@@ -8,6 +8,7 @@
  *
  * Usually you click Welcome page > Training > Check my work instead.
  */
+import { pathToFileURL } from "url";
 import { ROOT, c, title, info, ok, fail, warn, parseArgs, githubHandle, gitOut, recordReceipt } from "../lib/util.mjs";
 import { makeContext, rulesForLevel, findRule } from "./rules.mjs";
 
@@ -98,7 +99,9 @@ export default async function main(args) {
   }
 }
 
-// Allow both "node scripts/verify/check.mjs --level 1" and an import from training.mjs
-if (import.meta.url === `file://${process.argv[1].replace(/\\/g, "/")}`) {
+// Allow both "node scripts/verify/check.mjs --level 1" and an import from training.mjs.
+// A Windows file URL carries three slashes and a drive letter, so comparing the strings
+// by hand never matches and the script silently does nothing at all.
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   main(parseArgs(process.argv.slice(2)));
 }

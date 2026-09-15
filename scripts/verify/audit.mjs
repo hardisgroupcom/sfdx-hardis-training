@@ -19,6 +19,7 @@
  */
 import fs from "fs";
 import path from "path";
+import { pathToFileURL } from "url";
 import { makeContext, rulesForLevel } from "./rules.mjs";
 import { parseArgs } from "../lib/util.mjs";
 
@@ -162,6 +163,8 @@ async function main() {
   process.exit(audit.ok ? 0 : 1);
 }
 
-if (import.meta.url === `file://${process.argv[1].replace(/\\/g, "/")}`) {
+// A Windows file URL carries three slashes and a drive letter, so comparing the
+// strings by hand never matches and the script silently does nothing at all.
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   main();
 }
