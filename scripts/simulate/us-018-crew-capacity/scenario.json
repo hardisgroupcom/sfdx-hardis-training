@@ -1,0 +1,15 @@
+{
+  "id": "us-018-crew-capacity",
+  "title": "US-018 Cap the crew size a planner can assign",
+  "usedBy": "Level 2 lab 6, Level 3 labs 2 and 4",
+  "description": "Marco adds a crew capacity cap to the assignment flow, with the field and the permission it needs. He also takes Total Capacity kW off the Installation layout to make room, which nothing checks and somebody should notice.",
+  "branch": "training/mate-us-018-crew-capacity",
+  "author": {
+    "name": "Marco Bianchi",
+    "email": "marco.bianchi@helios-training.invalid"
+  },
+  "commitMessage": "US-018 Cap the crew size a planner can assign\n\nAdds Crew_Capacity_Cap__c on Installation and a decision in Installation_Assign_Crew\nthat brings an over-sized crew back down to the cap. Granted on Helios_Delivery_Manager.\nMoved the cap onto the Installation layout.",
+  "prTitle": "US-018 Cap the crew size a planner can assign",
+  "prBody": "Planners have been assigning crews larger than the installation can take, and the crews end up\nin each other's way on small roofs.\n\nThis adds `Crew_Capacity_Cap__c` on Installation, and a decision in `Installation_Assign_Crew`\nthat brings the crew back down to the cap when a planner goes over it.\n\n- New field `Installation__c.Crew_Capacity_Cap__c`\n- `Installation_Assign_Crew`: new `Crew Over Cap` decision after the status assignment\n- `Helios_Delivery_Manager`: read and edit on the new field\n- Installation layout: the cap added\n\nStory: US-018 in BACKLOG.md",
+  "nextStep": "Review it, then merge it into integration. Level 2 lab 6 then builds your own change on top and meets the conflict."
+}

@@ -1,0 +1,59 @@
+---
+# Builds the training site and publishes it to the gh-pages branch.
+#
+# The repository Pages setting must be "Deploy from a branch: gh-pages".
+# ghp-import pushes that branch; a repository configured for the "GitHub Actions"
+# Pages source would publish nothing and give no error.
+name: Build and publish the training site
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions: read-all
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build with Zensical and publish to gh-pages
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+
+      # Everything the site publishes is generated from training-universe.json
+      # and the lab front matter, so a drifted artifact fails here rather than
+      # reaching a learner.
+      - name: Regenerate the derived files
+        run: |
+          node scripts/build/universe.mjs
+          node scripts/build/site.mjs
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: 3.x
+
+      # Zensical is the successor of mkdocs-material and reads the same mkdocs.yml
+      - run: pip install zensical mdx_truly_sane_lists ghp-import
+      - run: zensical build
+
+      # Zensical has no gh-deploy command: ghp-import is the same tool mkdocs used
+      - name: Publish
+        run: |
+          git config --global user.name github-actions[bot]
+          git config --global user.email 41898282+github-actions[bot]@users.noreply.github.com
+          ghp-import --no-jekyll --push --force --message "Deployed ${GITHUB_SHA} with Zensical" site

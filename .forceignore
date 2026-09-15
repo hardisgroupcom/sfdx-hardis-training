@@ -1,0 +1,16 @@
+# Local artifacts, never versioned
+**/jsconfig.json
+**/.eslintrc.json
+**/.eslintrc.js
+**/lwc/.eslintrc.json
+**/profilePasswordPolicies/*
+**/appMenus/AppSwitcher.appMenu-meta.xml
+**/settings/*
+**/networks/*
+**/siteDotComSites/*
+**/objectTranslations/*
+**/standardValueSets/*
+
+# Temporary technical fields from the 2025 capacity spike, not versioned.
+# TODO remove once the spike is over  (Sofia, 2025-11)
+**/objects/Installation__c/fields/Crew_W*.field-meta.xml

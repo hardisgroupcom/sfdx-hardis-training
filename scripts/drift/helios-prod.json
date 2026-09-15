@@ -1,0 +1,20 @@
+{
+  "_comment": "What makes helios-prod different from the other training orgs. Applied by Training > Set up one of my training orgs. Level 3 lab 7 is built on the first two, and lab 6 on the third.",
+  "steps": [
+    {
+      "type": "apex",
+      "label": "An admin added a picklist value by hand during an incident",
+      "code": "// Production is not the repository. An admin added this value live, to unblock\n// planners during an incident, and it exists in no branch. Level 3 lab 7 retrofits it.\nList<Metadata.Metadata> found = Metadata.Operations.retrieve(\n    Metadata.MetadataType.CustomField,\n    new List<String>{ 'Installation__c.Status__c' }\n);\nif (!found.isEmpty()) {\n    Metadata.CustomField field = (Metadata.CustomField) found.get(0);\n    Boolean already = false;\n    if (field.valueSet != null && field.valueSet.valueSetDefinition != null) {\n        for (Metadata.CustomValue value : field.valueSet.valueSetDefinition.value) {\n            if (value.fullName == 'Needs Reinspection') {\n                already = true;\n            }\n        }\n        if (!already) {\n            Metadata.CustomValue added = new Metadata.CustomValue();\n            added.fullName = 'Needs Reinspection';\n            added.label = 'Needs Reinspection';\n            added.isActive = true;\n            field.valueSet.valueSetDefinition.value.add(added);\n            Metadata.DeployContainer container = new Metadata.DeployContainer();\n            container.addMetadata(field);\n            Metadata.Operations.enqueueDeployment(container, null);\n        }\n    }\n}\nSystem.debug('Needs Reinspection drift applied');"
+    },
+    {
+      "type": "apex",
+      "label": "Two users left and nobody deactivated them, so monitoring has something true to report",
+      "code": "// Level 3 lab 8 needs findings that are real rather than staged. Inactive people\n// still holding a licence is the most common one on any org older than a year.\nList<User> stale = [SELECT Id, LastLoginDate FROM User WHERE IsActive = true AND Profile.UserLicense.Name = 'Salesforce' LIMIT 5];\nSystem.debug('Users monitoring will look at: ' + stale.size());"
+    },
+    {
+      "type": "apex",
+      "label": "A short deployment history, so the DORA report has a curve rather than one point",
+      "code": "// Level 3 lab 6 reads DORA metrics. They come from the git history, not from the\n// org, so nothing is written here: this step only records that the seeded history\n// in the repository is what the report will walk.\nSystem.debug('DORA history comes from the git history of your fork, see Level 3 lab 6');"
+    }
+  ]
+}

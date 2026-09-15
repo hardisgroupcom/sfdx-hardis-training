@@ -1,0 +1,64 @@
+#!/usr/bin/env node
+/**
+ * The single entry point behind the Training menu of the VS Code extension.
+ *
+ *   node scripts/training.mjs status      Where am I?
+ *   node scripts/training.mjs seed        Set up one of my training orgs
+ *   node scripts/training.mjs check       Check my work
+ *   node scripts/training.mjs simulate    Simulate my teammates
+ *   node scripts/training.mjs reset       Reset this level
+ *   node scripts/training.mjs teardown    Clean up a training org
+ *
+ * Every verb prompts for what it needs, so nothing has to be typed. Flags exist
+ * for automation and for the labs that show what happened under the hood.
+ */
+import { parseArgs, abort, c } from "./lib/util.mjs";
+
+const VERBS = {
+  status: () => import("./training/status.mjs"),
+  seed: () => import("./training/seed.mjs"),
+  check: () => import("./training/check.mjs"),
+  simulate: () => import("./training/simulate.mjs"),
+  reset: () => import("./training/reset.mjs"),
+  teardown: () => import("./training/teardown.mjs")
+};
+
+async function main() {
+  const args = parseArgs(process.argv.slice(2));
+  const verb = args._[0];
+
+  if (!verb || args.help) {
+    console.log(`
+${c.bold("Salesforce DevOps with sfdx-hardis - training commands")}
+
+  ${c.cyan("status")}     Where am I? The level and lab you reached, and what to do next
+  ${c.cyan("seed")}       Set up one of my training orgs: deploys the Helios app and its data
+  ${c.cyan("check")}      Check my work: verifies a lab and prints your receipt
+  ${c.cyan("simulate")}   Simulate my teammates: creates the branches and Pull Requests a lab needs
+  ${c.cyan("reset")}      Reset this level: puts your repository back to a known state
+  ${c.cyan("teardown")}   Clean up a training org: removes the Helios app and its data
+
+Usually you click these on the VS Code Welcome page, under ${c.bold("Training")}.
+`);
+    process.exit(verb ? 0 : 1);
+  }
+
+  const loader = VERBS[verb];
+  if (!loader) {
+    abort(`"${verb}" is not a training command.`, `Try one of: ${Object.keys(VERBS).join(", ")}`);
+  }
+
+  const module = await loader();
+  await module.default(args);
+}
+
+main().catch((error) => {
+  console.error("");
+  console.error(c.red(`Something went wrong: ${error.message}`));
+  if (process.env.TRAINING_DEBUG) {
+    console.error(error.stack);
+  } else {
+    console.error(c.dim("Run again with TRAINING_DEBUG=1 to see the full stack trace."));
+  }
+  process.exit(1);
+});

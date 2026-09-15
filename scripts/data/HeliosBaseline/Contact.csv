@@ -1,0 +1,61 @@
+FirstName,LastName,Email,Title,Phone,Account.Name
+Paulo,Rossi,paulo.rossi.01@helios-training.invalid,Co-owner,+34 615 492 681,Sevilla Energy Coop 02
+Elena,Lopez,elena.lopez.02@helios-training.invalid,Owner,+34 622 544 617,Athina Villas 03
+Luis,Marino,luis.marino.03@helios-training.invalid,Building manager,+34 641 481 736,Bari Terraces 04
+Eleni,Garcia,eleni.garcia.04@helios-training.invalid,Owner,+34 627 645 821,Sevilla Terraces 05
+Eleni,Rossi,eleni.rossi.05@helios-training.invalid,Technical contact,+34 664 453 523,Marseille Housing 06
+Rafael,Marino,rafael.marino.06@helios-training.invalid,Building manager,+34 644 189 607,Faro Terraces 07
+Ines,Garcia,ines.garcia.07@helios-training.invalid,Technical contact,+34 674 120 146,Malaga Estates 08
+Hugo,Rossi,hugo.rossi.08@helios-training.invalid,Technical contact,+34 620 862 101,Valencia Terraces 09
+Marta,Marino,marta.marino.09@helios-training.invalid,Building manager,+34 678 749 929,Lisboa Residences 10
+Thomas,Leroy,thomas.leroy.10@helios-training.invalid,Co-owner,+34 656 782 303,Perpignan Residences 11
+Pedro,Moreau,pedro.moreau.11@helios-training.invalid,Co-owner,+34 649 384 233,Sevilla Residences 12
+Camille,Ferreira,camille.ferreira.12@helios-training.invalid,Co-owner,+34 691 769 922,Bari Properties 13
+Paulo,Papadopoulos,paulo.papadopoulos.13@helios-training.invalid,Building manager,+34 635 218 908,Bari Residences 14
+Eleni,Ferreira,eleni.ferreira.14@helios-training.invalid,Technical contact,+34 614 166 627,Lisboa Homes 15
+Sofia,Bernard,sofia.bernard.15@helios-training.invalid,Co-owner,+34 618 594 705,Cagliari Residences 16
+Rafael,Nikolaou,rafael.nikolaou.16@helios-training.invalid,Technical contact,+34 620 696 927,Montpellier Housing 17
+Hugo,Dubois,hugo.dubois.17@helios-training.invalid,Co-owner,+34 647 148 654,Thessaloniki Rooftops 18
+Eleni,Costa,eleni.costa.18@helios-training.invalid,Owner,+34 680 848 499,Bari Properties 19
+Rafael,Sanchez,rafael.sanchez.19@helios-training.invalid,Owner,+34 657 743 664,Palermo Solar Club 20
+Matteo,Nikolaou,matteo.nikolaou.20@helios-training.invalid,Building manager,+34 663 305 715,Faro Estates 21
+Matteo,Costa,matteo.costa.21@helios-training.invalid,Co-owner,+34 688 442 199,Bari Homes 22
+Ines,Costa,ines.costa.22@helios-training.invalid,Technical contact,+34 624 568 362,Athina Energy Coop 23
+Rafael,Moreau,rafael.moreau.23@helios-training.invalid,Building manager,+34 642 684 145,Montpellier Residences 24
+Rafael,Marino,rafael.marino.24@helios-training.invalid,Technical contact,+34 668 263 763,Faro Energy Coop 25
+Paulo,Nikolaou,paulo.nikolaou.25@helios-training.invalid,Technical contact,+34 663 194 825,Montpellier Homes 26
+Giulia,Costa,giulia.costa.26@helios-training.invalid,Technical contact,+34 643 823 798,Faro Housing 27
+Paulo,Garcia,paulo.garcia.27@helios-training.invalid,Technical contact,+34 630 468 298,Malaga Villas 28
+Elena,Ferreira,elena.ferreira.28@helios-training.invalid,Building manager,+34 631 865 152,Valencia Villas 29
+Rafael,Bernard,rafael.bernard.29@helios-training.invalid,Technical contact,+34 672 296 766,Montpellier Properties 30
+Sofia,Rossi,sofia.rossi.30@helios-training.invalid,Co-owner,+34 622 834 438,Lisboa Residences 31
+Diogo,Costa,diogo.costa.31@helios-training.invalid,Owner,+34 622 460 167,Malaga Terraces 32
+Elena,Ferreira,elena.ferreira.32@helios-training.invalid,Co-owner,+34 650 478 905,Bari Residences 33
+Luis,Lopez,luis.lopez.33@helios-training.invalid,Owner,+34 661 588 549,Cagliari Homes 34
+Marta,Conti,marta.conti.34@helios-training.invalid,Owner,+34 697 215 454,Montpellier Rooftops 35
+Camille,Silva,camille.silva.35@helios-training.invalid,Technical contact,+34 663 917 230,Palermo Villas 36
+Sofia,Rossi,sofia.rossi.36@helios-training.invalid,Building manager,+34 689 917 739,Athina Housing 37
+Giulia,Dubois,giulia.dubois.37@helios-training.invalid,Technical contact,+34 619 294 156,Lisboa Housing 38
+Marta,Silva,marta.silva.38@helios-training.invalid,Owner,+34 616 741 697,Thessaloniki Estates 39
+Diogo,Moreau,diogo.moreau.39@helios-training.invalid,Owner,+34 625 529 378,Cagliari Terraces 40
+Ana,Papadopoulos,ana.papadopoulos.40@helios-training.invalid,Co-owner,+34 619 102 254,Sevilla Housing 01
+Chloe,Dubois,chloe.dubois.41@helios-training.invalid,Building manager,+34 610 887 287,Sevilla Energy Coop 02
+Camille,Bernard,camille.bernard.42@helios-training.invalid,Technical contact,+34 692 364 648,Athina Villas 03
+Andreas,Sanchez,andreas.sanchez.43@helios-training.invalid,Co-owner,+34 699 279 724,Bari Terraces 04
+Sofia,Moreau,sofia.moreau.44@helios-training.invalid,Building manager,+34 664 415 985,Sevilla Terraces 05
+Giulia,Marino,giulia.marino.45@helios-training.invalid,Co-owner,+34 638 780 123,Marseille Housing 06
+Ana,Garcia,ana.garcia.46@helios-training.invalid,Owner,+34 694 335 871,Faro Terraces 07
+Ana,Dubois,ana.dubois.47@helios-training.invalid,Co-owner,+34 684 843 109,Malaga Estates 08
+Matteo,Sanchez,matteo.sanchez.48@helios-training.invalid,Owner,+34 612 239 971,Valencia Terraces 09
+Chloe,Dubois,chloe.dubois.49@helios-training.invalid,Co-owner,+34 646 287 493,Lisboa Residences 10
+Giulia,Leroy,giulia.leroy.50@helios-training.invalid,Technical contact,+34 691 861 730,Perpignan Residences 11
+Diogo,Costa,diogo.costa.51@helios-training.invalid,Owner,+34 613 234 623,Sevilla Residences 12
+Pedro,Lopez,pedro.lopez.52@helios-training.invalid,Owner,+34 663 840 879,Bari Properties 13
+Bianca,Dubois,bianca.dubois.53@helios-training.invalid,Co-owner,+34 611 474 727,Bari Residences 14
+Thomas,Silva,thomas.silva.54@helios-training.invalid,Technical contact,+34 663 162 693,Lisboa Homes 15
+Giulia,Silva,giulia.silva.55@helios-training.invalid,Technical contact,+34 638 829 646,Cagliari Residences 16
+Eleni,Nikolaou,eleni.nikolaou.56@helios-training.invalid,Building manager,+34 666 292 406,Montpellier Housing 17
+Paulo,Costa,paulo.costa.57@helios-training.invalid,Owner,+34 655 708 790,Thessaloniki Rooftops 18
+Paulo,Sanchez,paulo.sanchez.58@helios-training.invalid,Co-owner,+34 693 152 102,Bari Properties 19
+Eleni,Papadopoulos,eleni.papadopoulos.59@helios-training.invalid,Building manager,+34 637 731 409,Palermo Solar Club 20
+Ines,Nikolaou,ines.nikolaou.60@helios-training.invalid,Co-owner,+34 664 931 960,Faro Estates 21
