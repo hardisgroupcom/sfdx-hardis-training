@@ -42,7 +42,7 @@ const args = process.argv.slice(2);
 const FULL = args.includes("--full");
 const orgFlag = args.indexOf("--org");
 const ORG = orgFlag === -1 ? SPEC.org : args[orgFlag + 1];
-const wanted = args.filter((a, i) => !a.startsWith("--") && i !== orgFlag + 1);
+const wanted = args.filter((a, i) => !a.startsWith("--") && !(orgFlag !== -1 && i === orgFlag + 1));
 
 // sf is a shell wrapper on Windows, so it is called through a shell. SOQL quotes
 // its own literals with ' and the arguments are wrapped in ", so they never meet.
@@ -86,15 +86,37 @@ function scope(page, target) {
   return { locator: (sel) => frame.locator(sel), root: frame };
 }
 
-// Salesforce docks promotion panels ("Get Mobile", "Setup Assistant") over the
-// bottom right of Setup, on top of whatever the capture is about.
-const NOISE = [
-  ".forceDockingPanel",
-  ".slds-docked-form-footer .promo",
-  "one-appnav-overflow-menu",
-  "[data-aura-class='forcePromptDialog']",
-  "div.desktopPromoPanel",
+// Salesforce docks promotion panels ("Get Mobile") over the bottom right of
+// Setup, on top of whatever the capture is about.
+const NOISE = [".forceDockingPanel", "div.desktopPromoPanel", "one-appnav-overflow-menu"];
+
+// Admin nags that open over Setup on their own. They are taken off the page, not
+// clicked: "Remind me in 1 week" and "Save" both write something in the org.
+const NAGS = [
+  "Assign Org Responsibilities",
+  "Get the most out of Salesforce",
+  "Take Salesforce with you",
 ];
+
+async function dismissNags(page) {
+  await page
+    .evaluate((phrases) => {
+      let removed = 0;
+      for (const dialog of document.querySelectorAll("[role='dialog'], .slds-modal")) {
+        const text = dialog.innerText || "";
+        if (phrases.some((phrase) => text.includes(phrase))) {
+          dialog.remove();
+          removed += 1;
+        }
+      }
+      if (removed > 0) {
+        document
+          .querySelectorAll(".slds-backdrop, .modal-glass, .forceModalBackdrop")
+          .forEach((el) => el.remove());
+      }
+    }, NAGS)
+    .catch(() => {});
+}
 
 async function main() {
   const values = resolveLookups();
@@ -113,7 +135,15 @@ async function main() {
   await page.waitForTimeout(6000);
 
   for (const target of SPEC.captures) {
-    if (wanted.length > 0 && !wanted.includes(target.name)) {
+    const named = wanted.includes(target.name);
+    if (wanted.length > 0 && !named) {
+      continue;
+    }
+    // A capture the org will not serve stays in the spec with its reason, so the
+    // next person knows what is missing and what it would take. Naming it on the
+    // command line tries it anyway.
+    if (target.skip && !named) {
+      console.log(`${target.name}.png  SKIPPED: ${target.skip}`);
       continue;
     }
     await page.setViewportSize({ width: target.width || 1440, height: target.height || 900 });
@@ -127,6 +157,7 @@ async function main() {
       });
       await page.waitForTimeout(target.load || 7000);
     }
+    await dismissNags(page);
 
     const view = scope(page, target);
     if (target.waitFor) {
@@ -180,11 +211,14 @@ async function main() {
   }
 
   // Only the tab this script opened. Never browser.close(): over CDP that closes
-  // the Chrome the user is working in.
+  // the Chrome the user is working in. The CDP socket keeps node alive, so the
+  // process says so itself once the tab is gone.
   await page.close();
 }
 
-main().catch((error) => {
-  console.error(error.message || error);
-  process.exit(1);
-});
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error.message || error);
+    process.exit(1);
+  });

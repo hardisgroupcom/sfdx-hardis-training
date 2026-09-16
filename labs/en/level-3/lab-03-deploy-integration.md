@@ -5,7 +5,7 @@ lab: 3
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/devops-pipeline
+  - annotated/vscode/devops-pipeline--deployment-status
 depends_on:
   commands: [hardis:project:deploy:smart]
   flags: []
@@ -39,8 +39,11 @@ incidents come from.
 
 **Actions** tab of your fork, the **Deploy to integration** run that started when you merged.
 
-Or from VS Code: the **DevOps Pipeline** panel shows the running job on the `integration` column,
-with a link.
+Or from VS Code: the **DevOps Pipeline** panel puts the job on the arrow between `integration` and
+its org **(1)**, coloured with its status, and the legend under the diagram **(2)** says what each
+colour means. Click the marker to open the run.
+
+![The DevOps Pipeline panel, with the deployment status on the arrow to the org](../../_assets/annotated/vscode/devops-pipeline--deployment-status.png)
 
 ### 2. Read it in five parts
 

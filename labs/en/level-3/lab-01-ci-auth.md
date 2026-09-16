@@ -5,8 +5,8 @@ lab: 1
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/orgs-manager
-  - vscode/command-runner-question
+  - annotated/vscode/command-runner-question--ci-auth
+  - annotated/vscode/command-runner-completed--ci-auth-result
 depends_on:
   commands: [hardis:project:configure:auth]
   flags: []
@@ -61,9 +61,12 @@ pre-authorised user, no password anywhere, and revocation by deleting one app.
 In **Commands > Setup Configuration**, click **Configure Org CI authentication**. The same command
 sits in the settings menu of the **DevOps Pipeline** panel, as **Add/Configure Org**.
 
-![A sfdx-hardis command asking its questions in the extension](../../_assets/vscode/command-runner-question.png)
+The command runs in a panel rather than a terminal, and asks one question at a time **(1)**, with
+the answers to click below it **(2)**.
 
-It asks, one screen at a time:
+![A sfdx-hardis command waiting for an answer in the extension](../../_assets/annotated/vscode/command-runner-question--ci-auth.png)
+
+It asks, in this order:
 
 1. **Which major branch?** - `integration`
 2. **Which org?** - the `helios-integration` org, picked from the list of connected orgs
@@ -73,6 +76,14 @@ Let it run. It takes a couple of minutes.
 
 ### 2. Read what it produced
 
+When it finishes, the panel keeps every question with the answer you gave **(1)**, then the output
+of the run **(2)**, and a bar of the reports and documents it produced **(3)**.
+
+![A finished sfdx-hardis command, with its answers, its output and its reports](../../_assets/annotated/vscode/command-runner-completed--ci-auth-result.png)
+
+Scroll through **(2)**: this is where the two values you are about to store as secrets are printed.
+Nothing else prints them again, so do not close the panel until you have copied them.
+
 The command wrote several things, and you should look at each one:
 
 | What                              | Where                                                           | What it is                                                     |
@@ -80,7 +91,7 @@ The command wrote several things, and you should look at each one:
 | A certificate and key pair        | `config/branches/.jwt/integration.key` (encrypted) and a `.crt` | The credential itself                                          |
 | An External Client App definition | in the org, created for you                                     | What Salesforce authenticates against                          |
 | Branch configuration              | `config/branches/.sfdx-hardis.integration.yml`                  | `targetUsername`, `instanceUrl`, and the app's consumer key    |
-| Two values to store as secrets    | printed in the terminal                                         | `SFDX_CLIENT_ID_INTEGRATION` and `SFDX_CLIENT_KEY_INTEGRATION` |
+| Two values to store as secrets    | printed in the command panel                                    | `SFDX_CLIENT_ID_INTEGRATION` and `SFDX_CLIENT_KEY_INTEGRATION` |
 
 The private key committed to the repository is **encrypted**, with the passphrase held as
 `SFDX_CLIENT_KEY_INTEGRATION`. The repository alone is not enough to authenticate, which is what

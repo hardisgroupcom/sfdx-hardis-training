@@ -233,8 +233,8 @@
         "pipeline"
       ],
       "screenshots": [
-        "vscode/backpromote",
-        "vscode/backpromote-what"
+        "annotated/vscode/backpromote-loading",
+        "annotated/vscode/backpromote"
       ]
     },
     {
@@ -262,7 +262,7 @@
         "packageXml"
       ],
       "screenshots": [
-        "vscode/devops-pipeline"
+        "annotated/vscode/metadata-retriever"
       ]
     },
     {
@@ -290,9 +290,9 @@
         "deploymentAction"
       ],
       "screenshots": [
-        "vscode/pipeline-pr-actions-empty",
-        "vscode/pipeline-edit-action-apex",
-        "vscode/pipeline-pr-actions-list"
+        "annotated/vscode/pipeline-pr-actions-empty",
+        "annotated/vscode/pipeline-edit-action-apex",
+        "annotated/vscode/pipeline-pr-actions-list"
       ]
     },
     {
@@ -321,10 +321,10 @@
         "pipeline"
       ],
       "screenshots": [
-        "vscode/data-workbench",
-        "vscode/pipeline-edit-action-data",
-        "vscode/pipeline-edit-action-schedule-batch",
-        "vscode/pipeline-edit-action-manual"
+        "annotated/vscode/data-workbench",
+        "annotated/vscode/pipeline-edit-action-data",
+        "annotated/vscode/pipeline-edit-action-schedule-batch",
+        "annotated/vscode/pipeline-edit-action-manual"
       ]
     },
     {
@@ -382,7 +382,7 @@
         "packageXml"
       ],
       "screenshots": [
-        "vscode/pipeline-config"
+        "annotated/vscode/pipeline-config"
       ]
     },
     {
@@ -434,7 +434,7 @@
         "packageXml"
       ],
       "screenshots": [
-        "vscode/sidebar"
+        "annotated/vscode/sidebar"
       ]
     },
     {
@@ -495,8 +495,9 @@
         "pipelineConfig"
       ],
       "screenshots": [
-        "vscode/devops-pipeline",
-        "vscode/pipeline-config"
+        "annotated/vscode/devops-pipeline--one-column",
+        "annotated/vscode/pipeline-config--target-branches",
+        "annotated/vscode/pipeline-config-branch"
       ]
     },
     {
@@ -525,8 +526,8 @@
         "promptInput"
       ],
       "screenshots": [
-        "vscode/orgs-manager",
-        "vscode/command-runner-question"
+        "annotated/vscode/command-runner-question--ci-auth",
+        "annotated/vscode/command-runner-completed--ci-auth-result"
       ]
     },
     {
@@ -578,7 +579,7 @@
         "pipeline"
       ],
       "screenshots": [
-        "vscode/devops-pipeline"
+        "annotated/vscode/devops-pipeline--deployment-status"
       ]
     },
     {
@@ -608,8 +609,7 @@
         "packageXml"
       ],
       "screenshots": [
-        "vscode/devops-pipeline",
-        "vscode/pipeline-config"
+        "annotated/vscode/pipeline-config--cleaning-overwrite"
       ]
     },
     {
@@ -636,8 +636,7 @@
         "deploymentAction"
       ],
       "screenshots": [
-        "vscode/devops-pipeline",
-        "vscode/pipeline-branch-modal"
+        "annotated/vscode/pipeline-branch-modal--promote"
       ]
     },
     {
@@ -663,7 +662,7 @@
         "pipeline"
       ],
       "screenshots": [
-        "vscode/devops-pipeline"
+        "annotated/vscode/devops-pipeline--settings-menu"
       ]
     },
     {
@@ -693,8 +692,7 @@
         "metadataRetriever"
       ],
       "screenshots": [
-        "vscode/devops-pipeline",
-        "vscode/metadata-retriever"
+        "annotated/vscode/metadata-retriever--retrofit"
       ]
     },
     {
@@ -724,8 +722,8 @@
         "orgMonitoring"
       ],
       "screenshots": [
-        "vscode/monitoring-config",
-        "vscode/org-monitoring"
+        "annotated/vscode/monitoring-config--what-it-watches",
+        "annotated/vscode/org-monitoring--first-report"
       ]
     },
     {
@@ -752,7 +750,7 @@
         "documentationConfig"
       ],
       "screenshots": [
-        "vscode/documentation-workbench"
+        "annotated/vscode/documentation-workbench--generate-and-deploy"
       ]
     },
     {

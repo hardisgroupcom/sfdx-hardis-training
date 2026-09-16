@@ -5,8 +5,7 @@ lab: 5
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/devops-pipeline
-  - vscode/pipeline-branch-modal
+  - annotated/vscode/pipeline-branch-modal--promote
 depends_on:
   commands: [hardis:doc:release-notes, hardis:project:deploy:smart]
   flags: []
@@ -41,17 +40,17 @@ deploys to has real testers in it.
 
 ### 1. See what you are about to ship
 
-Open the **DevOps Pipeline** panel and click the `integration` column.
+Open the **DevOps Pipeline** panel and click the `integration` column **(1)**.
 
-![The branch window: what is waiting to be promoted](../../_assets/vscode/pipeline-branch-modal.png)
+![The DevOps Pipeline diagram, with the integration column that opens the branch window](../../_assets/annotated/vscode/pipeline-branch-modal--promote.png)
 
-It lists every Pull Request merged into `integration` since the last promotion to `uat`. That list
-**is** the release. Read it before you create anything: if a story in it should not go out this
-week, now is the moment, not after the deployment.
+A window opens on that branch. It lists every Pull Request merged into `integration` since the last
+promotion to `uat`. That list **is** the release. Read it before you create anything: if a story in
+it should not go out this week, now is the moment, not after the deployment.
 
 ### 2. Create the promotion Pull Request
 
-From the same panel, create the Pull Request from `integration` into `uat`.
+From the same window, create the Pull Request from `integration` into `uat`.
 
 Title it for the humans who will read it, not for git:
 
@@ -97,8 +96,8 @@ a piece of reference data.
 
 ### 6. Generate the release notes
 
-Open the **DevOps Pipeline** panel and click the `uat` column. At the bottom of the branch window,
-click **Generate Promotion Notes for uat**: it covers the promotion you have just merged.
+Open the **DevOps Pipeline** panel and click the `uat` column, the same way you clicked
+`integration` in step 1. At the bottom of the branch window, click **Generate Promotion Notes for uat**: it covers the promotion you have just merged.
 
 The button is named after what the branch is. `uat` still merges into `main`, so what arrived there
 is a promotion. On a branch with no merge target, `main`, the same button reads **Generate Release

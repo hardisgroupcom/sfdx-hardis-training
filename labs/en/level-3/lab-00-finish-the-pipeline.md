@@ -5,8 +5,9 @@ lab: 0
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/devops-pipeline
-  - vscode/pipeline-config
+  - annotated/vscode/devops-pipeline--one-column
+  - annotated/vscode/pipeline-config--target-branches
+  - annotated/vscode/pipeline-config-branch
 depends_on:
   commands: [hardis:project:create]
   flags: []
@@ -26,12 +27,12 @@ configuration you add.
 
 Open the **DevOps Pipeline** panel and look at what Sofia left.
 
-![The pipeline as it stands: one major branch](../../_assets/vscode/devops-pipeline.png)
+![The DevOps Pipeline panel with a single major branch column](../../_assets/annotated/vscode/devops-pipeline--one-column.png)
 
-One column. `integration`, with its org. The `uat` and `main` branches exist in git, and nothing
-knows about them: no org, no merge path, no deployment job.
+One column. `integration` **(1)**, with its org **(2)**. The `uat` and `main` branches exist in git,
+and nothing knows about them: no org, no merge path, no deployment job.
 
-The panel says so itself, in the warnings at the bottom:
+The panel says so itself, in the warnings at the bottom **(3)**:
 
 > No merge target defined for branch integration
 >
@@ -67,13 +68,14 @@ them in one sentence each, configuring them will not help.
 ### 2. Declare uat and main as targets
 
 Open the **DevOps Pipeline** panel, then its settings menu at the top right, and **Pipeline
-Settings**. It opens on **Global Pipeline Settings**.
+Settings**. It opens on **Global Pipeline Settings**, which the configuration scope selector
+**(1)** confirms.
 
-![The project configuration screen](../../_assets/vscode/pipeline-config.png)
+![The Global Pipeline Settings screen, with the scope selector, the Edit button and the User Stories tab](../../_assets/annotated/vscode/pipeline-config--target-branches.png)
 
-The panel is read-only until you click **Edit**, so click it first. Then, under the contribution
-settings, add `uat` and `main` to the list of available target branches, with labels contributors
-will understand:
+The panel is read-only until you click **Edit** **(2)**, so click it first. Then open the **User
+Stories** tab **(3)**, where the contribution settings live, and add `uat` and `main` to the list of
+available target branches, with labels contributors will understand:
 
 | Branch      | Label                                                                 |
 |-------------|-----------------------------------------------------------------------|
@@ -89,9 +91,11 @@ Set the production branch to `main`.
 
 Back in the pipeline diagram, `uat` and `main` now appear as columns with no org.
 
-For each one, switch the **Configuration Scope** dropdown of **Pipeline Settings** to `Branch: uat`,
-then to `Branch: main`. The title becomes **Pipeline Settings for major git branch uat**. Click
-**Edit**, then fill in:
+For each one, switch the configuration scope selector of **Pipeline Settings** **(1)** to
+`Branch: uat`, then to `Branch: main`. The title becomes **Pipeline Settings for major git branch
+uat**. Click **Edit** **(2)**, then fill in the two fields of the **Salesforce Org** tab **(3)**:
+
+![The Pipeline Settings panel scoped to one major branch](../../_assets/annotated/vscode/pipeline-config-branch.png)
 
 | Branch | Target username                | Instance URL                   |
 |--------|--------------------------------|--------------------------------|
@@ -103,7 +107,7 @@ the single most expensive mistake available in this lab.
 
 ### 4. Declare the merge path
 
-Still in the branch settings, in the **Deployment** tab, set the merge targets:
+Still in the branch settings, on the **Deployment** tab of the same panel, set the merge targets:
 
 | Branch      | Merge targets |
 |-------------|---------------|

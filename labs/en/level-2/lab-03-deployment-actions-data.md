@@ -5,10 +5,10 @@ lab: 3
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/data-workbench
-  - vscode/pipeline-edit-action-data
-  - vscode/pipeline-edit-action-schedule-batch
-  - vscode/pipeline-edit-action-manual
+  - annotated/vscode/data-workbench
+  - annotated/vscode/pipeline-edit-action-data
+  - annotated/vscode/pipeline-edit-action-schedule-batch
+  - annotated/vscode/pipeline-edit-action-manual
 depends_on:
   commands: [hardis:org:data:import, hardis:work:save]
   flags: []
@@ -86,14 +86,15 @@ tells you.
 
 ### 3. Build a data workspace for the reference records
 
-Open the **Data Workbench** panel.
+Open the **Data Workbench** panel. **Create Workspace** **(1)** sits at the top right, and the
+workspaces the project already carries are listed on the left **(2)**: `HeliosBaseline` is the one
+the Training menu uses to seed your org.
 
-![The Data Workbench, where SFDMU workspaces are created and run](../../_assets/vscode/data-workbench.png)
+![The Data Import/Export Workbench, where SFDMU workspaces are created and run](../../_assets/annotated/vscode/data-workbench.png)
 
 Create a new workspace named `HeliosCrewRefData`:
 
-1. **Create Workspace**, or **Create Your First Workspace** if you have none yet, and name it
-   `HeliosCrewRefData`
+1. **Create Workspace**, and name it `HeliosCrewRefData`
 2. Add the object `Crew_Capacity__c`
 3. Operation: **Upsert**
 4. External id: `External_Id__c`
@@ -117,20 +118,24 @@ Open your Pull Request in the **DevOps Pipeline** panel, **Deployment Actions** 
 
 **One: load the reference data.**
 
-![The SFDMU data import action editor](../../_assets/vscode/pipeline-edit-action-data.png)
+![The Edit Deployment Action dialog, with the Data type selected](../../_assets/annotated/vscode/pipeline-edit-action-data.png)
 
 | Field              | Value                               |
 |--------------------|-------------------------------------|
 | Type               | **Data**                            |
 | Label              | `Load crew capacity reference data` |
 | When               | After Metadata Deployment           |
-| SFDMU Project Path | `scripts/data/HeliosCrewRefData`    |
+| SFDMU Project Path | `HeliosCrewRefData`                 |
 | Execution Contexts | Validation and Deployment jobs      |
 | Target orgs        | All target orgs                     |
 
+**Type** **(1)** decides which fields the rest of the dialog shows. **SFDMU Project Path** **(2)**
+is a dropdown of the workspaces under `scripts/data/`, so it names `HeliosCrewRefData` rather than
+its path. **Target orgs** **(3)** on **All target orgs** means every org the pipeline deploys to.
+
 **Two: schedule the batch.**
 
-![The schedule Apex batch action editor](../../_assets/vscode/pipeline-edit-action-schedule-batch.png)
+![The Edit Deployment Action dialog, with the Schedule Batch type selected](../../_assets/annotated/vscode/pipeline-edit-action-schedule-batch.png)
 
 | Field                         | Value                                              |
 |-------------------------------|----------------------------------------------------|
@@ -141,9 +146,13 @@ Open your Pull Request in the **DevOps Pipeline** panel, **Deployment Actions** 
 | Scheduled Job Name (Optional) | `Helios crew capacity nightly`                     |
 | Run Only Once By Org          | yes                                                |
 
+**Schedule Batch** **(1)** replaces the script field with two of its own: **Apex Class Name**
+**(2)**, a dropdown of the schedulable classes in the project, and **Cron Expression** **(3)**,
+which the dialog explains with examples under the field.
+
 **Three: the one nobody can automate.**
 
-![The manual step action editor](../../_assets/vscode/pipeline-edit-action-manual.png)
+![The Edit Deployment Action dialog, with the Manual type selected](../../_assets/annotated/vscode/pipeline-edit-action-manual.png)
 
 Some things have no API. The planning board setting is one of them: it is a toggle in a managed
 package's Setup screen, and no deployment will ever touch it.
@@ -154,6 +163,10 @@ package's Setup screen, and no deployment will ever touch it.
 | Label        | `Turn on the planning board in Setup`                                                                                                                      |
 | Instructions | `Setup > Installed Packages > Helios Planning > Configure > tick "Use crew capacity rules" > Save. Takes about a minute, and has to be done in every org.` |
 | Target orgs  | All target orgs                                                                                                                                            |
+
+**Manual** **(1)** leaves one field that matters, **Instructions** **(2)**, a multi-line box that
+takes Markdown: number the clicks, and finish with what the person should see afterwards.
+**Target orgs** **(3)** stays on **All target orgs**, because this click is needed in every org.
 
 A manual step does not do anything. It **appears in the Pull Request comment and in the deployment
 report**, so the person releasing to production is told, in the release itself, that there is a

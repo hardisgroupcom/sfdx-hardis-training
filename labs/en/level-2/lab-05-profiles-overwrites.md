@@ -5,7 +5,7 @@ lab: 5
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/pipeline-config
+  - annotated/vscode/pipeline-config
 depends_on:
   commands: [hardis:work:save]
   flags: []
@@ -110,21 +110,25 @@ Now check `helios-integration`. The permission is there.
 
 ### 6. Look at the other protection while you are here
 
-Open the **DevOps Pipeline** panel, then **Pipeline Settings** in the gear menu.
+Open the **DevOps Pipeline** panel, then **Pipeline Settings** in the gear menu. Leave the scope
+selector **(1)** on **Global Settings**: these are project rules, identical for every branch.
 
-![Project configuration in the DevOps Pipeline panel](../../_assets/vscode/pipeline-config.png)
+![The Global Pipeline Settings panel, on its Deployment tab](../../_assets/annotated/vscode/pipeline-config.png)
 
-Two settings on this screen do related jobs, and it is worth knowing which is which:
+The settings are grouped in tabs. Three of them do related jobs, and it is worth knowing which is
+which:
 
-| Setting                            | What it protects against                                                                                                             |
-|------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
-| `autoCleanTypes: minimizeProfiles` | A Profile carrying permissions that belong on a Permission Set                                                                       |
-| `autoRemoveUserPermissions`        | Specific user permissions that must never travel between orgs at all, whatever carries them                                          |
-| `packageNoOverwritePath`           | Components that exist in the target org and must never be overwritten by a deployment, listed in `manifest/package-no-overwrite.xml` |
+| Setting                            | Tab                            | What it protects against                                                                                                             |
+|------------------------------------|--------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
+| `autoCleanTypes: minimizeProfiles` | **Salesforce Project** **(2)** | A Profile carrying permissions that belong on a Permission Set                                                                       |
+| `autoRemoveUserPermissions`        | **Salesforce Project** **(2)** | Specific user permissions that must never travel between orgs at all, whatever carries them                                          |
+| `packageNoOverwritePath`           | **Deployment** **(3)**         | Components that exist in the target org and must never be overwritten by a deployment, listed in `manifest/package-no-overwrite.xml` |
 
 The third one is the overwrite manager, and it is the one to reach for when a component is
 deliberately different in each org: a named credential pointing at a different endpoint, a custom
-setting holding an environment-specific value, a remote site setting.
+setting holding an environment-specific value, a remote site setting. It is also the only one of the
+three that is set per branch rather than globally, so the scope selector **(1)** has to name a
+branch before the **Deployment** tab shows it.
 
 ### 7. Write it down
 

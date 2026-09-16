@@ -5,8 +5,7 @@ lab: 4
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/devops-pipeline
-  - vscode/pipeline-config
+  - annotated/vscode/pipeline-config--cleaning-overwrite
 depends_on:
   commands: [hardis:project:deploy:smart]
   flags: []
@@ -116,21 +115,25 @@ in the org.
 
 Three things kept this from being much worse, and they are all configuration you can point at:
 
-**Cleaning** (`autoCleanTypes`) meant the conflict was on two small blocks rather than on a
-thousand-line Profile. This is most of the reason the project bans permissions on Profiles.
+Open **Pipeline Settings** from the DevOps Pipeline panel, on **Global Settings**, and find all
+three.
 
-**The overwrite manager** (`packageNoOverwritePath`) protects components that are deliberately
-different per org. Open the project **Settings** in the DevOps Pipeline panel and look at the
-configuration.
+![Global Pipeline Settings, with the tabs that hold the cleaning, overwrite and delta settings](../../_assets/annotated/vscode/pipeline-config--cleaning-overwrite.png)
 
-![Project configuration, where the cleaning and overwrite settings live](../../_assets/vscode/pipeline-config.png)
+**Cleaning** (`autoCleanTypes`, on the **Salesforce Project** tab **(1)**) meant the conflict was on
+two small blocks rather than on a thousand-line Profile. This is most of the reason the project bans
+permissions on Profiles.
 
-Anything listed in `manifest/package-no-overwrite.xml` is removed from the package when the target
-org already has it, so a deployment cannot flatten a named credential that points at a different
-endpoint in each environment.
+**The overwrite manager** (`packageNoOverwritePath`, on the **Deployment** tab **(2)**) protects
+components that are deliberately different per org. Anything listed in
+`manifest/package-no-overwrite.xml` is removed from the package when the target org already has it,
+so a deployment cannot flatten a named credential that points at a different endpoint in each
+environment.
 
-**Delta deployment** meant each merge deployed its own components rather than the whole repository,
-so US-019's deployment could not accidentally roll back US-018.
+**Delta deployment** is **Use Delta Deployment** **(3)**, on the same **Deployment** tab. With it on,
+each merge deploys its own components rather than the whole repository, so US-019's deployment
+cannot accidentally roll back US-018. Read its current value before you rely on it: the panel shows
+whether this project has it enabled, and the deployment log in Lab 3 shows what it changed.
 
 ### 8. Write the decision down
 

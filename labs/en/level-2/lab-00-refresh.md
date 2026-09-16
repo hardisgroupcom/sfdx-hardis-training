@@ -5,8 +5,8 @@ lab: 0
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/backpromote
-  - vscode/backpromote-what
+  - annotated/vscode/backpromote-loading
+  - annotated/vscode/backpromote
 depends_on:
   commands: [hardis:work:backpromote, hardis:work:refresh]
   flags: []
@@ -51,7 +51,14 @@ That list, not your memory, is what tells you whether a refresh is needed.
 In **Commands > CI/CD (advanced)**, click **Backpromote to your dev sandbox (Beta)**. The same panel
 opens from the **Backpromote (Beta)** card in the **DevOps Pipeline** panel.
 
-![The Backpromote panel](../../_assets/vscode/backpromote.png)
+It computes its plan before it shows you anything:
+
+1. **Target sandbox** **(1)** is the org the work comes down into, `helios-dev`
+2. **Parent branch** **(2)** is where it comes from, `integration`
+3. The three lines **(3)** read your org, list the Pull Requests merged in `integration`, and work
+   out the difference between the two
+
+![The Backpromote panel computing its plan](../../_assets/annotated/vscode/backpromote-loading.png)
 
 "Backpromote" is the direction that matters: work normally flows **up**, from your branch to
 integration to uat to production. A backpromote brings it **down** again, from a major branch into
@@ -59,9 +66,12 @@ your own environment, so you are building on what the team has rather than on wh
 
 ### 3. Choose what comes down
 
-The panel shows what differs between `integration` and your org, item by item.
+When the plan is ready the panel fills in. The merged Pull Requests are listed newest first
+**(1)**: pick the oldest one you want, and everything from there to the head of `integration`
+**(2)** comes down. Below, what differs between `integration` and your org is listed by metadata
+type, each item with its own tick **(3)**.
 
-![Choosing what the backpromote brings down](../../_assets/vscode/backpromote-what.png)
+![The Backpromote panel, with the merged Pull Requests and the items they bring down](../../_assets/annotated/vscode/backpromote.png)
 
 Go through the list rather than clicking "all":
 

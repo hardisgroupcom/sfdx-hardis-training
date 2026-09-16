@@ -5,7 +5,7 @@ lab: 1
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/devops-pipeline
+  - annotated/vscode/metadata-retriever
 depends_on:
   commands: [hardis:work:new, hardis:work:save, hardis:project:deploy:smart]
   flags: [--check]
@@ -155,9 +155,15 @@ exactly instead of guessing with a wildcard:
 An exact path ages badly too, but it ages **loudly**: the day the file disappears, nothing else
 starts being ignored.
 
-Then retrieve your field properly. Open the **Metadata Retriever** panel, search for
-`Installation__c.Crew_Warning_Sent__c`, and retrieve it. It appears under
-`force-app/main/default/objects/Installation__c/fields/`.
+Then retrieve your field properly. Open the **Metadata Retriever** panel:
+
+1. Check that the org at the top right **(1)** is `helios-dev`
+2. Type `Crew_Warning_Sent__c` into **Metadata Name** **(2)**
+3. Click **Search Metadata** **(3)**, then tick the field in the results and retrieve it
+
+![The Metadata Retriever panel, with its org selector, its filters and the Search Metadata button](../../_assets/annotated/vscode/metadata-retriever.png)
+
+The field appears under `force-app/main/default/objects/Installation__c/fields/`.
 
 ### 7. Publish again
 

@@ -5,7 +5,7 @@ lab: 6
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/devops-pipeline
+  - annotated/vscode/devops-pipeline--settings-menu
 depends_on:
   commands: [hardis:doc:dora-report, hardis:project:deploy:smart]
   flags: []
@@ -96,7 +96,11 @@ feature failing. It is an old one.
 You have shipped. The question a release manager gets asked next is "how are we doing", and it
 deserves a better answer than a feeling.
 
-Open the **DevOps Pipeline** panel and click **Generate DORA Metrics Report**.
+Open the **DevOps Pipeline** panel, open the gear menu at the top right **(1)**, and choose
+**Generate DORA Metrics Report**. It sits in the same menu as **Pipeline Settings**, which you used
+in Lab 0.
+
+![The DevOps Pipeline panel header, with the gear menu that holds the DORA report](../../_assets/annotated/vscode/devops-pipeline--settings-menu.png)
 
 The four metrics, and what they mean here:
 

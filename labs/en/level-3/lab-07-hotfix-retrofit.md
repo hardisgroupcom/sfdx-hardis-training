@@ -5,8 +5,7 @@ lab: 7
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/devops-pipeline
-  - vscode/metadata-retriever
+  - annotated/vscode/metadata-retriever--retrofit
 depends_on:
   commands: [hardis:org:retrieve:sources:retrofit, hardis:project:deploy:smart]
   flags: []
@@ -124,10 +123,15 @@ what you know changed.
 Start a User Story targeting `integration`, and pick `helios-prod` as the org to work in. Then open
 the **Metadata Retriever** from the Welcome page.
 
-![The Metadata Retriever, used to pull org changes into the repository](../../_assets/vscode/metadata-retriever.png)
+![The Metadata Retriever, with the org selector, the name filter and the search button](../../_assets/annotated/vscode/metadata-retriever--retrofit.png)
 
-Search for `Status__c`, tick the field, and retrieve it. One component, chosen by you, from an org
-you named.
+1. Check the org it reads from **(1)**. It has to say `helios-prod`, not the dev org you were last
+   in. This is the field people get wrong, and retrieving the wrong org is how a retrofit puts
+   yesterday's dev work into the repository
+2. Type `Status__c` in **Metadata Name** **(2)**
+3. **Search Metadata** **(3)**, then tick the field in the results and retrieve it
+
+One component, chosen by you, from an org you named.
 
 ### 7. Read the diff before you keep any of it
 

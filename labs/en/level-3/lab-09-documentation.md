@@ -5,7 +5,7 @@ lab: 9
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/documentation-workbench
+  - annotated/vscode/documentation-workbench--generate-and-deploy
 depends_on:
   commands: [hardis:doc:project2markdown]
   flags: []
@@ -40,13 +40,18 @@ exactly the part worth a person's time.
 
 ### 1. Open the Documentation Workbench
 
-![The Documentation Workbench](../../_assets/vscode/documentation-workbench.png)
+![The Documentation Workbench, with the parts to include, the Generate button and the deploy targets](../../_assets/annotated/vscode/documentation-workbench--generate-and-deploy.png)
 
-It generates, previews and publishes the project documentation. Everything in this lab happens here.
+Everything in this lab happens on this one screen. Three parts of it matter:
+
+1. **Include** **(1)**, which decides what gets documented. Objects, flows, Apex, permissions and
+   packages are all ticked, which is what you want the first time
+2. **Generate Documentation** **(2)**, the button that produces the pages
+3. **Deploy Documentation** **(3)**, at the bottom, which publishes them
 
 ### 2. Generate
 
-Click **Generate documentation**. It reads the sources in `force-app/` and produces a set of
+Click **Generate Documentation** **(2)**. It reads the sources in `force-app/` and produces a set of
 markdown pages under `docs/`.
 
 It takes a few minutes on a small project like Helios.
@@ -95,13 +100,15 @@ exists at the end of a level rather than at the start.
 
 ### 6. Publish it
 
-The **Deploy Documentation** section of the panel offers two targets:
+The **Deploy Documentation** section **(3)** offers three targets:
 
+- **Deploy to Cloudflare Pages** publishes it as a site, the way the sfdx-hardis documentation
+  itself is published
+- **Deploy to Confluence** publishes it into a Confluence space, and needs a Confluence API token
+  configured first
 - **Deploy to Salesforce** builds the HTML and uploads it as a static resource, with a Visualforce
   page and a custom tab, so the documentation is reachable from inside Salesforce. It is capped by
   the 5 MB static resource limit, so it suits a small project
-- **Deploy to Cloudflare Pages** publishes it as a site, the way the sfdx-hardis documentation
-  itself is published
 
 For this lab, generate and commit. Publishing is a project decision.
 

@@ -5,8 +5,8 @@ lab: 8
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/monitoring-config
-  - vscode/org-monitoring
+  - annotated/vscode/monitoring-config--what-it-watches
+  - annotated/vscode/org-monitoring--first-report
 depends_on:
   commands: [hardis:org:configure:monitoring]
   flags: []
@@ -56,9 +56,8 @@ audiences.
 
 ### 2. Run the configuration
 
-Open the **Monitoring Config Workbench** panel.
-
-![The Monitoring Config Workbench panel](../../_assets/vscode/monitoring-config.png)
+In **Commands > Setup Configuration**, click **Configure Org Monitoring**. It runs in a command
+panel and asks its questions one at a time, the way Lab 1 did.
 
 Answer:
 
@@ -72,8 +71,13 @@ same way Lab 1 did: External Client App, JWT, secrets. You already know that par
 
 ### 3. Choose what it watches
 
-The panel lists what monitoring can check. Everything is on by default, which is the right default
-and the wrong long-term setting.
+Open the **Monitoring Config Workbench** panel. It lists every check monitoring can run **(1)**,
+grouped by theme, with how often each one runs **(2)** and the severity that sends it to each
+channel **(3)**.
+
+![The Monitoring Config Workbench, with the list of checks, their frequency and their per-channel routing](../../_assets/annotated/vscode/monitoring-config--what-it-watches.png)
+
+Everything is on by default, which is the right default and the wrong long-term setting.
 
 For a first run, leave it all on. You are about to find out which of them say something useful about
 **this** org, and that is not knowable in advance.
@@ -89,9 +93,17 @@ backup of production and a set of reports.
 
 Open the **Org Monitoring Workbench** panel in VS Code, pointed at the monitoring repository.
 
-![The Org Monitoring Workbench panel, reading the monitoring results](../../_assets/vscode/org-monitoring.png)
+![The Org Monitoring Workbench, opened on the CI/CD repository instead of the monitoring one](../../_assets/annotated/vscode/org-monitoring--first-report.png)
 
-On the seeded Helios production org you will find at least:
+Check the banner first **(1)**. **Org Monitoring Not Present (CI/CD Repo)** means you opened the
+wrong folder: this panel reads the monitoring repository, not the one you have been working in all
+course. Open the monitoring repository and the banner goes.
+
+Each check is a card, and the two worth opening first on the seeded Helios production org are
+**Detect calls to deprecated API versions** **(2)** and **Detect unsecured Connected Apps in an org**
+**(3)**.
+
+On that org you will find at least:
 
 | Finding                                         | What it actually means                                                     |
 |-------------------------------------------------|----------------------------------------------------------------------------|
@@ -125,8 +137,9 @@ A report nobody opens is not monitoring.
 Configure **one** channel: Slack, Teams, Google Chat or email. One is enough, and more than one on
 day one means the same message arriving twice and being ignored in both places.
 
-Set the threshold so that only failures and critical findings are sent. A nightly "everything is
-fine" message is read for a week and filtered forever after.
+Back in the **Monitoring Config Workbench**, the **Messaging**, **Email** and **API** columns are
+the per-channel thresholds. Set them so that only failures and critical findings are sent. A nightly
+"everything is fine" message is read for a week and filtered forever after.
 
 ### 8. Write down where it lives
 

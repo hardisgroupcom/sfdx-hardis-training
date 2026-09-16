@@ -5,9 +5,9 @@ lab: 2
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/pipeline-pr-actions-empty
-  - vscode/pipeline-edit-action-apex
-  - vscode/pipeline-pr-actions-list
+  - annotated/vscode/pipeline-pr-actions-empty
+  - annotated/vscode/pipeline-edit-action-apex
+  - annotated/vscode/pipeline-pr-actions-list
 depends_on:
   commands: [hardis:work:save, hardis:project:deploy:smart]
   flags: []
@@ -140,13 +140,15 @@ production:
 
 ### 6. Declare it as a deployment action
 
-Open the **DevOps Pipeline** panel, find your Pull Request, and open its **Deployment Actions** tab.
+Open the **DevOps Pipeline** panel and find your Pull Request: your feature branch **(1)**, and on
+the arrow leaving it the numbered badge **(2)**. Click the badge.
 
-![A Pull Request with no deployment action yet](../../_assets/vscode/pipeline-pr-actions-empty.png)
+![The DevOps Pipeline panel, with the feature branch and the badge of its Pull Request](../../_assets/annotated/vscode/pipeline-pr-actions-empty.png)
 
-Click **Add New Action**, and choose the **Type** **Apex**.
+The Pull Request opens on its **Deployment Actions** tab. Click **Add New Action**, and in the
+**Edit Deployment Action** dialog set the **Type** **(1)** to **Apex**.
 
-![The Apex script deployment action editor](../../_assets/vscode/pipeline-edit-action-apex.png)
+![The Edit Deployment Action dialog, filled in for an Apex script](../../_assets/annotated/vscode/pipeline-edit-action-apex.png)
 
 Fill it in:
 
@@ -154,14 +156,20 @@ Fill it in:
 |----------------------|------------------------------------------------|
 | Label                | `Backfill Crew Size on existing installations` |
 | When                 | **After Metadata Deployment**                  |
-| Apex Script          | `scripts/apex/backfill-crew-size.apex`         |
+| Apex Script          | `backfill-crew-size.apex`                      |
 | Execution Contexts   | **Validation and Deployment jobs**             |
 | Target orgs          | **All target orgs**                            |
 | Run Only Once By Org | **yes**                                        |
 
-**Save**.
+**Apex Script** **(2)** is a dropdown of what it found under `scripts/apex/`, not a free text path,
+so the file has to exist in your branch before it appears. **Run Only Once By Org** **(3)** is the
+toggle below it.
 
-![The Pull Request with its deployment action listed](../../_assets/vscode/pipeline-pr-actions-list.png)
+**Save**. The action joins the list on the **Deployment Actions** tab, whose counter **(1)** goes up
+by one. **Add New Action** **(2)** stays there for the next one, and your row **(3)** carries a
+**Post-Deploy** chip in the **WHEN** column.
+
+![The Deployment Actions tab of the Pull Request, listing the actions it carries](../../_assets/annotated/vscode/pipeline-pr-actions-list.png)
 
 !!! tip "Run Only Once By Org"
     Tick it whenever the script is a one-time correction rather than something that should happen on
@@ -175,8 +183,10 @@ If the action runs **after** the deployment, the field is already required by th
 runs, and every one of those thirty updates is refused for the very reason you are trying to fix.
 The backfill has to run **first**.
 
-Set the action's **When** to **Before Metadata Deployment**. Now the order is: fill in the crew sizes,
-then make the field required, and nothing is ever in an invalid state.
+Open the action again from its row in the list and set its **When** to
+**Before Metadata Deployment**. The chip in the **WHEN** column flips from **Post-Deploy** to
+**Pre-Deploy**. Now the order is: fill in the crew sizes, then make the field required, and nothing
+is ever in an invalid state.
 
 !!! tip "How to decide pre or post, every time"
     Ask what the action needs to already exist. Data that has to be valid **before** a constraint
