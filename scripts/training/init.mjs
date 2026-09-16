@@ -15,8 +15,9 @@
  *   - Idempotent. Every step checks before it acts, so running it twice is
  *     harmless and running it after a half-finished manual attempt fixes it.
  *   - It never authenticates to Salesforce. Orgs Manager owns that.
- *   - It stops at the first failure and says what to do by hand instead, since
- *     every step it performs is also a documented lab step.
+ *   - It stops at the first failure and says which button to click instead. The
+ *     course never asks anybody to type a command, so a failure has to end in
+ *     something clickable.
  */
 import fs from "fs";
 import path from "path";
@@ -35,22 +36,30 @@ function checkGh() {
     abort(
       "The GitHub CLI (gh) is not installed.",
       [
-        "Install it from https://cli.github.com/ and run this again.",
-        "Or do the same steps by hand: Level 1 lab 1 walks through every one of them."
+        "Install it from https://cli.github.com/, then click this command again.",
+        "Level 1 lab 0 step 1 shows which download to take."
       ].join("\n  ")
     );
   }
   const status = run("gh", ["auth", "status"], { capture: true, quiet: true });
-  if (status.code !== 0) {
+  if (status.code === 0) {
+    return;
+  }
+
+  // Nobody is signed in. Sign them in here rather than telling them to type a
+  // command: this course never sends anybody to a terminal.
+  info("");
+  info("You are not signed in to GitHub yet, so let us do that first.");
+  info(c.dim("    A browser window opens. Answer GitHub.com, HTTPS, and sign in there."));
+  info("");
+  const login = run("gh", ["auth", "login", "--hostname", "github.com", "--git-protocol", "https", "--web"]);
+  if (login.code !== 0 || run("gh", ["auth", "status"], { capture: true, quiet: true }).code !== 0) {
     abort(
-      "The GitHub CLI is installed but not signed in.",
-      [
-        "Run: gh auth login",
-        "Pick GitHub.com, HTTPS, and authenticate with your browser.",
-        "Then run this command again."
-      ].join("\n  ")
+      "The GitHub sign-in did not finish.",
+      "Click Set up my pipeline again and complete the sign-in in the browser it opens."
     );
   }
+  ok("Signed in to GitHub.");
 }
 
 function ghJson(args) {
@@ -141,7 +150,7 @@ function ensureActions(slug) {
   warn("Actions could not be turned on from here.");
   info(`    Open https://github.com/${slug}/actions and click`);
   info(`    ${c.bold("I understand my workflows, go ahead and enable them")}.`);
-  info("    It is one click, and Level 1 lab 1 step 2 shows it.");
+  info("    It is one click, and then this command has nothing left to do.");
   return false;
 }
 
@@ -204,10 +213,16 @@ function setSecret(slug, org) {
 
   const res = run("gh", ["secret", "set", SECRET, "--repo", slug, "--body", url], { quiet: true });
   if (res.code !== 0) {
-    abort(
-      `Could not write the ${SECRET} secret.`,
-      `Add it by hand: https://github.com/${slug}/settings/secrets/actions`
-    );
+    // The value is printed so the secrets form can be filled without a terminal.
+    // It is a refresh token for a throwaway training org, in the learner's own
+    // repository, and Level 3 replaces it with a certificate.
+    warn(`Could not write the ${SECRET} secret from here.`);
+    info(`    Open https://github.com/${slug}/settings/secrets/actions`);
+    info(`    New repository secret, named ${c.bold(SECRET)}, with this value:`);
+    info("");
+    info(`    ${url}`);
+    info("");
+    return;
   }
   ok(`${SECRET} is set on ${c.bold(slug)}.`);
   info(c.dim("    It holds a long-lived refresh token for a throwaway training org."));
@@ -221,8 +236,8 @@ export default async function init(args) {
   info("  your own copy of the repository, Actions turned on, the org the");
   info("  integration branch deploys to, and the credential the job logs in with.");
   info("");
-  info(c.dim("On a real project none of this is yours to do: the pipeline already exists."));
-  info(c.dim("Level 1 lab 1 shows every step by hand if you would rather see them."));
+  info(c.dim("This exists for the course only. On a real project the pipeline is already"));
+  info(c.dim("there, and nobody asks a new contributor to build one on their first day."));
   info("");
 
   checkGh();

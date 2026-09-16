@@ -98,131 +98,60 @@
       }
     },
     {
-      "name": "github-fork",
-      "url": "https://github.com/hardisgroupcom/sfdx-hardis-training",
+      "name": "github-pr-comment",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/5",
       "width": 1440,
-      "height": 820,
+      "height": 1800,
+      "settle": 5000,
       "clip": {
-        "x": 0,
-        "y": 0,
-        "width": 1440,
-        "height": 320
-      },
-      "click": [
-        "button:has-text('Dismiss')"
-      ],
-      "settle": 1500
-    },
-    {
-      "name": "github-create-fork",
-      "url": "https://github.com/hardisgroupcom/sfdx-hardis-training/fork",
-      "width": 1440,
-      "height": 900,
-      "hideText": [
-        "Single sign-on to see results"
-      ],
-      "clip": {
-        "x": 0,
-        "y": 0,
-        "width": 1440,
-        "height": 700
+        "x": 100,
+        "y": 560,
+        "width": 890,
+        "height": 555
       }
     },
     {
-      "name": "github-actions-tab",
-      "url": "https://github.com/nvuillam/sfdx-hardis-training/actions",
-      "width": 1440,
-      "height": 820,
-      "hideText": [
-        {
-          "text": "Single sign-on to see results",
-          "max": 400
-        },
-        {
-          "text": "Upcoming change to GitHub App",
-          "max": 700
-        },
-        {
-          "text": "Help us improve GitHub Actions",
-          "max": 400
-        }
-      ],
-      "clip": {
-        "x": 0,
-        "y": 56,
-        "width": 1440,
-        "height": 330
-      },
-      "settle": 2500
-    },
-    {
-      "name": "github-secret-new",
-      "url": "https://github.com/nvuillam/sfdx-hardis-training/settings/secrets/actions/new",
-      "width": 1440,
-      "height": 820,
-      "hideText": [
-        "Single sign-on to see results"
-      ],
-      "clip": {
-        "x": 0,
-        "y": 56,
-        "width": 1440,
-        "height": 560
-      },
-      "settle": 2000,
-      "fill": [
-        [
-          "#secret_name",
-          "SFDX_AUTH_URL_INTEGRATION"
-        ],
-        [
-          "#secret_value",
-          "force://PlatformCLI::5Aep861EXAMPLEnotarealtoken.THISisAfakeVALUE@heliostraining-dev-ed.develop.my.salesforce.com"
-        ]
-      ]
-    },
-    {
       "name": "github-pr-checks",
-      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/1",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/5/checks",
       "width": 1440,
-      "height": 1500,
-      "settle": 4000
-    },
-    {
-      "name": "github-pr-comment",
-      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/2",
-      "width": 1440,
-      "height": 1500,
-      "settle": 4000
+      "height": 900,
+      "settle": 5000,
+      "clip": {
+        "x": 0,
+        "y": 95,
+        "width": 1440,
+        "height": 470
+      }
     },
     {
       "name": "github-pr-merge",
-      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/2",
-      "width": 1440,
-      "height": 1500,
-      "settle": 4000
-    },
-    {
-      "name": "github-actions-deploy",
-      "url": "https://github.com/nvuillam/sfdx-hardis-training/actions",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/5",
       "width": 1440,
       "height": 1000,
-      "settle": 3000
+      "settle": 4000,
+      "scrollTo": "text=Merge pull request",
+      "clip": {
+        "x": 150,
+        "y": 295,
+        "width": 850,
+        "height": 250
+      }
     },
     {
-      "name": "github-code-url",
-      "url": "https://github.com/nvuillam/sfdx-hardis-training",
+      "name": "gh-cli-download",
+      "url": "https://cli.github.com/",
       "width": 1440,
       "height": 900,
-      "click": [
-        "button:has-text('Code')"
-      ],
       "settle": 2500,
+      "click": [
+        "summary:has-text('Install with')",
+        "button:has-text('Install with')"
+      ],
       "clip": {
-        "x": 595,
-        "y": 100,
-        "width": 440,
-        "height": 400
+        "x": 365,
+        "y": 385,
+        "width": 630,
+        "height": 480
       }
     }
   ]

@@ -5,6 +5,9 @@ lab: 5
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/web/github-pr-checks
+  - annotated/web/github-pr-comment
+  - annotated/web/github-pr-merge
   - annotated/vscode/work-save-completed
 depends_on:
   commands: [hardis:project:deploy:smart]
@@ -78,27 +81,39 @@ Check two things before clicking, every single time:
 The title and body are already filled in from what you wrote in Lab 4. Click **Create pull
 request**.
 
-### 2. Watch the check run
+### 2. Watch the checks run
 
-Scroll to the bottom of the Pull Request. Within a minute, checks appear:
+Open the **Checks** tab **(1)**. Two of them matter here, and both start on their own:
 
-| Check                               | What it does                                                                                |
-|-------------------------------------|---------------------------------------------------------------------------------------------|
-| **Check deployment to integration** | Deploys your metadata into `helios-integration` in validation mode, and runs the Apex tests |
-| **MegaLinter**                      | Runs the code quality linters on the repository                                             |
+| Check                                        | What it does                                                                                |
+|----------------------------------------------|---------------------------------------------------------------------------------------------|
+| **Simulate Deployment (sfdx-hardis)** **(3)** | Deploys your metadata into `helios-integration` in validation mode, and runs the Apex tests |
+| **Mega-Linter** **(2)**                       | Runs the code quality linters over the repository                                           |
 
-Click **Details** on the deployment check and read the log while it runs. You will see it
-authenticate with your secret, compute the package, and start a deployment.
+![The Checks tab of a Pull Request, listing the jobs that ran](../../_assets/annotated/web/github-pr-checks.png)
+
+Click either one to read its log while it runs. The deployment check takes about two minutes, and
+you can watch it authenticate with your secret, work out what changed, and start the deployment.
 
 ### 3. Read the sfdx-hardis comment
 
-When the check finishes, sfdx-hardis posts a comment on the Pull Request. It is the most useful
-thing on the page, and it has several sections:
+When the deployment check finishes, sfdx-hardis writes a comment on the **Conversation** tab. It is
+the most useful thing on the page.
 
-1. **The result**, success or failure, with the deployment id
-2. **The list of deployed components**, which should be your three
-3. **The Apex test results and coverage**
-4. **Quality warnings**, if the linters found anything
+![The sfdx-hardis comment on a Pull Request](../../_assets/annotated/web/github-pr-comment.png)
+
+1. **The banner** **(1)** says whether the simulated deployment succeeded
+2. **What would change** **(2)**. Not a list of your files: sfdx-hardis sends the package and
+   Salesforce answers how much of it differs, as in `34 sent to the org, 10 would change (0 created,
+   10 updated, 0 deleted, 24 unchanged)`
+3. **Apex coverage** **(3)**, against the target this project sets
+4. **Tickets** **(4)**, the stories it recognised in your branch name and commit messages
+
+Below those, a summary of your commits and the name of the job that wrote the comment.
+
+!!! note "The numbers in that picture are from another story"
+    It is a real comment from a real run on this repository, kept as it came out. Yours will carry
+    your own story and your own counts.
 
 ### 4. Fix the warning
 
@@ -142,7 +157,13 @@ Delete the three lines. Commit from the **Source Control** panel with the messag
 
 ### 5. Merge
 
-Both checks green, the comment says success. Click **Merge pull request**, then **Confirm merge**.
+Both checks green, the comment says success. Back on the **Conversation** tab, scroll to the bottom:
+the merge box says **All checks have passed** and **No conflicts with base branch**, and the button
+is live.
+
+![The merge box of a Pull Request, with all checks passed](../../_assets/annotated/web/github-pr-merge.png)
+
+Click **Merge pull request** **(1)**, then **Confirm merge**.
 
 Then delete the branch. GitHub offers a button for it. A merged branch that stays around is one
 more thing in everyone's list for no benefit.

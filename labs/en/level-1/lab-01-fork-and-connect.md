@@ -11,11 +11,6 @@ screenshots:
   - annotated/vscode/devops-pipeline--settings-menu
   - annotated/vscode/pipeline-config-branch
   - annotated/vscode/pipeline-config-branch-edit
-  - annotated/web/github-fork
-  - annotated/web/github-create-fork
-  - annotated/web/github-actions-tab
-  - annotated/web/github-code-url
-  - annotated/web/github-secret-new
 depends_on:
   commands: []
   flags: []
@@ -53,7 +48,8 @@ Request opened there can deploy to an org you own. One command does all four.
 
 - [ ] Lab 0 finished: both orgs connected in **Orgs Manager** and seeded
 - [ ] The training project open in VS Code, with the sfdx-hardis panel showing
-- [ ] `gh auth status` answers with your GitHub account (Lab 0, step 1)
+- [ ] The GitHub CLI installed (Lab 0, step 1). You do not have to sign in: the command below
+      does that for you, in your browser, the first time it needs to
 
 ## Steps
 
@@ -86,88 +82,19 @@ OK  SFDX_AUTH_URL_INTEGRATION is set on your-handle/sfdx-hardis-training.
 Running it twice is harmless: every step checks before it acts. If one of them cannot be done from
 here, it says so and tells you which button to click instead.
 
-### 2. Know what it did, because you will do it by hand one day
+### 2. What it just did
 
-Four things, and each of them is a real step on a real project.
+Four things, each of them real work on a real project, and none of them yours to repeat:
 
-**It forked the repository.** A fork is a copy of a repository that becomes yours: it lands under
-your own GitHub account and you can change anything in it. Your clone now pushes to your fork
-(`origin`) and can still pull from the team's repository (`upstream`).
-
-**It turned Actions on.** GitHub disables workflows on every new fork until the owner says
-otherwise. Skip that and your Pull Request checks silently never run, which looks exactly like a
-broken course.
-
-**It wrote down which org `integration` deploys to**, in
-`config/branches/.sfdx-hardis.integration.yml`. The repository could not know: your orgs did not
-exist when it was written.
-
-**It gave the CI job a credential**, as a repository secret named `SFDX_AUTH_URL_INTEGRATION`. The
-job runs on GitHub's machines, has no idea who you are, and cannot reach your org without one.
-
-!!! warning "Why you never push to the shared repository"
-    Two reasons, and both are hard limits rather than etiquette. A Pull Request opened **from** a
-    fork cannot read the original repository's secrets, so its CI could never reach a Salesforce
-    org. And a few hundred learners opening Pull Requests on one repository would bury it. The
-    shared repository's only inbound traffic is badge claims.
-
-<details markdown="1"><summary>Doing the same four things by hand</summary>
-
-Worth reading once. This is what you would click on a project that has no script for it, and it is
-also the fallback if the command could not finish a step.
-
-**Fork.** Open
-[github.com/hardisgroupcom/sfdx-hardis-training](https://github.com/hardisgroupcom/sfdx-hardis-training)
-and click **Fork** **(1)**, top right.
-
-![The training repository on GitHub](../../_assets/annotated/web/github-fork.png)
-
-The **Create a new fork** page asks for three things:
-
-1. **Owner** **(1)**, which is your own account
-2. **Copy the `main` branch only** **(2)**, ticked for you. **Untick it**: this course needs the
-   other branches, and a fork made without them cannot work
-3. **Create fork** **(3)**
-
-![The Create a new fork page on GitHub](../../_assets/annotated/web/github-create-fork.png)
-
-**Turn Actions on.** In your fork, click the **Actions** tab **(1)**. GitHub shows a yellow banner:
-
-> Workflows aren't being run on this forked repository
-
-Click **I understand my workflows, go ahead and enable them**. The banner goes, and the workflows
-the project ships fill the left column **(2)**.
-
-![The Actions tab of a fork, with the workflow list in the left column](../../_assets/annotated/web/github-actions-tab.png)
-
-**Point your clone at your fork.** On your fork's page, the green **Code** button **(1)** opens a
-panel with the **HTTPS** address of the repository and a copy button **(2)** next to it.
-
-![The Code menu of a GitHub repository, with the HTTPS clone URL](../../_assets/annotated/web/github-code-url.png)
-
-In VS Code, **File > Open Folder** on an empty folder, then **Source Control > Clone Repository**
-and paste it. If you already have the shared repository cloned, it is one line in a terminal
-instead:
-
-```bash
-git remote rename origin upstream
-git remote add origin https://github.com/<your-handle>/sfdx-hardis-training.git
-git fetch origin
-```
-
-**Add the secret.** You need the auth URL of your integration org first:
-
-```bash
-sf org auth show-sfdx-auth-url --target-org helios-integration --no-prompt --json
-```
-
-Copy the value of `sfdxAuthUrl`, which starts with `force://`. Then in your fork on GitHub:
-**Settings > Secrets and variables > Actions > New repository secret**, **Name** **(1)**
-`SFDX_AUTH_URL_INTEGRATION`, **Secret** **(2)** the `force://...` string, **Add secret** **(3)**.
-
-![The New secret form of a GitHub repository, name and value filled in](../../_assets/annotated/web/github-secret-new.png)
-
-</details>
+- **Your own copy of the repository**, its *fork*, under your GitHub account. Your clone pushes
+  there now, and still pulls from the team's repository
+- **Actions turned on.** GitHub disables workflows on every new fork until the owner says
+  otherwise, and a fork with them off looks exactly like a broken course
+- **Which org `integration` deploys to**, written into
+  `config/branches/.sfdx-hardis.integration.yml`. The repository could not know that: your orgs did
+  not exist when it was written
+- **A credential for the CI job**, as a repository secret named `SFDX_AUTH_URL_INTEGRATION`. The
+  job runs on GitHub's machines, not yours, and cannot reach your org without one
 
 !!! danger "About that credential, and why it is a deliberate exception"
     An SFDX auth URL embeds a **long-lived OAuth refresh token**. Anyone who reads it has your org
@@ -305,11 +232,13 @@ GitHub.com, HTTPS, and authenticate with your browser. Lab 0 step 1 covers it.
 
 **It says Actions could not be turned on from here.**
 GitHub hides that switch behind a banner with no API. Open the **Actions** tab of your fork and
-click **I understand my workflows, go ahead and enable them**, as the collapsed section above shows.
+click **I understand my workflows, go ahead and enable them**. One click, and the command has
+nothing left to do.
 
 **The Actions tab shows no workflows.**
-You forked by hand and left "Copy the `main` branch only" ticked. Delete the fork and run
-**Set up my pipeline** again: it never copies the default branch alone.
+You forked by hand at some point and left "Copy the `main` branch only" ticked, so your fork has no
+`integration` branch. Delete the fork on GitHub and click **Set up my pipeline** again: it never
+copies the default branch alone.
 
 **The pipeline diagram is empty.**
 The extension did not find `config/.sfdx-hardis.yml`. You opened the wrong folder: it must be the

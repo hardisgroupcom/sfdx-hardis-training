@@ -72,8 +72,8 @@ Two screens are worth reading rather than clicking through:
 macOS and Linux already have a Unix shell, so there is nothing to choose there.
 
 !!! note "You may already have it"
-    Open a terminal and type `git --version`. If it answers with a number, skip this and move on.
-    The Setup panel in step 2 checks it too, and will tell you if it is missing.
+    Plenty of machines do. Install it anyway: the installer recognises an existing Git and offers to
+    update it. The Setup panel in step 2 checks it as well, and tells you if it is missing.
 
 !!! tip "Checking Git Bash is there, on Windows"
     Right-click any folder: the menu should offer **Open Git Bash here**. In VS Code you will also
@@ -97,29 +97,30 @@ get right on that page:
 
 Both are next-next-finish installers.
 
-Last, the [GitHub CLI](https://cli.github.com/), called `gh`. It is how Lab 1 forks the repository
-and sets up its automation for you, in one command instead of a dozen clicks. Take the installer for
-your machine, accept its defaults, then open a terminal and sign in:
+Last, the [GitHub CLI](https://cli.github.com/), called `gh`. On its home page, open the install
+list **(1)** and take the download for your machine: **Windows - Download MSI**, or **macOS -
+Download binary**. Accept the installer's defaults **(2)**.
 
-```bash
-gh auth login
-```
+![The GitHub CLI home page, with the install list open on the Windows MSI](../../_assets/annotated/web/gh-cli-download.png)
 
-Answer **GitHub.com**, **HTTPS**, and **Login with a web browser**. It prints a one-time code, opens
-your browser, and you are done. `gh auth status` confirms it afterwards.
+You never have to run `gh` yourself. Lab 1 uses it once, from a menu, and signs you in through your
+browser at that moment.
 
-Then open VS Code and install the extension. The **Extensions** icon **(1)** sits in the narrow bar
+!!! note "This one is for the course, not for the job"
+    The GitHub CLI is here so that Lab 1 can hand you a working pipeline in one click instead of a
+    dozen forms. On a real project you would join a repository that already exists, with its
+    automation already running, and you would never install this.
+
+Then open VS Code and install the extensions. The **Extensions** icon **(1)** sits in the narrow bar
 down the left, and looks like four small squares with one lifted away. Click it, type `hardis` in
-the search box **(2)**, and click **Install** on the first result **(3)**, the one described as
-*Handle Salesforce DX and Git without knowing anything about DX or Git*, by Nicolas Vuillamy.
+the search box **(2)**, and click **Install** on **SFDX Hardis Extension Pack for Salesforce**
+**(3)**, by Nicolas Vuillamy.
 
 ![The Extensions view of VS Code, with hardis typed in the search box](../../_assets/annotated/vscode/extensions-install.png)
 
-!!! note "The second result is a bundle, and this course does not need it"
-    **SFDX Hardis Extension Pack for Salesforce** installs the same extension along with seven
-    others that people often use beside it: Git Graph, YAML, Apex Log Analyzer, Markdown PDF and
-    Paste Image among them. Nothing in these labs needs any of them. Install it later if you like
-    the look of it.
+The pack installs sfdx-hardis itself along with the tools that go with it: Git Graph, which draws
+your branches, the YAML and Markdown support the configuration files use, and the Apex log viewer.
+Later levels use them, so take the pack rather than the single extension above it.
 
 The extension also has a page on the Visual Studio Marketplace, and its **Install** button **(1)**
 opens VS Code for you:

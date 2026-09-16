@@ -52,12 +52,9 @@ part.
 
 ## Three things that are true for the whole course
 
-**Everything happens in your own copy.** In Lab 1 you click **Fork** on GitHub and get the
-training repository under your own account. Your branch, your Pull Request, your merge, all inside
-that copy. Nothing you do ever reaches the shared repository, whose only inbound traffic is badge
-claims. Two reasons, and both are hard limits rather than etiquette: a Pull Request opened from a
-fork cannot read the original repository's secrets, so its CI could never reach your org; and a few
-hundred learners opening Pull Requests on one repository would bury it.
+**You work in your own copy.** Everything in this course happens in a repository that belongs to
+you and nobody else. Your changes, your mistakes, your fixes, and nothing you do reaches anybody
+else's work. Lab 1 sets that copy up for you in one click, and explains why it has to be that way.
 
 **You click, you do not type.** Every action in these labs is a button in the VS Code extension.
 Where a command appears, it is in an **Under the hood** block, which explains what the button did.

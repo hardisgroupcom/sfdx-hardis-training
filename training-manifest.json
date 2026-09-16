@@ -74,12 +74,7 @@
         "annotated/vscode/devops-pipeline--read-it",
         "annotated/vscode/devops-pipeline--settings-menu",
         "annotated/vscode/pipeline-config-branch",
-        "annotated/vscode/pipeline-config-branch-edit",
-        "annotated/web/github-fork",
-        "annotated/web/github-create-fork",
-        "annotated/web/github-actions-tab",
-        "annotated/web/github-code-url",
-        "annotated/web/github-secret-new"
+        "annotated/vscode/pipeline-config-branch-edit"
       ]
     },
     {
@@ -190,6 +185,9 @@
         "pipeline"
       ],
       "screenshots": [
+        "annotated/web/github-pr-checks",
+        "annotated/web/github-pr-comment",
+        "annotated/web/github-pr-merge",
         "annotated/vscode/work-save-completed"
       ]
     },

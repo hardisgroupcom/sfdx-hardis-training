@@ -127,7 +127,13 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  console.error(error.message || error);
-  process.exit(1);
-});
+main()
+  .then(() => {
+    // The CDP connection keeps the event loop alive, and closing it would close
+    // the user's browser. Nothing is left to wait for, so say so and leave.
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.error(error.message || error);
+    process.exit(1);
+  });
