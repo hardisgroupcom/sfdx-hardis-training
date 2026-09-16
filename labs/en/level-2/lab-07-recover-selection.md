@@ -70,38 +70,47 @@ Open it, then **CI/CD (simple)** **(1)**, then **Reset selected list of items to
 
 ![The SFDX HARDIS command list, with the CI/CD (simple) group open](../../_assets/annotated/vscode/sidebar.png)
 
-It clears the record of what you chose, so the next publish asks you again from scratch. It does
-**not** undo the commit that is already on your branch: that is the next step.
+It does more than its name suggests, and knowing exactly what saves you from undoing it twice. In
+one pass it:
 
-### 4. Recover: throw away the bad commit
+1. **Soft resets every commit** your branch has made since it left `integration`. The commits go,
+   the changes stay, sitting in your working tree as if you had never committed them
+2. **Unstages** all of it, so nothing is queued
+3. **Restores `manifest/package.xml` and `manifest/destructiveChanges.xml`** to the versions on the
+   branch point, which is what actually clears the selection
+4. Sets `canForcePush`, because your branch no longer matches what you pushed
 
-Your branch carries a commit with eighty files. Two ways to get rid of it, and the right one
-depends on whether you have opened the Pull Request.
+It asks you to confirm the reset first, and it refuses outright if you are standing on a major
+branch.
 
-**The branch is yours and nobody has reviewed it** (the normal case):
+So after this one command, your eighty-file commit is gone and the layout move is back in your
+working tree, uncommitted. Nothing of yours is lost: the change is in Salesforce, and the file is
+still in front of you.
 
-Reset the branch to where it started and start the publish again.
+### 4. Deal with what you already pushed
 
-```bash
-git fetch origin
-git reset --hard origin/integration
-```
+Locally you are clean. The branch on GitHub is not: it still carries the eighty-file commit, because
+a soft reset only moved your own copy.
 
-Your org still holds your change: the layout move is in Salesforce, not in git. Nothing is lost.
+**Nobody has reviewed it** (the normal case): push the corrected branch over it once you have
+re-published in the next step. That is what `canForcePush` was set for, and the publish will offer
+it. The mistake disappears from the history as though it never happened, which on your own feature
+branch before review is exactly what you want.
 
-**Somebody has already reviewed it**, or you want to keep the history honest: revert instead.
+**Somebody has already reviewed it**, or the branch is shared: do not force push. Rewriting history
+under a reviewer is how a review comment ends up attached to a commit that no longer exists. Commit
+the corrected state as a new commit instead, so the diff shows the mistake and its correction, both
+visible.
 
-```bash
-git revert <the bad commit>
-```
-
-which adds a commit undoing it, leaving the mistake visible. On a shared branch this is the only
-correct answer. On your own feature branch, before review, `reset --hard` is cleaner.
+!!! danger "Force pushing is for a branch only you have touched"
+    The rule is not about git, it is about people. Ask one question: has anyone else pulled this
+    branch, or commented on it? If yes, the history is shared and you add to it. If no, it is yours
+    and you can tidy it.
 
 ### 5. Publish again, properly
 
-**Save / Publish User Story**. This time the selection screen is empty again, and you tick exactly
-one thing: the **Layout**.
+In the **DevOps Pipeline** panel, click **Save / Publish** again. This time the selection screen is
+empty, and you tick exactly one thing: the **Layout**.
 
 `manifest/package.xml` now has one entry. Push, and the Pull Request diff is one file.
 
