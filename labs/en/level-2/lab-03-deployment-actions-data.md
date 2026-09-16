@@ -200,9 +200,31 @@ pipeline told you to**, not because you remembered.
     That happened for real while this course was being written. The job ran in a container where git
     refused the checkout (*detected dubious ownership*), so the tool could not work out which Pull
     Requests the merge carried, and it reported no actions rather than a failure. The workflow of
-    this project now declares the workspace safe, and sfdx-hardis stops instead of continuing, but
-    the habit is the lesson: **a green deployment is evidence that the metadata went in, and
-    evidence of nothing else.** The org is the only thing that tells you an action ran.
+    this project now declares the workspace safe, and sfdx-hardis stops instead of continuing.
+
+!!! danger "A data import succeeds when the object is missing"
+    This one is worth knowing for the rest of your career, because it is SFDMU behaving as designed
+    and it looks exactly like success:
+
+    ```
+    [WARNING] Describe failed for {Crew_Capacity__c}: The requested resource does not exist
+    [WARNING] {Crew_Capacity__c} is missing in the Target.
+    [WARNING] {Crew_Capacity__c} Object will be excluded from the process.
+    [WARNING] Object set 1 has no objects to process after validation. Skipping.
+    ===== MIGRATION JOB ENDED =====
+    Command succeeded.
+    Exit code 0 (SUCCESS).
+    ```
+
+    **Exit code 0.** The action is reported as run, the job is green, and not one record was
+    written. If the object never reached the org, for any reason, the import that was supposed to
+    fill it says nothing louder than a warning nobody reads.
+
+    That is why the check in this step is the records and not the tick, and it is why the two
+    `WARNING` lines are worth grepping for in a deployment log when a feature arrives empty.
+
+The habit behind all of this: **a green deployment is evidence that the metadata went in, and
+evidence of nothing else.** The org is the only thing that tells you an action ran.
 
 <details markdown="1"><summary>Under the hood: the three action types</summary>
 
