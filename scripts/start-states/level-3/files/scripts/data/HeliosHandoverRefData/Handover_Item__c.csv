@@ -1,0 +1,11 @@
+External_Id__c,Name,Label__c,Sequence__c,Is_Done__c,Is_Template__c
+HAND-TPL-01,Panels counted,Count the panels left on site against the delivery note,1,false,true
+HAND-TPL-02,Roof anchors checked,Check every roof anchor is torqued and logged,2,false,true
+HAND-TPL-03,Cabling labelled,Label the DC and AC runs at both ends,3,false,true
+HAND-TPL-04,Inverter commissioned,Commission the inverter and record its serial number,4,false,true
+HAND-TPL-05,Meter reading taken,Take the meter reading and photograph it,5,false,true
+HAND-TPL-06,Isolators tested,Test the AC and DC isolators in front of the customer,6,false,true
+HAND-TPL-07,Scaffolding released,Release the scaffolding and confirm the pickup slot,7,false,true
+HAND-TPL-08,Site cleared,Clear packaging and offcuts from the site,8,false,true
+HAND-TPL-09,Customer walkthrough,Walk the customer through the app and the shutdown procedure,9,false,true
+HAND-TPL-10,Handover pack signed,Get the handover pack signed and upload it,10,false,true

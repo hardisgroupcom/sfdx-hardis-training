@@ -1,0 +1,9 @@
+{
+  "objects": [
+    {
+      "query": "SELECT External_Id__c, Name, Label__c, Sequence__c, Is_Done__c, Is_Template__c FROM Handover_Item__c WHERE Is_Template__c = true",
+      "operation": "Upsert",
+      "externalId": "External_Id__c"
+    }
+  ]
+}

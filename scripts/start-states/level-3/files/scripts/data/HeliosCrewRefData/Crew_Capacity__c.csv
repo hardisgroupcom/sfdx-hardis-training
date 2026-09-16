@@ -1,0 +1,13 @@
+External_Id__c,Name,Crew_Type__c,Roof_Type__c,Panels_Per_Day__c
+CAP-ROOF-TILE,Roof tile,Roof,Tile,18
+CAP-ROOF-SLATE,Roof slate,Roof,Slate,14
+CAP-ROOF-FLAT,Roof flat,Roof,Flat,24
+CAP-ROOF-METAL,Roof metal,Roof,Metal,20
+CAP-GROUND-TILE,Ground tile,Ground,Tile,26
+CAP-GROUND-SLATE,Ground slate,Ground,Slate,22
+CAP-GROUND-FLAT,Ground flat,Ground,Flat,30
+CAP-GROUND-METAL,Ground metal,Ground,Metal,28
+CAP-ELEC-TILE,Electrical tile,Electrical,Tile,12
+CAP-ELEC-SLATE,Electrical slate,Electrical,Slate,10
+CAP-ELEC-FLAT,Electrical flat,Electrical,Flat,16
+CAP-ELEC-METAL,Electrical metal,Electrical,Metal,14

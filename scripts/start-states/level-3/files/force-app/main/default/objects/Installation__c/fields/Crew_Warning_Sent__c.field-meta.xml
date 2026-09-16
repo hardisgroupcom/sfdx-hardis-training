@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Crew_Warning_Sent__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Set by Installation Crew Warning once the planner has been told the crew looks too small, so the flow does not warn twice.</description>
+    <label>Crew Warning Sent</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>
