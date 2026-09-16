@@ -137,11 +137,11 @@ two-year-old org has, and a report that comes back nearly clean is not a broken 
 
 What you are reading for is the **shape** of each finding, so that you recognise it on a real org:
 
-| Finding on a real org          | What it actually means                                                     |
-|--------------------------------|----------------------------------------------------------------------------|
-| **Inactive users still active**| Licences being paid for, and accounts that can still log in                |
-| **An unsecured Connected App** | Something can reach your production data and nobody remembers approving it |
-| **Apex on an old API version** | It will break at a Salesforce release, on a date you do not control        |
+| Finding on a real org           | What it actually means                                                     |
+|---------------------------------|----------------------------------------------------------------------------|
+| **Inactive users still active** | Licences being paid for, and accounts that can still log in                |
+| **An unsecured Connected App**  | Something can reach your production data and nobody remembers approving it |
+| **Apex on an old API version**  | It will break at a Salesforce release, on a date you do not control        |
 
 The one finding you should genuinely expect here is in the **backup** rather than in a check: the
 `Needs Reinspection` picklist value from Lab 7 is in the org, and now it is in the monitoring

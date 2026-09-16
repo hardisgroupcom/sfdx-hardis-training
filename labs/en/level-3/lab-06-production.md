@@ -110,13 +110,13 @@ in Lab 0.
 
 It covers the last 90 days by default, and it reports five numbers, not four:
 
-| Metric                    | What it actually counts                                                         | What good looks like                                             |
-|---------------------------|---------------------------------------------------------------------------------|------------------------------------------------------------------|
-| **Deployment frequency**  | Successful deployments recorded **in the org**, divided by the period            | Weekly is fine. Quarterly means every release is enormous        |
-| **Lead time for changes** | Per Pull Request: its creation, to the deployment that landed within 14 days     | Days, not weeks. A long lead time means work is sitting somewhere |
-| **Change failure rate**   | Failed deployments divided by all deployments                                    | Below 15%. Above that, the check is not catching what it should  |
-| **Time to restore**       | Median hours from a failed deployment to the next successful one                 | Hours                                                            |
-| **Rework rate**           | Hotfix Pull Requests, and deployments that follow a failure within a day         | Low. This is the one Lab 7 moves                                 |
+| Metric                    | What it actually counts                                                      | What good looks like                                              |
+|---------------------------|------------------------------------------------------------------------------|-------------------------------------------------------------------|
+| **Deployment frequency**  | Successful deployments recorded **in the org**, divided by the period        | Weekly is fine. Quarterly means every release is enormous         |
+| **Lead time for changes** | Per Pull Request: its creation, to the deployment that landed within 14 days | Days, not weeks. A long lead time means work is sitting somewhere |
+| **Change failure rate**   | Failed deployments divided by all deployments                                | Below 15%. Above that, the check is not catching what it should   |
+| **Time to restore**       | Median hours from a failed deployment to the next successful one             | Hours                                                             |
+| **Rework rate**           | Hotfix Pull Requests, and deployments that follow a failure within a day     | Low. This is the one Lab 7 moves                                  |
 
 Two of those are not what the names suggest, and it is worth knowing which. **Change failure rate
 here is a deployment failure rate**: a release that deployed green and broke production on Tuesday

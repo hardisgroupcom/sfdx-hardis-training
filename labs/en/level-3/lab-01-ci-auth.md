@@ -97,13 +97,13 @@ them again, so do not close the panel or scroll past them.
 
 What it writes, and where:
 
-| What                              | Where                                                           | What it is                                                     |
-|-----------------------------------|-----------------------------------------------------------------|----------------------------------------------------------------|
-| An encrypted private key          | `config/branches/.jwt/integration.key`                          | The credential itself, meant to be committed                   |
-| A certificate                     | `integration.crt` in your home directory, deleted after the app deploys | What is uploaded into the org                          |
-| An External Client App definition | deployed into the org by the command                            | What Salesforce authenticates against                          |
-| Branch configuration              | `config/branches/.sfdx-hardis.integration.yml`                  | `targetUsername`, `instanceUrl` and `mergeTargets`             |
-| Two values to store as secrets    | printed in the command panel                                    | `SFDX_CLIENT_ID_INTEGRATION` and `SFDX_CLIENT_KEY_INTEGRATION` |
+| What                              | Where                                                                   | What it is                                                     |
+|-----------------------------------|-------------------------------------------------------------------------|----------------------------------------------------------------|
+| An encrypted private key          | `config/branches/.jwt/integration.key`                                  | The credential itself, meant to be committed                   |
+| A certificate                     | `integration.crt` in your home directory, deleted after the app deploys | What is uploaded into the org                                  |
+| An External Client App definition | deployed into the org by the command                                    | What Salesforce authenticates against                          |
+| Branch configuration              | `config/branches/.sfdx-hardis.integration.yml`                          | `targetUsername`, `instanceUrl` and `mergeTargets`             |
+| Two values to store as secrets    | printed in the command panel                                            | `SFDX_CLIENT_ID_INTEGRATION` and `SFDX_CLIENT_KEY_INTEGRATION` |
 
 The consumer key is **not** written to the branch configuration. It lives in the org and in your
 secret, and nowhere else in the repository.
