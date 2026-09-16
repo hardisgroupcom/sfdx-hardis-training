@@ -66,8 +66,13 @@ the object and the flow into `helios-integration` and the checklist will be empt
 feature will do nothing at all. Build a data workspace and declare an action.
 
 **Three: the conflict.** Before you open your Pull Request, run **Training > Simulate my
-teammates** and pick **US-018**, then merge it. Marco touches the same permission set you are about
-to change. Resolve it the way Lab 6 taught: take both.
+teammates** and pick **US-019**, then merge it. Amina adds a quote PDF field and grants it on
+`Helios Delivery Manager`, the same permission set your checklist fields need. Bring `integration`
+into your branch and resolve what git reports, the way Lab 6 taught: on a permission set, take both.
+
+!!! note "Not US-018 again"
+    Lab 6 already merged US-018, so simulating it a second time reports nothing to commit. Each
+    teammate story merges once per level.
 
 ### A hint on sequencing, because getting this wrong costs an hour
 

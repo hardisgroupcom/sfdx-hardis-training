@@ -1,7 +1,7 @@
 {
   "id": "us-019-quote-pdf",
   "title": "US-019 Generate a quote PDF from an opportunity",
-  "usedBy": "Level 3 lab 4",
+  "usedBy": "Level 2 lab 8, Level 3 lab 4",
   "description": "Amina stores the generated quote PDF on the batch and grants it to managers. It touches the same permission set as US-018, which is where the two collide.",
   "branch": "training/mate-us-019-quote-pdf",
   "author": {
