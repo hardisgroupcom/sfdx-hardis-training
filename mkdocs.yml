@@ -19,6 +19,9 @@ docs_dir: site-src
 # scripts/build/site.mjs copies to site-src/theme/.
 theme:
   name: material
+  # Only for the banner that says the course is not finished. Delete the folder
+  # and this line when it is.
+  custom_dir: site-overrides
   language: en
   font: false
   features:
