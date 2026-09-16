@@ -16,7 +16,7 @@ depends_on:
   docs: [salesforce-devops-work-on-user-story-deployment-actions]
 ---
 
-# Lab 2 - US-024: the field cannot be required yet
+# Lab 2 - US-024: green deployment, broken records
 
 **Level**: 2 Contributor advanced
 **Time**: ~60 min

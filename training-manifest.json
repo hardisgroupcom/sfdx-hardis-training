@@ -256,7 +256,7 @@
       "id": "l2-lab-02-deployment-actions-apex",
       "level": 2,
       "lab": 2,
-      "title": "US-024: the field cannot be required yet",
+      "title": "US-024: green deployment, broken records",
       "file": "labs/en/level-2/lab-02-deployment-actions-apex.md",
       "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2/lab-02-deployment-actions-apex/",
       "commands": [

@@ -494,7 +494,7 @@
         {
           "lab": 2,
           "slug": "lab-02-deployment-actions-apex",
-          "title": "US-024: the field cannot be required yet",
+          "title": "US-024: green deployment, broken records",
           "time": "60 min"
         },
         {

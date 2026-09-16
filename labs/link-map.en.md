@@ -25,7 +25,7 @@ so a renamed documentation page fails CI here rather than surprising a learner.
 | Level home | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2/ |
 | Lab 0 - Your org is behind, catch it up | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2/lab-00-refresh/ |
 | Lab 1 - US-021 will not deploy: a missing dependency | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2/lab-01-missing-dependency/ |
-| Lab 2 - US-024: the field cannot be required yet | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2/lab-02-deployment-actions-apex/ |
+| Lab 2 - US-024: green deployment, broken records | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2/lab-02-deployment-actions-apex/ |
 | Lab 3 - US-026: reference data and a batch must follow | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2/lab-03-deployment-actions-data/ |
 | Lab 4 - US-027 fails the quality gate and the tests | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2/lab-04-quality-and-tests/ |
 | Lab 5 - US-033: your Profile change disappeared | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2/lab-05-profiles-overwrites/ |

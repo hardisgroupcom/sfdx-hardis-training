@@ -218,4 +218,4 @@ Welcome page > **Training** > **Check my work**, then pick level 2 and lab 1.
 - [Solve deployment errors](https://sfdx-hardis.cloudity.com/salesforce-devops-solve-deployment-errors/)
 - [Source retrieve issues](https://sfdx-hardis.cloudity.com/salesforce-devops-retrieve/)
 
-[Next: Lab 2 - US-024, the field cannot be required yet](lab-02-deployment-actions-apex.md){ .md-button .md-button--primary }
+[Next: Lab 2 - US-024, green deployment, broken records](lab-02-deployment-actions-apex.md){ .md-button .md-button--primary }

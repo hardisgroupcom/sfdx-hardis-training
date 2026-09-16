@@ -13,7 +13,7 @@ nav:
       - Start here: en/level-2/index.md
       - "Lab 0 - Your org is behind, catch it up": en/level-2/lab-00-refresh.md
       - "Lab 1 - US-021 will not deploy: a missing dependency": en/level-2/lab-01-missing-dependency.md
-      - "Lab 2 - US-024: the field cannot be required yet": en/level-2/lab-02-deployment-actions-apex.md
+      - "Lab 2 - US-024: green deployment, broken records": en/level-2/lab-02-deployment-actions-apex.md
       - "Lab 3 - US-026: reference data and a batch must follow": en/level-2/lab-03-deployment-actions-data.md
       - "Lab 4 - US-027 fails the quality gate and the tests": en/level-2/lab-04-quality-and-tests.md
       - "Lab 5 - US-033: your Profile change disappeared": en/level-2/lab-05-profiles-overwrites.md
