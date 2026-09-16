@@ -19,7 +19,7 @@ depends_on:
 # Lab 2 - Take US-014 from the backlog
 
 **Level**: 1 Contributor basics
-**Time**: ~20 min
+**Time**: ~10 min
 **You will**: pick up your first ticket and land on a clean branch, pointed at your dev org.
 
 ## The situation

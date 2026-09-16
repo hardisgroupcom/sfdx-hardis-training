@@ -17,7 +17,7 @@ depends_on:
 # Lab 5 - Promote integration to UAT and write the release notes
 
 **Level**: 3 Release Manager
-**Time**: ~50 min
+**Time**: ~35 min
 **You will**: make your first promotion between two major branches, read the deployment actions it
 carries, and produce the document the business actually reads.
 

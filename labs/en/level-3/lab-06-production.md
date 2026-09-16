@@ -17,7 +17,7 @@ depends_on:
 # Lab 6 - Ship to production and read your DORA metrics
 
 **Level**: 3 Release Manager
-**Time**: ~50 min
+**Time**: ~35 min
 **You will**: release to production, and then measure whether your pipeline is any good.
 
 ## The situation

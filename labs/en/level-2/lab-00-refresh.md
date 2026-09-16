@@ -19,7 +19,7 @@ depends_on:
 # Lab 0 - Your org is behind, catch it up
 
 **Level**: 2 Contributor advanced
-**Time**: ~25 min
+**Time**: ~15 min
 **You will**: bring three teammates' merged stories into your own dev org, decide what to keep when
 the tool asks, and learn what a backpromote will never do for you.
 

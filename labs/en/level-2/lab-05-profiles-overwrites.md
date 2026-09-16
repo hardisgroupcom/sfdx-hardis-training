@@ -17,7 +17,7 @@ depends_on:
 # Lab 5 - US-033: your Profile change disappeared
 
 **Level**: 2 Contributor advanced
-**Time**: ~40 min
+**Time**: ~25 min
 **You will**: chase a permission that vanishes between a green deployment and the target org, and
 find out it was removed on purpose.
 

@@ -17,7 +17,7 @@ depends_on:
 # Capstone - Deliver US-041, which has all of it at once
 
 **Level**: 2 Contributor advanced
-**Time**: ~60 min
+**Time**: ~45 min
 **You will**: deliver one story that contains a dependency error, a data deployment action and a
 conflict with a teammate, with no step-by-step.
 

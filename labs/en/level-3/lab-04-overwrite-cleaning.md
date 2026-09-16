@@ -17,7 +17,7 @@ depends_on:
 # Lab 4 - Three Pull Requests collide
 
 **Level**: 3 Release Manager
-**Time**: ~60 min
+**Time**: ~40 min
 **You will**: decide the order three Pull Requests go in, when two of them fight over the same file
 and one of them does not work.
 

@@ -17,7 +17,7 @@ depends_on:
 # Lab 9 - Generate the project documentation
 
 **Level**: 3 Release Manager
-**Time**: ~30 min
+**Time**: ~20 min
 **You will**: produce readable documentation of an org nobody has documented in two years, from the
 sources you already have.
 

@@ -17,7 +17,7 @@ depends_on:
 # Lab 3 - Deploy to integration and read what happened
 
 **Level**: 3 Release Manager
-**Time**: ~40 min
+**Time**: ~25 min
 **You will**: read a deployment log properly, and understand why what was deployed is smaller than
 what changed.
 
