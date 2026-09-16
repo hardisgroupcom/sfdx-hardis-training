@@ -50,7 +50,13 @@ difference between "the org I meant" and "the org that happened to be open in th
 
 ### 2. Create the field
 
-In Salesforce: **Setup > Object Manager > Installation > Fields & Relationships > New**.
+In Salesforce: **Setup > Object Manager > Installation**, then **Fields & Relationships** **(1)**
+in the left column, then **New** **(2)**.
+
+![The Fields and Relationships page of the Installation object in Setup](../../_assets/annotated/salesforce/object-manager-fields.png)
+
+The list you see is the object before your change. `Panels Required` is what you are about to add
+to it.
 
 | Setting        | Value                                                         |
 |----------------|---------------------------------------------------------------|
@@ -80,7 +86,14 @@ Click **Save**.
 
 The acceptance criteria say the crew must see it. They do not have it yet: you granted nothing.
 
-**Setup > Permission Sets > Helios Delivery Crew > Object Settings > Installations**, then **Edit**.
+**Setup > Permission Sets > Helios Delivery Crew**, then **Object Settings** **(1)** and
+**Installations**, then **Edit**.
+
+![Object Settings for Installations on the Helios Delivery Crew permission set](../../_assets/annotated/salesforce/permission-set-object-settings.png)
+
+**Field Permissions** **(2)** is the table that matters, one row per field. This picture was taken
+before the field existed, so `Panels Required` is not in it yet: after your change it appears in
+that list, in alphabetical order.
 
 Find `Panels Required` and tick **Read Access**. Leave **Edit Access** unticked: a crew member
 reads how many panels to load, they do not decide the number.
@@ -101,8 +114,12 @@ check the **Details** tab. `Panels Required` is there, empty.
 Empty fields prove nothing. Put a number in.
 
 1. On `INST-00001`, click **Edit**, set **Panels Required** to `24`, and **Save**
-2. Look at the **Panel delivery timeline** component on the right: it lists the pallets booked for
-   this installation, with their quantities
+2. Look at the **Panel delivery timeline** component **(2)**: it lists the pallets booked for this
+   installation, with their quantities
+
+![An installation record in the Helios Delivery app](../../_assets/annotated/salesforce/installation-record.png)
+
+The **Installations** tab **(1)** is how you get back here from anywhere in the app.
 3. Do the quantities add up to roughly what you typed? On a real story you would ask the planner
    whether the field should be entered by hand or computed. Here, entered by hand is the story
 

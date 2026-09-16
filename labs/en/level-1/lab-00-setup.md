@@ -37,7 +37,7 @@ shared integration org the team merges into.
 
 ## Before you start
 
-- [ ] A computer where you can install software
+- [ ] A computer where you can install software, and permission to do so
 - [ ] A GitHub account
 - [ ] Two working email addresses, or one address that supports plus-addressing
 
@@ -45,7 +45,17 @@ shared integration org the team merges into.
 
 ### 1. Install VS Code and the extension
 
-Open [Visual Studio Code](https://code.visualstudio.com/) and take the download for your machine.
+First [Git](https://git-scm.com/downloads), which everything else in this course sits on. The page
+offers your operating system at the top: on Windows take **Click here to download** **(1)**, the
+64-bit standalone installer. Accept every default the installer offers.
+
+![The Git download page for Windows](../../_assets/annotated/web/git-download.png)
+
+!!! note "You may already have it"
+    Open a terminal and type `git --version`. If it answers with a number, skip this and move on.
+    The Setup panel in step 2 checks it too, and will tell you if it is missing.
+
+Then open [Visual Studio Code](https://code.visualstudio.com/) and take the download for your machine.
 On Windows that is the **Windows** button **(1)**; the two cards next to it hold the macOS and Linux
 builds.
 

@@ -295,19 +295,6 @@
         }
       ]
     },
-    "vscode/devops-pipeline.png#new-user-story": {
-      "pills": [
-        {
-          "n": 1,
-          "x": 4.1,
-          "y": 18.8,
-          "w": 7.9,
-          "h": 2.3,
-          "px": 3.2,
-          "py": 19.9
-        }
-      ]
-    },
     "vscode/devops-pipeline.png#settings-menu": {
       "pills": [
         {
@@ -1260,19 +1247,6 @@
           "h": 8.3,
           "px": 83.7,
           "py": 83.8
-        }
-      ]
-    },
-    "vscode/pipeline-cards.png#show-feature-branches": {
-      "pills": [
-        {
-          "n": 1,
-          "x": 83.7,
-          "y": 6.0,
-          "w": 9.5,
-          "h": 3.4,
-          "px": 82.2,
-          "py": 7.7
         }
       ]
     },

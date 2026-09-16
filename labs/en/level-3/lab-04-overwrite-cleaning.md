@@ -163,7 +163,7 @@ different per org. Anything listed in `manifest/package-no-overwrite.xml` is rem
 when the target org already has it, so a deployment cannot flatten a named credential that points at
 a different endpoint in each environment. Two things to know: the file does not exist in this
 project, so nothing is protected, and the setting is **branch-scoped**, so you will not find it on
-the global **Deployment** tab. Switch the scope to `Branch: integration` and it is there, as
+the global **Deployment** tab **(2)**. Switch the scope to `Branch: integration` and it is there, as
 **Branch-scoped custom Package-No-Overwrite path**.
 
 **Delta deployment** is **Use Delta Deployment** **(3)**, on the global **Deployment** tab, and

@@ -95,6 +95,9 @@ This becomes the commit message and the body of your Pull Request.
 
 ### 4. Read the manifest before you push
 
+The command pauses before pushing and asks you to confirm **(1)**. Take the pause: this is the
+last look you get at the package before it leaves your machine.
+
 Open `manifest/package.xml` in VS Code, or open the **Deployment Packages** menu at the top of the
 DevOps Pipeline panel and choose **Package XML**. The command hands it to you as well, as the
 **Git Delta package.xml** report at the bottom of its own panel **(2)**, with the number of

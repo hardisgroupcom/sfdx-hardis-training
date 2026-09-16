@@ -73,8 +73,12 @@ In VS Code, **New User Story**, with:
 
 ### 3. Fix it
 
-Open `Installation_Date_Not_Past` in `helios-prod` and read what is there before you change
-anything:
+In `helios-prod`: **Setup > Object Manager > Installation > Validation Rules** **(1)**, then open
+`Installation_Date_Not_Past` **(2)**.
+
+![The validation rules of the Installation object in Setup](../../_assets/annotated/salesforce/validation-rule.png)
+
+Read what is there before you change anything:
 
 ```
 AND(

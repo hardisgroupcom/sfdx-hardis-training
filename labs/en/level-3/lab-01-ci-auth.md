@@ -90,8 +90,10 @@ It asks a dozen questions, not three, and the order is not the one you would gue
 
 ### 2. Read what it produced, and copy the two values
 
-Before question 9 the panel prints the two values you are about to store **(2)**. Nothing prints
-them again, so do not close the panel or scroll past them.
+The panel keeps every question you answered **(1)**, so you can check what you told it without
+starting again. Before question 9 it prints the two values you are about to store **(2)**. Nothing
+prints them again, so do not close the panel or scroll past them. The files it wrote are listed in
+the reports bar at the bottom **(3)**.
 
 ![A finished sfdx-hardis command, with its answers, its output and its reports](../../_assets/annotated/vscode/command-runner-completed--ci-auth-result.png)
 

@@ -110,6 +110,31 @@ point of having it.
 - Release notes committed, with a human sentence at the top
 - A DORA report, and a `MY-PIPELINE.md` that a successor could actually use
 
+## If it goes wrong
+
+**A check fails and names a lab you are sure you did.**
+Read what it says it looked for. The checks assert outcomes on the `integration` branch, not effort:
+a story built in your org but never merged does not count, and neither does one merged into a branch
+that is not `integration`.
+
+**The Lab 7 check wants the hotfix on `main`.**
+That is check `3-07`, and it looks at `main`, not `integration`. Thursday is what satisfies it: the
+release that takes the week's work to production carries the hotfix with it. If you have not run
+Thursday yet, run it.
+
+**A teammate simulation says there is nothing to commit.**
+That story is already merged. Each teammate story merges once per level, and the ones Level 3 uses
+are listed in each lab. Nothing is wrong: move on.
+
+**A deployment is green and the feature is not in the org.**
+Open the log and find **Listing Post-deployment actions**. If it says none were defined, the actions
+never ran, and Level 2 lab 3 explains what to do about it. A green job proves the metadata went in
+and nothing else.
+
+**The whole thing is too much to finish in one sitting.**
+It is meant to be a week. Stop at the end of any day: each one ends with something merged, and
+nothing carries an unfinished state into the next.
+
 ## Check your work
 
 Welcome page > **Training** > **Check my work**, then pick level 3 and **Everything in level 3**.
