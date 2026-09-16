@@ -15,6 +15,7 @@ screenshots:
   - annotated/vscode/setup
   - annotated/web/sf-signup
   - annotated/vscode/orgs-manager
+  - annotated/vscode/org-select-alias
   - annotated/vscode/welcome--training-menu
 depends_on:
   commands: [hardis:org:data:import]
@@ -233,30 +234,46 @@ Back in VS Code, on the Welcome page, click **Orgs Manager**.
 
 ![The Orgs Manager table, with the Helios orgs and their connection state](../../_assets/annotated/vscode/orgs-manager.png)
 
-1. Click **Add Org** **(1)**
+1. Click **Add Org** **(1)**, then pick **Connect to another org** in the list that opens
 2. Leave the login URL on **Production / Developer Edition** (`login.salesforce.com`), because a
    Developer Edition org is not a sandbox
-3. Give it the alias `helios-dev`
-4. Your browser opens the Salesforce login page. Sign in with the first org, and allow access
-5. Repeat for the second org, with the alias `helios-integration`
+3. Your browser opens the Salesforce login page. Sign in with your first org, and allow access
 
-Both orgs now appear in the table, under the alias you gave them **(2)**, with a green **Connected**
-**(3)**. **This panel is how you authenticate to an org for the rest of the course.** Whenever a lab
-says "connect an org" or "switch to an org", this is where you do it, and it is also how you check
-which org you are pointed at, which saves more confusion than anything else in this training.
+Back in VS Code, the panel asks you one more thing:
+
+![The panel asking what name to give the org that was just connected](../../_assets/annotated/vscode/org-select-alias.png)
+
+**What name do you want to give this org?** The box **(1)** is already filled with a suggestion,
+taken from the org's own web address. On a Developer Edition that address is a string Salesforce
+invented, `orgfarm-9f2a1c7e4b` or similar, which tells you nothing about what the org is for.
+
+**Replace it with `helios-dev`**, then click **Validate** **(2)**.
+
+Repeat the whole thing for your second org, and name that one `helios-integration`.
+
+That name is called an **alias**, and it is what you will see and click from now on: in this panel,
+in the pipeline diagram, everywhere the course says "your dev org". Get these two right and nothing
+else in the training is ambiguous.
+
+Both orgs now appear in the table under the names you gave them **(2)**, with a green **Connected**
+**(3)**. **This panel is how you connect to an org for the rest of the course.** Whenever a lab says
+"connect an org" or "switch to an org", this is where you do it, and it is also how you check which
+org you are pointed at, which saves more confusion than anything else in this training.
 
 <details markdown="1"><summary>Under the hood: what connecting an org just did</summary>
 
 The panel ran:
 
-    sf org login web --alias helios-dev --instance-url https://login.salesforce.com
+    sf hardis:org:select
 
 which opened your browser, let Salesforce authenticate you, and stored an OAuth refresh token in
 your user profile (`~/.sfdx`). Nothing is stored in the project, and nothing is committed: the
-credential is yours and stays on your machine.
+credential is yours and stays on your machine. Then it named the org:
 
-The alias is the name everything else uses. `sf org display --target-org helios-dev` works from
-now on, and so does every sfdx-hardis command with `--target-org helios-dev`.
+    sf alias set helios-dev=you.helios.dev@heliostraining.invalid
+
+The alias is the name everything else uses. Every sfdx-hardis command that wants an org accepts
+`--target-org helios-dev` from now on, and so does the Salesforce CLI itself.
 
 </details>
 

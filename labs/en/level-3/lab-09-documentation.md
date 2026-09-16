@@ -126,7 +126,8 @@ both on and only the Salesforce one runs.
 
 For this lab, generate and commit. Publishing is a project decision.
 
-Commit the `docs/` folder on `integration` through an ordinary Pull Request.
+Put the `docs/` folder into `integration` through an ordinary Pull Request: **New User Story**,
+**Save / Publish User Story**, **Create Pull Request**, like any other change.
 
 ### 7. Make it a habit, not an event
 

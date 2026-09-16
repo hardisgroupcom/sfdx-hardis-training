@@ -49,7 +49,8 @@ pre-authorised user, no password anywhere, and revocation by deleting one app.
 
 - [ ] Lab 0 finished: three major branches with their orgs
 - [ ] All four orgs connected in **Orgs Manager**
-- [ ] `openssl` available (it ships with Git for Windows, macOS and Linux)
+- [ ] Nothing else. The command generates the certificate itself, using `openssl`, which came with
+      Git when you installed it in Level 1
 
 !!! note "This lab is about the CI, not your workstation"
     Your own connection to these orgs already exists and is not changing. Orgs Manager keeps
@@ -151,7 +152,8 @@ like a bug.
 
 ### 5. Do the same for uat and main
 
-Run the command twice more, once for each branch and org. Store four more secrets:
+Open the same **gear menu > Add/Configure Org** twice more, once for each branch and its org.
+Store four more secrets:
 
 - `SFDX_CLIENT_ID_UAT`, `SFDX_CLIENT_KEY_UAT`
 - `SFDX_CLIENT_ID_MAIN`, `SFDX_CLIENT_KEY_MAIN`
@@ -170,8 +172,8 @@ it yet, Lab 5 is the real promotion.
 
 **`integration` cannot be proven the same way, and that is the point of this step.**
 `SFDX_AUTH_URL_INTEGRATION` still exists, the authentication hook looks for it first, and it stops
-there. Push a trivial commit to `integration` and the log shows an auth URL login, not a JWT one, no
-matter how correct your certificate is.
+there. Re-run the last deployment job from the **Actions** tab of your fork and the log shows an auth
+URL login, not a JWT one, no matter how correct your certificate is.
 
 So there is nothing you can check on `integration` while the shortcut is there. Which is why the
 next step is a test and not a formality:
@@ -181,8 +183,9 @@ next step is a test and not a formality:
 In your fork: **Settings > Secrets and variables > Actions**, find `SFDX_AUTH_URL_INTEGRATION`, and
 delete it.
 
-Push another commit and watch the job still pass. If it does, the JWT path is genuinely what is
-being used, and it was not quietly falling back.
+Now go back to **Actions**, open the last **Process Deployment (sfdx-hardis)** run, and click
+**Re-run all jobs**. Nothing has changed except the secret you just deleted, so if the job still
+passes, the JWT path is genuinely what is being used and it was not quietly falling back.
 
 ### 8. Write down why
 

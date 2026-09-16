@@ -78,8 +78,9 @@ turns out to mean.
 if the other one lands badly.
 
 The order you want: **US-019 first** (small, green, no dependants), then **US-018** (green, bigger),
-and **US-020 goes back to Marco**. Where they are already merged, `git log --merges integration`
-tells you the order you actually used, which is the same question asked backwards.
+and **US-020 goes back to Marco**. Where they are already merged, the **Pull Requests** tab of the
+`integration` window in the DevOps Pipeline panel lists them in the order they went in, which is the
+same question asked backwards.
 
 ### 3. Send US-020 back, properly
 

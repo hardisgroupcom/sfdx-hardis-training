@@ -100,9 +100,10 @@ feature failing. It is an old one.
 You have shipped. The question a release manager gets asked next is "how are we doing", and it
 deserves a better answer than a feeling.
 
-**Set your default org to `helios-prod` first.** The menu entry runs the command with no flags, so it
-measures whatever org the CLI is currently pointed at. Run it while `helios-dev` is your default and
-you get a report about your sandbox, correctly formatted and completely irrelevant.
+**Point yourself at `helios-prod` first.** Open **Orgs Manager**, find the `helios-prod` row, and
+choose **Set as Default Org** in its actions menu. The report measures whatever org you are pointed
+at: run it while `helios-dev` is your current org and you get a report about your sandbox, correctly
+formatted and completely irrelevant.
 
 Then open the **DevOps Pipeline** panel, open the gear menu at the top right **(1)**, and choose
 **Generate DORA Metrics Report**. It sits in the same menu as **Pipeline Settings**, which you used
@@ -199,7 +200,8 @@ after a successful deployment. The metadata is in, the action is not. Re-run the
 re-run the deployment.
 
 **The DORA report says "No data available" for three of the metrics.**
-It had no target org. Set `helios-prod` as your default org and run it again.
+It had no target org. In **Orgs Manager**, set `helios-prod` as your default org, then open
+**Generate DORA Metrics Report** again.
 
 **The report is about the wrong org.**
 Same cause, other direction: it measured your default org, which was not `helios-prod`.

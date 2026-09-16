@@ -37,7 +37,7 @@ This lab is short and it is the one you will actually use.
 ## Before you start
 
 - [ ] Lab 6 finished and merged
-- [ ] A clean working tree
+- [ ] Nothing waiting in the **Source Control** panel that you still care about
 
 ## Steps
 
@@ -75,9 +75,9 @@ Open it, then **CI/CD (simple)** **(1)**, then **Reset selected list of items to
 It does more than its name suggests, and knowing exactly what saves you from undoing it twice. In
 one pass it:
 
-1. **Soft resets every commit** your branch has made since it left `integration`. The commits go,
-   the changes stay, sitting in your working tree as if you had never committed them
-2. **Unstages** all of it, so nothing is queued
+1. **Undoes every commit** your branch has made since it left `integration`, without touching a
+   single file. The commits go, your changes stay, in front of you, as if you had never published
+2. **Clears what was queued for the next commit**, so nothing is waiting
 3. **Restores `manifest/package.xml` and `manifest/destructiveChanges.xml`** to the versions on the
    branch point, which is what actually clears the selection
 4. Sets `canForcePush`, because your branch no longer matches what you pushed
@@ -132,8 +132,8 @@ In `MY-PIPELINE.md`, under Level 2:
 
 ```markdown
 - **Lab 7, resetselection**: I had selected the whole org. Reset selected list of items to merge
-  cleared the selection, git reset --hard origin/integration dropped the commit, and the org kept
-  my actual change.
+  cleared the selection and undid my commit, my change stayed in my files, and the org never
+  noticed.
 ```
 
 <details markdown="1"><summary>Under the hood: what the selection actually is</summary>
@@ -166,9 +166,8 @@ starting (Lab 0) is what prevents this, and it is why `hardis:work:new` offers i
 
 ## If it goes wrong
 
-**`git reset --hard` says you have local changes.**
-Commit or stash them first. `--hard` discards them without asking, which is fine here and a habit
-worth not forming.
+**The reset says you have changes waiting.**
+Publish them or discard them in the **Source Control** panel first, then run the reset again.
 
 **After the reset, the publish still pre-ticks everything.**
 You reset the branch but not the selection. Run **Reset selected list of items to merge** too.

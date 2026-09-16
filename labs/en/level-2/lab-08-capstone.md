@@ -70,7 +70,8 @@ feature will do nothing at all. Build a data workspace and declare an action.
 **Three: the conflict.** Before you open your Pull Request, run **Training > Simulate my
 teammates** and pick **US-019**, then merge it. Amina adds a quote PDF field and grants it on
 `Helios Delivery Manager`, the same permission set your checklist fields need. Bring `integration`
-into your branch and resolve what git reports, the way Lab 6 taught: on a permission set, take both.
+into your branch from the **Source Control** panel and resolve the conflict in the merge editor, the
+way Lab 6 taught: on a permission set, accept both.
 
 !!! note "Not US-018 again"
     Lab 6 already merged US-018, so simulating it a second time reports nothing to commit. Each

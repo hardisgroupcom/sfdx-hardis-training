@@ -147,7 +147,9 @@ reads needs two things the generator cannot know:
    over-staffed, and sales can generate quote PDFs."
 2. **The manual steps, stated as instructions to a named person**, not as a technical list
 
-Commit the result in the repository, and put its link in `MY-PIPELINE.md`.
+Put the result in the repository the way everything else gets there: **New User Story** targeting
+`integration`, **Save / Publish User Story**, **Create Pull Request**. Then put its link in
+`MY-PIPELINE.md`.
 
 <details markdown="1"><summary>Under the hood: what generated the notes, and what a promotion really is</summary>
 

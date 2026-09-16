@@ -69,14 +69,9 @@ Open the commit in your branch and look at what was actually committed for the P
 Almost nothing. The Profile file is there, but the field permission you added is gone, along with
 most of the rest of it.
 
-`hardis:work:save` did that, deliberately, before committing. It is the `minimizeProfiles` cleaning
-rule declared in `config/.sfdx-hardis.yml`:
-
-```yaml
-autoCleanTypes:
-  - minimizeProfiles
-  ...
-```
+Publishing did that, deliberately, before committing. It is a project setting called
+**minimizeProfiles**, one of the cleaning rules this project switched on, and you can see it in the
+**Pipeline Settings** panel on the **Salesforce Project** tab.
 
 ### 4. Understand why a project would ever do that
 

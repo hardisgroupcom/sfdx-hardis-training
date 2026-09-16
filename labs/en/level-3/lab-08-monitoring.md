@@ -39,7 +39,7 @@ Monitoring is the part of the release manager job that happens when nothing is b
 
 - [ ] Lab 7 finished
 - [ ] `helios-prod` connected in **Orgs Manager**
-- [ ] An empty GitHub repository of your own, with `monitoring` in its name, ready to clone
+- [ ] An empty GitHub repository of your own, with `monitoring` in its name
 - [ ] About 20 minutes of the 50 will be the first monitoring run
 
 ## Steps
@@ -59,8 +59,10 @@ not because the two are alternatives. Answer no, and it stops so you can go and 
 repository.
 
 So, before anything else: create an empty private repository called
-`sfdx-hardis-training-monitoring` on GitHub, clone it, and open **that folder** in VS Code. Nothing
-in this lab happens in the repository you have been working in all course.
+`sfdx-hardis-training-monitoring` on GitHub. Then bring it down the way Level 1 lab 0 brought this
+one down: **File > Open Folder** on an empty folder, **Source Control** panel, **Clone Repository**,
+and paste the address from the green **Code** button of your new repository. Nothing in this lab
+happens in the repository you have been working in all course.
 
 Why two repositories, and it is the same reason real projects do it:
 

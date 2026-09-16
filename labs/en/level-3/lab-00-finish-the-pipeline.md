@@ -214,8 +214,10 @@ point of most projects: not an empty repository, but a two-year-old org nobody h
 
 ### 6. Commit the configuration
 
-This is configuration, so it goes through the same pipeline as everything else. Commit it on a
-branch, open a Pull Request into `integration`, and merge it.
+This is configuration, so it goes through the same pipeline as everything else, and through the
+same three buttons Level 1 used: **New User Story** targeting `integration`, then **Save / Publish
+User Story**, then **Create Pull Request** from the bar at the end of it. Get the check green and
+merge.
 
 Yes, even as the release manager. Especially as the release manager.
 
@@ -235,7 +237,8 @@ has to match the branch exactly.
 Click **Refresh pipeline data** in the panel. It caches the git state.
 
 **You pointed a branch at the wrong org.**
-Fix the branch configuration file and commit again. Nothing has deployed yet, so nothing is broken.
+Fix the branch configuration in **Pipeline Settings** and publish again. Nothing has deployed yet,
+so nothing is broken.
 
 ## Check your work
 

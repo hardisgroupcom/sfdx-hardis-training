@@ -43,7 +43,9 @@ half of working on a pipeline, so this lab makes you meet one of each.
 ## Before you start
 
 - [ ] Lab 3 finished and merged
-- [ ] Comfortable enough with Apex to read fifteen lines of it
+- [ ] Willing to read fifteen lines of Apex. You do not have to write any: every block in this lab
+      is there to be copied, and what the lab is really teaching is how to read what the robots say
+      about it
 
 ## Steps
 
@@ -52,10 +54,12 @@ half of working on a pipeline, so this lab makes you meet one of each.
 **New User Story**, branch `US-027-schedule-by-availability`, target `integration`, org
 `helios-dev`.
 
-### 2. Write the change the way people actually write it
+### 2. Add the change the way people actually write it
 
-Open `force-app/main/default/classes/InstallationScheduler.cls` and add a method. The planner wants
-to check several installations at once, so you write the obvious thing:
+The planner wants to check several installations at once. Open
+`force-app/main/default/classes/InstallationScheduler.cls`, the file the pipeline already deploys,
+and paste in the method below, exactly as the developer who wrote it first did. It is the obvious
+way to do it, and that is the point:
 
 ```apex
     /**
@@ -177,8 +181,7 @@ the other way round from now on.
 **Apex tests**: open the **Org Monitoring Workbench** from the Welcome page, click the **Apex
 Tests** card, and pick `helios-dev`.
 It runs the org's Apex tests and checks the same coverage threshold the pipeline checks, so you get
-the pass, the fail and the percentage without pushing anything. From a terminal it is
-`sf hardis:org:test:apex`.
+the pass, the fail and the percentage without pushing anything.
 
 !!! note "The Apex Tests tab is a different thing"
     A Pull Request in the **DevOps Pipeline** panel can show an **Apex Tests (n) (beta)** tab. It
@@ -186,14 +189,21 @@ the pass, the fail and the percentage without pushing anything. From a terminal 
     appears on projects that set `enableDeploymentApexTestClasses`. Helios does not: it runs
     `RunLocalTests`, every test in the org, every time.
 
-**Linters**: run MegaLinter locally once, from a terminal:
+**Linters**: these are the one check you cannot usefully run on your own machine, because they need
+a container image the CI already has. Push, and read what they say on the Pull Request. That is two
+minutes of waiting rather than twenty of setting up, and Level 3 shows the release manager's view of
+the same report.
 
-```bash
-npx mega-linter-runner --flavor salesforce
-```
+<details markdown="1"><summary>Under the hood: the two commands behind those cards</summary>
 
-The first run downloads a container image and takes a few minutes. Every run after that is fast,
-and it is exactly what the CI runs.
+The Apex Tests card runs the same command the pipeline runs:
+
+    sf hardis:org:test:apex
+
+and the linters, on GitHub's machines, run MegaLinter with the Salesforce flavor. If you ever want
+them on your own machine, that is `npx mega-linter-runner --flavor salesforce`, and it needs Docker.
+
+</details>
 
 ### 6. Push and merge
 
@@ -242,12 +252,14 @@ a documented exclusion in `.mega-linter.yml`, never a blanket disable.
 Coverage is org-wide. Look at the per-class table in the Pull Request comment: another class may be
 dragging the average down.
 
-**The local MegaLinter run does nothing.**
-It needs Docker. Without Docker, run **Run Apex tests** locally and let the CI run the linters.
+**The Apex Tests card says there is no org.**
+It runs against the org you are pointed at. Open **Orgs Manager** and check that `helios-dev` is
+your current org, then run the card again.
 
 **The Apex tests pass locally and fail in CI.**
 Almost always data. Your dev org has records the integration org does not, or the other way round.
-A test that needs data must create it with `@testSetup`, never rely on what happens to be there.
+A test has to create the records it needs itself, rather than trusting whatever happens to be in
+the org.
 
 ## Check your work
 

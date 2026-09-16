@@ -132,7 +132,7 @@ And one thing it does that nobody expects the first time:
     Start your next User Story without reading it and you will branch off the wrong place.
 
     **New User Story** always branches from the target you pick, so it recovers on its own. If you
-    are moving by hand, check `git status` first.
+    want to know where you are, the branch name is in the bottom left corner of VS Code.
 
 The history is not on your computer either. sfdx-hardis records what reached your sandbox in a
 **Backpromotes comment** on each Pull Request it brought down, so the next backpromote knows where

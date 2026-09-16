@@ -64,11 +64,11 @@ In `helios-dev`, create:
   - `Crew_Type__c`, Picklist: `Roof`, `Ground`, `Electrical`
   - `Roof_Type__c`, Picklist: `Tile`, `Slate`, `Flat`, `Metal`
   - `Panels_Per_Day__c`, Number 3,0
-- An Apex class `CrewCapacityBatch` implementing `Database.Batchable<SObject>` and `Schedulable`,
-  which recomputes `Total_Capacity_kW__c` on planned installations. Keep it simple: what it does
-  matters less here than the fact that it has to be scheduled
-- A test class `CrewCapacityBatchTest`, because the deployment will run tests and the coverage
-  threshold is 75%
+- An Apex class `CrewCapacityBatch` that recalculates `Total_Capacity_kW__c` on planned
+  installations and that Salesforce can run on a schedule, plus its test class
+  `CrewCapacityBatchTest`. **You do not have to write these.** Copy them from
+  `scripts/apex/samples/` in the repository: what they compute matters far less here than the fact
+  that somebody has to schedule them in every org, which is the whole point of the lab
 
 Then create 12 Crew Capacity records in your org, one per crew type and roof type combination that
 Helios supports.
@@ -222,8 +222,8 @@ pipeline told you to**, not because you remembered.
     written. If the object never reached the org, for any reason, the import that was supposed to
     fill it says nothing louder than a warning nobody reads.
 
-    That is why the check in this step is the records and not the tick, and it is why the two
-    `WARNING` lines are worth grepping for in a deployment log when a feature arrives empty.
+    That is why the check in this step is the records and not the tick, and it is why those two
+    `WARNING` lines are worth searching for in a deployment log when a feature arrives empty.
 
 The habit behind all of this: **a green deployment is evidence that the metadata went in, and
 evidence of nothing else.** The org is the only thing that tells you an action ran.
@@ -273,8 +273,8 @@ The CI user cannot write the fields. Add them to `Helios_Delivery_Manager` and r
 deployment grants no field permissions to anybody by itself.
 
 **The import creates duplicates every run.**
-The operation is `Insert`, not `Upsert`, or the external id is not set. Both are in
-`scripts/data/HeliosCrewRefData/export.json`.
+The operation is `Insert`, not `Upsert`, or the external id is not set. Open the workspace in the
+**Data Workbench** panel and correct both there.
 
 **The schedule action fails with `Invalid cron expression`.**
 Salesforce cron has seconds and a day-of-week field: `0 0 2 * * ?`, not `0 2 * * *`.

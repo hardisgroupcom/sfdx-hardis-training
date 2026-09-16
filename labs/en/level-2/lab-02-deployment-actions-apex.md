@@ -78,10 +78,9 @@ for everyone, by definition. So the moment the field becomes required, every `fi
 entry that mentions it becomes invalid, and the deployment refuses the permission sets rather than
 the field.
 
-The fix takes a minute. In `helios-dev`, the entries disappear from the permission sets on their own
-once the field is required, so re-publish and let `hardis:work:save` pick up the new versions. If you
-are editing the XML directly, delete the two `<fieldPermissions>` blocks naming
-`Installation__c.Crew_Size__c`.
+The fix takes a minute and you do it in the org, not in a file. In `helios-dev` the entries
+disappear from the permission sets on their own once the field is required, so publish again and let
+the tool pick up the new versions of both permission sets.
 
 !!! note "This is a good error"
     It is precise, it names both offending components, and the fix is obvious once you know the rule.
@@ -119,9 +118,11 @@ The shape of the fix, and it is the shape of most "the data is in the way" probl
 Both can travel in the same Pull Request, as long as the tool knows to run them in that order. That
 is exactly what a **pre-deploy action** is.
 
-### 5. Write the backfill script
+### 5. Add the backfill script
 
-In your repository, create `scripts/apex/backfill-crew-size.apex`:
+Deployment actions of this kind run a short Apex script. You do not have to write one: create the
+file `scripts/apex/backfill-crew-size.apex` in the project and copy this into it. The two comments
+are the whole of what it does.
 
 ```apex
 // Gives every installation without a crew the default crew of two, so that
@@ -177,7 +178,7 @@ by one. **Add New Action** **(2)** stays there for the next one, and your row **
     Tick it whenever the script is a one-time correction rather than something that should happen on
     every deployment. sfdx-hardis records what it has run in each org, so the backfill fires once in
     integration, once in UAT, once in production, and never again. Leave it unticked for a script
-    that is genuinely idempotent and should re-run.
+    that does no harm if it runs twice and is meant to run on every deployment.
 
 ### 7. Order it correctly
 
@@ -249,8 +250,9 @@ The panel reads the Pull Request from your fork. If the Pull Request was opened 
 repository, it cannot see it. Close it and reopen it with the right base.
 
 **The Apex script fails with `Too many DML rows`.**
-Raise the `LIMIT` carefully, or convert the script to a batch. Thirty records is nowhere near the
-limit, so if you see this you are running against an org with far more data than the training one.
+Raise the number after `LIMIT` in the script. Thirty records is nowhere near the Salesforce ceiling,
+so if you see this you are running against an org with far more data than the training one, and that
+org needs a developer to split the correction into chunks.
 
 **The deployment still fails on the permission sets.**
 They still carry `fieldPermissions` for `Installation__c.Crew_Size__c`. A required field cannot have

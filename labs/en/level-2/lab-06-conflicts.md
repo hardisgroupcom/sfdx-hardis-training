@@ -35,7 +35,7 @@ flow and the same permission set as you. He merged this morning. You did not.
 ## Before you start
 
 - [ ] Lab 5 finished and merged
-- [ ] A clean working tree
+- [ ] Nothing waiting in the **Source Control** panel that you still care about
 
 ## Steps
 
@@ -107,25 +107,36 @@ own. A merge tool cannot know which of two connectors should win. You can.
 
 ### 4. Bring integration into your branch
 
-Do it locally, where you have proper tools.
+In the **Source Control** panel: the **...** menu > **Branch** > **Merge Branch**, and pick
+`integration`.
 
-In the **Source Control** panel: **...** menu > **Branch** > **Merge Branch**, and pick
-`integration`. Or from the terminal, since this is one of the few places where seeing the command
-helps:
+Two files come back marked as conflicting, and they appear in the panel under **Merge Changes**.
 
-```bash
-git fetch origin
-git merge origin/integration
-```
+<details markdown="1"><summary>Under the hood: what Merge Branch ran</summary>
 
-Git reports the two conflicting files.
+    git fetch origin
+    git merge origin/integration
+
+A conflict is not an error. It is git saying that two people wrote in the same place and it will not
+guess which one meant it.
+
+</details>
 
 ### 5. Resolve the permission set: take both
 
-Open
-`force-app/main/default/permissionsets/Helios_Delivery_Manager.permissionset-meta.xml`.
+Click the permission set file in the **Source Control** panel. VS Code opens its merge editor:
+your version on the left, Marco's on the right, and the result you are building at the bottom.
 
-You will see something like:
+This one is mechanical, and you can decide it without reading a single line of XML: **both entries
+belong**. Marco granted one field, you granted another, and a permission set holds as many as it
+needs. Click **Accept Both**, then **Complete Merge** at the top right.
+
+**Take both** is the right answer for almost every permission set conflict. Choosing one side is how
+a teammate's permission quietly disappears, and nobody notices until somebody cannot see a field.
+
+<details markdown="1"><summary>Under the hood: what the conflict actually looked like</summary>
+
+Git conflicts on lines, not on XML, so the markers landed inside one block rather than around two:
 
 ```xml
     <fieldPermissions>
@@ -139,13 +150,8 @@ You will see something like:
     </fieldPermissions>
 ```
 
-Git conflicts on lines, not on XML, so the markers land inside one `<fieldPermissions>` block
-rather than around two. That is normal and it is why the resolution has to be read rather than
-clicked through.
-
-This one is mechanical: **both entries belong**. Marco's field and yours are different fields, and
-a permission set holds as many as it needs. Delete the three markers and keep both blocks, in
-alphabetical order because that is how Salesforce writes them:
+**Accept Both** wrote the two complete blocks, in alphabetical order, which is how Salesforce writes
+them anyway:
 
 ```xml
     <fieldPermissions>
@@ -160,13 +166,11 @@ alphabetical order because that is how Salesforce writes them:
     </fieldPermissions>
 ```
 
-**Take both** is the right answer for almost every permission set conflict. Choosing one side is
-how a teammate's permission quietly disappears.
+</details>
 
 ### 6. Resolve the flow: understand both, then decide
 
-Open `force-app/main/default/flows/Installation_Assign_Crew.flow-meta.xml`. This one you cannot
-resolve by taking both, because the two changes are in the same decision path.
+This one you cannot resolve by taking both, because the two changes are in the same decision path.
 
 - **Marco's change** caps the crew at what the installation allows: never more than N
 - **Your change** raises the crew to at least 3 on flat roofs: never fewer than 3
@@ -181,16 +185,28 @@ For this lab, the decision has been made for you: **the cap wins**. A crew large
 installation allows is a safety problem; a crew of 2 on a flat roof is a slow day. Resolve so that
 your minimum applies **only when it does not exceed Marco's cap**.
 
-Practically:
+Do it in Flow Builder, not in the file. A flow is stored as XML that nobody can read reliably,
+developers included, and a flow that deploys but behaves wrongly is worse than one that fails.
 
-1. Take Marco's version of the file as the base (his cap decision and its connectors)
-2. Re-add your flat-roof decision **after** his cap, so the cap runs last and wins
-3. Delete every conflict marker
+1. In the merge editor, **Accept Incoming** on the flow: Marco's whole version wins for now
+2. **Save / Publish User Story** is not what you want yet. First deploy the merged flow to your dev
+   org: **DevOps Pipeline** > **Deploy to my org**, so `helios-dev` has Marco's cap
+3. Open **Flow Builder** in the org, on `Installation_Assign_Crew`, and add your flat-roof rule
+   again, **after** his cap so the cap runs last and wins
+4. Come back to VS Code and publish, which picks your rebuilt flow up from the org
 
-!!! tip "When a flow conflict is too tangled to resolve in XML"
-    It often is. The escape hatch: take one side wholesale, deploy that version to your dev org,
-    redo the other change in the Flow Builder, and re-publish. Slower to type, far faster than
-    hand-editing flow XML, and much less likely to produce a flow that deploys but behaves wrongly.
+Slower to describe, much faster to do, and you can see what you are building.
+
+<details markdown="1"><summary>Under the hood: resolving it in the file instead</summary>
+
+If you can read flow XML and want to: take Marco's version of the element and its connectors as the
+base, re-add your flat-roof decision after his cap, and delete every conflict marker. Then publish,
+which re-runs the cleaning rules over what you wrote by hand.
+
+The risk is not that it fails. The risk is that it deploys and the decisions run in an order you did
+not intend, which no check catches and no test in this project covers.
+
+</details>
 
 ### 7. Finish the merge and re-validate
 
@@ -225,8 +241,8 @@ You kept both sides of an element that can only exist once. Flow element names a
 remove one.
 
 **You lost your change entirely.**
-You resolved with "take theirs" on the whole file. `git merge --abort` before committing, or reset
-your branch and start the merge again.
+You accepted Marco's side on the whole file. In the **Source Control** panel, the **...** menu >
+**Branch** > **Abort Merge**, then start step 4 again.
 
 **The check fails on a conflict marker.**
 Search the whole repository for `<<<<<<<`, `=======` and `>>>>>>>`. A marker in an XML file is

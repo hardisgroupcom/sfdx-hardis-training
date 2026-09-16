@@ -118,10 +118,10 @@ The integration org is being sent a flow that reads a field the package does not
 integration org does not have that field either. From Salesforce's point of view the error is
 exactly right.
 
-So why is the field not in the package? `hardis:work:save` generates the package from the git diff,
-and the field is not in the diff, because the field never reached `force-app` at all. Look for it
-on disk under `force-app/main/default/objects/Installation__c/fields/`: it is not there, even
-though you selected it when publishing.
+So why is the field not in the package? Publishing builds the package out of what changed in your
+branch, and your field is not in that list, because the file for it never arrived in the project at
+all. Look where the fields live, `force-app/main/default/objects/Installation__c/fields/`: it is not
+there, even though you ticked it when you published.
 
 ### 5. Find why the field never reached the repository
 
@@ -136,9 +136,11 @@ Open `.forceignore` at the root of the repository.
 **/objects/Installation__c/fields/Crew_W*.field-meta.xml
 ```
 
-Sofia left a year ago. The spike is long over. The pattern she wrote for her `Crew_Workaround__c`
-field is still there, and it matches every field on Installation whose name starts with `Crew_W`,
-including the one you created this morning.
+Those lines are patterns, not file names. A `*` stands for any text, so the last one matches every
+field on Installation whose name starts with `Crew_W`.
+
+Sofia left a year ago and the spike is long over, but the pattern she wrote for her
+`Crew_Workaround__c` field is still there, and it matches the field you created this morning too.
 
 `.forceignore` tells the Salesforce CLI what to ignore when retrieving **and** when deploying. A
 component listed there is invisible in both directions, with no error and no warning: the retrieve
@@ -147,8 +149,8 @@ that noticed was Salesforce, in the integration org, three steps later.
 
 ### 6. Fix it
 
-Delete the stale pattern. If you would rather keep Sofia's field excluded, name it
-exactly instead of guessing with a wildcard:
+Delete the stale pattern. If you would rather keep Sofia's field excluded, name that one file
+exactly, with no `*` in it, so nothing else can ever match by accident:
 
 ```
 **/objects/Installation__c/fields/Crew_Workaround__c.field-meta.xml

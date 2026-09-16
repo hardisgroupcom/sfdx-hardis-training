@@ -38,6 +38,7 @@
         "annotated/vscode/setup",
         "annotated/web/sf-signup",
         "annotated/vscode/orgs-manager",
+        "annotated/vscode/org-select-alias",
         "annotated/vscode/welcome--training-menu"
       ]
     },

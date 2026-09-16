@@ -76,12 +76,12 @@ This release is also what finally carries the Lab 7 retrofit into `main`, so the
 picklist value reaches production through the pipeline and the check for Lab 7 passes.
 
 Then generate the release notes, add the sentence at the top that says what this release is for, and
-commit them.
+put them in the repository through a Pull Request like anything else.
 
 ### Friday: measure and write down
 
-Run the DORA report, with `helios-prod` as your default org so it measures production rather than
-your sandbox, and compare it with the baseline you took in Lab 6.
+Set `helios-prod` as your default org in **Orgs Manager**, so the report measures production rather
+than your sandbox, then run the DORA report and compare it with the baseline you took in Lab 6.
 
 Update `MY-PIPELINE.md` with:
 
