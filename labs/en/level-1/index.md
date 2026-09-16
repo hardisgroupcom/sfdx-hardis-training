@@ -42,8 +42,8 @@ part.
 
 | Lab                             | Title                                         | Time   |
 |---------------------------------|-----------------------------------------------|--------|
-| [0](lab-00-setup.md)            | Install the tools and seed your orgs          | 20 min |
-| [1](lab-01-fork-and-connect.md) | Fork the repository and connect your pipeline | 15 min |
+| [0](lab-00-setup.md)            | Install the tools and seed your orgs          | 25 min |
+| [1](lab-01-fork-and-connect.md) | Set up your pipeline and read it              | 10 min |
 | [2](lab-02-new-user-story.md)   | Take US-014 from the backlog                  | 10 min |
 | [3](lab-03-build-in-org.md)     | Build it in your org                          | 15 min |
 | [4](lab-04-publish.md)          | Publish it and read the package.xml diff      | 15 min |

@@ -14,8 +14,6 @@ screenshots:
   - annotated/vscode/setup
   - annotated/web/sf-signup
   - annotated/vscode/orgs-manager
-  - annotated/web/github-fork
-  - annotated/web/github-create-fork
   - annotated/vscode/welcome--training-menu
 depends_on:
   commands: [hardis:org:data:import]
@@ -29,7 +27,7 @@ depends_on:
 
 **Level**: 1 Contributor basics
 
-**Time**: ~20 min
+**Time**: ~25 min
 
 **You will**: get a working workstation and two Salesforce orgs that already contain the Helios
 Delivery app and its data, without typing a single command.
@@ -97,6 +95,17 @@ get right on that page:
 ![The Node.js download page, with the version selector and the installer buttons](../../_assets/annotated/web/nodejs-download.png)
 
 Both are next-next-finish installers.
+
+Last, the [GitHub CLI](https://cli.github.com/), called `gh`. It is how Lab 1 forks the repository
+and sets up its automation for you, in one command instead of a dozen clicks. Take the installer for
+your machine, accept its defaults, then open a terminal and sign in:
+
+```bash
+gh auth login
+```
+
+Answer **GitHub.com**, **HTTPS**, and **Login with a web browser**. It prints a one-time code, opens
+your browser, and you are done. `gh auth status` confirms it afterwards.
 
 Then open VS Code and install the extension. The **Extensions** icon sits in the narrow bar down
 the left, and looks like four small squares with one lifted away. Click it, type `sfdx-hardis` in
@@ -242,30 +251,33 @@ now on, and so does every sfdx-hardis command with `--target-org helios-dev`.
 
 ### 5. Get the repository
 
-You need the training project on your machine before you can seed the orgs from it.
+You need the training project on your machine before you can seed the orgs from it. Take the team's
+copy for now: it is read-only, and Lab 1 turns it into your own in one command.
 
-A **fork** is your own copy of somebody else's repository, made in one click and sitting under your
-own GitHub account. Open
-[the training repository](https://github.com/hardisgroupcom/sfdx-hardis-training) and click
-**Fork** **(1)**, top right.
+In VS Code:
 
-![The training repository on GitHub](../../_assets/annotated/web/github-fork.png)
+1. **File > Open Folder**, and pick an empty folder
+2. Open the **Source Control** panel, the branch icon in the narrow bar on the left
+3. Click **Clone Repository** and paste
+   `https://github.com/hardisgroupcom/sfdx-hardis-training.git`
+4. When VS Code asks, click **Open** to work in the cloned folder
 
-The **Create a new fork** page asks for three things:
+If GitHub asks you to sign in, let VS Code handle it: **Sign in with your browser** is enough.
 
-1. **Owner** **(1)**, which is your own account
-2. **Copy the `main` branch only** **(2)**, ticked for you. **Untick it**: this course needs the
-   other branches, and a fork made without them fails in Lab 1
-3. **Create fork** **(3)**
+<details markdown="1"><summary>Under the hood: what opening the folder told the extension</summary>
 
-![The Create a new fork page on GitHub](../../_assets/annotated/web/github-create-fork.png)
+The extension read three files, and it reads them again whenever they change, so you never have to
+reload the window:
 
-You now own `github.com/<your-handle>/sfdx-hardis-training`. Bring it onto your machine: in VS Code,
-**File > Open Folder**, pick an empty folder, then use the Source Control panel to **Clone
-Repository** with your fork's URL.
+- `sfdx-project.json`, which says the Salesforce sources live in `force-app`
+- `config/.sfdx-hardis.yml`, the project configuration: major branches, cleaning rules, the
+  Training menu
+- `config/branches/.sfdx-hardis.integration.yml`, the branch configuration: which org the
+  `integration` branch deploys to
 
-Lab 1 goes through both properly, with what each step means and what to do when GitHub asks you to
-sign in. For now you only need the files.
+That last one is empty of your details until Lab 1 fills it in.
+
+</details>
 
 ### 6. Seed each org
 

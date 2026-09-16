@@ -67,6 +67,13 @@ customCommands:
     vscodeIcon: mortar-board
     sldsIcon: utility:education
     commands:
+      - id: training-init
+        label: Set up my pipeline
+        vscodeIcon: repo-forked
+        sldsIcon: utility:merge
+        tooltip: Forks the repository, turns Actions on, and gives the CI job a way into your org
+        command: node scripts/training.mjs init
+        helpUrl: https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-01-fork-and-connect/
       - id: training-status
         label: Where am I?
         vscodeIcon: compass

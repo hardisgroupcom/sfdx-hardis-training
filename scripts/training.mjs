@@ -2,6 +2,7 @@
 /**
  * The single entry point behind the Training menu of the VS Code extension.
  *
+ *   node scripts/training.mjs init        Set up my pipeline
  *   node scripts/training.mjs status      Where am I?
  *   node scripts/training.mjs seed        Set up one of my training orgs
  *   node scripts/training.mjs check       Check my work
@@ -15,6 +16,7 @@
 import { parseArgs, abort, c } from "./lib/util.mjs";
 
 const VERBS = {
+  init: () => import("./training/init.mjs"),
   status: () => import("./training/status.mjs"),
   seed: () => import("./training/seed.mjs"),
   check: () => import("./training/check.mjs"),
@@ -31,6 +33,7 @@ async function main() {
     console.log(`
 ${c.bold("Salesforce DevOps with sfdx-hardis - training commands")}
 
+  ${c.cyan("init")}       Set up my pipeline: forks the repository, turns Actions on, sets the CI secret
   ${c.cyan("status")}     Where am I? The level and lab you reached, and what to do next
   ${c.cyan("seed")}       Set up one of my training orgs: deploys the Helios app and its data
   ${c.cyan("check")}      Check my work: verifies a lab and prints your receipt

@@ -5,60 +5,119 @@ lab: 1
 lang: en
 source_rev: ""
 screenshots:
-  - annotated/web/github-fork
-  - annotated/web/github-create-fork
-  - annotated/web/github-actions-tab
+  - annotated/vscode/welcome--training-menu
+  - annotated/vscode/devops-pipeline--github-auth
   - annotated/vscode/devops-pipeline--read-it
   - annotated/vscode/devops-pipeline--settings-menu
   - annotated/vscode/pipeline-config-branch
+  - annotated/vscode/pipeline-config-branch-edit
+  - annotated/web/github-fork
+  - annotated/web/github-create-fork
+  - annotated/web/github-actions-tab
+  - annotated/web/github-code-url
   - annotated/web/github-secret-new
 depends_on:
   commands: []
   flags: []
-  config: [developmentBranch, availableTargetBranches, targetUsername, instanceUrl]
-  panels: [pipeline, pipelineConfig, orgManager]
+  config: [developmentBranch, availableTargetBranches, targetUsername, instanceUrl, customCommands]
+  panels: [pipeline, pipelineConfig, orgManager, welcome]
   docs: [salesforce-devops-git-tokens, salesforce-devops-clone-repository, salesforce-devops-setup-auth-github]
 ---
 
-# Lab 1 - Fork the repository and connect your pipeline
+# Lab 1 - Set up your pipeline and read it
 
 **Level**: 1 Contributor basics
 
-**Time**: ~15 min
+**Time**: ~10 min
 
-**You will**: own a copy of the Helios repository, wire it to your integration org, and read the
-pipeline diagram that tells you which branch deploys where.
+**You will**: turn the read-only clone from Lab 0 into your own working pipeline, then read the
+diagram that tells you which branch deploys where.
 
 ## The situation
 
 The Helios team keeps its whole project in one **repository** on GitHub: the Salesforce sources, the
 configuration, the automation that deploys it, and every version of all of that since the project
-started.
+started. Lab 0 put a copy of it on your machine, but a read-only one: you cannot push to the team's
+repository and neither can anybody on this course.
 
-You are not going to touch theirs. You take a **fork**, which is GitHub's word for your own copy
-under your own account, and you work there. So does everyone else on this course. By the end of this
-lab, a Pull Request opened in your copy will really deploy to an org you own.
+So you need your own copy, called a **fork**, and it needs three things done to it before a Pull
+Request opened there can deploy to an org you own. One command does all four.
+
+!!! note "This part is not what the job looks like"
+    On a real project the repository already exists, its automation is already switched on and
+    somebody set up the credentials once, months before you arrived. You would join, clone, and
+    start on your first story. The setup below exists only because this course has to hand you a
+    pipeline of your own, and it is worth ten minutes, once, rather than an afternoon.
 
 ## Before you start
 
 - [ ] Lab 0 finished: both orgs connected in **Orgs Manager** and seeded
-- [ ] The project open in VS Code, with the sfdx-hardis panel showing
+- [ ] The training project open in VS Code, with the sfdx-hardis panel showing
+- [ ] `gh auth status` answers with your GitHub account (Lab 0, step 1)
 
 ## Steps
 
-### 1. Fork the repository
+### 1. Set up your pipeline
 
-!!! info "If fork is a new word"
-    A fork is a copy of a repository that becomes yours. One click makes it, it lands under your own
-    GitHub account, and you can change anything in it without asking anybody. GitHub remembers where
-    it came from, so you can pull later changes in from the original, but nothing travels back the
-    other way unless you ask for it.
+On the Welcome page, the **CUSTOM MENUS** heading **(1)** holds a single card, **Training
+(custom)** **(2)**.
 
-    Which also means you cannot break anything that matters here. If your fork ends up in a state
-    you do not understand, delete it and fork again. That is the fix for half the problems in this
-    lab.
+![The Welcome page, with the CUSTOM MENUS group and the Training card](../../_assets/annotated/vscode/welcome--training-menu.png)
 
-Open [github.com/hardisgroupcom/sfdx-hardis-training](https://github.com/hardisgroupcom/sfdx-hardis-training)
+Click it, then click **Set up my pipeline**.
+
+It asks one question, which of your orgs is the shared integration org, and then does four things
+and tells you as it goes:
+
+```text
+1 of 4  Your own copy of the repository
+OK  origin is now your-handle/sfdx-hardis-training, and the shared repository is upstream.
+
+2 of 4  Actions turned on
+OK  Actions are on.
+
+3 of 4  Which org the integration branch deploys to
+OK  config/branches/.sfdx-hardis.integration.yml now names your integration org.
+
+4 of 4  The credential the CI job uses
+OK  SFDX_AUTH_URL_INTEGRATION is set on your-handle/sfdx-hardis-training.
+```
+
+Running it twice is harmless: every step checks before it acts. If one of them cannot be done from
+here, it says so and tells you which button to click instead.
+
+### 2. Know what it did, because you will do it by hand one day
+
+Four things, and each of them is a real step on a real project.
+
+**It forked the repository.** A fork is a copy of a repository that becomes yours: it lands under
+your own GitHub account and you can change anything in it. Your clone now pushes to your fork
+(`origin`) and can still pull from the team's repository (`upstream`).
+
+**It turned Actions on.** GitHub disables workflows on every new fork until the owner says
+otherwise. Skip that and your Pull Request checks silently never run, which looks exactly like a
+broken course.
+
+**It wrote down which org `integration` deploys to**, in
+`config/branches/.sfdx-hardis.integration.yml`. The repository could not know: your orgs did not
+exist when it was written.
+
+**It gave the CI job a credential**, as a repository secret named `SFDX_AUTH_URL_INTEGRATION`. The
+job runs on GitHub's machines, has no idea who you are, and cannot reach your org without one.
+
+!!! warning "Why you never push to the shared repository"
+    Two reasons, and both are hard limits rather than etiquette. A Pull Request opened **from** a
+    fork cannot read the original repository's secrets, so its CI could never reach a Salesforce
+    org. And a few hundred learners opening Pull Requests on one repository would bury it. The
+    shared repository's only inbound traffic is badge claims.
+
+<details markdown="1"><summary>Doing the same four things by hand</summary>
+
+Worth reading once. This is what you would click on a project that has no script for it, and it is
+also the fallback if the command could not finish a step.
+
+**Fork.** Open
+[github.com/hardisgroupcom/sfdx-hardis-training](https://github.com/hardisgroupcom/sfdx-hardis-training)
 and click **Fork** **(1)**, top right.
 
 ![The training repository on GitHub](../../_assets/annotated/web/github-fork.png)
@@ -67,70 +126,85 @@ The **Create a new fork** page asks for three things:
 
 1. **Owner** **(1)**, which is your own account
 2. **Copy the `main` branch only** **(2)**, ticked for you. **Untick it**: this course needs the
-   other branches
+   other branches, and a fork made without them cannot work
 3. **Create fork** **(3)**
 
 ![The Create a new fork page on GitHub](../../_assets/annotated/web/github-create-fork.png)
 
-Leave the rest of the options as they are.
-
-You now own `github.com/<your-handle>/sfdx-hardis-training`. Everything from here happens there.
-
-!!! warning "Why you never push to the shared repository"
-    Two reasons, and both are hard limits rather than etiquette. A Pull Request opened **from** a
-    fork cannot read the original repository's secrets, so its CI could never reach a Salesforce
-    org. And a few hundred learners opening Pull Requests on one repository would bury it. The
-    shared repository's only inbound traffic is badge claims.
-
-### 2. Turn Actions on
-
-**GitHub disables Actions on every new fork** until the owner says otherwise. If you skip this,
-your Pull Request checks will silently never run and you will conclude the course is broken.
-
-In your fork, click the **Actions** tab **(1)**. GitHub shows a yellow banner:
+**Turn Actions on.** In your fork, click the **Actions** tab **(1)**. GitHub shows a yellow banner:
 
 > Workflows aren't being run on this forked repository
 
 Click **I understand my workflows, go ahead and enable them**. The banner goes, and the workflows
-the project ships fill the left column **(2)**. That list is how you know the fork can run them.
+the project ships fill the left column **(2)**.
 
 ![The Actions tab of a fork, with the workflow list in the left column](../../_assets/annotated/web/github-actions-tab.png)
 
-### 3. Clone your fork
+**Point your clone at your fork.** On your fork's page, the green **Code** button **(1)** opens a
+panel with the **HTTPS** address of the repository and a copy button **(2)** next to it.
 
-In VS Code, close the folder you opened in Lab 0 if it was not your fork, then:
+![The Code menu of a GitHub repository, with the HTTPS clone URL](../../_assets/annotated/web/github-code-url.png)
 
-1. **File > Open Folder**, pick an empty folder
-2. Open the **Source Control** panel (the branch icon in the left bar)
-3. Click **Clone Repository**, paste your fork URL, and pick the folder
+In VS Code, **File > Open Folder** on an empty folder, then **Source Control > Clone Repository**
+and paste it. If you already have the shared repository cloned, it is one line in a terminal
+instead:
 
-When VS Code asks, click **Open** to work in the cloned folder.
+```bash
+git remote rename origin upstream
+git remote add origin https://github.com/<your-handle>/sfdx-hardis-training.git
+git fetch origin
+```
 
-If GitHub asks you to authenticate, let VS Code handle it: **Sign in with your browser** is enough.
-You do not need a personal access token for this course, and you should not create one unless you
-want to.
+**Add the secret.** You need the auth URL of your integration org first:
 
-<details markdown="1"><summary>Under the hood: what cloning did</summary>
+```bash
+sf org auth show-sfdx-auth-url --target-org helios-integration --no-prompt --json
+```
 
-VS Code ran:
+Copy the value of `sfdxAuthUrl`, which starts with `force://`. Then in your fork on GitHub:
+**Settings > Secrets and variables > Actions > New repository secret**, **Name** **(1)**
+`SFDX_AUTH_URL_INTEGRATION`, **Secret** **(2)** the `force://...` string, **Add secret** **(3)**.
 
-    git clone https://github.com/<your-handle>/sfdx-hardis-training.git
-
-and then, because you opened the folder, the sfdx-hardis extension read three things it needs:
-
-- `sfdx-project.json`, which says the Salesforce sources live in `force-app`
-- `config/.sfdx-hardis.yml`, the project configuration: major branches, cleaning rules, the
-  Training menu
-- `config/branches/.sfdx-hardis.integration.yml`, the branch configuration: which org the
-  `integration` branch deploys to
-
-The extension reads them again whenever they change, so you never have to reload the window.
+![The New secret form of a GitHub repository, name and value filled in](../../_assets/annotated/web/github-secret-new.png)
 
 </details>
 
-### 4. Look at the pipeline before touching anything
+!!! danger "About that credential, and why it is a deliberate exception"
+    An SFDX auth URL embeds a **long-lived OAuth refresh token**. Anyone who reads it has your org
+    until you revoke it, and it cannot be rotated without authenticating again. The sfdx-hardis
+    documentation says plainly: [never use it for a major
+    org](https://sfdx-hardis.cloudity.com/salesforce-devops-setup-auth/).
 
-On the Welcome page, click **DevOps Pipeline**.
+    That guidance is right, and it is about real major orgs. Here the org is a throwaway Developer
+    Edition holding fictional solar installations, in a repository you own, for a course. The trade
+    is: a beginner reaches a working pipeline in their first hour instead of their second day.
+
+    **Level 3 lab 1 sets up JWT properly for all three orgs, and deletes this secret.** If you only
+    ever do Levels 1 and 2, delete the secret and the orgs when you are done.
+
+### 3. Let the extension talk to GitHub
+
+The command you just ran used the GitHub CLI. The **extension** has its own connection to GitHub,
+and it needs one too: without it the pipeline diagram can draw your branches but knows nothing about
+your Pull Requests.
+
+On the Welcome page, click **DevOps Pipeline**. At the top of the panel there is a **GitHub icon**
+**(1)**. It is **grey** while the extension is not connected, and its tooltip reads **Connect to
+GitHub**.
+
+![The DevOps Pipeline panel, with the GitHub icon in its header](../../_assets/annotated/vscode/devops-pipeline--github-auth.png)
+
+Click it. VS Code asks **How would you like to authenticate to GitHub?** and offers two answers:
+
+- **Sign in with VS Code**, which opens your browser and is what you want here
+- **Use Personal Access Token (PAT)**, for a host VS Code cannot sign in to, or an account you keep
+  separate
+
+Take **Sign in with VS Code** and approve the request in the browser. The icon turns from grey to
+colour, its tooltip becomes **Connected to GitHub**, and the panel gains what it could not show
+before: the Pull Requests on your branches, and the **Show feature branches** toggle.
+
+### 4. Look at the pipeline before touching anything
 
 ![The DevOps Pipeline panel, showing the Helios branches, the integration org and the warnings](../../_assets/annotated/vscode/devops-pipeline--read-it.png)
 
@@ -153,15 +227,15 @@ in this course is detail.
 
     The missing merge target is the missing rest of the pipeline: `uat` and `main` are not wired,
     and Level 3 lab 0 wires them. The missing certificate is the proper CI authentication, which
-    Level 3 lab 1 sets up and which you are about to replace with a shortcut in step 6.
+    Level 3 lab 1 sets up and which the secret from step 1 stands in for.
 
     A panel that tells you what is not finished is doing its job. Read these warnings on your own
     projects: they are usually right.
 
-### 5. Tell the integration branch which org it deploys to
+### 5. Find where the org setting lives, and change it
 
-The repository does not know your orgs: it cannot, they did not exist when it was written. You
-declare them once.
+Step 1 wrote the branch configuration for you. Find it now anyway, because on a real project this is
+the screen you use, and because you will need it again in Level 3.
 
 In the DevOps Pipeline panel, open the gear menu at the top right **(1)** and choose
 **Pipeline Settings**.
@@ -170,22 +244,27 @@ In the DevOps Pipeline panel, open the gear menu at the top right **(1)** and ch
 
 The settings are not per column: you pick the branch inside the panel, with the configuration scope
 selector at the top **(1)**. Choose `integration`: the selector then reads **Branch: integration**,
-and the title becomes **Pipeline Settings for major git branch integration**.
+and the title becomes **Pipeline Settings for major git branch integration**. The **Salesforce Org**
+tab **(3)** shows the two values that were written for you.
 
 ![The Pipeline Settings panel for the integration branch](../../_assets/annotated/vscode/pipeline-config-branch.png)
 
-The panel opens read-only, so nothing is changed by accident. Click **Edit** **(2)** to unlock the
-fields, then fill in two of them on the **Salesforce Org** tab **(3)**, with the values of your
-**second** org, the integration one:
+The panel opens read-only, so nothing is changed by accident. Click **Edit** **(2)** and the card
+becomes two fields:
 
-1. **Target username** - the org username, the one from the confirmation email
-2. **Instance URL** - `https://login.salesforce.com`
+1. **Instance URL** **(1)**, `https://login.salesforce.com` for a Developer Edition org, whatever
+   its My Domain says
+2. **Target Username** **(2)**, the org username, the one from the confirmation email
+3. **Save** **(3)**, which writes the file
 
-Save. If you are unsure of the username, open **Orgs Manager**: it is the column next to the alias.
+![The Pipeline Settings panel with the org fields unlocked](../../_assets/annotated/vscode/pipeline-config-branch-edit.png)
 
-<details markdown="1"><summary>Under the hood: what the Settings screen wrote</summary>
+Check both against your integration org. If you are unsure of the username, open **Orgs Manager**:
+it is the column next to the alias.
 
-It edited one file, `config/branches/.sfdx-hardis.integration.yml`:
+<details markdown="1"><summary>Under the hood: what the Settings screen writes</summary>
+
+One file, `config/branches/.sfdx-hardis.integration.yml`:
 
     targetUsername: you.helios.integration@heliostraining.invalid
     instanceUrl: https://login.salesforce.com
@@ -204,83 +283,41 @@ A branch file is committed on purpose: on a real project, everybody has to agree
 
 </details>
 
-### 6. Give the CI a way into your org
-
-Your Pull Request check runs on GitHub's machines, not yours. It has no idea who you are, so you
-have to give it a credential.
-
-The proper way is an External Client App with a JWT certificate. It takes about an hour, and it is
-Level 3 lab 1. For a throwaway Developer Edition org you created twenty minutes ago, sfdx-hardis
-supports a shortcut, and this is the **one place in the whole course** where you copy a command.
-
-Open a terminal in VS Code (**Terminal > New Terminal**) and run:
-
-```bash
-sf org auth show-sfdx-auth-url --target-org helios-integration --no-prompt --json
-```
-
-Copy the value of `sfdxAuthUrl` from the answer. It starts with `force://`.
-
-Then in your fork on GitHub:
-
-1. **Settings > Secrets and variables > Actions**
-2. **New repository secret**
-3. **Name** **(1)**: `SFDX_AUTH_URL_INTEGRATION`
-4. **Secret** **(2)**: the `force://...` string you copied
-5. **Add secret** **(3)**
-
-![The New secret form of a GitHub repository, name and value filled in](../../_assets/annotated/web/github-secret-new.png)
-
-!!! danger "This is a deliberate exception, and you should know why"
-    An SFDX auth URL embeds a **long-lived OAuth refresh token**. Anyone who reads it has your org
-    until you revoke it, and it cannot be rotated without authenticating again. The sfdx-hardis
-    documentation says plainly: [never use it for a major
-    org](https://sfdx-hardis.cloudity.com/salesforce-devops-setup-auth/).
-
-    That guidance is right, and it is about real major orgs. Here the org is a throwaway Developer
-    Edition holding fictional solar installations, in a repository you own, for a course. The
-    trade is: a beginner reaches a working pipeline in their first hour instead of their second
-    day.
-
-    **Level 3 lab 1 sets up JWT properly for all three orgs, and deletes this secret.** If you only
-    ever do Levels 1 and 2, delete the secret and the orgs when you are done.
-
-<details markdown="1"><summary>Under the hood: how sfdx-hardis uses that secret</summary>
-
-Before any deployment, the CI job calls the sfdx-hardis authentication hook. It looks for
-`SFDX_AUTH_URL_<ALIAS>`, where `<ALIAS>` is the **branch name in upper case**. On the `integration`
-branch that is `SFDX_AUTH_URL_INTEGRATION`, which is why the name is not arbitrary.
-
-When it finds one containing `force://`, it writes it to a temporary file and runs:
-
-    sf org login sfdx-url -f <temp file> --alias integration
-
-and skips JWT entirely. When it does **not** find one, it falls back to the certificate flow and
-looks for `SFDX_CLIENT_ID_INTEGRATION` and `SFDX_CLIENT_KEY_INTEGRATION`, which is what Level 3
-sets up.
-
-That is the whole mechanism. One environment variable decides which of the two paths runs.
-
-</details>
-
 ## What you should see
 
-Back in the DevOps Pipeline panel, click **Refresh**. The `integration` column now names your org
-under the branch name. That link, branch to org, is what the rest of this course rests on.
+Back in the DevOps Pipeline panel, click **Refresh**. The `integration` column names your org under
+the branch name, and the GitHub icon at the top is in colour. That link, branch to org, is what the
+rest of this course rests on.
+
+One thing left. The branch configuration is a file, and so far it only exists on your machine. Open
+the **Source Control** panel, commit `config/branches/.sfdx-hardis.integration.yml` with the message
+`Point integration at my org`, and push it to `integration`. It is the one time in this course you
+commit straight to a major branch: from Lab 2 on, everything goes through a Pull Request.
+
+It matters beyond tidiness. The badge job clones your fork and re-runs the checks against what is
+actually in it, so a setting that never left your laptop counts as not done.
 
 ## If it goes wrong
 
-**The Actions tab shows no workflows.**
-You skipped step 2, or you left "Copy the `main` branch only" ticked when forking. Delete the fork
-and fork again, unticking that box.
+**Set up my pipeline says the GitHub CLI is not installed.**
+Install it from [cli.github.com](https://cli.github.com/), then run `gh auth login` and pick
+GitHub.com, HTTPS, and authenticate with your browser. Lab 0 step 1 covers it.
 
-**`sf org auth show-sfdx-auth-url` says the org is not authenticated.**
-The alias is wrong. Open **Orgs Manager** and check the exact alias of your integration org, then
-use that after `--target-org`.
+**It says Actions could not be turned on from here.**
+GitHub hides that switch behind a banner with no API. Open the **Actions** tab of your fork and
+click **I understand my workflows, go ahead and enable them**, as the collapsed section above shows.
+
+**The Actions tab shows no workflows.**
+You forked by hand and left "Copy the `main` branch only" ticked. Delete the fork and run
+**Set up my pipeline** again: it never copies the default branch alone.
 
 **The pipeline diagram is empty.**
 The extension did not find `config/.sfdx-hardis.yml`. You opened the wrong folder: it must be the
 root of the clone, the folder that directly contains `sfdx-project.json`.
+
+**The pipeline shows branches but no Pull Requests.**
+The extension is not connected to GitHub. That is step 3, and the icon at the top of the panel is
+grey.
 
 **VS Code cannot push and asks for credentials in a loop.**
 Sign out of GitHub in VS Code (**Accounts** icon, bottom left) and sign in again with your browser.

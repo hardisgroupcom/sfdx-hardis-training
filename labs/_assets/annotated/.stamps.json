@@ -53,5 +53,8 @@
   "vscode/pipeline-cards.png#save-publish": "5c98cd3ae424e31f",
   "vscode/pipeline-cards.png#backpromote": "08d54ee914c75f54",
   "vscode/pipeline-cards.png#show-feature-branches": "a37a15e2350e9504",
-  "vscode/pipeline-branch-modal.png": "6a633ccff34b4cff"
+  "vscode/pipeline-branch-modal.png": "6a633ccff34b4cff",
+  "web/github-code-url.png": "67bdfb71a108b33c",
+  "vscode/pipeline-config-branch-edit.png": "b447c59d1c64f32f",
+  "vscode/devops-pipeline.png#github-auth": "00a1978d729da924"
 }

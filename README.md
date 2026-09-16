@@ -24,9 +24,11 @@ Each level awards a **Cloudity badge**. It is a badge, not a certification.
 2. Install the **sfdx-hardis** extension from the VS Code marketplace
 3. Open the sfdx-hardis panel, click **Setup**, and let it install the Salesforce CLI and the plugins
 4. Sign up for two free [Developer Edition orgs](https://developer.salesforce.com/signup)
-5. **Fork this repository**, enable Actions on your fork, and clone it
-6. Connect both orgs in **Orgs Manager**
-7. Welcome page > **Training** > **Set up one of my training orgs**, once per org
+5. Install the [GitHub CLI](https://cli.github.com/) and run `gh auth login`
+6. Clone this repository and connect both orgs in **Orgs Manager**
+7. Welcome page > **Training** > **Set up my pipeline**, which forks the repository, turns Actions
+   on and gives the CI job a way into your org
+8. Welcome page > **Training** > **Set up one of my training orgs**, once per org
 
 Then follow [Level 1 lab 0](https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-00-setup/),
 which walks through all of the above with screenshots.
@@ -51,6 +53,7 @@ this project declares itself as a **Training** menu, rendered on the Welcome pag
 
 | Card                               | What it does                                                |
 |------------------------------------|-------------------------------------------------------------|
+| **Set up my pipeline**             | Forks this repository, turns Actions on, sets the CI secret |
 | **Where am I?**                    | The level and lab you reached, and what to open next        |
 | **Set up one of my training orgs** | Deploys the Helios app and its data into an org you pick    |
 | **Check my work**                  | Verifies a lab and prints your receipt                      |
@@ -58,7 +61,7 @@ this project declares itself as a **Training** menu, rendered on the Welcome pag
 | **Reset this level**               | Puts your repository back to the start of a level           |
 | **Clean up a training org**        | Removes the Helios app and its data from an org             |
 
-All six run `node scripts/training.mjs <verb>`, declared under `customCommands` in
+All seven run `node scripts/training.mjs <verb>`, declared under `customCommands` in
 `config/.sfdx-hardis.yml`. They need no `npm install`: everything under `scripts/` is dependency-free
 Node.
 
