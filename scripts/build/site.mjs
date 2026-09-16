@@ -25,7 +25,7 @@ const OUT = path.join(ROOT, "site-src");
 
 const universe = JSON.parse(fs.readFileSync(path.join(ROOT, "training-universe.json"), "utf8"));
 
-function copyTree(from, to, filter) {
+function copyTree(from, to, filter, transform) {
   if (!fs.existsSync(from)) {
     return 0;
   }
@@ -34,14 +34,46 @@ function copyTree(from, to, filter) {
     const source = path.join(from, entry.name);
     const target = path.join(to, entry.name);
     if (entry.isDirectory()) {
-      count += copyTree(source, target, filter);
+      count += copyTree(source, target, filter, transform);
     } else if (!filter || filter(entry.name)) {
       fs.mkdirSync(path.dirname(target), { recursive: true });
-      fs.copyFileSync(source, target);
+      if (transform && entry.name.endsWith(".md")) {
+        fs.writeFileSync(target, transform(fs.readFileSync(source, "utf8"), source, target), "utf8");
+      } else {
+        fs.copyFileSync(source, target);
+      }
       count++;
     }
   }
   return count;
+}
+
+/**
+ * Rewrites the links that reach out of labs/.
+ *
+ * A lab linking to a file at the root of the repository needs one more "../"
+ * there than it does here: labs/en/level-1/lab-02.md has labs/ above it and the
+ * site page does not. The link resolves on GitHub and 404s on the site, and
+ * check-links.mjs cannot see it because it resolves against the repository.
+ * Links that stay inside labs/ keep their depth and are left alone.
+ */
+function rewriteEscapingLinks(content, source, target) {
+  return content.replace(/\]\((\.\.\/[^)\s]+)\)/g, (whole, link) => {
+    const [rel, fragment] = link.split("#");
+    const resolved = path.resolve(path.dirname(source), rel);
+    if (resolved.startsWith(path.join(ROOT, "labs") + path.sep)) {
+      return whole;
+    }
+    const fromRoot = path.relative(ROOT, resolved);
+    if (fromRoot.startsWith("..")) {
+      return whole;
+    }
+    const fixed = path
+      .relative(path.dirname(target), path.join(OUT, fromRoot))
+      .split(path.sep)
+      .join("/");
+    return `](${fixed}${fragment ? "#" + fragment : ""})`;
+  });
 }
 
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -57,7 +89,12 @@ const locales = fs
 
 let pages = 0;
 for (const locale of locales) {
-  pages += copyTree(path.join(localesDir, locale), path.join(OUT, locale), (name) => name.endsWith(".md"));
+  pages += copyTree(
+    path.join(localesDir, locale),
+    path.join(OUT, locale),
+    (name) => name.endsWith(".md"),
+    rewriteEscapingLinks
+  );
 }
 
 // The English home page is also the site home page. It moves up one level, so

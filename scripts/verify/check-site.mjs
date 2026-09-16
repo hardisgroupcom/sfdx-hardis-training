@@ -57,6 +57,7 @@ const BASE_PATH = sitePathPrefix();
 const pages = walk(SITE);
 const problems = [];
 let references = 0;
+let links_checked = 0;
 
 for (const file of pages) {
   const html = fs.readFileSync(file, "utf8");
@@ -69,6 +70,31 @@ for (const file of pages) {
     ...[...html.matchAll(/<link[^>]+href="([^"]+\.css[^"]*)"/g)].map((m) => m[1]),
     ...[...html.matchAll(/<script[^>]+src="([^"]+\.js[^"]*)"/g)].map((m) => m[1])
   ];
+
+  // Every page this page links to. A link out of labs/ carries one "../" too
+  // many for the site, resolves fine on GitHub, and 404s for the reader.
+  const links = [...html.matchAll(/<a[^>]+href="([^"]+)"/g)]
+    .map((m) => m[1])
+    .filter((href) => !/^(https?:|mailto:|#)/.test(href));
+
+  for (const ref of links) {
+    const clean = ref.split("?")[0].split("#")[0];
+    if (clean === "" || clean === ".") {
+      continue;
+    }
+    links_checked++;
+    const rooted = clean.startsWith("/") ? clean.replace(BASE_PATH, "/") : clean;
+    const target = rooted.startsWith("/")
+      ? path.join(SITE, rooted)
+      : path.resolve(pageDir, rooted);
+    // A directory link is the page inside it; anything else is the file itself
+    const exists =
+      fs.existsSync(target) &&
+      (!fs.statSync(target).isDirectory() || fs.existsSync(path.join(target, "index.html")));
+    if (!exists) {
+      problems.push(`${pageUrl} -> ${ref} (link goes nowhere)`);
+    }
+  }
 
   for (const ref of refs) {
     if (/^(https?:)?\/\//.test(ref) || ref.startsWith("data:")) {
@@ -89,12 +115,14 @@ for (const file of pages) {
   }
 }
 
-console.log(`${pages.length} page(s), ${references} local asset reference(s).`);
+console.log(
+  `${pages.length} page(s), ${references} local asset reference(s), ${links_checked} internal link(s).`
+);
 
 if (problems.length > 0) {
-  console.error(`\n${problems.length} missing asset(s):`);
+  console.error(`\n${problems.length} reference(s) that go nowhere:`);
   problems.forEach((p) => console.error(`  ${p}`));
   process.exit(1);
 }
 
-console.log("Every page resolves every asset it references.");
+console.log("Every page resolves every asset and every link it carries.");
