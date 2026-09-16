@@ -1227,6 +1227,67 @@
           "py": 27.3
         }
       ]
+    },
+    "vscode/pipeline-cards.png#new-user-story": {
+      "pills": [
+        {
+          "n": 1,
+          "x": 16.8,
+          "y": 73.0,
+          "w": 11.0,
+          "h": 3.4,
+          "px": 15.3,
+          "py": 74.7
+        },
+        {
+          "n": 2,
+          "x": 17.3,
+          "y": 79.7,
+          "w": 12.9,
+          "h": 8.3,
+          "px": 15.8,
+          "py": 83.8
+        }
+      ]
+    },
+    "vscode/pipeline-cards.png#save-publish": {
+      "pills": [
+        {
+          "n": 1,
+          "x": 58.0,
+          "y": 79.7,
+          "w": 12.9,
+          "h": 8.3,
+          "px": 56.5,
+          "py": 83.8
+        }
+      ]
+    },
+    "vscode/pipeline-cards.png#backpromote": {
+      "pills": [
+        {
+          "n": 1,
+          "x": 85.2,
+          "y": 79.7,
+          "w": 12.9,
+          "h": 8.3,
+          "px": 83.7,
+          "py": 83.8
+        }
+      ]
+    },
+    "vscode/pipeline-cards.png#show-feature-branches": {
+      "pills": [
+        {
+          "n": 1,
+          "x": 83.7,
+          "y": 6.0,
+          "w": 9.5,
+          "h": 3.4,
+          "px": 82.2,
+          "py": 7.7
+        }
+      ]
     }
   }
 }

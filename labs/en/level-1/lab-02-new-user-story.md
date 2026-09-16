@@ -5,7 +5,7 @@ lab: 2
 lang: en
 source_rev: ""
 screenshots:
-  - annotated/vscode/devops-pipeline--new-user-story
+  - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/work-new-target-branch
   - annotated/vscode/work-new-org
 depends_on:
@@ -49,10 +49,15 @@ and repeat for the rest of your career on this project.
 
 ### 1. Start the User Story
 
-In the **DevOps Pipeline** panel, or in the **Commands** tree under **CI/CD (simple)**, click
-**New User Story** **(1)**.
+On the Welcome page, open the **DevOps Pipeline** panel and scroll past the diagram to the
+**Project Contribution Workflow** **(1)**. Click the **New User Story** card **(2)**.
 
-![The Commands tree in VS Code, with New User Story under CI/CD (simple)](../../_assets/annotated/vscode/devops-pipeline--new-user-story.png)
+![The contribution cards of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
+
+!!! tip "Cannot see the cards?"
+    They sit under the branch diagram, and a project with several feature branches makes that
+    diagram tall enough to push them off the screen. Turn **Show feature branches** off in the
+    header: the diagram shrinks to the major branches and the cards come into view.
 
 The extension asks a short series of questions, one screen at a time. Answer them:
 

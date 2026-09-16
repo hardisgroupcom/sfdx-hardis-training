@@ -56,8 +56,8 @@ audiences.
 
 ### 2. Run the configuration
 
-In **Commands > Setup Configuration**, click **Configure Org Monitoring**. It runs in a command
-panel and asks its questions one at a time, the way Lab 1 did.
+Open the **Org Monitoring Workbench** from the Welcome page and click **Install Org Monitoring**.
+It runs in a command panel and asks its questions one at a time, the way Lab 1 did.
 
 Answer:
 

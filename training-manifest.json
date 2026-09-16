@@ -100,7 +100,7 @@
         "promptInput"
       ],
       "screenshots": [
-        "annotated/vscode/devops-pipeline--new-user-story",
+        "annotated/vscode/pipeline-cards--new-user-story",
         "annotated/vscode/work-new-target-branch",
         "annotated/vscode/work-new-org"
       ]
@@ -151,6 +151,7 @@
         "commandExecution"
       ],
       "screenshots": [
+        "annotated/vscode/pipeline-cards--save-publish",
         "annotated/vscode/work-save-commit-ready",
         "annotated/vscode/work-save-package-xml"
       ]
@@ -233,6 +234,7 @@
         "pipeline"
       ],
       "screenshots": [
+        "annotated/vscode/pipeline-cards--backpromote",
         "annotated/vscode/backpromote-loading",
         "annotated/vscode/backpromote"
       ]

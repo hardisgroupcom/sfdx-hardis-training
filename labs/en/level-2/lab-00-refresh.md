@@ -5,6 +5,7 @@ lab: 0
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/vscode/pipeline-cards--backpromote
   - annotated/vscode/backpromote-loading
   - annotated/vscode/backpromote
 depends_on:
@@ -48,8 +49,10 @@ That list, not your memory, is what tells you whether a refresh is needed.
 
 ### 2. Open Backpromote
 
-In **Commands > CI/CD (advanced)**, click **Backpromote to your dev sandbox (Beta)**. The same panel
-opens from the **Backpromote (Beta)** card in the **DevOps Pipeline** panel.
+In the **DevOps Pipeline** panel, under **Project Contribution Workflow**, click the
+**Backpromote (Beta)** card **(1)**.
+
+![The Backpromote card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--backpromote.png)
 
 It computes its plan before it shows you anything:
 

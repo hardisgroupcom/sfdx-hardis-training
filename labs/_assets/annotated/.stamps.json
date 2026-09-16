@@ -48,5 +48,9 @@
   "salesforce/object-manager-fields.png": "0f32335639c1ad8b",
   "salesforce/permission-set-object-settings.png": "27a59e9b9a7cf32b",
   "salesforce/installation-record.png": "be48b8642b456305",
-  "salesforce/validation-rule.png": "eb125a4764922706"
+  "salesforce/validation-rule.png": "eb125a4764922706",
+  "vscode/pipeline-cards.png#new-user-story": "6909c4fc5665cbe7",
+  "vscode/pipeline-cards.png#save-publish": "5c98cd3ae424e31f",
+  "vscode/pipeline-cards.png#backpromote": "08d54ee914c75f54",
+  "vscode/pipeline-cards.png#show-feature-branches": "a37a15e2350e9504"
 }

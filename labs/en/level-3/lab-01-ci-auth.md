@@ -58,8 +58,8 @@ pre-authorised user, no password anywhere, and revocation by deleting one app.
 
 ### 1. Run the configuration command for integration
 
-In **Commands > Setup Configuration**, click **Configure Org CI authentication**. The same command
-sits in the settings menu of the **DevOps Pipeline** panel, as **Add/Configure Org**.
+In the **DevOps Pipeline** panel, open the settings menu (the gear, top right) and click
+**Add/Configure Org**.
 
 The command runs in a panel rather than a terminal, and asks one question at a time **(1)**, with
 the answers to click below it **(2)**.

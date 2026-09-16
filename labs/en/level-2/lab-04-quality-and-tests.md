@@ -172,7 +172,8 @@ makes the number lie.
 Two round trips through CI to find two things you could have found in two minutes locally. Do it
 the other way round from now on.
 
-**Apex tests**: in **Commands > Org Monitoring**, click **Run Apex tests**, and pick `helios-dev`.
+**Apex tests**: open the **Org Monitoring Workbench** from the Welcome page, click the **Apex
+Tests** card, and pick `helios-dev`.
 It runs the org's Apex tests and checks the same coverage threshold the pipeline checks, so you get
 the pass, the fail and the percentage without pushing anything. From a terminal it is
 `sf hardis:org:test:apex`.

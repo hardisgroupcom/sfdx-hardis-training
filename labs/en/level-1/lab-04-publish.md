@@ -5,6 +5,7 @@ lab: 4
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/vscode/pipeline-cards--save-publish
   - annotated/vscode/work-save-commit-ready
   - annotated/vscode/work-save-package-xml
 depends_on:
@@ -39,8 +40,10 @@ Go slowly here once, and every following story takes five minutes.
 
 ### 1. Start the publish
 
-In the **DevOps Pipeline** panel, click the **Save / Publish** card, or in
-**Commands > CI/CD (simple)**, click **Save / Publish User Story**.
+In the **DevOps Pipeline** panel, under **Project Contribution Workflow**, click the
+**Save / Publish** card **(1)**.
+
+![The Save / Publish card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--save-publish.png)
 
 The first question is the one that catches everybody out.
 
@@ -73,9 +76,10 @@ Leave everything else unticked, even if it looks harmless. Two rules make that d
   publish it in a later story once you know what it is
 
 !!! tip "Picked the wrong things?"
-    It happens, and it is recoverable. **Commands > CI/CD (simple) > Reset selected list of items
-    to merge** clears the selection so you can start over. Level 2 lab 7 is a whole lab about
-    exactly that situation.
+    It happens, and it is recoverable. This is the one thing in Level 1 with no card of its own:
+    open the **SFDX HARDIS** view in the left bar, **CI/CD (simple)**, and click **Reset selected
+    list of items to merge**. It clears the selection so you can start over. Level 2 lab 7 is a
+    whole lab about exactly that situation.
 
 ### 3. Describe the story
 
