@@ -16,7 +16,7 @@ depends_on:
   docs: [salesforce-devops-publish-user-story, salesforce-devops-config-cleaning]
 ---
 
-# Lab 4 - Publish it and read the package.xml diff
+# Lab 4 - Publish it, and read what the tool selected
 
 **Level**: 1 Contributor basics
 

@@ -53,6 +53,23 @@ once. The work starts in Lab 2, and everything from there on is what a real day 
 - [ ] Lab 0 finished: the Setup panel all green
 - [ ] A GitHub account
 - [ ] Two working email addresses, or one address that supports plus-addressing
+
+!!! info "If you do not have a GitHub account"
+    Making one takes two minutes and costs nothing. Open
+    [github.com/signup](https://github.com/signup) and give it an email address, a password and a
+    username. GitHub emails you a code to confirm the address, and that is the whole of it: the free
+    plan does everything this course needs, and it never asks for a card.
+
+    Choose the username with a little care. It becomes part of the address of everything you put
+    there, `github.com/<your-username>/sfdx-hardis-training` in a few minutes, and people do read
+    it. Your name, or the handle you already use elsewhere, beats anything you will want to change
+    later.
+
+    **If you already have an account, use it.** Personal or work, old or new, it makes no
+    difference here. The one thing worth knowing about a work account: some companies restrict what
+    their members may fork. If the fork in step 5 is refused, that is why, and a personal account
+    gets you past it.
+
 - [ ] Nothing else. Step 5 installs the one extra tool it needs and signs you in with it
 
 ## Steps

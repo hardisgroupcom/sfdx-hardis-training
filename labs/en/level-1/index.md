@@ -46,7 +46,7 @@ part.
 | [1](lab-01-fork-and-connect.md) | Set up your training environment              | 20 min |
 | [2](lab-02-new-user-story.md)   | Take US-014 from the backlog                  | 10 min |
 | [3](lab-03-build-in-org.md)     | Build it in your org                          | 15 min |
-| [4](lab-04-publish.md)          | Publish it and read the package.xml diff      | 15 min |
+| [4](lab-04-publish.md)          | Publish it, and read what the tool selected   | 15 min |
 | [5](lab-05-pull-request.md)     | Open the Pull Request, get it green, merge    | 20 min |
 | [6](lab-06-capstone.md)         | Capstone: deliver US-016 on your own          | 25 min |
 
