@@ -103,6 +103,13 @@ jobs:
           else
             echo "[sfdx-hardis] Skipping coding-agent GitHub auth setup: CI_SFDX_HARDIS_GITHUB_PUSH_TOKEN is not set"
           fi
+          # The job runs in a container, and the checkout the runner made is owned
+          # by a different uid than the one git runs as here. Git then refuses the
+          # repository ("detected dubious ownership"), every git read fails, and
+          # sfdx-hardis cannot find which Pull Requests the merge carried: it
+          # reports "No deployment actions defined" and deploys without running
+          # them, green. Declaring the workspace safe is the supported fix.
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
           sf hardis:auth:login
           # TEMPORARY, remove once the fix of hardisgroupcom/sfdx-hardis#2206 is
           # released: when a job authenticates with SFDX_AUTH_URL rather than JWT,
