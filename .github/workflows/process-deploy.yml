@@ -19,6 +19,11 @@ concurrency:
 
 jobs:
   process_deployment:
+    # This repository holds the course; the learner's fork is where it runs.
+    # The upstream repository has no Salesforce org and no credentials, so the
+    # deployment jobs would fail on every content Pull Request and teach nothing.
+    # Every fork runs them normally.
+    if: github.repository != 'hardisgroupcom/sfdx-hardis-training'
     name: Process Deployment to Major Org
     runs-on: ubuntu-latest
     # Job runs in sfdx-hardis docker image, that includes Salesforce CLI and all required plugins & dependencies.
