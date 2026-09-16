@@ -149,10 +149,10 @@ Whole sections are deleted, because a Permission Set can carry all of them:
 Three sections are thinned rather than deleted, keeping only the entries a Permission Set cannot
 express:
 
-| Section                   | What survives                                         |
-|---------------------------|-------------------------------------------------------|
-| `recordTypeVisibilities`  | only the entries marked `default` (or `personAccountDefault`) |
-| `applicationVisibilities` | only the default app, and apps explicitly hidden (`visible` false) |
+| Section                   | What survives                                                                    |
+|---------------------------|----------------------------------------------------------------------------------|
+| `recordTypeVisibilities`  | only the entries marked `default` (or `personAccountDefault`)                    |
+| `applicationVisibilities` | only the default app, and apps explicitly hidden (`visible` false)               |
 | `userPermissions`         | only permissions explicitly turned **off**, plus everything on the Admin profile |
 
 And some sections are never touched, because nothing else can hold them: `loginHours`,

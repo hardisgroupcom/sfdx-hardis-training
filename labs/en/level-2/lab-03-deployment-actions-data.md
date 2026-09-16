@@ -132,14 +132,14 @@ Open your Pull Request in the **DevOps Pipeline** panel, **Deployment Actions** 
 
 ![The schedule Apex batch action editor](../../_assets/vscode/pipeline-edit-action-schedule-batch.png)
 
-| Field                        | Value                                              |
-|------------------------------|----------------------------------------------------|
-| Type                         | **Schedule Batch**                                 |
-| Label                        | `Schedule the nightly crew capacity recalculation` |
-| Apex Class Name              | `CrewCapacityBatch`                                |
-| Cron Expression              | `0 0 2 * * ?` (every night at 02:00)               |
-| Scheduled Job Name (Optional)| `Helios crew capacity nightly`                     |
-| Run Only Once By Org         | yes                                                |
+| Field                         | Value                                              |
+|-------------------------------|----------------------------------------------------|
+| Type                          | **Schedule Batch**                                 |
+| Label                         | `Schedule the nightly crew capacity recalculation` |
+| Apex Class Name               | `CrewCapacityBatch`                                |
+| Cron Expression               | `0 0 2 * * ?` (every night at 02:00)               |
+| Scheduled Job Name (Optional) | `Helios crew capacity nightly`                     |
+| Run Only Once By Org          | yes                                                |
 
 **Three: the one nobody can automate.**
 

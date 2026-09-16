@@ -11,7 +11,6 @@ copyright: Cloudity and friends
 # truth stays plain markdown under labs/.
 docs_dir: site-src
 
-
 # Theme, palette, fonts and extensions follow the product documentation site
 # (https://sfdx-hardis.cloudity.com), so the course reads as part of the same
 # product. The one deliberate difference is the lead colour: the product leads
@@ -46,28 +45,28 @@ theme:
       # background, foreground and colors mirror the product site's palette entries.
       # Zensical 0.0.57 accepts them and emits nothing from them, on both sites: the
       # stylesheet is what paints the page. They stay so the two configs read alike.
-      background: '#FFFFFF'
-      foreground: '#001135'
+      background: "#FFFFFF"
+      foreground: "#001135"
       colors:
-        primary: '#660FF2'
-        accent: '#0053FF'
-        link: '#660FF2'
-        header: '#660FF2'
-        nav: '#FFFFFF'
+        primary: "#660FF2"
+        accent: "#0053FF"
+        link: "#660FF2"
+        header: "#660FF2"
+        nav: "#FFFFFF"
     - scheme: slate
       primary: custom
       accent: custom
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
-      background: '#0A0620'
-      foreground: '#FFFFFF'
+      background: "#0A0620"
+      foreground: "#FFFFFF"
       colors:
-        primary: '#A87BFF'
-        accent: '#4D8BFF'
-        link: '#A87BFF'
-        header: '#1B0A3F'
-        nav: '#160C30'
+        primary: "#A87BFF"
+        accent: "#4D8BFF"
+        link: "#A87BFF"
+        header: "#1B0A3F"
+        nav: "#160C30"
 
 plugins:
   - glightbox

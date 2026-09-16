@@ -45,9 +45,7 @@
       "url": "https://code.visualstudio.com/download",
       "width": 1440,
       "height": 820,
-      "click": [
-        "button:has-text('Reject')"
-      ],
+      "click": ["button:has-text('Reject')"],
       "settle": 2000,
       "hideText": [
         {
@@ -67,9 +65,7 @@
       "url": "https://marketplace.visualstudio.com/items?itemName=NicolasVuillamy.vscode-sfdx-hardis",
       "width": 1440,
       "height": 820,
-      "click": [
-        "button:has-text('Reject')"
-      ],
+      "click": ["button:has-text('Reject')"],
       "settle": 2500,
       "clip": {
         "x": 0,
@@ -108,9 +104,7 @@
         "width": 1440,
         "height": 320
       },
-      "click": [
-        "button:has-text('Dismiss')"
-      ],
+      "click": ["button:has-text('Dismiss')"],
       "settle": 1500
     },
     {
@@ -118,9 +112,7 @@
       "url": "https://github.com/hardisgroupcom/sfdx-hardis-training/fork",
       "width": 1440,
       "height": 900,
-      "hideText": [
-        "Single sign-on to see results"
-      ],
+      "hideText": ["Single sign-on to see results"],
       "clip": {
         "x": 0,
         "y": 0,
@@ -160,9 +152,7 @@
       "url": "https://github.com/nvuillam/sfdx-hardis-training/settings/secrets/actions/new",
       "width": 1440,
       "height": 820,
-      "hideText": [
-        "Single sign-on to see results"
-      ],
+      "hideText": ["Single sign-on to see results"],
       "clip": {
         "x": 0,
         "y": 56,
@@ -171,10 +161,7 @@
       },
       "settle": 2000,
       "fill": [
-        [
-          "#secret_name",
-          "SFDX_AUTH_URL_INTEGRATION"
-        ],
+        ["#secret_name", "SFDX_AUTH_URL_INTEGRATION"],
         [
           "#secret_value",
           "force://PlatformCLI::5Aep861EXAMPLEnotarealtoken.THISisAfakeVALUE@heliostraining-dev-ed.develop.my.salesforce.com"
