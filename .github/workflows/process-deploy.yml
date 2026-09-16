@@ -99,6 +99,14 @@ jobs:
             echo "[sfdx-hardis] Skipping coding-agent GitHub auth setup: CI_SFDX_HARDIS_GITHUB_PUSH_TOKEN is not set"
           fi
           sf hardis:auth:login
+          # TEMPORARY, remove once the fix of hardisgroupcom/sfdx-hardis#2206 is
+          # released: when a job authenticates with SFDX_AUTH_URL rather than JWT,
+          # the login does not pass --set-default, and the next command stops with
+          # "NoDefaultEnvError: No default environment found". Setting it from a
+          # separate process writes the config file, which the in-process call the
+          # hook makes does not.
+          sf config set target-org="$(sf org display --target-org "$ORG_ALIAS" --json \
+            | node -p "JSON.parse(require('fs').readFileSync(0)).result.username")"
           sf hardis:project:deploy:smart
 
       # Upload sfdx-hardis reports, including the complete deployment result JSON
