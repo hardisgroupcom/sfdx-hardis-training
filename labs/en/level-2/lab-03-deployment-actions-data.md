@@ -183,12 +183,26 @@ step is reported as pending.
 
 ### 6. Verify in the integration org
 
+Do not take the green tick for it. **Open the org and look:**
+
 - **Crew Capacity** has 12 records
 - **Setup > Scheduled Jobs** lists `Helios crew capacity nightly`
 - The manual step is listed as still to do, because you have not done it
 
 Do the manual step by hand in `helios-integration`. That is the point: you did it **because the
 pipeline told you to**, not because you remembered.
+
+!!! warning "If the records are not there and the job was green"
+    Read the deployment log for the line **Listing Post-deployment actions**. When it is followed by
+    *No post-deployment actions defined*, the actions were never found, and the deployment happily
+    carried on without them.
+
+    That happened for real while this course was being written. The job ran in a container where git
+    refused the checkout (*detected dubious ownership*), so the tool could not work out which Pull
+    Requests the merge carried, and it reported no actions rather than a failure. The workflow of
+    this project now declares the workspace safe, and sfdx-hardis stops instead of continuing, but
+    the habit is the lesson: **a green deployment is evidence that the metadata went in, and
+    evidence of nothing else.** The org is the only thing that tells you an action ran.
 
 <details markdown="1"><summary>Under the hood: the three action types</summary>
 
