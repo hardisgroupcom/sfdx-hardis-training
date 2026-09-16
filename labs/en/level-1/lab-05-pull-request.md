@@ -8,6 +8,8 @@ screenshots:
   - annotated/web/github-pr-checks
   - annotated/web/github-pr-comment
   - annotated/web/github-pr-merge
+  - annotated/web/github-actions-deploy
+  - annotated/web/github-pr-deployed
   - annotated/vscode/work-save-completed
 depends_on:
   commands: [hardis:project:deploy:smart]
@@ -172,8 +174,23 @@ more thing in everyone's list for no benefit.
 
 Merging into `integration` starts a second job, and this one is not a check: it deploys for real.
 
-Go to the **Actions** tab of your fork and open the running **Deploy to integration** job. When it
-finishes, open `helios-integration` from **Orgs Manager** and look at an installation.
+Go to the **Actions** tab **(1)** of your fork. The run at the top is **Process Deployment
+(sfdx-hardis)** **(2)**, on `integration`, and it takes about two minutes.
+
+![The Actions tab of a fork, with the deployment run at the top](../../_assets/annotated/web/github-actions-deploy.png)
+
+When it finishes, it writes a second comment on the Pull Request you just merged:
+
+![The comment sfdx-hardis writes after the merge deployment](../../_assets/annotated/web/github-pr-deployed.png)
+
+1. **Deployment successful** **(1)**, and this time the org really changed
+2. **What changed** **(2)**, in the same shape as the check said it would: `10 changed` where the
+   check said `10 would change`
+3. **Quick Deploy** **(3)**. The merge job did not start from nothing. It released the validation
+   the Pull Request check had already done, which is why it did not run the Apex tests a second
+   time and why it took two minutes rather than five
+
+Then open `helios-integration` from **Orgs Manager** and look at an installation.
 
 `Panels Required` is there. You built it in one org and it arrived in another, and you never
 deployed anything by hand.

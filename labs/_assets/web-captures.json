@@ -153,6 +153,37 @@
         "width": 630,
         "height": 480
       }
+    },
+    {
+      "name": "github-actions-deploy",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/actions",
+      "width": 1440,
+      "height": 900,
+      "settle": 4000,
+      "hideText": [
+        "Upcoming change to GitHub App installation token format",
+        "Help us improve GitHub Actions"
+      ],
+      "clip": {
+        "x": 0,
+        "y": 55,
+        "width": 1440,
+        "height": 480
+      }
+    },
+    {
+      "name": "github-pr-deployed",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/5",
+      "width": 1440,
+      "height": 1000,
+      "settle": 4500,
+      "scrollTo": "text=Deployment success",
+      "clip": {
+        "x": 100,
+        "y": 325,
+        "width": 890,
+        "height": 335
+      }
     }
   ]
 }

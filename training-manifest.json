@@ -188,6 +188,8 @@
         "annotated/web/github-pr-checks",
         "annotated/web/github-pr-comment",
         "annotated/web/github-pr-merge",
+        "annotated/web/github-actions-deploy",
+        "annotated/web/github-pr-deployed",
         "annotated/vscode/work-save-completed"
       ]
     },
