@@ -45,9 +45,11 @@ conflicts and deployment actions. Someone who has never solved one cannot review
 
 ## What you need
 
-- A computer with [VS Code](https://code.visualstudio.com/) and [Node.js](https://nodejs.org/) 22 or later (24 recommended).
+- A computer you are allowed to install software on. Level 1 lab 0 walks through what to install,
+  one download at a time, with screenshots.
 - A [GitHub](https://github.com/) account, free.
-- Two free [Developer Edition orgs](https://developer.salesforce.com/signup) to start with, two more at Level 3.
+- Two free [Salesforce Developer Edition orgs](https://developer.salesforce.com/signup) to start
+  with, two more at Level 3. Level 1 lab 1 signs you up for them.
 - Nothing else. No paid service, no licence, no credit card.
 
 ## What you get
