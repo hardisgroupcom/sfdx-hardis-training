@@ -20,23 +20,26 @@ depends_on:
   docs: [salesforce-devops-git-tokens, salesforce-devops-clone-repository, salesforce-devops-setup-auth-github]
 ---
 
-# Lab 1 - Get your orgs and your pipeline
+# Lab 1 - Set up your training environment
 
 **Level**: 1 Contributor basics
 
 **Time**: ~20 min
 
-**You will**: end up with two Salesforce orgs that already hold the Helios app and its data, and a
-pipeline of your own that deploys into one of them.
+**You will**: end up with two Salesforce orgs of your own, a copy of the project, and a pipeline
+wired to them.
 
 ## The situation
 
-You joined Helios this morning and your machine is ready. What you do not have yet is anywhere to
-work: an org to build in, the shared org the team merges into, and the project itself.
+**This lab is not the job, and none of it happens on a real project.**
 
-Nothing in this lab is what a working day looks like. On a real project the orgs exist, the
-repository exists and its pipeline has been running for months. This is the course handing you all
-three in twenty minutes.
+There, all of this exists before you arrive: the orgs were created by whoever set the project up,
+the repository has been there for years, and its pipeline has been deploying for months. You would
+join, open the project, and start on a ticket.
+
+This course cannot hand you a team's environment, so it has you build a small one: two free
+Salesforce orgs, a copy of the project, and a pipeline wired to them. Twenty minutes of plumbing,
+once. The work starts in Lab 2, and everything from there on is what a real day looks like.
 
 !!! note "This part is not what the job looks like"
     On a real project the repository already exists, its automation is already switched on and
@@ -104,7 +107,7 @@ step 2. Keep both usernames somewhere.
 
 Back in VS Code, on the Welcome page, click **Orgs Manager**.
 
-![The Orgs Manager table, with the Helios orgs and their connection state](../../_assets/annotated/vscode/orgs-manager.png)
+![The Orgs Manager table, with both training orgs and their connection state](../../_assets/annotated/vscode/orgs-manager.png)
 
 1. Click **Add Org** **(1)**, then pick **Connect to another org** in the list that opens
 2. Leave the login URL on **Production / Developer Edition** (`login.salesforce.com`), because a
@@ -195,12 +198,16 @@ Click it, then click **Set up one of my training orgs**.
 
 The command asks which org. Pick `helios-dev`. It then:
 
-1. Deploys the Helios Delivery app into the org
+1. Deploys an app called **Helios Delivery** into the org
 2. Grants you the **Helios Delivery Manager** permission set
 3. Loads 40 accounts, 60 contacts, 25 opportunities, 30 installations and 80 panel batches
 4. Tells you what it put there
 
 Run it a second time for `helios-integration`.
+
+Helios Energy is the fictional company you are about to work for. Lab 2 introduces it properly, with
+a backlog and a first ticket. For now it is just an app and some records, so that your orgs contain
+something to change.
 
 Each org takes a few minutes, most of it the metadata deployment. It is not stuck.
 
@@ -326,7 +333,7 @@ before: the Pull Requests on your branches, and the **Show feature branches** to
 
 ### 8. Look at the pipeline before touching anything
 
-![The DevOps Pipeline panel, showing the Helios branches, the integration org and the warnings](../../_assets/annotated/vscode/devops-pipeline--read-it.png)
+![The DevOps Pipeline panel, showing the branches, the integration org and the warnings](../../_assets/annotated/vscode/devops-pipeline--read-it.png)
 
 This diagram is the single most useful thing in the extension. Read it left to right:
 
@@ -358,8 +365,8 @@ Back in the DevOps Pipeline panel, click **Refresh**. The `integration` column n
 the branch name, and the GitHub icon at the top is in colour. That link, branch to org, is what the
 rest of this course rests on.
 
-That is the whole setup. From Lab 2 on you are doing the job rather than preparing to do it, and
-every change you make goes through a Pull Request.
+That is the whole of the plumbing, and the last of it you will see. From Lab 2 on you are doing the
+job rather than preparing to do it: a ticket, a branch, a change, a Pull Request, a deployment.
 
 ## If it goes wrong
 

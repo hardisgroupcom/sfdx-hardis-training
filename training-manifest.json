@@ -29,7 +29,8 @@
         "annotated/web/vscode-marketplace",
         "annotated/vscode/welcome--first-open",
         "annotated/vscode/welcome--setup-button",
-        "annotated/vscode/setup"
+        "annotated/vscode/setup",
+        "annotated/vscode/setup--ready"
       ]
     },
     {

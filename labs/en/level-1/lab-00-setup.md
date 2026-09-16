@@ -13,6 +13,7 @@ screenshots:
   - annotated/vscode/welcome--first-open
   - annotated/vscode/welcome--setup-button
   - annotated/vscode/setup
+  - annotated/vscode/setup--ready
 depends_on:
   commands: []
   flags: []
@@ -171,8 +172,15 @@ ways when one person is two major versions behind, and nobody notices until a de
 
 ## What you should see
 
-The **Setup** panel, with every line ticked: the Salesforce CLI, its plugins, Node.js and Git, all
-green and all at a version the panel is happy with.
+The **Setup** panel with nothing left to install:
+
+![The Setup panel once everything is installed](../../_assets/annotated/vscode/setup--ready.png)
+
+The line to read is the summary at the top **(1)**. It names anything still missing, and missing is
+the only state that stops you. An amber **Upgrade** on a dependency **(2)** is not a failure: it
+means a newer version exists, and the button fetches it whenever you feel like it.
+
+Everything else is ticked, green, and at a version the panel is happy with.
 
 That is the whole of this lab. Your machine can now run everything the rest of the course, and every
 Salesforce project that uses sfdx-hardis, is going to ask of it.
@@ -195,11 +203,12 @@ always the answer.
 If you came here to set up a real project, you are done: open your team's repository and the
 **DevOps Pipeline** panel will tell you the rest.
 
-If you are taking the course, Lab 1 gets you two free Salesforce orgs and a pipeline of your own.
+If you are taking the course, Lab 1 builds you a small environment to work in: two free Salesforce
+orgs, a copy of the project, and a pipeline. It is the last of the setup.
 
 ## Go deeper
 
 - [Install sfdx-hardis](https://sfdx-hardis.cloudity.com/salesforce-devops-use-install/)
 - [The VS Code extension](https://sfdx-hardis.cloudity.com/vscode-extension/)
 
-[Next: Lab 1 - Get your orgs and your pipeline](lab-01-fork-and-connect.md){ .md-button .md-button--primary }
+[Next: Lab 1 - Set up your training environment](lab-01-fork-and-connect.md){ .md-button .md-button--primary }
