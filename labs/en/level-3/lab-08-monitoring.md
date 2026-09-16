@@ -44,14 +44,17 @@ Monitoring is the part of the release manager job that happens when nothing is b
 
 ### 1. Create the second repository yourself, first
 
-Monitoring lives in a **second, separate repository**, and this is the part people get wrong:
-`sf hardis:org:configure:monitoring` does not create it, and it checks where you are: if the
-repository name does not contain `monitoring` it asks whether you really mean to mix monitoring and
-deployment sources, and stops if you say no. You can say yes, and you should not.
+Monitoring **always** lives in its own repository, separate from the one your pipeline deploys
+from. Not usually, not by preference: always. This is the part people get wrong, and it is the part
+that is expensive to undo once a year of nightly commits has piled up in the wrong place.
 
-The command checks the name of the repository it is standing in, and if that name does not contain
-the word `monitoring` it stops and tells you to go and make one. There is an escape hatch answer for
-people who know what they are doing, and you are not that person yet.
+`sf hardis:org:configure:monitoring` does not create that repository for you. It checks the name of
+the one it is standing in, and if that name does not contain `monitoring` it asks whether you really
+mean to mix monitoring and deployment sources.
+
+**The answer is no.** The question exists because the command cannot be certain from a name alone,
+not because the two are alternatives. Answer no, and it stops so you can go and make the right
+repository.
 
 So, before anything else: create an empty private repository called
 `sfdx-hardis-training-monitoring` on GitHub, clone it, and open **that folder** in VS Code. Nothing
@@ -66,7 +69,8 @@ Why two repositories, and it is the same reason real projects do it:
 | Different content     | Monitoring stores nightly org backups. It grows, and it should not grow inside the repository people clone every day           |
 
 Your source repository and your monitoring repository are two different things with two different
-audiences.
+audiences. If you ever find yourself about to answer yes to that question, the right move is to stop
+and create the second repository, however late it feels.
 
 ### 2. Run the configuration
 
