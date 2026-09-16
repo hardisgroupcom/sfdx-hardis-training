@@ -56,9 +56,9 @@ audiences.
 
 ### 2. Run the configuration
 
-Open the **Monitoring Config** panel.
+Open the **Monitoring Config Workbench** panel.
 
-![The Monitoring Config panel](../../_assets/vscode/monitoring-config.png)
+![The Monitoring Config Workbench panel](../../_assets/vscode/monitoring-config.png)
 
 Answer:
 
@@ -87,9 +87,9 @@ backup of production and a set of reports.
 
 ### 5. Read the first report
 
-Open the **Org Monitoring** panel in VS Code, pointed at the monitoring repository.
+Open the **Org Monitoring Workbench** panel in VS Code, pointed at the monitoring repository.
 
-![The Org Monitoring panel, reading the monitoring results](../../_assets/vscode/org-monitoring.png)
+![The Org Monitoring Workbench panel, reading the monitoring results](../../_assets/vscode/org-monitoring.png)
 
 On the seeded Helios production org you will find at least:
 

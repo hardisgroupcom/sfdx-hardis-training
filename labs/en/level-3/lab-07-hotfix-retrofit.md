@@ -110,42 +110,56 @@ first is how a fix gets shipped twice and regressed once.
 ### 6. Find what production has that the repository does not
 
 The admin added a picklist value `Needs Reinspection` to `Installation__c.Status__c`, live, on
-Monday morning.
+Monday morning. Production now has something the repository does not, and the next deployment that
+touches that field will quietly remove it.
 
-Run the retrofit: in **Commands > CI/CD (advanced)**, click **Retrofit from org**, against
-`helios-prod`.
+There used to be a command that swept an org for every such difference and put them all on a branch.
+It is deprecated, deliberately, and the reason is worth understanding before you reach for anything
+automatic: **a sweep cannot tell you whether a difference means production is ahead or behind.** It
+reports both the same way, and the second kind, accepted, rolls the repository back.
 
-It compares the org with the repository, for the metadata types the project declared worth watching,
-and reports the differences.
+So you recover the change the way you would build it: as an ordinary User Story, retrieving exactly
+what you know changed.
+
+Start a User Story targeting `integration`, and pick `helios-prod` as the org to work in. Then open
+the **Metadata Retriever** from the Welcome page.
 
 ![The Metadata Retriever, used to pull org changes into the repository](../../_assets/vscode/metadata-retriever.png)
 
-### 7. Read every difference before you accept any
+Search for `Status__c`, tick the field, and retrieve it. One component, chosen by you, from an org
+you named.
 
-The retrofit will report several things. They are not all the same kind of thing:
+### 7. Read the diff before you keep any of it
 
-| What it reports                                      | What to do                                                                |
+Open the Source Control panel and read what landed.
+
+You asked for one field and you will usually get more than the picklist value: an API version bump,
+a reordered block, a `<fullName>` that differs in case. A retrieve returns the org's current
+serialisation of the whole component, not just the part that changed.
+
+Three kinds of difference, and only one of them is yours to keep:
+
+| What you see in the diff                             | What to do                                                                |
 |------------------------------------------------------|---------------------------------------------------------------------------|
-| The picklist value an admin added to fix an incident | **Take it.** It is real, it is needed, and it has to be in the repository |
-| A field a managed package added on install           | **Ignore it.** It belongs to the package                                  |
-| Something that differs because production is behind  | **Do not take it.** That is the pipeline's job, not the retrofit's        |
+| The picklist value an admin added to fix an incident | **Keep it.** It is real, it is needed, and it has to be in the repository |
+| Noise: API version, attribute order, whitespace      | **Discard it.** Stage the hunks you want, not the file                    |
+| Something that differs because production is behind  | **Discard it.** That is the pipeline's job, not yours                     |
 
-The third one is the trap. A retrofit shows every difference, and some differences mean production
-is **behind**, not ahead. Taking those rolls the repository back.
+The third one is the trap, and it is why this step is manual. Production being behind looks exactly
+like production being ahead in a file diff. You are the one who knows which it is, because you know
+what you went looking for.
 
-`retrofitIgnoredFiles` and `sourcesToRetrofit` in `config/.sfdx-hardis.yml` are how a project makes
-this decision once instead of every time.
+Stage the picklist hunk. Leave the rest.
 
-### 8. Bring the picklist value in, through the pipeline
+### 8. Bring it in, through the pipeline
 
-Accept the picklist value. It lands in your working copy, on the retrofit branch.
+Publish and open a Pull Request into `integration`, like any other story. Review it, merge it.
 
-Then treat it as an ordinary change: Pull Request into `integration`, review it, merge it. It flows
-to `uat` and comes back to `main` on the next release, at which point production and the repository
-agree again.
+It flows to `uat`, and comes back to `main` on the next release, at which point production and the
+repository agree again.
 
-That last sentence is the whole point of a retrofit: **not to change production, but to stop
-production being changed back.**
+That last sentence is the whole point: **not to change production, but to stop production being
+changed back.**
 
 ### 9. Write both down
 
@@ -165,28 +179,23 @@ branch from `main`, and `hardis:work:save` computes the package against `main`. 
 The branch prefix matters for a reason beyond tidiness: the DORA change failure rate in Lab 6 counts
 releases followed by a fix, and it recognises a fix by its branch name.
 
-**The retrofit** ran:
+**The retrofit** used the Metadata Retriever, which runs a plain targeted retrieve:
 
-    sf hardis:org:retrieve:sources:retrofit
+    sf project retrieve start --metadata CustomField:Installation__c.Status__c --target-org helios-prod
 
-which retrieves the declared metadata types from the org, compares them with the branch, and puts
-the differences on a branch named by `retrofitBranch`. Three configuration keys shape it:
+and nothing else. No branch is created for you, no comparison is made on your behalf, and that is
+the point.
 
-    retrofitBranch: retrofit
-    sourcesToRetrofit:
-      - CustomField
-      - Layout
-      - ValidationRule
-      - CustomObject
-    retrofitIgnoredFiles:
-      - force-app/main/default/objects/Account/fields/OldLegacy__c.field-meta.xml
+There is an older command, `sf hardis:org:retrieve:sources:retrofit`, that swept the org for every
+difference in a declared list of types and put them all on a branch. **It is deprecated and you
+should not use it.** It automated the easy half of the job, finding differences, and left the half
+that actually matters, deciding what each difference means, to whoever read the branch afterwards.
+In practice nobody read it carefully every week, and a sweep accepted wholesale eventually reverts
+something.
 
-`sourcesToRetrofit` keeps the comparison to types where a manual change is plausible and worth
-catching. Comparing everything produces hundreds of meaningless differences and gets switched off
-within a month, which is worse than not having it.
-
-Many teams run the retrofit on a schedule, weekly, so that a manual production change is noticed in
-days rather than discovered by a deployment that removes it.
+What replaces it is not a command, it is a habit, and it belongs to Lab 8: **put the org under
+monitoring.** Monitoring tells you a manual change happened, on the day it happened, and who made
+it. Then you retrieve that one thing, knowingly. Detection is automatic, the judgement is not.
 
 </details>
 
@@ -203,11 +212,12 @@ days rather than discovered by a deployment that removes it.
 **The hotfix Pull Request wants to bring next week's work with it.**
 You branched from `integration`. Start again from `main`.
 
-**The retrofit reports hundreds of differences.**
-`sourcesToRetrofit` is too wide, or absent. Narrow it to the types that matter.
+**The retrieve brought back far more than the picklist value.**
+Expected. A retrieve returns the org's whole current version of the component. Stage the hunk you
+came for and discard the rest, rather than committing the file.
 
-**The retrofit wants to remove things.**
-Production is behind the repository for those components. Do not accept them: that is a deployment
+**The diff wants to remove things.**
+Production is behind the repository for those components. Do not keep them: that is a deployment
 problem, not a retrofit one.
 
 **The picklist value disappears again after the next release.**

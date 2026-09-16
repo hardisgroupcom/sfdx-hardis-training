@@ -96,7 +96,7 @@ feature failing. It is an old one.
 You have shipped. The question a release manager gets asked next is "how are we doing", and it
 deserves a better answer than a feeling.
 
-In **Commands > CI/CD (misc)**, run **Generate DORA report**, against `helios-prod`.
+Open the **DevOps Pipeline** panel and click **Generate DORA Metrics Report**.
 
 The four metrics, and what they mean here:
 

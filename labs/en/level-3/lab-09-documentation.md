@@ -95,11 +95,13 @@ exists at the end of a level rather than at the start.
 
 ### 6. Publish it
 
-Two options, both in the panel:
+The **Deploy Documentation** section of the panel offers two targets:
 
-- **Publish to the org** as a Salesforce site or static resource, so it is reachable from inside
-  Salesforce
-- **Publish as a static site**, the way the sfdx-hardis documentation itself is published
+- **Deploy to Salesforce** builds the HTML and uploads it as a static resource, with a Visualforce
+  page and a custom tab, so the documentation is reachable from inside Salesforce. It is capped by
+  the 5 MB static resource limit, so it suits a small project
+- **Deploy to Cloudflare Pages** publishes it as a site, the way the sfdx-hardis documentation
+  itself is published
 
 For this lab, generate and commit. Publishing is a project decision.
 
