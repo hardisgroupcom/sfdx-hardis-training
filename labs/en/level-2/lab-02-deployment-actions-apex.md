@@ -35,12 +35,13 @@ for it: a deployment action.
 > - Crew Size is required
 > - Existing records are backfilled with the default of 2
 
-One checkbox in Setup. Then the deployment fails, and it fails for a reason that has nothing to do
-with your metadata: the integration org holds thirty installations with no crew size, and Salesforce
-will not make a field required while records violate it.
+One checkbox in Setup. Then two things happen, and the second one is the one that matters.
 
-You cannot fix this with a better package. The org has to change **before** the metadata does, and
-that change has to happen in every org this story ever reaches.
+The deployment fails, for a reason that has nothing to do with your data. You fix that in a minute.
+The deployment then goes green, and you have quietly broken thirty installation records for
+everybody, with nothing anywhere telling you.
+
+This lab is about the gap between a green deployment and a safe one.
 
 ## Before you start
 
@@ -61,31 +62,62 @@ for now, or note that it already refused: either way you have just met the probl
 
 Publish, push, open the Pull Request.
 
-### 2. Read the failure
+### 2. Read the first failure
 
 ```
-Error: Installation__c.Crew_Size__c - cannot set field to required: 30 existing records have no value
+Helios_Delivery_Crew     Cannot deploy to a required field: Installation__c.Crew_Size__c
+Helios_Delivery_Manager  Cannot deploy to a required field: Installation__c.Crew_Size__c
 ```
 
-Thirty records. You could open the integration org and fill them in by hand, and the deployment
-would go through. Then it would fail again in UAT, and again in production, and nobody would
-remember why.
+Not a word about your data. The problem is the permission sets.
+
+A **universally required** field has no field level security to grant: it is visible and mandatory
+for everyone, by definition. So the moment the field becomes required, every `fieldPermissions`
+entry that mentions it becomes invalid, and the deployment refuses the permission sets rather than
+the field.
+
+The fix takes a minute. In `helios-dev`, the entries disappear from the permission sets on their own
+once the field is required, so re-publish and let `hardis:work:save` pick up the new versions. If you
+are editing the XML directly, delete the two `<fieldPermissions>` blocks naming
+`Installation__c.Crew_Size__c`.
+
+!!! note "This is a good error"
+    It is precise, it names both offending components, and the fix is obvious once you know the rule.
+    Most Salesforce deployment errors are like this: they sound like they are about the thing you
+    changed, and they are about something that referenced it.
+
+### 3. Watch it go green, and understand why that is the problem
+
+Push the fix. The check passes. Merge. The deployment to `helios-integration` succeeds.
+
+Now open `helios-integration`, find an installation, change anything at all on it, and save.
+
+```
+Required fields are missing: [Crew_Size__c]
+```
+
+**Salesforce enforces a required field on save, not on the data that is already there.** The
+deployment was perfectly happy to make the field required while thirty installations had it empty.
+Those thirty records are now unsaveable: not just for you, for everybody, for any edit, until
+somebody puts a crew size on them.
+
+Nothing failed. No check went red. The first person to find out is a planner who cannot save a
+record.
 
 **Anything you have to do by hand in one org, you will have to do in every org.** That is what a
 deployment action is for.
 
-### 3. Split the story into two moves
+### 4. Split the story into two moves
 
-The shape of the fix, and it is the shape of most "the org is in the way" problems:
+The shape of the fix, and it is the shape of most "the data is in the way" problems:
 
-1. Deploy the field **still optional**
-2. Run something that makes the data valid
-3. Deploy the field **required**
+1. Make the data valid
+2. Make the field required
 
-Steps 2 and 3 can travel in the same Pull Request, as long as the tool knows to run them in that
-order. That is exactly what a post-deploy action is.
+Both can travel in the same Pull Request, as long as the tool knows to run them in that order. That
+is exactly what a **pre-deploy action** is.
 
-### 4. Write the backfill script
+### 5. Write the backfill script
 
 In your repository, create `scripts/apex/backfill-crew-size.apex`:
 
@@ -106,7 +138,7 @@ production:
 - It only touches records that are actually wrong (`WHERE Crew_Size__c = null`)
 - It says how many it changed, so the deployment log is readable afterwards
 
-### 5. Declare it as a deployment action
+### 6. Declare it as a deployment action
 
 Open the **DevOps Pipeline** panel, find your Pull Request, and open its **Deployment Actions** tab.
 
@@ -136,24 +168,21 @@ Fill it in:
     integration, once in UAT, once in production, and never again. Leave it unticked for a script
     that is genuinely idempotent and should re-run.
 
-### 6. Make the deployment two-step
+### 7. Order it correctly
 
-The action runs **after** the deployment. Your deployment makes the field required. So on the first
-run the order would be: make required (fails), then backfill (never reached).
+If the action runs **after** the deployment, the field is already required by the time the backfill
+runs, and every one of those thirty updates is refused for the very reason you are trying to fix.
+The backfill has to run **first**.
 
-Change the order of your own work instead:
+Set the action's **When** to **Before the deployment**. Now the order is: fill in the crew sizes,
+then make the field required, and nothing is ever in an invalid state.
 
-1. On this Pull Request, keep the field **optional**, and keep the backfill action
-2. Merge. The field deploys, the backfill runs, the org is now clean
-3. Open a second small Pull Request that only makes the field required
+!!! tip "How to decide pre or post, every time"
+    Ask what the action needs to already exist. Data that has to be valid **before** a constraint
+    lands is pre-deploy. Reference records that need an object that does not exist yet are
+    post-deploy, which is Lab 3. The answer is never a habit, it is that question.
 
-Or, in one Pull Request, declare the backfill as a **pre-deploy** action instead of post-deploy.
-Both are legitimate. Two Pull Requests is easier to review and easier to roll back; one is faster.
-
-For this lab, do it in one: change the action's **When** to **Before the deployment**, and keep the
-field required. Then the order is backfill, then deploy, and the deployment succeeds.
-
-### 7. Watch it run
+### 8. Watch it run
 
 Push and watch the check. In the job log you will see the action fire before the deployment starts,
 with the `System.debug` line reporting how many records it fixed.
@@ -195,6 +224,7 @@ whole value: **the knowledge is in the repository, not in someone's head.**
 
 - The Pull Request comment listing the deployment action it ran, above the deployment result
 - `Crew Size` required in `helios-integration`, with all thirty installations carrying a value
+- An installation you can still save, which is the whole point
 - No manual step performed by anybody in any org
 
 ## If it goes wrong
@@ -207,8 +237,13 @@ repository, it cannot see it. Close it and reopen it with the right base.
 Raise the `LIMIT` carefully, or convert the script to a batch. Thirty records is nowhere near the
 limit, so if you see this you are running against an org with far more data than the training one.
 
-**The deployment still fails on the required field.**
-The action ran after the deployment. Change **When** to **Before the deployment**.
+**The deployment still fails on the permission sets.**
+They still carry `fieldPermissions` for `Installation__c.Crew_Size__c`. A required field cannot have
+any. Re-publish from an org where the field is already required, or delete the two blocks by hand.
+
+**The backfill updated nothing, and records are still unsaveable.**
+The action ran after the deployment, so every update hit the constraint it was meant to prevent.
+Change **When** to **Before the deployment** and run it again.
 
 **The action ran but nothing changed.**
 `runOnlyOnceByOrg` is ticked and it already ran in that org during an earlier attempt. That is
