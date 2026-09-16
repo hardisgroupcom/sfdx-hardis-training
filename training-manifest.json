@@ -31,6 +31,7 @@
         "annotated/web/git-download",
         "annotated/web/vscode-download",
         "annotated/web/nodejs-download",
+        "annotated/vscode/extensions-install",
         "annotated/web/vscode-marketplace",
         "annotated/vscode/welcome--first-open",
         "annotated/vscode/welcome--setup-button",

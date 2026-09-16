@@ -56,5 +56,6 @@
   "vscode/pipeline-branch-modal.png": "6a633ccff34b4cff",
   "web/github-code-url.png": "67bdfb71a108b33c",
   "vscode/pipeline-config-branch-edit.png": "b447c59d1c64f32f",
-  "vscode/devops-pipeline.png#github-auth": "00a1978d729da924"
+  "vscode/devops-pipeline.png#github-auth": "00a1978d729da924",
+  "vscode/extensions-install.png": "71c5c2b733c36771"
 }

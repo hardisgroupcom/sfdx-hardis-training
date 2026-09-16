@@ -8,6 +8,7 @@ screenshots:
   - annotated/web/git-download
   - annotated/web/vscode-download
   - annotated/web/nodejs-download
+  - annotated/vscode/extensions-install
   - annotated/web/vscode-marketplace
   - annotated/vscode/welcome--first-open
   - annotated/vscode/welcome--setup-button
@@ -107,9 +108,18 @@ gh auth login
 Answer **GitHub.com**, **HTTPS**, and **Login with a web browser**. It prints a one-time code, opens
 your browser, and you are done. `gh auth status` confirms it afterwards.
 
-Then open VS Code and install the extension. The **Extensions** icon sits in the narrow bar down
-the left, and looks like four small squares with one lifted away. Click it, type `sfdx-hardis` in
-the search box, and click **Install** on the entry published by **Cloudity**.
+Then open VS Code and install the extension. The **Extensions** icon **(1)** sits in the narrow bar
+down the left, and looks like four small squares with one lifted away. Click it, type `hardis` in
+the search box **(2)**, and click **Install** on the first result **(3)**, the one described as
+*Handle Salesforce DX and Git without knowing anything about DX or Git*, by Nicolas Vuillamy.
+
+![The Extensions view of VS Code, with hardis typed in the search box](../../_assets/annotated/vscode/extensions-install.png)
+
+!!! note "The second result is a bundle, and this course does not need it"
+    **SFDX Hardis Extension Pack for Salesforce** installs the same extension along with seven
+    others that people often use beside it: Git Graph, YAML, Apex Log Analyzer, Markdown PDF and
+    Paste Image among them. Nothing in these labs needs any of them. Install it later if you like
+    the look of it.
 
 The extension also has a page on the Visual Studio Marketplace, and its **Install** button **(1)**
 opens VS Code for you:
