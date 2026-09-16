@@ -11,8 +11,8 @@ screenshots:
   - annotated/vscode/clone-repository
   - annotated/vscode/org-select-alias
   - annotated/vscode/welcome--training-menu
-  - annotated/vscode/devops-pipeline--github-auth
-  - annotated/vscode/devops-pipeline--read-it
+  - annotated/vscode/devops-pipeline-disconnected--github-auth
+  - annotated/vscode/devops-pipeline-fresh--read-it
 depends_on:
   commands: [hardis:org:data:import]
   flags: []
@@ -349,7 +349,7 @@ On the Welcome page, click **DevOps Pipeline**. At the top of the panel there is
 **(1)**. It is **grey** while the extension is not connected, and its tooltip reads **Connect to
 GitHub**.
 
-![The DevOps Pipeline panel, with the GitHub icon in its header](../../_assets/annotated/vscode/devops-pipeline--github-auth.png)
+![The DevOps Pipeline panel, with the GitHub icon in its header](../../_assets/annotated/vscode/devops-pipeline-disconnected--github-auth.png)
 
 Click it. VS Code asks **How would you like to authenticate to GitHub?** and offers two answers:
 
@@ -363,37 +363,35 @@ before: the Pull Requests on your branches, and the **Show feature branches** to
 
 ### 8. Look at the pipeline before touching anything
 
-![The DevOps Pipeline panel, showing the branches, the integration org and the warnings](../../_assets/annotated/vscode/devops-pipeline--read-it.png)
+![The DevOps Pipeline panel after the setup: one branch, one org](../../_assets/annotated/vscode/devops-pipeline-fresh--read-it.png)
 
-This diagram is the single most useful thing in the extension. Read it left to right:
+Two boxes and an arrow. That is the whole of your pipeline today, and it is worth a minute because
+every diagram you meet later is this one with more in it.
 
-1. **`integration`** **(1)** is the only major branch this project has today. It is where every
-   contributor merges, and it deploys to the integration org **(2)**
-2. Your **feature branches** **(3)** appear as small boxes feeding into it
-3. The **Pull Requests** waiting on it are the numbered badges on the arrows, coloured with their
-   CI job status
-4. **`uat`** and **`main`** exist as branches but are **not** part of the pipeline. Nobody wired
-   them. That is not an accident: finishing this pipeline is what Level 3 is about
+1. **`integration`** **(1)** is a git branch, and the only *major* branch this project has. Major
+   means the team shares it: everybody's work ends up there, and nobody builds directly on it
+2. **`helios-integration`** **(2)** is the Salesforce org that branch owns. One branch, one org,
+   and that pairing is what the setup you just ran wrote down
+3. The **arrow** **(3)** is the deployment. Whatever reaches `integration` is deployed into that
+   org, by a robot, without anybody clicking anything
 
-The branch you work on, and the org it ends up in, are the two facts that matter. Everything else
-in this course is detail.
+Nothing else is drawn, because nothing else exists yet. You have no branch of your own in flight
+and no Pull Request open, so the diagram has nothing to add. Lab 2 puts the first box on the left
+of this picture, and from then on it fills up.
 
-!!! note "About the two warnings at the bottom"
-    The block at the bottom of the panel **(4)** warns that `integration` has no merge target, and
-    that there is no certificate key file for it. Both are correct, and both are deliberate.
+!!! note "`uat` and `main` are missing on purpose"
+    Your fork carries those two branches, and the diagram ignores them: a branch becomes part of
+    the pipeline only once somebody says which org it deploys to, and nobody has.
 
-    The missing merge target is the missing rest of the pipeline: `uat` and `main` are not wired,
-    and Level 3 lab 0 wires them. The missing certificate is the proper CI authentication, which
-    Level 3 lab 1 sets up and which the secret from step 5 stands in for.
-
-    A panel that tells you what is not finished is doing its job. Read these warnings on your own
-    projects: they are usually right.
+    That is the shape of this course. Levels 1 and 2 are the work of a contributor, which happens
+    between a feature branch and `integration`. Level 3 is the work of a release manager, and its
+    first lab is wiring `uat` and `main` into this same diagram.
 
 ## What you should see
 
-Back in the DevOps Pipeline panel, click **Refresh**. The `integration` column names your org under
-the branch name, and the GitHub icon at the top is in colour. That link, branch to org, is what the
-rest of this course rests on.
+Back in the DevOps Pipeline panel, click **Refresh**. Two boxes, `integration` and your integration
+org, joined by an arrow, and the GitHub icon at the top in colour rather than grey. That link,
+branch to org, is what the rest of this course rests on.
 
 That is the whole of the plumbing, and the last of it you will see. From Lab 2 on you are doing the
 job rather than preparing to do it: a ticket, a branch, a change, a Pull Request, a deployment.

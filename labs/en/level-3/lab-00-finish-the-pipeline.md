@@ -32,19 +32,16 @@ Open the **DevOps Pipeline** panel and look at what Sofia left.
 
 ![The DevOps Pipeline panel with a single major branch column](../../_assets/annotated/vscode/devops-pipeline--one-column.png)
 
-One column. `integration` **(1)**, with its org **(2)**. The `uat` and `main` branches exist in git,
-and nothing knows about them: no org, no merge path, no deployment job.
+One column. `integration` **(1)**, with its org **(2)**, and the feature branches your teammates
+have in flight. The `uat` and `main` branches exist in git, and nothing here knows about them: no
+org, no merge path, no deployment job. A branch is only part of a pipeline once somebody writes
+down which org it deploys to, and for those two nobody has.
 
-The panel says so itself, in the warnings at the bottom **(3)**:
+That is your first week, and this lab is the first half of it. The second half is the next lab: the
+credential that lets a job reach an org it is trusted with.
 
-> No merge target defined for branch integration
->
-> No encrypted certificate key file found for branch 'integration'
-
-Those two lines are your first week. The first is this lab, the second is the next one.
-
-That is not unusual. Most projects start with one shared org because that is all they need on day
-one, and finishing the pipeline gets postponed until the day somebody needs to release.
+None of this is unusual. Most projects start with one shared org because that is all they need on
+day one, and finishing the pipeline gets postponed until the day somebody needs to release.
 
 ## Before you start
 

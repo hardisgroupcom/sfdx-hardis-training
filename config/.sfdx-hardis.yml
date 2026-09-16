@@ -9,6 +9,11 @@ projectName: HeliosEnergy
 # Level 3 lab 0 is where uat and main are declared as major branches.
 developmentBranch: integration
 productionBranch: main
+# How the CI job gets into an org. Levels 1 and 2 use an auth URL kept in a
+# GitHub secret, which is the shortcut, so there is no certificate to look for
+# and the pipeline is right not to ask for one. Level 3 lab 1 replaces it with
+# a JWT certificate and puts this back to encryptedCert.
+orgAuthenticationMode: secretsOnly
 availableTargetBranches:
   - integration
 availableTargetBranchesLabels:

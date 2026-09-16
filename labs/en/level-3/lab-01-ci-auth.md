@@ -7,6 +7,7 @@ source_rev: ""
 screenshots:
   - annotated/vscode/command-runner-question--ci-auth
   - annotated/vscode/command-runner-completed--ci-auth-result
+  - annotated/vscode/pipeline-config-deployment--deployment-tab
 depends_on:
   commands: [hardis:project:configure:auth]
   flags: []
@@ -187,7 +188,29 @@ Now go back to **Actions**, open the last **Process Deployment (sfdx-hardis)** r
 **Re-run all jobs**. Nothing has changed except the secret you just deleted, so if the job still
 passes, the JWT path is genuinely what is being used and it was not quietly falling back.
 
-### 8. Write down why
+### 8. Tell the panel what the project now uses
+
+One line of configuration is still describing the old world.
+
+`config/.sfdx-hardis.yml` carries `orgAuthenticationMode: secretsOnly`, put there when the course
+handed you the auth URL shortcut. It is how the DevOps Pipeline panel knows not to look for
+certificate key files, and not to warn you when there are none. There are certificates now, so that
+line is a lie, and a panel told a lie stops being able to warn you about anything.
+
+In the **DevOps Pipeline** panel, **gear menu > Pipeline Settings**. Check the scope reads **Global
+Settings** **(1)**, because this one belongs to the project and not to a branch, and stay on the
+**Deployment** tab **(2)**.
+
+![The Global Pipeline Settings panel, Deployment tab](../../_assets/annotated/vscode/pipeline-config-deployment--deployment-tab.png)
+
+**Org Authentication Mode** **(3)** reads *CI/CD secrets variables only*. Click **Edit** **(4)**,
+change it to *Encrypted certificate key files*, and **Save**.
+
+From now on the panel checks `config/branches/.jwt/<branch>.key` for every major branch and says so
+when one is missing. That is the check you want switched on: a key file that never made it into a
+commit is exactly the failure that only shows up in a job, at the worst moment.
+
+### 9. Write down why
 
 In `MY-PIPELINE.md`, under Level 3:
 
@@ -229,9 +252,10 @@ plain `SFDX_CLIENT_ID` with no suffix, as a last resort and with a warning in th
 unsuffixed secret left over from an old setup will answer for every branch.
 
 `orgAuthenticationMode` in `config/.sfdx-hardis.yml` is **not** written by this command, and no CLI
-command reads it. It is a key you set by hand, and it only tells the VS Code pipeline panel which
-shape to expect, so that it can warn you when a major org is not configured the way the project
-declared. The default it assumes is `encryptedCert`, which is what you have just built.
+command reads it. It only tells the VS Code pipeline panel which shape to expect, so that it can
+warn you when a major org is not configured the way the project declared. `secretsOnly` means the
+credentials live entirely in CI secrets and there is no key file to look for; `encryptedCert`, the
+default and what step 8 sets, means every major branch should have one committed.
 
 </details>
 
@@ -241,6 +265,7 @@ declared. The default it assumes is `encryptedCert`, which is what you have just
 - Three `config/branches/.jwt/*.key` files, encrypted
 - A green check job on the Pull Request into `uat`, authenticating with JWT
 - `SFDX_AUTH_URL_INTEGRATION` gone, and `integration` still deploying green after it went
+- The DevOps Pipeline panel quiet: no warning about a missing key file, on any of the three branches
 
 ## If it goes wrong
 
