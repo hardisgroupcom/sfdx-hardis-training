@@ -167,7 +167,10 @@ Then:
 
 1. Paste `https://github.com/hardisgroupcom/sfdx-hardis-training.git` and press Enter
 2. Pick the folder to put it in. VS Code creates a `sfdx-hardis-training` folder inside the one you
-   choose, so an ordinary projects folder is the right answer
+   choose, so choose the place you want **every** repository to live from now on. If you have no
+   such place yet, make one: `C:\git` on Windows, `~/git` on macOS and Linux. Short path, no
+   spaces, not inside OneDrive or any folder that syncs, because a sync client and a git repository
+   fight over the same files
 3. When it asks, click **Open** to work in the clone
 
 If GitHub asks you to sign in, let VS Code handle it: **Sign in with your browser** is enough.
