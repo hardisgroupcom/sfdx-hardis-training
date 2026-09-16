@@ -81,9 +81,10 @@ what you are reviewing is byte for byte what the screenshots show.
 In `helios-dev`:
 
 1. Open the flow `Installation Assign Crew` and add a decision so that an installation whose roof
-   type is `Flat` gets a crew of at least 3, whatever else the flow decided
+   type is `Flat` gets a crew of at least 3, whatever else the flow decided. Connect it to the
+   **same assignment** the flow already ends on, so the new rule runs after the status change
 2. On the permission set `Helios Delivery Manager`, grant edit access on
-   `Installation__c.Crew_Size__c`
+   `Installation__c.Crew_Notes__c`, so a planner can say why a crew was raised
 
 Publish, selecting the flow and the permission set. Push.
 
@@ -96,6 +97,11 @@ GitHub shows:
 > `force-app/main/default/permissionsets/Helios_Delivery_Manager.permissionset-meta.xml`
 
 Two files, two completely different kinds of problem.
+
+Neither of them is git being awkward. Both changes are real, both are wanted, and in both files the
+two of you wrote in the same place: Marco granted a field on the permission set one line from where
+you granted yours, and he connected the same assignment element in the flow to a decision of his
+own. A merge tool cannot know which of two connectors should win. You can.
 
 ### 4. Bring integration into your branch
 
@@ -120,20 +126,20 @@ Open
 You will see something like:
 
 ```xml
+    <fieldPermissions>
+        <editable>true</editable>
 <<<<<<< HEAD
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Installation__c.Crew_Size__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
+        <field>Installation__c.Crew_Notes__c</field>
 =======
-    <fieldPermissions>
-        <editable>true</editable>
         <field>Installation__c.Crew_Capacity_Cap__c</field>
+>>>>>>> origin/integration
         <readable>true</readable>
     </fieldPermissions>
->>>>>>> origin/integration
 ```
+
+Git conflicts on lines, not on XML, so the markers land inside one `<fieldPermissions>` block
+rather than around two. That is normal and it is why the resolution has to be read rather than
+clicked through.
 
 This one is mechanical: **both entries belong**. Marco's field and yours are different fields, and
 a permission set holds as many as it needs. Delete the three markers and keep both blocks, in
@@ -147,7 +153,7 @@ alphabetical order because that is how Salesforce writes them:
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Installation__c.Crew_Size__c</field>
+        <field>Installation__c.Crew_Notes__c</field>
         <readable>true</readable>
     </fieldPermissions>
 ```
