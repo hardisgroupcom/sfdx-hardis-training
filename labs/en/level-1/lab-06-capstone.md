@@ -17,7 +17,7 @@ depends_on:
 # Capstone - Deliver US-016 on your own
 
 **Level**: 1 Contributor basics
-**Time**: ~30 min
+**Time**: ~25 min
 **You will**: do the whole loop again with no step-by-step, which is the only way to find out
 whether you learned it.
 

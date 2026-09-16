@@ -23,7 +23,7 @@ depends_on:
 # Lab 1 - Fork the repository and connect your pipeline
 
 **Level**: 1 Contributor basics
-**Time**: ~20 min
+**Time**: ~15 min
 **You will**: own a copy of the Helios repository, wire it to your integration org, and read the
 pipeline diagram that tells you which branch deploys where.
 

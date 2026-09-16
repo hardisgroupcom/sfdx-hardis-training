@@ -20,7 +20,7 @@ depends_on:
 # Lab 3 - US-026: reference data and a batch must follow
 
 **Level**: 2 Contributor advanced
-**Time**: ~35 min
+**Time**: ~30 min
 **You will**: meet the worst kind of failure, the one where nothing fails, and fix it with three
 deployment actions of three different kinds.
 

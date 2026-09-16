@@ -18,7 +18,7 @@ depends_on:
 # Lab 1 - Wire CI authentication for three orgs
 
 **Level**: 3 Release Manager
-**Time**: ~45 min
+**Time**: ~40 min
 **You will**: replace the shortcut Level 1 gave you with the credential a real project uses, for all
 three orgs, and delete the shortcut.
 

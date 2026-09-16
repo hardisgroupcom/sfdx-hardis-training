@@ -17,7 +17,7 @@ depends_on:
 # Capstone - Run one full weekly release cycle
 
 **Level**: 3 Release Manager
-**Time**: ~50 min
+**Time**: ~45 min
 **You will**: do a whole week in one sitting, with no step-by-step, and end with something you could
 show somebody.
 

@@ -19,7 +19,7 @@ depends_on:
 # Lab 4 - Publish it and read the package.xml diff
 
 **Level**: 1 Contributor basics
-**Time**: ~20 min
+**Time**: ~15 min
 **You will**: pull your org changes into the repository, understand what the tool chose to keep and
 what it removed, and push a branch that is ready to be reviewed.
 

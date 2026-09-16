@@ -25,7 +25,7 @@ depends_on:
 # Lab 0 - Install the tools and seed your orgs
 
 **Level**: 1 Contributor basics
-**Time**: ~25 min
+**Time**: ~20 min
 **You will**: get a working workstation and two Salesforce orgs that already contain the Helios
 Delivery app and its data, without typing a single command.
 

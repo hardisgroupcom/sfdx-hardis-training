@@ -17,7 +17,7 @@ depends_on:
 # Lab 5 - Open the Pull Request, get it green, merge
 
 **Level**: 1 Contributor basics
-**Time**: ~25 min
+**Time**: ~20 min
 **You will**: have a robot check your work before a human does, fix what it finds, and put US-014
 into the shared integration org.
 
