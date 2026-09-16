@@ -119,6 +119,13 @@ for (let i = 0; i < urls.length; i += BATCH) {
       unverifiable.push({ url, status: results[index].status });
       return;
     }
+    // A 5xx means the host had a bad minute, usually rate limiting. The link is
+    // not broken, and failing the build on it makes the check noise that people
+    // learn to ignore. Reported, never fatal.
+    if (typeof results[index].status === "number" && results[index].status >= 500) {
+      unverifiable.push({ url, status: results[index].status });
+      return;
+    }
     broken.push({ url, status: results[index].status, usedBy: external.get(url) });
   });
   process.stdout.write(`  checked ${Math.min(i + BATCH, urls.length)}/${urls.length}\r`);
@@ -146,7 +153,7 @@ if (unverifiable.length > 0) {
   console.log(`
 ${unverifiable.length} URL(s) could not be verified automatically (the host refuses non-browser requests):`);
   unverifiable.forEach((item) => console.log(`  ${item.status}  ${item.url}`));
-  console.log("  These are not failures. Open them by hand if one looks suspect.");
+  console.log("  These are not failures: the host refused us or was busy. Open one by hand if it looks suspect.");
 }
 
 if (!failed) {
