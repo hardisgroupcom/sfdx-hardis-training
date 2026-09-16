@@ -13,38 +13,38 @@ screenshots:
   - annotated/vscode/welcome--first-open
   - annotated/vscode/welcome--setup-button
   - annotated/vscode/setup
-  - annotated/web/sf-signup
-  - annotated/vscode/orgs-manager
-  - annotated/vscode/org-select-alias
-  - annotated/vscode/welcome--training-menu
 depends_on:
-  commands: [hardis:org:data:import]
+  commands: []
   flags: []
-  config: [customCommands, customCommandsPosition]
-  panels: [welcome, setup, orgManager]
+  config: []
+  panels: [welcome, setup]
   docs: [salesforce-devops-use-install, vscode-extension]
 ---
 
-# Lab 0 - Install the tools and seed your orgs
+# Lab 0 - Install the tools
 
 **Level**: 1 Contributor basics
 
-**Time**: ~25 min
+**Time**: ~10 min
 
-**You will**: get a working workstation and two Salesforce orgs that already contain the Helios
-Delivery app and its data, without typing a single command.
+**You will**: turn a plain computer into one that can do Salesforce DevOps, without typing a single
+command.
 
 ## The situation
 
-Your first morning. Somebody sends you a repository link and says "set yourself up, we will give
-you a ticket after lunch". At Helios that means: the tools, and two orgs. One to build in, and the
-shared integration org the team merges into.
+Your first morning on any Salesforce team, this one or a real one. Before you can be given a ticket,
+five things have to be on your machine, and the last of them installs most of the rest for you.
+
+!!! tip "This lab stands on its own"
+    It is the same list whether you are here for the course or joining a project that already has a
+    pipeline. If somebody sent you here to get set up before your first day, **finish this lab and
+    stop**. Lab 1 is where the training-specific part starts: free Salesforce orgs, a training
+    repository, fictional data. None of that belongs on a real project.
 
 ## Before you start
 
 - [ ] A computer where you can install software, and permission to do so
 - [ ] A GitHub account
-- [ ] Two working email addresses, or one address that supports plus-addressing
 
 ## Steps
 
@@ -181,218 +181,37 @@ ways when one person is two major versions behind, and nobody notices until a de
 
 </details>
 
-### 3. Create your two Developer Edition orgs
-
-Go to [developer.salesforce.com/signup](https://developer.salesforce.com/signup) and sign up
-**twice**. Free, unlimited, no credit card.
-
-The form asks for your first name, last name, job title, company and country or region, then three
-things that decide whether the signup goes through:
-
-1. **Work email** **(1)**
-2. the tick that accepts the master subscription agreement **(2)**
-3. **Sign me up** **(3)**
-
-![The Salesforce Developer Edition signup form](../../_assets/annotated/web/sf-signup.png)
-
-You do not choose a username: it is generated and sent to you.
-
-**Work email** is the field that decides whether the second signup works. It must be a real
-address you can open, because the signup is confirmed by email, and the two orgs cannot share one
-address.
-
-If you only have one, use plus-addressing. Everything between the `+` and the `@` is ignored on
-delivery, so one inbox answers to as many addresses as you like. On Gmail, if your address is
-`jane.doe@gmail.com`:
-
-| Sign up with                  | The confirmation arrives in |
-|-------------------------------|------------------------------|
-| `jane.doe+heliosdev@gmail.com`   | `jane.doe@gmail.com`      |
-| `jane.doe+heliosinteg@gmail.com` | `jane.doe@gmail.com`      |
-
-Salesforce treats them as two different addresses, which is the point. Outlook.com, Fastmail,
-iCloud and most company mail servers do the same; if yours does not, the confirmation simply never
-arrives and you need a second real address.
-
-Name them so you can tell them apart later:
-
-| Org             | What it is for                                              |
-|-----------------|-------------------------------------------------------------|
-| your first org  | your own development environment, where you build           |
-| your second org | the shared integration org, where the team's work is merged |
-
-Open each confirmation email and set a password. The email also carries the username Salesforce
-generated for that org: it looks like an email address but it is not one, and it is what you log in
-with, what `sf org login` authenticates, and what you will type into the pipeline configuration in
-Lab 1. Keep both usernames somewhere.
-
-!!! note "A Developer Edition org never expires, but it is deactivated after a long period of inactivity. Finish a level within a few weeks and you will never meet that."
-
-### 4. Connect both orgs in Orgs Manager
-
-Back in VS Code, on the Welcome page, click **Orgs Manager**.
-
-![The Orgs Manager table, with the Helios orgs and their connection state](../../_assets/annotated/vscode/orgs-manager.png)
-
-1. Click **Add Org** **(1)**, then pick **Connect to another org** in the list that opens
-2. Leave the login URL on **Production / Developer Edition** (`login.salesforce.com`), because a
-   Developer Edition org is not a sandbox
-3. Your browser opens the Salesforce login page. Sign in with your first org, and allow access
-
-Back in VS Code, the panel asks you one more thing:
-
-![The panel asking what name to give the org that was just connected](../../_assets/annotated/vscode/org-select-alias.png)
-
-**What name do you want to give this org?** The box **(1)** is already filled with a suggestion,
-taken from the org's own web address. On a Developer Edition that address is a string Salesforce
-invented, `orgfarm-9f2a1c7e4b` or similar, which tells you nothing about what the org is for.
-
-**Replace it with `helios-dev`**, then click **Validate** **(2)**.
-
-Repeat the whole thing for your second org, and name that one `helios-integration`.
-
-That name is called an **alias**, and it is what you will see and click from now on: in this panel,
-in the pipeline diagram, everywhere the course says "your dev org". Get these two right and nothing
-else in the training is ambiguous.
-
-Both orgs now appear in the table under the names you gave them **(2)**, with a green **Connected**
-**(3)**. **This panel is how you connect to an org for the rest of the course.** Whenever a lab says
-"connect an org" or "switch to an org", this is where you do it, and it is also how you check which
-org you are pointed at, which saves more confusion than anything else in this training.
-
-<details markdown="1"><summary>Under the hood: what connecting an org just did</summary>
-
-The panel ran:
-
-    sf hardis:org:select
-
-which opened your browser, let Salesforce authenticate you, and stored an OAuth refresh token in
-your user profile (`~/.sfdx`). Nothing is stored in the project, and nothing is committed: the
-credential is yours and stays on your machine. Then it named the org:
-
-    sf alias set helios-dev=you.helios.dev@heliostraining.invalid
-
-The alias is the name everything else uses. Every sfdx-hardis command that wants an org accepts
-`--target-org helios-dev` from now on, and so does the Salesforce CLI itself.
-
-</details>
-
-### 5. Get the repository
-
-You need the training project on your machine before you can seed the orgs from it. Take the team's
-copy for now: it is read-only, and Lab 1 turns it into your own in one command.
-
-In VS Code:
-
-1. **File > Open Folder**, and pick an empty folder
-2. Open the **Source Control** panel, the branch icon in the narrow bar on the left
-3. Click **Clone Repository** and paste
-   `https://github.com/hardisgroupcom/sfdx-hardis-training.git`
-4. When VS Code asks, click **Open** to work in the cloned folder
-
-If GitHub asks you to sign in, let VS Code handle it: **Sign in with your browser** is enough.
-
-<details markdown="1"><summary>Under the hood: what opening the folder told the extension</summary>
-
-The extension read three files, and it reads them again whenever they change, so you never have to
-reload the window:
-
-- `sfdx-project.json`, which says the Salesforce sources live in `force-app`
-- `config/.sfdx-hardis.yml`, the project configuration: major branches, cleaning rules, the
-  Training menu
-- `config/branches/.sfdx-hardis.integration.yml`, the branch configuration: which org the
-  `integration` branch deploys to
-
-That last one is empty of your details until Lab 1 fills it in.
-
-</details>
-
-### 6. Seed each org
-
-Open the Welcome page again. Above the built-in cards there is a **CUSTOM MENUS** heading **(1)**,
-holding a single card: **Training (custom)** **(2)**.
-
-![The Welcome page, with the CUSTOM MENUS group and the Training card](../../_assets/annotated/vscode/welcome--training-menu.png)
-
-!!! note "Why the card says \"Training (custom)\""
-    The extension appends `(custom)` to every menu a project declares in its own
-    `config/.sfdx-hardis.yml`, so you can always tell a project's commands from the ones the
-    product ships. The rest of these labs call it the **Training** menu.
-
-Click it, then click **Set up one of my training orgs**.
-
-The command asks which org. Pick `helios-dev`. It then:
-
-1. Deploys the Helios Delivery app into the org
-2. Grants you the **Helios Delivery Manager** permission set
-3. Loads 40 accounts, 60 contacts, 25 opportunities, 30 installations and 80 panel batches
-4. Tells you what it put there
-
-Run it a second time for `helios-integration`.
-
-Each org takes a few minutes, most of it the metadata deployment. It is not stuck.
-
-<details markdown="1"><summary>Under the hood: what "Set up one of my training orgs" just did</summary>
-
-The card runs one command, declared by this project in `config/.sfdx-hardis.yml` under
-`customCommands`:
-
-    node scripts/training.mjs seed
-
-which in turn runs three real commands against the org you picked:
-
-    sf project deploy start --source-dir force-app --target-org helios-dev --wait 60
-    sf org assign permset --name Helios_Delivery_Manager --target-org helios-dev
-    sf hardis:org:data:import --path scripts/data/HeliosBaseline --target-org helios-dev
-
-The order matters, and not in the way you would guess. A metadata deployment grants **no field
-level security to anybody**, not even to a System Administrator. Load the data before assigning the
-permission set and the load fails on fields the running user cannot see, with an error message that
-says nothing about permissions. That is why step 2 sits between the deployment and the data.
-
-The data load is an **upsert on an external id**, so running the card twice updates the same 235
-records instead of creating 470. Anything in this course that can be run twice, can be run twice.
-
-</details>
-
 ## What you should see
 
-Open `helios-dev` from the Orgs Manager panel (the **Open** button next to the org). In Salesforce,
-click the App Launcher, find **Helios Delivery**, and open the **Installations** tab.
+The **Setup** panel, with every line ticked: the Salesforce CLI, its plugins, Node.js and Git, all
+green and all at a version the panel is happy with.
 
-You should see 30 installations with names like `INST-00001`, each linked to an account, with a
-status and an install date. Open one: the **Panel delivery timeline** component on the right lists
-the pallets booked for that job.
-
-That is the app you are going to change.
+That is the whole of this lab. Your machine can now run everything the rest of the course, and every
+Salesforce project that uses sfdx-hardis, is going to ask of it.
 
 ## If it goes wrong
 
-**The Setup panel says a dependency is still missing after installing it.**
-Close and reopen VS Code. The panel reads your PATH, and a freshly installed global npm package is
-not on the PATH of a terminal that was already open.
+**The Setup panel says the Salesforce CLI is missing after it installed it.**
+It landed somewhere that was not on the PATH of a terminal that was already open. Close VS Code
+completely and open it again.
 
-**The org signup email never arrives.**
-Check spam, then check the address you typed in **Work email**. If you are signing up the second
-org with the same address as the first, Salesforce refuses it: use plus-addressing.
+**The extension does not appear after installing it.**
+Reload the window: **View > Command Palette**, then **Developer: Reload Window**.
 
-**The deployment fails with "This org does not have the required feature".**
-You signed up for something other than a Developer Edition, most likely a Trailhead Playground with
-a restricted edition. Sign up again at
-[developer.salesforce.com/signup](https://developer.salesforce.com/signup).
+**The Setup panel shows a red line you cannot clear.**
+Click the line. The panel tells you what it tried and what it got back, and that message is nearly
+always the answer.
 
-**The data load fails on `Installation__c` with an external id message.**
-The permission set was not assigned. Run **Training > Set up one of my training orgs** again on the
-same org: it repeats safely and the second run fixes it.
+## Next
 
-## Check your work
+If you came here to set up a real project, you are done: open your team's repository and the
+**DevOps Pipeline** panel will tell you the rest.
 
-Welcome page > **Training** > **Check my work**, then pick level 1 and lab 0.
+If you are taking the course, Lab 1 gets you two free Salesforce orgs and a pipeline of your own.
 
 ## Go deeper
 
-- [Install the tools](https://sfdx-hardis.cloudity.com/salesforce-devops-use-install/)
+- [Install sfdx-hardis](https://sfdx-hardis.cloudity.com/salesforce-devops-use-install/)
 - [The VS Code extension](https://sfdx-hardis.cloudity.com/vscode-extension/)
-- [Data workspaces with SFDMU](https://sfdx-hardis.cloudity.com/salesforce-devops-agent-data-workspaces/)
 
-[Next: Lab 1 - Fork the repository and connect your pipeline](lab-01-fork-and-connect.md){ .md-button .md-button--primary }
+[Next: Lab 1 - Get your orgs and your pipeline](lab-01-fork-and-connect.md){ .md-button .md-button--primary }

@@ -109,7 +109,7 @@ function pipelineNotes(ctx) {
 export const RULES = [
   // ------------------------------------------------------------- level 1
   {
-    id: "1-00", level: 1, lab: 0, auditable: false,
+    id: "1-00", level: 1, lab: 1, auditable: false,
     title: "The training project is cloned and the Helios app is in your org",
     check: (ctx) => {
       const universe = ctx.readOn(ctx.currentBranch(), "training-universe.json");

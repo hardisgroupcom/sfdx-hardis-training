@@ -5,6 +5,9 @@ lab: 1
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/web/sf-signup
+  - annotated/vscode/orgs-manager
+  - annotated/vscode/org-select-alias
   - annotated/vscode/welcome--training-menu
   - annotated/vscode/devops-pipeline--github-auth
   - annotated/vscode/devops-pipeline--read-it
@@ -12,31 +15,30 @@ screenshots:
   - annotated/vscode/pipeline-config-branch
   - annotated/vscode/pipeline-config-branch-edit
 depends_on:
-  commands: []
+  commands: [hardis:org:data:import]
   flags: []
   config: [developmentBranch, availableTargetBranches, targetUsername, instanceUrl, customCommands]
   panels: [pipeline, pipelineConfig, orgManager, welcome]
   docs: [salesforce-devops-git-tokens, salesforce-devops-clone-repository, salesforce-devops-setup-auth-github]
 ---
 
-# Lab 1 - Set up your pipeline and read it
+# Lab 1 - Get your orgs and your pipeline
 
 **Level**: 1 Contributor basics
 
-**Time**: ~10 min
+**Time**: ~25 min
 
-**You will**: turn the read-only clone from Lab 0 into your own working pipeline, then read the
-diagram that tells you which branch deploys where.
+**You will**: end up with two Salesforce orgs that already hold the Helios app and its data, and a
+pipeline of your own that deploys into one of them.
 
 ## The situation
 
-The Helios team keeps its whole project in one **repository** on GitHub: the Salesforce sources, the
-configuration, the automation that deploys it, and every version of all of that since the project
-started. Lab 0 put a copy of it on your machine, but a read-only one: you cannot push to the team's
-repository and neither can anybody on this course.
+You joined Helios this morning and your machine is ready. What you do not have yet is anywhere to
+work: an org to build in, the shared org the team merges into, and the project itself.
 
-So you need your own copy, called a **fork**, and it needs three things done to it before a Pull
-Request opened there can deploy to an org you own. One command does all four.
+Nothing in this lab is what a working day looks like. On a real project the orgs exist, the
+repository exists and its pipeline has been running for months. This is the course handing you all
+three in twenty minutes.
 
 !!! note "This part is not what the job looks like"
     On a real project the repository already exists, its automation is already switched on and
@@ -46,14 +48,188 @@ Request opened there can deploy to an org you own. One command does all four.
 
 ## Before you start
 
-- [ ] Lab 0 finished: both orgs connected in **Orgs Manager** and seeded
-- [ ] The training project open in VS Code, with the sfdx-hardis panel showing
-- [ ] The GitHub CLI installed (Lab 0, step 1). You do not have to sign in: the command below
+- [ ] Lab 0 finished: the Setup panel all green
+- [ ] Two working email addresses, or one address that supports plus-addressing
+- [ ] The GitHub CLI installed (Lab 0, step 1). You do not have to sign in: the command in step 5
       does that for you, in your browser, the first time it needs to
 
 ## Steps
 
-### 1. Set up your pipeline
+### 1. Create your two Developer Edition orgs
+
+Go to [developer.salesforce.com/signup](https://developer.salesforce.com/signup) and sign up
+**twice**. Free, unlimited, no credit card.
+
+The form asks for your first name, last name, job title, company and country or region, then three
+things that decide whether the signup goes through:
+
+1. **Work email** **(1)**
+2. the tick that accepts the master subscription agreement **(2)**
+3. **Sign me up** **(3)**
+
+![The Salesforce Developer Edition signup form](../../_assets/annotated/web/sf-signup.png)
+
+You do not choose a username: it is generated and sent to you.
+
+**Work email** is the field that decides whether the second signup works. It must be a real
+address you can open, because the signup is confirmed by email, and the two orgs cannot share one
+address.
+
+If you only have one, use plus-addressing. Everything between the `+` and the `@` is ignored on
+delivery, so one inbox answers to as many addresses as you like. On Gmail, if your address is
+`jane.doe@gmail.com`:
+
+| Sign up with                  | The confirmation arrives in |
+|-------------------------------|------------------------------|
+| `jane.doe+heliosdev@gmail.com`   | `jane.doe@gmail.com`      |
+| `jane.doe+heliosinteg@gmail.com` | `jane.doe@gmail.com`      |
+
+Salesforce treats them as two different addresses, which is the point. Outlook.com, Fastmail,
+iCloud and most company mail servers do the same; if yours does not, the confirmation simply never
+arrives and you need a second real address.
+
+Name them so you can tell them apart later:
+
+| Org             | What it is for                                              |
+|-----------------|-------------------------------------------------------------|
+| your first org  | your own development environment, where you build           |
+| your second org | the shared integration org, where the team's work is merged |
+
+Open each confirmation email and set a password. The email also carries the username Salesforce
+generated for that org: it looks like an email address but it is not one, and it is what you log in
+with, what `sf org login` authenticates, and what you will type into the pipeline configuration in
+step 2. Keep both usernames somewhere.
+
+!!! note "A Developer Edition org never expires, but it is deactivated after a long period of inactivity. Finish a level within a few weeks and you will never meet that."
+
+### 2. Connect both orgs in Orgs Manager
+
+Back in VS Code, on the Welcome page, click **Orgs Manager**.
+
+![The Orgs Manager table, with the Helios orgs and their connection state](../../_assets/annotated/vscode/orgs-manager.png)
+
+1. Click **Add Org** **(1)**, then pick **Connect to another org** in the list that opens
+2. Leave the login URL on **Production / Developer Edition** (`login.salesforce.com`), because a
+   Developer Edition org is not a sandbox
+3. Your browser opens the Salesforce login page. Sign in with your first org, and allow access
+
+Back in VS Code, the panel asks you one more thing:
+
+![The panel asking what name to give the org that was just connected](../../_assets/annotated/vscode/org-select-alias.png)
+
+**What name do you want to give this org?** The box **(1)** is already filled with a suggestion,
+taken from the org's own web address. On a Developer Edition that address is a string Salesforce
+invented, `orgfarm-9f2a1c7e4b` or similar, which tells you nothing about what the org is for.
+
+**Replace it with `helios-dev`**, then click **Validate** **(2)**.
+
+Repeat the whole thing for your second org, and name that one `helios-integration`.
+
+That name is called an **alias**, and it is what you will see and click from now on: in this panel,
+in the pipeline diagram, everywhere the course says "your dev org". Get these two right and nothing
+else in the training is ambiguous.
+
+Both orgs now appear in the table under the names you gave them **(2)**, with a green **Connected**
+**(3)**. **This panel is how you connect to an org for the rest of the course.** Whenever a lab says
+"connect an org" or "switch to an org", this is where you do it, and it is also how you check which
+org you are pointed at, which saves more confusion than anything else in this training.
+
+<details markdown="1"><summary>Under the hood: what connecting an org just did</summary>
+
+The panel ran:
+
+    sf hardis:org:select
+
+which opened your browser, let Salesforce authenticate you, and stored an OAuth refresh token in
+your user profile (`~/.sfdx`). Nothing is stored in the project, and nothing is committed: the
+credential is yours and stays on your machine. Then it named the org:
+
+    sf alias set helios-dev=you.helios.dev@heliostraining.invalid
+
+The alias is the name everything else uses. Every sfdx-hardis command that wants an org accepts
+`--target-org helios-dev` from now on, and so does the Salesforce CLI itself.
+
+</details>
+
+### 3. Get the repository
+
+You need the training project on your machine before you can seed the orgs from it. Take the team's
+copy for now: it is read-only, and step 5 turns it into your own in one command.
+
+In VS Code:
+
+1. **File > Open Folder**, and pick an empty folder
+2. Open the **Source Control** panel, the branch icon in the narrow bar on the left
+3. Click **Clone Repository** and paste
+   `https://github.com/hardisgroupcom/sfdx-hardis-training.git`
+4. When VS Code asks, click **Open** to work in the cloned folder
+
+If GitHub asks you to sign in, let VS Code handle it: **Sign in with your browser** is enough.
+
+<details markdown="1"><summary>Under the hood: what opening the folder told the extension</summary>
+
+The extension read three files, and it reads them again whenever they change, so you never have to
+reload the window:
+
+- `sfdx-project.json`, which says the Salesforce sources live in `force-app`
+- `config/.sfdx-hardis.yml`, the project configuration: major branches, cleaning rules, the
+  Training menu
+- `config/branches/.sfdx-hardis.integration.yml`, the branch configuration: which org the
+  `integration` branch deploys to
+
+That last one is empty of your details until step 5 fills it in.
+
+</details>
+
+### 4. Seed each org
+
+Open the Welcome page again. Above the built-in cards there is a **CUSTOM MENUS** heading **(1)**,
+holding a single card: **Training (custom)** **(2)**.
+
+![The Welcome page, with the CUSTOM MENUS group and the Training card](../../_assets/annotated/vscode/welcome--training-menu.png)
+
+!!! note "Why the card says \"Training (custom)\""
+    The extension appends `(custom)` to every menu a project declares in its own
+    `config/.sfdx-hardis.yml`, so you can always tell a project's commands from the ones the
+    product ships. The rest of these labs call it the **Training** menu.
+
+Click it, then click **Set up one of my training orgs**.
+
+The command asks which org. Pick `helios-dev`. It then:
+
+1. Deploys the Helios Delivery app into the org
+2. Grants you the **Helios Delivery Manager** permission set
+3. Loads 40 accounts, 60 contacts, 25 opportunities, 30 installations and 80 panel batches
+4. Tells you what it put there
+
+Run it a second time for `helios-integration`.
+
+Each org takes a few minutes, most of it the metadata deployment. It is not stuck.
+
+<details markdown="1"><summary>Under the hood: what "Set up one of my training orgs" just did</summary>
+
+The card runs one command, declared by this project in `config/.sfdx-hardis.yml` under
+`customCommands`:
+
+    node scripts/training.mjs seed
+
+which in turn runs three real commands against the org you picked:
+
+    sf project deploy start --source-dir force-app --target-org helios-dev --wait 60
+    sf org assign permset --name Helios_Delivery_Manager --target-org helios-dev
+    sf hardis:org:data:import --path scripts/data/HeliosBaseline --target-org helios-dev
+
+The order matters, and not in the way you would guess. A metadata deployment grants **no field
+level security to anybody**, not even to a System Administrator. Load the data before assigning the
+permission set and the load fails on fields the running user cannot see, with an error message that
+says nothing about permissions. That is why step 2 sits between the deployment and the data.
+
+The data load is an **upsert on an external id**, so running the card twice updates the same 235
+records instead of creating 470. Anything in this course that can be run twice, can be run twice.
+
+</details>
+
+### 5. Set up your pipeline
 
 On the Welcome page, the **CUSTOM MENUS** heading **(1)** holds a single card, **Training
 (custom)** **(2)**.
@@ -82,7 +258,7 @@ OK  SFDX_AUTH_URL_INTEGRATION is set on your-handle/sfdx-hardis-training.
 Running it twice is harmless: every step checks before it acts. If one of them cannot be done from
 here, it says so and tells you which button to click instead.
 
-### 2. What it just did
+### 6. What it just did
 
 Four things, each of them real work on a real project, and none of them yours to repeat:
 
@@ -109,7 +285,7 @@ Four things, each of them real work on a real project, and none of them yours to
     **Level 3 lab 1 sets up JWT properly for all three orgs, and deletes this secret.** If you only
     ever do Levels 1 and 2, delete the secret and the orgs when you are done.
 
-### 3. Let the extension talk to GitHub
+### 7. Let the extension talk to GitHub
 
 The command you just ran used the GitHub CLI. The **extension** has its own connection to GitHub,
 and it needs one too: without it the pipeline diagram can draw your branches but knows nothing about
@@ -131,7 +307,7 @@ Take **Sign in with VS Code** and approve the request in the browser. The icon t
 colour, its tooltip becomes **Connected to GitHub**, and the panel gains what it could not show
 before: the Pull Requests on your branches, and the **Show feature branches** toggle.
 
-### 4. Look at the pipeline before touching anything
+### 8. Look at the pipeline before touching anything
 
 ![The DevOps Pipeline panel, showing the Helios branches, the integration org and the warnings](../../_assets/annotated/vscode/devops-pipeline--read-it.png)
 
@@ -154,14 +330,14 @@ in this course is detail.
 
     The missing merge target is the missing rest of the pipeline: `uat` and `main` are not wired,
     and Level 3 lab 0 wires them. The missing certificate is the proper CI authentication, which
-    Level 3 lab 1 sets up and which the secret from step 1 stands in for.
+    Level 3 lab 1 sets up and which the secret from step 5 stands in for.
 
     A panel that tells you what is not finished is doing its job. Read these warnings on your own
     projects: they are usually right.
 
-### 5. Find where the org setting lives, and change it
+### 9. Find where the org setting lives, and change it
 
-Step 1 wrote the branch configuration for you. Find it now anyway, because on a real project this is
+Step 5 wrote the branch configuration for you. Find it now anyway, because on a real project this is
 the screen you use, and because you will need it again in Level 3.
 
 In the DevOps Pipeline panel, open the gear menu at the top right **(1)** and choose
@@ -245,7 +421,7 @@ The extension did not find `config/.sfdx-hardis.yml`. You opened the wrong folde
 root of the clone, the folder that directly contains `sfdx-project.json`.
 
 **The pipeline shows branches but no Pull Requests.**
-The extension is not connected to GitHub. That is step 3, and the icon at the top of the panel is
+The extension is not connected to GitHub. That is step 7, and the icon at the top of the panel is
 grey.
 
 **VS Code cannot push and asks for credentials in a loop.**

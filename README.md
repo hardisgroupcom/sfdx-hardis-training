@@ -20,18 +20,28 @@ Each level awards a **Cloudity badge**. It is a badge, not a certification.
 
 ## Getting started
 
-1. Install [VS Code](https://code.visualstudio.com/) and [Node.js](https://nodejs.org/) 22 or later (24 recommended)
-2. Install the **sfdx-hardis** extension from the VS Code marketplace
-3. Open the sfdx-hardis panel, click **Setup**, and let it install the Salesforce CLI and the plugins
-4. Sign up for two free [Developer Edition orgs](https://developer.salesforce.com/signup)
-5. Install the [GitHub CLI](https://cli.github.com/) and run `gh auth login`
-6. Clone this repository and connect both orgs in **Orgs Manager**
-7. Welcome page > **Training** > **Set up my pipeline**, which forks the repository, turns Actions
-   on and gives the CI job a way into your org
-8. Welcome page > **Training** > **Set up one of my training orgs**, once per org
+**The tools**, which is the same list on any Salesforce project, not just this one:
 
-Then follow [Level 1 lab 0](https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-00-setup/),
-which walks through all of the above with screenshots.
+1. Install [Git](https://git-scm.com/downloads), [VS Code](https://code.visualstudio.com/),
+   [Node.js](https://nodejs.org/) 22 or later (24 recommended) and the
+   [GitHub CLI](https://cli.github.com/)
+2. Install the **SFDX Hardis Extension Pack for Salesforce** from the VS Code marketplace
+3. Open the sfdx-hardis panel, click **Setup**, and let it install the Salesforce CLI and the plugins
+
+**Then the course**, which is the part that only makes sense here:
+
+4. Sign up for two free [Developer Edition orgs](https://developer.salesforce.com/signup) and
+   connect them in **Orgs Manager**, naming them `helios-dev` and `helios-integration`
+5. Clone this repository
+6. Welcome page > **Training** > **Set up my pipeline**, which forks the repository, turns Actions
+   on and gives the CI job a way into your org
+7. Welcome page > **Training** > **Set up one of my training orgs**, once per org
+
+[Level 1 lab 0](https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-00-setup/) is
+the first block, with screenshots, and it stands on its own: finish it and stop if you only came to
+set a machine up.
+[Lab 1](https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-01-fork-and-connect/) is
+the second.
 
 ## Everything happens in your own copy
 

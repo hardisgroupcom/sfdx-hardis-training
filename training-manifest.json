@@ -10,22 +10,16 @@
       "title": "Install the tools and seed your orgs",
       "file": "labs/en/level-1/lab-00-setup.md",
       "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-00-setup/",
-      "commands": [
-        "hardis:org:data:import"
-      ],
+      "commands": [],
       "flags": [],
-      "config": [
-        "customCommands",
-        "customCommandsPosition"
-      ],
+      "config": [],
       "docs": [
         "salesforce-devops-use-install",
         "vscode-extension"
       ],
       "panels": [
         "welcome",
-        "setup",
-        "orgManager"
+        "setup"
       ],
       "screenshots": [
         "annotated/web/git-download",
@@ -35,11 +29,7 @@
         "annotated/web/vscode-marketplace",
         "annotated/vscode/welcome--first-open",
         "annotated/vscode/welcome--setup-button",
-        "annotated/vscode/setup",
-        "annotated/web/sf-signup",
-        "annotated/vscode/orgs-manager",
-        "annotated/vscode/org-select-alias",
-        "annotated/vscode/welcome--training-menu"
+        "annotated/vscode/setup"
       ]
     },
     {
@@ -49,7 +39,9 @@
       "title": "Fork the repository and connect your pipeline",
       "file": "labs/en/level-1/lab-01-fork-and-connect.md",
       "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-01-fork-and-connect/",
-      "commands": [],
+      "commands": [
+        "hardis:org:data:import"
+      ],
       "flags": [],
       "config": [
         "developmentBranch",
@@ -70,6 +62,9 @@
         "welcome"
       ],
       "screenshots": [
+        "annotated/web/sf-signup",
+        "annotated/vscode/orgs-manager",
+        "annotated/vscode/org-select-alias",
         "annotated/vscode/welcome--training-menu",
         "annotated/vscode/devops-pipeline--github-auth",
         "annotated/vscode/devops-pipeline--read-it",
@@ -794,215 +789,6 @@
     }
   ],
   "reverseIndex": {
-    "commands": {
-      "hardis:org:data:import": [
-        "l1-lab-00-setup",
-        "l2-lab-03-deployment-actions-data",
-        "l2-lab-08-capstone"
-      ],
-      "hardis:work:new": [
-        "l1-lab-02-new-user-story",
-        "l1-lab-06-capstone",
-        "l2-lab-01-missing-dependency",
-        "l2-lab-08-capstone"
-      ],
-      "hardis:work:save": [
-        "l1-lab-04-publish",
-        "l1-lab-06-capstone",
-        "l2-lab-01-missing-dependency",
-        "l2-lab-02-deployment-actions-apex",
-        "l2-lab-03-deployment-actions-data",
-        "l2-lab-04-quality-and-tests",
-        "l2-lab-05-profiles-overwrites",
-        "l2-lab-06-conflicts",
-        "l2-lab-07-recover-selection",
-        "l2-lab-08-capstone"
-      ],
-      "hardis:project:deploy:smart": [
-        "l1-lab-05-pull-request",
-        "l2-lab-01-missing-dependency",
-        "l2-lab-02-deployment-actions-apex",
-        "l2-lab-04-quality-and-tests",
-        "l3-lab-02-review-pr",
-        "l3-lab-03-deploy-integration",
-        "l3-lab-04-overwrite-cleaning",
-        "l3-lab-05-uat-release-notes",
-        "l3-lab-06-production",
-        "l3-lab-07-hotfix-retrofit",
-        "l3-lab-10-capstone"
-      ],
-      "hardis:work:backpromote": [
-        "l2-lab-00-refresh"
-      ],
-      "hardis:work:refresh": [
-        "l2-lab-00-refresh",
-        "l2-lab-06-conflicts"
-      ],
-      "hardis:work:resetselection": [
-        "l2-lab-07-recover-selection"
-      ],
-      "hardis:project:create": [
-        "l3-lab-00-finish-the-pipeline"
-      ],
-      "hardis:project:configure:auth": [
-        "l3-lab-01-ci-auth"
-      ],
-      "hardis:doc:release-notes": [
-        "l3-lab-05-uat-release-notes",
-        "l3-lab-10-capstone"
-      ],
-      "hardis:doc:dora-report": [
-        "l3-lab-06-production",
-        "l3-lab-10-capstone"
-      ],
-      "hardis:org:retrieve:sources:retrofit": [
-        "l3-lab-07-hotfix-retrofit"
-      ],
-      "hardis:org:configure:monitoring": [
-        "l3-lab-08-monitoring"
-      ],
-      "hardis:doc:project2markdown": [
-        "l3-lab-09-documentation"
-      ]
-    },
-    "config": {
-      "customCommands": [
-        "l1-lab-00-setup",
-        "l1-lab-01-fork-and-connect"
-      ],
-      "customCommandsPosition": [
-        "l1-lab-00-setup"
-      ],
-      "developmentBranch": [
-        "l1-lab-01-fork-and-connect",
-        "l1-lab-02-new-user-story"
-      ],
-      "availableTargetBranches": [
-        "l1-lab-01-fork-and-connect",
-        "l1-lab-02-new-user-story",
-        "l3-lab-00-finish-the-pipeline",
-        "l3-lab-05-uat-release-notes"
-      ],
-      "targetUsername": [
-        "l1-lab-01-fork-and-connect",
-        "l3-lab-00-finish-the-pipeline",
-        "l3-lab-01-ci-auth"
-      ],
-      "instanceUrl": [
-        "l1-lab-01-fork-and-connect",
-        "l3-lab-00-finish-the-pipeline",
-        "l3-lab-01-ci-auth"
-      ],
-      "branchPrefixChoices": [
-        "l1-lab-02-new-user-story"
-      ],
-      "newTaskNameRegex": [
-        "l1-lab-02-new-user-story"
-      ],
-      "autoCleanTypes": [
-        "l1-lab-04-publish",
-        "l1-lab-06-capstone",
-        "l2-lab-05-profiles-overwrites",
-        "l2-lab-06-conflicts",
-        "l2-lab-08-capstone",
-        "l3-lab-04-overwrite-cleaning"
-      ],
-      "autoRemoveUserPermissions": [
-        "l1-lab-04-publish",
-        "l2-lab-05-profiles-overwrites"
-      ],
-      "testLevel": [
-        "l1-lab-05-pull-request",
-        "l2-lab-04-quality-and-tests",
-        "l3-lab-03-deploy-integration"
-      ],
-      "apexTestsMinCoverageOrgWide": [
-        "l1-lab-05-pull-request",
-        "l2-lab-04-quality-and-tests"
-      ],
-      "backpromoteScanLimit": [
-        "l2-lab-00-refresh"
-      ],
-      "commandsPostDeploy": [
-        "l2-lab-02-deployment-actions-apex",
-        "l2-lab-03-deployment-actions-data",
-        "l2-lab-08-capstone"
-      ],
-      "apexScript": [
-        "l2-lab-02-deployment-actions-apex"
-      ],
-      "runOnlyOnceByOrg": [
-        "l2-lab-02-deployment-actions-apex"
-      ],
-      "dataPackages": [
-        "l2-lab-03-deployment-actions-data"
-      ],
-      "testCoverageNotBlocking": [
-        "l2-lab-04-quality-and-tests"
-      ],
-      "minimizeProfiles": [
-        "l2-lab-05-profiles-overwrites"
-      ],
-      "packageNoOverwritePath": [
-        "l2-lab-05-profiles-overwrites",
-        "l3-lab-04-overwrite-cleaning"
-      ],
-      "availableTargetBranchesLabels": [
-        "l3-lab-00-finish-the-pipeline"
-      ],
-      "productionBranch": [
-        "l3-lab-00-finish-the-pipeline",
-        "l3-lab-06-production",
-        "l3-lab-07-hotfix-retrofit",
-        "l3-lab-10-capstone"
-      ],
-      "mergeTargets": [
-        "l3-lab-00-finish-the-pipeline",
-        "l3-lab-05-uat-release-notes",
-        "l3-lab-06-production",
-        "l3-lab-10-capstone"
-      ],
-      "orgAuthenticationMode": [
-        "l3-lab-01-ci-auth"
-      ],
-      "useDeltaDeployment": [
-        "l3-lab-03-deploy-integration",
-        "l3-lab-04-overwrite-cleaning"
-      ],
-      "enableDeltaDeploymentBetweenMajorBranches": [
-        "l3-lab-03-deploy-integration"
-      ],
-      "retrofitBranch": [
-        "l3-lab-07-hotfix-retrofit"
-      ],
-      "sourcesToRetrofit": [
-        "l3-lab-07-hotfix-retrofit"
-      ],
-      "retrofitIgnoredFiles": [
-        "l3-lab-07-hotfix-retrofit"
-      ],
-      "monitoringCommands": [
-        "l3-lab-08-monitoring"
-      ],
-      "monitoringDisable": [
-        "l3-lab-08-monitoring"
-      ],
-      "notificationConfig": [
-        "l3-lab-08-monitoring"
-      ],
-      "msTeamsWebhookUrl": [
-        "l3-lab-08-monitoring"
-      ],
-      "docDeployToOrg": [
-        "l3-lab-09-documentation"
-      ],
-      "docDeployToCloudflare": [
-        "l3-lab-09-documentation"
-      ],
-      "mermaidTheme": [
-        "l3-lab-09-documentation"
-      ]
-    },
     "docs": {
       "salesforce-devops-use-install": [
         "l1-lab-00-setup"
@@ -1142,14 +928,6 @@
       "setup": [
         "l1-lab-00-setup"
       ],
-      "orgManager": [
-        "l1-lab-00-setup",
-        "l1-lab-01-fork-and-connect",
-        "l1-lab-02-new-user-story",
-        "l1-lab-03-build-in-org",
-        "l1-lab-06-capstone",
-        "l3-lab-01-ci-auth"
-      ],
       "pipeline": [
         "l1-lab-01-fork-and-connect",
         "l1-lab-02-new-user-story",
@@ -1177,6 +955,13 @@
         "l2-lab-05-profiles-overwrites",
         "l3-lab-00-finish-the-pipeline",
         "l3-lab-04-overwrite-cleaning"
+      ],
+      "orgManager": [
+        "l1-lab-01-fork-and-connect",
+        "l1-lab-02-new-user-story",
+        "l1-lab-03-build-in-org",
+        "l1-lab-06-capstone",
+        "l3-lab-01-ci-auth"
       ],
       "promptInput": [
         "l1-lab-02-new-user-story",
@@ -1224,6 +1009,211 @@
         "l3-lab-09-documentation"
       ],
       "documentationConfig": [
+        "l3-lab-09-documentation"
+      ]
+    },
+    "commands": {
+      "hardis:org:data:import": [
+        "l1-lab-01-fork-and-connect",
+        "l2-lab-03-deployment-actions-data",
+        "l2-lab-08-capstone"
+      ],
+      "hardis:work:new": [
+        "l1-lab-02-new-user-story",
+        "l1-lab-06-capstone",
+        "l2-lab-01-missing-dependency",
+        "l2-lab-08-capstone"
+      ],
+      "hardis:work:save": [
+        "l1-lab-04-publish",
+        "l1-lab-06-capstone",
+        "l2-lab-01-missing-dependency",
+        "l2-lab-02-deployment-actions-apex",
+        "l2-lab-03-deployment-actions-data",
+        "l2-lab-04-quality-and-tests",
+        "l2-lab-05-profiles-overwrites",
+        "l2-lab-06-conflicts",
+        "l2-lab-07-recover-selection",
+        "l2-lab-08-capstone"
+      ],
+      "hardis:project:deploy:smart": [
+        "l1-lab-05-pull-request",
+        "l2-lab-01-missing-dependency",
+        "l2-lab-02-deployment-actions-apex",
+        "l2-lab-04-quality-and-tests",
+        "l3-lab-02-review-pr",
+        "l3-lab-03-deploy-integration",
+        "l3-lab-04-overwrite-cleaning",
+        "l3-lab-05-uat-release-notes",
+        "l3-lab-06-production",
+        "l3-lab-07-hotfix-retrofit",
+        "l3-lab-10-capstone"
+      ],
+      "hardis:work:backpromote": [
+        "l2-lab-00-refresh"
+      ],
+      "hardis:work:refresh": [
+        "l2-lab-00-refresh",
+        "l2-lab-06-conflicts"
+      ],
+      "hardis:work:resetselection": [
+        "l2-lab-07-recover-selection"
+      ],
+      "hardis:project:create": [
+        "l3-lab-00-finish-the-pipeline"
+      ],
+      "hardis:project:configure:auth": [
+        "l3-lab-01-ci-auth"
+      ],
+      "hardis:doc:release-notes": [
+        "l3-lab-05-uat-release-notes",
+        "l3-lab-10-capstone"
+      ],
+      "hardis:doc:dora-report": [
+        "l3-lab-06-production",
+        "l3-lab-10-capstone"
+      ],
+      "hardis:org:retrieve:sources:retrofit": [
+        "l3-lab-07-hotfix-retrofit"
+      ],
+      "hardis:org:configure:monitoring": [
+        "l3-lab-08-monitoring"
+      ],
+      "hardis:doc:project2markdown": [
+        "l3-lab-09-documentation"
+      ]
+    },
+    "config": {
+      "developmentBranch": [
+        "l1-lab-01-fork-and-connect",
+        "l1-lab-02-new-user-story"
+      ],
+      "availableTargetBranches": [
+        "l1-lab-01-fork-and-connect",
+        "l1-lab-02-new-user-story",
+        "l3-lab-00-finish-the-pipeline",
+        "l3-lab-05-uat-release-notes"
+      ],
+      "targetUsername": [
+        "l1-lab-01-fork-and-connect",
+        "l3-lab-00-finish-the-pipeline",
+        "l3-lab-01-ci-auth"
+      ],
+      "instanceUrl": [
+        "l1-lab-01-fork-and-connect",
+        "l3-lab-00-finish-the-pipeline",
+        "l3-lab-01-ci-auth"
+      ],
+      "customCommands": [
+        "l1-lab-01-fork-and-connect"
+      ],
+      "branchPrefixChoices": [
+        "l1-lab-02-new-user-story"
+      ],
+      "newTaskNameRegex": [
+        "l1-lab-02-new-user-story"
+      ],
+      "autoCleanTypes": [
+        "l1-lab-04-publish",
+        "l1-lab-06-capstone",
+        "l2-lab-05-profiles-overwrites",
+        "l2-lab-06-conflicts",
+        "l2-lab-08-capstone",
+        "l3-lab-04-overwrite-cleaning"
+      ],
+      "autoRemoveUserPermissions": [
+        "l1-lab-04-publish",
+        "l2-lab-05-profiles-overwrites"
+      ],
+      "testLevel": [
+        "l1-lab-05-pull-request",
+        "l2-lab-04-quality-and-tests",
+        "l3-lab-03-deploy-integration"
+      ],
+      "apexTestsMinCoverageOrgWide": [
+        "l1-lab-05-pull-request",
+        "l2-lab-04-quality-and-tests"
+      ],
+      "backpromoteScanLimit": [
+        "l2-lab-00-refresh"
+      ],
+      "commandsPostDeploy": [
+        "l2-lab-02-deployment-actions-apex",
+        "l2-lab-03-deployment-actions-data",
+        "l2-lab-08-capstone"
+      ],
+      "apexScript": [
+        "l2-lab-02-deployment-actions-apex"
+      ],
+      "runOnlyOnceByOrg": [
+        "l2-lab-02-deployment-actions-apex"
+      ],
+      "dataPackages": [
+        "l2-lab-03-deployment-actions-data"
+      ],
+      "testCoverageNotBlocking": [
+        "l2-lab-04-quality-and-tests"
+      ],
+      "minimizeProfiles": [
+        "l2-lab-05-profiles-overwrites"
+      ],
+      "packageNoOverwritePath": [
+        "l2-lab-05-profiles-overwrites",
+        "l3-lab-04-overwrite-cleaning"
+      ],
+      "availableTargetBranchesLabels": [
+        "l3-lab-00-finish-the-pipeline"
+      ],
+      "productionBranch": [
+        "l3-lab-00-finish-the-pipeline",
+        "l3-lab-06-production",
+        "l3-lab-07-hotfix-retrofit",
+        "l3-lab-10-capstone"
+      ],
+      "mergeTargets": [
+        "l3-lab-00-finish-the-pipeline",
+        "l3-lab-05-uat-release-notes",
+        "l3-lab-06-production",
+        "l3-lab-10-capstone"
+      ],
+      "orgAuthenticationMode": [
+        "l3-lab-01-ci-auth"
+      ],
+      "useDeltaDeployment": [
+        "l3-lab-03-deploy-integration",
+        "l3-lab-04-overwrite-cleaning"
+      ],
+      "enableDeltaDeploymentBetweenMajorBranches": [
+        "l3-lab-03-deploy-integration"
+      ],
+      "retrofitBranch": [
+        "l3-lab-07-hotfix-retrofit"
+      ],
+      "sourcesToRetrofit": [
+        "l3-lab-07-hotfix-retrofit"
+      ],
+      "retrofitIgnoredFiles": [
+        "l3-lab-07-hotfix-retrofit"
+      ],
+      "monitoringCommands": [
+        "l3-lab-08-monitoring"
+      ],
+      "monitoringDisable": [
+        "l3-lab-08-monitoring"
+      ],
+      "notificationConfig": [
+        "l3-lab-08-monitoring"
+      ],
+      "msTeamsWebhookUrl": [
+        "l3-lab-08-monitoring"
+      ],
+      "docDeployToOrg": [
+        "l3-lab-09-documentation"
+      ],
+      "docDeployToCloudflare": [
+        "l3-lab-09-documentation"
+      ],
+      "mermaidTheme": [
         "l3-lab-09-documentation"
       ]
     }
