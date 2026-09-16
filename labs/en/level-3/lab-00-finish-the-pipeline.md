@@ -68,20 +68,24 @@ them in one sentence each, configuring them will not help.
 ### 2. Declare uat and main as targets
 
 Open the **DevOps Pipeline** panel, then its settings menu at the top right, and **Pipeline
-Settings**. It opens on **Global Pipeline Settings**, which the configuration scope selector
-**(1)** confirms.
+Settings**. The page title reads **Global Pipeline Settings**, and the configuration scope selector
+**(1)** reads **Global Settings**.
 
 ![The Global Pipeline Settings screen, with the scope selector, the Edit button and the User Stories tab](../../_assets/annotated/vscode/pipeline-config--target-branches.png)
 
 The panel is read-only until you click **Edit** **(2)**, so click it first. Then open the **User
-Stories** tab **(3)**, where the contribution settings live, and add `uat` and `main` to the list of
-available target branches, with labels contributors will understand:
+Stories** tab **(3)**, one of the ten tabs of the global scope, where the contribution settings live.
 
-| Branch      | Label                                                                 |
-|-------------|-----------------------------------------------------------------------|
-| integration | `integration: shared integration org, where every contributor merges` |
-| uat         | `uat: user acceptance, only a release manager targets this`           |
-| main        | `main: production, hotfixes only`                                     |
+Two fields matter here, and they are **two separate text boxes, one value per line**:
+**Available PR/MR target branches** and **Labels for available PR/MR target branches**. Nothing
+pairs them except their order, so line 2 of one belongs to line 2 of the other. Get the order wrong
+and contributors see the wrong description next to the right branch, with no error anywhere.
+
+| Line | Branch      | Label                                                                 |
+|------|-------------|-----------------------------------------------------------------------|
+| 1    | integration | `integration: shared integration org, where every contributor merges` |
+| 2    | uat         | `uat: user acceptance, only a release manager targets this`           |
+| 3    | main        | `main: production, hotfixes only`                                     |
 
 **Save**.
 
@@ -100,25 +104,42 @@ available target branches, with labels contributors will understand:
 
 ### 3. Give uat and main their orgs
 
-Back in the pipeline diagram, `uat` and `main` now appear as columns with no org.
+Refresh the pipeline diagram and `uat` and `main` are still not on it. Declaring them as target
+branches told the contribution screen they exist. It did not make them major branches.
 
-For each one, switch the configuration scope selector of **Pipeline Settings** **(1)** to
-`Branch: uat`, then to `Branch: main`. The title becomes **Pipeline Settings for major git branch
-uat**. Click **Edit** **(2)**, then fill in the two fields of the **Salesforce Org** tab **(3)**:
+**A branch becomes major by having a file in `config/branches/`, and no screen creates the first
+one.** The scope selector only lists branches that already have such a file, so `Branch: uat` is not
+in it yet, and the panel cannot bootstrap itself out of that.
 
-![The Pipeline Settings panel scoped to one major branch](../../_assets/annotated/vscode/pipeline-config-branch.png)
+So write the two files by hand, next to the `integration` one that is already there:
 
-| Branch | Target username                | Instance URL                   |
+    config/branches/.sfdx-hardis.uat.yml
+    config/branches/.sfdx-hardis.main.yml
+
+with two keys each. Get the usernames from **Orgs Manager**, and check them twice: pointing `main`
+at the wrong org is the single most expensive mistake available in this lab.
+
+| Branch | `targetUsername`               | `instanceUrl`                  |
 |--------|--------------------------------|--------------------------------|
 | uat    | the `helios-uat` org username  | `https://login.salesforce.com` |
 | main   | the `helios-prod` org username | `https://login.salesforce.com` |
 
-Get the usernames from **Orgs Manager**, and check them twice. Pointing `main` at the wrong org is
-the single most expensive mistake available in this lab.
+Now reopen **Pipeline Settings**. The scope selector **(1)** offers `Branch: uat` and `Branch: main`,
+and picking one changes the title to **Pipeline Settings for major git branch uat**. Click **Edit**
+**(2)** and the two fields of the **Salesforce Org** tab **(3)** hold what you just wrote:
+
+![The Pipeline Settings panel scoped to one major branch](../../_assets/annotated/vscode/pipeline-config-branch.png)
+
+Before **Edit**, that tab shows one summary card reading `Instance URL` and `Target Username` rather
+than two editable fields. That is the view mode, not a missing setting.
+
+The next lab writes these same two keys for you, as a side effect of configuring CI authentication.
+Doing it by hand once is how you know what it wrote.
 
 ### 4. Declare the merge path
 
-Still in the branch settings, on the **Deployment** tab of the same panel, set the merge targets:
+Still in the branch settings, on the **Deployment** tab of the same panel, set **Merge target
+branches**, one value per line:
 
 | Branch      | Merge targets |
 |-------------|---------------|
@@ -153,27 +174,35 @@ conversation with a stakeholder who asks "so where is it".
       - "main: production, hotfixes only"
     productionBranch: main
 
-and two new files appeared under `config/branches/`:
-
-    config/branches/.sfdx-hardis.uat.yml
-    config/branches/.sfdx-hardis.main.yml
-
-each holding `targetUsername`, `instanceUrl` and `mergeTargets`.
+and the two files you wrote under `config/branches/` now hold `targetUsername`, `instanceUrl` and
+`mergeTargets`.
 
 **A major branch is not declared anywhere as "major".** It becomes one by having a branch
 configuration file with an org in it. That is the whole mechanism, and knowing it means you can read
-any sfdx-hardis project in two minutes by listing `config/branches/`.
+any sfdx-hardis project in two minutes by listing `config/branches/`. It is also why step 3 started
+in a text editor: every screen that reads major branches, the pipeline diagram and the scope
+selector included, is reading that folder, so none of them can show you a branch that has no file
+there yet.
+
+One more thing worth knowing about the panel: at branch scope it only writes what differs from the
+global configuration. A value you type that happens to equal the global one is silently not written,
+and you get a file that looks like it lost your edit.
 
 ### What `sf hardis:project:create` would have done
 
-Had Helios started today, the project would have been generated rather than assembled:
+Had Helios started today, the skeleton would have been generated rather than assembled:
 
     sf hardis:project:create
 
-which asks for the branch names and the orgs, then writes `sfdx-project.json`,
-`config/.sfdx-hardis.yml`, every `config/branches/` file, `manifest/package.xml`, the `.gitignore`
-and `.forceignore`, and the CI workflows for your git provider. It is the same result you have just
-produced by hand, which is the point of doing it by hand once.
+which asks for the type of development orgs, the project name, **one** development branch and the
+cleaning types, connects a DevHub, runs `sf project generate`, then copies the default CI files over
+the result: the workflows for **every** git provider at once, `manifest/package-no-overwrite.xml`,
+`.mega-linter.yml` and friends. It writes `projectName`, `developmentBranch` and `autoCleanTypes`
+into `config/.sfdx-hardis.yml`.
+
+It does **not** write a single `config/branches/` file, and it never asks for an org other than the
+DevHub. The branch files are the next lab's command, or your text editor. So generating the project
+would have saved you the skeleton and left you exactly the work you have just done.
 
 The other command worth knowing about is `sf hardis:org:retrieve:sources:dx`, which takes an
 existing org with no repository at all and produces the initial commit. That is the real starting

@@ -41,7 +41,8 @@ deploys to has real testers in it.
 ### 1. See what you are about to ship
 
 Open the **DevOps Pipeline** panel and click the `integration` node in the diagram. A window opens
-on that branch.
+on that branch, titled **Pull Requests in integration**, with up to four tabs: **Pull Requests**,
+**Tickets**, **Deployment Actions** and **Apex Tests**.
 
 ![The branch window of integration, listing what it carries](../../_assets/annotated/vscode/pipeline-branch-modal.png)
 
@@ -50,7 +51,9 @@ since the last promotion to `uat`. That list **is** the release. Read it before 
 if a story in it should not go out this week, now is the moment, not after the deployment.
 
 **Deployment Actions** **(2)** is the same list of actions those Pull Requests carried, gathered in
-one place, and step 3 comes back to it. **(3)** generates the notes, which is step 6.
+one place, and step 3 comes back to it. **Tickets** is the same again for whatever ticketing system
+the project declares, which this one does not, so it will be empty. **(3)** generates the notes,
+which is step 6.
 
 !!! note "Empty, with a Go Live selector instead?"
     Then this branch has no merge target yet, and the panel is showing you its go-lives rather than
@@ -59,7 +62,13 @@ one place, and step 3 comes back to it. **(3)** generates the notes, which is st
 
 ### 2. Create the promotion Pull Request
 
-From the same window, create the Pull Request from `integration` into `uat`.
+Create it on GitHub, from `integration` into `uat`, like any other Pull Request.
+
+!!! note "There is no button for this in the panel, and that is correct"
+    The branch window does have a **Create promotion from integration (experimental)** button, but
+    it only appears when the project turns on `enablePromotionBranches`, which this one does not.
+    That feature is for promoting a **subset** of what is waiting. What you are doing is promoting
+    everything, and everything is what a plain Pull Request from one branch to the next carries.
 
 Title it for the humans who will read it, not for git:
 
@@ -67,11 +76,14 @@ Title it for the humans who will read it, not for git:
 
 ### 3. Read the deployment actions it carries
 
-Once the check runs, the sfdx-hardis comment has a **Deployment actions** section. This is the part
+Once the check runs, the sfdx-hardis comment gains a section headed **Post-deployment Actions
+Results** (the merge job adds **Pre-deployment Actions Results** in the same shape). This is the part
 of a promotion that has no equivalent in a contributor Pull Request.
 
-Every action any contributor declared on any of the merged stories is collected here, in order, with
-what it will do and in which org.
+Every action any contributor declared on any of the merged stories is collected into one table, with
+its label, its type, its status and a link back to the Pull Request it came from. Anything needing a
+human gets a **checklist above the table**, under a heading that says whether it happens before or
+after the deployment.
 
 **Read it before merging.** Two things to look for:
 
@@ -80,9 +92,12 @@ what it will do and in which org.
 | A **manual step** | Somebody has to click something in UAT. That somebody is you, and it will not happen unless you plan it |
 | A **data import** | Records will be written to UAT. Testers may have their own records there                                |
 
-The actions are read-only in a promotion: you cannot edit a contributor's action from here, because
-it belongs to their Pull Request and to every org after this one. If one is wrong, it is fixed in a
-new Pull Request, not in this promotion.
+You cannot edit a contributor's action from here: it belongs to their Pull Request and to every org
+after this one, so a wrong action is fixed in a new Pull Request rather than in this promotion.
+
+The checklist is the exception, and it is not decoration. **Tick a box once you have done the thing
+in the org**, and the next sfdx-hardis job reads the box back and records the action as done. Leave
+it unticked and the next promotion will still be asking you for it.
 
 ### 4. Merge and watch the deployment
 
@@ -106,15 +121,22 @@ a piece of reference data.
 ### 6. Generate the release notes
 
 Open the **DevOps Pipeline** panel and click the `uat` column, the same way you clicked
-`integration` in step 1. At the bottom of the branch window, click **Generate Promotion Notes for uat**: it covers the promotion you have just merged.
+`integration` in step 1. In the footer of the branch window, click **Generate Promotion Notes for
+uat**: it covers the promotion you have just merged.
 
 The button is named after what the branch is. `uat` still merges into `main`, so what arrived there
 is a promotion. On a branch with no merge target, `main`, the same button reads **Generate Release
-Notes for Latest Release in main**, and **Generate Release Notes for** the go-live you choose in the
-selector at the top of the window.
+Notes for Latest Release in main**, and once you pick a go-live in the selector at the top of the
+window it reads **Generate Release Notes for** that go-live.
+
+Next to it sits **Preview Upcoming Promotion Notes from uat**, which does the same thing for what has
+not been promoted yet. It is the one to use on a Wednesday, when somebody asks what Thursday's
+release will contain.
 
 You get a markdown document listing the Pull Requests, their authors, their stories and the manual
-steps, generated from the merge history rather than from anybody's memory.
+steps, generated from the merge history rather than from anybody's memory. It lands under
+`hardis-report/release-notes/`, in a folder named after the version and the date, as markdown, PDF
+and spreadsheet.
 
 Read it and then improve it. Generated notes are a complete list, and a release note the business
 reads needs two things the generator cannot know:
@@ -129,15 +151,20 @@ Commit the result in the repository, and put its link in `MY-PIPELINE.md`.
 
 The command was:
 
-    sf hardis:doc:release-notes
+    sf hardis:doc:release-notes --mode post --target-branch uat
 
 which walks the git history between two references, collects the merge commits, matches each one
 with its Pull Request through the git provider API, and pulls the title, author, body and declared
 deployment actions.
 
-**This is why Lab 2 said not to squash.** A squashed merge loses the link between the commit and the
-Pull Request, and both the release notes and the DORA report in Lab 6 are built from exactly that
-link. A project that squashes everything has no release notes it did not write by hand.
+**That API call is the part that can quietly fail.** The command needs a git provider token, taken
+from the environment (`GITHUB_TOKEN` or `CI_SFDX_HARDIS_GITHUB_TOKEN` on GitHub). With no token it
+does not stop: it warns, collects zero Pull Requests, and writes you a perfectly formatted document
+with nothing in it. An empty release note is more often a missing token than an empty release.
+
+**This is also why Lab 2 said not to squash.** A squashed merge loses the link between the commit and
+the Pull Request, and both the release notes and the DORA report in Lab 6 lean on exactly that link.
+A project that squashes everything has no release notes it did not write by hand.
 
 **A promotion is an ordinary Pull Request.** There is no special promotion machinery in the default
 setup: `integration` into `uat` is a branch merged into another branch, and the deployment job on
@@ -175,8 +202,9 @@ That is expected on a first promotion: UAT is behind by the whole history. It se
 one.
 
 **The release notes are empty.**
-The history between the two references has no merge commits with Pull Requests behind them. Either
-the range is wrong, or the merges were squashed.
+Three causes, in order of likelihood: no git provider token in the environment, so the Pull Request
+lookup returned nothing and only warned; the merges were squashed, so there is no link to look up;
+or the range is wrong.
 
 ## Check your work
 

@@ -23,7 +23,7 @@ what changed.
 
 ## The situation
 
-Merging Marco's Pull Request started a deployment job. Most people watch the colour and move on.
+Merging your layout fix started a deployment job. Most people watch the colour and move on.
 
 A release manager reads it, because the deployment log is the only place that says what actually
 reached the org, and the difference between that and what you thought you were shipping is where
@@ -31,7 +31,7 @@ incidents come from.
 
 ## Before you start
 
-- [ ] Lab 2 finished: US-018 merged into `integration`
+- [ ] Lab 2 finished: your layout fix merged into `integration`
 
 ## Steps
 
@@ -61,49 +61,60 @@ step 3 is about it.
 
 **Five: post-deploy actions**, then the notification.
 
-### 3. Understand why the package is smaller than the diff
+### 3. Understand why the package is bigger than the diff
 
-Marco changed a flow, a permission set, a field and a layout: four components.
+You changed one component. Now read what the job actually sent.
 
-The deployment sent fewer than the repository holds, and on a real project it would send fewer
-still. Two mechanisms decide that, and they are different:
+Open `manifest/package.xml`. It lists the whole Helios app, about thirty components, and **that is
+the package**: on this project every deployment to `integration` sends all of it, whatever the diff
+said. The log's count of components sent will say so.
 
-**Delta deployment.** Instead of sending the whole repository, sfdx-hardis computes what changed
+That is the default, and it is worth feeling once before you learn the thing that fixes it.
+
+**Delta deployment.** Instead of sending the declared package, sfdx-hardis computes what changed
 between the commit already deployed to this org and the new one, and sends only that. A full
 Salesforce deployment of a mature project takes 40 minutes; a delta takes 3. The trade is that the
 org has to genuinely be at the commit the pipeline thinks it is at.
 
 !!! note "This project has delta off, on purpose"
     `useDeltaDeployment` is absent from `config/.sfdx-hardis.yml`, so every deployment in this
-    course sends the full package. Read it in **Pipeline Settings**, **Deployment** tab: **Use Delta
-    Deployment** shows **Disabled**.
+    course sends the full package. Read it in **Pipeline Settings**, **Deployment** tab, global
+    scope: **Use Delta Deployment** shows **Disabled**.
 
     The Helios app is 30 components, so a full deployment costs a minute and delta would save
     nothing while adding a way for the course to fail confusingly on a missing dependency. Turn it
     on when a deployment starts costing you real time, which on a real project is soon. There is a
     second key for promotions between major branches,
-    `enableDeltaDeploymentBetweenMajorBranches`, and it is off by default for the same reason:
-    a promotion carries more, and is the riskiest place to send less.
+    `enableDeltaDeploymentBetweenMajorBranches`, on the **Danger Zone** tab, and it is off by
+    default for the same reason: a promotion carries more, and is the riskiest place to send less.
 
-**Automated cleaning.** The rules in `config/.sfdx-hardis.yml` remove things from the package before
-it is sent: profile permissions that belong on permission sets, flow element positions, list view
-scopes.
+Find the number of components the log says it sent. Compare it with the number of files in your
+Pull Request. The gap is the cost of having delta off, and it is the argument for turning it on.
 
-Look at the log and identify at least one component that was in the diff and not in the deployment.
-Then find which of the two mechanisms removed it.
+### 4. Know what Smart Deploy is, and what it is not
 
-### 4. Find what Smart Deploy skipped, and why
+"Smart Deploy" is the name of the command, not of a filter. `sf hardis:project:deploy:smart` is the
+orchestrator: it decides the package, reuses a validated deployment as a Quick Deploy when it can,
+runs the pre and post deployment actions, translates Salesforce errors into advice, and writes the
+Pull Request comment. It is smart about the **job**, not about comparing your repository with the
+org component by component.
 
-Further down, the log lists components it decided not to send because the target org already has
-them identical. That is not cleaning and not delta: it is Smart Deploy comparing with the org.
+Two things are often assumed to be part of it and are not:
 
-This is what stops a deployment from touching a hundred components to change one, which matters
-because every touched component is a chance to fail on something unrelated.
+- **Nothing compares each component with the org and drops the identical ones.** There is an opt-in
+  mechanism that does something close, `manifest/packageDeployOnChange.xml`, and it only ever looks
+  at the components listed in that file. The file does not exist in this project, and it does
+  nothing unless it does
+- **Cleaning is not a deployment filter.** It ran on a contributor's machine, at commit time. Step 3
+  of the under the hood section below is about that
+
+So the honest answer to "why did it deploy thirty components to change one" is: because nothing was
+configured to stop it. That is a decision this project made, not a thing the tool does for you.
 
 ### 5. Verify in the org, not in the log
 
-Open `helios-integration` from **Orgs Manager** and check Marco's change is actually there: the cap
-in the flow, the field on the layout.
+Open `helios-integration` from **Orgs Manager** and check your change is actually there: the three
+fields back on the Installation layout, beside Marco's cap field.
 
 A log is a claim. The org is the fact. On a real project you check the org after every deployment to
 a major environment, and it takes thirty seconds.
@@ -113,33 +124,45 @@ a major environment, and it takes thirty seconds.
 In `MY-PIPELINE.md`, under Level 3:
 
 ```markdown
-- **Lab 3, Smart Deploy**: the deployment sent N of the M components in the diff. X was removed by
-  cleaning, Y was skipped because integration already had it identical.
+- **Lab 3, Smart Deploy**: the deployment sent N components to change M. Delta is off on this
+  project, there is no package-no-overwrite file and no deploy-on-change file, so the whole declared
+  package goes every time.
 ```
 
-<details markdown="1"><summary>Under the hood: the three filters, in order</summary>
+<details markdown="1"><summary>Under the hood: where the package comes from, and where cleaning really happens</summary>
 
 The job ran:
 
     sf hardis:project:deploy:smart
 
-and the package it finally sent went through three filters, in this order:
+and the package it sent was built like this:
 
-1. **Delta.** If `useDeltaDeployment` is on, `sfdx-git-delta` computes the changed components
-   between the last deployed commit and `HEAD`. `enableDeltaDeploymentBetweenMajorBranches`
-   controls whether the same applies to a major-to-major deployment, which is off by default
-   because a promotion to production is the worst possible place to discover that the org drifted
-2. **Cleaning.** The `autoCleanTypes` rules rewrite or drop parts of the package
-3. **Smart Deploy.** What survives is compared with the target org, and identical components are
-   dropped
+1. **Start from `manifest/package.xml`**, the declared package, plus
+   `manifest/destructiveChanges.xml` for what is being removed
+2. **Delta**, if `useDeltaDeployment` is on: `sfdx-git-delta` computes the changed components
+   between the last deployed commit and `HEAD`, and everything else is taken back out of the
+   package. `enableDeltaDeploymentBetweenMajorBranches` controls whether the same applies to a
+   major-to-major deployment, and is off by default because a promotion to production is the worst
+   possible place to discover that the org drifted
+3. **The overwrite manager**, if `manifest/package-no-overwrite.xml` exists: the org is queried, and
+   any component **listed in that file** that the org already has is taken out. It is scoped to its
+   own list and nothing else, and a component it protects is still created in an org that does not
+   have it yet
+4. **Deploy-on-change**, if `manifest/packageDeployOnChange.xml` exists: those components, and only
+   those, are retrieved from the org and compared, and the unchanged ones are dropped
 
-The order matters when you are debugging. "Why is my component not deployed" is answered by walking
-those three in sequence, and the log prints each one.
+Steps 2, 3 and 4 are all off in this project, so what Salesforce receives is step 1.
+
+**Cleaning is not in that list, and this is the thing to take away.** The `autoCleanTypes` rules run
+inside `sf hardis:work:save`, on a contributor's machine, before the commit. They rewrite the files
+on disk and commit the result, which is why Level 1 lab 4 could show you the diff they produced. By
+the time a deployment runs, there is nothing left to clean: the repository already is the cleaned
+version.
 
 Two failure modes worth recognising:
 
-- **The org drifted.** Somebody changed something in the org by hand, so Smart Deploy compares your
-  component with something unexpected. Level 3 lab 7 is about that
+- **The org drifted.** Somebody changed something in the org by hand and the deployment overwrites
+  it without a word, because nothing compared. Level 3 lab 7 is about that
 - **Delta lost a dependency.** Your change needs a component that did not change, so the delta does
   not carry it, and the deployment fails on a reference. The fix is not to disable delta: it is to
   include the dependency, which `manifest/package.xml` is for
@@ -149,7 +172,7 @@ Two failure modes worth recognising:
 ## What you should see
 
 - A green **Deploy to integration** run
-- A log where you can name what was deployed, what was cleaned and what was skipped
+- A log where you can name how many components went, and why that number is not one
 - The change present in `helios-integration`
 
 ## If it goes wrong
@@ -159,8 +182,9 @@ Something changed between the two: the org, or another deployment landing first.
 check whether somebody deployed by hand.
 
 **The log says "nothing to deploy".**
-The delta found no change, which usually means the merge commit carried nothing, or the org is
-already at that commit.
+With delta off that should not happen on this project, because the package is declared rather than
+computed. If it does, check that `manifest/package.xml` is still in the branch and still lists
+something.
 
 **The job never started.**
 The workflow only triggers on pushes to major branches. Check that the merge really landed on

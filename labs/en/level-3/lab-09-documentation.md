@@ -44,10 +44,15 @@ exactly the part worth a person's time.
 
 Everything in this lab happens on this one screen. Three parts of it matter:
 
-1. **Include** **(1)**, which decides what gets documented. Objects, flows, Apex, permissions and
-   packages are all ticked, which is what you want the first time
+1. **Include** **(1)**, which decides what gets documented. Eight boxes: Objects, Flows & Process
+   Builders, Profiles & Permissions, Automations, Lightning Pages, Apex, Lightning Web Components and
+   Installed Packages. All ticked is what you want the first time
 2. **Generate Documentation** **(2)**, the button that produces the pages
-3. **Deploy Documentation** **(3)**, at the bottom, which publishes them
+3. **Deploy Documentation** **(3)**, further down, which publishes them
+
+Next to **Include** there is a second column, **Formats & History**. Leave it alone for now, but note
+that **With Flow History** is ticked by default. That one checkbox is what step 4 is about, and
+without it the flow pages have no history diagrams at all.
 
 ### 2. Generate
 
@@ -81,9 +86,10 @@ The flow is rendered as a Mermaid diagram: the trigger, the entry conditions, th
 their outcomes. It is readable by somebody who has never opened a Salesforce flow, which is most of
 the people who will ask you what it does.
 
-There is a second thing worth noticing: the history diagrams show how a flow changed over time,
-built from git history. That answers "when did this flow start doing that", which is otherwise a
-long afternoon.
+There is a second thing worth noticing: `Installation_Assign_Crew-history.md` sits beside it, showing
+how the flow changed over time, built from git history. That answers "when did this flow start doing
+that", which is otherwise a long afternoon. It exists because **With Flow History** was ticked, which
+passes `--with-history` to the generator. Untick it and the page is simply not written.
 
 ### 5. Fix the worst gaps by hand
 
@@ -100,7 +106,8 @@ exists at the end of a level rather than at the start.
 
 ### 6. Publish it
 
-The **Deploy Documentation** section **(3)** offers three targets:
+The **Deploy Documentation** section **(3)** offers three cards, each with the same **Deploy**
+button:
 
 - **Deploy to Cloudflare Pages** publishes it as a site, the way the sfdx-hardis documentation
   itself is published
@@ -109,6 +116,11 @@ The **Deploy Documentation** section **(3)** offers three targets:
 - **Deploy to Salesforce** builds the HTML and uploads it as a static resource, with a Visualforce
   page and a custom tab, so the documentation is reachable from inside Salesforce. It is capped by
   the 5 MB static resource limit, so it suits a small project
+
+The same three exist as configuration keys, `docDeployToCloudflare`, `docDeployToConfluence` and
+`docDeployToOrg`, which is how the monitoring workflow republishes the documentation every night
+without anybody clicking anything. The Cloudflare and Salesforce ones are mutually exclusive: turn
+both on and only the Salesforce one runs.
 
 For this lab, generate and commit. Publishing is a project decision.
 
@@ -129,13 +141,16 @@ The command was:
 
 which reads:
 
-- `force-app/` for the metadata: objects, fields, flows, Apex, permission sets, packages
-- `manifest/package.xml` for what is in scope
-- `config/.sfdx-hardis.yml` for the project configuration it documents
-- the **git history**, for the "what changed and when" diagrams
+- the package directories declared in `sfdx-project.json`, so `force-app/`: objects, fields, flows,
+  Apex, permission sets, packages
+- `manifest/` for a page describing the manifests themselves
+- `config/.sfdx-hardis.yml` for the project configuration it documents, which becomes
+  `docs/sfdx-hardis-params.md` and `docs/sfdx-hardis-branches-and-orgs.md`
+- the **git history**, for the "what changed and when" diagrams, when `--with-history` is passed
 
 and writes markdown under `docs/`, plus a `mkdocs.yml` so the result is a site rather than a pile of
-files.
+files. It does not overwrite a `mkdocs.yml` you already have, so your own navigation survives a
+regeneration.
 
 The flow diagrams are Mermaid, generated from the flow XML. That means they are text in the
 repository, so they diff, review and version like everything else, and they never go stale relative

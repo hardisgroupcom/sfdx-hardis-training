@@ -25,8 +25,11 @@ change an admin made by hand.
 
 Two problems, and they arrive in the order they always do.
 
-**17:40 on a Friday.** Planners cannot save an installation. The validation rule that went out this
-week refuses a date that used to be fine. Waiting for the normal path means Monday.
+**17:40 on a Friday.** Planners close the week by cancelling the installations the crews could not
+reach and back-dating them to the day it was called off. Every one of those saves is refused. The
+`Installation_Date_Not_Past` validation rule exempts installations that are `Completed` and says
+nothing about the ones that are `Cancelled`, so a job that will never happen is held to a rule about
+scheduling it. Waiting for the normal path means the week does not close until Monday.
 
 **Monday morning.** While fixing the incident, an admin added a picklist value directly in
 production, because that was the fastest way to unblock people. It works. It is in production and in
@@ -70,8 +73,8 @@ In VS Code, **New User Story**, with:
 
 ### 3. Fix it
 
-In `helios-prod`, adjust the validation rule so it no longer refuses a date that was already on the
-record:
+Open `Installation_Date_Not_Past` in `helios-prod` and read what is there before you change
+anything:
 
 ```
 AND(
@@ -81,8 +84,25 @@ AND(
 )
 ```
 
-The `ISCHANGED` is what was missing: the rule was firing on every save of an old record, not only
-when somebody moved the date.
+Three conditions, and two of them are already doing their job. `ISCHANGED` is why an old record can
+still be saved as long as nobody touches the date, and the `Completed` exemption is why a finished
+job can be dated when it actually happened. Whoever wrote this thought about it.
+
+The gap is the fourth condition that is not there. Add it:
+
+```
+AND(
+  ISCHANGED(Install_Date__c),
+  Install_Date__c < TODAY(),
+  NOT(ISPICKVAL(Status__c, "Completed")),
+  NOT(ISPICKVAL(Status__c, "Cancelled"))
+)
+```
+
+A cancelled installation is finished work, exactly like a completed one, and the rule's own
+description says finished work is exempt. This is the shape most production incidents have: not a
+rule that is wrong, a rule whose list of exceptions was written before somebody invented a new way
+of being an exception.
 
 ### 4. Publish and ship
 
@@ -113,7 +133,8 @@ Monday morning. Production now has something the repository does not, and the ne
 touches that field will quietly remove it.
 
 There used to be a command that swept an org for every such difference and put them all on a branch.
-It is deprecated, deliberately, and the reason is worth understanding before you reach for anything
+It is deprecated, deliberately: the command name still exists, and running it now prints an error,
+does nothing and exits non-zero. The reason is worth understanding before you reach for anything
 automatic: **a sweep cannot tell you whether a difference means production is ahead or behind.** It
 reports both the same way, and the second kind, accepted, rolls the repository back.
 
@@ -125,11 +146,15 @@ the **Metadata Retriever** from the Welcome page.
 
 ![The Metadata Retriever, with the org selector, the name filter and the search button](../../_assets/annotated/vscode/metadata-retriever--retrofit.png)
 
-1. Check the org it reads from **(1)**. It has to say `helios-prod`, not the dev org you were last
-   in. This is the field people get wrong, and retrieving the wrong org is how a retrofit puts
-   yesterday's dev work into the repository
+1. Check the org it reads from **(1)**. It opens on your default org and then goes its own way, so it
+   has to say `helios-prod`, not the dev org you were last in. This is the field people get wrong,
+   and retrieving the wrong org is how a retrofit puts yesterday's dev work into the repository
 2. Type `Status__c` in **Metadata Name** **(2)**
 3. **Search Metadata** **(3)**, then tick the field in the results and retrieve it
+
+The panel opens in **Recent Changes** mode, which is what you want: you are looking for something
+somebody touched this week. If the field does not come back, switch to **All Metadata** and search
+again rather than assuming the change is not there.
 
 One component, chosen by you, from an org you named.
 
@@ -185,17 +210,23 @@ releases followed by a fix, and it recognises a fix by its branch name.
 
 **The retrofit** used the Metadata Retriever, which runs a plain targeted retrieve:
 
-    sf project retrieve start --metadata CustomField:Installation__c.Status__c --target-org helios-prod
+    sf project retrieve start --metadata "CustomField:Installation__c.Status__c" --target-org <the org username> --json
 
 and nothing else. No branch is created for you, no comparison is made on your behalf, and that is
-the point.
+the point. Two details if you ever read the command it ran: `--target-org` gets the org's username
+rather than its alias, and the **Full metadata** toggle swaps the whole thing for
+`sf hardis mdapi read`, which reads through the Metadata API instead.
 
 There is an older command, `sf hardis:org:retrieve:sources:retrofit`, that swept the org for every
-difference in a declared list of types and put them all on a branch. **It is deprecated and you
-should not use it.** It automated the easy half of the job, finding differences, and left the half
-that actually matters, deciding what each difference means, to whoever read the branch afterwards.
-In practice nobody read it carefully every week, and a sweep accepted wholesale eventually reverts
-something.
+difference in a declared list of types and put them all on a branch. **It is deprecated.** Not
+discouraged: the command still exists, and its entire body is now an error message and a non-zero
+exit. It automated the easy half of the job, finding differences, and left the half that actually
+matters, deciding what each difference means, to whoever read the branch afterwards. In practice
+nobody read it carefully every week, and a sweep accepted wholesale eventually reverts something.
+
+Its three configuration keys, `retrofitBranch`, `sourcesToRetrofit` and `retrofitIgnoredFiles`, are
+still in the JSON schema and will still autocomplete in a `.sfdx-hardis.yml`. Nothing reads them any
+more.
 
 What replaces it is not a command, it is a habit, and it belongs to Lab 8: **put the org under
 monitoring.** Monitoring tells you a manual change happened, on the day it happened, and who made
@@ -207,7 +238,7 @@ it. Then you retrieve that one thing, knowingly. Detection is automatic, the jud
 
 - The validation rule fixed in `helios-prod`, through a Pull Request into `main`
 - The same fix merged into `integration`
-- `Needs Reinspection` present in the repository, in
+- `Needs Reinspection` present on `integration`, in
   `force-app/main/default/objects/Installation__c/fields/Status__c.field-meta.xml`
 - Two lines in `MY-PIPELINE.md`
 
@@ -231,6 +262,12 @@ It reached the repository on a branch that never got merged. Check that it is re
 ## Check your work
 
 Welcome page > **Training** > **Check my work**, then pick level 3 and lab 7.
+
+!!! warning "This check looks at `main`, not at `integration`"
+    It wants `Needs Reinspection` on the production branch, and step 8 only put it on `integration`.
+    That is deliberate: the retrofit is not finished until production and the repository agree, and
+    they only agree after the next release carries it up. So this one passes at the end of the
+    capstone, not here. Run it now to see it fail for a reason you can name, and again after Lab 10.
 
 ## Go deeper
 

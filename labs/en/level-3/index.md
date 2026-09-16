@@ -61,9 +61,10 @@ Before Lab 0, sign up for two more free Developer Edition orgs at
 Manager** with the aliases `helios-uat` and `helios-prod`, and seed each one with
 **Training > Set up one of my training orgs**.
 
-`helios-prod` is seeded slightly differently from the others: one version behind, with a picklist
-value an admin added by hand and a short deployment history. Lab 7 needs the first two, and Lab 6
-needs the third so the DORA report has a curve rather than a single point.
+`helios-prod` gets the same sources as the other three, plus one thing the seeding adds by hand: a
+`Needs Reinspection` value on the `Installation__c.Status__c` picklist, which exists in no branch.
+That is what Lab 7 retrofits. Nothing seeds a deployment history, so the DORA report in Lab 6 sees
+only the deployments you make yourself.
 
 ## Keep MY-PIPELINE.md open
 

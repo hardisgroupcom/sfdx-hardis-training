@@ -35,17 +35,22 @@ nobody is going to tell you the order to do things in.
 
 ### Monday: take in what contributors sent you
 
-Run **Training > Simulate my teammates** twice, for **US-019** and **US-020**, if they are not
-already open.
+The only teammate Pull Request still in play is **US-020**, open since Lab 4 and still failing. The
+other two are merged by now, and each scenario is used once: **Simulate my teammates** will replay a
+scenario onto a branch that already has its files, report "Nothing to commit" and open nothing.
 
-For each one:
+So build the second Pull Request yourself, the way a contributor would: **New User Story** targeting
+`integration`, one small change of your own in `helios-dev`, published and opened. Pick something a
+reviewer could reasonably argue with, because in ten minutes you are that reviewer.
+
+For each of the two:
 
 - Read the sfdx-hardis comment
 - Read the diff with the four questions from Lab 2: does it match the story, does anything
   disappear, are permissions on a permission set, is it reversible
 - Approve or request changes, and say why
 
-One of them fails its check. It goes back to its author with the failure named. Do not fix it
+US-020 still fails its check. It stays with its author, with the failure named. Do not fix it
 yourself.
 
 ### Tuesday: merge and deploy to integration
@@ -62,15 +67,19 @@ Verify in `helios-uat` that the stories are usable, not only deployed.
 
 ### Thursday: release to production
 
-Create the promotion from `uat` into `main`. Check the destructive changes section. Merge, watch,
-verify, do the manual steps.
+Create the promotion from `uat` into `main`. Read the counts line in the sfdx-hardis comment and stop
+if anything is being deleted that you were not expecting. Merge, watch, verify, do the manual steps.
+
+This release is also what finally carries the Lab 7 retrofit into `main`, so the `Needs Reinspection`
+picklist value reaches production through the pipeline and the check for Lab 7 passes.
 
 Then generate the release notes, add the sentence at the top that says what this release is for, and
 commit them.
 
 ### Friday: measure and write down
 
-Run the DORA report and look at how this week moved the numbers.
+Run the DORA report, with `helios-prod` as your default org so it measures production rather than
+your sandbox, and compare it with the baseline you took in Lab 6.
 
 Update `MY-PIPELINE.md` with:
 

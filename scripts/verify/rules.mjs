@@ -535,17 +535,26 @@ export const RULES = [
   },
   {
     id: "3-04", level: 3, lab: 4,
-    title: "The three colliding Pull Requests were ordered and merged",
+    title: "The colliding Pull Requests were ordered, and both grants survived",
     check: (ctx) => {
+      // US-020 is deliberately NOT checked here: lab 4 sends it back to its author
+      // and no lab ever merges it. Requiring it would make this check unpassable.
       const history = ctx.log(DEV);
-      const missing = ["US-018", "US-019", "US-020"].filter((id) => !mentions(history, id));
+      const missing = ["US-018", "US-019"].filter((id) => !mentions(history, id));
       if (missing.length > 0) {
         return miss(`these stories never reached integration: ${missing.join(", ")}`, `the history of ${DEV}`);
       }
       const manager = ctx.readOn(DEV, PERMSET("Helios_Delivery_Manager")) || "";
-      return !/<{7}|>{7}|={7}/.test(manager)
-        ? pass("The three stories are merged and the permission set has no conflict markers")
-        : miss("Helios_Delivery_Manager still contains conflict markers", `${PERMSET("Helios_Delivery_Manager")} on branch ${DEV}`);
+      if (/<{7}|>{7}|={7}/.test(manager)) {
+        return miss("Helios_Delivery_Manager still contains conflict markers", `${PERMSET("Helios_Delivery_Manager")} on branch ${DEV}`);
+      }
+      const lostGrants = ["Crew_Capacity_Cap__c", "Quote_Pdf_Url__c"].filter((f) => !manager.includes(f));
+      return lostGrants.length === 0
+        ? pass("Both stories are merged and Helios_Delivery_Manager carries both grants")
+        : miss(
+          `Helios_Delivery_Manager lost these grants: ${lostGrants.join(", ")}`,
+          `${PERMSET("Helios_Delivery_Manager")} on branch ${DEV}`
+        );
     }
   },
   {

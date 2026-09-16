@@ -66,38 +66,55 @@ the answers to click below it **(2)**.
 
 ![A sfdx-hardis command waiting for an answer in the extension](../../_assets/annotated/vscode/command-runner-question--ci-auth.png)
 
-It asks, in this order:
+It asks a dozen questions, not three, and the order is not the one you would guess:
 
-1. **Which major branch?** - `integration`
-2. **Which org?** - the `helios-integration` org, picked from the list of connected orgs
-3. **Certificate storage mode** - **encrypted certificate in the repository**
+1. **Which org?** - select or log into `helios-integration`
+2. **Which git branch do you want to configure deployments from?** - `integration`. The list is
+   built from your **remote** branches, and branches whose name contains a `/` are filtered out of
+   it
+3. **What is the base URL or domain?** - `https://login.salesforce.com`. **The highlighted answer is
+   the sandbox one**, so this is a question to read rather than confirm
+4. **Which target branches can this one merge into?** - `uat`. This writes `mergeTargets` again, on
+   top of what you set in Lab 0, so give the same answer
+5. **Which Salesforce username will the CI server deploy as?** - the `helios-integration` username
+6. **How do you want to provide the SSL certificate?** - self-signed. The other answer, CA-signed,
+   generates nothing at all and only prints instructions
+7. **Do you want sfdx-hardis to configure the External Client App?** - yes
+8. **Which JWT certificate storage mode?** - **ClientId + decryption key as secret variables +
+   encrypted certificate as file**, the default. The other mode puts the certificate itself in a
+   third secret and deletes the file
+9. **Please confirm when variables have been set.** This one is a stop, and step 3 is what it is
+   waiting for. Do not answer yes yet
+10. Then, after you confirm: the **name** of the External Client App, a **contact email**, and the
+    **profile to pre-authorise** (`System Administrator`)
 
-Let it run. It takes a couple of minutes.
+### 2. Read what it produced, and copy the two values
 
-### 2. Read what it produced
-
-When it finishes, the panel keeps every question with the answer you gave **(1)**, then the output
-of the run **(2)**, and a bar of the reports and documents it produced **(3)**.
+Before question 9 the panel prints the two values you are about to store **(2)**. Nothing prints
+them again, so do not close the panel or scroll past them.
 
 ![A finished sfdx-hardis command, with its answers, its output and its reports](../../_assets/annotated/vscode/command-runner-completed--ci-auth-result.png)
 
-Scroll through **(2)**: this is where the two values you are about to store as secrets are printed.
-Nothing else prints them again, so do not close the panel until you have copied them.
-
-The command wrote several things, and you should look at each one:
+What it writes, and where:
 
 | What                              | Where                                                           | What it is                                                     |
 |-----------------------------------|-----------------------------------------------------------------|----------------------------------------------------------------|
-| A certificate and key pair        | `config/branches/.jwt/integration.key` (encrypted) and a `.crt` | The credential itself                                          |
-| An External Client App definition | in the org, created for you                                     | What Salesforce authenticates against                          |
-| Branch configuration              | `config/branches/.sfdx-hardis.integration.yml`                  | `targetUsername`, `instanceUrl`, and the app's consumer key    |
+| An encrypted private key          | `config/branches/.jwt/integration.key`                          | The credential itself, meant to be committed                   |
+| A certificate                     | `integration.crt` in your home directory, deleted after the app deploys | What is uploaded into the org                          |
+| An External Client App definition | deployed into the org by the command                            | What Salesforce authenticates against                          |
+| Branch configuration              | `config/branches/.sfdx-hardis.integration.yml`                  | `targetUsername`, `instanceUrl` and `mergeTargets`             |
 | Two values to store as secrets    | printed in the command panel                                    | `SFDX_CLIENT_ID_INTEGRATION` and `SFDX_CLIENT_KEY_INTEGRATION` |
 
-The private key committed to the repository is **encrypted**, with the passphrase held as
-`SFDX_CLIENT_KEY_INTEGRATION`. The repository alone is not enough to authenticate, which is what
-makes committing it acceptable.
+The consumer key is **not** written to the branch configuration. It lives in the org and in your
+secret, and nowhere else in the repository.
+
+The private key committed to the repository is **encrypted**, with a passphrase the command
+generates at random and holds as `SFDX_CLIENT_KEY_INTEGRATION`. The repository alone is not enough
+to authenticate, which is what makes committing it acceptable.
 
 ### 3. Store the secrets in your fork
+
+Do this now, while question 9 is still waiting.
 
 In your fork: **Settings > Secrets and variables > Actions > New repository secret**, twice:
 
@@ -109,17 +126,24 @@ In your fork: **Settings > Secrets and variables > Actions > New repository secr
 The `<ALIAS>` suffix is **the branch name in upper case**. That is the entire convention, and it is
 why the names are not arbitrary.
 
-### 4. Finish the org authorisation by hand
+Now answer yes to question 9, and let the command create the app.
 
-sfdx-hardis creates the External Client App, but one step needs a human in Salesforce Setup, and it
-is the step people forget:
+### 4. Check the org authorisation it did for you
 
-In `helios-integration`: **Setup > External Client Apps > sfdx-hardis > Policies > Edit**, set
-**Permitted Users** to *Admin approved users are pre-authorised*, and **Save**. Then, under
-**Profiles** or **Permission Sets**, add the profile of the user the CI authenticates as.
+The step everybody warns you about, pre-authorising the app, is the one the command already did.
 
-Without this, the JWT flow fails with `user hasn't approved this consumer`, which is an accurate
-message that reads like a bug.
+The External Client App it deploys carries `Admin approved users are pre-authorized` and the profile
+you named at the last question, which is why that question exists. Go and look at it once, so you
+know where it is when it matters:
+
+In `helios-integration`: **Setup > External Client App Manager > sfdx-hardis > Policies**. Permitted
+Users reads *Admin approved users are pre-authorized*, and the profile is listed.
+
+It matters because of the one path where it is **not** done for you: if the app deployment fails and
+the command falls back to printing manual instructions, those instructions stop at uploading the
+certificate. They say nothing about permitted users or profiles. Follow them literally and the first
+CI login fails with `user hasn't approved this consumer`, which is an accurate message that reads
+like a bug.
 
 ### 5. Do the same for uat and main
 
@@ -128,19 +152,25 @@ Run the command twice more, once for each branch and org. Store four more secret
 - `SFDX_CLIENT_ID_UAT`, `SFDX_CLIENT_KEY_UAT`
 - `SFDX_CLIENT_ID_MAIN`, `SFDX_CLIENT_KEY_MAIN`
 
-And pre-authorise the app in each org.
+The command pre-authorises each app as it creates it, so there is nothing to do in Setup unless a
+deployment failed.
 
 Six secrets, three External Client Apps, three certificates. Tedious once, then never again.
 
 ### 6. Prove it works before you delete anything
 
-Push a trivial commit to `integration` and watch the deployment job. In the log, the authentication
-step should now say it is using JWT rather than an SFDX auth URL.
+Start with `uat`, because it is the one that can be proven right now. Open a Pull Request from
+`integration` into `uat` and watch the check job authenticate. That branch has no auth URL secret to
+fall back on, so a green authentication there is a JWT authentication and nothing else. Do not merge
+it yet, Lab 5 is the real promotion.
 
-Then do the same for `uat` and `main`: open a Pull Request from `integration` into `uat` and check
-that the check job authenticates. Do not merge it yet, Lab 5 is the real promotion.
+**`integration` cannot be proven the same way, and that is the point of this step.**
+`SFDX_AUTH_URL_INTEGRATION` still exists, the authentication hook looks for it first, and it stops
+there. Push a trivial commit to `integration` and the log shows an auth URL login, not a JWT one, no
+matter how correct your certificate is.
 
-Three green authentications. Now, and only now:
+So there is nothing you can check on `integration` while the shortcut is there. Which is why the
+next step is a test and not a formality:
 
 ### 7. Delete the shortcut
 
@@ -181,13 +211,20 @@ and the CI job now runs, before anything else:
 The private key is decrypted at the start of the job with `SFDX_CLIENT_KEY_INTEGRATION`, used, and
 never written anywhere persistent.
 
-**How the authentication hook chooses.** For a branch `<B>`, it looks for `SFDX_AUTH_URL_<B>` first.
-If it finds one, it uses it and stops. Otherwise it falls back to `SFDX_CLIENT_ID_<B>` plus the
-certificate. That order is why step 7 is a real test and not a formality: while the auth URL secret
-existed, the JWT path was never being exercised.
+**How the authentication hook chooses.** For a branch `<B>`, it looks for `SFDX_AUTH_URL_<B>` first,
+in that spelling and then upper-cased. If it finds one, it uses it and returns, before the JWT
+variables are even read. Only if there is none does it go on to `SFDX_CLIENT_ID_<B>` plus the
+certificate. That order is why step 7 is a real test: while the auth URL secret existed, the JWT
+path was never being exercised.
 
-`orgAuthenticationMode` in `config/.sfdx-hardis.yml` records which storage mode you chose, and the
-pipeline panel warns when a major org is not configured the way the project declared.
+One detail worth knowing before you debug this on a real project: the JWT lookup also accepts a
+plain `SFDX_CLIENT_ID` with no suffix, as a last resort and with a warning in the log. A single
+unsuffixed secret left over from an old setup will answer for every branch.
+
+`orgAuthenticationMode` in `config/.sfdx-hardis.yml` is **not** written by this command, and no CLI
+command reads it. It is a key you set by hand, and it only tells the VS Code pipeline panel which
+shape to expect, so that it can warn you when a major org is not configured the way the project
+declared. The default it assumes is `encryptedCert`, which is what you have just built.
 
 </details>
 
@@ -195,8 +232,8 @@ pipeline panel warns when a major org is not configured the way the project decl
 
 - Six secrets in your fork, none of them an auth URL
 - Three `config/branches/.jwt/*.key` files, encrypted
-- A green deployment job whose log shows a JWT login
-- `SFDX_AUTH_URL_INTEGRATION` gone
+- A green check job on the Pull Request into `uat`, authenticating with JWT
+- `SFDX_AUTH_URL_INTEGRATION` gone, and `integration` still deploying green after it went
 
 ## If it goes wrong
 

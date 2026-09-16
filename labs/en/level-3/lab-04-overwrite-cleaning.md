@@ -23,7 +23,7 @@ and one of them does not work.
 
 ## The situation
 
-Friday afternoon. Three Pull Requests are waiting:
+Friday afternoon. Three stories carry this week:
 
 | Pull Request                              | Author        | Checks      | What it touches                            |
 |-------------------------------------------|---------------|-------------|--------------------------------------------|
@@ -42,41 +42,57 @@ Deciding what goes in, in what order, and what waits, is the job.
 
 ## Steps
 
-### 1. Create the three Pull Requests
+### 1. Create the Pull Requests you still can
 
-Welcome page > **Training** > **Simulate my teammates**, three times, once for each of US-018,
-US-019 and US-020.
+Welcome page > **Training** > **Simulate my teammates**, twice: **US-020 Refactor
+InstallationScheduler**, and **US-019 Generate a quote PDF from an opportunity**.
 
-If US-018 is already merged from Lab 2, that is fine: this lab is about the other two colliding
-with what is already in `integration`.
+**US-018 is not among them.** You merged it in Level 2 lab 6, and each teammate scenario is used
+once: replaying one onto a branch that already has its files reports "Nothing to commit" and opens
+nothing.
 
-Wait for the checks.
+US-019 may do the same, and that is not a fault either. It depends on how you got here: the Level 2
+capstone merges US-019, so if you walked straight from Level 2 into Level 3 it is already in
+`integration`, and if you reset into Level 3 it is waiting for you. If it reports "Nothing to
+commit", open its merged Pull Request instead and read that. Every step below works either way.
+
+Two of the three decisions in this lab may therefore be decisions you already made. Going back over
+them with a release manager's eyes is cheaper than making them again, and about as useful.
+
+Wait for the checks. US-020's will fail.
 
 ### 2. Triage before you touch anything
 
-Look at the three and sort them, in this order of questions:
+Sort the three, in this order of questions:
 
 **Which ones are green?** A failing Pull Request is not a decision, it is a task for its author. Do
 not spend your Friday fixing Marco's refactor.
 
-**Which ones conflict?** US-018 and US-019 both edit `Helios_Delivery_Manager`. Whichever merges
-second will have to resolve.
+**Which ones touch the same file?** US-018 and US-019 both edit `Helios_Delivery_Manager`. Whichever
+merges second inherits whatever the first one did to that file, and step 5 is about what "inherits"
+turns out to mean.
 
-**Which one is smaller?** All else equal, merge the smaller one first. Its author resolves nothing,
-and the larger one has a better-defined conflict to resolve.
+**Which one is smaller?** All else equal, merge the smaller one first. Its author has less to redo
+if the other one lands badly.
 
-Your order: **US-019 first** (small, green, no dependants), then **US-018** (green, resolves the
-conflict), and **US-020 goes back to Marco**.
+The order you want: **US-019 first** (small, green, no dependants), then **US-018** (green, bigger),
+and **US-020 goes back to Marco**. Where they are already merged, `git log --merges integration`
+tells you the order you actually used, which is the same question asked backwards.
 
 ### 3. Send US-020 back, properly
 
 Open it and read the failure. It is a genuine failure, in his code, and it is his to fix.
 
+Read it properly before you write anything, because it is not what the words "failing tests" suggest.
+`earliestInstallDate` now returns a `Datetime`, and `InstallationSchedulerTest` still assigns it to a
+`Date`. The class does not compile, so no test runs at all. What the log gives you is a compilation
+error with a class name and a line number, not a failed assertion.
+
 Leave one review comment that does three things:
 
-> The check fails on `InstallationSchedulerTest.earliestInstallDateAddsThePreparationBuffer`:
-> the refactor changed the return type and the test was not updated. Not blocking anything else, so
-> I am taking US-019 and US-018 into this week's release and this one can land on Monday.
+> The check fails to compile `InstallationSchedulerTest`: `earliestInstallDate` returns a `Datetime`
+> now and line 23 still assigns it to a `Date`. No tests ran. Not blocking anything else, so US-019
+> and US-018 go out in this week's release and this one can land on Monday.
 
 Names the failure, says who owns it, says what happens to the release. Then **Request changes** and
 move on.
@@ -85,63 +101,85 @@ move on.
     It is faster once and expensive every time after. The author does not learn the failure, and you
     become the person every failing check is escalated to.
 
-### 4. Merge US-019
+### 4. Merge US-019, or read how it went in
 
-Green, small, no conflict. Review it the way Lab 2 taught, approve, merge.
+Look at its diff on `Helios_Delivery_Manager`: one new `<fieldPermissions>` block for
+`Panel_Batch__c.Quote_Pdf_Url__c`, added near the bottom of the file where the `Panel_Batch__c`
+grants live.
 
-### 5. Merge US-018, which now conflicts
+Green, small, nothing in its way. Review it the way Lab 2 taught, approve, merge. If it is already
+merged, read the merged one instead and note how little there was to it.
 
-GitHub now reports a conflict on
-`force-app/main/default/permissionsets/Helios_Delivery_Manager.permissionset-meta.xml`.
+Nothing here was hard, which is exactly why it is worth knowing what happened next.
 
-Permission set conflicts are almost always **take both**: Amina granted one field, Marco granted
-another, and the permission set holds as many as it needs. Resolve it in the GitHub web editor,
-keeping both `<fieldPermissions>` blocks in alphabetical order.
+### 5. Find the conflict that never happened
 
-Then **wait for the checks to run again** on the resolved branch. A conflict resolved in the web
+US-018 granted `Installation__c.Crew_Capacity_Cap__c`, near the top of the same file. US-019 granted
+`Panel_Batch__c.Quote_Pdf_Url__c`, near the bottom. Two people, same file, same week.
+
+**Git merged them without a word.** No conflict, no resolution, no second look. Open the file on
+`integration` and both grants are there, in order, as if one person had written them.
+
+That is not luck and it is not git being clever. A conflict needs the two edits to land in the same
+place, within the few lines of context git compares. These two are about fifty lines apart in an
+alphabetically sorted file, so git took both and moved on. Level 2 lab 6 gave you the other case:
+your `Crew_Notes__c` grant sat one line from Marco's `Crew_Capacity_Cap__c`, git could not choose,
+and it stopped and asked.
+
+The release manager's takeaway is not "permission sets rarely conflict". It is this:
+
+**A silent merge is the common case, and a conflict is the rare one.** Git warns you about the rare
+one. Nothing warns you about the common one, so if you want to know that both grants survived, you
+have to go and look. That is step 6, and on a real project it is a habit rather than a step.
+
+When git does stop and ask, permission set conflicts are almost always **take both**: one field each,
+and the permission set holds as many as it needs. Resolve it keeping both `<fieldPermissions>` blocks
+in alphabetical order, then **wait for the checks to run again**. A conflict resolved in the web
 editor is a new commit, and it has never been validated. Merging without re-validating is how a
 resolution that dropped a closing tag reaches an org.
 
-Green. Merge.
+### 6. Look at the permission set in the org
 
-### 6. Watch the deployment, then look at the permission set in the org
+In `helios-integration`, check `Helios_Delivery_Manager` has **both** new field permissions:
+`Crew_Capacity_Cap__c` on Installation and `Quote_Pdf_Url__c` on Panel Batch.
 
-In `helios-integration`, check `Helios_Delivery_Manager` has **both** new field permissions.
+If one is missing, something dropped it between the branch and the org, and the fix is a follow-up
+Pull Request, not an edit in the org.
 
-If one is missing, the resolution dropped it, and the fix is a follow-up Pull Request, not an edit
-in the org.
+### 7. Understand what kept this survivable, and what is not there
 
-### 7. Understand why this was survivable
-
-Three things kept this from being much worse, and they are all configuration you can point at:
-
-Open **Pipeline Settings** from the DevOps Pipeline panel, on **Global Settings**, and find all
-three.
+Three mechanisms are worth being able to point at. Open **Pipeline Settings** from the DevOps
+Pipeline panel and look at each one, because only the first is actually doing anything here.
 
 ![Global Pipeline Settings, with the tabs that hold the cleaning, overwrite and delta settings](../../_assets/annotated/vscode/pipeline-config--cleaning-overwrite.png)
 
-**Cleaning** (`autoCleanTypes`, on the **Salesforce Project** tab **(1)**) meant the conflict was on
-two small blocks rather than on a thousand-line Profile. This is most of the reason the project bans
-permissions on Profiles.
+**Cleaning** (`autoCleanTypes`, on the **Salesforce Project** tab **(1)** of **Global Settings**) is
+on, and it is why these two grants were two small blocks in a permission set rather than two edits
+in a thousand-line Profile. A Profile conflict is a bad afternoon. This is most of the reason the
+project bans permissions on Profiles.
 
-**The overwrite manager** (`packageNoOverwritePath`, on the **Deployment** tab **(2)**) protects
-components that are deliberately different per org. Anything listed in
-`manifest/package-no-overwrite.xml` is removed from the package when the target org already has it,
-so a deployment cannot flatten a named credential that points at a different endpoint in each
-environment.
+**The overwrite manager** (`packageNoOverwritePath`) protects components that are deliberately
+different per org. Anything listed in `manifest/package-no-overwrite.xml` is removed from the package
+when the target org already has it, so a deployment cannot flatten a named credential that points at
+a different endpoint in each environment. Two things to know: the file does not exist in this
+project, so nothing is protected, and the setting is **branch-scoped**, so you will not find it on
+the global **Deployment** tab. Switch the scope to `Branch: integration` and it is there, as
+**Branch-scoped custom Package-No-Overwrite path**.
 
-**Delta deployment** is **Use Delta Deployment** **(3)**, on the same **Deployment** tab. With it on,
-each merge deploys its own components rather than the whole repository, so US-019's deployment
-cannot accidentally roll back US-018. Read its current value before you rely on it: the panel shows
-whether this project has it enabled, and the deployment log in Lab 3 shows what it changed.
+**Delta deployment** is **Use Delta Deployment** **(3)**, on the global **Deployment** tab, and
+Lab 3 showed you it is **Disabled** here. With it on, each merge deploys the components that changed
+rather than the declared package. It is a speed and blast-radius decision, not a safety net: it does
+not stop one merge overwriting another, because both deployments send what their own commit
+contains.
 
 ### 8. Write the decision down
 
 In `MY-PIPELINE.md`:
 
 ```markdown
-- **Lab 4, three Pull Requests**: merged US-019 then US-018, resolved the Helios_Delivery_Manager
-  conflict by keeping both grants, sent US-020 back to its author with the failing test named.
+- **Lab 4, three Pull Requests**: US-019 and US-018 both edited Helios_Delivery_Manager and git
+  merged them silently, fifty lines apart, so both grants survived and nothing asked me. Checked the
+  org rather than trusting that. Sent US-020 back to its author with the compilation error named.
 ```
 
 <details markdown="1"><summary>Under the hood: the three mechanisms and where each one lives</summary>
@@ -168,20 +206,21 @@ org must get one, and an existing org must keep its own.
 
 ## What you should see
 
-- US-019 and US-018 merged, in that order
-- US-020 open, with a review that names the failure
+- US-019 and US-018 both in the `integration` history
+- US-020 open, with a review that names the compilation error
 - `Helios_Delivery_Manager` in `helios-integration` carrying both grants
 
 ## If it goes wrong
 
-**The conflict resolution broke the XML.**
-The check fails on a parse error. Fix it on the branch and let the checks run again. Never merge a
-red conflict resolution.
+**Simulate my teammates says "Nothing to commit".**
+That scenario is already in your `integration`. Expected for US-018 always, and for US-019 when you
+came straight from the Level 2 capstone. Read the merged Pull Request instead of recreating it.
 
-**Merging US-018 rolled back US-019.**
-The resolution took one side of the file wholesale. Revert the merge and redo it taking both.
+**One of the two grants is missing from the permission set.**
+Something took one side of the file wholesale, most likely a manual merge during Level 2. Put it
+back in a follow-up Pull Request, not by editing the org.
 
-**All three Pull Requests conflict with each other.**
+**Two Pull Requests are waiting and both are green.**
 Merge them one at a time, waiting for each deployment to finish. Merging two at once into the same
 branch is how a release manager loses an evening.
 

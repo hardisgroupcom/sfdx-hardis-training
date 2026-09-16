@@ -47,12 +47,14 @@ yes. On this project that person is you, and you did it in Lab 5 step 5.
 A manual step in production is something you will do, live, in front of nobody, at whatever time the
 release is. Know about it now.
 
-**Three: is production where you think it is?** Open `helios-prod` and look. It is seeded one
-version behind, and Lab 7 is about an admin who changed something there by hand. Assume nothing.
+**Three: is production where you think it is?** Open `helios-prod` and look. It carries the same
+sources as the other orgs plus one thing an admin added by hand, which is what Lab 7 is about.
+Assume nothing.
 
 ### 2. Create the production Pull Request
 
-From the **DevOps Pipeline** panel, the `uat` column, create the Pull Request into `main`.
+On GitHub, from `uat` into `main`, the same way you created the promotion in Lab 5. There is no
+button for it in the panel unless the project turns on promotion branches, and this one does not.
 
 Title it plainly:
 
@@ -96,35 +98,48 @@ feature failing. It is an old one.
 You have shipped. The question a release manager gets asked next is "how are we doing", and it
 deserves a better answer than a feeling.
 
-Open the **DevOps Pipeline** panel, open the gear menu at the top right **(1)**, and choose
+**Set your default org to `helios-prod` first.** The menu entry runs the command with no flags, so it
+measures whatever org the CLI is currently pointed at. Run it while `helios-dev` is your default and
+you get a report about your sandbox, correctly formatted and completely irrelevant.
+
+Then open the **DevOps Pipeline** panel, open the gear menu at the top right **(1)**, and choose
 **Generate DORA Metrics Report**. It sits in the same menu as **Pipeline Settings**, which you used
 in Lab 0.
 
 ![The DevOps Pipeline panel header, with the gear menu that holds the DORA report](../../_assets/annotated/vscode/devops-pipeline--settings-menu.png)
 
-The four metrics, and what they mean here:
+It covers the last 90 days by default, and it reports five numbers, not four:
 
-| Metric                    | What it measures                                | What good looks like                                                          |
-|---------------------------|-------------------------------------------------|-------------------------------------------------------------------------------|
-| **Deployment frequency**  | How often you release to production             | Weekly is fine. Quarterly means every release is enormous and therefore risky |
-| **Lead time for changes** | Merge into `integration`, to live in production | Days, not weeks. A long lead time usually means work sits in UAT waiting      |
-| **Change failure rate**   | Releases needing a fix afterwards               | Below 15%. Above that, the check is not catching what it should               |
-| **Time to restore**       | Incident to fix live                            | Hours. This is the number Lab 7 is about                                      |
+| Metric                    | What it actually counts                                                         | What good looks like                                             |
+|---------------------------|---------------------------------------------------------------------------------|------------------------------------------------------------------|
+| **Deployment frequency**  | Successful deployments recorded **in the org**, divided by the period            | Weekly is fine. Quarterly means every release is enormous        |
+| **Lead time for changes** | Per Pull Request: its creation, to the deployment that landed within 14 days     | Days, not weeks. A long lead time means work is sitting somewhere |
+| **Change failure rate**   | Failed deployments divided by all deployments                                    | Below 15%. Above that, the check is not catching what it should  |
+| **Time to restore**       | Median hours from a failed deployment to the next successful one                 | Hours                                                            |
+| **Rework rate**           | Hotfix Pull Requests, and deployments that follow a failure within a day         | Low. This is the one Lab 7 moves                                 |
 
-The report covers the releases you just made **plus the deployment history seeded into
-`helios-prod`**, so there is a curve to read rather than a single point.
+Two of those are not what the names suggest, and it is worth knowing which. **Change failure rate
+here is a deployment failure rate**: a release that deployed green and broke production on Tuesday
+does not appear in it. **Time to restore is the gap between a broken deployment and a working one**,
+not between an incident and its fix. They measure your pipeline, not your org.
 
-### 7. Read the curve, not the number
+### 7. Read what is there, and know what is missing
 
-Look at deployment frequency over time. Helios went from deploying every few weeks to deploying
-weekly when the pipeline was finished. That is the story the report tells, and it is the one worth
-repeating to whoever asks whether the pipeline was worth it.
+You have shipped once. On a fresh production org, that is roughly what the report will show: a small
+number of deployments, most of them yours, over a 90 day window that was empty until this week.
+Nothing seeds a deployment history into `helios-prod`, so there is no curve to read yet, and a report
+that says so is telling the truth.
 
-Write the four numbers in `MY-PIPELINE.md`:
+That is the honest version of this step, and it is also the point. A DORA report on a pipeline that
+has run once is an empty baseline. It becomes useful at the fourth or fifth release, when the numbers
+have somewhere to move from. Take the baseline now.
+
+Write the numbers in `MY-PIPELINE.md`:
 
 ```markdown
-- **Lab 6, DORA**: deployment frequency X per month, lead time Y days, change failure rate Z%,
-  time to restore W hours. Frequency is up since the pipeline reached production.
+- **Lab 6, DORA**: baseline after the first production release. Deployment frequency X per week,
+  lead time Y days, change failure rate Z%, time to restore W hours, rework rate V%. Measured
+  against helios-prod over 90 days.
 ```
 
 <details markdown="1"><summary>Under the hood: where the DORA numbers come from</summary>
@@ -133,21 +148,32 @@ The command was:
 
     sf hardis:doc:dora-report
 
-and every number comes from the git history and the git provider API, not from Salesforce:
+and it reads **two** sources, which is the thing to know about it:
 
-- **Deployment frequency**: merges into the production branch, from `productionBranch`
-- **Lead time**: for each story, the time between its merge into `developmentBranch` and the merge
-  of the release carrying it into `productionBranch`
-- **Change failure rate**: releases followed within a short window by a hotfix, recognised by the
-  branch naming convention
-- **Time to restore**: the interval between such a release and its hotfix reaching production
+- **Salesforce**, through the Tooling API: every `DeployRequest` on the target org in the period,
+  with its status and its dates, ignoring validation-only runs. Deployment frequency, change failure
+  rate and time to restore are computed from that and from nothing else
+- **The git provider**, for the merged Pull Requests into the current branch. Lead time pairs each
+  one with the first successful deployment that completed within 14 days of its merge. The rework
+  rate uses the branch names, recognising a fix by a `hotfix/`, `fix/` or `bugfix/` prefix
 
-Which means all four depend on the conventions this pipeline enforces: merge commits rather than
-squashes, branch prefixes, and a production branch that is actually declared. A project that does
-not follow them gets a report full of zeros, and the report is not wrong.
+So it does not read `productionBranch`, it does not read `developmentBranch`, and it has no idea
+which of your orgs is production. **The org you point it at is the scope.** Point it at a sandbox
+and it will measure the sandbox, cheerfully.
 
-It also means the numbers are honest in a way a dashboard somebody fills in by hand never is. Nobody
-can improve deployment frequency by editing a spreadsheet.
+Two degradations worth recognising rather than debugging:
+
+- **No target org**: the three Salesforce metrics read "No data available" and the report still
+  prints
+- **No git provider token**: it falls back to parsing `git log --merges`, recognising GitHub and
+  GitLab merge commit messages. Squashed merges give it nothing to parse, which is the second reason
+  this course does not squash
+
+The report lands in `hardis-report/` and is copied to `docs/dora/`.
+
+The numbers are honest in a way a dashboard somebody fills in by hand never is. Nobody can improve
+deployment frequency by editing a spreadsheet. They are also narrower than the DORA names suggest,
+and a release manager quoting them should know which part they cover.
 
 </details>
 
@@ -156,7 +182,7 @@ can improve deployment frequency by editing a spreadsheet.
 - `main` carrying the release
 - A green **Deploy to main** job
 - The stories working in `helios-prod`
-- A DORA report with a curve, and its four numbers in `MY-PIPELINE.md`
+- A DORA report measured against `helios-prod`, and its numbers in `MY-PIPELINE.md`
 
 ## If it goes wrong
 
@@ -170,9 +196,15 @@ Salesforce deployments are atomic per deployment, so this usually means a post-d
 after a successful deployment. The metadata is in, the action is not. Re-run the action, do not
 re-run the deployment.
 
-**The DORA report is empty or all zeros.**
-Either the production branch is not declared (`productionBranch` in `config/.sfdx-hardis.yml`), or
-the history has no merge commits it can attribute.
+**The DORA report says "No data available" for three of the metrics.**
+It had no target org. Set `helios-prod` as your default org and run it again.
+
+**The report is about the wrong org.**
+Same cause, other direction: it measured your default org, which was not `helios-prod`.
+
+**Lead time is zero or missing.**
+No Pull Request data. Either there is no git provider token in the environment, or the merges were
+squashed and the `git log` fallback has nothing to recognise.
 
 ## Check your work
 
