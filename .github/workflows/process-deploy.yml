@@ -105,8 +105,7 @@ jobs:
           # "NoDefaultEnvError: No default environment found". Setting it from a
           # separate process writes the config file, which the in-process call the
           # hook makes does not.
-          sf config set target-org="$(sf org display --target-org "$ORG_ALIAS" --json \
-            | node -p "JSON.parse(require('fs').readFileSync(0)).result.username")"
+          sf config set target-org="$ORG_ALIAS"
           sf hardis:project:deploy:smart
 
       # Upload sfdx-hardis reports, including the complete deployment result JSON
