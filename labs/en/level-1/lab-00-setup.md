@@ -50,14 +50,33 @@ shared integration org the team merges into.
 First [Git](https://git-scm.com/downloads). Git is the tool that records every version of a project
 and moves it between your laptop and GitHub, and everything else in this course sits on it. You will
 never have to type a Git command: the extension runs them for you, and shows you which one it ran.
-The download page offers your operating system at the top: on Windows take **Click here to download** **(1)**, the
-64-bit standalone installer. Accept every default the installer offers.
+The download page offers your operating system at the top: on Windows take **Click here to
+download** **(1)**, the 64-bit standalone installer.
 
 ![The Git download page for Windows](../../_assets/annotated/web/git-download.png)
+
+**Accept every default the installer offers**, and on Windows that matters more than it sounds. The
+defaults include **Git Bash**, a Unix-style terminal that comes with Git, and sfdx-hardis uses it:
+several of the commands the extension runs for you are shell commands that the Windows command
+prompt does not understand. If you untick the Git Bash components, parts of this course fail with
+errors that look like nothing to do with Git.
+
+Two screens are worth reading rather than clicking through:
+
+- **Select Components**: leave **Git Bash Here** and **Git GUI Here** ticked
+- **Adjusting your PATH environment**: keep the recommended middle option, *Git from the command
+  line and also from 3rd-party software*, so VS Code can find Git
+
+macOS and Linux already have a Unix shell, so there is nothing to choose there.
 
 !!! note "You may already have it"
     Open a terminal and type `git --version`. If it answers with a number, skip this and move on.
     The Setup panel in step 2 checks it too, and will tell you if it is missing.
+
+!!! tip "Checking Git Bash is there, on Windows"
+    Right-click any folder: the menu should offer **Open Git Bash here**. In VS Code you will also
+    find **Git Bash** in the terminal's dropdown, next to PowerShell. If neither shows up, run the
+    Git installer again and keep the defaults this time.
 
 Then open [Visual Studio Code](https://code.visualstudio.com/) and take the download for your machine.
 On Windows that is the **Windows** button **(1)**; the two cards next to it hold the macOS and Linux
