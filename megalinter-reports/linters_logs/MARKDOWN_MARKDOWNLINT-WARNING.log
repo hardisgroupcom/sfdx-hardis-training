@@ -1,0 +1,37 @@
+Results of markdownlint linter (version 0.49.1)
+See documentation on https://megalinter.io/10.1.0/descriptors/markdown_markdownlint/
+-----------------------------------------------
+
+❌ [ERROR] for workspace /github/workspace
+Linter raw log:
+labs/en/level-1/lab-01-fork-and-connect.md:176 error MD046/code-block-style Code block style [Expected: indented; Actual: fenced]
+labs/en/level-1/lab-04-publish.md:121 error MD046/code-block-style Code block style [Expected: fenced; Actual: indented]
+labs/en/level-1/lab-04-publish.md:130 error MD046/code-block-style Code block style [Expected: fenced; Actual: indented]
+labs/en/level-1/lab-05-pull-request.md:90 error MD040/fenced-code-language Fenced code blocks should have a language specified [Context: "```"]
+labs/en/level-1/lab-05-pull-request.md:147 error MD046/code-block-style Code block style [Expected: fenced; Actual: indented]
+labs/en/level-1/lab-05-pull-request.md:164 error MD046/code-block-style Code block style [Expected: fenced; Actual: indented]
+labs/en/level-2/lab-00-refresh.md:111 error MD046/code-block-style Code block style [Expected: indented; Actual: fenced]
+labs/en/level-2/lab-01-missing-dependency.md:74 error MD040/fenced-code-language Fenced code blocks should have a language specified [Context: "```"]
+labs/en/level-2/lab-01-missing-dependency.md:99 error MD040/fenced-code-language Fenced code blocks should have a language specified [Context: "```"]
+labs/en/level-2/lab-01-missing-dependency.md:128 error MD040/fenced-code-language Fenced code blocks should have a language specified [Context: "```"]
+labs/en/level-2/lab-01-missing-dependency.md:151 error MD040/fenced-code-language Fenced code blocks should have a language specified [Context: "```"]
+labs/en/level-2/lab-01-missing-dependency.md:171 error MD046/code-block-style Code block style [Expected: fenced; Actual: indented]
+labs/en/level-2/lab-02-deployment-actions-apex.md:66 error MD040/fenced-code-language Fenced code blocks should have a language specified [Context: "```"]
+labs/en/level-2/lab-02-deployment-actions-apex.md:168 error MD046/code-block-style Code block style [Expected: fenced; Actual: indented]
+labs/en/level-2/lab-04-quality-and-tests.md:89 error MD040/fenced-code-language Fenced code blocks should have a language specified [Context: "```"]
+labs/en/level-2/lab-04-quality-and-tests.md:136 error MD040/fenced-code-language Fenced code blocks should have a language specified [Context: "```"]
+labs/en/level-2/lab-04-quality-and-tests.md:195 error MD046/code-block-style Code block style [Expected: fenced; Actual: indented]
+labs/en/level-2/lab-06-conflicts.md:108 error MD046/code-block-style Code block style [Expected: indented; Actual: fenced]
+labs/en/level-2/lab-06-conflicts.md:122 error MD046/code-block-style Code block style [Expected: indented; Actual: fenced]
+labs/en/level-2/lab-06-conflicts.md:142 error MD046/code-block-style Code block style [Expected: indented; Actual: fenced]
+labs/en/level-2/lab-07-recover-selection.md:128 error MD046/code-block-style Code block style [Expected: fenced; Actual: indented]
+labs/en/level-3/lab-01-ci-auth.md:158 error MD046/code-block-style Code block style [Expected: fenced; Actual: indented]
+labs/en/level-3/lab-01-ci-auth.md:162 error MD046/code-block-style Code block style [Expected: fenced; Actual: indented]
+labs/en/level-3/lab-03-deploy-integration.md:108 error MD046/code-block-style Code block style [Expected: fenced; Actual: indented]
+labs/en/level-3/lab-06-production.md:130 error MD046/code-block-style Code block style [Expected: fenced; Actual: indented]
+labs/en/level-3/lab-07-hotfix-retrofit.md:77 error MD040/fenced-code-language Fenced code blocks should have a language specified [Context: "```"]
+labs/en/level-3/lab-07-hotfix-retrofit.md:170 error MD046/code-block-style Code block style [Expected: fenced; Actual: indented]
+labs/en/level-3/lab-07-hotfix-retrofit.md:175 error MD046/code-block-style Code block style [Expected: fenced; Actual: indented]
+labs/en/level-3/lab-08-monitoring.md:147 error MD046/code-block-style Code block style [Expected: fenced; Actual: indented]
+README.md:75 error MD040/fenced-code-language Fenced code blocks should have a language specified [Context: "```"]
+

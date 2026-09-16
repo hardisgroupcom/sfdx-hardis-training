@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "AquaSecurityOfficial.trivy-vulnerability-scanner",
+        "foxundermoon.shell-format",
+        "salesforce.salesforcedx-vscode",
+        "timonwong.shellcheck",
+        "esbenp.prettier-vscode"
+    ]
+}

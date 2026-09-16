@@ -1,0 +1,2 @@
+"rule","engine","severity","tags","file","startLine","startColumn","endLine","endColumn","message","resources"
+"AvoidDebugStatements","pmd",3,"Recommended,Performance,Apex,SfdxHardis","force-app/main/default/classes/InstallationScheduler.cls",46,9,46,60,"Avoid debug statements since they impact on performance","https://docs.pmd-code.org/pmd-doc-7.26.0/pmd_rules_apex_performance.html#avoiddebugstatements"

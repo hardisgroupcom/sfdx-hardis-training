@@ -1,0 +1,10 @@
+[0000]  WARN no explicit name and version provided for directory source, deriving artifact ID from the given path (which is not ideal)
+NAME                                      VERSION  TYPE                            
+actions/checkout                          v4.3.1   github-action  (+3 duplicates)  
+actions/checkout                          v6       github-action  (+2 duplicates)  
+actions/setup-node                        v4.4.0   github-action  (+3 duplicates)  
+actions/setup-python                      v5.6.0   github-action                   
+actions/upload-artifact                   v4       github-action  (+2 duplicates)  
+oxsecurity/megalinter/flavors/salesforce  v10      github-action                   
+peter-evans/create-pull-request           v8       github-action                   
+stefanzweifel/git-auto-commit-action      v7       github-action
