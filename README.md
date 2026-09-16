@@ -20,7 +20,7 @@ Each level awards a **Cloudity badge**. It is a badge, not a certification.
 
 ## Getting started
 
-1. Install [VS Code](https://code.visualstudio.com/) and [Node.js](https://nodejs.org/) 20 or later
+1. Install [VS Code](https://code.visualstudio.com/) and [Node.js](https://nodejs.org/) 22 or later (24 recommended)
 2. Install the **sfdx-hardis** extension from the VS Code marketplace
 3. Open the sfdx-hardis panel, click **Setup**, and let it install the Salesforce CLI and the plugins
 4. Sign up for two free [Developer Edition orgs](https://developer.salesforce.com/signup)

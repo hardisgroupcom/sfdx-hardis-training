@@ -51,9 +51,11 @@ builds.
 
 ![The Visual Studio Code download page, one card per operating system](../../_assets/annotated/web/vscode-download.png)
 
-Then [Node.js](https://nodejs.org/), version 20 or later. Two things to get right on that page:
+Then [Node.js](https://nodejs.org/), **version 22 at the least, 24 recommended**. Two things to
+get right on that page:
 
-1. the version selector, left on **LTS** **(1)**
+1. the version selector **(1)**. The one marked **LTS** is the safe choice, as long as it reads 22
+   or higher
 2. **Windows Installer (.msi)** **(2)**, or the equivalent for your machine
 
 ![The Node.js download page, with the version selector and the installer buttons](../../_assets/annotated/web/nodejs-download.png)

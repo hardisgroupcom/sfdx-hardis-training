@@ -27,7 +27,7 @@ conflicts and deployment actions. Someone who has never solved one cannot review
 
 ## What you need
 
-- A computer with [VS Code](https://code.visualstudio.com/) and [Node.js](https://nodejs.org/) 20 or later.
+- A computer with [VS Code](https://code.visualstudio.com/) and [Node.js](https://nodejs.org/) 22 or later (24 recommended).
 - A [GitHub](https://github.com/) account, free.
 - Two free [Developer Edition orgs](https://developer.salesforce.com/signup) to start with, two more at Level 3.
 - Nothing else. No paid service, no licence, no credit card.
