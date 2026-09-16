@@ -7,22 +7,22 @@ Helios Energy installs residential solar panels in southern Europe. Sales runs o
 The delivery team works in three-week iterations. Every story below is real work
 for the `Helios Delivery` app, and every one of them is a lab in this course.
 
-| Story  | Level | Title                                                          | Owner         | Branch                                     |
-|--------|-------|----------------------------------------------------------------|---------------|--------------------------------------------|
-| US-014 | 1     | Show the crew how many panels a job needs                      | You           | `features/US-014-panels-required`          |
-| US-016 | 1     | Let the crew leave notes on an installation                    | You           | `features/US-016-crew-notes`               |
-| US-018 | 2     | Cap the crew size a planner can assign                         | Marco Bianchi | `training/mate-us-018-crew-capacity`       |
-| US-019 | 3     | Generate a quote PDF from an opportunity                       | Amina Diallo  | `training/mate-us-019-quote-pdf`           |
-| US-020 | 3     | Refactor InstallationScheduler                                 | Marco Bianchi | `training/mate-us-020-apex-refactor`       |
-| US-021 | 2     | Warn the planner when a crew is too small                      | You           | `features/US-021-crew-size-warning`        |
-| US-024 | 2     | Crew size becomes mandatory                                    | You           | `features/US-024-crew-size-required`       |
-| US-026 | 2     | Crew capacity reference data and nightly recalculation         | You           | `features/US-026-crew-capacity-data`       |
-| US-027 | 2     | Check several installations against panel availability at once | You           | `features/US-027-schedule-by-availability` |
-| US-033 | 2     | Crews can read the panel batch cost                            | You           | `features/US-033-batch-cost-visibility`    |
-| US-034 | 2     | Flat roofs need a crew of at least three                       | You           | `features/US-034-crew-override`            |
-| US-038 | 2     | Tidy the Installation layout                                   | You           | `features/US-038-installation-notes-tidy`  |
-| US-041 | 2     | Installation handover checklist                                | You           | `features/US-041-handover-checklist`       |
-| US-045 | 3     | Installations can no longer be saved                           | You           | `fixes/US-045-installation-date-hotfix`    |
+| Story | Level | Title | Owner | Branch |
+|---|---|---|---|---|
+| US-014 | 1 | Show the crew how many panels a job needs | You | `features/US-014-panels-required` |
+| US-016 | 1 | Let the crew leave notes on an installation | You | `features/US-016-crew-notes` |
+| US-018 | 2 | Cap the crew size a planner can assign | Marco Bianchi | `training/mate-us-018-crew-capacity` |
+| US-019 | 3 | Generate a quote PDF from an opportunity | Amina Diallo | `training/mate-us-019-quote-pdf` |
+| US-020 | 3 | Refactor InstallationScheduler | Marco Bianchi | `training/mate-us-020-apex-refactor` |
+| US-021 | 2 | Warn the planner when a crew is too small | You | `features/US-021-crew-size-warning` |
+| US-024 | 2 | Crew size becomes mandatory | You | `features/US-024-crew-size-required` |
+| US-026 | 2 | Crew capacity reference data and nightly recalculation | You | `features/US-026-crew-capacity-data` |
+| US-027 | 2 | Check several installations against panel availability at once | You | `features/US-027-schedule-by-availability` |
+| US-033 | 2 | Crews can read the panel batch cost | You | `features/US-033-batch-cost-visibility` |
+| US-034 | 2 | Flat roofs need a crew of at least three | You | `features/US-034-crew-override` |
+| US-038 | 2 | Tidy the Installation layout | You | `features/US-038-installation-notes-tidy` |
+| US-041 | 2 | Installation handover checklist | You | `features/US-041-handover-checklist` |
+| US-045 | 3 | Installations can no longer be saved | You | `fixes/US-045-installation-date-hotfix` |
 
 ## The stories in full
 
@@ -211,9 +211,9 @@ Acceptance criteria:
 
 ## The team
 
-| Who             | Role                                                                                                   |
-|-----------------|--------------------------------------------------------------------------------------------------------|
+| Who | Role |
+|---|---|
 | Sofia Marchetti | Release manager. Left the company between Level 2 and Level 3, which is why the pipeline is yours now. |
-| Marco Bianchi   | Senior contributor. Merges before you do, on the files you touched.                                    |
-| Amina Diallo    | Contributor, works on the quoting side of the app.                                                     |
-| You             | New joiner in Level 1, trusted contributor in Level 2, release manager in Level 3.                     |
+| Marco Bianchi | Senior contributor. Merges before you do, on the files you touched. |
+| Amina Diallo | Contributor, works on the quoting side of the app. |
+| You | New joiner in Level 1, trusted contributor in Level 2, release manager in Level 3. |

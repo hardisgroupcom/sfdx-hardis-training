@@ -8,11 +8,11 @@ that the next person can see how the pipeline was put together.
 
 ## Orgs
 
-| Branch      | Org alias          | What it is for |
-|-------------|--------------------|----------------|
-| integration | helios-integration |                |
-| uat         | helios-uat         |                |
-| main        | helios-prod        |                |
+| Branch | Org alias | What it is for |
+|---|---|---|
+| integration | helios-integration | |
+| uat | helios-uat | |
+| main | helios-prod | |
 
 ## Level 2
 

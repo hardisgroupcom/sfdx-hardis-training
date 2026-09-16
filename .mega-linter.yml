@@ -1,3 +1,9 @@
 # Extend from shared sfdx-hardis Mega-Linter configuration :)
 EXTENDS:
   - https://raw.githubusercontent.com/hardisgroupcom/sfdx-hardis/main/config/sfdx-hardis.mega-linter-config.yml
+
+# Generated files. scripts/build/universe.mjs writes them from
+# training-universe.json and the lab front matter, and CI fails when they drift
+# from what it produces. A formatter rewriting them would make that check fail
+# forever, for a difference nobody made.
+FILTER_REGEX_EXCLUDE: (\.vscode|staticresources/|^BACKLOG\.md$|^MY-PIPELINE\.template\.md$|^training-manifest\.json$|^labs/link-map\.en\.md$|^mkdocs-nav\.yml$|^site-src/)
