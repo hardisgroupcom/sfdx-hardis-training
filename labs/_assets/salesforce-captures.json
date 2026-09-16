@@ -28,32 +28,23 @@
     {
       "name": "new-field-details",
       "skip": "Step 2 of the wizard, unreachable for the same reason as new-field-type.",
-      "click": [
-        "input[name='goNext']"
-      ]
+      "click": ["input[name='goNext']"]
     },
     {
       "name": "new-field-security",
       "skip": "Step 3 of the wizard, unreachable for the same reason as new-field-type.",
-      "click": [
-        "input[name='goNext']"
-      ]
+      "click": ["input[name='goNext']"]
     },
     {
       "name": "new-field-layouts",
       "skip": "Step 4 of the wizard, unreachable for the same reason as new-field-type. Never click past it: the next button on step 4 is Save.",
-      "click": [
-        "input[name='goNext']"
-      ]
+      "click": ["input[name='goNext']"]
     },
     {
       "name": "permission-set-object-settings",
       "path": "/lightning/setup/PermSets/page?address=%2F{{crewPermSetId}}",
       "frame": "iframe",
-      "click": [
-        "a:has-text('Object Settings')",
-        "a:has-text('Installations')"
-      ],
+      "click": ["a:has-text('Object Settings')", "a:has-text('Installations')"],
       "after": "text=Field Permissions",
       "width": 1720,
       "height": 1250,
