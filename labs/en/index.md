@@ -15,9 +15,9 @@ what a real Salesforce team does every day, with the same tools.
 
 | Level                                            | Who it is for                                                    | Time   | Before you start   | You finish able to                                                                                  |
 |--------------------------------------------------|------------------------------------------------------------------|--------|--------------------|-----------------------------------------------------------------------------------------------------|
-| [**1 - Contributor basics**](level-1/index.md)   | Admins and developers joining a team that already has a pipeline | 2 h 40 | Nothing            | Take a User Story, build it, publish it, get a green Pull Request, merge it                         |
-| [**2 - Contributor advanced**](level-2/index.md) | The same people, once the easy stories are behind them           | 4 h 45 | Level 1            | Solve deployment errors, declare deployment actions, handle overwrites, resolve conflicts           |
-| [**3 - Release Manager**](level-3/index.md)      | The person who owns the pipeline, the orgs and the releases      | 6 h 35 | Levels 1 **and** 2 | Take over an org with no pipeline, review and merge, release to UAT and production, hotfix, monitor |
+| [**1 - Contributor basics**](level-1/index.md)   | Admins and developers joining a team that already has a pipeline | 2 h 25 | Nothing            | Take a User Story, build it, publish it, get a green Pull Request, merge it                         |
+| [**2 - Contributor advanced**](level-2/index.md) | The same people, once the easy stories are behind them           | 4 h 15 | Level 1            | Solve deployment errors, declare deployment actions, handle overwrites, resolve conflicts           |
+| [**3 - Release Manager**](level-3/index.md)      | The person who owns the pipeline, the orgs and the releases      | 6 h 25 | Levels 1 **and** 2 | Take over an org with no pipeline, review and merge, release to UAT and production, hotfix, monitor |
 
 Levels 1 and 2 are both the contributor path. You may stop after Level 1 and you will be able to
 deliver. Level 2 is where you learn what to do when delivery goes wrong, which is most of the job.
@@ -30,9 +30,14 @@ conflicts and deployment actions. Someone who has never solved one cannot review
     Edition orgs and a real GitHub fork while it was written: a Pull Request check comes back in
     about two minutes, a deployment in about two, and you read the result while it runs.
 
-    They assume you work through a lab rather than stopping to explore, and that you read the
-    **Under the hood** panels once rather than twice. Take longer if it is your first Salesforce
-    project: none of this is a race, and nothing expires.
+    They assume you already know Salesforce. Creating a field, ticking field level security or
+    building a small flow is not what this course teaches, so those minutes are counted as the setup
+    they are. What is budgeted properly is the DevOps: the failures, the conflicts, the deployment
+    actions.
+
+    They also assume you work through a lab rather than stopping to explore, and that you read the
+    **Under the hood** panels once rather than twice. Take longer if you like: none of this is a
+    race, and nothing expires.
 
 ## What you need
 

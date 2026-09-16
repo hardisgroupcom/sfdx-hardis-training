@@ -168,6 +168,37 @@
   display: table;
 }
 
+/* Tables on a phone.
+ *
+ * Several tables in this course carry five columns of prose, and at portrait
+ * width the browser answers by making every column one word wide, which is how
+ * the levels table on the home page ended up unreadable. Below the theme's
+ * medium breakpoint the wrapper scrolls instead, and each cell keeps enough
+ * width to hold a phrase, so a reader swipes a readable table rather than
+ * squinting at a column of single words. */
+@media screen and (max-width: 76.1875em) {
+  .md-typeset__table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .md-typeset__table > table {
+    min-width: 34rem;
+  }
+
+  .md-typeset__table th,
+  .md-typeset__table td {
+    min-width: 7rem;
+  }
+
+  /* The first column is the one you navigate by, so it gets more room */
+  .md-typeset__table th:first-child,
+  .md-typeset__table td:first-child {
+    min-width: 9rem;
+  }
+}
+
 /* light mode table header bgcolor */
 .md-typeset__table th {
   background-color: #F0E8FF;

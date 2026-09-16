@@ -17,7 +17,7 @@ depends_on:
 # Lab 7 - Production is broken: hotfix and retrofit
 
 **Level**: 3 Release Manager
-**Time**: ~45 min
+**Time**: ~35 min
 **You will**: ship a fix straight to production without breaking the pipeline, then bring back a
 change an admin made by hand.
 

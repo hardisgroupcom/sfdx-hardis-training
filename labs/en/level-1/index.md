@@ -6,7 +6,7 @@ lang: en
 
 # Level 1 - Contributor basics
 
-**Time**: about 2 h 40, in one sitting or six.
+**Time**: about 2 h 25, in one sitting or six.
 **Before you start**: nothing. This is the first level.
 
 ## The story
@@ -29,7 +29,7 @@ That is this level.
 | [0](lab-00-setup.md)            | Install the tools and seed your orgs          | 25 min |
 | [1](lab-01-fork-and-connect.md) | Fork the repository and connect your pipeline | 20 min |
 | [2](lab-02-new-user-story.md)   | Take US-014 from the backlog                  | 10 min |
-| [3](lab-03-build-in-org.md)     | Build it in your org                          | 30 min |
+| [3](lab-03-build-in-org.md)     | Build it in your org                          | 15 min |
 | [4](lab-04-publish.md)          | Publish it and read the package.xml diff      | 20 min |
 | [5](lab-05-pull-request.md)     | Open the Pull Request, get it green, merge    | 25 min |
 | [6](lab-06-capstone.md)         | Capstone: deliver US-016 on your own          | 30 min |

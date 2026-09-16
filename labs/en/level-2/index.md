@@ -6,7 +6,7 @@ lang: en
 
 # Level 2 - Contributor advanced
 
-**Time**: about 4 h 45.
+**Time**: about 4 h 15.
 **Before you start**: [Level 1](../level-1/index.md). Not optional: every lab here assumes the loop
 is automatic for you.
 
@@ -27,14 +27,14 @@ This is the half of the contributor path that decides whether you enjoy working 
 | Lab                                    | Title                                          | Time   |
 |----------------------------------------|------------------------------------------------|--------|
 | [0](lab-00-refresh.md)                 | Your org is behind, catch it up                | 15 min |
-| [1](lab-01-missing-dependency.md)      | US-021 will not deploy: a missing dependency   | 30 min |
-| [2](lab-02-deployment-actions-apex.md) | US-024: green deployment, broken records       | 40 min |
-| [3](lab-03-deployment-actions-data.md) | US-026: reference data and a batch must follow | 40 min |
+| [1](lab-01-missing-dependency.md)      | US-021 will not deploy: a missing dependency   | 25 min |
+| [2](lab-02-deployment-actions-apex.md) | US-024: green deployment, broken records       | 30 min |
+| [3](lab-03-deployment-actions-data.md) | US-026: reference data and a batch must follow | 35 min |
 | [4](lab-04-quality-and-tests.md)       | US-027 fails the quality gate and the tests    | 30 min |
 | [5](lab-05-profiles-overwrites.md)     | US-033: your Profile change disappeared        | 25 min |
 | [6](lab-06-conflicts.md)               | Marco merged first: resolve the conflict       | 40 min |
 | [7](lab-07-recover-selection.md)       | You committed the wrong things: recover        | 20 min |
-| [8](lab-08-capstone.md)                | Capstone: deliver US-041                       | 45 min |
+| [8](lab-08-capstone.md)                | Capstone: deliver US-041                       | 35 min |
 
 ## If you are joining here
 

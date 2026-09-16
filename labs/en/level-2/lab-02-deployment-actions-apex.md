@@ -19,7 +19,7 @@ depends_on:
 # Lab 2 - US-024: green deployment, broken records
 
 **Level**: 2 Contributor advanced
-**Time**: ~40 min
+**Time**: ~30 min
 **You will**: hit a failure that no amount of metadata fixing solves, and learn the tool that exists
 for it: a deployment action.
 

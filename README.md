@@ -8,9 +8,9 @@ Three free learning paths that take you from "I have never used Git" to "I own t
 
 | Level                        | Audience                                                         | Time   | Prerequisite   |
 |------------------------------|------------------------------------------------------------------|--------|----------------|
-| **1 - Contributor basics**   | Admins and developers joining a team that already has a pipeline | 2 h 40 | none           |
-| **2 - Contributor advanced** | The same people, once the easy stories are behind them           | 4 h 45 | Level 1        |
-| **3 - Release Manager**      | The person who owns the pipeline, the orgs and the releases      | 6 h 35 | Levels 1 and 2 |
+| **1 - Contributor basics**   | Admins and developers joining a team that already has a pipeline | 2 h 25 | none           |
+| **2 - Contributor advanced** | The same people, once the easy stories are behind them           | 4 h 15 | Level 1        |
+| **3 - Release Manager**      | The person who owns the pipeline, the orgs and the releases      | 6 h 25 | Levels 1 and 2 |
 
 You work on a real repository for a fictional solar installer, **Helios Energy**, with free
 Developer Edition orgs that come pre-loaded with the app and its data. Everything is free: no paid

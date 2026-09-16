@@ -6,7 +6,7 @@ lang: en
 
 # Level 3 - Release Manager
 
-**Time**: about 6 h 35.
+**Time**: about 6 h 25.
 **Before you start**: [Level 1](../level-1/index.md) **and** [Level 2](../level-2/index.md). Both
 are required, and the badge audit checks both before it looks at anything here.
 
@@ -47,7 +47,7 @@ Your first week is finishing the pipeline. Then you run it.
 | [4](lab-04-overwrite-cleaning.md)  | Three Pull Requests collide                            | 40 min |
 | [5](lab-05-uat-release-notes.md)   | Promote integration to UAT and write the release notes | 35 min |
 | [6](lab-06-production.md)          | Ship to production and read your DORA metrics          | 35 min |
-| [7](lab-07-hotfix-retrofit.md)     | Production is broken: hotfix and retrofit              | 45 min |
+| [7](lab-07-hotfix-retrofit.md)     | Production is broken: hotfix and retrofit              | 35 min |
 | [8](lab-08-monitoring.md)          | Put production under monitoring                        | 40 min |
 | [9](lab-09-documentation.md)       | Generate the project documentation                     | 20 min |
 | [10](lab-10-capstone.md)           | Capstone: run one full weekly release cycle            | 50 min |

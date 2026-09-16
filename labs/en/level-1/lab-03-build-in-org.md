@@ -17,7 +17,7 @@ depends_on:
 # Lab 3 - Build it in your org
 
 **Level**: 1 Contributor basics
-**Time**: ~30 min
+**Time**: ~15 min
 **You will**: build US-014 the way an admin builds anything, by clicking in Salesforce Setup, and
 check it against real records.
 
