@@ -84,6 +84,11 @@ Go through the list rather than clicking "all":
 | Something you are half way through building yourself | **Leave it.** A backpromote would overwrite your work in progress |
 | Something you do not recognise at all                | **Take it.** If it is on `integration`, it is the team's truth    |
 
+For a file that both sides changed, the panel offers a third answer beside **Overwrite** and **Keep
+org version**: **Merge**. It writes the file with conflict markers on the backpromote branch and
+you resolve it in the VS Code merge editor, the same way Lab 6 has you resolve a Pull Request
+conflict. Reach for it when both changes are real and you need both.
+
 The rule when you hesitate: `integration` wins. It is the shared reality, and your org is a copy of
 it that you are allowed to modify temporarily.
 
@@ -113,7 +118,24 @@ Three things it deliberately does **not** do, and knowing them saves an afternoo
   problem
 - **It does not undo what you did by hand.** If you changed something in your org that
   `integration` also changed, the deployment overwrites it. That is why you read the list
-- **It does not touch the shared orgs.** A backpromote only ever writes to your own environment
+- **It does not touch the shared orgs.** A backpromote refuses a production org, and any org a
+  major branch deploys to. It only ever writes to a developer sandbox, a scratch org or a Developer
+  Edition org
+
+And one thing it does that nobody expects the first time:
+
+!!! warning "It leaves you on the backpromote branch"
+    The deployment runs from a branch called `backpromote/integration/<your org>`, and **the
+    checkout stays there when the command finishes**. The last line of the output tells you so.
+    Start your next User Story without reading it and you will branch off the wrong place.
+
+    **New User Story** always branches from the target you pick, so it recovers on its own. If you
+    are moving by hand, check `git status` first.
+
+The history is not on your computer either. sfdx-hardis records what reached your sandbox in a
+**Backpromotes comment** on each Pull Request it brought down, so the next backpromote knows where
+to start, from any machine and any teammate. That is also why the command needs a git provider
+token: without one it cannot read its own history, and it stops.
 
 </details>
 
