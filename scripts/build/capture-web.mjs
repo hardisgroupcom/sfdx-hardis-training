@@ -119,8 +119,9 @@ async function main() {
     console.log(`${target.name}.png  ${target.url}`);
   }
 
+  // Only the tab this script opened. Never browser.close() on a CDP connection:
+  // it closes the whole browser it is attached to, which is the user's own.
   await page.close();
-  await browser.close();
   if (freshContext) {
     await freshContext.close();
   }
