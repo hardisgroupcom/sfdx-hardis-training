@@ -110,7 +110,7 @@ Now check `helios-integration`. The permission is there.
 
 ### 6. Look at the other protection while you are here
 
-Open the **DevOps Pipeline** panel, then the project **Settings**.
+Open the **DevOps Pipeline** panel, then **Pipeline Settings** in the gear menu.
 
 ![Project configuration in the DevOps Pipeline panel](../../_assets/vscode/pipeline-config.png)
 

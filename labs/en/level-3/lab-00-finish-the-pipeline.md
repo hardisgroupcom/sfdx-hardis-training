@@ -66,12 +66,14 @@ them in one sentence each, configuring them will not help.
 
 ### 2. Declare uat and main as targets
 
-Open the **DevOps Pipeline** panel, then the project **Settings**.
+Open the **DevOps Pipeline** panel, then its settings menu at the top right, and **Pipeline
+Settings**. It opens on **Global Pipeline Settings**.
 
 ![The project configuration screen](../../_assets/vscode/pipeline-config.png)
 
-Under the contribution settings, add `uat` and `main` to the list of available target branches,
-with labels contributors will understand:
+The panel is read-only until you click **Edit**, so click it first. Then, under the contribution
+settings, add `uat` and `main` to the list of available target branches, with labels contributors
+will understand:
 
 | Branch      | Label                                                                 |
 |-------------|-----------------------------------------------------------------------|
@@ -87,7 +89,9 @@ Set the production branch to `main`.
 
 Back in the pipeline diagram, `uat` and `main` now appear as columns with no org.
 
-For each one, open its **Settings** and fill in:
+For each one, switch the **Configuration Scope** dropdown of **Pipeline Settings** to `Branch: uat`,
+then to `Branch: main`. The title becomes **Pipeline Settings for major git branch uat**. Click
+**Edit**, then fill in:
 
 | Branch | Target username                | Instance URL                   |
 |--------|--------------------------------|--------------------------------|
@@ -99,13 +103,15 @@ the single most expensive mistake available in this lab.
 
 ### 4. Declare the merge path
 
-Still in the branch settings, set the merge targets:
+Still in the branch settings, in the **Deployment** tab, set the merge targets:
 
 | Branch      | Merge targets |
 |-------------|---------------|
 | integration | `uat`         |
 | uat         | `main`        |
 | main        | none          |
+
+**Save**.
 
 This is what stops a contributor opening a Pull Request straight from a feature branch into
 production. It is not a permission, it is a guardrail, and it exists because the alternative is
@@ -180,7 +186,7 @@ The file was written for a different branch name. Check `config/branches/` for a
 has to match the branch exactly.
 
 **The pipeline diagram does not refresh.**
-Click **Refresh** in the panel. It caches the git state.
+Click **Refresh pipeline data** in the panel. It caches the git state.
 
 **You pointed a branch at the wrong org.**
 Fix the branch configuration file and commit again. Nothing has deployed yet, so nothing is broken.

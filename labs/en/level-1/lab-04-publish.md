@@ -38,7 +38,8 @@ Go slowly here once, and every following story takes five minutes.
 
 ### 1. Start the publish
 
-On the Welcome page, or in **Commands > CI/CD (simple)**, click **Save / Publish User Story**.
+In the **DevOps Pipeline** panel, click the **Save / Publish** card, or in
+**Commands > CI/CD (simple)**, click **Save / Publish User Story**.
 
 The command does a fair amount before asking you anything: it lists what changed in your org since
 the branch started, and compares it with what is in the repository.
@@ -80,7 +81,8 @@ This becomes the commit message and the body of your Pull Request.
 
 ### 4. Read the manifest before you push
 
-Open `manifest/package.xml` in VS Code, or click the **package.xml** entry in the panel.
+Open `manifest/package.xml` in VS Code, or open the **Deployment Packages** menu at the top of the
+DevOps Pipeline panel and choose **Package XML**.
 
 It should say something close to:
 

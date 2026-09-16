@@ -92,13 +92,14 @@ Open the **Data Workbench** panel.
 
 Create a new workspace named `HeliosCrewRefData`:
 
-1. **New workspace**, name it `HeliosCrewRefData`
+1. **Create Workspace**, or **Create Your First Workspace** if you have none yet, and name it
+   `HeliosCrewRefData`
 2. Add the object `Crew_Capacity__c`
 3. Operation: **Upsert**
 4. External id: `External_Id__c`
 5. Fields: the four you created
 
-Then **Export from org**, pointing at `helios-dev`. The panel pulls your 12 records into CSV files
+Then **Export data**, pointing at `helios-dev`. The panel pulls your 12 records into CSV files
 under `scripts/data/HeliosCrewRefData/`.
 
 Open `scripts/data/HeliosCrewRefData/Crew_Capacity__c.csv` and read it. Twelve rows, one column per
@@ -118,26 +119,27 @@ Open your Pull Request in the **DevOps Pipeline** panel, **Deployment Actions** 
 
 ![The SFDMU data import action editor](../../_assets/vscode/pipeline-edit-action-data.png)
 
-| Field          | Value                               |
-|----------------|-------------------------------------|
-| Type           | **Import data (SFDMU)**             |
-| Label          | `Load crew capacity reference data` |
-| When           | After the deployment                |
-| Data workspace | `scripts/data/HeliosCrewRefData`    |
-| Context        | All orgs                            |
+| Field              | Value                               |
+|--------------------|-------------------------------------|
+| Type               | **Data**                            |
+| Label              | `Load crew capacity reference data` |
+| When               | After Metadata Deployment           |
+| SFDMU Project Path | `scripts/data/HeliosCrewRefData`    |
+| Execution Contexts | Validation and Deployment jobs      |
+| Target orgs        | All target orgs                     |
 
 **Two: schedule the batch.**
 
 ![The schedule Apex batch action editor](../../_assets/vscode/pipeline-edit-action-schedule-batch.png)
 
-| Field                 | Value                                              |
-|-----------------------|----------------------------------------------------|
-| Type                  | **Schedule Apex batch**                            |
-| Label                 | `Schedule the nightly crew capacity recalculation` |
-| Class                 | `CrewCapacityBatch`                                |
-| Cron expression       | `0 0 2 * * ?` (every night at 02:00)               |
-| Job name              | `Helios crew capacity nightly`                     |
-| Run only once per org | yes                                                |
+| Field                        | Value                                              |
+|------------------------------|----------------------------------------------------|
+| Type                         | **Schedule Batch**                                 |
+| Label                        | `Schedule the nightly crew capacity recalculation` |
+| Apex Class Name              | `CrewCapacityBatch`                                |
+| Cron Expression              | `0 0 2 * * ?` (every night at 02:00)               |
+| Scheduled Job Name (Optional)| `Helios crew capacity nightly`                     |
+| Run Only Once By Org         | yes                                                |
 
 **Three: the one nobody can automate.**
 
@@ -148,10 +150,10 @@ package's Setup screen, and no deployment will ever touch it.
 
 | Field        | Value                                                                                                                                                      |
 |--------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Type         | **Manual step**                                                                                                                                            |
+| Type         | **Manual**                                                                                                                                                 |
 | Label        | `Turn on the planning board in Setup`                                                                                                                      |
 | Instructions | `Setup > Installed Packages > Helios Planning > Configure > tick "Use crew capacity rules" > Save. Takes about a minute, and has to be done in every org.` |
-| Context      | All orgs                                                                                                                                                   |
+| Target orgs  | All target orgs                                                                                                                                            |
 
 A manual step does not do anything. It **appears in the Pull Request comment and in the deployment
 report**, so the person releasing to production is told, in the release itself, that there is a

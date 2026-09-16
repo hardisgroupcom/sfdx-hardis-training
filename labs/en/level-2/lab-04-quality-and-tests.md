@@ -172,8 +172,16 @@ makes the number lie.
 Two round trips through CI to find two things you could have found in two minutes locally. Do it
 the other way round from now on.
 
-**Apex tests**: open the **Apex Tests** panel, select `InstallationSchedulerTest`, and run it
-against `helios-dev`. You get the pass or fail and the coverage without pushing anything.
+**Apex tests**: in **Commands > Org Monitoring**, click **Run Apex tests**, and pick `helios-dev`.
+It runs the org's Apex tests and checks the same coverage threshold the pipeline checks, so you get
+the pass, the fail and the percentage without pushing anything. From a terminal it is
+`sf hardis:org:test:apex`.
+
+!!! note "The Apex Tests tab is a different thing"
+    A Pull Request in the **DevOps Pipeline** panel can show an **Apex Tests (n) (beta)** tab. It
+    runs nothing. It picks which test classes that Pull Request's deployment will run, and it only
+    appears on projects that set `enableDeploymentApexTestClasses`. Helios does not: it runs
+    `RunLocalTests`, every test in the org, every time.
 
 **Linters**: run MegaLinter locally once, from a terminal:
 
@@ -232,7 +240,7 @@ Coverage is org-wide. Look at the per-class table in the Pull Request comment: a
 dragging the average down.
 
 **The local MegaLinter run does nothing.**
-It needs Docker. Without Docker, use the Apex Tests panel locally and let the CI run the linters.
+It needs Docker. Without Docker, run **Run Apex tests** locally and let the CI run the linters.
 
 **The Apex tests pass locally and fail in CI.**
 Almost always data. Your dev org has records the integration org does not, or the other way round.

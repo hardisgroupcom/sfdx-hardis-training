@@ -58,7 +58,8 @@ pre-authorised user, no password anywhere, and revocation by deleting one app.
 
 ### 1. Run the configuration command for integration
 
-In **Commands > CI/CD (advanced)**, click **Configure Org CI Authentication**.
+In **Commands > Setup Configuration**, click **Configure Org CI authentication**. The same command
+sits in the settings menu of the **DevOps Pipeline** panel, as **Add/Configure Org**.
 
 ![A sfdx-hardis command asking its questions in the extension](../../_assets/vscode/command-runner-question.png)
 

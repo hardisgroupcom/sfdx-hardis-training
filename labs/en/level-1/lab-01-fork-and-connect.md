@@ -40,8 +40,8 @@ copy will really deploy to an org you own.
 Open [github.com/hardisgroupcom/sfdx-hardis-training](https://github.com/hardisgroupcom/sfdx-hardis-training),
 click **Fork** at the top right, then **Create fork**.
 
-Leave every option at its default. In particular, **do not** tick "Copy the `main` branch only":
-this course needs the other branches.
+GitHub ticks "Copy the `main` branch only" for you. **Untick it**: this course needs the other
+branches. Leave the rest of the options as they are.
 
 You now own `github.com/<your-handle>/sfdx-hardis-training`. Everything from here happens there.
 
@@ -128,15 +128,17 @@ in this course is detail.
 The repository does not know your orgs: it cannot, they did not exist when it was written. You
 declare them once.
 
-In the DevOps Pipeline panel, find the **integration** column, click its menu, and choose
-**Settings**.
+In the DevOps Pipeline panel, open the gear menu at the top right and choose **Pipeline Settings**.
+The settings are not per column: you pick the branch inside the panel, with the **Configuration
+Scope** selector at the top. Choose `integration`, and the title becomes **Pipeline Settings for
+major git branch integration**.
 
 ![The pipeline configuration screen for a branch](../../_assets/vscode/pipeline-config.png)
 
-Fill in two fields with the values of your **second** org, the integration one:
+The panel opens read-only, so nothing is changed by accident. Click **Edit** to unlock the fields,
+then fill in two of them with the values of your **second** org, the integration one:
 
-1. **Target username** - the org username, the one that looks like
-   `you.helios.integration@heliostraining.invalid`
+1. **Target username** - the org username, the one from the confirmation email
 2. **Instance URL** - `https://login.salesforce.com`
 
 Save. If you are unsure of the username, open **Orgs Manager**: it is the column next to the alias.
@@ -227,8 +229,8 @@ under the branch name. That link, branch to org, is what the rest of this course
 ## If it goes wrong
 
 **The Actions tab shows no workflows.**
-You skipped step 2, or you ticked "Copy the `main` branch only" when forking. Delete the fork and
-fork again, leaving the defaults.
+You skipped step 2, or you left "Copy the `main` branch only" ticked when forking. Delete the fork
+and fork again, unticking that box.
 
 **`sf org auth show-sfdx-auth-url` says the org is not authenticated.**
 The alias is wrong. Open **Orgs Manager** and check the exact alias of your integration org, then

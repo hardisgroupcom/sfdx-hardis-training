@@ -42,8 +42,9 @@ still yours to fix, not on release night.
 
 ### 1. Open the Pull Request
 
-In the **DevOps Pipeline** panel, find your branch and click **Create Pull Request**. The extension
-opens GitHub on the right page, with base and head already filled in.
+In the **DevOps Pipeline** panel, find your branch in the diagram and click the small **+ PR** pill
+on the arrow leaving it. Its tooltip reads **Create PR**. The extension opens GitHub on the right
+page, with base and head already filled in.
 
 ![Creating the Pull Request from the DevOps Pipeline panel](../../_assets/vscode/pipeline-pr-modal.png)
 

@@ -54,7 +54,11 @@ A new icon appears in the left bar: a small cloud. Click it. The **Welcome** pag
 You need the Salesforce CLI and a few plugins. You are not going to install them by hand: the
 extension has a panel that checks what is missing and installs it.
 
-On the Welcome page, click **Setup**.
+On the Welcome page, the button at the top left of the header band opens the Setup panel. There is
+no card called Setup: the button is labelled with the state of your dependencies, so it reads
+**Check in progress** while it is still looking, then either **Dependencies up to date** or
+**N update(s) needed**. Hover it and the tooltip says **Open Setup**. Wait for the check to finish,
+then click it.
 
 ![The Setup panel, listing every dependency with its version](../../_assets/vscode/setup.png)
 
@@ -92,13 +96,14 @@ ways when one person is two major versions behind, and nobody notices until a de
 Go to [developer.salesforce.com/signup](https://developer.salesforce.com/signup) and sign up
 **twice**. Free, unlimited, no credit card.
 
-Two fields are easy to confuse, and confusing them is the most common way a signup fails:
+The form asks for your first name, last name, job title, company, country or region and a **work
+email**, plus a tick to accept the master subscription agreement. You do not choose a username: it
+is generated and sent to you.
 
-- **Email** must be a real address you can open, because the signup is confirmed by email. If you
-  only have one address, use plus-addressing: `you+heliosdev@example.com` and
-  `you+heliosinteg@example.com` both arrive in the same inbox for most providers.
-- **Username** is not an email. It only has to be globally unique and email-shaped. Something like
-  `you.helios.dev@heliostraining.invalid` is fine and will never collide with anyone.
+The one field that decides whether the second signup works is **Work email**. It must be a real
+address you can open, because the signup is confirmed by email, and the two orgs cannot share one
+address. If you only have one, use plus-addressing: `you+heliosdev@example.com` and
+`you+heliosinteg@example.com` both arrive in the same inbox for most providers.
 
 Name them so you can tell them apart later:
 
@@ -107,8 +112,10 @@ Name them so you can tell them apart later:
 | your first org  | your own development environment, where you build           |
 | your second org | the shared integration org, where the team's work is merged |
 
-Open each confirmation email and set a password. Keep both usernames somewhere: you need them in
-the next step.
+Open each confirmation email and set a password. The email also carries the username Salesforce
+generated for that org: it looks like an email address but it is not one, and it is what you log in
+with, what `sf org login` authenticates, and what you will type into the pipeline configuration in
+Lab 1. Keep both usernames somewhere.
 
 !!! note "A Developer Edition org never expires, but it is deactivated after a long period of inactivity. Finish a level within a few weeks and you will never meet that."
 
@@ -118,7 +125,7 @@ Back in VS Code, on the Welcome page, click **Orgs Manager**.
 
 ![The Orgs Manager panel, with the Helios orgs connected](../../_assets/vscode/orgs-manager.png)
 
-1. Click **Connect an org**
+1. Click **Add Org**
 2. Leave the login URL on **Production / Developer Edition** (`login.salesforce.com`), because a
    Developer Edition org is not a sandbox
 3. Give it the alias `helios-dev`
@@ -221,8 +228,8 @@ Close and reopen VS Code. The panel reads your PATH, and a freshly installed glo
 not on the PATH of a terminal that was already open.
 
 **The org signup email never arrives.**
-Check spam, then check that you typed a real address in the **Email** field and not the username
-you invented. They are different fields, and this is the most common mistake in this lab.
+Check spam, then check the address you typed in **Work email**. If you are signing up the second
+org with the same address as the first, Salesforce refuses it: use plus-addressing.
 
 **The deployment fails with "This org does not have the required feature".**
 You signed up for something other than a Developer Edition, most likely a Trailhead Playground with

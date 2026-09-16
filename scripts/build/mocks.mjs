@@ -77,11 +77,14 @@ writeJson(path.join(OUT, "universe.json"), {
 });
 
 // ---------------------------------------------------------- sf-mock-overlay
+// The story a learner takes first, which is what the command prompts show
+const STORY = u.userStories.find((s) => s.id === "US-014") || u.userStories[0];
+
 const orgFor = (alias, index, isDevHub) => {
   const def = u.orgs.find((o) => o.alias === alias);
   return {
     username: `helios.deploy+${alias}@heliostraining.invalid`,
-    alias: alias.toUpperCase().replace(/-/g, "_"),
+    alias,
     orgId: `00D8E00000${String(100000 + index)}EAA`,
     // A real Developer Edition instance URL, which is what a learner will have
     instanceUrl: `https://helios-${alias.replace("helios-", "")}-dev-ed.develop.my.salesforce.com`,
@@ -113,7 +116,44 @@ writeJson(path.join(OUT, "sf-mock-overlay.json"), {
     instanceUrl: "https://helios-dev-dev-ed.develop.my.salesforce.com",
     apiVersion: "64.0",
     connectedStatus: "Connected",
-    alias: "HELIOS_DEV"
+    alias: "helios-dev"
+  },
+  // What the command panel shows while the New User Story and the Save / Publish
+  // commands ask their questions. The base fixture answers with a MyCompany-CRM
+  // story, which would tell a learner to pick names that exist nowhere in this
+  // course.
+  scenario: {
+    repoUrl: `${WEB}.git`,
+    targetBranch: "integration",
+    targetBranches: u.branches.majors.map((branch) => ({
+      title: branch,
+      value: branch,
+      description:
+        branch === "integration"
+          ? "Where the team merges its work (this course)"
+          : `The ${branch} environment`
+    })),
+    storyName: `${STORY.id} ${STORY.title}`,
+    storyBranch: STORY.branch,
+    devOrgs: u.orgs
+      .filter((o) => o.branch === null)
+      .map((o) => ({
+        title: `https://helios-${o.alias.replace("helios-", "")}-dev-ed.develop.my.salesforce.com`,
+        value: o.alias,
+        description: `helios.deploy+${o.alias}@heliostraining.invalid`
+      })),
+    // The delta package.xml the Save / Publish command shows for that story
+    packageXmlTypes: [
+      { name: "CustomField", members: ["Installation__c.Panels_Required__c"] },
+      { name: "Layout", members: ["Installation__c-Installation Layout"] },
+      { name: "PermissionSet", members: ["Helios_Delivery_Crew", "Helios_Delivery_Manager"] }
+    ],
+    publishItems: [
+      { title: "Installation__c.Panels_Required__c", value: "Installation__c.Panels_Required__c" },
+      { title: "Installation__c-Installation Layout", value: "Installation__c-Installation Layout" },
+      { title: "Helios_Delivery_Manager", value: "Helios_Delivery_Manager" },
+      { title: "Helios_Delivery_Crew", value: "Helios_Delivery_Crew" }
+    ]
   },
   apexClasses: [
     {

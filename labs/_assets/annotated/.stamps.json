@@ -4,5 +4,19 @@
   "web/sf-signup.png": "e2c440650bf5b4f8",
   "web/github-fork.png": "94465b592914b28b",
   "web/github-create-fork.png": "3240204175725a89",
-  "web/github-secret-new.png": "a7c02afe55515046"
+  "web/github-secret-new.png": "a7c02afe55515046",
+  "vscode/welcome.png#first-open": "407dd37fac745932",
+  "vscode/welcome.png#setup-button": "cdc43fb7afc3bc9d",
+  "vscode/welcome.png#training-menu": "3865310ee050840a",
+  "vscode/setup.png": "9351ec3d92bcd8a0",
+  "vscode/orgs-manager.png": "b400a3757b839c99",
+  "vscode/devops-pipeline.png#read-it": "13366f56baa6d18c",
+  "vscode/devops-pipeline.png#new-user-story": "2a46493cba20950d",
+  "vscode/devops-pipeline.png#settings-menu": "1d20919fa3d6b0a2",
+  "vscode/pipeline-config-branch.png": "b6b99349c36e9258",
+  "vscode/work-new-target-branch.png": "ffa525f117076df6",
+  "vscode/work-save-package-xml.png": "b65674f3852800ae",
+  "web/vscode-download.png": "7bd8a5d2ef79e66c",
+  "web/vscode-marketplace.png": "f724f3cc62ace908",
+  "web/github-actions-tab.png": "3b0514b25ad9487a"
 }

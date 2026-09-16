@@ -47,7 +47,7 @@ and repeat for the rest of your career on this project.
 
 ### 1. Start the User Story
 
-On the Welcome page, or in the **Commands** tree under **CI/CD (simple)**, click
+In the **DevOps Pipeline** panel, or in the **Commands** tree under **CI/CD (simple)**, click
 **New User Story**.
 
 The extension asks a short series of questions, one screen at a time. Answer them:

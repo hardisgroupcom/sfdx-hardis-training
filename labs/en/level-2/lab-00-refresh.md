@@ -48,7 +48,8 @@ That list, not your memory, is what tells you whether a refresh is needed.
 
 ### 2. Open Backpromote
 
-On the Welcome page, or in **Commands > CI/CD (advanced)**, click **Backpromote**.
+In **Commands > CI/CD (advanced)**, click **Backpromote to your dev sandbox (Beta)**. The same panel
+opens from the **Backpromote (Beta)** card in the **DevOps Pipeline** panel.
 
 ![The Backpromote panel](../../_assets/vscode/backpromote.png)
 
@@ -75,8 +76,8 @@ it that you are allowed to modify temporarily.
 
 ### 4. Run it and read the result
 
-Click **Backpromote**. The panel deploys the selected items into your org and reports each one, with
-the deployment actions the merged stories declared.
+Click **Backpromote to helios-dev**. The panel deploys the selected items into your org and reports
+each one, with the deployment actions the merged stories declared.
 
 <details markdown="1"><summary>Under the hood: what Backpromote just did</summary>
 
