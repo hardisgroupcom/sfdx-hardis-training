@@ -5,6 +5,7 @@ lab: 0
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/web/git-download
   - annotated/web/vscode-download
   - annotated/web/nodejs-download
   - annotated/web/vscode-marketplace
@@ -13,6 +14,8 @@ screenshots:
   - annotated/vscode/setup
   - annotated/web/sf-signup
   - annotated/vscode/orgs-manager
+  - annotated/web/github-fork
+  - annotated/web/github-create-fork
   - annotated/vscode/welcome--training-menu
 depends_on:
   commands: [hardis:org:data:import]
@@ -95,9 +98,14 @@ get right on that page:
 
 Both are next-next-finish installers.
 
-Then open VS Code, click the **Extensions** icon in the left bar, type `sfdx-hardis`, and click
-**Install** on **sfdx-hardis** by Cloudity. Its page on the Visual Studio Marketplace carries the
-same **Install** button **(1)**, if you would rather start from your browser.
+Then open VS Code and install the extension. The **Extensions** icon sits in the narrow bar down
+the left, and looks like four small squares with one lifted away. Click it, type `sfdx-hardis` in
+the search box, and click **Install** on the entry published by **Cloudity**.
+
+The extension also has a page on the Visual Studio Marketplace, and its **Install** button **(1)**
+opens VS Code for you:
+
+<https://marketplace.visualstudio.com/items?itemName=NicolasVuillamy.vscode-sfdx-hardis>
 
 ![The sfdx-hardis extension page on the Visual Studio Marketplace](../../_assets/annotated/web/vscode-marketplace.png)
 
@@ -170,8 +178,20 @@ You do not choose a username: it is generated and sent to you.
 
 **Work email** is the field that decides whether the second signup works. It must be a real
 address you can open, because the signup is confirmed by email, and the two orgs cannot share one
-address. If you only have one, use plus-addressing: `you+heliosdev@example.com` and
-`you+heliosinteg@example.com` both arrive in the same inbox for most providers.
+address.
+
+If you only have one, use plus-addressing. Everything between the `+` and the `@` is ignored on
+delivery, so one inbox answers to as many addresses as you like. On Gmail, if your address is
+`jane.doe@gmail.com`:
+
+| Sign up with                  | The confirmation arrives in |
+|-------------------------------|------------------------------|
+| `jane.doe+heliosdev@gmail.com`   | `jane.doe@gmail.com`      |
+| `jane.doe+heliosinteg@gmail.com` | `jane.doe@gmail.com`      |
+
+Salesforce treats them as two different addresses, which is the point. Outlook.com, Fastmail,
+iCloud and most company mail servers do the same; if yours does not, the confirmation simply never
+arrives and you need a second real address.
 
 Name them so you can tell them apart later:
 
@@ -224,13 +244,28 @@ now on, and so does every sfdx-hardis command with `--target-org helios-dev`.
 
 You need the training project on your machine before you can seed the orgs from it.
 
-1. Open [the training repository](https://github.com/hardisgroupcom/sfdx-hardis-training) and
-   click **Fork**, top right, then **Create fork**. You now have your own copy
-2. In VS Code, **File > Open Folder**, pick an empty folder, then use the Source Control panel to
-   clone your fork into it
+A **fork** is your own copy of somebody else's repository, made in one click and sitting under your
+own GitHub account. Open
+[the training repository](https://github.com/hardisgroupcom/sfdx-hardis-training) and click
+**Fork** **(1)**, top right.
 
-Lab 1 goes through forking and cloning properly, with what each step means. For now you only need
-the files.
+![The training repository on GitHub](../../_assets/annotated/web/github-fork.png)
+
+The **Create a new fork** page asks for three things:
+
+1. **Owner** **(1)**, which is your own account
+2. **Copy the `main` branch only** **(2)**, ticked for you. **Untick it**: this course needs the
+   other branches, and a fork made without them fails in Lab 1
+3. **Create fork** **(3)**
+
+![The Create a new fork page on GitHub](../../_assets/annotated/web/github-create-fork.png)
+
+You now own `github.com/<your-handle>/sfdx-hardis-training`. Bring it onto your machine: in VS Code,
+**File > Open Folder**, pick an empty folder, then use the Source Control panel to **Clone
+Repository** with your fork's URL.
+
+Lab 1 goes through both properly, with what each step means and what to do when GitHub asks you to
+sign in. For now you only need the files.
 
 ### 6. Seed each org
 
