@@ -5,7 +5,7 @@ lab: 5
 lang: en
 source_rev: ""
 screenshots:
-  - annotated/vscode/pipeline-branch-modal--promote
+  - annotated/vscode/pipeline-branch-modal
 depends_on:
   commands: [hardis:doc:release-notes, hardis:project:deploy:smart]
   flags: []
@@ -40,13 +40,22 @@ deploys to has real testers in it.
 
 ### 1. See what you are about to ship
 
-Open the **DevOps Pipeline** panel and click the `integration` column **(1)**.
+Open the **DevOps Pipeline** panel and click the `integration` node in the diagram. A window opens
+on that branch.
 
-![The DevOps Pipeline diagram, with the integration column that opens the branch window](../../_assets/annotated/vscode/pipeline-branch-modal--promote.png)
+![The branch window of integration, listing what it carries](../../_assets/annotated/vscode/pipeline-branch-modal.png)
 
-A window opens on that branch. It lists every Pull Request merged into `integration` since the last
-promotion to `uat`. That list **is** the release. Read it before you create anything: if a story in
-it should not go out this week, now is the moment, not after the deployment.
+**Pull Requests** **(1)** is the list that matters: every Pull Request merged into `integration`
+since the last promotion to `uat`. That list **is** the release. Read it before you create anything:
+if a story in it should not go out this week, now is the moment, not after the deployment.
+
+**Deployment Actions** **(2)** is the same list of actions those Pull Requests carried, gathered in
+one place, and step 3 comes back to it. **(3)** generates the notes, which is step 6.
+
+!!! note "Empty, with a Go Live selector instead?"
+    Then this branch has no merge target yet, and the panel is showing you its go-lives rather than
+    what is waiting to be promoted. Lab 0 of this level is what gives `integration` a merge target.
+    Go back and finish it.
 
 ### 2. Create the promotion Pull Request
 

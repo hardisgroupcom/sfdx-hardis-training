@@ -25,9 +25,9 @@
   "vscode/backpromote-loading.png": "93895c8bdd910d3c",
   "vscode/backpromote.png": "bf3e1936e4c0a04a",
   "vscode/metadata-retriever.png": "adfa8881603d124e",
-  "vscode/pipeline-pr-actions-empty.png": "6cc423a736064693",
+  "vscode/pipeline-pr-actions-empty.png": "e6bdd794ca2f12f6",
   "vscode/pipeline-edit-action-apex.png": "e7ab8cc006f8e53d",
-  "vscode/pipeline-pr-actions-list.png": "2b71d15b6f13c7f3",
+  "vscode/pipeline-pr-actions-list.png": "45bb76640ec7abb5",
   "vscode/data-workbench.png": "a61550fc90f369c0",
   "vscode/pipeline-edit-action-data.png": "7c879473e9f24738",
   "vscode/pipeline-edit-action-schedule-batch.png": "47d4421771e839a9",
@@ -52,5 +52,6 @@
   "vscode/pipeline-cards.png#new-user-story": "6909c4fc5665cbe7",
   "vscode/pipeline-cards.png#save-publish": "5c98cd3ae424e31f",
   "vscode/pipeline-cards.png#backpromote": "08d54ee914c75f54",
-  "vscode/pipeline-cards.png#show-feature-branches": "a37a15e2350e9504"
+  "vscode/pipeline-cards.png#show-feature-branches": "a37a15e2350e9504",
+  "vscode/pipeline-branch-modal.png": "6a633ccff34b4cff"
 }
