@@ -63,6 +63,7 @@
       ],
       "screenshots": [
         "annotated/web/sf-signup",
+        "annotated/web/gh-cli-download",
         "annotated/vscode/orgs-manager",
         "annotated/vscode/org-select-alias",
         "annotated/vscode/welcome--training-menu",

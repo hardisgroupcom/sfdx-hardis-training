@@ -6,6 +6,7 @@ lang: en
 source_rev: ""
 screenshots:
   - annotated/web/sf-signup
+  - annotated/web/gh-cli-download
   - annotated/vscode/orgs-manager
   - annotated/vscode/org-select-alias
   - annotated/vscode/welcome--training-menu
@@ -49,9 +50,9 @@ three in twenty minutes.
 ## Before you start
 
 - [ ] Lab 0 finished: the Setup panel all green
+- [ ] A GitHub account
 - [ ] Two working email addresses, or one address that supports plus-addressing
-- [ ] The GitHub CLI installed (Lab 0, step 1). You do not have to sign in: the command in step 5
-      does that for you, in your browser, the first time it needs to
+- [ ] Nothing else. Step 5 installs the one extra tool it needs and signs you in with it
 
 ## Steps
 
@@ -231,7 +232,25 @@ records instead of creating 470. Anything in this course that can be run twice, 
 
 ### 5. Set up your pipeline
 
-On the Welcome page, the **CUSTOM MENUS** heading **(1)** holds a single card, **Training
+One tool first, and only for this. The command below uses the
+[GitHub CLI](https://cli.github.com/), called `gh`, to make your copy of the repository and set its
+automation up. On its home page, open the install list **(1)** and take the download for your
+machine: **Windows - Download MSI**, or **macOS - Download binary**. Accept the installer's defaults
+**(2)**.
+
+![The GitHub CLI home page, with the install list open on the Windows MSI](../../_assets/annotated/web/gh-cli-download.png)
+
+You never have to run `gh` yourself. The command below uses it once and signs you in through your
+browser at that moment.
+
+!!! note "This one is for the course, and for GitHub"
+    It is here so that one click can hand you a working pipeline instead of a dozen forms. Nothing
+    else in the course needs it, and nothing in sfdx-hardis does: this project happens to live on
+    GitHub, and GitLab, Azure DevOps and Bitbucket projects work exactly the same way without it.
+    On a real project you would join a repository that already exists, with its automation already
+    running, and you would never install this.
+
+Now, on the Welcome page, the **CUSTOM MENUS** heading **(1)** holds a single card, **Training
 (custom)** **(2)**.
 
 ![The Welcome page, with the CUSTOM MENUS group and the Training card](../../_assets/annotated/vscode/welcome--training-menu.png)
@@ -403,8 +422,8 @@ actually in it, so a setting that never left your laptop counts as not done.
 ## If it goes wrong
 
 **Set up my pipeline says the GitHub CLI is not installed.**
-Install it from [cli.github.com](https://cli.github.com/), then run `gh auth login` and pick
-GitHub.com, HTTPS, and authenticate with your browser. Lab 0 step 1 covers it.
+Install it from [cli.github.com](https://cli.github.com/), as step 5 shows, then click the card
+again. It signs you in itself, in your browser, the first time it needs to.
 
 **It says Actions could not be turned on from here.**
 GitHub hides that switch behind a banner with no API. Open the **Actions** tab of your fork and

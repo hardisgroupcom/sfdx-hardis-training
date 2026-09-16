@@ -22,9 +22,8 @@ Each level awards a **Cloudity badge**. It is a badge, not a certification.
 
 **The tools**, which is the same list on any Salesforce project, not just this one:
 
-1. Install [Git](https://git-scm.com/downloads), [VS Code](https://code.visualstudio.com/),
-   [Node.js](https://nodejs.org/) 22 or later (24 recommended) and the
-   [GitHub CLI](https://cli.github.com/)
+1. Install [Git](https://git-scm.com/downloads), [VS Code](https://code.visualstudio.com/) and
+   [Node.js](https://nodejs.org/) 22 or later (24 recommended)
 2. Install the **SFDX Hardis Extension Pack for Salesforce** from the VS Code marketplace
 3. Open the sfdx-hardis panel, click **Setup**, and let it install the Salesforce CLI and the plugins
 
@@ -32,7 +31,8 @@ Each level awards a **Cloudity badge**. It is a badge, not a certification.
 
 4. Sign up for two free [Developer Edition orgs](https://developer.salesforce.com/signup) and
    connect them in **Orgs Manager**, naming them `helios-dev` and `helios-integration`
-5. Clone this repository
+5. Clone this repository, and install the [GitHub CLI](https://cli.github.com/), which the next
+   step uses and nothing else does
 6. Welcome page > **Training** > **Set up my pipeline**, which forks the repository, turns Actions
    on and gives the CI job a way into your org
 7. Welcome page > **Training** > **Set up one of my training orgs**, once per org

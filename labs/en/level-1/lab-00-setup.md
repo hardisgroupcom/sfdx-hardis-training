@@ -37,21 +37,23 @@ five things have to be on your machine, and the last of them installs most of th
 
 !!! tip "This lab stands on its own"
     It is the same list whether you are here for the course or joining a project that already has a
-    pipeline. If somebody sent you here to get set up before your first day, **finish this lab and
-    stop**. Lab 1 is where the training-specific part starts: free Salesforce orgs, a training
-    repository, fictional data. None of that belongs on a real project.
+    pipeline, and it does not care which git provider that project uses: GitHub, GitLab, Azure
+    DevOps and Bitbucket all work the same from here. If somebody sent you here to get set up
+    before your first day, **finish this lab and stop**. Lab 1 is where the training-specific part
+    starts: free Salesforce orgs, a training repository, fictional data. None of that belongs on a
+    real project.
 
 ## Before you start
 
 - [ ] A computer where you can install software, and permission to do so
-- [ ] A GitHub account
 
 ## Steps
 
 ### 1. Install VS Code and the extension
 
 First [Git](https://git-scm.com/downloads). Git is the tool that records every version of a project
-and moves it between your laptop and GitHub, and everything else in this course sits on it. You will
+and moves it between your laptop and wherever your team keeps the project, and everything else in
+this course sits on it. You will
 never have to type a Git command: the extension runs them for you, and shows you which one it ran.
 The download page offers your operating system at the top: on Windows take **Click here to
 download** **(1)**, the 64-bit standalone installer.
@@ -97,20 +99,6 @@ get right on that page:
 ![The Node.js download page, with the version selector and the installer buttons](../../_assets/annotated/web/nodejs-download.png)
 
 Both are next-next-finish installers.
-
-Last, the [GitHub CLI](https://cli.github.com/), called `gh`. On its home page, open the install
-list **(1)** and take the download for your machine: **Windows - Download MSI**, or **macOS -
-Download binary**. Accept the installer's defaults **(2)**.
-
-![The GitHub CLI home page, with the install list open on the Windows MSI](../../_assets/annotated/web/gh-cli-download.png)
-
-You never have to run `gh` yourself. Lab 1 uses it once, from a menu, and signs you in through your
-browser at that moment.
-
-!!! note "This one is for the course, not for the job"
-    The GitHub CLI is here so that Lab 1 can hand you a working pipeline in one click instead of a
-    dozen forms. On a real project you would join a repository that already exists, with its
-    automation already running, and you would never install this.
 
 Then open VS Code and install the extensions. The **Extensions** icon **(1)** sits in the narrow bar
 down the left, and looks like four small squares with one lifted away. Click it, type `hardis` in
