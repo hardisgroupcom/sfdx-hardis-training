@@ -8,6 +8,7 @@ screenshots:
   - annotated/vscode/devops-pipeline--one-column
   - annotated/vscode/pipeline-config--target-branches
   - annotated/vscode/pipeline-config-branch
+  - annotated/vscode/pipeline-config-branch-edit
 depends_on:
   commands: [hardis:project:create]
   flags: []
@@ -131,6 +132,11 @@ and picking one changes the title to **Pipeline Settings for major git branch ua
 **(2)** and the two fields of the **Salesforce Org** tab **(3)** hold what you just wrote:
 
 ![The Pipeline Settings panel scoped to one major branch](../../_assets/annotated/vscode/pipeline-config-branch.png)
+
+**Edit** **(2)** turns that read-only card into the two fields you fill: **Instance URL** **(1)**
+and **Target Username** **(2)**, then **Save** **(3)**.
+
+![The same panel with the org fields unlocked](../../_assets/annotated/vscode/pipeline-config-branch-edit.png)
 
 Before **Edit**, that tab shows one summary card reading `Instance URL` and `Target Username` rather
 than two editable fields. That is the view mode, not a missing setting.

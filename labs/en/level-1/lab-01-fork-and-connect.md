@@ -12,14 +12,11 @@ screenshots:
   - annotated/vscode/welcome--training-menu
   - annotated/vscode/devops-pipeline--github-auth
   - annotated/vscode/devops-pipeline--read-it
-  - annotated/vscode/devops-pipeline--settings-menu
-  - annotated/vscode/pipeline-config-branch
-  - annotated/vscode/pipeline-config-branch-edit
 depends_on:
   commands: [hardis:org:data:import]
   flags: []
   config: [developmentBranch, availableTargetBranches, targetUsername, instanceUrl, customCommands]
-  panels: [pipeline, pipelineConfig, orgManager, welcome]
+  panels: [pipeline, orgManager, welcome]
   docs: [salesforce-devops-git-tokens, salesforce-devops-clone-repository, salesforce-devops-setup-auth-github]
 ---
 
@@ -27,7 +24,7 @@ depends_on:
 
 **Level**: 1 Contributor basics
 
-**Time**: ~25 min
+**Time**: ~20 min
 
 **You will**: end up with two Salesforce orgs that already hold the Helios app and its data, and a
 pipeline of your own that deploys into one of them.
@@ -286,8 +283,9 @@ Four things, each of them real work on a real project, and none of them yours to
 - **Actions turned on.** GitHub disables workflows on every new fork until the owner says
   otherwise, and a fork with them off looks exactly like a broken course
 - **Which org `integration` deploys to**, written into
-  `config/branches/.sfdx-hardis.integration.yml`. The repository could not know that: your orgs did
-  not exist when it was written
+  `config/branches/.sfdx-hardis.integration.yml` and pushed to your fork. The repository could not
+  know that: your orgs did not exist when it was written. It is pushed because the badge job clones
+  your fork and checks what is actually in it
 - **A credential for the CI job**, as a repository secret named `SFDX_AUTH_URL_INTEGRATION`. The
   job runs on GitHub's machines, not yours, and cannot reach your org without one
 
@@ -354,70 +352,14 @@ in this course is detail.
     A panel that tells you what is not finished is doing its job. Read these warnings on your own
     projects: they are usually right.
 
-### 9. Find where the org setting lives, and change it
-
-Step 5 wrote the branch configuration for you. Find it now anyway, because on a real project this is
-the screen you use, and because you will need it again in Level 3.
-
-In the DevOps Pipeline panel, open the gear menu at the top right **(1)** and choose
-**Pipeline Settings**.
-
-![The DevOps Pipeline panel header, with the gear menu that holds Pipeline Settings](../../_assets/annotated/vscode/devops-pipeline--settings-menu.png)
-
-The settings are not per column: you pick the branch inside the panel, with the configuration scope
-selector at the top **(1)**. Choose `integration`: the selector then reads **Branch: integration**,
-and the title becomes **Pipeline Settings for major git branch integration**. The **Salesforce Org**
-tab **(3)** shows the two values that were written for you.
-
-![The Pipeline Settings panel for the integration branch](../../_assets/annotated/vscode/pipeline-config-branch.png)
-
-The panel opens read-only, so nothing is changed by accident. Click **Edit** **(2)** and the card
-becomes two fields:
-
-1. **Instance URL** **(1)**, `https://login.salesforce.com` for a Developer Edition org, whatever
-   its My Domain says
-2. **Target Username** **(2)**, the org username, the one from the confirmation email
-3. **Save** **(3)**, which writes the file
-
-![The Pipeline Settings panel with the org fields unlocked](../../_assets/annotated/vscode/pipeline-config-branch-edit.png)
-
-Check both against your integration org. If you are unsure of the username, open **Orgs Manager**:
-it is the column next to the alias.
-
-<details markdown="1"><summary>Under the hood: what the Settings screen writes</summary>
-
-One file, `config/branches/.sfdx-hardis.integration.yml`:
-
-    targetUsername: you.helios.integration@heliostraining.invalid
-    instanceUrl: https://login.salesforce.com
-    mergeTargets: []
-
-sfdx-hardis has three layers of configuration, and this is the middle one:
-
-| Layer   | File                                        | Who it applies to           |
-|---------|---------------------------------------------|-----------------------------|
-| project | `config/.sfdx-hardis.yml`                   | everyone, committed         |
-| branch  | `config/branches/.sfdx-hardis.<branch>.yml` | one major branch, committed |
-| user    | `config/user/.sfdx-hardis.<username>.yml`   | you only, git-ignored       |
-
-A branch file is committed on purpose: on a real project, everybody has to agree on which org
-`integration` means.
-
-</details>
-
 ## What you should see
 
 Back in the DevOps Pipeline panel, click **Refresh**. The `integration` column names your org under
 the branch name, and the GitHub icon at the top is in colour. That link, branch to org, is what the
 rest of this course rests on.
 
-One thing left. The branch configuration is a file, and so far it only exists on your machine. Open
-the **Source Control** panel, commit `config/branches/.sfdx-hardis.integration.yml` with the message
-`Point integration at my org`, and push it to `integration`. It is the one time in this course you
-commit straight to a major branch: from Lab 2 on, everything goes through a Pull Request.
-
-It matters beyond tidiness. The badge job clones your fork and re-runs the checks against what is
-actually in it, so a setting that never left your laptop counts as not done.
+That is the whole setup. From Lab 2 on you are doing the job rather than preparing to do it, and
+every change you make goes through a Pull Request.
 
 ## If it goes wrong
 

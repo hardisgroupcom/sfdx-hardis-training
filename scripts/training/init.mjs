@@ -193,7 +193,62 @@ function writeBranchConfig(org) {
   } else {
     ok(`${path.relative(ROOT, file)} now names ${c.bold(username)}.`);
   }
+  publishBranchConfig(file);
   return username;
+}
+
+/* Commits the branch configuration on the major branch and pushes it.
+
+   The badge job clones the fork and re-runs the checks against what is actually
+   in it, so a setting that never left the machine counts as not done. Doing it
+   here also spares the learner the one commit straight to a major branch that
+   the rest of the course tells them never to make.
+*/
+function publishBranchConfig(file) {
+  const relative = path.relative(ROOT, file).split(path.sep).join("/");
+  const changed = gitOut(["status", "--porcelain", "--", relative]) !== "";
+  // A previous run may have committed it and failed to push, so "nothing to
+  // commit" is not the same question as "nothing to publish"
+  const unpushed = gitOut(["log", "--oneline", `origin/${BRANCH}..${BRANCH}`, "--", relative]) !== "";
+  if (!changed && !unpushed) {
+    ok("Already published: nothing changed since last time.");
+    return;
+  }
+
+  const current = gitOut(["rev-parse", "--abbrev-ref", "HEAD"]);
+  if (current !== BRANCH && git(["checkout", BRANCH], { quiet: true }).code !== 0) {
+    warn(`Could not switch to ${BRANCH} to publish the configuration.`);
+    info(`    Commit ${relative} yourself from the Source Control panel, on ${BRANCH}.`);
+    return;
+  }
+
+  if (changed) {
+    git(["add", "--", relative], { quiet: true });
+    const committed = run(
+      "git",
+      ["commit", "-m", `Point ${BRANCH} at my org`, "--", relative],
+      { capture: true, quiet: true }
+    );
+    if (committed.code !== 0) {
+      warn("Could not commit the branch configuration.");
+      info("    Commit it from the Source Control panel: git needs a name and an email first.");
+      info("    File > Preferences > Settings, or your teammate's usual way of setting them.");
+      return;
+    }
+  }
+
+  if (git(["push", "origin", BRANCH]).code !== 0) {
+    // Someone merged something since the clone, which is normal on a shared
+    // branch. Replay the one commit on top of theirs and try once more.
+    info(c.dim(`    ${BRANCH} moved on the server, replaying on top of it`));
+    if (git(["pull", "--rebase", "--autostash", "origin", BRANCH]).code !== 0 ||
+        git(["push", "origin", BRANCH]).code !== 0) {
+      warn(`Committed, but could not push to ${BRANCH}.`);
+      info("    Push it from the Source Control panel when you can.");
+      return;
+    }
+  }
+  ok(`Published on ${c.bold(BRANCH)}, so the badge job can see it too.`);
 }
 
 // ------------------------------------------------------------ 4. the secret
@@ -280,8 +335,5 @@ export default async function init(args) {
     warn("One thing is left for you: turn Actions on, as printed above.");
     info("");
   }
-  info("Commit and push the branch configuration when you are ready:");
-  info(c.dim("    the DevOps Pipeline panel shows it under Branch: integration."));
-  info("");
   info(`Next: ${c.bold("Training > Set up one of my training orgs")}, once per org.`);
 }

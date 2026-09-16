@@ -57,7 +57,6 @@
       ],
       "panels": [
         "pipeline",
-        "pipelineConfig",
         "orgManager",
         "welcome"
       ],
@@ -68,10 +67,7 @@
         "annotated/vscode/org-select-alias",
         "annotated/vscode/welcome--training-menu",
         "annotated/vscode/devops-pipeline--github-auth",
-        "annotated/vscode/devops-pipeline--read-it",
-        "annotated/vscode/devops-pipeline--settings-menu",
-        "annotated/vscode/pipeline-config-branch",
-        "annotated/vscode/pipeline-config-branch-edit"
+        "annotated/vscode/devops-pipeline--read-it"
       ]
     },
     {
@@ -504,7 +500,8 @@
       "screenshots": [
         "annotated/vscode/devops-pipeline--one-column",
         "annotated/vscode/pipeline-config--target-branches",
-        "annotated/vscode/pipeline-config-branch"
+        "annotated/vscode/pipeline-config-branch",
+        "annotated/vscode/pipeline-config-branch-edit"
       ]
     },
     {
@@ -951,12 +948,6 @@
         "l3-lab-07-hotfix-retrofit",
         "l3-lab-10-capstone"
       ],
-      "pipelineConfig": [
-        "l1-lab-01-fork-and-connect",
-        "l2-lab-05-profiles-overwrites",
-        "l3-lab-00-finish-the-pipeline",
-        "l3-lab-04-overwrite-cleaning"
-      ],
       "orgManager": [
         "l1-lab-01-fork-and-connect",
         "l1-lab-02-new-user-story",
@@ -996,6 +987,11 @@
       ],
       "apexTestsSelect": [
         "l2-lab-04-quality-and-tests"
+      ],
+      "pipelineConfig": [
+        "l2-lab-05-profiles-overwrites",
+        "l3-lab-00-finish-the-pipeline",
+        "l3-lab-04-overwrite-cleaning"
       ],
       "metadataRetriever": [
         "l3-lab-07-hotfix-retrofit"

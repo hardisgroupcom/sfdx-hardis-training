@@ -25,7 +25,7 @@ depends_on:
 
 **Level**: 1 Contributor basics
 
-**Time**: ~10 min
+**Time**: ~15 min
 
 **You will**: turn a plain computer into one that can do Salesforce DevOps, without typing a single
 command.
