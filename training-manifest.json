@@ -28,6 +28,7 @@
         "orgManager"
       ],
       "screenshots": [
+        "annotated/web/git-download",
         "annotated/web/vscode-download",
         "annotated/web/nodejs-download",
         "annotated/web/vscode-marketplace",
@@ -52,7 +53,8 @@
         "developmentBranch",
         "availableTargetBranches",
         "targetUsername",
-        "instanceUrl"
+        "instanceUrl",
+        "customCommands"
       ],
       "docs": [
         "salesforce-devops-git-tokens",
@@ -62,15 +64,20 @@
       "panels": [
         "pipeline",
         "pipelineConfig",
-        "orgManager"
+        "orgManager",
+        "welcome"
       ],
       "screenshots": [
-        "annotated/web/github-fork",
-        "annotated/web/github-create-fork",
-        "annotated/web/github-actions-tab",
+        "annotated/vscode/welcome--training-menu",
+        "annotated/vscode/devops-pipeline--github-auth",
         "annotated/vscode/devops-pipeline--read-it",
         "annotated/vscode/devops-pipeline--settings-menu",
         "annotated/vscode/pipeline-config-branch",
+        "annotated/vscode/pipeline-config-branch-edit",
+        "annotated/web/github-fork",
+        "annotated/web/github-create-fork",
+        "annotated/web/github-actions-tab",
+        "annotated/web/github-code-url",
         "annotated/web/github-secret-new"
       ]
     },
@@ -858,7 +865,8 @@
     },
     "config": {
       "customCommands": [
-        "l1-lab-00-setup"
+        "l1-lab-00-setup",
+        "l1-lab-01-fork-and-connect"
       ],
       "customCommandsPosition": [
         "l1-lab-00-setup"
@@ -1126,7 +1134,8 @@
     },
     "panels": {
       "welcome": [
-        "l1-lab-00-setup"
+        "l1-lab-00-setup",
+        "l1-lab-01-fork-and-connect"
       ],
       "setup": [
         "l1-lab-00-setup"
