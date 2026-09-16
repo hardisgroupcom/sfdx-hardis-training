@@ -8,6 +8,12 @@ EXTENDS:
 # forever, for a difference nobody made.
 FILTER_REGEX_EXCLUDE: (\.vscode|staticresources/|^BACKLOG\.md$|^MY-PIPELINE\.template\.md$|^training-manifest\.json$|^labs/link-map\.en\.md$|^mkdocs-nav\.yml$|^site-src/|^megalinter-reports/)
 
+# jscpd's minTokens is raised to 120 in .jscpd.json. That file is schema
+# validated and rejects a comment key, so the reason lives here: every script in
+# this repository opens with the same preamble (the ESM imports, fileURLToPath,
+# HERE and ROOT), and at the default of 50 tokens that preamble was the only
+# thing the detector ever found.
+
 # The only CSS here styles the documentation site on top of the theme Zensical
 # ships, so every selector and custom property it touches is the theme's, not
 # ours: stylelint asks us to rename things we do not own.

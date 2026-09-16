@@ -19,6 +19,5 @@
     "**/*.xml",
     "**/*.csv"
   ],
-  "_comment": "minTokens is raised above the default 50 because every script here opens with the same dozen lines: the ESM imports, fileURLToPath, HERE and ROOT. That preamble is not duplication anybody can remove, and at the default it was the only thing the detector ever found.",
   "minTokens": 120
 }

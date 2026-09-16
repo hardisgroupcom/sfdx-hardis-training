@@ -109,13 +109,29 @@ export default async function simulate(args) {
   } else {
     const bodyFile = path.join(ROOT, ".training-pr-body.md");
     fs.writeFileSync(bodyFile, scenario.prBody, "utf8");
-    const pr = run("gh", [
-      "pr", "create",
-      "--base", "integration",
-      "--head", scenario.branch,
-      "--title", scenario.prTitle,
-      "--body-file", bodyFile
-    ]);
+    // GitHub needs a moment after a push before its API can see the new branch.
+    // Asked too soon it answers "No commits between <base> and <head>", which
+    // reads like the push failed when it did not. Three tries, two seconds apart,
+    // has been enough every time. The command writes straight to the terminal,
+    // so its message cannot be inspected here: any failure is retried, and the
+    // fallback below still covers a Pull Request that genuinely already exists.
+    let pr = { code: 1, stderr: "" };
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      pr = run("gh", [
+        "pr", "create",
+        "--base", "integration",
+        "--head", scenario.branch,
+        "--title", scenario.prTitle,
+        "--body-file", bodyFile
+      ]);
+      if (pr.code === 0) {
+        break;
+      }
+      if (attempt < 3) {
+        info(`  The branch is not visible to the GitHub API yet, retrying (${attempt} of 3)`);
+        run(process.execPath, ["-e", "const t = Date.now(); while (Date.now() - t < 2000) {}"], { quiet: true });
+      }
+    }
     fs.rmSync(bodyFile, { force: true });
     if (pr.code !== 0) {
       warn("The Pull Request could not be opened automatically. It may already exist.");
