@@ -148,12 +148,17 @@ async function ask(question) {
  */
 export async function select(message, choices, preselected) {
   if (preselected) {
-    const found = choices.find((ch) => ch.value === preselected);
+    // An org answers to several names: its aliases and its username. Match any of
+    // them, or a value passed on the command line is refused for no good reason.
+    const found =
+      choices.find((ch) => ch.value === preselected) ||
+      choices.find((ch) => (ch.aliases || []).includes(preselected));
     if (found) {
       info(`${message} ${c.green(found.label)}`);
       return found.value;
     }
-    abort(`"${preselected}" is not one of: ${choices.map((ch) => ch.value).join(", ")}`);
+    const known = choices.flatMap((ch) => [ch.value, ...(ch.aliases || [])]);
+    abort(`"${preselected}" is not one of: ${[...new Set(known)].join(", ")}`);
   }
   if (choices.length === 1) {
     info(`${message} ${c.green(choices[0].label)} ${c.dim("(the only one available)")}`);
@@ -193,12 +198,38 @@ export async function confirm(message, defaultYes = false) {
 }
 
 // ------------------------------------------------------------------ orgs
-/** Every org the Salesforce CLI knows about, connected ones first. */
+/**
+ * Every alias the Salesforce CLI knows, grouped by username.
+ *
+ * One org can carry several aliases, and `sf org list` only ever reports one of
+ * them. That bites as soon as anything aliases an org a second time: the CI
+ * authentication of Level 1 aliases your integration org as "integration", and
+ * from then on "helios-integration" is invisible to `sf org list`.
+ */
+function aliasesByUsername() {
+  const data = runJson("sf", ["alias", "list", "--json"]);
+  const map = new Map();
+  for (const entry of (data && data.result) || []) {
+    const username = entry.value;
+    const alias = entry.alias;
+    if (!username || !alias) {
+      continue;
+    }
+    if (!map.has(username)) {
+      map.set(username, []);
+    }
+    map.get(username).push(alias);
+  }
+  return map;
+}
+
+/** Every org the Salesforce CLI knows about, with every alias each one carries. */
 export function connectedOrgs() {
   const data = runJson("sf", ["org", "list", "--json"]);
   if (!data || !data.result) {
     return [];
   }
+  const aliasMap = aliasesByUsername();
   const buckets = ["nonScratchOrgs", "devHubs", "sandboxes", "scratchOrgs", "other"];
   const seen = new Set();
   const orgs = [];
@@ -208,8 +239,12 @@ export function connectedOrgs() {
         continue;
       }
       seen.add(org.username);
+      const known = aliasMap.get(org.username) || [];
+      const reported = [org.alias, ...(Array.isArray(org.aliases) ? org.aliases : [])].filter(Boolean);
+      const aliases = [...new Set([...known, ...reported])];
       orgs.push({
-        alias: org.alias || (Array.isArray(org.aliases) ? org.aliases[0] : null) || "",
+        alias: aliases[0] || "",
+        aliases,
         username: org.username,
         instanceUrl: org.instanceUrl,
         connected: org.connectedStatus === "Connected"
@@ -222,6 +257,8 @@ export function connectedOrgs() {
 export function orgChoices(orgs) {
   return orgs.map((org) => ({
     value: org.alias || org.username,
+    // Every name this org answers to, so picking it by any of them works
+    aliases: [...(org.aliases || []), org.username].filter(Boolean),
     label: org.alias ? `${org.alias}  ${c.dim(org.username)}` : org.username,
     hint: org.connected ? "" : "(not connected)"
   }));
