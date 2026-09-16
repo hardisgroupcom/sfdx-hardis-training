@@ -1,0 +1,18 @@
+{
+  "_comment": "The only CSS in this repository styles the documentation site, on top of the theme Zensical ships. Its class names and custom properties are the theme's, so the two naming rules stylelint enforces by default would ask us to rename things we do not own.",
+  "extends": "stylelint-config-standard",
+  "rules": {
+    "selector-class-pattern": [
+      "^(md|zen)-[a-z0-9]+(__[a-z0-9-]+)?(--[a-z0-9-]+)?$|^[a-z][a-z0-9-]*$",
+      {
+        "message": "Use kebab-case, or the theme's own BEM names (md-block__element--modifier)"
+      }
+    ],
+    "custom-property-pattern": [
+      "^(md|zen)-[a-z0-9-]+$|^[a-z][a-z0-9-]*$",
+      {
+        "message": "Use kebab-case, or one of the theme's --md-* custom properties"
+      }
+    ]
+  }
+}

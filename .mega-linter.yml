@@ -6,4 +6,11 @@ EXTENDS:
 # training-universe.json and the lab front matter, and CI fails when they drift
 # from what it produces. A formatter rewriting them would make that check fail
 # forever, for a difference nobody made.
-FILTER_REGEX_EXCLUDE: (\.vscode|staticresources/|^BACKLOG\.md$|^MY-PIPELINE\.template\.md$|^training-manifest\.json$|^labs/link-map\.en\.md$|^mkdocs-nav\.yml$|^site-src/)
+FILTER_REGEX_EXCLUDE: (\.vscode|staticresources/|^BACKLOG\.md$|^MY-PIPELINE\.template\.md$|^training-manifest\.json$|^labs/link-map\.en\.md$|^mkdocs-nav\.yml$|^site-src/|^megalinter-reports/)
+
+# The Salesforce Code Analyzer is for the Apex and the metadata of the Helios
+# app. Pointed at the whole repository it reads the site stylesheet as if it were
+# an Aura component and asks for SLDS design tokens in it.
+SALESFORCE_SFDX_SCANNER_APEX_ARGUMENTS: --workspace force-app
+SALESFORCE_SFDX_SCANNER_AURA_ARGUMENTS: --workspace force-app
+SALESFORCE_SFDX_SCANNER_LWC_ARGUMENTS: --workspace force-app

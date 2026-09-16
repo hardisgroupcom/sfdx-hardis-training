@@ -142,6 +142,9 @@ writeJson(path.join(OUT, "sf-mock-overlay.json"), {
         value: o.alias,
         description: `helios.deploy+${o.alias}@heliostraining.invalid`
       })),
+    // Where this project records the manual steps a deployment needs. The base
+    // fixture points at a SharePoint file that means nothing to a learner.
+    manualActionsUrl: `${u.course.site}/en/level-2/lab-03-deployment-actions-data/`,
     // The delta package.xml the Save / Publish command shows for that story
     packageXmlTypes: [
       { name: "CustomField", members: ["Installation__c.Panels_Required__c"] },
