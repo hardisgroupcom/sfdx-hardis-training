@@ -8,6 +8,7 @@ screenshots:
   - annotated/web/sf-signup
   - annotated/web/gh-cli-download
   - annotated/vscode/orgs-manager
+  - annotated/vscode/clone-repository
   - annotated/vscode/org-select-alias
   - annotated/vscode/welcome--training-menu
   - annotated/vscode/devops-pipeline--github-auth
@@ -157,15 +158,24 @@ The alias is the name everything else uses. Every sfdx-hardis command that wants
 You need the training project on your machine before you can seed the orgs from it. Take the team's
 copy for now: it is read-only, and step 5 turns it into your own in one command.
 
-In VS Code:
+In VS Code, with no folder open, click the **Source Control** icon **(1)** in the narrow bar down the
+left. It offers two buttons. Take **Clone Repository** **(2)**.
 
-1. **File > Open Folder**, and pick an empty folder
-2. Open the **Source Control** panel, the branch icon in the narrow bar on the left
-3. Click **Clone Repository** and paste
-   `https://github.com/hardisgroupcom/sfdx-hardis-training.git`
-4. When VS Code asks, click **Open** to work in the cloned folder
+![The Source Control panel of VS Code before any folder is open](../../_assets/annotated/vscode/clone-repository.png)
+
+Then:
+
+1. Paste `https://github.com/hardisgroupcom/sfdx-hardis-training.git` and press Enter
+2. Pick the folder to put it in. VS Code creates a `sfdx-hardis-training` folder inside the one you
+   choose, so an ordinary projects folder is the right answer
+3. When it asks, click **Open** to work in the clone
 
 If GitHub asks you to sign in, let VS Code handle it: **Sign in with your browser** is enough.
+
+!!! note "You do not need an empty folder first"
+    **Clone Repository** asks where to put the project, so there is nothing to prepare. The two
+    buttons in the picture only appear while no folder is open: once one is, the Source Control
+    panel shows that folder's changes instead.
 
 <details markdown="1"><summary>Under the hood: what opening the folder told the extension</summary>
 
