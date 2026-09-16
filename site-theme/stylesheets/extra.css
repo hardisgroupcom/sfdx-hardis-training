@@ -1,0 +1,222 @@
+/* stylelint-disable SelectorFormat */
+
+/*
+ * Theme of the sfdx-hardis training site.
+ *
+ * It is the same family as the product documentation (https://sfdx-hardis.cloudity.com):
+ * same Cloudity palette, same self-hosted fonts, same table and link treatment. One thing
+ * is deliberately different so the two sites are never confused: the product leads with
+ * Cloudity blue and uses purple as its accent, the course swaps them and leads with
+ * Cloudity purple. Same brand colours, different lead, in both light and dark.
+ */
+
+/*
+ * Self-hosted web fonts. The theme's own font setting is disabled in mkdocs.yml, so nothing is
+ * fetched from fonts.googleapis.com or fonts.gstatic.com and no learner data leaves the site.
+ * Open Sans is the body font of cloudity.com. Its headings use Singolare, which is proprietary
+ * and not distributable, so headings fall back to Open Sans too.
+ * Both files are variable fonts: one file covers the whole weight range.
+ */
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: swap;
+  src: url("./fonts/open-sans-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Open Sans";
+  font-style: italic;
+  font-weight: 300 800;
+  font-display: swap;
+  src: url("./fonts/open-sans-latin-italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url("./fonts/jetbrains-mono-latin.woff2") format("woff2");
+}
+
+/*
+ * Cloudity brand palette, sampled from cloudity.com.
+ *   purple      #660FF2  primary / links / header, on the course site
+ *   blue        #0053FF  accent, on the course site
+ *   navy        #001135  headings and footer on the product site
+ *   plum        #1B0A3F  the purple-side counterpart of navy, header and footer here
+ *   surface     #F3F3F3  alternating section bands on cloudity.com
+ *   grey        #646E73  muted text
+ * White on #660FF2 measures 7.2:1, well above the 4.5:1 the WCAG AA text rule asks for.
+ * Dark mode lifts purple and blue so they keep contrast on plum.
+ *
+ * The light tokens are declared on the scheme attribute as well as on :root. The theme sets its
+ * own light values in a [data-md-color-scheme="default"] rule, which sits on <body>; a :root rule
+ * only reaches <html>, and body's own declaration would win over the inherited one. The dark block
+ * below needs no such pairing, it already targets the same element.
+ */
+:root,
+[data-md-color-scheme="default"] {
+  --cloudity-purple: #660FF2;
+  --cloudity-blue: #0053FF;
+  --cloudity-navy: #001135;
+  --cloudity-plum: #1B0A3F;
+  --cloudity-surface: #F3F3F3;
+  --cloudity-grey: #646E73;
+
+  --md-text-font: "Open Sans";
+  --md-code-font: "JetBrains Mono";
+  --md-text-font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --md-code-font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --md-primary-fg-color: var(--cloudity-purple);
+  --md-primary-fg-color--light: #8A46F5;
+  --md-primary-fg-color--dark: #4A0BB0;
+  --md-primary-bg-color: #FFFFFF;
+  --md-primary-bg-color--light: rgb(255 255 255 / 70%);
+
+  --md-accent-fg-color: var(--cloudity-blue);
+  --md-accent-fg-color--transparent: rgb(0 83 255 / 10%);
+  --md-accent-bg-color: #FFFFFF;
+
+  --md-default-bg-color: #FFFFFF;
+  --md-default-fg-color: var(--cloudity-navy);
+  --md-default-fg-color--light: var(--cloudity-grey);
+  --md-default-fg-color--lighter: rgb(0 17 53 / 32%);
+  --md-default-fg-color--lightest: rgb(0 17 53 / 7%);
+
+  --md-typeset-a-color: var(--cloudity-purple);
+  --md-typeset-mark-color: rgb(0 83 255 / 18%);
+  --md-code-bg-color: var(--cloudity-surface);
+
+  --md-footer-bg-color: var(--cloudity-plum);
+  --md-footer-bg-color--dark: #120628;
+  --md-footer-fg-color: #FFFFFF;
+  --md-header-bg-color: var(--cloudity-purple);
+  --md-header-fg-color: #FFFFFF;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-hue: 265;
+
+  --md-primary-fg-color: #A87BFF;
+  --md-primary-fg-color--light: #C4A4FF;
+  --md-primary-fg-color--dark: var(--cloudity-purple);
+  --md-primary-bg-color: #FFFFFF;
+  --md-primary-bg-color--light: rgb(255 255 255 / 70%);
+
+  --md-accent-fg-color: #4D8BFF;
+  --md-accent-fg-color--transparent: rgb(77 139 255 / 14%);
+
+  --md-default-bg-color: #0A0620;
+  --md-default-fg-color: #FFFFFF;
+  --md-default-fg-color--light: #C2B8D9;
+  --md-default-fg-color--lighter: rgb(255 255 255 / 45%);
+  --md-default-fg-color--lightest: rgb(255 255 255 / 12%);
+
+  --md-typeset-a-color: #A87BFF;
+  --md-code-bg-color: #170C33;
+
+  --md-footer-bg-color: var(--cloudity-plum);
+  --md-footer-bg-color--dark: #120628;
+  --md-footer-fg-color: #FFFFFF;
+  --md-header-bg-color: var(--cloudity-plum);
+  --md-header-fg-color: #FFFFFF;
+}
+
+/* Cloudity purple header in the light scheme, plum in the dark one so the bar stays comfortable
+   against a dark page. Both grounds are dark enough for white text, so the white wordmark serves
+   both and the footer keeps its plum. */
+.md-header,
+.md-tabs {
+  background-color: var(--cloudity-purple);
+  color: #FFFFFF;
+}
+
+[data-md-color-scheme="slate"] .md-header,
+[data-md-color-scheme="slate"] .md-tabs {
+  background-color: var(--cloudity-plum);
+}
+
+.md-footer {
+  background-color: var(--cloudity-plum);
+}
+
+/* The header is dark in both schemes, so the search trigger keeps one light-on-dark treatment.
+   Zensical colors it from the default foreground tokens, which resolve to near-black in the
+   light scheme and would vanish against the purple bar. */
+.md-header .md-search__button {
+  color: #FFFFFF;
+  background-color: rgb(255 255 255 / 14%);
+}
+
+.md-header .md-search__button:hover,
+.md-header .md-search__button:focus-visible {
+  background-color: rgb(255 255 255 / 24%);
+}
+
+/* Deliberately no background on .md-sidebar: the element is only as tall as its sticky
+   wrapper (44px), so painting it draws a stray band instead of a full column. */
+
+/* Force all sidebar/menu links in dark mode to be white for consistency */
+[data-md-color-scheme="slate"] .md-nav__link,
+[data-md-color-scheme="slate"] .md-nav__link--active,
+[data-md-color-scheme="slate"] .md-nav__item--active>.md-nav__link,
+[data-md-color-scheme="slate"] .md-nav__item--nested>.md-nav__link,
+[data-md-color-scheme="slate"] .md-nav__link:visited,
+[data-md-color-scheme="slate"] .md-nav__link:focus,
+[data-md-color-scheme="slate"] .md-nav__link:hover {
+  color: #fff !important;
+}
+
+.md-typeset__table {
+  min-width: 100%;
+}
+
+.md-typeset table:not([class]) {
+  display: table;
+}
+
+/* light mode table header bgcolor */
+.md-typeset__table th {
+  background-color: #F0E8FF;
+}
+
+/* dark mode table header bgcolor */
+[data-md-color-scheme="slate"] .md-typeset__table th {
+  background-color: #170C33;
+}
+
+/* light mode alternating table bg colors */
+.md-typeset__table tr:nth-child(2n) {
+  background-color: var(--cloudity-surface);
+}
+
+/* dark mode alternating table bg colors */
+[data-md-color-scheme="slate"] .md-typeset__table tr:nth-child(2n) {
+  background-color: #170C33;
+}
+
+/* Improve link readability in dark mode */
+[data-md-color-scheme="slate"] a,
+[data-md-color-scheme="slate"] .md-typeset a {
+  color: #A87BFF;
+}
+
+[data-md-color-scheme="slate"] .md-typeset a:hover {
+  color: #4D8BFF;
+}
+
+/* Labs are read with a browser on one side and an IDE on the other, so screenshots are the
+   bulk of a page. Keeping them inside a frame stops a full-width capture from swamping the
+   text it illustrates. */
+.md-typeset img {
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgb(0 17 53 / 18%);
+}
+
+[data-md-color-scheme="slate"] .md-typeset img {
+  box-shadow: 0 1px 4px rgb(0 0 0 / 55%);
+}

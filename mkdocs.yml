@@ -11,35 +11,67 @@ copyright: Cloudity and friends
 # truth stays plain markdown under labs/.
 docs_dir: site-src
 
+
+# Theme, palette, fonts and extensions follow the product documentation site
+# (https://sfdx-hardis.cloudity.com), so the course reads as part of the same
+# product. The one deliberate difference is the lead colour: the product leads
+# with Cloudity blue and accents in purple, the course swaps them. Details and
+# the self-hosted fonts live in site-theme/stylesheets/extra.css, which
+# scripts/build/site.mjs copies to site-src/theme/.
 theme:
   name: material
   language: en
-  palette:
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      primary: custom
-      accent: custom
-      toggle:
-        icon: material/weather-night
-        name: Switch to dark mode
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      primary: custom
-      accent: custom
-      toggle:
-        icon: material/weather-sunny
-        name: Switch to light mode
+  font: false
   features:
+    - content.action.edit
+    - content.code.copy
+    - content.tabs.link
     - navigation.instant
     - navigation.tracking
     - navigation.sections
     - navigation.top
     - navigation.footer
-    - content.code.copy
-    - content.action.edit
     - search.suggest
     - search.highlight
     - toc.follow
+  logo: theme/images/cloudity-text-logo-white.svg
+  favicon: theme/images/cloudity-logo.svg
+  palette:
+    - scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+      # background, foreground and colors mirror the product site's palette entries.
+      # Zensical 0.0.57 accepts them and emits nothing from them, on both sites: the
+      # stylesheet is what paints the page. They stay so the two configs read alike.
+      background: '#FFFFFF'
+      foreground: '#001135'
+      colors:
+        primary: '#660FF2'
+        accent: '#0053FF'
+        link: '#660FF2'
+        header: '#660FF2'
+        nav: '#FFFFFF'
+    - scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+      background: '#0A0620'
+      foreground: '#FFFFFF'
+      colors:
+        primary: '#A87BFF'
+        accent: '#4D8BFF'
+        link: '#A87BFF'
+        header: '#1B0A3F'
+        nav: '#160C30'
+
+plugins:
+  - glightbox
+  - search
 
 markdown_extensions:
   - admonition
@@ -48,7 +80,14 @@ markdown_extensions:
   - tables
   - footnotes
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.emoji:
+      emoji_index: !!python/name:zensical.extensions.emoji.twemoji
+      emoji_generator: !!python/name:zensical.extensions.emoji.to_svg
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.tabbed:
@@ -56,10 +95,19 @@ markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite
-  - pymdownx.snippets
+  - pymdownx.snippets:
+      base_path: site-src
+      restrict_base_path: false
   - mdx_truly_sane_lists
   - toc:
       permalink: true
+
+extra_css:
+  - theme/stylesheets/extra.css
+
+extra_javascript:
+  - https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.2.1/tablesort.min.js
+  - theme/javascripts/tables.js
 
 extra:
   social:
@@ -69,6 +117,7 @@ extra:
     - icon: fontawesome/solid/book
       link: https://sfdx-hardis.cloudity.com/
       name: sfdx-hardis documentation
+  generator: false
 
 nav:
   - Home: index.md

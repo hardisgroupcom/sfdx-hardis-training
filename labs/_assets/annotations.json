@@ -1,0 +1,140 @@
+{
+  "_comment": "Numbered pills drawn on screenshots by scripts/build/annotate.mjs. Coordinates are percentages of the image, so re-taking a screenshot at another resolution keeps them in place. x/y place the box (or the point when there is no w/h); px/py move the pill off the box corner when the corner is too close to an edge. The lab text refers to the numbers.",
+  "images": {
+    "web/git-download.png": {
+      "pills": [
+        {
+          "n": 1,
+          "x": 36.0,
+          "y": 37.9,
+          "w": 12.0,
+          "h": 3.2
+        }
+      ]
+    },
+    "web/nodejs-download.png": {
+      "pills": [
+        {
+          "n": 1,
+          "x": 20.3,
+          "y": 35.1,
+          "w": 10.0,
+          "h": 7.7,
+          "px": 11.5,
+          "py": 38.9
+        },
+        {
+          "n": 2,
+          "x": 12.8,
+          "y": 54.5,
+          "w": 15.6,
+          "h": 7.7,
+          "px": 10.8,
+          "py": 58.3
+        }
+      ]
+    },
+    "web/sf-signup.png": {
+      "pills": [
+        {
+          "n": 1,
+          "x": 50.6,
+          "y": 44.3,
+          "w": 40.3,
+          "h": 5.1,
+          "px": 94.0,
+          "py": 46.9
+        },
+        {
+          "n": 2,
+          "x": 6.7,
+          "y": 52.9,
+          "w": 75.1,
+          "h": 4.7,
+          "px": 4.6,
+          "py": 55.2
+        },
+        {
+          "n": 3,
+          "x": 6.7,
+          "y": 85.4,
+          "w": 84.4,
+          "h": 6.4
+        }
+      ]
+    },
+    "web/github-fork.png": {
+      "pills": [
+        {
+          "n": 1,
+          "x": 76.5,
+          "y": 37.8,
+          "w": 5.4,
+          "h": 8.1,
+          "px": 76.5,
+          "py": 30.0
+        }
+      ]
+    },
+    "web/github-create-fork.png": {
+      "pills": [
+        {
+          "n": 1,
+          "x": 25.1,
+          "y": 40.1,
+          "w": 10.8,
+          "h": 4.6,
+          "px": 22.6,
+          "py": 42.4
+        },
+        {
+          "n": 2,
+          "x": 25.0,
+          "y": 73.4,
+          "w": 14.2,
+          "h": 3.2,
+          "px": 22.0,
+          "py": 75.0
+        },
+        {
+          "n": 3,
+          "x": 67.2,
+          "y": 81.6,
+          "w": 6.8,
+          "h": 4.6
+        }
+      ]
+    },
+    "web/github-secret-new.png": {
+      "pills": [
+        {
+          "n": 1,
+          "x": 27.8,
+          "y": 33.6,
+          "w": 63.9,
+          "h": 5.5,
+          "px": 25.9,
+          "py": 36.4
+        },
+        {
+          "n": 2,
+          "x": 27.8,
+          "y": 46.1,
+          "w": 63.9,
+          "h": 36.9,
+          "px": 25.9,
+          "py": 48.8
+        },
+        {
+          "n": 3,
+          "x": 27.8,
+          "y": 86.4,
+          "w": 6.4,
+          "h": 5.2,
+          "px": 25.9,
+          "py": 89.0
+        }
+      ]
+    }
+  }
+}

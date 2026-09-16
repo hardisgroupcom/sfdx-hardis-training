@@ -9,6 +9,7 @@
  *   labs/en/index.md               -> site-src/index.md
  *   labs/en/level-1/lab-00.md      -> site-src/en/level-1/lab-00.md
  *   labs/_assets/**                -> site-src/_assets/**
+ *   site-theme/**                  -> site-src/theme/**
  *   BACKLOG.md                     -> site-src/BACKLOG.md
  *   badges/<handle>.md             -> site-src/badges/<handle>.md
  *
@@ -71,6 +72,11 @@ if (fs.existsSync(enHome)) {
 
 const assets = copyTree(path.join(localesDir, "_assets"), path.join(OUT, "_assets"));
 
+// The theme's own files: the stylesheet and its self-hosted fonts, the logo and
+// the favicon, the table sorting script. mkdocs.yml points at them under theme/,
+// which is where they land in the built site.
+const themeFiles = copyTree(path.join(ROOT, "site-theme"), path.join(OUT, "theme"));
+
 // Everything else the site publishes
 for (const file of ["BACKLOG.md", "MY-PIPELINE.template.md", "TRANSLATION.md"]) {
   const source = path.join(ROOT, file);
@@ -119,4 +125,4 @@ const badgeIndex = [
 fs.mkdirSync(path.join(OUT, "badges"), { recursive: true });
 fs.writeFileSync(path.join(OUT, "badges", "index.md"), badgeIndex, "utf8");
 
-console.log(`site-src assembled: ${pages} lab page(s), ${assets} asset(s), ${badgePages} badge page(s), ${locales.length} locale(s)`);
+console.log(`site-src assembled: ${pages} lab page(s), ${assets} asset(s), ${themeFiles} theme file(s), ${badgePages} badge page(s), ${locales.length} locale(s)`);
