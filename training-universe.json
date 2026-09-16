@@ -272,10 +272,10 @@
       "level": 2,
       "lab": 4,
       "author": "you",
-      "title": "Schedule installations by panel batch availability",
-      "story": "As a planner, I want the scheduler to refuse a date before the panels arrive, so that crews stop turning up to an empty warehouse.",
+      "title": "Check several installations against panel availability at once",
+      "story": "As a planner, I want to check a list of installations against panel availability in one go, so that I can fill a week of planning without opening every record.",
       "acceptance": [
-        "InstallationScheduler checks batch availability",
+        "InstallationScheduler returns the installations that can take a crew on a given day",
         "Coverage stays above the threshold"
       ],
       "branch": "features/US-027-schedule-by-availability",
@@ -283,7 +283,7 @@
         "InstallationScheduler",
         "InstallationSchedulerTest"
       ],
-      "seededFailure": "InstallationScheduler contains a hardcoded record type id that trips PMD, and the change drops coverage below the threshold"
+      "seededFailure": "The obvious implementation queries inside its loop, which PMD warns about, and the new branch has no test, which drops coverage below the threshold and blocks the deployment"
     },
     {
       "id": "US-033",

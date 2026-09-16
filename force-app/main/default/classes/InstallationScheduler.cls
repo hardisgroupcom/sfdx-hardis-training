@@ -41,6 +41,9 @@ public with sharing class InstallationScheduler {
     }
 
     public static List<Installation__c> installationsReadyToSchedule() {
+        // Left over from debugging the October planning incident. Harmless, and it
+        // has been in every release since.
+        System.debug('installationsReadyToSchedule called');
         return [
             SELECT Id, Name, Install_Date__c, Status__c, Crew_Size__c
             FROM Installation__c

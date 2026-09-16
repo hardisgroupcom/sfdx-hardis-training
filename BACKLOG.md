@@ -17,7 +17,7 @@ for the `Helios Delivery` app, and every one of them is a lab in this course.
 | US-021 | 2 | Warn the planner when a crew is too small | You | `features/US-021-crew-size-warning` |
 | US-024 | 2 | Crew size becomes mandatory | You | `features/US-024-crew-size-required` |
 | US-026 | 2 | Crew capacity reference data and nightly recalculation | You | `features/US-026-crew-capacity-data` |
-| US-027 | 2 | Schedule installations by panel batch availability | You | `features/US-027-schedule-by-availability` |
+| US-027 | 2 | Check several installations against panel availability at once | You | `features/US-027-schedule-by-availability` |
 | US-033 | 2 | Crews can read the panel batch cost | You | `features/US-033-batch-cost-visibility` |
 | US-034 | 2 | Flat roofs need a crew of at least three | You | `features/US-034-crew-override` |
 | US-038 | 2 | Tidy the Installation layout | You | `features/US-038-installation-notes-tidy` |
@@ -132,17 +132,17 @@ Acceptance criteria:
 - The batch is scheduled nightly
 - The planning board setting is on
 
-### US-027 - Schedule installations by panel batch availability
+### US-027 - Check several installations against panel availability at once
 
 **Owner**: You  
 **Branch**: `features/US-027-schedule-by-availability`  
 **Level**: 2, lab 4
 
-> As a planner, I want the scheduler to refuse a date before the panels arrive, so that crews stop turning up to an empty warehouse.
+> As a planner, I want to check a list of installations against panel availability in one go, so that I can fill a week of planning without opening every record.
 
 Acceptance criteria:
 
-- InstallationScheduler checks batch availability
+- InstallationScheduler returns the installations that can take a crew on a given day
 - Coverage stays above the threshold
 
 ### US-033 - Crews can read the panel batch cost

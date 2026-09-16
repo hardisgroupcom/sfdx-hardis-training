@@ -85,34 +85,43 @@ thing on the page, and it has several sections:
 
 ### 4. Fix the warning
 
-Your Pull Request is green, but MegaLinter reports one warning on a file you did not write:
+Your Pull Request is green, but MegaLinter reports one finding on a file you did not write:
 
-> `InstallationScheduler.cls` - method `earliestInstallDate` has no ApexDoc comment
-
-This is real technical debt that was already in the repository. It is not blocking, and you could
-ignore it. Do not.
-
-Open `force-app/main/default/classes/InstallationScheduler.cls` and put a proper ApexDoc header on
-`earliestInstallDate`, matching the style of `suggestedCrewSize` just below it:
-
-```apex
-/**
- * The earliest date a crew can be sent to this installation: the panels have to
- * be in the warehouse, plus the preparation buffer.
- *
- * @param installationId the installation to schedule
- * @return the earliest possible install date, or null when no panel batch has arrived
- */
-public static Date earliestInstallDate(Id installationId) {
+```
+InstallationScheduler.cls:46  pmd:AvoidDebugStatements  (Moderate)
+Avoid debug statements since they impact on performance
 ```
 
-Commit it from the **Source Control** panel with the message
-`US-014 document earliestInstallDate`, and push. The checks run again on their own.
+Open `force-app/main/default/classes/InstallationScheduler.cls` and look at line 46:
+
+```apex
+// Left over from debugging the October planning incident. Harmless, and it
+// has been in every release since.
+System.debug('installationsReadyToSchedule called');
+```
+
+Somebody added it during an incident a year ago and never took it out. It is real technical debt,
+it is not blocking, and you could ignore it. Do not.
+
+Two reasons the rule exists, and neither is tidiness:
+
+- **Every `System.debug` costs time in production**, on every execution, whether or not anybody is
+  reading a log
+- **A debug line is where data leaks.** This one prints nothing sensitive. The next one somebody
+  copies from it might
+
+Delete the three lines. Commit from the **Source Control** panel with the message
+`US-014 remove a leftover debug statement`, and push. The checks run again on their own.
 
 !!! note "Why the warning appeared now and not before"
     MegaLinter runs on the whole repository for every Pull Request into a major branch, so a
     pre-existing problem surfaces on the first Pull Request anybody opens. That is how legacy debt
     actually behaves on a real project: it waits until someone comes near it.
+
+!!! tip "Why this one does not block you"
+    The Apex analyzer is configured as **non blocking** on this project: it reports, it does not
+    refuse. The deployment check and the test coverage do refuse, and you meet both at Level 2.
+    A project decides that balance for itself, in `.mega-linter.yml`.
 
 ### 5. Merge
 

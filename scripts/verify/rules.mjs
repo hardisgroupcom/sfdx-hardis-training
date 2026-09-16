@@ -190,12 +190,11 @@ export const RULES = [
       if (!field) {
         return miss("Panels_Required__c is not on integration yet", `branch ${DEV}`);
       }
-      const scheduler = ctx.readOn(DEV, "force-app/main/default/classes/InstallationScheduler.cls");
-      const documented = scheduler && /\/\*\*[\s\S]{0,400}@return[\s\S]{0,200}\*\/\s*public static Date earliestInstallDate/.test(scheduler);
-      return documented
-        ? pass("The field is on integration and the ApexDoc warning was fixed")
+      const scheduler = ctx.readOn(DEV, "force-app/main/default/classes/InstallationScheduler.cls") || "";
+      return !/System\.debug\s*\(/.test(scheduler)
+        ? pass("The field is on integration and the quality warning was fixed")
         : miss(
-          "earliestInstallDate still has no ApexDoc header, so the quality warning on your Pull Request was never fixed",
+          "InstallationScheduler still has the leftover System.debug, so the quality finding on your Pull Request was never fixed",
           `force-app/main/default/classes/InstallationScheduler.cls on branch ${DEV}`
         );
     }
@@ -328,17 +327,26 @@ export const RULES = [
     title: "US-027: the hardcoded id is gone and the scheduler is covered",
     check: (ctx) => {
       const cls = ctx.readOn(DEV, "force-app/main/default/classes/InstallationScheduler.cls") || "";
-      if (/['"][a-zA-Z0-9]{15}([a-zA-Z0-9]{3})?['"]/.test(cls)) {
+      if (!/schedulableOn/.test(cls)) {
         return miss(
-          "a hardcoded Salesforce id is still in InstallationScheduler",
+          "schedulableOn was not found in InstallationScheduler",
           `force-app/main/default/classes/InstallationScheduler.cls on branch ${DEV}`
         );
       }
+      // The outcome, not the procedure: the query has to be out of the loop. Any
+      // shape that queries once for the whole list passes, which is what an IN bind
+      // on the collection looks like however it is written.
+      if (!/WHERE\s+Installation__c\s+IN\s*:/i.test(cls)) {
+        return miss(
+          "schedulableOn still queries inside its loop: one SOQL per installation hits the governor limit",
+          `force-app/main/default/classes/InstallationScheduler.cls on branch ${DEV}, expected a single query binding the whole list`
+        );
+      }
       const test = ctx.readOn(DEV, "force-app/main/default/classes/InstallationSchedulerTest.cls") || "";
-      return /availab|batch/i.test(test) && /@isTest/.test(test)
-        ? pass("No hardcoded id, and the new behaviour has a test")
+      return /schedulableOn/.test(test) && /@isTest/.test(test)
+        ? pass("The query is out of the loop, and the new behaviour has a test")
         : miss(
-          "InstallationSchedulerTest does not cover the availability change",
+          "InstallationSchedulerTest does not cover schedulableOn",
           `force-app/main/default/classes/InstallationSchedulerTest.cls on branch ${DEV}`
         );
     }

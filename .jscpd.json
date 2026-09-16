@@ -1,7 +1,9 @@
 {
-  "_comment": "Copy-paste detection for the Helios app. The teammate patch sets and the level start states are deliberate near-copies of force-app: that is what makes a lab reproduce the same conflict for everybody, so duplication there is the design, not a defect.",
   "threshold": 1,
-  "reporters": ["html", "markdown"],
+  "reporters": [
+    "html",
+    "markdown"
+  ],
   "ignore": [
     "**/node_modules/**",
     "**/.git/**",

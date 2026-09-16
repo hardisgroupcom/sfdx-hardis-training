@@ -28,14 +28,15 @@ run the checks before pushing.
 > As a planner, I want the scheduler to refuse a date before the panels arrive, so that crews stop
 > turning up to an empty warehouse.
 
-An Apex change in `InstallationScheduler`. Two things will stop you, and neither is about
-Salesforce refusing your metadata:
+An Apex change in `InstallationScheduler`. Two things will stop you, and neither is Salesforce
+refusing your metadata:
 
-1. **PMD**, through MegaLinter, on a hardcoded id you are about to introduce by copying an existing
-   pattern
-2. **Code coverage**, because the new branch of logic has no test
+1. **PMD**, through MegaLinter, on a query inside a loop that you are about to write by copying an
+   existing pattern. It **warns**
+2. **Code coverage**, because the new branch of logic has no test. It **blocks**
 
-Both are the project's rules, not Salesforce's. Both exist because somebody got burned.
+Both are the project's rules, not Salesforce's. Knowing which of your gates warn and which refuse is
+half of working on a pipeline, so this lab makes you meet one of each.
 
 ## Before you start
 
@@ -51,67 +52,86 @@ Both are the project's rules, not Salesforce's. Both exist because somebody got 
 
 ### 2. Write the change the way people actually write it
 
-Open `force-app/main/default/classes/InstallationScheduler.cls` and add a method. You are going to
-copy the shape of something that already exists nearby, because that is what everyone does:
+Open `force-app/main/default/classes/InstallationScheduler.cls` and add a method. The planner wants
+to check several installations at once, so you write the obvious thing:
 
 ```apex
     /**
-     * Whether this installation can be scheduled on the given day: the panels have
-     * to have arrived, plus the preparation buffer.
+     * The installations from the list that can be scheduled on the given day.
      *
-     * @param installationId the installation to check
+     * @param installationIds the installations to check
      * @param wanted the day the planner wants
-     * @return true when the crew can be sent that day
+     * @return the ids that can take a crew that day
      */
-    public static Boolean canScheduleOn(Id installationId, Date wanted) {
-        // Standard record type of Installation, same id in every org
-        Id standardRecordType = '0125f000000XyZaAAK';
-        Date earliest = earliestInstallDate(installationId);
-        if (earliest == null) {
-            return false;
+    public static List<Id> schedulableOn(List<Id> installationIds, Date wanted) {
+        List<Id> allowed = new List<Id>();
+        for (Id installationId : installationIds) {
+            for (Panel_Batch__c batch : [
+                SELECT Arrival_Date__c
+                FROM Panel_Batch__c
+                WHERE Installation__c = :installationId
+                ORDER BY Arrival_Date__c DESC
+                LIMIT 1
+            ]) {
+                if (batch.Arrival_Date__c != null && wanted >= batch.Arrival_Date__c.addDays(PREPARATION_DAYS)) {
+                    allowed.add(installationId);
+                }
+            }
         }
-        return wanted >= earliest;
+        return allowed;
     }
 ```
 
 Publish, push, open the Pull Request.
 
-### 3. MegaLinter blocks you
+### 3. MegaLinter warns you
 
 ```
-InstallationScheduler.cls:42  AvoidHardcodedId  Avoid hardcoding Salesforce IDs
+InstallationScheduler.cls:56  pmd:OperationWithLimitsInLoop  (Moderate)
+Avoid operations in loops that may hit governor limits
 ```
 
-The comment says "same id in every org". It is not. Record type ids, profile ids, queue ids and
-every other Salesforce id are **generated per org**. A hardcoded id works in the org it was copied
-from and silently misbehaves everywhere else, which is the most expensive kind of bug this pipeline
-exists to catch.
+A SOQL query inside a `for` loop. Salesforce allows 100 queries per transaction, so this method
+works perfectly for a planner checking five installations and throws
+`System.LimitException: Too many SOQL queries: 101` the first time somebody checks a hundred and
+one. It will pass every test you write and fail on a busy Monday.
 
-Fix it by asking the org rather than remembering:
+The fix is the one Apex pattern worth knowing by heart: **query once, outside the loop, and index
+what you get back**.
 
 ```apex
-    public static Boolean canScheduleOn(Id installationId, Date wanted) {
-        Date earliest = earliestInstallDate(installationId);
-        if (earliest == null) {
-            return false;
+    public static List<Id> schedulableOn(List<Id> installationIds, Date wanted) {
+        Map<Id, Date> latestArrival = new Map<Id, Date>();
+        for (Panel_Batch__c batch : [
+            SELECT Installation__c, Arrival_Date__c
+            FROM Panel_Batch__c
+            WHERE Installation__c IN :installationIds
+            AND Arrival_Date__c != null
+            ORDER BY Arrival_Date__c ASC
+        ]) {
+            latestArrival.put(batch.Installation__c, batch.Arrival_Date__c);
         }
-        return wanted >= earliest;
+        List<Id> allowed = new List<Id>();
+        for (Id installationId : installationIds) {
+            Date arrival = latestArrival.get(installationId);
+            if (arrival != null && wanted >= arrival.addDays(PREPARATION_DAYS)) {
+                allowed.add(installationId);
+            }
+        }
+        return allowed;
     }
 ```
 
-In this case the variable was not used at all, which is the other thing copy-paste does. If you do
-need a record type id, the way to get it is:
+One query, whatever the size of the list.
 
-```apex
-Id standardRecordType = Schema.SObjectType.Installation__c
-    .getRecordTypeInfosByDeveloperName()
-    .get('Standard')
-    .getRecordTypeId();
-```
+!!! note "This one warns, it does not block"
+    The Apex analyzer is non blocking on this project: your Pull Request is still mergeable with
+    that finding on it. Nothing stops you shipping the loop except reading the comment. That is a
+    deliberate choice a project makes, and it is why the next step is the one that actually refuses.
 
 ### 4. The tests block you
 
-Push the fix. MegaLinter passes. Now the deployment check fails:
+Push the fix. MegaLinter is clean. Now the deployment check **fails**, and this one is not advice:
 
 ```
 Code coverage of InstallationScheduler is 71%, below the required 75%
@@ -122,24 +142,24 @@ You added a method with three branches and no test. Add them to
 
 ```apex
     @isTest
-    static void canScheduleOnRefusesBeforeThePanelsArrive() {
+    static void schedulableOnRefusesBeforeThePanelsArrive() {
         Installation__c inst = [SELECT Id FROM Installation__c LIMIT 1];
         Test.startTest();
-        Boolean tooEarly = InstallationScheduler.canScheduleOn(inst.Id, Date.today());
-        Boolean lateEnough = InstallationScheduler.canScheduleOn(inst.Id, Date.today().addDays(60));
+        List<Id> tooEarly = InstallationScheduler.schedulableOn(new List<Id>{ inst.Id }, Date.today());
+        List<Id> lateEnough = InstallationScheduler.schedulableOn(new List<Id>{ inst.Id }, Date.today().addDays(60));
         Test.stopTest();
-        System.assertEquals(false, tooEarly, 'The crew cannot be sent before the panels arrive');
-        System.assertEquals(true, lateEnough, 'A date after the buffer is allowed');
+        System.assert(tooEarly.isEmpty(), 'The crew cannot be sent before the panels arrive');
+        System.assertEquals(1, lateEnough.size(), 'A date after the buffer is allowed');
     }
 
     @isTest
-    static void canScheduleOnIsFalseWithoutAnyBatch() {
+    static void schedulableOnIgnoresInstallationsWithNoBatch() {
         Installation__c lonely = new Installation__c(Status__c = 'Planned', External_Id__c = 'TEST-INST-003');
         insert lonely;
         Test.startTest();
-        Boolean allowed = InstallationScheduler.canScheduleOn(lonely.Id, Date.today().addDays(30));
+        List<Id> allowed = InstallationScheduler.schedulableOn(new List<Id>{ lonely.Id }, Date.today().addDays(30));
         Test.stopTest();
-        System.assertEquals(false, allowed, 'With no panel batch, nothing can be scheduled');
+        System.assert(allowed.isEmpty(), 'With no panel batch, nothing can be scheduled');
     }
 ```
 
@@ -196,9 +216,9 @@ point: Salesforce is happy to deploy a hardcoded id.
 
 ## What you should see
 
-- The MegaLinter check green
+- The MegaLinter check reporting no findings
 - The deployment check green, with coverage above 75% in the comment
-- `canScheduleOn` in `helios-integration`, with no hardcoded id anywhere in the class
+- `schedulableOn` in `helios-integration`, with one query outside the loop
 
 ## If it goes wrong
 
