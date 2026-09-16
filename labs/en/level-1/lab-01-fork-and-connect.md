@@ -5,8 +5,13 @@ lab: 1
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/devops-pipeline
-  - vscode/pipeline-config
+  - annotated/web/github-fork
+  - annotated/web/github-create-fork
+  - annotated/web/github-actions-tab
+  - annotated/vscode/devops-pipeline--read-it
+  - annotated/vscode/devops-pipeline--settings-menu
+  - annotated/vscode/pipeline-config-branch
+  - annotated/web/github-secret-new
 depends_on:
   commands: []
   flags: []
@@ -37,11 +42,21 @@ copy will really deploy to an org you own.
 
 ### 1. Fork the repository
 
-Open [github.com/hardisgroupcom/sfdx-hardis-training](https://github.com/hardisgroupcom/sfdx-hardis-training),
-click **Fork** at the top right, then **Create fork**.
+Open [github.com/hardisgroupcom/sfdx-hardis-training](https://github.com/hardisgroupcom/sfdx-hardis-training)
+and click **Fork** **(1)**, top right.
 
-GitHub ticks "Copy the `main` branch only" for you. **Untick it**: this course needs the other
-branches. Leave the rest of the options as they are.
+![The training repository on GitHub](../../_assets/annotated/web/github-fork.png)
+
+The **Create a new fork** page asks for three things:
+
+1. **Owner** **(1)**, which is your own account
+2. **Copy the `main` branch only** **(2)**, ticked for you. **Untick it**: this course needs the
+   other branches
+3. **Create fork** **(3)**
+
+![The Create a new fork page on GitHub](../../_assets/annotated/web/github-create-fork.png)
+
+Leave the rest of the options as they are.
 
 You now own `github.com/<your-handle>/sfdx-hardis-training`. Everything from here happens there.
 
@@ -56,11 +71,14 @@ You now own `github.com/<your-handle>/sfdx-hardis-training`. Everything from her
 **GitHub disables Actions on every new fork** until the owner says otherwise. If you skip this,
 your Pull Request checks will silently never run and you will conclude the course is broken.
 
-In your fork, click the **Actions** tab. GitHub shows a yellow banner:
+In your fork, click the **Actions** tab **(1)**. GitHub shows a yellow banner:
 
 > Workflows aren't being run on this forked repository
 
-Click **I understand my workflows, go ahead and enable them**.
+Click **I understand my workflows, go ahead and enable them**. The banner goes, and the workflows
+the project ships fill the left column **(2)**. That list is how you know the fork can run them.
+
+![The Actions tab of a fork, with the workflow list in the left column](../../_assets/annotated/web/github-actions-tab.png)
 
 ### 3. Clone your fork
 
@@ -98,14 +116,15 @@ The extension reads them again whenever they change, so you never have to reload
 
 On the Welcome page, click **DevOps Pipeline**.
 
-![The DevOps Pipeline panel showing the Helios branches and orgs](../../_assets/vscode/devops-pipeline.png)
+![The DevOps Pipeline panel, showing the Helios branches, the integration org and the warnings](../../_assets/annotated/vscode/devops-pipeline--read-it.png)
 
-This diagram is the single most useful thing in the extension. Read it top to bottom:
+This diagram is the single most useful thing in the extension. Read it left to right:
 
-1. **`integration`** is the only major branch this project has today. It is where every contributor
-   merges, and it deploys to the integration org
-2. Your **feature branches** appear as small boxes feeding into it
-3. The **Pull Requests** waiting on it are listed with their CI job status
+1. **`integration`** **(1)** is the only major branch this project has today. It is where every
+   contributor merges, and it deploys to the integration org **(2)**
+2. Your **feature branches** **(3)** appear as small boxes feeding into it
+3. The **Pull Requests** waiting on it are the numbered badges on the arrows, coloured with their
+   CI job status
 4. **`uat`** and **`main`** exist as branches but are **not** part of the pipeline. Nobody wired
    them. That is not an accident: finishing this pipeline is what Level 3 is about
 
@@ -113,8 +132,8 @@ The branch you work on, and the org it ends up in, are the two facts that matter
 in this course is detail.
 
 !!! note "About the two warnings at the bottom"
-    The panel warns that `integration` has no merge target, and that there is no certificate key
-    file for it. Both are correct, and both are deliberate.
+    The block at the bottom of the panel **(4)** warns that `integration` has no merge target, and
+    that there is no certificate key file for it. Both are correct, and both are deliberate.
 
     The missing merge target is the missing rest of the pipeline: `uat` and `main` are not wired,
     and Level 3 lab 0 wires them. The missing certificate is the proper CI authentication, which
@@ -128,15 +147,20 @@ in this course is detail.
 The repository does not know your orgs: it cannot, they did not exist when it was written. You
 declare them once.
 
-In the DevOps Pipeline panel, open the gear menu at the top right and choose **Pipeline Settings**.
-The settings are not per column: you pick the branch inside the panel, with the **Configuration
-Scope** selector at the top. Choose `integration`, and the title becomes **Pipeline Settings for
-major git branch integration**.
+In the DevOps Pipeline panel, open the gear menu at the top right **(1)** and choose
+**Pipeline Settings**.
 
-![The pipeline configuration screen for a branch](../../_assets/vscode/pipeline-config.png)
+![The DevOps Pipeline panel header, with the gear menu that holds Pipeline Settings](../../_assets/annotated/vscode/devops-pipeline--settings-menu.png)
 
-The panel opens read-only, so nothing is changed by accident. Click **Edit** to unlock the fields,
-then fill in two of them with the values of your **second** org, the integration one:
+The settings are not per column: you pick the branch inside the panel, with the configuration scope
+selector at the top **(1)**. Choose `integration`: the selector then reads **Branch: integration**,
+and the title becomes **Pipeline Settings for major git branch integration**.
+
+![The Pipeline Settings panel for the integration branch](../../_assets/annotated/vscode/pipeline-config-branch.png)
+
+The panel opens read-only, so nothing is changed by accident. Click **Edit** **(2)** to unlock the
+fields, then fill in two of them on the **Salesforce Org** tab **(3)**, with the values of your
+**second** org, the integration one:
 
 1. **Target username** - the org username, the one from the confirmation email
 2. **Instance URL** - `https://login.salesforce.com`
@@ -185,9 +209,11 @@ Then in your fork on GitHub:
 
 1. **Settings > Secrets and variables > Actions**
 2. **New repository secret**
-3. Name: `SFDX_AUTH_URL_INTEGRATION`
-4. Value: the `force://...` string you copied
-5. **Add secret**
+3. **Name** **(1)**: `SFDX_AUTH_URL_INTEGRATION`
+4. **Secret** **(2)**: the `force://...` string you copied
+5. **Add secret** **(3)**
+
+![The New secret form of a GitHub repository, name and value filled in](../../_assets/annotated/web/github-secret-new.png)
 
 !!! danger "This is a deliberate exception, and you should know why"
     An SFDX auth URL embeds a **long-lived OAuth refresh token**. Anyone who reads it has your org

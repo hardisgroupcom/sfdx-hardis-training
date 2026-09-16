@@ -28,9 +28,15 @@
         "orgManager"
       ],
       "screenshots": [
-        "vscode/welcome",
-        "vscode/setup",
-        "vscode/orgs-manager"
+        "annotated/web/vscode-download",
+        "annotated/web/nodejs-download",
+        "annotated/web/vscode-marketplace",
+        "annotated/vscode/welcome--first-open",
+        "annotated/vscode/welcome--setup-button",
+        "annotated/vscode/setup",
+        "annotated/web/sf-signup",
+        "annotated/vscode/orgs-manager",
+        "annotated/vscode/welcome--training-menu"
       ]
     },
     {
@@ -59,8 +65,13 @@
         "orgManager"
       ],
       "screenshots": [
-        "vscode/devops-pipeline",
-        "vscode/pipeline-config"
+        "annotated/web/github-fork",
+        "annotated/web/github-create-fork",
+        "annotated/web/github-actions-tab",
+        "annotated/vscode/devops-pipeline--read-it",
+        "annotated/vscode/devops-pipeline--settings-menu",
+        "annotated/vscode/pipeline-config-branch",
+        "annotated/web/github-secret-new"
       ]
     },
     {
@@ -89,7 +100,8 @@
         "promptInput"
       ],
       "screenshots": [
-        "vscode/devops-pipeline"
+        "annotated/vscode/devops-pipeline--new-user-story",
+        "annotated/vscode/work-new-target-branch"
       ]
     },
     {
@@ -110,7 +122,7 @@
         "orgManager"
       ],
       "screenshots": [
-        "vscode/orgs-manager"
+        "annotated/vscode/orgs-manager"
       ]
     },
     {
@@ -138,7 +150,7 @@
         "commandExecution"
       ],
       "screenshots": [
-        "vscode/devops-pipeline"
+        "annotated/vscode/work-save-package-xml"
       ]
     },
     {

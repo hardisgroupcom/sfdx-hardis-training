@@ -5,7 +5,7 @@ lab: 3
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/orgs-manager
+  - annotated/vscode/orgs-manager
 depends_on:
   commands: []
   flags: []
@@ -36,9 +36,11 @@ your own org, never in the shared one.
 
 ### 1. Open your org
 
-In **Orgs Manager**, find `helios-dev` and click **Open**.
+In **Orgs Manager**, find `helios-dev` by its alias **(2)**, check that it still says **Connected**
+**(3)**, and open it from the actions at the end of its row. If it is not connected any more,
+**Add Org** **(1)** puts it back.
 
-![Orgs Manager, where you open the org you are working in](../../_assets/vscode/orgs-manager.png)
+![The Orgs Manager table, with the alias and connection state of each org](../../_assets/annotated/vscode/orgs-manager.png)
 
 Your browser opens the org, already logged in. No password, no login page: the extension used the
 credential you stored in Lab 0.

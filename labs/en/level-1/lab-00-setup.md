@@ -5,9 +5,15 @@ lab: 0
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/welcome
-  - vscode/setup
-  - vscode/orgs-manager
+  - annotated/web/vscode-download
+  - annotated/web/nodejs-download
+  - annotated/web/vscode-marketplace
+  - annotated/vscode/welcome--first-open
+  - annotated/vscode/welcome--setup-button
+  - annotated/vscode/setup
+  - annotated/web/sf-signup
+  - annotated/vscode/orgs-manager
+  - annotated/vscode/welcome--training-menu
 depends_on:
   commands: [hardis:org:data:import]
   flags: []
@@ -39,28 +45,44 @@ shared integration org the team merges into.
 
 ### 1. Install VS Code and the extension
 
-Install [Visual Studio Code](https://code.visualstudio.com/) if you do not have it, then install
-[Node.js](https://nodejs.org/) version 20 or later. Both are next-next-finish installers.
+Open [Visual Studio Code](https://code.visualstudio.com/) and take the download for your machine.
+On Windows that is the **Windows** button **(1)**; the two cards next to it hold the macOS and Linux
+builds.
+
+![The Visual Studio Code download page, one card per operating system](../../_assets/annotated/web/vscode-download.png)
+
+Then [Node.js](https://nodejs.org/), version 20 or later. Two things to get right on that page:
+
+1. the version selector, left on **LTS** **(1)**
+2. **Windows Installer (.msi)** **(2)**, or the equivalent for your machine
+
+![The Node.js download page, with the version selector and the installer buttons](../../_assets/annotated/web/nodejs-download.png)
+
+Both are next-next-finish installers.
 
 Then open VS Code, click the **Extensions** icon in the left bar, type `sfdx-hardis`, and click
-**Install** on **sfdx-hardis** by Cloudity.
+**Install** on **sfdx-hardis** by Cloudity. Its page on the Visual Studio Marketplace carries the
+same **Install** button **(1)**, if you would rather start from your browser.
 
-A new icon appears in the left bar: a small cloud. Click it. The **Welcome** page opens.
+![The sfdx-hardis extension page on the Visual Studio Marketplace](../../_assets/annotated/web/vscode-marketplace.png)
 
-![The sfdx-hardis Welcome page in VS Code](../../_assets/vscode/welcome.png)
+A new icon appears in the left bar **(1)**. Click it: the **Welcome** tab **(2)** opens, and that
+tab is where every lab of this course starts.
+
+![VS Code with the sfdx-hardis Welcome tab open](../../_assets/annotated/vscode/welcome--first-open.png)
 
 ### 2. Let the Setup panel install the rest
 
 You need the Salesforce CLI and a few plugins. You are not going to install them by hand: the
 extension has a panel that checks what is missing and installs it.
 
-On the Welcome page, the button at the top left of the header band opens the Setup panel. There is
-no card called Setup: the button is labelled with the state of your dependencies, so it reads
-**Check in progress** while it is still looking, then either **Dependencies up to date** or
+On the Welcome page, the button at the top left of the header band **(1)** opens the Setup panel.
+There is no card called Setup: the button is labelled with the state of your dependencies, so it
+reads **Check in progress** while it is still looking, then either **Dependencies up to date** or
 **N update(s) needed**. Hover it and the tooltip says **Open Setup**. Wait for the check to finish,
 then click it.
 
-![The Setup panel, listing every dependency with its version](../../_assets/vscode/setup.png)
+![The Welcome page header, with the dependency-state button at its left](../../_assets/annotated/vscode/welcome--setup-button.png)
 
 The panel lists every dependency the pipeline needs, with the version you have and the version
 that is current:
@@ -71,8 +93,12 @@ that is current:
 4. **sfdx-git-delta** - computes what changed between two commits, used by the deployments
 5. **Salesforce Extension Pack** - the official Salesforce tooling for VS Code
 
-Anything marked as missing or out of date has an **Install** button. Click them, top to bottom.
-The panel queues the installations and reports each one as it finishes.
+![The Setup panel, listing every dependency with its version](../../_assets/annotated/vscode/setup.png)
+
+A dependency that is already fine is green and offers only **Re-check** **(3)**. One that is missing
+or out of date carries its own **Upgrade** button **(2)**, and **Run pending installs** **(1)** does
+the whole list in one go. Use that one: the panel queues the installations and reports each as it
+finishes.
 
 This takes a few minutes. It is the longest part of this lab and the only one you never repeat.
 
@@ -96,11 +122,18 @@ ways when one person is two major versions behind, and nobody notices until a de
 Go to [developer.salesforce.com/signup](https://developer.salesforce.com/signup) and sign up
 **twice**. Free, unlimited, no credit card.
 
-The form asks for your first name, last name, job title, company, country or region and a **work
-email**, plus a tick to accept the master subscription agreement. You do not choose a username: it
-is generated and sent to you.
+The form asks for your first name, last name, job title, company and country or region, then three
+things that decide whether the signup goes through:
 
-The one field that decides whether the second signup works is **Work email**. It must be a real
+1. **Work email** **(1)**
+2. the tick that accepts the master subscription agreement **(2)**
+3. **Sign me up** **(3)**
+
+![The Salesforce Developer Edition signup form](../../_assets/annotated/web/sf-signup.png)
+
+You do not choose a username: it is generated and sent to you.
+
+**Work email** is the field that decides whether the second signup works. It must be a real
 address you can open, because the signup is confirmed by email, and the two orgs cannot share one
 address. If you only have one, use plus-addressing: `you+heliosdev@example.com` and
 `you+heliosinteg@example.com` both arrive in the same inbox for most providers.
@@ -123,19 +156,19 @@ Lab 1. Keep both usernames somewhere.
 
 Back in VS Code, on the Welcome page, click **Orgs Manager**.
 
-![The Orgs Manager panel, with the Helios orgs connected](../../_assets/vscode/orgs-manager.png)
+![The Orgs Manager table, with the Helios orgs and their connection state](../../_assets/annotated/vscode/orgs-manager.png)
 
-1. Click **Add Org**
+1. Click **Add Org** **(1)**
 2. Leave the login URL on **Production / Developer Edition** (`login.salesforce.com`), because a
    Developer Edition org is not a sandbox
 3. Give it the alias `helios-dev`
 4. Your browser opens the Salesforce login page. Sign in with the first org, and allow access
 5. Repeat for the second org, with the alias `helios-integration`
 
-Both orgs now appear in the panel with a green status. **This panel is how you authenticate to an
-org for the rest of the course.** Whenever a lab says "connect an org" or "switch to an org", this
-is where you do it, and it is also how you check which org you are pointed at, which saves more
-confusion than anything else in this training.
+Both orgs now appear in the table, under the alias you gave them **(2)**, with a green **Connected**
+**(3)**. **This panel is how you authenticate to an org for the rest of the course.** Whenever a lab
+says "connect an org" or "switch to an org", this is where you do it, and it is also how you check
+which org you are pointed at, which saves more confusion than anything else in this training.
 
 <details markdown="1"><summary>Under the hood: what connecting an org just did</summary>
 
@@ -166,8 +199,10 @@ the files.
 
 ### 6. Seed each org
 
-Open the Welcome page again. At the top, above the built-in cards, there is a **CUSTOM MENUS**
-group holding a single card: **Training**.
+Open the Welcome page again. Above the built-in cards there is a **CUSTOM MENUS** heading **(1)**,
+holding a single card: **Training (custom)** **(2)**.
+
+![The Welcome page, with the CUSTOM MENUS group and the Training card](../../_assets/annotated/vscode/welcome--training-menu.png)
 
 !!! note "Why the card says \"Training (custom)\""
     The extension appends `(custom)` to every menu a project declares in its own

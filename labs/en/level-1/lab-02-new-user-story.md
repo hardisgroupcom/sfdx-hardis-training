@@ -5,7 +5,8 @@ lab: 2
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/devops-pipeline
+  - annotated/vscode/devops-pipeline--new-user-story
+  - annotated/vscode/work-new-target-branch
 depends_on:
   commands: [hardis:work:new]
   flags: []
@@ -48,15 +49,21 @@ and repeat for the rest of your career on this project.
 ### 1. Start the User Story
 
 In the **DevOps Pipeline** panel, or in the **Commands** tree under **CI/CD (simple)**, click
-**New User Story**.
+**New User Story** **(1)**.
+
+![The Commands tree in VS Code, with New User Story under CI/CD (simple)](../../_assets/annotated/vscode/devops-pipeline--new-user-story.png)
 
 The extension asks a short series of questions, one screen at a time. Answer them:
 
 1. **What do you want to do?** - *Start a new User Story*
-2. **Target branch** - `integration`. It is the only choice this project offers today, and that is
-   the point: you never guess where your work is going
+2. **Target branch** - `integration` **(1)**, the choice described as where the team merges its
+   work. `uat` and `main` are under it, and nothing is wired to them yet
 3. **Type of branch** - **Feature**, because this adds something rather than fixing it
 4. **Name** - `US-014-panels-required`
+
+![The target branch question, listing integration, uat and main](../../_assets/annotated/vscode/work-new-target-branch.png)
+
+You never guess where your work is going: the command asks, and writes the answer down.
 
 The name is checked against a pattern the project declares, so every branch on this repository
 looks the same. Type something else and it tells you what it expected.
