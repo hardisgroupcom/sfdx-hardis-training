@@ -8,6 +8,12 @@ EXTENDS:
 # forever, for a difference nobody made.
 FILTER_REGEX_EXCLUDE: (\.vscode|staticresources/|^BACKLOG\.md$|^MY-PIPELINE\.template\.md$|^training-manifest\.json$|^labs/link-map\.en\.md$|^mkdocs-nav\.yml$|^site-src/|^megalinter-reports/)
 
+# The only CSS here styles the documentation site on top of the theme Zensical
+# ships, so every selector and custom property it touches is the theme's, not
+# ours: stylelint asks us to rename things we do not own.
+DISABLE_LINTERS:
+  - CSS_STYLELINT
+
 # The Salesforce Code Analyzer is for the Apex and the metadata of the Helios
 # app. Pointed at the whole repository it reads the site stylesheet as if it were
 # an Aura component and asks for SLDS design tokens in it.
