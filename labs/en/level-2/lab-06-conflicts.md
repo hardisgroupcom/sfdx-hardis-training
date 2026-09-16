@@ -17,7 +17,9 @@ depends_on:
 # Lab 6 - Marco merged first: resolve the conflict
 
 **Level**: 2 Contributor advanced
+
 **Time**: ~35 min
+
 **You will**: face a real merge conflict on two files that conflict very differently, and resolve
 both without losing anybody's work.
 

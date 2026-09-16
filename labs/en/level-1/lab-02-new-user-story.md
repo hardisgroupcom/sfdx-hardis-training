@@ -19,7 +19,9 @@ depends_on:
 # Lab 2 - Take US-014 from the backlog
 
 **Level**: 1 Contributor basics
+
 **Time**: ~10 min
+
 **You will**: pick up your first ticket and land on a clean branch, pointed at your dev org.
 
 ## The situation
@@ -39,6 +41,13 @@ The backlog is in [BACKLOG.md](../../../BACKLOG.md). Your first story is at the 
 
 Small on purpose. What matters in this lab is not the field, it is the loop you are about to learn
 and repeat for the rest of your career on this project.
+
+!!! info "Branch, in one sentence"
+    A branch is a named line of work inside the repository. Yours starts as an exact copy of what
+    the team has right now. You change what your story needs on it, and the team's version stays as
+    it was until your Pull Request merges yours back in, which is how two people work on two stories
+    at once without stepping on each other. The extension creates the branch, switches you onto it
+    and later pushes it, so you never type a Git command.
 
 ## Before you start
 

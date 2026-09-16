@@ -17,7 +17,9 @@ depends_on:
 # Lab 5 - Open the Pull Request, get it green, merge
 
 **Level**: 1 Contributor basics
+
 **Time**: ~20 min
+
 **You will**: have a robot check your work before a human does, fix what it finds, and put US-014
 into the shared integration org.
 
@@ -30,6 +32,12 @@ Pull Request.
 
 That is the whole point of this way of working. You find out your deployment fails while it is
 still yours to fix, not on release night.
+
+!!! info "Pull Request, in one sentence"
+    A Pull Request asks for one branch to be folded into another, yours into `integration` here. It
+    is a page on GitHub holding three things: what your branch changes, the result of every check
+    that ran on it, and the conversation about whether it should go in. Nothing moves until somebody
+    clicks Merge. Everyone shortens it to "PR".
 
 ## Before you start
 

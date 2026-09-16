@@ -23,15 +23,21 @@ depends_on:
 # Lab 1 - Fork the repository and connect your pipeline
 
 **Level**: 1 Contributor basics
+
 **Time**: ~15 min
+
 **You will**: own a copy of the Helios repository, wire it to your integration org, and read the
 pipeline diagram that tells you which branch deploys where.
 
 ## The situation
 
-The Helios team works in one repository. You are not going to push to it: you work in **your own
-copy**, and so does everyone in this course. By the end of this lab, a Pull Request opened in your
-copy will really deploy to an org you own.
+The Helios team keeps its whole project in one **repository** on GitHub: the Salesforce sources, the
+configuration, the automation that deploys it, and every version of all of that since the project
+started.
+
+You are not going to touch theirs. You take a **fork**, which is GitHub's word for your own copy
+under your own account, and you work there. So does everyone else on this course. By the end of this
+lab, a Pull Request opened in your copy will really deploy to an org you own.
 
 ## Before you start
 
@@ -41,6 +47,16 @@ copy will really deploy to an org you own.
 ## Steps
 
 ### 1. Fork the repository
+
+!!! info "If fork is a new word"
+    A fork is a copy of a repository that becomes yours. One click makes it, it lands under your own
+    GitHub account, and you can change anything in it without asking anybody. GitHub remembers where
+    it came from, so you can pull later changes in from the original, but nothing travels back the
+    other way unless you ask for it.
+
+    Which also means you cannot break anything that matters here. If your fork ends up in a state
+    you do not understand, delete it and fork again. That is the fix for half the problems in this
+    lab.
 
 Open [github.com/hardisgroupcom/sfdx-hardis-training](https://github.com/hardisgroupcom/sfdx-hardis-training)
 and click **Fork** **(1)**, top right.

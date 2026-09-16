@@ -18,7 +18,9 @@ depends_on:
 # Lab 8 - Put production under monitoring
 
 **Level**: 3 Release Manager
+
 **Time**: ~35 min
+
 **You will**: set up nightly monitoring on production, read its first report, and decide what is
 worth being told about.
 

@@ -11,6 +11,10 @@ You will work on a real repository for a fictional solar installer, **Helios Ene
 Developer Edition orgs that come pre-loaded with the app and its data. Everything you do here is
 what a real Salesforce team does every day, with the same tools.
 
+If Git is new to you, that is the expected starting point. Level 1 defines the six words you need,
+repository and fork among them, at the moment you first meet each one, and the VS Code extension
+runs the Git commands for you.
+
 ## The three levels
 
 | Level                                            | Who it is for                                                    | Time   | Before you start   | You finish able to                                                                                  |

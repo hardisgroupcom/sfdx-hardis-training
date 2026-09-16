@@ -17,7 +17,9 @@ depends_on:
 # Lab 4 - US-027 fails the quality gate and the tests
 
 **Level**: 2 Contributor advanced
+
 **Time**: ~30 min
+
 **You will**: get blocked twice by robots, fix both properly rather than around them, and learn to
 run the checks before pushing.
 

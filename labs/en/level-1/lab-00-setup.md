@@ -25,7 +25,9 @@ depends_on:
 # Lab 0 - Install the tools and seed your orgs
 
 **Level**: 1 Contributor basics
+
 **Time**: ~20 min
+
 **You will**: get a working workstation and two Salesforce orgs that already contain the Helios
 Delivery app and its data, without typing a single command.
 
@@ -45,8 +47,10 @@ shared integration org the team merges into.
 
 ### 1. Install VS Code and the extension
 
-First [Git](https://git-scm.com/downloads), which everything else in this course sits on. The page
-offers your operating system at the top: on Windows take **Click here to download** **(1)**, the
+First [Git](https://git-scm.com/downloads). Git is the tool that records every version of a project
+and moves it between your laptop and GitHub, and everything else in this course sits on it. You will
+never have to type a Git command: the extension runs them for you, and shows you which one it ran.
+The download page offers your operating system at the top: on Windows take **Click here to download** **(1)**, the
 64-bit standalone installer. Accept every default the installer offers.
 
 ![The Git download page for Windows](../../_assets/annotated/web/git-download.png)

@@ -17,7 +17,9 @@ depends_on:
 # Lab 1 - US-021 will not deploy: a missing dependency
 
 **Level**: 2 Contributor advanced
+
 **Time**: ~25 min
+
 **You will**: meet your first failing deployment check, read the error properly, and find the cause
 in a file most people never open.
 

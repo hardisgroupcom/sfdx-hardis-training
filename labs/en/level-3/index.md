@@ -7,6 +7,7 @@ lang: en
 # Level 3 - Release Manager
 
 **Time**: about 6 h.
+
 **Before you start**: [Level 1](../level-1/index.md) **and** [Level 2](../level-2/index.md). Both
 are required, and the badge audit checks both before it looks at anything here.
 

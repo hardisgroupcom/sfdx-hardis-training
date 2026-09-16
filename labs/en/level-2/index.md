@@ -7,6 +7,7 @@ lang: en
 # Level 2 - Contributor advanced
 
 **Time**: about 4 h.
+
 **Before you start**: [Level 1](../level-1/index.md). Not optional: every lab here assumes the loop
 is automatic for you.
 

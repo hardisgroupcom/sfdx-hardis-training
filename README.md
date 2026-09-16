@@ -31,7 +31,11 @@ Each level awards a **Cloudity badge**. It is a badge, not a certification.
 Then follow [Level 1 lab 0](https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-00-setup/),
 which walks through all of the above with screenshots.
 
-## Everything happens in your own fork
+## Everything happens in your own copy
+
+New to Git? A **repository** is a project folder plus every version of it there has ever been, and a
+**fork** is your own copy of one, under your own GitHub account. Level 1 lab 1 makes yours, with
+screenshots, and the level home page defines the rest of the vocabulary before you need it.
 
 You fork this repository and work only there: your feature branches, your Pull Requests, your
 merges. Nothing is ever pushed here, whose only inbound traffic is badge claims.

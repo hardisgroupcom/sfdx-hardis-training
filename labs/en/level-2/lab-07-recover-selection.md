@@ -17,7 +17,9 @@ depends_on:
 # Lab 7 - You committed the wrong things: recover
 
 **Level**: 2 Contributor advanced
+
 **Time**: ~20 min
+
 **You will**: deliberately over-select at publish time, see what that does to a Pull Request, and
 learn the two recovery paths.
 

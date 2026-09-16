@@ -7,6 +7,7 @@ lang: en
 # Level 1 - Contributor basics
 
 **Time**: about 2 h, in one sitting or six.
+
 **Before you start**: nothing. This is the first level.
 
 ## The story
@@ -22,6 +23,21 @@ first story.
 
 That is this level.
 
+## Six words, before anything else
+
+If you have never used Git, this is the whole vocabulary. Nothing in Level 1 assumes you knew it
+beforehand, and you will not have to type a single Git command: the VS Code extension does that
+part.
+
+| Word             | What it means                                                                |
+|------------------|------------------------------------------------------------------------------|
+| **Repository**   | One project folder, plus every version of it there has ever been. Often shortened to "repo". The Helios repo lives on GitHub. |
+| **Fork**         | Your own copy of somebody else's repository, made in one click, under your GitHub account. You can change anything in it, and the original never notices. |
+| **Clone**        | Downloading a repository onto your laptop, so VS Code can open it.           |
+| **Branch**       | A named line of work inside a repository. You change what you need on yours, and the team's version stays untouched until you merge. |
+| **Commit**       | Recording a set of changes in the repository's history, with a message saying why. |
+| **Pull Request** | Asking for your branch to be folded into the team's. It is where the checks run and where a colleague reads what you did. Everyone says "PR". |
+
 ## What you will do
 
 | Lab                             | Title                                         | Time   |
@@ -36,11 +52,12 @@ That is this level.
 
 ## Three things that are true for the whole course
 
-**Everything happens in your own fork.** You fork the training repository and work only there.
-Your feature branch, your Pull Request, your merge, all inside your copy. Nothing is ever pushed
-to the shared repository, whose only inbound traffic is badge claims. Two reasons, both hard: a
-Pull Request from a fork cannot read the original repository's secrets, so its CI could never
-reach your org; and a few hundred learners opening Pull Requests there would bury it.
+**Everything happens in your own copy.** In Lab 1 you click **Fork** on GitHub and get the
+training repository under your own account. Your branch, your Pull Request, your merge, all inside
+that copy. Nothing you do ever reaches the shared repository, whose only inbound traffic is badge
+claims. Two reasons, and both are hard limits rather than etiquette: a Pull Request opened from a
+fork cannot read the original repository's secrets, so its CI could never reach your org; and a few
+hundred learners opening Pull Requests on one repository would bury it.
 
 **You click, you do not type.** Every action in these labs is a button in the VS Code extension.
 Where a command appears, it is in an **Under the hood** block, which explains what the button did.

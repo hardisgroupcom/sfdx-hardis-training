@@ -19,7 +19,9 @@ depends_on:
 # Lab 0 - Your pipeline stops at integration: finish it
 
 **Level**: 3 Release Manager
+
 **Time**: ~30 min
+
 **You will**: turn a one-stage pipeline into a three-stage one, and understand every line of
 configuration you add.
 
