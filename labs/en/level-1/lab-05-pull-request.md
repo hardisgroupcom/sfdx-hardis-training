@@ -5,8 +5,7 @@ lab: 5
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/devops-pipeline
-  - vscode/pipeline-pr-modal
+  - annotated/vscode/work-save-completed
 depends_on:
   commands: [hardis:project:deploy:smart]
   flags: [--check]
@@ -42,11 +41,20 @@ still yours to fix, not on release night.
 
 ### 1. Open the Pull Request
 
-In the **DevOps Pipeline** panel, find your branch in the diagram and click the small **+ PR** pill
-on the arrow leaving it. Its tooltip reads **Create PR**. The extension opens GitHub on the right
-page, with base and head already filled in.
+Go back to the panel where **Save / Publish** finished in Lab 4. Along the bottom is a bar of
+actions, and the first one is **Create Pull Request** **(1)**. Click it: the extension opens GitHub
+on the right page, with base and head already filled in.
 
-![Creating the Pull Request from the DevOps Pipeline panel](../../_assets/vscode/pipeline-pr-modal.png)
+![The end of the Save / Publish command, with its actions bar](../../_assets/annotated/vscode/work-save-completed.png)
+
+Two other things in that bar are worth knowing now, because later labs use them. **(2)** is the
+`package.xml` the command generated, the one you read in Lab 4. **(3)** opens the Deployment
+Actions of this Pull Request, which is what the whole of Level 2 lab 2 is about.
+
+!!! note "If you closed that panel"
+    Nothing is lost. Open your fork on GitHub: it shows a banner offering to open a Pull Request
+    for the branch you just pushed. The **+ PR** pill you may have noticed in the DevOps Pipeline
+    diagram is for major branches, not for your feature branch.
 
 Check two things before clicking, every single time:
 

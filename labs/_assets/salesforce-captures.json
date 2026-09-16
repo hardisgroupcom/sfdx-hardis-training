@@ -1,0 +1,16 @@
+{
+  "_comment": "Salesforce screens a learner has to click through. Captured by scripts/build/capture-salesforce.mjs over CDP, annotated by scripts/build/annotate.mjs. Nothing is ever saved in the org: the wizard captures walk forward and leave by navigating away.",
+  "org": "helios-uat",
+  "_org_comment": "Setup has to be in English, which follows the user and not the URL. helios-dev holds the same Helios metadata but its only human user is French, so the captures come from the UAT org, read only.",
+  "lookups": {
+    "crewPermSetId": "SELECT Id FROM PermissionSet WHERE Name = 'Helios_Delivery_Crew' LIMIT 1",
+    "installationId": "SELECT Id FROM Installation__c WHERE Name = 'INST-00001' LIMIT 1"
+  },
+  "captures": [
+    {
+      "name": "object-manager-fields",
+      "path": "/lightning/setup/ObjectManager/Installation__c/FieldsAndRelationships/view",
+      "waitFor": "button:has-text('New'), input[name='New']"
+    }
+  ]
+}

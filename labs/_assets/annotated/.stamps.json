@@ -14,9 +14,12 @@
   "vscode/devops-pipeline.png#new-user-story": "2a46493cba20950d",
   "vscode/devops-pipeline.png#settings-menu": "1d20919fa3d6b0a2",
   "vscode/pipeline-config-branch.png": "b6b99349c36e9258",
-  "vscode/work-new-target-branch.png": "ffa525f117076df6",
-  "vscode/work-save-package-xml.png": "b65674f3852800ae",
+  "vscode/work-new-target-branch.png": "9a5b35602acd2c52",
+  "vscode/work-save-package-xml.png": "6d70fd6fe430d1a0",
   "web/vscode-download.png": "7bd8a5d2ef79e66c",
   "web/vscode-marketplace.png": "f724f3cc62ace908",
-  "web/github-actions-tab.png": "3b0514b25ad9487a"
+  "web/github-actions-tab.png": "3b0514b25ad9487a",
+  "vscode/work-new-org.png": "6fb39895c53c348d",
+  "vscode/work-save-commit-ready.png": "dfb6cfc8ee8817e9",
+  "vscode/work-save-completed.png": "2424014d071bfc32"
 }

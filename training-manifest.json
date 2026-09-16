@@ -101,7 +101,8 @@
       ],
       "screenshots": [
         "annotated/vscode/devops-pipeline--new-user-story",
-        "annotated/vscode/work-new-target-branch"
+        "annotated/vscode/work-new-target-branch",
+        "annotated/vscode/work-new-org"
       ]
     },
     {
@@ -150,6 +151,7 @@
         "commandExecution"
       ],
       "screenshots": [
+        "annotated/vscode/work-save-commit-ready",
         "annotated/vscode/work-save-package-xml"
       ]
     },
@@ -179,8 +181,7 @@
         "pipeline"
       ],
       "screenshots": [
-        "vscode/devops-pipeline",
-        "vscode/pipeline-pr-modal"
+        "annotated/vscode/work-save-completed"
       ]
     },
     {

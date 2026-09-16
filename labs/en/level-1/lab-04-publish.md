@@ -5,6 +5,7 @@ lab: 4
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/vscode/work-save-commit-ready
   - annotated/vscode/work-save-package-xml
 depends_on:
   commands: [hardis:work:save]
@@ -41,8 +42,17 @@ Go slowly here once, and every following story takes five minutes.
 In the **DevOps Pipeline** panel, click the **Save / Publish** card, or in
 **Commands > CI/CD (simple)**, click **Save / Publish User Story**.
 
-The command does a fair amount before asking you anything: it lists what changed in your org since
-the branch started, and compares it with what is in the repository.
+The first question is the one that catches everybody out.
+
+![The Save / Publish command asking whether the metadata is already committed](../../_assets/annotated/vscode/work-save-commit-ready.png)
+
+Answer **(1)** if you have already pulled your changes from the org, staged the files and made a
+commit. Answer **(2)** if you have not, and the command pulls the org for you so you can commit.
+There is a third answer that explains what a commit is, and taking it costs nothing.
+
+If you are following this lab straight through from Lab 3, you have changed the org and nothing
+else, so **(2)** is your answer. The command then lists what changed in your org since the branch
+started, and compares it with what is in the repository.
 
 ### 2. Select what belongs to US-014
 

@@ -7,6 +7,7 @@ source_rev: ""
 screenshots:
   - annotated/vscode/devops-pipeline--new-user-story
   - annotated/vscode/work-new-target-branch
+  - annotated/vscode/work-new-org
 depends_on:
   commands: [hardis:work:new]
   flags: []
@@ -70,7 +71,13 @@ looks the same. Type something else and it tells you what it expected.
 
 ### 2. Pick the org you will build in
 
-The next question is which org this User Story is developed in. Choose **`helios-dev`**.
+The next question is which org this User Story is developed in. The list shows the orgs you
+connected in Lab 0, by their instance URL, with the username underneath.
+
+Pick the **first org** **(1)**, the one you gave the alias `helios-dev`. **(2)** authenticates an
+org that is not in the list yet, which you do not need today.
+
+![The New User Story command asking which org to build in](../../_assets/annotated/vscode/work-new-org.png)
 
 This is the org you seeded in Lab 0, and the one you are about to change by hand in Setup. Never
 pick `helios-integration` here: that is the shared org, and building directly in it is exactly what
