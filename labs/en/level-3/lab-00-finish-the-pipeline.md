@@ -83,9 +83,20 @@ available target branches, with labels contributors will understand:
 | uat         | `uat: user acceptance, only a release manager targets this`           |
 | main        | `main: production, hotfixes only`                                     |
 
-Set the production branch to `main`.
-
 **Save**.
+
+!!! note "Looking for the production branch?"
+    You will not find it on this screen. `productionBranch` has no field in the settings panel,
+    and this project already carries it:
+
+    ```yaml
+    productionBranch: main
+    ```
+
+    Open `config/.sfdx-hardis.yml` and read the Pipeline block to see it. A panel that covers most
+    of a configuration and not all of it is normal, and it is why the under the hood sections of
+    this course keep showing you the file. The file is the truth; the panel is a convenience over
+    it.
 
 ### 3. Give uat and main their orgs
 

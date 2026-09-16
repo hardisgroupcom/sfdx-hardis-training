@@ -65,12 +65,25 @@ step 3 is about it.
 
 Marco changed a flow, a permission set, a field and a layout: four components.
 
-The deployment probably sent fewer. Two mechanisms decide that, and they are different:
+The deployment sent fewer than the repository holds, and on a real project it would send fewer
+still. Two mechanisms decide that, and they are different:
 
 **Delta deployment.** Instead of sending the whole repository, sfdx-hardis computes what changed
 between the commit already deployed to this org and the new one, and sends only that. A full
 Salesforce deployment of a mature project takes 40 minutes; a delta takes 3. The trade is that the
 org has to genuinely be at the commit the pipeline thinks it is at.
+
+!!! note "This project has delta off, on purpose"
+    `useDeltaDeployment` is absent from `config/.sfdx-hardis.yml`, so every deployment in this
+    course sends the full package. Read it in **Pipeline Settings**, **Deployment** tab: **Use Delta
+    Deployment** shows **Disabled**.
+
+    The Helios app is 30 components, so a full deployment costs a minute and delta would save
+    nothing while adding a way for the course to fail confusingly on a missing dependency. Turn it
+    on when a deployment starts costing you real time, which on a real project is soon. There is a
+    second key for promotions between major branches,
+    `enableDeltaDeploymentBetweenMajorBranches`, and it is off by default for the same reason:
+    a promotion carries more, and is the riskiest place to send less.
 
 **Automated cleaning.** The rules in `config/.sfdx-hardis.yml` remove things from the package before
 it is sent: profile permissions that belong on permission sets, flow element positions, list view
