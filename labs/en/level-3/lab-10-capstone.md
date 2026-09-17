@@ -5,6 +5,7 @@ lab: 10
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/vscode/pipeline-cards--new-user-story
   - vscode/devops-pipeline
 depends_on:
   commands: [hardis:project:deploy:smart, hardis:doc:release-notes, hardis:doc:dora-report]
@@ -41,7 +42,11 @@ The only teammate Pull Request still in play is **US-020**, open since Lab 4 and
 other two are merged by now, and each scenario is used once: **Simulate my teammates** will replay a
 scenario onto a branch that already has its files, report "Nothing to commit" and open nothing.
 
-So build the second Pull Request yourself, the way a contributor would: **New User Story** targeting
+So build the second Pull Request yourself, the way a contributor would.
+
+![The New User Story card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
+
+**New User Story** **(2)**, under **Project Contribution Workflow** **(1)**, targeting
 `integration`, one small change of your own in `helios-dev`, published and opened. Pick something a
 reviewer could reasonably argue with, because in ten minutes you are that reviewer.
 

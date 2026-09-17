@@ -244,6 +244,7 @@
         "pipeline"
       ],
       "screenshots": [
+        "annotated/vscode/backpromote-result--what-it-did",
         "annotated/vscode/pipeline-cards--backpromote",
         "annotated/vscode/backpromote-loading",
         "annotated/vscode/backpromote"
@@ -428,6 +429,8 @@
         "commandExecution"
       ],
       "screenshots": [
+        "annotated/vscode/sidebar-commands-custom-menu--training-menu",
+        "annotated/vscode/pipeline-cards--new-user-story",
         "annotated/vscode/sidebar-commands-advanced--push"
       ]
     },
@@ -517,6 +520,7 @@
         "pipelineConfig"
       ],
       "screenshots": [
+        "annotated/vscode/pipeline-cards--new-user-story",
         "annotated/vscode/devops-pipeline-level3--three-stages",
         "annotated/vscode/devops-pipeline--one-column",
         "annotated/vscode/pipeline-config--target-branches",
@@ -639,6 +643,7 @@
         "packageXml"
       ],
       "screenshots": [
+        "annotated/vscode/sidebar-commands-custom-menu--training-menu",
         "annotated/vscode/pipeline-config--cleaning-overwrite"
       ]
     },
@@ -723,6 +728,7 @@
         "metadataRetriever"
       ],
       "screenshots": [
+        "annotated/vscode/pipeline-cards--new-user-story",
         "annotated/vscode/metadata-retriever--retrofit"
       ]
     },
@@ -810,6 +816,7 @@
         "pipeline"
       ],
       "screenshots": [
+        "annotated/vscode/pipeline-cards--new-user-story",
         "vscode/devops-pipeline"
       ]
     }

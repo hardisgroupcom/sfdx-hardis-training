@@ -5,6 +5,7 @@ lab: 0
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/devops-pipeline-level3--three-stages
   - annotated/vscode/devops-pipeline--one-column
   - annotated/vscode/pipeline-config--target-branches
@@ -218,10 +219,16 @@ point of most projects: not an empty repository, but a two-year-old org nobody h
 
 ### 6. Commit the configuration
 
-This is configuration, so it goes through the same pipeline as everything else, and through the
-same three buttons Level 1 used: **New User Story** targeting `integration`, then **Save / Publish
-User Story**, then **Create Pull Request** from the bar at the end of it. Get the check green and
-merge.
+This is configuration, so it goes through the same pipeline as everything else, and through the same
+buttons Level 1 used.
+
+![The contribution cards of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
+
+Under **Project Contribution Workflow** **(1)**: **New User Story** **(2)** targeting `integration`,
+then commit the three files from **Source Control**, then **Save / Publish**, then **Create Pull
+Request** from the bar at the end of it. Get the check green and merge.
+
+There is nothing to retrieve here: you edited configuration files, not an org.
 
 Yes, even as the release manager. Especially as the release manager.
 

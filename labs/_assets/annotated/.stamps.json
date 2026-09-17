@@ -22,7 +22,7 @@
   "vscode/work-new-org.png": "8929749cf59e152a",
   "vscode/work-save-commit-ready.png": "7a2e1de58026dea9",
   "vscode/work-save-completed.png": "3eabc492828dd335",
-  "vscode/backpromote-loading.png": "40a4c618f73e177c",
+  "vscode/backpromote-loading.png": "eb62bf13f9d4758c",
   "vscode/backpromote.png": "c1b8e7da9de4e34f",
   "vscode/metadata-retriever.png": "713a644de8386e19",
   "vscode/pipeline-pr-actions-empty.png": "86df05aa6d3a01d9",
@@ -90,5 +90,6 @@
   "vscode/pipeline-branch-modal-level3.png#what-it-carries": "d00d1edf87e0a27d",
   "vscode/devops-pipeline-level3.png#three-stages": "2c6161afec1aad88",
   "vscode/pipeline-branch-modal.png#no-merge-target": "836620d57175d30a",
-  "vscode/sidebar-commands-custom-menu.png#training-menu": "c7cd4045d8b1eacc"
+  "vscode/sidebar-commands-custom-menu.png#training-menu": "c7cd4045d8b1eacc",
+  "vscode/backpromote-result.png#what-it-did": "d7d73b516f889916"
 }

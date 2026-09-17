@@ -5,6 +5,7 @@ lab: 0
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/vscode/backpromote-result--what-it-did
   - annotated/vscode/pipeline-cards--backpromote
   - annotated/vscode/backpromote-loading
   - annotated/vscode/backpromote
@@ -98,8 +99,20 @@ it that you are allowed to modify temporarily.
 
 ### 4. Run it and read the result
 
-Click **Backpromote to helios-dev**. The panel deploys the selected items into your org and reports
-each one, with the deployment actions the merged stories declared.
+Click **Backpromote to helios-dev** **(1)**. The panel works through the run step by step **(2)**,
+and when it finishes it tells you what happened **(3)**.
+
+![The Backpromote panel, finished, with its summary](../../_assets/annotated/vscode/backpromote-result--what-it-did.png)
+
+Read the four lines of the summary rather than the colour:
+
+- how many items reached your org, and how many were deleted from it
+- how many deployment actions ran, were skipped, or failed
+- **how many manual actions are waiting for you in the sandbox**, which nothing can do for you
+- which Pull Requests it wrote its history onto, so the next backpromote knows where to start
+
+Then click **Back to `<your branch>`** **(4)**. It is the last button of the panel and the one
+people miss, and the next note explains why it matters.
 
 <details markdown="1"><summary>Under the hood: what Backpromote just did</summary>
 
@@ -130,11 +143,13 @@ And one thing it does that nobody expects the first time:
 
 !!! warning "It leaves you on the backpromote branch"
     The deployment runs from a branch called `backpromote/integration/<your org>`, and **the
-    checkout stays there when the command finishes**. The last line of the output tells you so.
-    Start your next User Story without reading it and you will branch off the wrong place.
+    checkout stays there when the command finishes**. The panel says so, and offers the
+    **Back to `<your branch>`** button **(4)** to undo it: it restores the changes it stashed
+    before the run, then proposes a merge of the parent branch.
 
-    **New User Story** always branches from the target you pick, so it recovers on its own. If you
-    want to know where you are, the branch name is in the bottom left corner of VS Code.
+    Take that button. If you do not, **New User Story** still branches from the target you pick, so
+    nothing breaks, but anything you had in progress stays stashed behind a branch you have
+    forgotten about. The branch you are on is always in the bottom left corner of VS Code.
 
 The history is not on your computer either. sfdx-hardis records what reached your sandbox in a
 **Backpromotes comment** on each Pull Request it brought down, so the next backpromote knows where

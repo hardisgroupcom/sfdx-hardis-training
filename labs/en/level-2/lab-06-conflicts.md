@@ -5,6 +5,8 @@ lab: 6
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/vscode/sidebar-commands-custom-menu--training-menu
+  - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/sidebar-commands-advanced--push
 depends_on:
   commands: [hardis:work:save, hardis:work:refresh]
@@ -44,8 +46,11 @@ flow and the same permission set as you. He merged this morning. You did not.
 Marco does not exist. His work does, and the training reproduces it inside **your own** fork so you
 can genuinely review and merge it.
 
-Welcome page > **Training** > **Simulate my teammates**, and choose
+**Training** **(1)** > **Simulate my teammates** **(2)**, from the Welcome page or from the
+sfdx-hardis command list, and choose
 **US-018 Cap the crew size a planner can assign**.
+
+![The Training menu of the sfdx-hardis command list](../../_assets/annotated/vscode/sidebar-commands-custom-menu--training-menu.png)
 
 It creates the branch `training/mate-us-018-crew-capacity` from your current `integration`, commits
 Marco's changes under his name, pushes it to your fork, and opens the Pull Request.
@@ -74,7 +79,10 @@ what you are reviewing is byte for byte what the screenshots show.
 
 ### 2. Build your own change on top of an out-of-date branch
 
-**New User Story**, branch `US-034-crew-override`, target `integration`, org `helios-dev`.
+**New User Story** **(2)**, under **Project Contribution Workflow** **(1)**. Branch
+`US-034-crew-override`, target `integration`, org `helios-dev`.
+
+![The New User Story card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
 !!! warning "Do not refresh your org this time"
     `hardis:work:new` offers to bring `integration` down into your org. For this lab, **decline**.

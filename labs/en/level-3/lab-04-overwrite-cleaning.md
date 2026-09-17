@@ -5,6 +5,7 @@ lab: 4
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/vscode/sidebar-commands-custom-menu--training-menu
   - annotated/vscode/pipeline-config--cleaning-overwrite
 depends_on:
   commands: [hardis:project:deploy:smart]
@@ -46,8 +47,11 @@ Deciding what goes in, in what order, and what waits, is the job.
 
 ### 1. Create the Pull Requests you still can
 
-Welcome page > **Training** > **Simulate my teammates**, twice: **US-020 Refactor
+**Training** **(1)** > **Simulate my teammates** **(2)**, from the Welcome page or from the
+sfdx-hardis command list, twice: **US-020 Refactor
 InstallationScheduler**, and **US-019 Generate a quote PDF from an opportunity**.
+
+![The Training menu of the sfdx-hardis command list](../../_assets/annotated/vscode/sidebar-commands-custom-menu--training-menu.png)
 
 **US-018 is not among them.** You merged it in Level 2 lab 6, and each teammate scenario is used
 once: replaying one onto a branch that already has its files reports "Nothing to commit" and opens

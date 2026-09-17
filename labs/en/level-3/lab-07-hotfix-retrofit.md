@@ -5,6 +5,7 @@ lab: 7
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/metadata-retriever--retrofit
 depends_on:
   commands: [hardis:org:retrieve:sources:retrofit, hardis:project:deploy:smart]
@@ -64,7 +65,11 @@ This is the part people get wrong, and it produces an incident on top of an inci
 `integration` carries next week's work. Branch a hotfix from it and you ship next week's work to
 production tonight.
 
-In VS Code, **New User Story**, with:
+In VS Code, **New User Story** **(2)**, under **Project Contribution Workflow** **(1)**:
+
+![The New User Story card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
+
+Answer:
 
 | Question      | Answer                                                        |
 |---------------|---------------------------------------------------------------|
