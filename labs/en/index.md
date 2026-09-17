@@ -31,21 +31,6 @@ deliver. Level 2 is where you learn what to do when delivery goes wrong, which i
 **Level 2 is required before Level 3.** A release manager reviews other people's deployment errors,
 conflicts and deployment actions. Someone who has never solved one cannot review one.
 
-!!! note "About the times"
-    They are measured, not padded. Every lab in this course was walked against real Developer
-    Edition orgs and a real GitHub fork while it was written: a Pull Request check comes back in
-    about two minutes, a deployment in about two, and you read the result while it runs.
-
-    They assume you already know Salesforce. Creating a field, ticking field level security or
-    building a small flow is not what this course teaches, so those minutes are counted as the setup
-    they are. What is budgeted properly is the DevOps: the failures, the conflicts, the deployment
-    actions.
-
-    They also assume you work through a lab rather than stopping to explore, and that you read the
-    **Under the hood** panels once rather than twice. Take longer if you like: none of this is a
-    race. The one thing with a clock is the scratch orgs, which live 30 days, and one click
-    rebuilds them.
-
 ## What you need
 
 - A computer you are allowed to install software on. Lab 1.1 walks through what to install,
