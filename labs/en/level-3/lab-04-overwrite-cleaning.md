@@ -241,4 +241,4 @@ Welcome page > **Training** > **Check my work**, then pick level 3 and lab 4.
 - [Delta deployments](https://sfdx-hardis.cloudity.com/salesforce-devops-config-delta-deployment/)
 - [Overwrite management](https://sfdx-hardis.cloudity.com/salesforce-devops-config-overwrite/)
 
-[Next: Lab 5 - Promote integration to UAT](lab-05-uat-release-notes.md){ .md-button .md-button--primary }
+[Next: Lab 5 - Promote integration to UAT and write the release notes](lab-05-uat-release-notes.md){ .md-button .md-button--primary }

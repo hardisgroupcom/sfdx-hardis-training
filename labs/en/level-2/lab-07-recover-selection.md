@@ -69,7 +69,7 @@ Read three of them in the diff. You will find at least one that is not an additi
 **deletion** or a downgrade: something that exists on `integration` and not in your org, because
 your org is a few days behind.
 
-That is the real damage. An over-wide selection does not just add noise, it proposes to undo work.
+That is the real damage. An over-wide selection adds noise, and it proposes to undo work.
 
 ### 3. Recover: reset the selection
 
@@ -101,7 +101,7 @@ still in front of you.
 ### 4. Deal with what you already pushed
 
 Locally you are clean. The branch on GitHub is not: it still carries the eighty-file commit, because
-a soft reset only moved your own copy.
+the reset only changed the copy on your machine.
 
 **Nobody has reviewed it** (the normal case): push the corrected branch over it once you have
 re-published in the next step. That is what `canForcePush` was set for, and the publish will offer
@@ -204,4 +204,4 @@ Welcome page > **Training** > **Check my work**, then pick level 2 and lab 7.
 - [Publish your User Story](https://sfdx-hardis.cloudity.com/salesforce-devops-publish-user-story/)
 - [Clean a repository by hand](https://sfdx-hardis.cloudity.com/salesforce-devops-manual-repo-clean/)
 
-[Next: Capstone - Deliver US-041](lab-08-capstone.md){ .md-button .md-button--primary }
+[Next: Capstone - Deliver US-041, which has all of it at once](lab-08-capstone.md){ .md-button .md-button--primary }

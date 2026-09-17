@@ -219,4 +219,4 @@ Welcome page > **Training** > **Check my work**, then pick level 3 and lab 6.
 - [Deploy to major orgs](https://sfdx-hardis.cloudity.com/salesforce-devops-deploy-major-branches/)
 - [DORA Metrics](https://sfdx-hardis.cloudity.com/hardis/doc/salesforce-devops-dora-report/)
 
-[Next: Lab 7 - Production is broken](lab-07-hotfix-retrofit.md){ .md-button .md-button--primary }
+[Next: Lab 7 - Production is broken: hotfix and retrofit](lab-07-hotfix-retrofit.md){ .md-button .md-button--primary }

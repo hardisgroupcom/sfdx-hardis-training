@@ -277,4 +277,4 @@ work in the Flow Builder, passes.
 - [Profiles and Permission Sets](https://sfdx-hardis.cloudity.com/salesforce-devops-work-on-user-story-profiles/)
 - [Overwrite management](https://sfdx-hardis.cloudity.com/salesforce-devops-config-overwrite/)
 
-[Next: Lab 7 - You committed the wrong things](lab-07-recover-selection.md){ .md-button .md-button--primary }
+[Next: Lab 7 - You committed the wrong things: recover](lab-07-recover-selection.md){ .md-button .md-button--primary }

@@ -132,9 +132,9 @@ The first question is the one that catches everybody out.
 
 ![The Save / Publish command asking whether the metadata is already committed](../../_assets/annotated/vscode/work-save-commit-ready.png)
 
-Answer **(1)**, *My commits are ready*, because they are: you retrieved and committed in the steps
-above. **(2)** asks the command to pull the org for you instead, and there is a third answer that
-explains what a commit is, which costs nothing to read.
+Answer **(1)**, *Yes, my commit(s) are ready!*, because they are: you retrieved and committed in the
+steps above. **(2)** asks the command to pull the org for you instead, and the third answer explains
+what a commit is, which costs nothing to read.
 
 !!! warning "Why this course never takes answer (2)"
     That answer runs `sf project retrieve start`, which needs **source tracking**. Scratch orgs and

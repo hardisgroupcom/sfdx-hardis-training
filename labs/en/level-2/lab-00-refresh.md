@@ -196,4 +196,4 @@ Welcome page > **Training** > **Check my work**, then pick level 2 and lab 0.
 
 - [Backpromote](https://sfdx-hardis.cloudity.com/salesforce-devops-backpromote/)
 
-[Next: Lab 1 - US-021 will not deploy](lab-01-missing-dependency.md){ .md-button .md-button--primary }
+[Next: Lab 1 - US-021 will not deploy: a missing dependency](lab-01-missing-dependency.md){ .md-button .md-button--primary }

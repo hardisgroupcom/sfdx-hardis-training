@@ -287,4 +287,4 @@ Welcome page > **Training** > **Check my work**, then pick level 2 and lab 2.
 
 - [Deployment actions](https://sfdx-hardis.cloudity.com/salesforce-devops-work-on-user-story-deployment-actions/)
 
-[Next: Lab 3 - US-026, reference data and a batch must follow](lab-03-deployment-actions-data.md){ .md-button .md-button--primary }
+[Next: Lab 3 - US-026: reference data and a batch must follow](lab-03-deployment-actions-data.md){ .md-button .md-button--primary }

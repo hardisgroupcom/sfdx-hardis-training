@@ -206,4 +206,4 @@ Welcome page > **Training** > **Check my work**, then pick level 2 and lab 5.
 - [Profiles and Permission Sets](https://sfdx-hardis.cloudity.com/salesforce-devops-work-on-user-story-profiles/)
 - [Overwrite management](https://sfdx-hardis.cloudity.com/salesforce-devops-config-overwrite/)
 
-[Next: Lab 6 - Marco merged first](lab-06-conflicts.md){ .md-button .md-button--primary }
+[Next: Lab 6 - Marco merged first: resolve the conflict](lab-06-conflicts.md){ .md-button .md-button--primary }

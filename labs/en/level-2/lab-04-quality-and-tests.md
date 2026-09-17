@@ -283,4 +283,4 @@ Welcome page > **Training** > **Check my work**, then pick level 2 and lab 4.
 - [Solve MegaLinter errors](https://sfdx-hardis.cloudity.com/salesforce-devops-solve-megalinter-errors/)
 - [Development guidelines](https://sfdx-hardis.cloudity.com/salesforce-devops-work-on-user-story-development/)
 
-[Next: Lab 5 - US-033, your Profile change disappeared](lab-05-profiles-overwrites.md){ .md-button .md-button--primary }
+[Next: Lab 5 - US-033: your Profile change disappeared](lab-05-profiles-overwrites.md){ .md-button .md-button--primary }
