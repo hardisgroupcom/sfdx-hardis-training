@@ -88,7 +88,7 @@ export default async function simulate(args) {
   ok(`On ${scenario.branch}`);
 
   title("2 of 4  Applying the teammate changes");
-  const applied = applyFiles(scenario);
+  const applied = [...applyFiles(scenario), ...applyPatches(scenario)];
   applied.forEach((f) => info(c.dim(`    ${f}`)));
   ok(`${applied.length} file(s) written`);
 
@@ -165,6 +165,54 @@ function loadScenarios() {
     .filter((p) => fs.existsSync(p))
     .map((p) => ({ ...JSON.parse(fs.readFileSync(p, "utf8")), dir: path.dirname(p) }))
     .sort((a, b) => a.id.localeCompare(b.id));
+}
+
+/**
+ * Applies the patches of a scenario to files that already exist.
+ *
+ * A permission set or a layout belongs to everybody: several stories add to the
+ * same file, and the learner has usually added to it too. Copying a snapshot
+ * over it would take their work back out without a word, so a teammate says
+ * what it adds and what it removes, and nothing else changes.
+ *
+ * Each patch is { file, block, insertBefore | insertAfter | remove }.
+ */
+function applyPatches(scenario) {
+  const written = [];
+  for (const patch of scenario.patches || []) {
+    const target = path.join(ROOT, patch.file);
+    if (!fs.existsSync(target)) {
+      abort(
+        `The teammate change expects ${patch.file}, which is not in your project.`,
+        "Reset the level from the Training menu, then run this again."
+      );
+    }
+    let content = fs.readFileSync(target, "utf8");
+    if (patch.remove) {
+      if (!content.includes(patch.remove)) {
+        warn(`Nothing to remove in ${patch.file}: it was already gone.`);
+      }
+      content = content.replace(patch.remove, "");
+    }
+    if (patch.block) {
+      if (content.includes(patch.block.trim())) {
+        warn(`${patch.file} already carries this change.`);
+      } else {
+        const anchor = patch.insertBefore || patch.insertAfter;
+        if (!anchor || !content.includes(anchor)) {
+          abort(
+            `The teammate change cannot be placed in ${patch.file}.`,
+            "Reset the level from the Training menu, then run this again."
+          );
+        }
+        const at = content.indexOf(anchor) + (patch.insertAfter ? anchor.length : 0);
+        content = content.slice(0, at) + patch.block + content.slice(at);
+      }
+    }
+    fs.writeFileSync(target, content, "utf8");
+    written.push(`${patch.file} (patched)`);
+  }
+  return written;
 }
 
 function applyFiles(scenario) {
