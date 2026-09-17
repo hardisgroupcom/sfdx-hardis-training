@@ -289,7 +289,8 @@ Now, on the Welcome page, the **CUSTOM MENUS** heading **(1)** holds a single ca
 
 ![The Welcome page, with the CUSTOM MENUS group and the Training card](../../_assets/annotated/vscode/welcome--training-menu.png)
 
-Click it, then click **Set up my pipeline**.
+Click it. The seven Training commands appear, the ones the
+[level index](index.md#the-training-menu) lists. Click **Set up my pipeline**.
 
 It asks one question, which of your orgs is the shared integration org, and then does four things
 and tells you as it goes:
