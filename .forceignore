@@ -6,6 +6,9 @@
 **/profilePasswordPolicies/*
 **/appMenus/AppSwitcher.appMenu-meta.xml
 **/settings/*
+# except this one: it allows deployments while a scheduled Apex job exists,
+# which Lab 2.4 creates and every later deployment needs
+!**/settings/Deployment.settings-meta.xml
 **/networks/*
 **/siteDotComSites/*
 **/objectTranslations/*
