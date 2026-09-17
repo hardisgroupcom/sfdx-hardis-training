@@ -11,6 +11,7 @@ for the `Helios Delivery` app, and every one of them is a lab in this course.
 |---|---|---|---|---|
 | US-014 | 1 | Show the crew how many panels a job needs | You | `features/US-014-panels-required` |
 | US-016 | 1 | Let the crew leave notes on an installation | You | `features/US-016-crew-notes` |
+| US-017 | 2 | Record who signed an installation off | Amina Diallo | `training/mate-us-017-sign-off` |
 | US-018 | 2 | Cap the crew size a planner can assign | Marco Bianchi | `training/mate-us-018-crew-capacity` |
 | US-019 | 2 | Generate a quote PDF from an opportunity | Amina Diallo | `training/mate-us-019-quote-pdf` |
 | US-020 | 3 | Refactor InstallationScheduler | Marco Bianchi | `training/mate-us-020-apex-refactor` |
@@ -53,6 +54,19 @@ Acceptance criteria:
 - A Crew Notes field exists on Installation
 - A My Open Installations list view exists
 - The crew permission set grants the field
+
+### US-017 - Record who signed an installation off
+
+**Owner**: Amina Diallo  
+**Branch**: `training/mate-us-017-sign-off`  
+**Lab**: 2.1
+
+> As a delivery manager, I want the name of whoever signed the installation off, so that I can call them when the customer rings back.
+
+Acceptance criteria:
+
+- The field is on the layout
+- Managers can read and write it
 
 ### US-018 - Cap the crew size a planner can assign
 

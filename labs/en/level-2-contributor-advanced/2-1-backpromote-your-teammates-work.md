@@ -45,7 +45,20 @@ contributor accidentally undoes a teammate's work.
 
 ## Steps
 
-### 1. Open Backpromote
+### 1. Bring your teammate's work in
+
+The two weeks you were away have to exist before you can catch up on them. One click makes them:
+**Training: Level 2** > **Simulate my teammates**, and take **US-017 Record who signed an
+installation off**.
+
+It creates Amina's branch in your own fork from your current `integration`, commits her change under
+her name and opens the Pull Request. Review it the way you would a colleague's, then **merge it**.
+
+`integration` now carries three merged Pull Requests your org has never seen as a deployment: your
+two Level 1 stories, which are in `helios-dev` only because you built them there, and Amina's, which
+is nowhere near it.
+
+### 2. Open Backpromote
 
 In the **DevOps Pipeline** panel, under **Project Contribution Workflow**, click the
 **Backpromote (Beta)** card **(1)**.
@@ -65,7 +78,7 @@ It computes its plan before it shows you anything:
 integration to uat to production. A backpromote brings it **down** again, from a major branch into
 your own environment, so you are building on what the team has rather than on what you remember.
 
-### 2. See how far behind you are
+### 3. See how far behind you are
 
 The **WHERE** block at the top of the panel answers that, and it is the only place that does.
 **3 Pull Requests in the window**: three stories were merged into `integration` since the last time
@@ -74,7 +87,7 @@ anything came down into your org.
 That count, not your memory, is what tells you whether a refresh is needed. On a Monday after a
 week off it is worth reading before anything else.
 
-### 3. Choose what comes down
+### 4. Choose what comes down
 
 When the plan is ready the panel fills in. The merged Pull Requests are listed newest first
 **(1)**: pick the oldest one you want, and everything from there to the head of `integration`
@@ -99,7 +112,7 @@ Reach for it when both changes are real and you need both.
 The rule when you hesitate: `integration` wins. It is the shared reality, and your org is a copy of
 it that you are allowed to modify temporarily.
 
-### 4. Run it and read the result
+### 5. Run it and read the result
 
 Click **Backpromote to helios-dev** **(1)**. The panel works through the run step by step **(2)**,
 and when it finishes it tells you what happened **(3)**.
@@ -161,7 +174,7 @@ token: without one it cannot read its own history, and it stops.
 
 </details>
 
-### 5. Write it down
+### 6. Write it down
 
 Open `MY-PIPELINE.md` (copy `MY-PIPELINE.template.md` if you have not yet) and add one line under
 Level 2:
