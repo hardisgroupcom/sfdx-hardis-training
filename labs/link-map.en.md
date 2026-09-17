@@ -10,13 +10,13 @@ so a renamed documentation page fails CI here rather than surprising a learner.
 | Lab | URL |
 |---|---|
 | Level home | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/ |
-| Lab 0 - Install the tools and seed your orgs | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-00-setup/ |
-| Lab 1 - Fork the repository and connect your pipeline | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-01-fork-and-connect/ |
+| Lab 0 - Install the tools | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-00-setup/ |
+| Lab 1 - Set up your training environment | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-01-fork-and-connect/ |
 | Lab 2 - Take US-014 from the backlog | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-02-new-user-story/ |
 | Lab 3 - Build it in your org | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-03-build-in-org/ |
-| Lab 4 - Publish it and read the package.xml diff | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-04-publish/ |
+| Lab 4 - Choose what to keep, and publish it | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-04-publish/ |
 | Lab 5 - Open the Pull Request, get it green, merge | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-05-pull-request/ |
-| Lab 6 - Capstone: deliver US-016 alone | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-06-capstone/ |
+| Lab 6 - Capstone: Deliver US-016 on your own | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-06-capstone/ |
 
 ## Level 2 - Contributor advanced
 
@@ -31,7 +31,7 @@ so a renamed documentation page fails CI here rather than surprising a learner.
 | Lab 5 - US-033: your Profile change disappeared | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2/lab-05-profiles-overwrites/ |
 | Lab 6 - Marco merged first: resolve the conflict | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2/lab-06-conflicts/ |
 | Lab 7 - You committed the wrong things: recover | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2/lab-07-recover-selection/ |
-| Lab 8 - Capstone: deliver US-041 | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2/lab-08-capstone/ |
+| Lab 8 - Capstone: Deliver US-041, which has all of it at once | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2/lab-08-capstone/ |
 
 ## Level 3 - Release Manager
 
@@ -48,7 +48,7 @@ so a renamed documentation page fails CI here rather than surprising a learner.
 | Lab 7 - Production is broken: hotfix and retrofit | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3/lab-07-hotfix-retrofit/ |
 | Lab 8 - Put production under monitoring | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3/lab-08-monitoring/ |
 | Lab 9 - Generate the project documentation | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3/lab-09-documentation/ |
-| Lab 10 - Capstone: run one full weekly release cycle | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3/lab-10-capstone/ |
+| Lab 10 - Capstone: Run one full weekly release cycle | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3/lab-10-capstone/ |
 
 ## sfdx-hardis documentation pages used by the labs
 

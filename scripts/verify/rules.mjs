@@ -135,7 +135,7 @@ export const RULES = [
         ? pass("The integration branch names its org")
         : miss(
           "targetUsername is still empty in config/branches/.sfdx-hardis.integration.yml",
-          `branch ${DEV}. Set it from the DevOps Pipeline panel, integration column, Settings`
+          `branch ${DEV}. Run Training > Set up my pipeline again: it writes the file and pushes it`
         );
     }
   },

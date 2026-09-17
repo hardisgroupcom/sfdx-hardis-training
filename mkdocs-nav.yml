@@ -2,13 +2,13 @@ nav:
   - Home: index.md
   - Level 1 - Contributor basics:
       - Start here: en/level-1/index.md
-      - "Lab 0 - Install the tools and seed your orgs": en/level-1/lab-00-setup.md
-      - "Lab 1 - Fork the repository and connect your pipeline": en/level-1/lab-01-fork-and-connect.md
+      - "Lab 0 - Install the tools": en/level-1/lab-00-setup.md
+      - "Lab 1 - Set up your training environment": en/level-1/lab-01-fork-and-connect.md
       - "Lab 2 - Take US-014 from the backlog": en/level-1/lab-02-new-user-story.md
       - "Lab 3 - Build it in your org": en/level-1/lab-03-build-in-org.md
-      - "Lab 4 - Publish it and read the package.xml diff": en/level-1/lab-04-publish.md
+      - "Lab 4 - Choose what to keep, and publish it": en/level-1/lab-04-publish.md
       - "Lab 5 - Open the Pull Request, get it green, merge": en/level-1/lab-05-pull-request.md
-      - "Lab 6 - Capstone: deliver US-016 alone": en/level-1/lab-06-capstone.md
+      - "Lab 6 - Capstone: Deliver US-016 on your own": en/level-1/lab-06-capstone.md
   - Level 2 - Contributor advanced:
       - Start here: en/level-2/index.md
       - "Lab 0 - Your org is behind, catch it up": en/level-2/lab-00-refresh.md
@@ -19,7 +19,7 @@ nav:
       - "Lab 5 - US-033: your Profile change disappeared": en/level-2/lab-05-profiles-overwrites.md
       - "Lab 6 - Marco merged first: resolve the conflict": en/level-2/lab-06-conflicts.md
       - "Lab 7 - You committed the wrong things: recover": en/level-2/lab-07-recover-selection.md
-      - "Lab 8 - Capstone: deliver US-041": en/level-2/lab-08-capstone.md
+      - "Lab 8 - Capstone: Deliver US-041, which has all of it at once": en/level-2/lab-08-capstone.md
   - Level 3 - Release Manager:
       - Start here: en/level-3/index.md
       - "Lab 0 - Your pipeline stops at integration: finish it": en/level-3/lab-00-finish-the-pipeline.md
@@ -32,7 +32,7 @@ nav:
       - "Lab 7 - Production is broken: hotfix and retrofit": en/level-3/lab-07-hotfix-retrofit.md
       - "Lab 8 - Put production under monitoring": en/level-3/lab-08-monitoring.md
       - "Lab 9 - Generate the project documentation": en/level-3/lab-09-documentation.md
-      - "Lab 10 - Capstone: run one full weekly release cycle": en/level-3/lab-10-capstone.md
+      - "Lab 10 - Capstone: Run one full weekly release cycle": en/level-3/lab-10-capstone.md
   - Backlog: BACKLOG.md
   - Badges: badges/index.md
   - Link map: labs/link-map.en.md

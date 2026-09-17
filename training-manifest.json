@@ -7,7 +7,7 @@
       "id": "l1-lab-00-setup",
       "level": 1,
       "lab": 0,
-      "title": "Install the tools and seed your orgs",
+      "title": "Install the tools",
       "file": "labs/en/level-1/lab-00-setup.md",
       "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-00-setup/",
       "commands": [],
@@ -37,7 +37,7 @@
       "id": "l1-lab-01-fork-and-connect",
       "level": 1,
       "lab": 1,
-      "title": "Fork the repository and connect your pipeline",
+      "title": "Set up your training environment",
       "file": "labs/en/level-1/lab-01-fork-and-connect.md",
       "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-01-fork-and-connect/",
       "commands": [
@@ -132,7 +132,7 @@
       "id": "l1-lab-04-publish",
       "level": 1,
       "lab": 4,
-      "title": "Publish it and read the package.xml diff",
+      "title": "Choose what to keep, and publish it",
       "file": "labs/en/level-1/lab-04-publish.md",
       "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-04-publish/",
       "commands": [
@@ -201,7 +201,7 @@
       "id": "l1-lab-06-capstone",
       "level": 1,
       "lab": 6,
-      "title": "Capstone: deliver US-016 alone",
+      "title": "Capstone: Deliver US-016 on your own",
       "file": "labs/en/level-1/lab-06-capstone.md",
       "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-06-capstone/",
       "commands": [
@@ -466,7 +466,7 @@
       "id": "l2-lab-08-capstone",
       "level": 2,
       "lab": 8,
-      "title": "Capstone: deliver US-041",
+      "title": "Capstone: Deliver US-041, which has all of it at once",
       "file": "labs/en/level-2/lab-08-capstone.md",
       "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2/lab-08-capstone/",
       "commands": [
@@ -795,7 +795,7 @@
       "id": "l3-lab-10-capstone",
       "level": 3,
       "lab": 10,
-      "title": "Capstone: run one full weekly release cycle",
+      "title": "Capstone: Run one full weekly release cycle",
       "file": "labs/en/level-3/lab-10-capstone.md",
       "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3/lab-10-capstone/",
       "commands": [
