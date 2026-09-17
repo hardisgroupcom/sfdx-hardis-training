@@ -5,6 +5,7 @@ private class InstallationSchedulerTest {
         Installation__c inst = new Installation__c(
             Status__c = 'Planned',
             Install_Date__c = Date.today().addDays(30),
+            Crew_Size__c = 2,
             External_Id__c = 'TEST-INST-001'
         );
         insert inst;
@@ -31,7 +32,7 @@ private class InstallationSchedulerTest {
 
     @isTest
     static void earliestInstallDateIsNullWhenNothingHasArrived() {
-        Installation__c lonely = new Installation__c(Status__c = 'Planned', External_Id__c = 'TEST-INST-002');
+        Installation__c lonely = new Installation__c(Status__c = 'Planned', Crew_Size__c = 2, External_Id__c = 'TEST-INST-002');
         insert lonely;
         Test.startTest();
         Date earliest = InstallationScheduler.earliestInstallDate(lonely.Id);

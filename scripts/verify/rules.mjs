@@ -301,7 +301,7 @@ export const RULES = [
   },
   {
     id: "2.5", level: 2, lab: 5,
-    title: "US-027: the hardcoded id is gone and the scheduler is covered",
+    title: "US-027: the query is out of the loop and the scheduler is covered",
     check: (ctx) => {
       const cls = ctx.readOn(DEV, "force-app/main/default/classes/InstallationScheduler.cls") || "";
       if (!/schedulableOn/.test(cls)) {

@@ -190,8 +190,8 @@
     },
     {
       "id": "US-019",
-      "level": 3,
-      "lab": 5,
+      "level": 2,
+      "lab": 9,
       "author": "amina",
       "title": "Generate a quote PDF from an opportunity",
       "story": "As a sales rep, I want a button that generates the quote PDF, so that I stop rebuilding it in a spreadsheet.",
@@ -366,7 +366,7 @@
       "source": "training/mate-us-019-quote-pdf",
       "target": "integration",
       "checkState": "success",
-      "usedBy": ["lab-3-5"]
+      "usedBy": ["lab-2-9", "lab-3-5"]
     },
     {
       "number": 3,

@@ -12,7 +12,7 @@ for the `Helios Delivery` app, and every one of them is a lab in this course.
 | US-014 | 1 | Show the crew how many panels a job needs | You | `features/US-014-panels-required` |
 | US-016 | 1 | Let the crew leave notes on an installation | You | `features/US-016-crew-notes` |
 | US-018 | 2 | Cap the crew size a planner can assign | Marco Bianchi | `training/mate-us-018-crew-capacity` |
-| US-019 | 3 | Generate a quote PDF from an opportunity | Amina Diallo | `training/mate-us-019-quote-pdf` |
+| US-019 | 2 | Generate a quote PDF from an opportunity | Amina Diallo | `training/mate-us-019-quote-pdf` |
 | US-020 | 3 | Refactor InstallationScheduler | Marco Bianchi | `training/mate-us-020-apex-refactor` |
 | US-021 | 2 | Warn the planner when a crew is too small | You | `features/US-021-crew-size-warning` |
 | US-024 | 2 | Crew size becomes mandatory | You | `features/US-024-crew-size-required` |
@@ -71,7 +71,7 @@ Acceptance criteria:
 
 **Owner**: Amina Diallo  
 **Branch**: `training/mate-us-019-quote-pdf`  
-**Lab**: 3.5
+**Lab**: 2.9
 
 > As a sales rep, I want a button that generates the quote PDF, so that I stop rebuilding it in a spreadsheet.
 
