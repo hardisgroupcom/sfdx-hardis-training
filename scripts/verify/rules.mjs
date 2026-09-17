@@ -454,7 +454,12 @@ export const RULES = [
       if (missingBranches.length > 0) {
         return miss(`these branches do not exist: ${missingBranches.join(", ")}`, "your fork");
       }
-      const project = ctx.readOn("main", "config/.sfdx-hardis.yml") || ctx.readOn(DEV, "config/.sfdx-hardis.yml") || "";
+      // Lab 3.1 writes this on the branch the release manager is standing on, and
+      // it only reaches main with the first promotion, several labs later. Either
+      // branch carrying it means the pipeline was configured.
+      const project = [ctx.readOn("main", "config/.sfdx-hardis.yml"), ctx.readOn(DEV, "config/.sfdx-hardis.yml")]
+        .filter(Boolean)
+        .join("\n");
       if (!/availableTargetBranches:[\s\S]{0,200}preprod/.test(project)) {
         return miss(
           "preprod is not listed under availableTargetBranches, so nobody can start a hotfix",
