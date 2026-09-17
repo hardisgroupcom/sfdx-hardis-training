@@ -120,6 +120,22 @@ emptied of everything the cleaning took out and carrying nothing this project wa
 repository held no Profile before you arrived, and it should hold none after: the check at the end
 of the lab looks for exactly that.
 
+**Open `manifest/package.xml` and delete the Profile block as well**, the three lines naming
+`Admin`:
+
+```xml
+<types>
+    <members>Admin</members>
+    <name>Profile</name>
+</types>
+```
+
+The first publish put it there, and nothing takes it back out when you delete the file: the package
+is only ever added to. A package that names a component the branch does not carry fails the next
+deployment with *an object 'Admin' of type Profile was named in package.xml, but was not found in
+zipped directory*, which is a confusing way of saying the two disagree. Reading the manifest before
+pushing, the habit from Lab 1.5, is what catches it.
+
 ### 6. Look at the other protection while you are here
 
 Open the **DevOps Pipeline** panel, then **Pipeline Settings** in the gear menu. Leave the scope
@@ -204,6 +220,10 @@ the integration org user, which **Training: Level 2 > Set up one of my training 
 
 **A Profile keeps coming back in your commits.**
 Something in your selection pulls it in. Do not fight it in the file: untick it at publish time.
+
+**`an object 'Admin' of type Profile was named in package.xml, but was not found in zipped directory`.**
+You deleted the Profile file and left its three lines in `manifest/package.xml`. Delete them too, as
+step 5 says, and push again.
 
 ## Check your work
 
