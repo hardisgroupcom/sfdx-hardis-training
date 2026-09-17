@@ -181,9 +181,15 @@
       "author": "amina",
       "title": "Record who signed an installation off",
       "story": "As a delivery manager, I want the name of whoever signed the installation off, so that I can call them when the customer rings back.",
-      "acceptance": ["The field is on the layout", "Managers can read and write it"],
+      "acceptance": [
+        "The field is on the layout",
+        "Managers can read and write it"
+      ],
       "branch": "training/mate-us-017-sign-off",
-      "metadata": ["Installation__c.Signed_Off_By__c", "Helios_Delivery_Manager"]
+      "metadata": [
+        "Installation__c.Signed_Off_By__c",
+        "Helios_Delivery_Manager"
+      ]
     },
     {
       "id": "US-018",

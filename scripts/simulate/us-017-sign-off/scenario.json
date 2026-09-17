@@ -2,9 +2,7 @@
   "id": "us-017-sign-off",
   "title": "US-017 Record who signed an installation off",
   "usedBy": "Lab 2.1",
-  "levels": [
-    2
-  ],
+  "levels": [2],
   "description": "Amina adds a Signed Off By field on Installation, on the layout and granted to managers. This is the work that was merged into integration while you were away, and that your org does not have yet.",
   "branch": "training/mate-us-017-sign-off",
   "author": {
