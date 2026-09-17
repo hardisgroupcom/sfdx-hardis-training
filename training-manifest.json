@@ -698,6 +698,7 @@
         "pipeline"
       ],
       "screenshots": [
+        "annotated/vscode/orgs-manager",
         "annotated/vscode/devops-pipeline--settings-menu"
       ]
     },

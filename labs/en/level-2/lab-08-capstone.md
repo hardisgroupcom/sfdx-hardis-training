@@ -55,7 +55,9 @@ fixes.
    checklist every job starts from
 4. **Build the close check**: a record-triggered flow `Installation_Close_Check` on Installation
    that blocks a save into `Completed` while any related handover item is not done
-5. **Publish, Pull Request, green, merge**
+5. **Bring it down**: **Commit changes**, **Recent Changes**, and take what you made and nothing
+   else. Commit it
+6. **Publish, Pull Request, green, merge**
 
 ### The three things waiting for you
 

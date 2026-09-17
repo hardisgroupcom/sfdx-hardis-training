@@ -5,6 +5,7 @@ lab: 6
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/vscode/orgs-manager
   - annotated/vscode/devops-pipeline--settings-menu
 depends_on:
   commands: [hardis:doc:dora-report, hardis:project:deploy:smart]
@@ -86,7 +87,13 @@ When it finishes, do any manual steps, then check the org.
 
 ### 5. Verify in production
 
-Same as UAT, with more care:
+Open `helios-prod` from **Orgs Manager**: find it by its alias **(2)**, check it says **Connected**
+**(3)**, and open it from the actions at the end of its row. **Add Org** **(1)** reconnects it if
+the session expired.
+
+![The Orgs Manager table, with the alias and connection state of each org](../../_assets/annotated/vscode/orgs-manager.png)
+
+Then check, the same as UAT and with more care:
 
 - The two stories work
 - Something that was already working still works: open an installation, check the timeline
