@@ -1,5 +1,5 @@
 /**
- * Sample for Level 2 lab 3. Copy it into your org as it is.
+ * Sample for Lab 2.4. Copy it into your org as it is.
  *
  * It recalculates Total Capacity kW on every planned installation, from how many
  * panels a crew can lay in a day on that roof type. What it computes matters far

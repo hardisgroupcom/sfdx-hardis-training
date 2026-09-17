@@ -1,0 +1,110 @@
+---
+title: "Level 3 - Salesforce DevOps release manager"
+description: "Own a Salesforce CI/CD pipeline with sfdx-hardis: environments, JWT authentication, promotions, release notes, hotfixes, monitoring and DORA metrics."
+id: l3-home
+level: 3
+lang: en
+---
+
+# Level 3 - Salesforce DevOps release manager
+
+**Time**: about 6 h.
+
+**Before you start**: [Level 1](../level-1-contributor-basics/index.md) **and** [Level 2](../level-2-contributor-advanced/index.md). Both
+are required, and the badge audit checks both before it looks at anything here.
+
+## Why Level 2 is not optional
+
+A release manager reviews other people's deployment errors, deployment actions and conflicts. Those
+are exactly what Level 2 puts you through. Somebody who has never solved a deployment error cannot
+judge whether a contributor solved theirs properly, and the reviews they give will be about
+formatting.
+
+If you skipped Level 2, do it. It is seven hours and it is the difference between approving Pull
+Requests and understanding them.
+
+## The story
+
+Sofia Marchetti left. She was the release manager, she set the pipeline up two years ago, and she
+never finished it.
+
+What you inherit works, in the sense that contributors deliver into `integration` every day and the
+business tests in `uat`. What it does not have:
+
+- **No preprod and no production in the pipeline.** The branches exist. Nothing deploys to them
+- **No proper CI authentication.** There are two refresh-token secrets somebody added in a hurry
+- **No monitoring.** Nobody finds out about a problem in production until a user calls
+- **No release notes and no metrics.** Nobody can say what shipped last month or how long it took
+- **No generated documentation.** The org is two years old and the only description of it is Sofia
+
+Your first week is finishing the pipeline. Then you run it.
+
+## The Training menu
+
+Everything this course asks you to run outside the product's own buttons lives in one menu. Open the
+**Welcome page**, and under **CUSTOM MENUS** click the **Training: Level 3** card. Its commands take
+over the page:
+
+![The Level 3 training menu, opened on the Welcome page](../../_assets/annotated/vscode/welcome-custom-menu-3.png)
+
+Seven of them, and the labs call them by these names:
+
+| Command                            | What it does                                                       |
+|------------------------------------|--------------------------------------------------------------------|
+| **Set up my training environment** | Rebuilds a scratch org that expired, and points the pipeline at it |
+| **Where am I?**                    | Says which level and lab you reached, and what to do next          |
+| **Set up one of my training orgs** | Deploys the Helios app and its data into an org you choose         |
+| **Simulate my teammates**          | Creates the teammate branches and Pull Requests a lab needs        |
+| **Check my work**                  | Verifies the lab you just finished and prints your receipt         |
+| **Reset this level**               | Puts your repository back to the start of Level 3                  |
+| **Clean up a training org**        | Removes the Helios app and its data from an org                    |
+
+There is one menu per level, and each holds only what that level needs, so nothing in front of you is
+for a lab you have not reached.
+
+The same commands are in the **SFDX HARDIS** view of the left bar, under **Training: Level 3**.
+Either route runs the same thing.
+
+## What you will do
+
+| Lab                                                       | Title                                               | Time   |
+|-----------------------------------------------------------|-----------------------------------------------------|--------|
+| [3.1](3-1-configure-the-pipeline-up-to-production.md)     | Configure the CI/CD pipeline up to production       | 30 min |
+| [3.2](3-2-ci-authentication-with-jwt.md)                  | Set up CI authentication with JWT for four orgs     | 40 min |
+| [3.3](3-3-review-a-contributor-pull-request.md)           | Review and merge a contributor Pull Request         | 25 min |
+| [3.4](3-4-deploy-to-integration-and-read-the-log.md)      | Deploy to integration and read the deployment log   | 25 min |
+| [3.5](3-5-merge-colliding-pull-requests.md)               | Three Pull Requests collide: choose the merge order | 35 min |
+| [3.6](3-6-promote-to-uat-and-write-release-notes.md)      | Promote to UAT and write the release notes          | 35 min |
+| [3.7](3-7-release-to-production-and-read-dora-metrics.md) | Release to production and read your DORA metrics    | 35 min |
+| [3.8](3-8-hotfix-and-retrofit.md)                         | Production is broken: hotfix and retrofit           | 35 min |
+| [3.9](3-9-monitor-your-production-org.md)                 | Monitor your production org                         | 35 min |
+| [3.10](3-10-generate-the-project-documentation.md)        | Generate the Salesforce project documentation       | 20 min |
+| [3.11](3-11-capstone-run-a-weekly-release-cycle.md)       | Capstone: run a weekly release cycle                | 45 min |
+
+## One more org
+
+Levels 1 and 2 ran on one Developer Edition org, `helios-prod`, and the three scratch orgs it
+created: `helios-dev`, `helios-integration` and `helios-uat`. This level adds production and the
+stage before it, and needs one more signup.
+
+Before Lab 3.1, sign up for one more free Developer Edition org at
+[developer.salesforce.com/signup](https://developer.salesforce.com/signup) and connect it in **Orgs
+Manager** with the alias `helios-preprod`. Then seed both Developer Edition orgs with
+**Training: Level 3 > Set up one of my training orgs**: `helios-preprod`, and `helios-prod`, which
+until now only created the others and held nothing.
+
+`helios-prod` gets the same sources as the other orgs, plus one thing the seeding adds by hand: a
+`Needs Reinspection` value on the `Installation__c.Status__c` picklist, which exists in no branch.
+That is what Lab 3.8 retrofits. Nothing seeds a deployment history, so the DORA report in Lab 3.7 sees
+only the deployments you make yourself.
+
+If a scratch org expired since Level 2, **Training: Level 3 > Set up my training environment**
+rebuilds it first.
+
+## Keep MY-PIPELINE.md open
+
+More than half the labs here ask you to write a line in it, and the badge audit reads it. It is the
+document that says how this pipeline was put together, which is precisely what Sofia did not leave
+you.
+
+[Start with Lab 3.1](3-1-configure-the-pipeline-up-to-production.md){ .md-button .md-button--primary }

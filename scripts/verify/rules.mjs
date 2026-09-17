@@ -109,21 +109,11 @@ function pipelineNotes(ctx) {
 export const RULES = [
   // ------------------------------------------------------------- level 1
   {
-    id: "1-00", level: 1, lab: 1, auditable: false,
-    title: "The training project is cloned and the Helios app is in your org",
-    check: (ctx) => {
-      const universe = ctx.readOn(ctx.currentBranch(), "training-universe.json");
-      return universe
-        ? pass("The repository is cloned and complete")
-        : miss("training-universe.json was not found", "the root of your clone");
-    }
-  },
-  {
-    id: "1-01", level: 1, lab: 1,
+    id: "1.2", level: 1, lab: 2,
     title: "Your fork has integration and uat branches, and each knows which org it deploys to",
     check: (ctx) => {
       if (!ctx.hasBranch(DEV)) {
-        return miss(`no branch named "${DEV}"`, "your fork. Lab 1 creates it, or Reset this level restores it");
+        return miss(`no branch named "${DEV}"`, "your fork. Lab 1.2 creates it, or Reset this level restores it");
       }
       const rerun = "Run Set up my training environment again: it writes the file and pushes it";
       for (const branch of ["integration", "uat"]) {
@@ -142,7 +132,7 @@ export const RULES = [
     }
   },
   {
-    id: "1-02", level: 1, lab: 2,
+    id: "1.3", level: 1, lab: 3,
     title: "US-014 was taken from the backlog on its own branch",
     check: (ctx) => {
       const history = ctx.log(DEV);
@@ -152,7 +142,7 @@ export const RULES = [
     }
   },
   {
-    id: "1-03", level: 1, lab: 3,
+    id: "1.4", level: 1, lab: 4,
     title: "Panels Required exists on Installation and the crew can read it",
     check: (ctx) => {
       const field = ctx.readOn(DEV, FIELD("Installation__c", "Panels_Required__c"));
@@ -172,7 +162,7 @@ export const RULES = [
     }
   },
   {
-    id: "1-04", level: 1, lab: 4,
+    id: "1.5", level: 1, lab: 5,
     title: "Panels Required is on the Installation layout",
     check: (ctx) => {
       const layout = ctx.readOn(DEV, "force-app/main/default/layouts/Installation__c-Installation Layout.layout-meta.xml");
@@ -185,7 +175,7 @@ export const RULES = [
     }
   },
   {
-    id: "1-05", level: 1, lab: 5,
+    id: "1.6", level: 1, lab: 6,
     title: "US-014 reached integration through a Pull Request",
     check: (ctx) => {
       const field = ctx.readOn(DEV, FIELD("Installation__c", "Panels_Required__c"));
@@ -195,7 +185,7 @@ export const RULES = [
     }
   },
   {
-    id: "1-06", level: 1, lab: 6,
+    id: "1.7", level: 1, lab: 7,
     title: "Capstone: US-016 delivered on your own",
     check: (ctx) => {
       const field = ctx.readOn(DEV, FIELD("Installation__c", "Crew_Notes__c"));
@@ -217,7 +207,7 @@ export const RULES = [
 
   // ------------------------------------------------------------- level 2
   {
-    id: "2-00", level: 2, lab: 0, auditable: false,
+    id: "2.1", level: 2, lab: 1, auditable: false,
     title: "Your dev org is level with integration",
     check: (ctx) => {
       const notes = pipelineNotes(ctx);
@@ -225,12 +215,12 @@ export const RULES = [
         ? pass("The backpromote is recorded in MY-PIPELINE.md")
         : miss(
           "no line about the backpromote in MY-PIPELINE.md",
-          "MY-PIPELINE.md. Lab 0 asks you to note which items you kept and which you dropped"
+          "MY-PIPELINE.md. Lab 2.1 asks you to note which items you kept and which you dropped"
         );
     }
   },
   {
-    id: "2-01", level: 2, lab: 1,
+    id: "2.2", level: 2, lab: 2,
     title: "US-021: the excluded field was un-excluded and the flow deploys",
     check: (ctx) => {
       const forceignore = ctx.readOn(DEV, ".forceignore") || "";
@@ -257,7 +247,7 @@ export const RULES = [
     }
   },
   {
-    id: "2-02", level: 2, lab: 2,
+    id: "2.3", level: 2, lab: 3,
     title: "US-024: Crew Size is required, and an Apex action backfills the old records",
     check: (ctx) => {
       const field = ctx.readOn(DEV, FIELD("Installation__c", "Crew_Size__c")) || "";
@@ -281,7 +271,7 @@ export const RULES = [
     }
   },
   {
-    id: "2-03", level: 2, lab: 3,
+    id: "2.4", level: 2, lab: 4,
     title: "US-026: the reference data and the batch follow the deployment",
     check: (ctx) => {
       const workspaces = ctx.listOn(DEV, "scripts/data/");
@@ -310,7 +300,7 @@ export const RULES = [
     }
   },
   {
-    id: "2-04", level: 2, lab: 4,
+    id: "2.5", level: 2, lab: 5,
     title: "US-027: the hardcoded id is gone and the scheduler is covered",
     check: (ctx) => {
       const cls = ctx.readOn(DEV, "force-app/main/default/classes/InstallationScheduler.cls") || "";
@@ -339,7 +329,7 @@ export const RULES = [
     }
   },
   {
-    id: "2-05", level: 2, lab: 5,
+    id: "2.6", level: 2, lab: 6,
     title: "US-033: the batch cost permission moved to the permission set",
     check: (ctx) => {
       const crew = ctx.readOn(DEV, PERMSET("Helios_Delivery_Crew"));
@@ -362,7 +352,7 @@ export const RULES = [
     }
   },
   {
-    id: "2-06", level: 2, lab: 6,
+    id: "2.7", level: 2, lab: 7,
     title: "The conflict with Marco is resolved, and both sides survived",
     check: (ctx) => {
       const flows = ctx.listOn(DEV, "force-app/main/default/flows/");
@@ -389,14 +379,14 @@ export const RULES = [
     }
   },
   {
-    id: "2-07", level: 2, lab: 7, auditable: true,
+    id: "2.8", level: 2, lab: 8, auditable: true,
     title: "The repository carries only what belongs to it",
     check: (ctx) => {
       const notes = pipelineNotes(ctx);
       if (!mentions(notes, "resetselection") && !mentions(notes, "reset selection")) {
         return miss(
           "MY-PIPELINE.md does not record what you had over-selected and how you recovered",
-          "MY-PIPELINE.md. Lab 7 asks for one line naming what you dropped"
+          "MY-PIPELINE.md. Lab 2.8 asks for one line naming what you dropped"
         );
       }
       const stray = ctx.listOn(DEV, "force-app/main/default/").filter((f) =>
@@ -406,12 +396,12 @@ export const RULES = [
         ? pass("The recovery is recorded, and no over-committed metadata is left on integration")
         : miss(
           `${stray.length} file(s) that should never have been committed are on integration: ${stray.slice(0, 3).join(", ")}`,
-          `branch ${DEV}. Lab 7 is about resetting a selection that went too wide`
+          `branch ${DEV}. Lab 2.8 is about resetting a selection that went too wide`
         );
     }
   },
   {
-    id: "2-08", level: 2, lab: 8,
+    id: "2.9", level: 2, lab: 9,
     title: "Capstone: US-041, the handover checklist",
     check: (ctx) => {
       const objects = ctx.listOn(DEV, "force-app/main/default/objects/");
@@ -437,7 +427,7 @@ export const RULES = [
 
   // ------------------------------------------------------------- level 3
   {
-    id: "3-00", level: 3, lab: 0,
+    id: "3.1", level: 3, lab: 1,
     title: "The pipeline reaches production",
     check: (ctx) => {
       const missingBranches = ["uat", "preprod", "main"].filter((b) => !ctx.hasBranch(b));
@@ -459,7 +449,7 @@ export const RULES = [
     }
   },
   {
-    id: "3-01", level: 3, lab: 1,
+    id: "3.2", level: 3, lab: 2,
     title: "CI authentication is wired for the four orgs, and the Level 1 shortcut is gone",
     check: (ctx) => {
       const branches = ["integration", "uat", "preprod", "main"];
@@ -484,12 +474,12 @@ export const RULES = [
         ? pass("The four orgs are configured, and the Level 1 shortcut is accounted for")
         : miss(
           "MY-PIPELINE.md does not record that the SFDX_AUTH_URL_INTEGRATION secret was deleted",
-          "MY-PIPELINE.md. Lab 1 ends by deleting it and writing down why"
+          "MY-PIPELINE.md. Lab 3.2 ends by deleting it and writing down why"
         );
     }
   },
   {
-    id: "3-02", level: 3, lab: 2,
+    id: "3.3", level: 3, lab: 3,
     title: "Marco's US-018 was reviewed and merged into integration",
     check: (ctx) => {
       const history = ctx.log(DEV);
@@ -505,7 +495,7 @@ export const RULES = [
     }
   },
   {
-    id: "3-03", level: 3, lab: 3, auditable: false,
+    id: "3.4", level: 3, lab: 4, auditable: false,
     title: "The integration deployment was read, not just watched",
     check: (ctx) => {
       const notes = pipelineNotes(ctx);
@@ -515,10 +505,10 @@ export const RULES = [
     }
   },
   {
-    id: "3-04", level: 3, lab: 4,
+    id: "3.5", level: 3, lab: 5,
     title: "The colliding Pull Requests were ordered, and both grants survived",
     check: (ctx) => {
-      // US-020 is deliberately NOT checked here: lab 4 sends it back to its author
+      // US-020 is deliberately NOT checked here: Lab 3.5 sends it back to its author
       // and no lab ever merges it. Requiring it would make this check unpassable.
       const history = ctx.log(DEV);
       const missing = ["US-018", "US-019"].filter((id) => !mentions(history, id));
@@ -539,7 +529,7 @@ export const RULES = [
     }
   },
   {
-    id: "3-05", level: 3, lab: 5,
+    id: "3.6", level: 3, lab: 6,
     title: "Integration was promoted to UAT",
     check: (ctx) => {
       if (!ctx.hasBranch("uat")) {
@@ -555,7 +545,7 @@ export const RULES = [
     }
   },
   {
-    id: "3-06", level: 3, lab: 6,
+    id: "3.7", level: 3, lab: 7,
     title: "UAT was released to production, and the DORA report was read",
     check: (ctx) => {
       if (!ctx.hasBranch("main")) {
@@ -575,7 +565,7 @@ export const RULES = [
     }
   },
   {
-    id: "3-07", level: 3, lab: 7,
+    id: "3.8", level: 3, lab: 8,
     title: "The hotfix shipped and the admin change was retrofitted",
     check: (ctx) => {
       const status = ctx.readOn("main", FIELD("Installation__c", "Status__c")) || "";
@@ -593,7 +583,7 @@ export const RULES = [
     }
   },
   {
-    id: "3-08", level: 3, lab: 8,
+    id: "3.9", level: 3, lab: 9,
     title: "Production is under monitoring",
     check: (ctx) => {
       const notes = pipelineNotes(ctx);
@@ -602,12 +592,12 @@ export const RULES = [
         ? pass(`Monitoring repository recorded: ${url[0]}`)
         : miss(
           "MY-PIPELINE.md does not record the URL of the monitoring repository",
-          "MY-PIPELINE.md. sf hardis:org:configure:monitoring creates a second repository, and lab 8 asks you to write its URL down"
+          "MY-PIPELINE.md. sf hardis:org:configure:monitoring creates a second repository, and Lab 3.9 asks you to write its URL down"
         );
     }
   },
   {
-    id: "3-09", level: 3, lab: 9,
+    id: "3.10", level: 3, lab: 10,
     title: "The project documentation is generated and committed",
     check: (ctx) => {
       const docs = ctx.listOn(DEV, "docs/").concat(ctx.listOn("main", "docs/"));
@@ -621,7 +611,7 @@ export const RULES = [
     }
   },
   {
-    id: "3-10", level: 3, lab: 10,
+    id: "3.11", level: 3, lab: 11,
     title: "Capstone: a full release cycle",
     check: (ctx) => {
       const notes = pipelineNotes(ctx);

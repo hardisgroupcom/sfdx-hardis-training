@@ -143,7 +143,7 @@
     {
       "id": "US-014",
       "level": 1,
-      "lab": 2,
+      "lab": 3,
       "author": "you",
       "title": "Show the crew how many panels a job needs",
       "story": "As a delivery crew member, I want to see the number of panels required on the installation record, so that I load the right quantity on the van.",
@@ -158,7 +158,7 @@
     {
       "id": "US-016",
       "level": 1,
-      "lab": 6,
+      "lab": 7,
       "author": "you",
       "title": "Let the crew leave notes on an installation",
       "story": "As a delivery crew member, I want a free text notes field and a list view of my open installations, so that I hand over cleanly to the next shift.",
@@ -177,7 +177,7 @@
     {
       "id": "US-018",
       "level": 2,
-      "lab": 6,
+      "lab": 7,
       "author": "marco",
       "title": "Cap the crew size a planner can assign",
       "story": "As a planner, I want the assignment flow to refuse a crew larger than the installation allows, so that we stop over-staffing small jobs.",
@@ -191,7 +191,7 @@
     {
       "id": "US-019",
       "level": 3,
-      "lab": 4,
+      "lab": 5,
       "author": "amina",
       "title": "Generate a quote PDF from an opportunity",
       "story": "As a sales rep, I want a button that generates the quote PDF, so that I stop rebuilding it in a spreadsheet.",
@@ -202,7 +202,7 @@
     {
       "id": "US-020",
       "level": 3,
-      "lab": 4,
+      "lab": 5,
       "author": "marco",
       "title": "Refactor InstallationScheduler",
       "story": "As a developer, I want the scheduler split into testable methods, so that we stop being afraid of it.",
@@ -214,7 +214,7 @@
     {
       "id": "US-021",
       "level": 2,
-      "lab": 1,
+      "lab": 2,
       "author": "you",
       "title": "Warn the planner when a crew is too small",
       "story": "As a planner, I want a warning on the installation when the assigned crew is smaller than the job needs, so that I fix it before the van leaves.",
@@ -229,7 +229,7 @@
     {
       "id": "US-024",
       "level": 2,
-      "lab": 2,
+      "lab": 3,
       "author": "you",
       "title": "Crew size becomes mandatory",
       "story": "As a planner, I want Crew Size to be mandatory on every installation, so that no job is scheduled without a crew.",
@@ -244,7 +244,7 @@
     {
       "id": "US-026",
       "level": 2,
-      "lab": 3,
+      "lab": 4,
       "author": "you",
       "title": "Crew capacity reference data and nightly recalculation",
       "story": "As a planner, I want capacity rules per crew type and a nightly job that recalculates them, so that the planning board is right every morning.",
@@ -260,7 +260,7 @@
     {
       "id": "US-027",
       "level": 2,
-      "lab": 4,
+      "lab": 5,
       "author": "you",
       "title": "Check several installations against panel availability at once",
       "story": "As a planner, I want to check a list of installations against panel availability in one go, so that I can fill a week of planning without opening every record.",
@@ -275,7 +275,7 @@
     {
       "id": "US-033",
       "level": 2,
-      "lab": 5,
+      "lab": 6,
       "author": "you",
       "title": "Crews can read the panel batch cost",
       "story": "As a delivery crew member, I want to see the cost of the batch I am installing, so that I report damage with the right value.",
@@ -287,7 +287,7 @@
     {
       "id": "US-034",
       "level": 2,
-      "lab": 6,
+      "lab": 7,
       "author": "you",
       "title": "Flat roofs need a crew of at least three",
       "story": "As a planner, I want the assignment flow to put at least three people on a flat roof, so that the ballast is carried safely.",
@@ -302,7 +302,7 @@
     {
       "id": "US-038",
       "level": 2,
-      "lab": 7,
+      "lab": 8,
       "author": "you",
       "title": "Tidy the Installation layout",
       "story": "As a planner, I want Crew Size above Install Date on the installation layout, so that I see the staffing before the date.",
@@ -316,7 +316,7 @@
     {
       "id": "US-041",
       "level": 2,
-      "lab": 8,
+      "lab": 9,
       "author": "you",
       "title": "Installation handover checklist",
       "story": "As a planner, I want a handover checklist on the installation with its reference items, so that a job is only closed when the checklist is complete.",
@@ -336,7 +336,7 @@
     {
       "id": "US-045",
       "level": 3,
-      "lab": 7,
+      "lab": 8,
       "author": "you",
       "title": "Installations can no longer be saved",
       "story": "As a planner, I want to be able to save an installation whose date is already in the past, so that I can update a job that has slipped.",
@@ -357,7 +357,7 @@
       "source": "training/mate-us-018-crew-capacity",
       "target": "integration",
       "checkState": "success",
-      "usedBy": ["l2-lab-06", "l3-lab-02", "l3-lab-04"]
+      "usedBy": ["lab-2-7", "lab-3-3", "lab-3-5"]
     },
     {
       "number": 2,
@@ -366,7 +366,7 @@
       "source": "training/mate-us-019-quote-pdf",
       "target": "integration",
       "checkState": "success",
-      "usedBy": ["l3-lab-04"]
+      "usedBy": ["lab-3-5"]
     },
     {
       "number": 3,
@@ -375,7 +375,7 @@
       "source": "training/mate-us-020-apex-refactor",
       "target": "integration",
       "checkState": "failure",
-      "usedBy": ["l3-lab-04"]
+      "usedBy": ["lab-3-5"]
     }
   ],
   "data": {
@@ -388,192 +388,219 @@
   "levels": [
     {
       "level": 1,
-      "slug": "level-1",
+      "slug": "level-1-contributor-basics",
       "name": "Contributor basics",
       "duration": "about 2 h",
       "prerequisite": null,
       "badge": "sfdx-hardis Contributor Basics",
       "labs": [
         {
-          "lab": 0,
-          "slug": "lab-00-setup",
-          "title": "Install the tools",
-          "time": "15 min"
-        },
-        {
           "lab": 1,
-          "slug": "lab-01-fork-and-connect",
-          "title": "Set up your training environment",
-          "time": "30 min"
+          "slug": "1-1-install-vs-code-and-sfdx-hardis",
+          "title": "Install VS Code, Git and sfdx-hardis",
+          "description": "Install Git, Node.js, VS Code and the sfdx-hardis extension, then let its Setup panel install the Salesforce CLI and plugins without typing a command.",
+          "time": "15 min"
         },
         {
           "lab": 2,
-          "slug": "lab-02-new-user-story",
-          "title": "Take US-014 from the backlog",
-          "time": "10 min"
+          "slug": "1-2-create-your-dev-hub-scratch-orgs-and-pipeline",
+          "title": "Create your Dev Hub, scratch orgs and CI/CD pipeline",
+          "description": "Sign up for one free Salesforce Developer Edition org, then let one click create a Dev Hub, three scratch orgs, your GitHub fork and its CI/CD pipeline.",
+          "time": "30 min"
         },
         {
           "lab": 3,
-          "slug": "lab-03-build-in-org",
-          "title": "Build it in your org",
-          "time": "15 min"
+          "slug": "1-3-start-a-user-story-on-a-git-branch",
+          "title": "Start a User Story on its own Git branch",
+          "description": "Take your first ticket from the backlog and create its Git branch and development org with the New User Story button of the sfdx-hardis VS Code extension.",
+          "time": "10 min"
         },
         {
           "lab": 4,
-          "slug": "lab-04-publish",
-          "title": "Choose what to keep, and publish it",
-          "time": "20 min"
+          "slug": "1-4-build-a-custom-field-in-your-org",
+          "title": "Build a custom field in your Salesforce org",
+          "description": "Create a custom field, grant it through a permission set and add it to the page layout in Salesforce Setup, in your own development scratch org.",
+          "time": "15 min"
         },
         {
           "lab": 5,
-          "slug": "lab-05-pull-request",
-          "title": "Open the Pull Request, get it green, merge",
+          "slug": "1-5-retrieve-commit-and-publish-your-changes",
+          "title": "Retrieve, commit and publish your Salesforce changes",
+          "description": "Bring your org changes into Git with the sfdx-hardis Metadata Retriever, stage only the files of your story, commit, and publish your branch.",
           "time": "20 min"
         },
         {
           "lab": 6,
-          "slug": "lab-06-capstone",
-          "title": "Capstone: Deliver US-016 on your own",
+          "slug": "1-6-pull-request-deployment-check-and-merge",
+          "title": "Open a Pull Request, pass the deployment check, merge",
+          "description": "Open a GitHub Pull Request, read the sfdx-hardis deployment check and its comment, merge, and watch CI/CD deploy your change to the integration org.",
+          "time": "20 min"
+        },
+        {
+          "lab": 7,
+          "slug": "1-7-capstone-deliver-a-user-story-on-your-own",
+          "title": "Capstone: deliver a User Story on your own",
+          "description": "Deliver a Salesforce User Story end to end with no step-by-step: branch, build, retrieve, commit, Pull Request and deployment with sfdx-hardis.",
           "time": "25 min"
         }
       ]
     },
     {
       "level": 2,
-      "slug": "level-2",
+      "slug": "level-2-contributor-advanced",
       "name": "Contributor advanced",
       "duration": "about 4 h",
       "prerequisite": 1,
       "badge": "sfdx-hardis Contributor",
       "labs": [
         {
-          "lab": 0,
-          "slug": "lab-00-refresh",
-          "title": "Your org is behind, catch it up",
+          "lab": 1,
+          "slug": "2-1-backpromote-your-teammates-work",
+          "title": "Backpromote: catch your org up with the team",
+          "description": "Your development org is behind integration. Bring in the stories your teammates merged with the sfdx-hardis Backpromote panel, keeping your own work.",
           "time": "15 min"
         },
         {
-          "lab": 1,
-          "slug": "lab-01-missing-dependency",
-          "title": "US-021 will not deploy: a missing dependency",
+          "lab": 2,
+          "slug": "2-2-fix-a-missing-dependency-deployment-error",
+          "title": "Fix a deployment error caused by a missing dependency",
+          "description": "A Pull Request deployment check fails. Read the Salesforce error properly and find the component a .forceignore entry silently left out.",
           "time": "25 min"
         },
         {
-          "lab": 2,
-          "slug": "lab-02-deployment-actions-apex",
-          "title": "US-024: green deployment, broken records",
-          "time": "30 min"
-        },
-        {
           "lab": 3,
-          "slug": "lab-03-deployment-actions-data",
-          "title": "US-026: reference data and a batch must follow",
+          "slug": "2-3-fix-broken-records-with-an-apex-deployment-action",
+          "title": "Fix broken records with an Apex deployment action",
+          "description": "Making a field required deploys green and breaks existing records. Fix it with a pre-deployment Apex script declared as an sfdx-hardis deployment action.",
           "time": "30 min"
         },
         {
           "lab": 4,
-          "slug": "lab-04-quality-and-tests",
-          "title": "US-027 fails the quality gate and the tests",
+          "slug": "2-4-ship-reference-data-and-a-batch-with-deployment-actions",
+          "title": "Ship reference data and a batch with deployment actions",
+          "description": "A green deployment is not a working feature. Ship reference data, a scheduled Apex batch and a manual step as sfdx-hardis deployment actions.",
           "time": "30 min"
         },
         {
           "lab": 5,
-          "slug": "lab-05-profiles-overwrites",
-          "title": "US-033: your Profile change disappeared",
-          "time": "25 min"
+          "slug": "2-5-pass-code-quality-and-apex-test-coverage",
+          "title": "Pass the code quality gate and Apex test coverage",
+          "description": "Fix a PMD warning and the Apex code coverage that block your Pull Request, and run the same checks from VS Code before you push.",
+          "time": "30 min"
         },
         {
           "lab": 6,
-          "slug": "lab-06-conflicts",
-          "title": "Marco merged first: resolve the conflict",
-          "time": "35 min"
+          "slug": "2-6-permission-sets-profiles-and-overwrites",
+          "title": "Permission sets, profiles and why a grant disappears",
+          "description": "A permission granted on a Profile vanishes after a green deployment. Learn how sfdx-hardis cleans profiles, and grant access with a permission set.",
+          "time": "25 min"
         },
         {
           "lab": 7,
-          "slug": "lab-07-recover-selection",
-          "title": "You committed the wrong things: recover",
-          "time": "20 min"
+          "slug": "2-7-resolve-a-git-merge-conflict",
+          "title": "Resolve a Git merge conflict with a teammate",
+          "description": "A teammate merged first on the same flow and permission set. Resolve both Git conflicts in VS Code without losing anybody's work.",
+          "time": "35 min"
         },
         {
           "lab": 8,
-          "slug": "lab-08-capstone",
-          "title": "Capstone: Deliver US-041, which has all of it at once",
+          "slug": "2-8-recover-from-committing-the-wrong-metadata",
+          "title": "Recover from committing the wrong metadata",
+          "description": "You published far more than your story. See what it does to a Pull Request, and recover with the two sfdx-hardis ways out.",
+          "time": "20 min"
+        },
+        {
+          "lab": 9,
+          "slug": "2-9-capstone-deliver-a-user-story-that-has-it-all",
+          "title": "Capstone: deliver a User Story that has it all",
+          "description": "Deliver one Salesforce User Story with a dependency error, a data deployment action and a merge conflict, with no step-by-step.",
           "time": "30 min"
         }
       ]
     },
     {
       "level": 3,
-      "slug": "level-3",
+      "slug": "level-3-release-manager",
       "name": "Release Manager",
       "duration": "about 6 h",
       "prerequisite": 2,
       "badge": "sfdx-hardis Release Manager",
       "labs": [
         {
-          "lab": 0,
-          "slug": "lab-00-finish-the-pipeline",
-          "title": "Your pipeline stops at uat: finish it",
+          "lab": 1,
+          "slug": "3-1-configure-the-pipeline-up-to-production",
+          "title": "Configure the CI/CD pipeline up to production",
+          "description": "Turn a two-stage Salesforce pipeline into four stages up to production: major branches, their orgs and merge targets in sfdx-hardis Pipeline Settings.",
           "time": "30 min"
         },
         {
-          "lab": 1,
-          "slug": "lab-01-ci-auth",
-          "title": "Wire CI authentication for four orgs",
+          "lab": 2,
+          "slug": "3-2-ci-authentication-with-jwt",
+          "title": "Set up CI authentication with JWT for four orgs",
+          "description": "Replace auth URL secrets with JWT authentication through an External Client App for every major org, configured by sfdx-hardis, and prove it works.",
           "time": "40 min"
         },
         {
-          "lab": 2,
-          "slug": "lab-02-review-pr",
-          "title": "Review and merge a contributor Pull Request",
-          "time": "25 min"
-        },
-        {
           "lab": 3,
-          "slug": "lab-03-deploy-integration",
-          "title": "Deploy to integration and read what happened",
+          "slug": "3-3-review-a-contributor-pull-request",
+          "title": "Review and merge a contributor Pull Request",
+          "description": "Review a teammate's Salesforce Pull Request as a release manager: find what the deployment check missed, request a change, and merge.",
           "time": "25 min"
         },
         {
           "lab": 4,
-          "slug": "lab-04-overwrite-cleaning",
-          "title": "Three Pull Requests collide",
-          "time": "35 min"
+          "slug": "3-4-deploy-to-integration-and-read-the-log",
+          "title": "Deploy to integration and read the deployment log",
+          "description": "Read an sfdx-hardis deployment log properly, and understand why what was deployed to the integration org is smaller than what changed.",
+          "time": "25 min"
         },
         {
           "lab": 5,
-          "slug": "lab-05-uat-release-notes",
-          "title": "Promote integration to UAT and write the release notes",
+          "slug": "3-5-merge-colliding-pull-requests",
+          "title": "Three Pull Requests collide: choose the merge order",
+          "description": "Decide the order three Pull Requests are merged in when two change the same file and one fails its check, as a Salesforce release manager.",
           "time": "35 min"
         },
         {
           "lab": 6,
-          "slug": "lab-06-production",
-          "title": "Ship to production and read your DORA metrics",
+          "slug": "3-6-promote-to-uat-and-write-release-notes",
+          "title": "Promote to UAT and write the release notes",
+          "description": "Promote integration to UAT, read the deployment actions the promotion carries, and generate release notes the business can read, with sfdx-hardis.",
           "time": "35 min"
         },
         {
           "lab": 7,
-          "slug": "lab-07-hotfix-retrofit",
-          "title": "Production is broken: hotfix and retrofit",
+          "slug": "3-7-release-to-production-and-read-dora-metrics",
+          "title": "Release to production and read your DORA metrics",
+          "description": "Release through preprod to your production org, verify it, then measure deployment frequency, lead time and failure rate with a DORA report.",
           "time": "35 min"
         },
         {
           "lab": 8,
-          "slug": "lab-08-monitoring",
-          "title": "Put production under monitoring",
+          "slug": "3-8-hotfix-and-retrofit",
+          "title": "Production is broken: hotfix and retrofit",
+          "description": "Ship a Salesforce hotfix from preprod to production without breaking the pipeline, then bring a change an admin made in production back into Git.",
           "time": "35 min"
         },
         {
           "lab": 9,
-          "slug": "lab-09-documentation",
-          "title": "Generate the project documentation",
-          "time": "20 min"
+          "slug": "3-9-monitor-your-production-org",
+          "title": "Monitor your production org",
+          "description": "Set up nightly sfdx-hardis monitoring on your Salesforce production org, read its first report, and decide which alerts are worth receiving.",
+          "time": "35 min"
         },
         {
           "lab": 10,
-          "slug": "lab-10-capstone",
-          "title": "Capstone: Run one full weekly release cycle",
+          "slug": "3-10-generate-the-project-documentation",
+          "title": "Generate the Salesforce project documentation",
+          "description": "Generate readable documentation of an undocumented Salesforce org with sfdx-hardis: objects, flows, Apex and permissions, from the sources in Git.",
+          "time": "20 min"
+        },
+        {
+          "lab": 11,
+          "slug": "3-11-capstone-run-a-weekly-release-cycle",
+          "title": "Capstone: run a weekly release cycle",
+          "description": "Run a full week as a Salesforce release manager with no step-by-step: review, integrate, promote to UAT, release to production and measure.",
           "time": "45 min"
         }
       ]

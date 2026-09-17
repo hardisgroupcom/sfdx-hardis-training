@@ -3,7 +3,7 @@
  * Checks one lab, or a whole level, against your own clone, and prints the
  * receipt line to keep for your badge claim.
  *
- *   node scripts/verify/check.mjs --level 1 --lab 3
+ *   node scripts/verify/check.mjs --level 1 --lab 4      (Lab 1.4)
  *   node scripts/verify/check.mjs --level 1
  *
  * Usually you click Welcome page > Training: Level N > Check my work instead.
@@ -61,7 +61,8 @@ export default async function main(args) {
     fail("Pass a level: --level 1, --level 2 or --level 3");
     process.exit(1);
   }
-  const lab = args.lab === undefined ? null : Number.parseInt(args.lab, 10);
+  // A lab is named N.M everywhere a learner sees it, and "--lab 1.4" works as well as "--lab 4"
+  const lab = args.lab === undefined ? null : Number.parseInt(String(args.lab).split(".").pop(), 10);
 
   const ctx = makeContext(args.dir || ROOT);
   const handle = githubHandle();
@@ -74,11 +75,11 @@ export default async function main(args) {
   } else {
     const rule = findRule(level, lab);
     if (!rule) {
-      fail(`Level ${level} has no lab ${lab}.`);
+      fail(`There is no Lab ${level}.${lab}.`);
       process.exit(1);
     }
     rules = [rule];
-    title(`Checking level ${level}, lab ${lab}`);
+    title(`Checking Lab ${level}.${lab}`);
   }
 
   const results = runRules(ctx, rules);

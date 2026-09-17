@@ -1,9 +1,11 @@
 ---
+title: "Free hands-on Salesforce DevOps course"
+description: "Free hands-on Salesforce DevOps course in three levels: Git, Pull Requests, CI/CD pipelines and release management with sfdx-hardis and VS Code."
 id: home
 lang: en
 ---
 
-# Salesforce DevOps with sfdx-hardis
+# Salesforce DevOps training with sfdx-hardis
 
 Three free learning paths that take you from "I have never used Git" to "I own the pipeline".
 
@@ -17,11 +19,11 @@ runs the Git commands for you.
 
 ## The three levels
 
-| Level                                            | Who it is for                                                    | Time | Before you start   | You finish able to                                                                                  |
-|--------------------------------------------------|------------------------------------------------------------------|------|--------------------|-----------------------------------------------------------------------------------------------------|
-| [**1 - Contributor basics**](level-1/index.md)   | Admins and developers joining a team that already has a pipeline | 2 h  | Nothing            | Take a User Story, build it, publish it, get a green Pull Request, merge it                         |
-| [**2 - Contributor advanced**](level-2/index.md) | The same people, once the easy stories are behind them           | 4 h  | Level 1            | Solve deployment errors, declare deployment actions, handle overwrites, resolve conflicts           |
-| [**3 - Release Manager**](level-3/index.md)      | The person who owns the pipeline, the orgs and the releases      | 6 h  | Levels 1 **and** 2 | Take over an org with no pipeline, review and merge, release to UAT and production, hotfix, monitor |
+| Level                                                                 | Who it is for                                                    | Time | Before you start   | You finish able to                                                                                  |
+|-----------------------------------------------------------------------|------------------------------------------------------------------|------|--------------------|-----------------------------------------------------------------------------------------------------|
+| [**1 - Contributor basics**](level-1-contributor-basics/index.md)     | Admins and developers joining a team that already has a pipeline | 2 h  | Nothing            | Take a User Story, build it, publish it, get a green Pull Request, merge it                         |
+| [**2 - Contributor advanced**](level-2-contributor-advanced/index.md) | The same people, once the easy stories are behind them           | 4 h  | Level 1            | Solve deployment errors, declare deployment actions, handle overwrites, resolve conflicts           |
+| [**3 - Release Manager**](level-3-release-manager/index.md)           | The person who owns the pipeline, the orgs and the releases      | 6 h  | Levels 1 **and** 2 | Take over an org with no pipeline, review and merge, release to UAT and production, hotfix, monitor |
 
 Levels 1 and 2 are both the contributor path. You may stop after Level 1 and you will be able to
 deliver. Level 2 is where you learn what to do when delivery goes wrong, which is most of the job.
@@ -46,11 +48,11 @@ conflicts and deployment actions. Someone who has never solved one cannot review
 
 ## What you need
 
-- A computer you are allowed to install software on. Level 1 lab 0 walks through what to install,
+- A computer you are allowed to install software on. Lab 1.1 walks through what to install,
   one download at a time, with screenshots.
 - A [GitHub](https://github.com/) account, free.
 - One free [Salesforce Developer Edition org](https://developer.salesforce.com/signup) to start
-  with, and one more at Level 3. Level 1 lab 1 signs you up, and creates the other orgs the course
+  with, and one more at Level 3. Lab 1.2 signs you up, and creates the other orgs the course
   needs from that one.
 - Nothing else. No paid service, no licence, no credit card.
 
@@ -70,4 +72,4 @@ memory.
 
 ## Start
 
-[Level 1 - Contributor basics](level-1/index.md){ .md-button .md-button--primary }
+[Level 1 - Contributor basics](level-1-contributor-basics/index.md){ .md-button .md-button--primary }

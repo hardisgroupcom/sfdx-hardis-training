@@ -81,7 +81,7 @@ function checkGh() {
       "The GitHub CLI (gh) is not installed.",
       [
         "Install it from https://cli.github.com/, then click this command again.",
-        "Level 1 lab 1 shows which download to take."
+        "Lab 1.2 shows which download to take."
       ].join("\n  ")
     );
   }
@@ -121,7 +121,7 @@ function currentHandle() {
 /**
  * The Developer Edition org the learner connected, when there is nothing to choose.
  *
- * Lab 1 tells them to name it helios-prod, so that alias wins. Somebody who
+ * Lab 1.2 tells them to name it helios-prod, so that alias wins. Somebody who
  * named it something else and has exactly one Org Farm org connected is not
  * asked either: that org is the only candidate. Anything else is a question.
  */
@@ -574,7 +574,7 @@ export function writeBranchConfigs(pipeline, usernames) {
     ok(changed.length > 0 ? `${c.bold(branch)} now names its org, and is pushed.` : `${c.bold(branch)} was already right.`);
   }
 
-  // Leave the learner on integration, where Lab 2 starts. Coming from main, the
+  // Leave the learner on integration, where Lab 1.3 starts. Coming from main, the
   // branch the clone opened on, there is nothing to go back to.
   const home = original === "main" || original === "HEAD" ? pipeline[0].branch : original;
   if (gitOut(["rev-parse", "--abbrev-ref", "HEAD"]) !== home) {
@@ -611,7 +611,7 @@ export function setSecrets(slug, pipeline) {
     ok(`${secret} is set on ${c.bold(slug)}.`);
   }
   info(c.dim("    Each holds a long-lived refresh token for a throwaway scratch org."));
-  info(c.dim("    Level 3 lab 1 replaces them with JWT certificates and deletes them."));
+  info(c.dim("    Lab 3.2 replaces them with JWT certificates and deletes them."));
 }
 
 // --------------------------------------------------------------------- main
@@ -640,7 +640,7 @@ export default async function init(args) {
   if (orgs.filter((o) => !o.isScratch).length === 0) {
     abort(
       "No connected org was found.",
-      `Connect your Developer Edition org in the Orgs Manager panel first, and name it ${devHubDef.alias}. Level 1 lab 1 shows how.`
+      `Connect your Developer Edition org in the Orgs Manager panel first, and name it ${devHubDef.alias}. Lab 1.2 shows how.`
     );
   }
   const devHub = await findDevHub(orgs, args.org);

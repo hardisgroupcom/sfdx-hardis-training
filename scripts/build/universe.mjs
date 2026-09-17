@@ -190,7 +190,7 @@ function backlog() {
     lines.push(`### ${story.id} - ${story.title}`, "");
     lines.push(`**Owner**: ${owner ? owner.name : story.author}  `);
     lines.push(`**Branch**: \`${story.branch}\`  `);
-    lines.push(`**Level**: ${story.level}, lab ${story.lab}`, "");
+    lines.push(`**Lab**: ${story.level}.${story.lab}`, "");
     lines.push(`> ${story.story}`, "");
     lines.push("Acceptance criteria:", "");
     for (const criterion of story.acceptance) {
@@ -224,7 +224,7 @@ function linkMap() {
     lines.push("| Lab | URL |", "|---|---|");
     lines.push(`| Level home | ${SITE}/en/${level.slug}/ |`);
     for (const lab of level.labs) {
-      lines.push(`| Lab ${lab.lab} - ${lab.title} | ${SITE}/en/${level.slug}/${lab.slug}/ |`);
+      lines.push(`| Lab ${level.level}.${lab.lab} - ${lab.title} | ${SITE}/en/${level.slug}/${lab.slug}/ |`);
     }
     lines.push("");
   }
@@ -297,7 +297,7 @@ function nav() {
     lines.push(`  - Level ${level.level} - ${level.name}:`);
     lines.push(`      - Start here: en/${level.slug}/index.md`);
     for (const lab of level.labs) {
-      lines.push(`      - "Lab ${lab.lab} - ${lab.title}": en/${level.slug}/${lab.slug}.md`);
+      lines.push(`      - "Lab ${level.level}.${lab.lab} - ${lab.title}": en/${level.slug}/${lab.slug}.md`);
     }
   }
   lines.push("  - Backlog: BACKLOG.md");
@@ -329,16 +329,16 @@ that the next person can see how the pipeline was put together.
 
 ## Level 2
 
-- **Lab 0, backpromote**: which items I kept, and which I dropped, and why.
-- **Lab 7, resetselection**: what I had over-selected, and how I recovered.
+- **Lab 2.1, backpromote**: which items I kept, and which I dropped, and why.
+- **Lab 2.8, resetselection**: what I had over-selected, and how I recovered.
 
 ## Level 3
 
-- **Lab 1, CI authentication**: the date I deleted the \`SFDX_AUTH_URL_INTEGRATION\` and \`SFDX_AUTH_URL_UAT\` secrets, and why they should never have been there for a real org.
-- **Lab 3, Smart Deploy**: what the deployment sent, and what it skipped.
-- **Lab 6, DORA**: deployment frequency, lead time, change failure rate, time to restore.
-- **Lab 8, monitoring**: the URL of the monitoring repository this created.
-- **Lab 10, release notes**: the link to the release notes I published.
+- **Lab 3.2, CI authentication**: the date I deleted the \`SFDX_AUTH_URL_INTEGRATION\` and \`SFDX_AUTH_URL_UAT\` secrets, and why they should never have been there for a real org.
+- **Lab 3.4, Smart Deploy**: what the deployment sent, and what it skipped.
+- **Lab 3.7, DORA**: deployment frequency, lead time, change failure rate, time to restore.
+- **Lab 3.9, monitoring**: the URL of the monitoring repository this created.
+- **Lab 3.11, release notes**: the link to the release notes I published.
 `;
 }
 emit("MY-PIPELINE.template.md", pipelineTemplate());

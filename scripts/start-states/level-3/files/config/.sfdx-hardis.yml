@@ -7,7 +7,7 @@ projectName: HeliosEnergy
 # --- Pipeline -------------------------------------------------------------
 # At Levels 1 and 2 the pipeline is integration then uat, both deploying to
 # scratch orgs that Set up my training environment creates. preprod and main
-# exist in the fork and have no org yet: Level 3 lab 0 is where they join.
+# exist in the fork and have no org yet: Lab 3.1 is where they join.
 developmentBranch: integration
 productionBranch: main
 availableTargetBranches:
@@ -30,8 +30,8 @@ apexTestsMinCoverageOrgWide: 75
 testCoverageNotBlocking: false
 
 # --- Automated cleaning ---------------------------------------------------
-# Applied by hardis:work:save before the Pull Request. Level 1 lab 4 reads the
-# result, Level 3 lab 4 explains why each one is here.
+# Applied by hardis:work:save before the Pull Request. Lab 1.5 reads the
+# result, Lab 3.5 explains why each one is here.
 autoCleanTypes:
   - destructivechanges
   - localfields
@@ -41,7 +41,7 @@ autoCleanTypes:
   - listViewsMine
 
 # Permissions that must never travel through a Profile on this project.
-# This is what makes the Level 2 lab 5 failure happen, and it is deliberate.
+# This is what makes the Lab 2.6 failure happen, and it is deliberate.
 autoRemoveUserPermissions:
   - EnableCommunityAppLauncher
   - FieldServiceAccess
@@ -83,7 +83,7 @@ customCommands:
         sldsIcon: utility:upload
         tooltip: Deploys the Helios Energy app and its sample data into the org you choose
         command: node scripts/training.mjs seed
-        helpUrl: https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-00-setup/
+        helpUrl: https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1-contributor-basics/1-1-install-vs-code-and-sfdx-hardis/
       - id: training-check
         label: Check my work
         vscodeIcon: pass
@@ -97,7 +97,7 @@ customCommands:
         sldsIcon: utility:groups
         tooltip: Creates the teammate branches and Pull Requests your lab needs
         command: node scripts/training.mjs simulate
-        helpUrl: https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2/lab-06-conflicts/
+        helpUrl: https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2-contributor-advanced/2-7-resolve-a-git-merge-conflict/
       - id: training-reset
         label: Reset this level
         vscodeIcon: debug-restart

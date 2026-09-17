@@ -30,7 +30,7 @@ for the `Helios Delivery` app, and every one of them is a lab in this course.
 
 **Owner**: You  
 **Branch**: `features/US-014-panels-required`  
-**Level**: 1, lab 2
+**Lab**: 1.3
 
 > As a delivery crew member, I want to see the number of panels required on the installation record, so that I load the right quantity on the van.
 
@@ -44,7 +44,7 @@ Acceptance criteria:
 
 **Owner**: You  
 **Branch**: `features/US-016-crew-notes`  
-**Level**: 1, lab 6
+**Lab**: 1.7
 
 > As a delivery crew member, I want a free text notes field and a list view of my open installations, so that I hand over cleanly to the next shift.
 
@@ -58,7 +58,7 @@ Acceptance criteria:
 
 **Owner**: Marco Bianchi  
 **Branch**: `training/mate-us-018-crew-capacity`  
-**Level**: 2, lab 6
+**Lab**: 2.7
 
 > As a planner, I want the assignment flow to refuse a crew larger than the installation allows, so that we stop over-staffing small jobs.
 
@@ -71,7 +71,7 @@ Acceptance criteria:
 
 **Owner**: Amina Diallo  
 **Branch**: `training/mate-us-019-quote-pdf`  
-**Level**: 3, lab 4
+**Lab**: 3.5
 
 > As a sales rep, I want a button that generates the quote PDF, so that I stop rebuilding it in a spreadsheet.
 
@@ -83,7 +83,7 @@ Acceptance criteria:
 
 **Owner**: Marco Bianchi  
 **Branch**: `training/mate-us-020-apex-refactor`  
-**Level**: 3, lab 4
+**Lab**: 3.5
 
 > As a developer, I want the scheduler split into testable methods, so that we stop being afraid of it.
 
@@ -96,7 +96,7 @@ Acceptance criteria:
 
 **Owner**: You  
 **Branch**: `features/US-021-crew-size-warning`  
-**Level**: 2, lab 1
+**Lab**: 2.2
 
 > As a planner, I want a warning on the installation when the assigned crew is smaller than the job needs, so that I fix it before the van leaves.
 
@@ -109,7 +109,7 @@ Acceptance criteria:
 
 **Owner**: You  
 **Branch**: `features/US-024-crew-size-required`  
-**Level**: 2, lab 2
+**Lab**: 2.3
 
 > As a planner, I want Crew Size to be mandatory on every installation, so that no job is scheduled without a crew.
 
@@ -122,7 +122,7 @@ Acceptance criteria:
 
 **Owner**: You  
 **Branch**: `features/US-026-crew-capacity-data`  
-**Level**: 2, lab 3
+**Lab**: 2.4
 
 > As a planner, I want capacity rules per crew type and a nightly job that recalculates them, so that the planning board is right every morning.
 
@@ -136,7 +136,7 @@ Acceptance criteria:
 
 **Owner**: You  
 **Branch**: `features/US-027-schedule-by-availability`  
-**Level**: 2, lab 4
+**Lab**: 2.5
 
 > As a planner, I want to check a list of installations against panel availability in one go, so that I can fill a week of planning without opening every record.
 
@@ -149,7 +149,7 @@ Acceptance criteria:
 
 **Owner**: You  
 **Branch**: `features/US-033-batch-cost-visibility`  
-**Level**: 2, lab 5
+**Lab**: 2.6
 
 > As a delivery crew member, I want to see the cost of the batch I am installing, so that I report damage with the right value.
 
@@ -161,7 +161,7 @@ Acceptance criteria:
 
 **Owner**: You  
 **Branch**: `features/US-034-crew-override`  
-**Level**: 2, lab 6
+**Lab**: 2.7
 
 > As a planner, I want the assignment flow to put at least three people on a flat roof, so that the ballast is carried safely.
 
@@ -174,7 +174,7 @@ Acceptance criteria:
 
 **Owner**: You  
 **Branch**: `features/US-038-installation-notes-tidy`  
-**Level**: 2, lab 7
+**Lab**: 2.8
 
 > As a planner, I want Crew Size above Install Date on the installation layout, so that I see the staffing before the date.
 
@@ -186,7 +186,7 @@ Acceptance criteria:
 
 **Owner**: You  
 **Branch**: `features/US-041-handover-checklist`  
-**Level**: 2, lab 8
+**Lab**: 2.9
 
 > As a planner, I want a handover checklist on the installation with its reference items, so that a job is only closed when the checklist is complete.
 
@@ -200,7 +200,7 @@ Acceptance criteria:
 
 **Owner**: You  
 **Branch**: `fixes/US-045-installation-date-hotfix`  
-**Level**: 3, lab 7
+**Lab**: 3.8
 
 > As a planner, I want to be able to save an installation whose date is already in the past, so that I can update a job that has slipped.
 

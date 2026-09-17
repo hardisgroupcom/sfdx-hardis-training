@@ -7,7 +7,7 @@
  * additive:
  *
  *   labs/en/index.md               -> site-src/index.md
- *   labs/en/level-1/lab-00.md      -> site-src/en/level-1/lab-00.md
+ *   labs/en/level-1-contributor-basics/1-1-*.md  -> site-src/en/level-1-contributor-basics/1-1-*.md
  *   labs/_assets/**                -> site-src/_assets/**
  *   site-theme/**                  -> site-src/theme/**
  *   BACKLOG.md                     -> site-src/BACKLOG.md
@@ -52,7 +52,7 @@ function copyTree(from, to, filter, transform) {
  * Rewrites the links that reach out of labs/.
  *
  * A lab linking to a file at the root of the repository needs one more "../"
- * there than it does here: labs/en/level-1/lab-02.md has labs/ above it and the
+ * there than it does here: labs/en/level-1-contributor-basics/1-3-*.md has labs/ above it and the
  * site page does not. The link resolves on GitHub and 404s on the site, and
  * check-links.mjs cannot see it because it resolves against the repository.
  * Links that stay inside labs/ keep their depth and are left alone.
@@ -126,7 +126,7 @@ for (const locale of locales) {
 }
 
 // The English home page is also the site home page. It moves up one level, so
-// its relative links move with it: "level-1/index.md" becomes "en/level-1/...".
+// its relative links move with it: "level-1-contributor-basics/index.md" becomes "en/level-1-contributor-basics/...".
 const enHome = path.join(OUT, "en", "index.md");
 if (fs.existsSync(enHome)) {
   const home = fs
@@ -142,11 +142,29 @@ const assets = copyTree(path.join(localesDir, "_assets"), path.join(OUT, "_asset
 // which is where they land in the built site.
 const themeFiles = copyTree(path.join(ROOT, "site-theme"), path.join(OUT, "theme"));
 
-// Everything else the site publishes
+// Everything else the site publishes. These files are read on GitHub too, where
+// front matter renders as a table, so their search title and description are
+// added here, on the way into the site, rather than in the files themselves.
+const PAGE_META = {
+  "BACKLOG.md": {
+    title: "Helios Energy backlog: the User Stories of the course",
+    description: "Every User Story of the Salesforce DevOps training with sfdx-hardis, with its acceptance criteria, its Git branch and the lab that delivers it."
+  },
+  "MY-PIPELINE.template.md": {
+    title: "My pipeline notebook: template",
+    description: "The notebook a learner fills in during the Salesforce DevOps training: the orgs of the pipeline, and one line per lab on what was decided and why."
+  },
+  "TRANSLATION.md": {
+    title: "Translating the Salesforce DevOps training",
+    description: "How to translate the labs of the free Salesforce DevOps training with sfdx-hardis, and how translations are kept in step with the English source."
+  }
+};
+const frontMatter = (meta) =>
+  meta ? `---\ntitle: ${JSON.stringify(meta.title)}\ndescription: ${JSON.stringify(meta.description)}\n---\n\n` : "";
 for (const file of ["BACKLOG.md", "MY-PIPELINE.template.md", "TRANSLATION.md"]) {
   const source = path.join(ROOT, file);
   if (fs.existsSync(source)) {
-    fs.copyFileSync(source, path.join(OUT, file));
+    fs.writeFileSync(path.join(OUT, file), frontMatter(PAGE_META[file]) + fs.readFileSync(source, "utf8"), "utf8");
   }
 }
 const linkMap = path.join(ROOT, "labs", "link-map.en.md");
@@ -169,7 +187,10 @@ const handles = fs.existsSync(badgesDir)
   : [];
 
 const badgeIndex = [
-  "# Badges",
+  frontMatter({
+    title: "Salesforce DevOps training badges",
+    description: "The learners who finished a level of the free Salesforce DevOps training with sfdx-hardis, checked by a job that read their public repository."
+  }) + "# Badges",
   "",
   "Everybody who finished a level of this course and claimed it.",
   "",

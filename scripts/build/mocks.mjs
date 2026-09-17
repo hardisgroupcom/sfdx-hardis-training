@@ -216,7 +216,7 @@ writeJson(path.join(OUT, "sf-mock-overlay.json"), {
       })),
     // Where this project records the manual steps a deployment needs. The base
     // fixture points at a SharePoint file that means nothing to a learner.
-    manualActionsUrl: `${u.course.site}/en/level-2/lab-03-deployment-actions-data/`,
+    manualActionsUrl: `${u.course.site}/en/level-2-contributor-advanced/2-4-ship-reference-data-and-a-batch-with-deployment-actions/`,
     // The delta package.xml the Save / Publish command shows for that story
     packageXmlTypes: [
       { name: "CustomField", members: ["Installation__c.Panels_Required__c"] },
@@ -339,7 +339,7 @@ const mergedLevel1 = u.userStories
 
 // The learner own Pull Request: the contribution cards of the DevOps Pipeline
 // panel and the deployment action editors are captured from it, so the images
-// show the deployment actions of Level 2 labs 2 and 3.
+// show the deployment actions of Labs 2.3 and 2.4.
 const myStory = u.userStories.find((story) => story.id === "US-024");
 openPullRequests.unshift({
   id: MY_PR_NUMBER,
@@ -463,7 +463,7 @@ if (fs.existsSync(basePlanFile)) {
   };
 
   // The three teammate stories that merged while the learner was away, which is
-  // exactly the situation Level 2 lab 0 puts them in.
+  // exactly the situation Lab 2.1 puts them in.
   const BACKPROMOTED = [
     { id: "US-018", title: "Cap the crew size a planner can assign", author: "Marco Bianchi", branch: "training/mate-us-018-crew-capacity", items: 3, actions: 0 },
     { id: "US-019", title: "Generate a quote PDF from an opportunity", author: "Amina Diallo", branch: "training/mate-us-019-quote-pdf", items: 2, actions: 0 },
@@ -581,7 +581,7 @@ const baseline = path.join(ROOT, "scripts", "data", "HeliosBaseline", "export.js
 if (fs.existsSync(baseline)) {
   write(path.join(PROJECT, "scripts", "data", "HeliosBaseline", "export.json"), fs.readFileSync(baseline, "utf8"));
 }
-// HeliosCrewRefData is what a learner builds in Level 2 lab 3, so it is not
+// HeliosCrewRefData is what a learner builds in Lab 2.4, so it is not
 // shipped in the training repository. The fixture needs it all the same: the
 // screenshots show the finished state of that lab.
 writeJson(path.join(PROJECT, "scripts", "data", "HeliosCrewRefData", "export.json"), {

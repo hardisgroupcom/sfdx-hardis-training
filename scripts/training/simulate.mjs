@@ -48,7 +48,7 @@ export default async function simulate(args) {
   if (slug && slug.toLowerCase() === universe().course.upstreamRepo.toLowerCase()) {
     abort(
       "This would open a Pull Request on the shared training repository.",
-      "Work in your own fork. See Level 1 lab 1."
+      "Work in your own fork. See Lab 1.2."
     );
   }
 

@@ -21,9 +21,11 @@ export default async function check(args) {
   const levelDef = levels.find((l) => l.level === level);
   const labChoices = [
     { value: "all", label: `Everything in level ${level}  ${c.dim("(what the badge claim checks)")}` },
-    ...levelDef.labs.map((l) => ({ value: String(l.lab), label: `Lab ${l.lab} - ${l.title}` }))
+    ...levelDef.labs.map((l) => ({ value: String(l.lab), label: `Lab ${level}.${l.lab} - ${l.title}` }))
   ];
-  const lab = await select("Which lab?", labChoices, args.lab);
+  // "--lab 1.4" and "--lab 4" both name Lab 1.4
+  const preselected = args.lab === undefined ? undefined : String(args.lab).split(".").pop();
+  const lab = await select("Which lab?", labChoices, preselected);
 
   info("");
   await runCheck({ level: String(level), lab: lab === "all" ? undefined : lab });

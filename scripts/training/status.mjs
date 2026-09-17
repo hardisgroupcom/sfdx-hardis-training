@@ -22,7 +22,7 @@ export default async function status() {
   info(`  Branch     : ${c.bold(branch || "unknown")}`);
   if (slug && slug.toLowerCase() === u.course.upstreamRepo.toLowerCase()) {
     warn("You are working in the training repository itself, not in your own fork.");
-    info(c.dim("    Everything in this course happens in your fork. See Level 1 lab 1."));
+    info(c.dim("    Everything in this course happens in your fork. See Lab 1.2."));
   }
 
   // ------------------------------------------------------------ the orgs
@@ -54,7 +54,7 @@ export default async function status() {
       if (nextLevel === null) {
         const firstMissing = results.find((r) => !r.ok);
         nextLevel = levelDef.level;
-        nextLab = firstMissing ? firstMissing.rule.lab : 0;
+        nextLab = firstMissing ? firstMissing.rule.lab : 1;
       }
     }
   }
@@ -71,7 +71,7 @@ export default async function status() {
   const labDef = levelDef.labs.find((l) => l.lab === nextLab) || levelDef.labs[0];
   title("What to do next");
   info(`  Level ${nextLevel} - ${levelDef.name}`);
-  info(`  ${c.bold(`Lab ${labDef.lab} - ${labDef.title}`)}  ${c.dim(`(~${labDef.time})`)}`);
+  info(`  ${c.bold(`Lab ${levelDef.level}.${labDef.lab} - ${labDef.title}`)}  ${c.dim(`(~${labDef.time})`)}`);
   info("");
   info(`  ${c.cyan(`${u.course.site}/en/${levelDef.slug}/${labDef.slug}/`)}`);
 

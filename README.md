@@ -38,16 +38,16 @@ Each level awards a **Cloudity badge**. It is a badge, not a certification.
    (`helios-dev`, `helios-integration`, `helios-uat`), and wires the `integration` and `uat`
    branches to them
 
-[Level 1 lab 0](https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-00-setup/) is
+[Lab 1.1](https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1-contributor-basics/1-1-install-vs-code-and-sfdx-hardis/) is
 the first block, with screenshots, and it stands on its own: finish it and stop if you only came to
 set a machine up.
-[Lab 1](https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-01-fork-and-connect/) is
+[Lab 1.2](https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline/) is
 the second.
 
 ## Everything happens in your own copy
 
 New to Git? A **repository** is a project folder plus every version of it there has ever been, and a
-**fork** is your own copy of one, under your own GitHub account. Level 1 lab 1 makes yours, with
+**fork** is your own copy of one, under your own GitHub account. Lab 1.2 makes yours, with
 screenshots, and the level home page defines the rest of the vocabulary before you need it.
 
 You fork this repository and work only there: your feature branches, your Pull Requests, your

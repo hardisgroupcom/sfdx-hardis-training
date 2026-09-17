@@ -28,9 +28,9 @@ const OUT = path.join(ROOT, "site", "_mobile-check");
 // The pages most likely to be opened on a phone, and the widest tables
 const PAGES = [
   "index.html",
-  "en/level-1/index.html",
-  "en/level-2/index.html",
-  "en/level-3/index.html",
+  "en/level-1-contributor-basics/index.html",
+  "en/level-2-contributor-advanced/index.html",
+  "en/level-3-release-manager/index.html",
   "BACKLOG/index.html",
 ];
 

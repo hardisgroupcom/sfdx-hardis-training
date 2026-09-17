@@ -1,0 +1,234 @@
+---
+id: lab-1-3
+title: "Lab 1.3 - Start a User Story on its own Git branch"
+description: "Take your first ticket from the backlog and create its Git branch and development org with the New User Story button of the sfdx-hardis VS Code extension."
+level: 1
+lab: 3
+lang: en
+source_rev: ""
+screenshots:
+  - annotated/vscode/pipeline-cards--new-user-story
+  - annotated/vscode/work-new-target-branch
+  - annotated/vscode/work-new-story-type
+  - annotated/vscode/work-new-story-name
+  - annotated/vscode/work-new-org-type
+  - annotated/vscode/work-new-org
+  - annotated/vscode/work-new-completed
+depends_on:
+  commands: [hardis:work:new]
+  flags: []
+  config: [developmentBranch, availableTargetBranches, branchPrefixChoices, newTaskNameRegex]
+  panels: [pipeline, orgManager, promptInput]
+  docs: [salesforce-devops-create-new-user-story]
+---
+
+# Lab 1.3 - Start a User Story on its own Git branch
+
+**Level**: 1 Contributor basics
+
+**Time**: ~10 min
+
+**You will**: pick up your first ticket and land on a clean branch, pointed at your dev org.
+
+## The situation
+
+The backlog is in [BACKLOG.md](../../../BACKLOG.md). Your first story is at the top:
+
+> **US-014 - Show the crew how many panels a job needs**
+>
+> As a delivery crew member, I want to see the number of panels required on the installation
+> record, so that I load the right quantity on the van.
+>
+> Acceptance criteria:
+>
+> - A Panels Required field exists on Installation
+> - It is visible to the crew permission set
+> - It appears on the Installation record page
+
+Small on purpose. What matters in this lab is not the field, it is the loop you are about to learn
+and repeat for the rest of your career on this project.
+
+!!! info "Branch, in one sentence"
+    A branch is a named line of work inside the repository. Yours starts as an exact copy of what
+    the team has right now. You change what your story needs on it, and the team's version stays as
+    it was until your Pull Request merges yours back in, which is how two people work on two stories
+    at once without stepping on each other. The extension creates the branch, switches you onto it
+    and later pushes it, so you never type a Git command.
+
+## Before you start
+
+- [ ] Lab 1.2 finished: your fork is cloned, and `integration` and `uat` name their orgs
+- [ ] `helios-dev` listed as **Connected** in **Orgs Manager**
+
+## Steps
+
+### 1. Start the User Story
+
+On the Welcome page, open the **DevOps Pipeline** panel and scroll past the diagram to the
+**Project Contribution Workflow** **(1)**. Click the **New User Story** card **(2)**.
+
+![The contribution cards of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
+
+!!! tip "Cannot see the cards?"
+    They sit under the branch diagram, and a project with several feature branches makes that
+    diagram tall enough to push them off the screen. Turn **Show feature branches** off in the
+    header: the diagram shrinks to the major branches and the cards come into view.
+
+The extension asks four questions, one screen at a time. Each one appears in its own panel, and
+every answer you give stays visible above the next question, so you can always see what you told it.
+
+### 2. Where the work is going
+
+**What will be the target branch of your new User Story?** There is one answer, `integration`
+**(1)**, described as the shared integration org where every contributor merges. Take it.
+
+![The target branch question, offering integration](../../_assets/annotated/vscode/work-new-target-branch.png)
+
+A list of one is not the command being slow. This project declares `integration` as the only branch
+a contributor may target, in `availableTargetBranches`, and the question shows what the project
+allows. Lab 3.1 adds `uat` and `main` to that list, and the same question then offers three.
+
+You never guess where your work is going: the command asks first, writes the answer down, and every
+later step reads it back.
+
+### 3. What kind of work it is
+
+**What type of User Story do you want to create?** Take **Feature** **(1)**: US-014 adds something
+that was not there. **Fix** **(2)** is for correcting something already delivered.
+
+![The question asking whether this is a feature or a fix](../../_assets/annotated/vscode/work-new-story-type.png)
+
+The answer becomes the first part of your branch name, `features/` or `fixes/`, so anybody looking
+at the list of branches can see at a glance what kind of work is in flight.
+
+### 4. What to call it
+
+**What is the name of your new User Story?** Type it in the box **(1)** and click **Validate**
+**(2)**:
+
+```
+US-014-panels-required
+```
+
+![The question asking for the name of the User Story](../../_assets/annotated/vscode/work-new-story-name.png)
+
+The example under the field is not decoration: this project declares a pattern that names have to
+match, and the example is a name that matches it. Type something else, `Panels Required` say, and
+the command tells you what it expected and asks again.
+
+### 5. Which org you will build in
+
+**Which Salesforce org do you want to work in?** Take **Scratch org** **(1)**: `helios-dev` is one,
+created in Lab 1.2.
+
+![The question asking what kind of org this User Story is built in](../../_assets/annotated/vscode/work-new-org-type.png)
+
+The other answers are for other projects. **Sandbox org with source tracking** **(2)** is what most
+teams use, a developer sandbox the release manager hands out. The last one is for working on XML
+and configuration without an org at all.
+
+Then the list of scratch orgs. Take **Reuse scratch org helios-dev** **(1)**.
+
+![The New User Story command asking which scratch org to build in](../../_assets/annotated/vscode/work-new-org.png)
+
+This is the org Lab 1.2 filled with the Helios app, and the one you are about to change by hand in
+Setup. The list does not offer `helios-integration` or `helios-uat`: the command knows those two
+belong to major branches, and building directly in a shared org is exactly what this whole way of
+working exists to stop.
+
+!!! danger "Never take Create new scratch org here"
+    It is the first answer, and on a real project it is often the right one. Here it would ask your
+    Dev Hub for a fourth scratch org, and a Developer Edition Dev Hub keeps only three alive: the
+    command fails after a long wait, with nothing to show for it.
+
+### 6. Read what it tells you at the end
+
+The command opens `helios-dev` in your browser: you can leave that tab for Lab 1.4. Then it finishes
+and prints what it did. Read it rather than closing it.
+
+![The New User Story command, finished, with its summary](../../_assets/annotated/vscode/work-new-completed.png)
+
+- the branch it created and checked out **(1)**
+- the confirmation that you are ready to work on it **(2)**
+- the org it attached to this User Story, by username and URL **(3)**
+
+Those three lines are worth a glance every time. A branch name that is not the one you expected, or
+an org that is not the one you meant, is a problem that costs thirty seconds now and an afternoon
+later.
+
+<details markdown="1"><summary>Under the hood: what "New User Story" just did</summary>
+
+The panel ran:
+
+    sf hardis:work:new
+
+which did five things, in order:
+
+1. **Fetched and updated the target branch.** `git fetch`, then `git checkout integration` and
+   `git pull`, so your branch starts from what the team has now rather than from whatever you had
+   last week. This is the step people skip by hand and regret a week later
+2. **Created the branch**, named from your answers:
+   `git checkout -b features/US-014-panels-required`
+3. **Wrote your user configuration** in `config/user/.sfdx-hardis.<your-username>.yml`, recording
+   the org for this User Story. That file is git-ignored: it is yours, nobody else needs it
+4. **Selected the org** as the default target for the following commands
+5. **Opened the org** in your browser, since you are about to work in it
+
+The list of scratch orgs is the ones your default Dev Hub created, which Lab 1.2 set to `helios-prod`,
+minus the ones named in `config/branches/`. Nothing here brings what is on `integration` into your
+org: that is a backpromote, and Level 2 starts with one.
+
+The branch prefix `features/` and the name pattern come from `config/.sfdx-hardis.yml`:
+
+    branchPrefixChoices:
+      - value: features
+        title: "Feature: a new capability or an improvement"
+      - value: fixes
+        title: "Fix: correct something that is broken"
+    newTaskNameRegex: '^US-\d{3}-[a-z0-9-]+$'
+
+Change those two settings and every contributor gets different prompts. That is how a project
+enforces a convention without anybody having to remember it.
+
+</details>
+
+## What you should see
+
+Three things, all visible without leaving VS Code:
+
+1. **Bottom left of the status bar**: the branch is now `features/US-014-panels-required`
+2. **The sfdx-hardis panel, Status section**: *Current Org* is your `helios-dev` org
+3. **The DevOps Pipeline panel**: your new branch appears as a small box feeding `integration`
+
+If any of the three disagrees with the others, stop and fix it now rather than after you have built
+something.
+
+## If it goes wrong
+
+**The command refuses the name.**
+The pattern this project uses is `US-014-panels-required`: three digits, then lowercase words
+separated by hyphens. `US14-PanelsRequired` is rejected on purpose.
+
+**It says you have uncommitted changes.**
+You changed something before starting. Either commit it on the branch you are on, or discard it
+from the Source Control panel. `hardis:work:new` will not carry stray work onto a fresh branch.
+
+**The org list does not show `helios-dev`.**
+The scratch org expired: they live 30 days. Click **Training: Level 1 > Set up my training
+environment** again. It creates a new `helios-dev` with the Helios app, and leaves everything else
+as it is.
+
+**It fails with a message about the scratch org limit.**
+You took **Create new scratch org**. Nothing was created and nothing is broken: start the User Story
+again and take **Reuse scratch org helios-dev**.
+
+## Check your work
+
+Welcome page > **Training: Level 1** > **Check my work**, then pick Lab 1.3.
+
+## Go deeper
+
+- [Start a User Story](https://sfdx-hardis.cloudity.com/salesforce-devops-create-new-user-story/)
+- [The contributor loop in one page](https://sfdx-hardis.cloudity.com/salesforce-devops-use-home/)
+
+[Next: Lab 1.4 - Build a custom field in your Salesforce org](1-4-build-a-custom-field-in-your-org.md){ .md-button .md-button--primary }

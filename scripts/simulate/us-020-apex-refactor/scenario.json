@@ -1,7 +1,7 @@
 {
   "id": "us-020-apex-refactor",
   "title": "US-020 Refactor InstallationScheduler (fails its check)",
-  "usedBy": "Level 3 lab 4",
+  "usedBy": "Lab 3.5",
   "levels": [3],
   "description": "Marco changes earliestInstallDate to return a Datetime and does not update the test class. The deployment check fails to compile it. This one is meant to be sent back, not fixed by you.",
   "branch": "training/mate-us-020-apex-refactor",

@@ -2,14 +2,14 @@
 # Edited from VS Code: DevOps Pipeline panel > the integration column > Settings.
 #
 # targetUsername and instanceUrl name the org this branch deploys to.
-# They are empty on purpose: they are yours, and you fill them in at Level 1 lab 1.
+# They are empty on purpose: they are yours, and you fill them in at Lab 1.2.
 #
 # Level 1 authenticates CI with the SFDX_AUTH_URL_INTEGRATION repository secret,
 # which is a shortcut for throwaway training orgs only.
-# Level 3 lab 1 replaces it with a proper External Client App and JWT.
+# Lab 3.2 replaces it with a proper External Client App and JWT.
 
 targetUsername: ""
 instanceUrl: ""
 
-# Level 3 lab 0 adds "uat" here, once uat becomes a major branch.
+# Lab 3.1 adds "uat" here, once uat becomes a major branch.
 mergeTargets: []

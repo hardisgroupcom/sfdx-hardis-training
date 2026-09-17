@@ -102,7 +102,7 @@ for (let i = 1; i <= 25; i++) {
 }
 
 // ----------------------------------------------------------- Installations
-// Crew_Size__c is deliberately left empty on every record: Level 2 lab 2 is
+// Crew_Size__c is deliberately left empty on every record: Lab 2.3 is
 // built on "you cannot make a field required when the data does not have it".
 const installations = [];
 for (let i = 1; i <= 30; i++) {

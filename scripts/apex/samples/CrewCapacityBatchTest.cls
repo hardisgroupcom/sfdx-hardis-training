@@ -1,8 +1,8 @@
 /**
- * Sample for Level 2 lab 3. Copy it into your org as it is.
+ * Sample for Lab 2.4. Copy it into your org as it is.
  *
  * Salesforce refuses to deploy Apex unless tests cover at least 75% of it, and
- * this project keeps that rule. Level 2 lab 4 is entirely about that gate.
+ * this project keeps that rule. Lab 2.5 is entirely about that gate.
  *
  * It creates the records it needs rather than trusting whatever happens to be in
  * the org, which is the one habit worth taking from this file.

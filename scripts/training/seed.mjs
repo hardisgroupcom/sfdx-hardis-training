@@ -101,7 +101,7 @@ export default async function seed(args) {
   if (orgs.length === 0) {
     abort(
       "No connected org was found.",
-      "Open the Orgs Manager panel in VS Code and connect your training org first. See Level 1 lab 1."
+      "Open the Orgs Manager panel in VS Code and connect your training org first. See Lab 1.2."
     );
   }
 
@@ -169,7 +169,7 @@ export default async function seed(args) {
 /**
  * Per-org differences the labs rely on, from scripts/drift/<alias>.json.
  * This is how helios-prod ends up one step behind the repository, which is what
- * Level 3 lab 7 needs in order to have something to retrofit.
+ * Lab 3.8 needs in order to have something to retrofit.
  */
 export function applyDrift(alias) {
   const file = path.join(ROOT, "scripts", "drift", `${alias}.json`);
