@@ -35,6 +35,9 @@ function unpushedBranches() {
       const [branch, upstream, track] = line.split("|");
       return { branch, upstream, track: track || "" };
     })
+    // A backpromote branch is the tool's own workspace, rebuilt on every run and
+    // never pushed by anybody. It is not work waiting to be published.
+    .filter((b) => !b.branch.startsWith("backpromote/"))
     .filter((b) => !b.upstream || b.track.includes("ahead"));
 }
 
