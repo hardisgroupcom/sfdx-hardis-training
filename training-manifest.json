@@ -126,7 +126,10 @@
         "orgManager"
       ],
       "screenshots": [
-        "annotated/vscode/orgs-manager-actions"
+        "annotated/vscode/orgs-manager-actions",
+        "annotated/salesforce/object-manager-fields",
+        "annotated/salesforce/permission-set-object-settings",
+        "annotated/salesforce/installation-record"
       ]
     },
     {
@@ -488,9 +491,7 @@
         "deploymentAction",
         "dataWorkbench"
       ],
-      "screenshots": [
-        "vscode/devops-pipeline"
-      ]
+      "screenshots": []
     },
     {
       "id": "lab-3-1",
@@ -644,7 +645,7 @@
         "packageXml"
       ],
       "screenshots": [
-        "annotated/vscode/sidebar-commands-custom-menu--training-menu",
+        "annotated/vscode/welcome-custom-menu-3",
         "annotated/vscode/pipeline-config--cleaning-overwrite"
       ]
     },
@@ -818,8 +819,7 @@
         "pipeline"
       ],
       "screenshots": [
-        "annotated/vscode/pipeline-cards--new-user-story",
-        "vscode/devops-pipeline"
+        "annotated/vscode/pipeline-cards--new-user-story"
       ]
     }
   ],

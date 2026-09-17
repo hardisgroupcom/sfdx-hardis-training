@@ -87,7 +87,7 @@ what you are reviewing is byte for byte what the screenshots show.
 ![The New User Story card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
 !!! warning "Do not refresh your org this time"
-    `hardis:work:new` offers to bring `integration` down into your org. For this lab, **decline**.
+    **New User Story** offers to bring `integration` down into your org. For this lab, **decline**.
     You are deliberately reproducing the situation of somebody who started before Marco merged.
 
 In `helios-dev`:
@@ -139,7 +139,8 @@ your version on the left, Marco's on the right, and the result you are building 
 
 This one is mechanical, and you can decide it without reading a single line of XML: **both entries
 belong**. Marco granted one field, you granted another, and a permission set holds as many as it
-needs. Click **Accept Both**, then **Complete Merge** at the top right.
+needs. Take the button that keeps both sides, **Accept Combination** in the merge editor, then
+**Complete Merge** at the top right.
 
 **Take both** is the right answer for almost every permission set conflict. Choosing one side is how
 a teammate's permission quietly disappears, and nobody notices until somebody cannot see a field.
@@ -160,8 +161,8 @@ Git conflicts on lines, not on XML, so the markers landed inside one block rathe
     </fieldPermissions>
 ```
 
-**Accept Both** wrote the two complete blocks, in alphabetical order, which is how Salesforce writes
-them anyway:
+Keeping both sides wrote the two complete blocks, in alphabetical order, which is how Salesforce
+writes them anyway:
 
 ```xml
     <fieldPermissions>
@@ -207,7 +208,7 @@ developers included, and a flow that deploys but behaves wrongly is worse than o
 
 3. Open **Flow Builder** in the org, on `Installation_Assign_Crew`, and add your flat-roof rule
    again, **after** his cap so the cap runs last and wins
-4. Come back to VS Code and publish, which picks your rebuilt flow up from the org
+4. Come back to VS Code, bring the rebuilt flow down with **Commit changes**, commit it, and publish
 
 Slower to describe, much faster to do, and you can see what you are building.
 
@@ -227,8 +228,8 @@ not intend, which no check catches and no test in this project covers.
 Mark both files resolved in the Source Control panel, commit the merge, push.
 
 Then **re-publish**: **Save / Publish User Story**. This matters. The merge produced XML by hand,
-and `hardis:work:save` re-runs the cleaning rules over it and regenerates `manifest/package.xml`
-from the new diff. Skipping it is how a stray conflict marker reaches a deployment.
+and publishing re-runs the cleaning rules over it and rebuilds `manifest/package.xml` from what your
+branch now changes. Skipping it is how a stray conflict marker reaches a deployment.
 
 Watch the check go green, then merge.
 

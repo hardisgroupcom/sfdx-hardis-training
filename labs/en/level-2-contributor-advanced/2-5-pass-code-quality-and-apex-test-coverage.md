@@ -36,8 +36,8 @@ run the checks before pushing.
 An Apex change in `InstallationScheduler`. Two things will stop you, and neither is Salesforce
 refusing your metadata:
 
-1. **PMD**, through MegaLinter, on a query inside a loop that you are about to write by copying an
-   existing pattern. It **warns**
+1. **PMD**, the Apex code analyzer, run for you by MegaLinter, on a query inside a loop that you are
+   about to write by copying an existing pattern. It **warns**
 2. **Code coverage**, because the new branch of logic has no test. It **blocks**
 
 Both are the project's rules, not Salesforce's. Knowing which of your gates warn and which refuse is
@@ -167,7 +167,7 @@ You added a method with three branches and no test. Add them to
 
     @isTest
     static void schedulableOnIgnoresInstallationsWithNoBatch() {
-        Installation__c lonely = new Installation__c(Status__c = 'Planned', External_Id__c = 'TEST-INST-003');
+        Installation__c lonely = new Installation__c(Status__c = 'Planned', Crew_Size__c = 2, External_Id__c = 'TEST-INST-003');
         insert lonely;
         Test.startTest();
         List<Id> allowed = InstallationScheduler.schedulableOn(new List<Id>{ lonely.Id }, Date.today().addDays(30));
@@ -179,6 +179,11 @@ You added a method with three branches and no test. Add them to
 Note what the assertions do: they check the **behaviour the story asked for**, with a message that
 says why. A test that only runs the code to lift a percentage is worse than no test, because it
 makes the number lie.
+
+The `Crew_Size__c = 2` on the record the second test creates is not decoration. Lab 2.3 made that
+field mandatory, so any test that inserts an installation without it now fails, and a failing test
+is a failing deployment. Every test class in the org has to be checked for this, and that is the
+real price of making a field required.
 
 ### 5. Run the checks before pushing this time
 
@@ -195,8 +200,8 @@ the pass, the fail and the percentage without pushing anything.
 
 !!! note "The banner at the top is expected"
     *Org Monitoring Not Present (CI/CD Repo)* means this repository is a delivery pipeline and not a
-    monitoring repository. The cards below it still work against whatever org you pick. Level 3 lab
-    8 is where monitoring gets a repository of its own.
+    monitoring repository. The cards below it still work against whatever org you pick. Lab 3.9 is
+    where monitoring gets a repository of its own.
 
 !!! note "The Apex Tests tab is a different thing"
     A Pull Request in the **DevOps Pipeline** panel can show an **Apex Tests (n) (beta)** tab. It

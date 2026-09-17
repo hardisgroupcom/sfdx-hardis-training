@@ -81,7 +81,7 @@ Helios_Delivery_Manager  Cannot deploy to a required field: Installation__c.Crew
 Not a word about your data. The problem is the permission sets.
 
 A **universally required** field has no field level security to grant: it is visible and mandatory
-for everyone, by definition. So the moment the field becomes required, every `fieldPermissions`
+for everyone, by definition. So the moment the field becomes required, every field-level security
 entry that mentions it becomes invalid, and the deployment refuses the permission sets rather than
 the field.
 
@@ -153,8 +153,9 @@ production:
 Open the **DevOps Pipeline** panel. There are two ways to your Pull Request, and both land in the
 same place.
 
-In the diagram: your feature branch **(1)**, and on the arrow leaving it the numbered badge **(2)**.
-Click the badge.
+In the diagram: turn on **Show feature branches** at the top right, which is off until you ask for
+it, and your own branch appears beside the major ones. Your feature branch **(1)**, and on the arrow
+leaving it the numbered badge **(2)**. Click the badge.
 
 ![The DevOps Pipeline panel, with the feature branch and the badge of its Pull Request](../../_assets/annotated/vscode/pipeline-pr-actions-empty.png)
 
@@ -163,7 +164,7 @@ always points at the Pull Request of the branch you are standing on.
 
 ![The My Pull Request card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--my-pull-request.png)
 
-The Pull Request opens on its **Deployment Actions** tab. Click **Add New Action**, and in the
+The Pull Request opens. Go to its **Deployment Actions** tab, click **Add New Action**, and in the
 **Edit Deployment Action** dialog set the **Type** **(1)** to **Apex**.
 
 ![The Edit Deployment Action dialog, filled in for an Apex script](../../_assets/annotated/vscode/pipeline-edit-action-apex.png)
@@ -221,12 +222,14 @@ required in `helios-integration` without anyone opening Setup.
 
 <details markdown="1"><summary>Under the hood: where the action is stored and how it runs</summary>
 
-The editor wrote a YAML file next to your Pull Request, under `scripts/actions/`:
+The editor wrote a YAML file named after your Pull Request, under `scripts/actions/`:
 
     commandsPreDeploy:
       - id: backfill-crew-size
         label: Backfill Crew Size on existing installations
-        apexScript: scripts/apex/backfill-crew-size.apex
+        type: apex
+        parameters:
+          apexScript: scripts/apex/backfill-crew-size.apex
         context: all
         runOnlyOnceByOrg: true
 

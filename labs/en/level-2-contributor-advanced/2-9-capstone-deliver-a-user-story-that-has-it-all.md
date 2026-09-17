@@ -7,7 +7,6 @@ lab: 9
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/devops-pipeline
 depends_on:
   commands: [hardis:work:new, hardis:work:save, hardis:org:data:import]
   flags: []
@@ -58,15 +57,18 @@ fixes.
 4. **Build the close check**: a record-triggered flow `Installation_Close_Check` on Installation
    that blocks a save into `Completed` while any related handover item is not done. Describe every
    element, the way Lab 2.2 had you do
-5. **Bring it down**: **Commit changes**, **Recent Changes**, and take what you made and nothing
+5. **Grant the new fields** on the `Helios Delivery Manager` permission set, never on a Profile,
+   the way Lab 2.6 had you do
+6. **Bring it down**: **Commit changes**, **Recent Changes**, and take what you made and nothing
    else. Commit it
-6. **Publish, Pull Request, green, merge**
+7. **Publish, Pull Request, green, merge**
 
 ### The three things waiting for you
 
-**One: the dependency.** One of the fields you create will not reach the repository. You have met
-this exact failure. The evidence is in `manifest/package.xml`, and the cause is in a file at the
-root of the repository. Do not guess: look.
+**One: the dependency.** Do not assume every field you created reached the repository. Count them in
+`force-app/` and count them again in `manifest/package.xml` before you push. When one is missing,
+the cause is the file at the root of the repository you met in Lab 2.2, and the deployment error you
+get three steps later will name the field and not the cause. Do not guess: look.
 
 **Two: the data.** Ten records in your org are ten records in your org. A green deployment will put
 the object and the flow into `helios-integration` and the checklist will be empty there, and the
@@ -76,7 +78,7 @@ feature will do nothing at all. Build a data workspace and declare an action.
 teammates** and pick **US-019**, then merge it. Amina adds a quote PDF field and grants it on
 `Helios Delivery Manager`, the same permission set your checklist fields need. Bring `integration`
 into your branch from the **Source Control** panel and resolve the conflict in the merge editor, the
-way Lab 2.7 taught: on a permission set, accept both.
+way Lab 2.7 taught: on a permission set, keep both sides.
 
 !!! note "Not US-018 again"
     Lab 2.7 already merged US-018, so simulating it a second time reports nothing to commit. Each
@@ -98,7 +100,7 @@ In `helios-integration`, after the merge:
 
 - `Handover_Item__c` with 10 template records
 - Saving an installation to `Completed` with an incomplete checklist is refused, with your message
-- `Helios_Delivery_Crew` granting the new fields, and Marco's change still present
+- `Helios_Delivery_Manager` granting the new fields, and Amina's quote PDF field still present
 
 ## If it goes wrong
 

@@ -100,6 +100,9 @@ Import/Export Workbench**. **Create Workspace** **(1)** sits at the top right, a
 the project already carries are listed on the left **(2)**: `HeliosBaseline` is the one the Training
 menu uses to seed your org.
 
+A workspace is a folder of CSV files plus the recipe that says which object each one fills and how.
+It is run by SFDMU, the data loader sfdx-hardis uses, and nothing in it is specific to one org.
+
 ![The Data Import/Export Workbench, where SFDMU workspaces are created and run](../../_assets/annotated/vscode/data-workbench.png)
 
 Create a new workspace named `HeliosCrewRefData`:
@@ -136,8 +139,12 @@ Open your Pull Request in the **DevOps Pipeline** panel, **Deployment Actions** 
 | Label              | `Load crew capacity reference data` |
 | When               | After Metadata Deployment           |
 | SFDMU Project Path | `HeliosCrewRefData`                 |
-| Execution Contexts | Validation and Deployment jobs      |
+| Execution Contexts | Deployment job only                 |
 | Target orgs        | All target orgs                     |
+
+**Deployment job only**, not both jobs, because a validation job is a rehearsal: it checks the
+metadata and changes nothing. An import writes records for real, so it has no business running
+during a check.
 
 **Type** **(1)** decides which fields the rest of the dialog shows. **SFDMU Project Path** **(2)**
 is a dropdown of the workspaces under `scripts/data/`, so it names `HeliosCrewRefData` rather than
@@ -167,12 +174,20 @@ which the dialog explains with examples under the field.
 Some things have no API. The planning board setting is one of them: it is a toggle in a managed
 package's Setup screen, and no deployment will ever touch it.
 
-| Field        | Value                                                                                                                                                      |
-|--------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Type         | **Manual**                                                                                                                                                 |
-| Label        | `Turn on the planning board in Setup`                                                                                                                      |
-| Instructions | `Setup > Installed Packages > Helios Planning > Configure > tick "Use crew capacity rules" > Save. Takes about a minute, and has to be done in every org.` |
-| Target orgs  | All target orgs                                                                                                                                            |
+| Field        | Value                                 |
+|--------------|---------------------------------------|
+| Type         | **Manual**                            |
+| Label        | `Turn on the planning board in Setup` |
+| Instructions | the four numbered lines below         |
+| Target orgs  | All target orgs                       |
+
+```
+1. Open **Setup**, type `Installed Packages` in the Quick Find box.
+2. Find **Helios Planning** and click **Configure**.
+3. Tick **"Use crew capacity rules"**, then click **Save**.
+4. Check: the planning board shows a capacity column. If it was already ticked, there is nothing to
+   do: tick the box anyway.
+```
 
 **Manual** **(1)** leaves one field that matters, **Instructions** **(2)**, a multi-line box that
 takes Markdown: number the clicks, and finish with what the person should see afterwards.
@@ -207,10 +222,11 @@ pipeline told you to**, not because you remembered.
     *No post-deployment actions defined*, the actions were never found, and the deployment happily
     carried on without them.
 
-    That happened for real while this course was being written. The job ran in a container where git
-    refused the checkout (*detected dubious ownership*), so the tool could not work out which Pull
-    Requests the merge carried, and it reported no actions rather than a failure. The workflow of
-    this project now declares the workspace safe, and sfdx-hardis stops instead of continuing.
+    That happened for real while this course was being written. The CI job could not read its own
+    git history, so the tool could not work out which Pull Requests the merge carried, and it
+    reported no actions rather than a failure. It is fixed in this project, and sfdx-hardis now
+    stops instead of carrying on. The habit it leaves behind is the one worth keeping: when a
+    feature arrives empty, read the log for that line before you blame the import.
 
 !!! danger "A data import succeeds when the object is missing"
     This one is worth knowing for the rest of your career, because it is SFDMU behaving as designed
@@ -243,19 +259,26 @@ All three are entries in the same YAML file under `scripts/actions/`:
     commandsPostDeploy:
       - id: load-crew-capacity
         label: Load crew capacity reference data
-        command: sf hardis:org:data:import --path scripts/data/HeliosCrewRefData
-        context: all
+        type: data
+        parameters:
+          sfdmuProject: HeliosCrewRefData
+        context: process-deployment-only
       - id: schedule-crew-capacity
         label: Schedule the nightly crew capacity recalculation
-        className: CrewCapacityBatch
-        cronExpression: "0 0 2 * * ?"
-        jobName: Helios crew capacity nightly
+        type: schedule-batch
+        parameters:
+          className: CrewCapacityBatch
+          cronExpression: "0 0 2 * * ?"
+          jobName: Helios crew capacity nightly
+        context: process-deployment-only
         runOnlyOnceByOrg: true
       - id: planning-board-setting
         label: Turn on the planning board in Setup
-        manual: true
-        instructions: |
-          Setup > Installed Packages > Helios Planning > Configure ...
+        type: manual
+        parameters:
+          instructions: |
+            1. Open **Setup**, type `Installed Packages` in the Quick Find box.
+            ...
 
 The data import runs SFDMU through `sf hardis:org:data:import`, the same command the Training menu
 uses to seed your org. The schedule action runs anonymous Apex that calls `System.schedule`. The

@@ -91,24 +91,25 @@ one pass it:
 2. **Clears what was queued for the next commit**, so nothing is waiting
 3. **Restores `manifest/package.xml` and `manifest/destructiveChanges.xml`** to the versions on the
    branch point, which is what actually clears the selection
-4. Sets `canForcePush`, because your branch no longer matches what you pushed
+4. **Marks your branch as safe to overwrite on GitHub**, because what you have locally no longer
+   matches what you pushed
 
-It asks you to confirm the reset first, and it refuses outright if you are standing on a major
-branch.
+It asks you to confirm the reset first, and it refuses outright if you are standing on the branch
+you were going to merge into.
 
-So after this one command, your eighty-file commit is gone and the layout move is back in your
-working tree, uncommitted. Nothing of yours is lost: the change is in Salesforce, and the file is
-still in front of you.
+So after this one command, the over-wide commit is gone and the layout move is back in front of you,
+uncommitted, in the **Source Control** panel. Nothing of yours is lost: the change is in Salesforce,
+and the file is still on your disk.
 
 ### 4. Deal with what you already pushed
 
-Locally you are clean. The branch on GitHub is not: it still carries the eighty-file commit, because
+Locally you are clean. The branch on GitHub is not: it still carries the over-wide commit, because
 the reset only changed the copy on your machine.
 
 **Nobody has reviewed it** (the normal case): push the corrected branch over it once you have
-re-published in the next step. That is what `canForcePush` was set for, and the publish will offer
-it. The mistake disappears from the history as though it never happened, which on your own feature
-branch before review is exactly what you want.
+re-published in the next step. That is what the reset authorised, and the publish will offer it. The
+mistake disappears from the history as though it never happened, which on your own feature branch
+before review is exactly what you want.
 
 **Somebody has already reviewed it**, or the branch is shared: do not force push. Rewriting history
 under a reviewer is how a review comment ends up attached to a commit that no longer exists. Commit
@@ -122,7 +123,7 @@ visible.
 
 ### 5. Publish again, properly
 
-Everything the retrieve brought down is still in your working tree, uncommitted. In the **Source
+Everything the retrieve brought down is still in your files, uncommitted. In the **Source
 Control** panel, commit **one file only**, the layout, and discard the rest.
 
 Then **Save / Publish** **(1)** again.
@@ -190,8 +191,8 @@ Publish them or discard them in the **Source Control** panel first, then run the
 
 **After the reset, `manifest/package.xml` is still long.**
 The reset put it back to the branch point, so a long file means you committed again afterwards.
-Check the Source Control panel: everything the retrieve brought down is still in your working tree,
-and only what you commit goes into the package.
+Check the Source Control panel: everything the retrieve brought down is still in your files, and
+only what you commit goes into the package.
 
 **You already merged the bad Pull Request.**
 Revert it on `integration` with the **Revert** button GitHub offers on a merged Pull Request, then

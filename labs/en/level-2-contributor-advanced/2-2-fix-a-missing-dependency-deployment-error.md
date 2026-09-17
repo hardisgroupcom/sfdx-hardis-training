@@ -96,8 +96,8 @@ subject `Crew may be too small for this installation`, then an **Update Records*
 Two things before you save, both of which the pipeline will ask you for later if you skip them now:
 
 1. **Give every element a description.** Click each one and fill in the description field with what
-   it is for, in a sentence. The Flow analyzer asks for it, and the generated documentation at Level
-   3 lab 2.10 is only as good as these
+   it is for, in a sentence. The Flow analyzer asks for it, and the generated documentation of Lab
+   3.10 is only as good as these
 2. **Give both record elements a fault path.** On the Create Records element, drag the connector
    from its **fault** outlet to a new **Assignment** named `Log Fault`, and assign
    `{!$Flow.FaultMessage}` to a text variable. Connect the Update Records fault outlet to the same

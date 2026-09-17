@@ -114,6 +114,12 @@ lists `Helios_Delivery_Crew`. Push, green, merge.
 
 Now check `helios-integration`. The permission is there.
 
+One tidy-up before you move on. The Profile file you retrieved in step 1 is still in your branch,
+emptied of everything the cleaning took out and carrying nothing this project wants. Delete
+`force-app/main/default/profiles/` from the **Source Control** panel and commit that too. This
+repository held no Profile before you arrived, and it should hold none after: the check at the end
+of the lab looks for exactly that.
+
 ### 6. Look at the other protection while you are here
 
 Open the **DevOps Pipeline** panel, then **Pipeline Settings** in the gear menu. Leave the scope
@@ -184,7 +190,7 @@ enforces it rather than hoping.
 
 - `manifest/package.xml` listing `Helios_Delivery_Crew`, not a Profile
 - `Cost` readable by the crew in `helios-integration`
-- No Profile file with meaningful permissions in your branch
+- No Profile file left in `force-app/main/default/profiles/`
 
 ## If it goes wrong
 
