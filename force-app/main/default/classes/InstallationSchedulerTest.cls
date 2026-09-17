@@ -21,7 +21,7 @@ private class InstallationSchedulerTest {
         insert new Installation__c(
             Status__c = 'Planned',
             Crew_Size__c = 2,
-            External_Id__c = 'TEST-INST-003'
+            External_Id__c = 'TEST-INST-900'
         );
     }
 
