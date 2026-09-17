@@ -35,3 +35,6 @@ site-src/
 .DS_Store
 Thumbs.db
 *.swp
+
+# Your own progress record, written by Check my work. It is yours, not the project's.
+.training-progress.json
