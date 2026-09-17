@@ -173,9 +173,8 @@ which did five things, in order:
 5. **Opened the org** in your browser, since you are about to work in it
 
 The list of scratch orgs is the ones your default Dev Hub created, which Lab 1 set to `helios-prod`,
-minus the ones named in `config/branches/`. With a sandbox instead, the command would also have
-offered to update it with what is on `integration`: that is a backpromote, and Level 2 starts with
-one.
+minus the ones named in `config/branches/`. Nothing here brings what is on `integration` into your
+org: that is a backpromote, and Level 2 starts with one.
 
 The branch prefix `features/` and the name pattern come from `config/.sfdx-hardis.yml`:
 
