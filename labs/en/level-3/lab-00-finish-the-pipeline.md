@@ -83,11 +83,11 @@ Two fields matter here, and they are **two separate text boxes, one value per li
 pairs them except their order, so line 2 of one belongs to line 2 of the other. Get the order wrong
 and contributors see the wrong description next to the right branch, with no error anywhere.
 
-| Line | Branch      | Label                                                    |
-|------|-------------|----------------------------------------------------------|
+| Line | Branch      | Label                                                        |
+|------|-------------|--------------------------------------------------------------|
 | 1    | integration | `The shared integration org, where every contributor merges` |
-| 2    | uat         | `User acceptance, only a release manager targets this`   |
-| 3    | main        | `Production, hotfixes only`                              |
+| 2    | uat         | `User acceptance, only a release manager targets this`       |
+| 3    | main        | `Production, hotfixes only`                                  |
 
 The label is what a contributor reads next to the branch name when the question is asked, so it
 says what the branch is for rather than repeating what it is called.

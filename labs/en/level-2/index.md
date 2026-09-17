@@ -47,13 +47,13 @@ over the page:
 
 Five of them, and the labs call them by these names:
 
-| Command                              | What it does                                                  |
-|--------------------------------------|---------------------------------------------------------------|
-| **Where am I?**                      | Says which level and lab you reached, and what to do next     |
-| **Simulate my teammates**            | Creates the teammate branches and Pull Requests a lab needs   |
-| **Set up one of my training orgs**   | Deploys the Helios app and its data into an org you choose    |
-| **Check my work**                    | Verifies the lab you just finished and prints your receipt    |
-| **Reset this level**                 | Puts your repository back to the start of Level 2             |
+| Command                            | What it does                                                |
+|------------------------------------|-------------------------------------------------------------|
+| **Where am I?**                    | Says which level and lab you reached, and what to do next   |
+| **Simulate my teammates**          | Creates the teammate branches and Pull Requests a lab needs |
+| **Set up one of my training orgs** | Deploys the Helios app and its data into an org you choose  |
+| **Check my work**                  | Verifies the lab you just finished and prints your receipt  |
+| **Reset this level**               | Puts your repository back to the start of Level 2           |
 
 There is one menu per level, and each holds only what that level needs, so nothing in front of you is
 for a lab you have not reached.
