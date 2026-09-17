@@ -480,8 +480,12 @@ export const RULES = [
       const branches = ["integration", "uat", "preprod", "main"];
       const notConfigured = [];
       for (const b of branches) {
-        const cfg = ctx.readOn("main", `config/branches/.sfdx-hardis.${b}.yml`) ||
-          ctx.readOn(DEV, `config/branches/.sfdx-hardis.${b}.yml`) || "";
+        // Whichever branch carries the configured file counts: the release
+        // manager writes it where they stand, and it reaches main with the
+        // first promotion, several labs later.
+        const cfg = [ctx.readOn(DEV, `config/branches/.sfdx-hardis.${b}.yml`), ctx.readOn("main", `config/branches/.sfdx-hardis.${b}.yml`)]
+          .filter(Boolean)
+          .find((text) => /targetUsername:\s*["']?[^"'\s]/.test(text) && /instanceUrl:\s*["']?https/.test(text)) || "";
         const hasUser = /targetUsername:\s*["']?[^"'\s]/.test(cfg);
         const hasUrl = /instanceUrl:\s*["']?https/.test(cfg);
         if (!hasUser || !hasUrl) {
