@@ -98,10 +98,10 @@ If you only have one, use plus-addressing. Everything between the `+` and the `@
 delivery, so one inbox answers to as many addresses as you like. On Gmail, if your address is
 `jane.doe@gmail.com`:
 
-| Sign up with                  | The confirmation arrives in |
-|-------------------------------|------------------------------|
-| `jane.doe+heliosdev@gmail.com`   | `jane.doe@gmail.com`      |
-| `jane.doe+heliosinteg@gmail.com` | `jane.doe@gmail.com`      |
+| Sign up with                     | The confirmation arrives in |
+|----------------------------------|-----------------------------|
+| `jane.doe+heliosdev@gmail.com`   | `jane.doe@gmail.com`        |
+| `jane.doe+heliosinteg@gmail.com` | `jane.doe@gmail.com`        |
 
 Salesforce treats them as two different addresses, which is the point. Outlook.com, Fastmail,
 iCloud and most company mail servers do the same; if yours does not, the confirmation simply never

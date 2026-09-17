@@ -94,11 +94,7 @@
     }
   ],
   "branches": {
-    "majors": [
-      "integration",
-      "uat",
-      "main"
-    ],
+    "majors": ["integration", "uat", "main"],
     "training": [
       {
         "name": "training/start-level-1",
@@ -140,10 +136,7 @@
         "It appears on the Installation record page"
       ],
       "branch": "features/US-014-panels-required",
-      "metadata": [
-        "Installation__c.Panels_Required__c",
-        "Helios_Delivery_Crew"
-      ]
+      "metadata": ["Installation__c.Panels_Required__c", "Helios_Delivery_Crew"]
     },
     {
       "id": "US-016",
@@ -176,10 +169,7 @@
         "Planners can override it"
       ],
       "branch": "training/mate-us-018-crew-capacity",
-      "metadata": [
-        "Installation_Assign_Crew flow",
-        "Helios_Delivery_Manager"
-      ]
+      "metadata": ["Installation_Assign_Crew flow", "Helios_Delivery_Manager"]
     },
     {
       "id": "US-019",
@@ -188,13 +178,9 @@
       "author": "amina",
       "title": "Generate a quote PDF from an opportunity",
       "story": "As a sales rep, I want a button that generates the quote PDF, so that I stop rebuilding it in a spreadsheet.",
-      "acceptance": [
-        "The permission is granted to managers"
-      ],
+      "acceptance": ["The permission is granted to managers"],
       "branch": "training/mate-us-019-quote-pdf",
-      "metadata": [
-        "Helios_Delivery_Manager"
-      ]
+      "metadata": ["Helios_Delivery_Manager"]
     },
     {
       "id": "US-020",
@@ -203,14 +189,9 @@
       "author": "marco",
       "title": "Refactor InstallationScheduler",
       "story": "As a developer, I want the scheduler split into testable methods, so that we stop being afraid of it.",
-      "acceptance": [
-        "Behaviour unchanged",
-        "Coverage above the threshold"
-      ],
+      "acceptance": ["Behaviour unchanged", "Coverage above the threshold"],
       "branch": "training/mate-us-020-apex-refactor",
-      "metadata": [
-        "InstallationScheduler"
-      ],
+      "metadata": ["InstallationScheduler"],
       "failsCheck": true
     },
     {
@@ -220,10 +201,7 @@
       "author": "you",
       "title": "Warn the planner when a crew is too small",
       "story": "As a planner, I want a warning on the installation when the assigned crew is smaller than the job needs, so that I fix it before the van leaves.",
-      "acceptance": [
-        "The flow reads Crew Size",
-        "A warning is shown"
-      ],
+      "acceptance": ["The flow reads Crew Size", "A warning is shown"],
       "branch": "features/US-021-crew-size-warning",
       "metadata": [
         "Installation__c.Crew_Size__c",
@@ -243,9 +221,7 @@
         "Existing records are backfilled with the default of 2"
       ],
       "branch": "features/US-024-crew-size-required",
-      "metadata": [
-        "Installation__c.Crew_Size__c"
-      ],
+      "metadata": ["Installation__c.Crew_Size__c"],
       "seededFailure": "The permission sets still grant field level security on the field, which a required field cannot have, so the deployment fails on them. Once that is fixed the deployment goes green and silently makes the 30 installations with no crew size unsaveable, because Salesforce enforces a required field on save rather than on the data already there"
     },
     {
@@ -261,10 +237,7 @@
         "The planning board setting is on"
       ],
       "branch": "features/US-026-crew-capacity-data",
-      "metadata": [
-        "Crew_Capacity__c",
-        "CrewCapacityBatch"
-      ],
+      "metadata": ["Crew_Capacity__c", "CrewCapacityBatch"],
       "seededFailure": "The feature is silently inert after deployment because the reference records and the schedule exist in no org"
     },
     {
@@ -279,10 +252,7 @@
         "Coverage stays above the threshold"
       ],
       "branch": "features/US-027-schedule-by-availability",
-      "metadata": [
-        "InstallationScheduler",
-        "InstallationSchedulerTest"
-      ],
+      "metadata": ["InstallationScheduler", "InstallationSchedulerTest"],
       "seededFailure": "The obvious implementation queries inside its loop, which PMD warns about, and the new branch has no test, which drops coverage below the threshold and blocks the deployment"
     },
     {
@@ -292,14 +262,9 @@
       "author": "you",
       "title": "Crews can read the panel batch cost",
       "story": "As a delivery crew member, I want to see the cost of the batch I am installing, so that I report damage with the right value.",
-      "acceptance": [
-        "The crew can read Panel Batch Cost"
-      ],
+      "acceptance": ["The crew can read Panel Batch Cost"],
       "branch": "features/US-033-batch-cost-visibility",
-      "metadata": [
-        "Panel_Batch__c.Cost__c",
-        "Helios_Delivery_Crew"
-      ],
+      "metadata": ["Panel_Batch__c.Cost__c", "Helios_Delivery_Crew"],
       "seededFailure": "The permission was granted on a Profile that overwrite management protects, so the deployment is green and the permission is missing"
     },
     {
@@ -314,10 +279,7 @@
         "Marco crew cap from US-018 still wins when the two disagree"
       ],
       "branch": "features/US-034-crew-override",
-      "metadata": [
-        "Installation_Assign_Crew flow",
-        "Helios_Delivery_Manager"
-      ],
+      "metadata": ["Installation_Assign_Crew flow", "Helios_Delivery_Manager"],
       "seededFailure": "Marco US-018 merged first and touched the same flow and the same permission set"
     },
     {
@@ -331,9 +293,7 @@
         "Crew Size sits above Install Date on the Installation layout"
       ],
       "branch": "features/US-038-installation-notes-tidy",
-      "metadata": [
-        "Installation__c-Installation Layout"
-      ],
+      "metadata": ["Installation__c-Installation Layout"],
       "seededFailure": "None. The lab is about publishing far too much and recovering from it"
     },
     {
@@ -368,9 +328,7 @@
         "Completed installations stay exempt"
       ],
       "branch": "fixes/US-045-installation-date-hotfix",
-      "metadata": [
-        "Installation_Date_Not_Past validation rule"
-      ],
+      "metadata": ["Installation_Date_Not_Past validation rule"],
       "seededFailure": "The validation rule shipped without ISCHANGED, so it refuses every save of an old record"
     }
   ],
@@ -382,11 +340,7 @@
       "source": "training/mate-us-018-crew-capacity",
       "target": "integration",
       "checkState": "success",
-      "usedBy": [
-        "l2-lab-06",
-        "l3-lab-02",
-        "l3-lab-04"
-      ]
+      "usedBy": ["l2-lab-06", "l3-lab-02", "l3-lab-04"]
     },
     {
       "number": 2,
@@ -395,9 +349,7 @@
       "source": "training/mate-us-019-quote-pdf",
       "target": "integration",
       "checkState": "success",
-      "usedBy": [
-        "l3-lab-04"
-      ]
+      "usedBy": ["l3-lab-04"]
     },
     {
       "number": 3,
@@ -406,9 +358,7 @@
       "source": "training/mate-us-020-apex-refactor",
       "target": "integration",
       "checkState": "failure",
-      "usedBy": [
-        "l3-lab-04"
-      ]
+      "usedBy": ["l3-lab-04"]
     }
   ],
   "data": {

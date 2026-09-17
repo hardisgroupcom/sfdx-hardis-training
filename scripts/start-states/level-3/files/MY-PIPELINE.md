@@ -6,11 +6,11 @@ that the next person can see how the pipeline was put together.
 
 ## Orgs
 
-| Branch | Org alias | What it is for |
-|---|---|---|
+| Branch      | Org alias          | What it is for                                                              |
+|-------------|--------------------|-----------------------------------------------------------------------------|
 | integration | helios-integration | Where every contributor merges. Deployed on every merge into `integration`. |
-| uat | helios-uat | Not wired yet. Level 3 lab 0 is where it becomes a major branch. |
-| main | helios-prod | Not wired yet either. Level 3 finishes the pipeline up to here. |
+| uat         | helios-uat         | Not wired yet. Level 3 lab 0 is where it becomes a major branch.            |
+| main        | helios-prod        | Not wired yet either. Level 3 finishes the pipeline up to here.             |
 
 ## Level 2
 

@@ -17,11 +17,11 @@ runs the Git commands for you.
 
 ## The three levels
 
-| Level                                            | Who it is for                                                    | Time   | Before you start   | You finish able to                                                                                  |
-|--------------------------------------------------|------------------------------------------------------------------|--------|--------------------|-----------------------------------------------------------------------------------------------------|
-| [**1 - Contributor basics**](level-1/index.md)   | Admins and developers joining a team that already has a pipeline | 2 h | Nothing            | Take a User Story, build it, publish it, get a green Pull Request, merge it                         |
-| [**2 - Contributor advanced**](level-2/index.md) | The same people, once the easy stories are behind them           | 4 h | Level 1            | Solve deployment errors, declare deployment actions, handle overwrites, resolve conflicts           |
-| [**3 - Release Manager**](level-3/index.md)      | The person who owns the pipeline, the orgs and the releases      | 6 h | Levels 1 **and** 2 | Take over an org with no pipeline, review and merge, release to UAT and production, hotfix, monitor |
+| Level                                            | Who it is for                                                    | Time | Before you start   | You finish able to                                                                                  |
+|--------------------------------------------------|------------------------------------------------------------------|------|--------------------|-----------------------------------------------------------------------------------------------------|
+| [**1 - Contributor basics**](level-1/index.md)   | Admins and developers joining a team that already has a pipeline | 2 h  | Nothing            | Take a User Story, build it, publish it, get a green Pull Request, merge it                         |
+| [**2 - Contributor advanced**](level-2/index.md) | The same people, once the easy stories are behind them           | 4 h  | Level 1            | Solve deployment errors, declare deployment actions, handle overwrites, resolve conflicts           |
+| [**3 - Release Manager**](level-3/index.md)      | The person who owns the pipeline, the orgs and the releases      | 6 h  | Levels 1 **and** 2 | Take over an org with no pipeline, review and merge, release to UAT and production, hotfix, monitor |
 
 Levels 1 and 2 are both the contributor path. You may stop after Level 1 and you will be able to
 deliver. Level 2 is where you learn what to do when delivery goes wrong, which is most of the job.

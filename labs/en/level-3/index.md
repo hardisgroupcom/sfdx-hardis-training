@@ -47,15 +47,15 @@ and expand **Training (custom)** **(1)**:
 
 Seven commands **(2)**, and the labs call them by these names:
 
-| Command                         | What it does                                                    |
-|---------------------------------|-----------------------------------------------------------------|
-| **Set up my pipeline**          | Forks the repository, turns Actions on, gives the CI a way in   |
-| **Where am I?**                 | Says which level and lab you reached, and what to do next       |
-| **Set up one of my training orgs** | Deploys the Helios app and its data into an org you choose   |
-| **Check my work**               | Verifies the lab you just finished and prints your receipt      |
-| **Simulate my teammates**       | Creates the teammate branches and Pull Requests a lab needs     |
-| **Reset this level**            | Puts your repository back to the start of a level               |
-| **Clean up a training org**     | Removes the Helios app and its data from an org                 |
+| Command                            | What it does                                                  |
+|------------------------------------|---------------------------------------------------------------|
+| **Set up my pipeline**             | Forks the repository, turns Actions on, gives the CI a way in |
+| **Where am I?**                    | Says which level and lab you reached, and what to do next     |
+| **Set up one of my training orgs** | Deploys the Helios app and its data into an org you choose    |
+| **Check my work**                  | Verifies the lab you just finished and prints your receipt    |
+| **Simulate my teammates**          | Creates the teammate branches and Pull Requests a lab needs   |
+| **Reset this level**               | Puts your repository back to the start of a level             |
+| **Clean up a training org**        | Removes the Helios app and its data from an org               |
 
 The same seven are on the **Welcome page**, as a card called **Training**. Either route runs the
 same thing.

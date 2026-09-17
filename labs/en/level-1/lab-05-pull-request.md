@@ -86,8 +86,8 @@ request**.
 
 Open the **Checks** tab **(1)**. Two of them matter here, and both start on their own:
 
-| Check                                        | What it does                                                                                |
-|----------------------------------------------|---------------------------------------------------------------------------------------------|
+| Check                                         | What it does                                                                                |
+|-----------------------------------------------|---------------------------------------------------------------------------------------------|
 | **Simulate Deployment (sfdx-hardis)** **(3)** | Deploys your metadata into `helios-integration` in validation mode, and runs the Apex tests |
 | **Mega-Linter** **(2)**                       | Runs the code quality linters over the repository                                           |
 
