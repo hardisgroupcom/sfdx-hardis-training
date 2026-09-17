@@ -107,6 +107,10 @@ writeJson(path.join(OUT, "universe.json"), {
   // clicks that tick them. They follow the sourceMembers list below: the panel
   // sorts by type then name, and the seeded app rows sit between them.
   retrieverRows: "611,863,914",
+  // The order the Deployment Actions tab lists them in, for the editor shots:
+  // this project loads its reference data after the metadata deployment
+  actionEditorOrder:
+    "command,remove-packagexml-items,data,apex,schedule-batch,publish-community,manual,target-orgs-include,target-orgs-exclude",
   branches: [
     ...u.branches.majors.filter((b) => b !== "integration"),
     ...u.userStories.filter((s) => s.level <= 2 && s.author === "you").map((s) => s.branch),
@@ -481,7 +485,7 @@ if (fs.existsSync(basePlanFile)) {
   const BACKPROMOTED = [
     { id: "US-018", title: "Cap the crew size a planner can assign", author: "Marco Bianchi", branch: "training/mate-us-018-crew-capacity", items: 3, actions: 0 },
     { id: "US-019", title: "Generate a quote PDF from an opportunity", author: "Amina Diallo", branch: "training/mate-us-019-quote-pdf", items: 2, actions: 0 },
-    { id: "US-026", title: "Crew capacity reference data and nightly recalculation", author: "Amina Diallo", branch: "features/US-026-crew-capacity-data", items: 2, actions: 2 }
+    { id: "US-026", title: "Crew capacity reference data and nightly recalculation", author: "You", branch: "features/US-026-crew-capacity-data", items: 2, actions: 2 }
   ];
   plan.pullRequests = BACKPROMOTED.map((story, i) => ({
     ...(plan.pullRequests[i] || plan.pullRequests[0]),
@@ -630,14 +634,6 @@ const ACTIONS_YAML = `commandsPreDeploy:
     command: sf hardis:org:monitor:limits
     context: all
     allowFailure: true
-  - id: 7a1c3d2e-2d0b-4f1e-8e3b-024b00000002
-    label: Load the crew capacity reference data
-    type: data
-    when: pre-deploy
-    parameters:
-      sfdmuProject: HeliosCrewRefData
-    command: sf hardis:org:data:import --path scripts/data/HeliosCrewRefData
-    context: process-deployment-only
   - id: 7a1c3d2e-2d0b-4f1e-8e3b-024b00000003
     label: Remove profiles from the delta package
     type: remove-packagexml-items
@@ -648,6 +644,14 @@ const ACTIONS_YAML = `commandsPreDeploy:
     command: ""
     context: check-deployment-only
 commandsPostDeploy:
+  - id: 7a1c3d2e-2d0b-4f1e-8e3b-024b00000002
+    label: Load the crew capacity reference data
+    type: data
+    when: post-deploy
+    parameters:
+      sfdmuProject: HeliosCrewRefData
+    command: sf hardis:org:data:import --path scripts/data/HeliosCrewRefData
+    context: process-deployment-only
   - id: 7a1c3d2e-2d0b-4f1e-8e3b-024b00000004
     label: Backfill Crew Size on existing installations
     type: apex
