@@ -47,7 +47,7 @@ over the page:
 
 ![The Level 3 training menu, opened on the Welcome page](../../_assets/annotated/vscode/welcome-custom-menu-3.png)
 
-Seven of them, and the labs call them by these names:
+Eight of them, and the labs call them by these names:
 
 | Command                            | What it does                                                       |
 |------------------------------------|--------------------------------------------------------------------|
@@ -56,6 +56,7 @@ Seven of them, and the labs call them by these names:
 | **Set up one of my training orgs** | Deploys the Helios app and its data into an org you choose         |
 | **Simulate my teammates**          | Creates the teammate branches and Pull Requests a lab needs        |
 | **Check my work**                  | Verifies the lab you just finished and prints your receipt         |
+| **Claim my badge**                 | Checks the whole level, then opens your badge claim filled in      |
 | **Reset this level**               | Puts your repository back to the start of Level 3                  |
 | **Clean up a training org**        | Removes the Helios app and its data from an org                    |
 

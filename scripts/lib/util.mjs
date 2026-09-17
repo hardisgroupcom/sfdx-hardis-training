@@ -212,6 +212,27 @@ export async function select(message, choices, preselected) {
   }
 }
 
+/** A free text answer. Enter accepts the value in brackets. */
+export async function input(message, initial = "") {
+  if (!isInteractive()) {
+    if (initial) {
+      info(`${message} ${c.green(initial)}`);
+      return initial;
+    }
+    abort(`${message} needs an answer, and this terminal cannot ask for one.`);
+  }
+  for (;;) {
+    const answer = await ask(c.bold(message) + (initial ? c.dim(` [${initial}] `) : " "));
+    if (answer) {
+      return answer;
+    }
+    if (initial) {
+      return initial;
+    }
+    warn("Type an answer, it cannot be empty.");
+  }
+}
+
 export async function confirm(message, defaultYes = false) {
   if (!isInteractive()) {
     return defaultYes;
@@ -362,4 +383,49 @@ export function repoSlug() {
 
 export function hasGh() {
   return run("gh", ["--version"], { capture: true, quiet: true }).code === 0;
+}
+
+/**
+ * gh, installed and signed in. Both are worth telling apart: the fixes differ.
+ *
+ * Signing in happens here rather than in a message telling somebody to type a
+ * command: this course never sends anybody to a terminal.
+ */
+export function ensureGh() {
+  if (!hasGh()) {
+    abort(
+      "The GitHub CLI (gh) is not installed.",
+      [
+        "Install it from https://cli.github.com/, then click this command again.",
+        "Lab 1.2 shows which download to take."
+      ].join("\n  ")
+    );
+  }
+  if (run("gh", ["auth", "status"], { capture: true, quiet: true }).code === 0) {
+    return;
+  }
+
+  info("");
+  info("You are not signed in to GitHub yet, so let us do that first.");
+  info(c.dim("    A browser window opens. Answer GitHub.com, HTTPS, and sign in there."));
+  info("");
+  const login = run("gh", ["auth", "login", "--hostname", "github.com", "--git-protocol", "https", "--web"]);
+  if (login.code !== 0 || run("gh", ["auth", "status"], { capture: true, quiet: true }).code !== 0) {
+    abort(
+      "The GitHub sign-in did not finish.",
+      "Click the command again and complete the sign-in in the browser it opens."
+    );
+  }
+  ok("Signed in to GitHub.");
+}
+
+/** Opens a page in the default browser, and always prints it in case it does not. */
+export function openUrl(url) {
+  const opener = WINDOWS
+    ? { command: "cmd", args: ["/c", "start", "", url] }
+    : process.platform === "darwin"
+      ? { command: "open", args: [url] }
+      : { command: "xdg-open", args: [url] };
+  const res = run(opener.command, opener.args, { capture: true, quiet: true });
+  return res.code === 0;
 }

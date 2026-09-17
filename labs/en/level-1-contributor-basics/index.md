@@ -60,13 +60,14 @@ over the page:
 
 ![The Level 1 training menu, opened on the Welcome page](../../_assets/annotated/vscode/welcome-custom-menu.png)
 
-Four of them, and the labs call them by these names:
+Five of them, and the labs call them by these names:
 
 | Command                            | What it does                                                                     |
 |------------------------------------|----------------------------------------------------------------------------------|
 | **Set up my training environment** | Forks the repository, creates your scratch orgs with the app, wires the pipeline |
 | **Where am I?**                    | Says which level and lab you reached, and what to do next                        |
 | **Check my work**                  | Verifies the lab you just finished and prints your receipt                       |
+| **Claim my badge**                 | Checks the whole level, then opens your badge claim filled in                    |
 | **Reset this level**               | Puts your repository back to the start of Level 1                                |
 
 There is one menu per level, and each holds only what that level needs, so nothing in front of you is

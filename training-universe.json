@@ -393,6 +393,7 @@
       "duration": "about 2 h",
       "prerequisite": null,
       "badge": "sfdx-hardis Contributor Basics",
+      "star": "hardisgroupcom/sfdx-hardis",
       "labs": [
         {
           "lab": 1,
@@ -452,6 +453,7 @@
       "duration": "about 4 h",
       "prerequisite": 1,
       "badge": "sfdx-hardis Contributor",
+      "star": "oxsecurity/megalinter",
       "labs": [
         {
           "lab": 1,
@@ -525,6 +527,7 @@
       "duration": "about 6 h",
       "prerequisite": 2,
       "badge": "sfdx-hardis Release Manager",
+      "star": "hardisgroupcom/vscode-sfdx-hardis",
       "labs": [
         {
           "lab": 1,

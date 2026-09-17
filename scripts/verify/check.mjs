@@ -90,9 +90,8 @@ export default async function main(args) {
     ok(`${passed} of ${results.length} checks passed.`);
     if (lab === null) {
       info("");
-      info(`  You can claim your level ${level} badge now. Open an issue on`);
-      info(`  ${c.cyan("https://github.com/hardisgroupcom/sfdx-hardis-training/issues/new/choose")}`);
-      info("  and paste the receipt lines above.");
+      info(`  You can claim your level ${level} badge now:`);
+      info(`  Welcome page > ${c.bold(`Training: Level ${level}`)} > ${c.bold("Claim my badge")}.`);
     }
   } else {
     warn(`${passed} of ${results.length} checks passed. Read what is missing above, fix it, and run this again.`);

@@ -63,7 +63,7 @@ export default async function status() {
   console.log("");
   if (nextLevel === null) {
     ok("Every lab of all three levels verifies. Claim your badges if you have not already.");
-    info(`  ${c.cyan("https://github.com/" + u.course.upstreamRepo + "/issues/new/choose")}`);
+    info(`  Welcome page > ${c.bold("Training: Level 3")} > ${c.bold("Claim my badge")}.`);
     return;
   }
 

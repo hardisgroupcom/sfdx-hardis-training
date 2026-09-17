@@ -149,17 +149,21 @@ nothing carries an unfinished state into the next.
 
 Welcome page > **Training: Level 3** > **Check my work**, then pick **Everything in level 3**.
 
-Eleven checks. Keep the receipts.
+Eleven checks.
 
 ## Claim your badge
 
-1. Open [a new issue on the training repository](https://github.com/hardisgroupcom/sfdx-hardis-training/issues/new/choose)
-2. Pick **Claim a training badge**
-3. Level **3**, your Trailblazer username, the URL of your public fork, your receipts
-4. Submit
+Welcome page > **Training: Level 3** > **Claim my badge**.
 
 A Level 3 claim re-runs the **Level 1 and Level 2 audits first**. That is how the prerequisite is
-enforced, because a Trailmix cannot gate anything.
+enforced, because a Trailmix cannot gate anything. The command runs those same audits on your
+machine before it opens anything, so you find out here rather than on the issue.
+
+!!! info "It also asks you to star the VS Code extension"
+    Level 3 asks you to star
+    [hardisgroupcom/vscode-sfdx-hardis](https://github.com/hardisgroupcom/vscode-sfdx-hardis), the
+    extension every click of this course went through, on top of the Level 1 and Level 2 stars. The
+    command offers to do all three for you, and the audit checks them.
 
 The badge is **sfdx-hardis Release Manager**.
 

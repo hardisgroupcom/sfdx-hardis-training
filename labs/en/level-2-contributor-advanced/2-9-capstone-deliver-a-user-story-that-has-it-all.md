@@ -112,17 +112,22 @@ Level 2, which means redoing the capstone, not the whole level.
 
 Welcome page > **Training: Level 2** > **Check my work**, then pick **Everything in level 2**.
 
-Nine checks. Keep the receipts.
+Nine checks.
 
 ## Claim your badge
 
-1. Open [a new issue on the training repository](https://github.com/hardisgroupcom/sfdx-hardis-training/issues/new/choose)
-2. Pick **Claim a training badge**
-3. Level **2**, your Trailblazer username, the URL of your public fork, your receipts
-4. Submit
+Welcome page > **Training: Level 2** > **Claim my badge**.
+
+Same as Level 1: it re-checks everything here, opens the claim form filled in, and you tick the
+three boxes and submit.
 
 A Level 2 claim re-runs the **Level 1 audit as well**, because the badge says you can do both. If
-you skipped Level 1, that is where it will say so.
+you skipped Level 1, that is where it will say so, and the command says it before the form opens.
+
+!!! info "It also asks you to star MegaLinter"
+    Level 2 asks you to star [oxsecurity/megalinter](https://github.com/oxsecurity/megalinter), the
+    linting engine behind the quality gate your Pull Requests go through, on top of the Level 1 star.
+    The command offers to do both for you, and the audit checks them.
 
 The badge for this level is called **sfdx-hardis Contributor**, without a qualifier. That is
 deliberate: Level 1 makes you able to deliver, Level 2 makes you a contributor.

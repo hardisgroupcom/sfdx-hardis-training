@@ -78,13 +78,19 @@ Node.
 
 ## Claiming a badge
 
-[Open a claim issue](https://github.com/hardisgroupcom/sfdx-hardis-training/issues/new/choose) with
-your level, your Trailblazer username, the URL of your public fork, and the receipts printed by
-**Check my work**.
+**Training: Level N > Claim my badge**. It re-runs every check of the level locally, refuses to
+claim a level that does not pass, and opens the claim issue form with the level, your Trailblazer
+username, your repository and your receipts already filled in. You tick the three consent boxes and
+submit. [Opening the form by hand](https://github.com/hardisgroupcom/sfdx-hardis-training/issues/new/choose)
+works too.
 
 A job clones your repository, re-runs every check of the level against its actual content and
 history, and answers on the issue. Nobody reviews claims by hand. A level 2 claim re-runs the level
 1 audit too, and a level 3 claim re-runs all three.
+
+Each level also asks you to star the project it teaches: sfdx-hardis for level 1, MegaLinter for
+level 2, the VS Code extension for level 3. The claim command offers to do it, and the audit checks
+it.
 
 Your repository has to be public, and your GitHub handle becomes public in this repository.
 

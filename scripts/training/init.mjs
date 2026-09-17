@@ -38,7 +38,7 @@ import os from "os";
 import path from "path";
 import {
   ROOT, c, title, info, ok, warn, abort, run, runAsync, runJson, parseJsonOutput, git, gitOut,
-  select, confirm, connectedOrgs, orgChoices, universe, hasGh, repoSlug
+  select, confirm, connectedOrgs, orgChoices, universe, ensureGh, repoSlug
 } from "../lib/util.mjs";
 import { deployAppToAll, grantManager, loadData, recordSeeded, alreadySeeded } from "./seed.mjs";
 
@@ -74,38 +74,6 @@ export function levelOnePipeline(aliasOf = (alias) => alias) {
 const step = (n, text) => title(`${n} of ${STEPS}  ${text}`);
 
 // -------------------------------------------------------------------- GitHub
-/** gh, installed and signed in. Both are worth telling apart: the fixes differ. */
-function checkGh() {
-  if (!hasGh()) {
-    abort(
-      "The GitHub CLI (gh) is not installed.",
-      [
-        "Install it from https://cli.github.com/, then click this command again.",
-        "Lab 1.2 shows which download to take."
-      ].join("\n  ")
-    );
-  }
-  const status = run("gh", ["auth", "status"], { capture: true, quiet: true });
-  if (status.code === 0) {
-    return;
-  }
-
-  // Nobody is signed in. Sign them in here rather than telling them to type a
-  // command: this course never sends anybody to a terminal.
-  info("");
-  info("You are not signed in to GitHub yet, so let us do that first.");
-  info(c.dim("    A browser window opens. Answer GitHub.com, HTTPS, and sign in there."));
-  info("");
-  const login = run("gh", ["auth", "login", "--hostname", "github.com", "--git-protocol", "https", "--web"]);
-  if (login.code !== 0 || run("gh", ["auth", "status"], { capture: true, quiet: true }).code !== 0) {
-    abort(
-      "The GitHub sign-in did not finish.",
-      "Click Set up my training environment again and complete the sign-in in the browser it opens."
-    );
-  }
-  ok("Signed in to GitHub.");
-}
-
 function ghJson(args) {
   const res = run("gh", args, { capture: true, quiet: true });
   return res.code === 0 ? parseJsonOutput(res.stdout) : null;
@@ -629,7 +597,7 @@ export default async function init(args) {
   info(c.dim("already there, and nobody asks a new contributor to build them on their first day."));
   info("");
 
-  checkGh();
+  ensureGh();
   const handle = currentHandle();
   if (!handle) {
     abort("Could not read your GitHub account.", "Click Set up my training environment again.");

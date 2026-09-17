@@ -88,25 +88,36 @@ is not failing. Not using it and giving up is.
 
 Welcome page > **Training: Level 1** > **Check my work**, then pick **Everything in level 1**.
 
-Six checks should pass. Keep the receipt lines it prints: they are what you paste into your badge
-claim.
+Six checks should pass. The receipt lines it prints are your progress record, and the claim below
+picks them up on its own.
 
 ## Claim your badge
 
 You finished Level 1.
 
-1. Open [a new issue on the training repository](https://github.com/hardisgroupcom/sfdx-hardis-training/issues/new/choose)
-2. Pick **Claim a training badge**
-3. Fill in: level **1**, your Trailblazer username, the URL of **your public fork**, and the
-   receipt lines
-4. Submit
+Welcome page > **Training: Level 1** > **Claim my badge**.
 
-A job clones your fork, re-runs every check above against it, and answers on the issue. Nobody
+It checks the whole level again first and refuses to claim anything that does not pass: a claim that
+would be rejected is a claim not worth opening. Then it opens the claim form of the training
+repository in your browser, with the level, your username, your fork and your receipts already in
+it. Tick the three boxes and click **Submit**.
+
+Those three boxes are yours to tick, and nothing ticks them for you. They say your fork is public
+and your GitHub handle becomes public in the training repository, which is a decision about your
+name rather than a formality.
+
+!!! info "It also asks you to star sfdx-hardis"
+    Level 1 asks you to star [hardisgroupcom/sfdx-hardis](https://github.com/hardisgroupcom/sfdx-hardis),
+    the open source project this whole course is about. The command offers to do it for you, and the
+    audit checks it. One click, free, and it is what keeps a project like this one visible.
+
+A job then clones your fork, re-runs every check above against it, and answers on the issue. Nobody
 reviews it by hand, so it usually takes a couple of minutes. If something does not verify, the
 comment names the exact lab and what it looked for, you fix it, and you edit the issue to run it
 again.
 
-Your fork has to be **public** for the audit to read it.
+Your fork has to be **public** for the audit to read it. If it is private, the command offers to
+make it public.
 
 !!! note "It is a badge, not a certification"
     There is no exam and no accreditation here. Share it under *Featured* on LinkedIn, not under

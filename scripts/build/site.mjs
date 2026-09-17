@@ -203,9 +203,16 @@ const badgeIndex = [
   "",
   "## Claim yours",
   "",
-  `[Open a claim issue](https://github.com/${universe.course.upstreamRepo}/issues/new/choose) with your`,
-  "level, your Trailblazer username, the URL of your public fork and the receipt lines printed by",
-  "**Check my work**, in the Training menu of your level.",
+  "In VS Code: Welcome page > **Training: Level N** > **Claim my badge**. It checks the whole level",
+  "on your machine first, then opens the claim form with everything already filled in, and you tick",
+  "the three boxes and submit.",
+  "",
+  "Each level also asks you to star the open source project it teaches, which the command offers to",
+  "do and the audit checks.",
+  "",
+  `You can also [open a claim issue](https://github.com/${universe.course.upstreamRepo}/issues/new/choose) by hand,`,
+  "with your level, your Trailblazer username, the URL of your public fork and the receipt lines",
+  "printed by **Check my work**.",
   ""
 ].join("\n");
 fs.mkdirSync(path.join(OUT, "badges"), { recursive: true });
