@@ -28,14 +28,14 @@ Second ticket, second day. Nobody is going to walk you through this one.
 
 > **US-016 - Let the crew leave notes on an installation**
 >
-> As a delivery crew member, I want a free text notes field and a list view of my open
-> installations, so that I hand over cleanly to the next shift.
+> As a delivery crew member, I want a free text notes field on an installation, so that I hand
+> over cleanly to the next shift.
 >
 > Acceptance criteria:
 >
 > - A **Crew Notes** field exists on Installation, long text, editable by the crew
-> - A **My Open Installations** list view exists, showing installations that are not completed
-> - The crew permission set grants the field
+> - It is on the Installation page layout, where the crew can see it
+> - The crew permission set grants it
 
 ## Before you start
 
@@ -53,32 +53,25 @@ No numbered clicks this time. The loop, in order:
     - A **Long Text Area** field `Crew_Notes__c` on `Installation__c`, 4000 characters, with a
       description and help text
     - Grant it **Read** and **Edit** on `Helios Delivery Crew`, because a crew member writes notes
-    - On the layout
-    - A list view `My Open Installations` on Installation, filtered to `Status not equal to
-      Completed`, with the columns a crew member needs
+    - On the Installation page layout
 3. **Bring it down.** **Commit changes**, **Recent Changes**, **Search Metadata**, and take the
-   field, the permission set, the layout and the list view. Nothing else. Commit them
-4. **Publish**, and read `manifest/package.xml` before pushing. Four entries, all yours
+   field, the permission set and the layout. Nothing else. Commit them
+4. **Publish**, and read `manifest/package.xml` before pushing. Three entries, all yours
 5. **Open the Pull Request** into `integration` in your own fork, get it green, merge
 6. **Check the integration org** after the deployment job
 
-## Two things that will catch you
+## The one thing that catches everybody
 
-**The list view will look different after publishing.** Salesforce records list views with a scope
-that means "mine" for the person who retrieved them. The `listViewsMine` cleaning rule rewrites
-that, because a list view whose scope is one developer's user is useless to everybody else. Look at
-the diff and you will see it happen.
-
-**Long text areas cannot go everywhere.** A Long Text Area cannot be used in a list view column and
-cannot be filtered on. If you try to put `Crew_Notes__c` in the `My Open Installations` columns,
-Salesforce refuses. Pick the columns a crew actually needs: name, account, status, install date.
+**The permission set and the field travel together.** If you retrieve the field and forget the
+permission set, the deployment succeeds and nobody can see the field. If you retrieve the
+permission set and forget the field, the deployment fails outright, because a permission set cannot
+grant something that is not there. Take both, every time. It is the same pair you took in Lab 4.
 
 ## What you should see
 
 In `helios-integration`, after the merge deployment:
 
-- `Crew Notes` on the Installation record, editable
-- `My Open Installations` in the list view picker, showing fewer records than `All Installations`
+- `Crew Notes` on the Installation record, editable, with your help text under it
 
 ## If it goes wrong
 
@@ -86,13 +79,13 @@ Everything you need is in Labs 2 to 5. The failures are the same ones, and the *
 sections there cover them. Resist the urge to reread the whole lab: look up the one step you are
 stuck on.
 
-If your repository ends up in a state you cannot untangle, Welcome page > **Training** > **Reset
+If your repository ends up in a state you cannot untangle, Welcome page > **Training: Level 1** > **Reset
 this level** puts it back to the start of Level 1 and you can redo the capstone cleanly. Using it
 is not failing. Not using it and giving up is.
 
 ## Check your work
 
-Welcome page > **Training** > **Check my work**, then pick level 1 and **Everything in level 1**.
+Welcome page > **Training: Level 1** > **Check my work**, then pick **Everything in level 1**.
 
 Seven checks should pass. Keep the receipt lines it prints: they are what you paste into your badge
 claim.

@@ -5,7 +5,7 @@ lab: 3
 lang: en
 source_rev: ""
 screenshots:
-  - annotated/vscode/orgs-manager
+  - annotated/vscode/orgs-manager-actions
 depends_on:
   commands: []
   flags: []
@@ -38,14 +38,18 @@ your own org, never in the shared one.
 
 ### 1. Open your org
 
-In **Orgs Manager**, find `helios-dev` by its alias **(2)**, check that it still says **Connected**
-**(3)**, and open it from the actions at the end of its row. If it is not connected any more,
-**Add Org** **(1)** puts it back.
+In **Orgs Manager**, find the row whose **ALIAS** column says `helios-dev`. Read the alias, not the
+address: Salesforce hands out free orgs from its Org Farm and the address it gives them says nothing
+about what the org is for, so your orgs all look alike. The picture below has four rows because it
+was taken at the end of the course; you have two.
 
-![The Orgs Manager table, with the alias and connection state of each org](../../_assets/annotated/vscode/orgs-manager.png)
+At the end of that row, click the chevron. It opens everything you can do to that org, and the first
+entry is **Open** **(1)**.
+
+![The actions menu of the development org in Orgs Manager](../../_assets/annotated/vscode/orgs-manager-actions.png)
 
 Your browser opens the org, already logged in. No password, no login page: the extension used the
-credential you stored in Lab 0.
+credential it stored when you connected the org in Lab 1.
 
 Opening the org from this panel rather than from a bookmark is a habit worth forming. It is the
 difference between "the org I meant" and "the org that happened to be open in that tab".
@@ -149,12 +153,12 @@ The Helios org has a rule that refuses moving an installation date into the past
 date by accident, put it back to a future date.
 
 **You cannot edit the Permission Set.**
-You are not assigned **Helios Delivery Manager**. Run **Training > Set up one of my training orgs**
+You are not assigned **Helios Delivery Manager**. Run **Training: Level 1 > Set up one of my training orgs**
 on `helios-dev` again: it assigns it, and repeating it is harmless.
 
 ## Check your work
 
-Welcome page > **Training** > **Check my work**, then pick level 1 and lab 3.
+Welcome page > **Training: Level 1** > **Check my work**, then pick lab 3.
 
 It will fail, and that is correct: nothing is in the repository yet. Lab 4 is what makes this check
 pass. Run it anyway once, so you see what a failing check looks like before it matters.

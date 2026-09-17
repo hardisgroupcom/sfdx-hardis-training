@@ -197,7 +197,7 @@ redo the story properly. Do not try to fix `integration` by hand.
 
 ## Check your work
 
-Welcome page > **Training** > **Check my work**, then pick level 2 and lab 7.
+Welcome page > **Training: Level 2** > **Check my work**, then pick lab 7.
 
 ## Go deeper
 

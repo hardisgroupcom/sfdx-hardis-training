@@ -195,7 +195,7 @@ small diffs.
 
 ## Check your work
 
-Welcome page > **Training** > **Check my work**, then pick level 3 and lab 9.
+Welcome page > **Training: Level 3** > **Check my work**, then pick lab 9.
 
 ## Go deeper
 

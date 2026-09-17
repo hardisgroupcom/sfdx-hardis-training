@@ -41,7 +41,7 @@ ${c.bold("Salesforce DevOps with sfdx-hardis - training commands")}
   ${c.cyan("reset")}      Reset this level: puts your repository back to a known state
   ${c.cyan("teardown")}   Clean up a training org: removes the Helios app and its data
 
-Usually you click these on the VS Code Welcome page, under ${c.bold("Training")}.
+Usually you click these on the VS Code Welcome page, under ${c.bold("Training: Level 1")}, ${c.bold("Level 2")} or ${c.bold("Level 3")}.
 `);
     process.exit(verb ? 0 : 1);
   }

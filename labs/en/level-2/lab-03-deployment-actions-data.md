@@ -291,7 +291,7 @@ Scheduled Jobs** and tick it.
 
 ## Check your work
 
-Welcome page > **Training** > **Check my work**, then pick level 2 and lab 3.
+Welcome page > **Training: Level 2** > **Check my work**, then pick lab 3.
 
 ## Go deeper
 

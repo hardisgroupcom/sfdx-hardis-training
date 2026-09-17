@@ -110,6 +110,13 @@ extra_css:
 extra_javascript:
   - https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.2.1/tablesort.min.js
   - theme/javascripts/tables.js
+  # The theme wraps every picture in a glightbox link but ships no viewer with
+  # it, so a click used to leave the lab and land on a bare PNG. This opens it
+  # over the page instead. See site-theme/javascripts/lightbox.js.
+  - theme/javascripts/lightbox.js
+  # A guard: the template puts nothing after the footer, so anything found
+  # there came from a page swap that went wrong. See after-footer.js.
+  - theme/javascripts/after-footer.js
 
 extra:
   social:

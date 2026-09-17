@@ -6,7 +6,7 @@
  *   node scripts/verify/check.mjs --level 1 --lab 3
  *   node scripts/verify/check.mjs --level 1
  *
- * Usually you click Welcome page > Training > Check my work instead.
+ * Usually you click Welcome page > Training: Level N > Check my work instead.
  */
 import { pathToFileURL } from "url";
 import { ROOT, c, title, info, ok, fail, warn, parseArgs, githubHandle, gitOut, recordReceipt } from "../lib/util.mjs";

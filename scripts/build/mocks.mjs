@@ -52,6 +52,37 @@ function writeJson(file, data) {
   write(file, JSON.stringify(data, null, 2) + "\n");
 }
 
+/*
+ * The target branches a contributor is offered, read from the project config
+ * rather than from the universe, because that file is what the real command
+ * reads. A YAML parser would be one dependency for two flat lists, so this
+ * pulls the two blocks out with a regular expression and fails loudly if the
+ * shape of the file changes.
+ */
+const projectConfigText = fs.readFileSync(path.join(ROOT, "config", ".sfdx-hardis.yml"), "utf8");
+function yamlList(key) {
+  const block = projectConfigText.match(new RegExp(`^${key}:\\r?\\n((?:\\s*-\\s.*\\r?\\n)+)`, "m"));
+  if (!block) {
+    return [];
+  }
+  return block[1]
+    .split(/\r?\n/)
+    .map((line) => line.replace(/^\s*-\s*/, "").trim())
+    .filter(Boolean)
+    .map((value) => value.replace(/^["'](.*)["']$/, "$1"));
+}
+const targetBranchNames = yamlList("availableTargetBranches");
+const targetBranchLabels = yamlList("availableTargetBranchesLabels");
+if (targetBranchNames.length === 0) {
+  console.error("config/.sfdx-hardis.yml has no availableTargetBranches: the mock cannot know what to offer.");
+  process.exit(1);
+}
+const PROJECT_TARGET_BRANCHES = targetBranchNames.map((branch, index) => ({
+  title: branch,
+  value: branch,
+  description: targetBranchLabels[index] || undefined
+}));
+
 const [owner, repo] = u.course.upstreamRepo.split("/");
 const WEB = `https://github.com/${owner}/${repo}`;
 const person = (handle) => u.cast.find((p) => p.handle === handle) || { name: handle, handle };
@@ -84,14 +115,32 @@ writeJson(path.join(OUT, "universe.json"), {
 // The story a learner takes first, which is what the command prompts show
 const STORY = u.userStories.find((s) => s.id === "US-014") || u.userStories[0];
 
+/*
+ * The instance URL of a training org.
+ *
+ * Salesforce hands out free Developer Edition orgs from its Org Farm, and their
+ * host name says nothing about what the org is for: it is orgfarm, ten hex
+ * characters and the same suffix for everybody. The screenshots have to show
+ * that, because it is the whole reason a learner needs the alias column to tell
+ * their orgs apart, and the reason Set up my pipeline can recognise the
+ * integration org from its alias rather than from its address.
+ */
+const ORG_FARM_IDS = {
+  "helios-dev": "a4f21c7d09",
+  "helios-integration": "b70e3d5142",
+  "helios-uat": "c18a94f6be",
+  "helios-prod": "d6b52e0a37"
+};
+const instanceUrlFor = (alias) =>
+  `https://orgfarm-${ORG_FARM_IDS[alias] || "0000000000"}-dev-ed.develop.my.salesforce.com`;
+
 const orgFor = (alias, index, isDevHub) => {
   const def = u.orgs.find((o) => o.alias === alias);
   return {
     username: `helios.deploy+${alias}@heliostraining.invalid`,
     alias,
     orgId: `00D8E00000${String(100000 + index)}EAA`,
-    // A real Developer Edition instance URL, which is what a learner will have
-    instanceUrl: `https://helios-${alias.replace("helios-", "")}-dev-ed.develop.my.salesforce.com`,
+    instanceUrl: instanceUrlFor(alias),
     instanceApiVersion: "64.0",
     loginUrl: "https://login.salesforce.com",
     connectedStatus: "Connected",
@@ -117,7 +166,7 @@ writeJson(path.join(OUT, "sf-mock-overlay.json"), {
   orgDisplay: {
     id: "00D8E00000100000EAA",
     username: "helios.deploy+helios-dev@heliostraining.invalid",
-    instanceUrl: "https://helios-dev-dev-ed.develop.my.salesforce.com",
+    instanceUrl: instanceUrlFor("helios-dev"),
     apiVersion: "64.0",
     connectedStatus: "Connected",
     alias: "helios-dev"
@@ -129,14 +178,11 @@ writeJson(path.join(OUT, "sf-mock-overlay.json"), {
   scenario: {
     repoUrl: `${WEB}.git`,
     targetBranch: "integration",
-    targetBranches: u.branches.majors.map((branch) => ({
-      title: branch,
-      value: branch,
-      description:
-        branch === "integration"
-          ? "Where the team merges its work (this course)"
-          : `The ${branch} environment`
-    })),
+    // What the target branch question offers. It has to be what the project
+    // actually allows, not the list of major branches: Levels 1 and 2 pin it to
+    // integration, and a screenshot showing uat and main would be offering a
+    // contributor two answers the config refuses.
+    targetBranches: PROJECT_TARGET_BRANCHES,
     storyName: `${STORY.id} ${STORY.title}`,
     // What the prompt offers as an example: the project declares a branch name
     // pattern, so the example has to be a name that pattern accepts
@@ -145,7 +191,7 @@ writeJson(path.join(OUT, "sf-mock-overlay.json"), {
     devOrgs: u.orgs
       .filter((o) => o.branch === null)
       .map((o) => ({
-        title: `https://helios-${o.alias.replace("helios-", "")}-dev-ed.develop.my.salesforce.com`,
+        title: instanceUrlFor(o.alias),
         value: o.alias,
         description: `helios.deploy+${o.alias}@heliostraining.invalid`
       })),
@@ -376,7 +422,7 @@ if (fs.existsSync(basePlanFile)) {
     ...plan.targetOrg,
     alias: "helios-dev",
     username: "helios.deploy+helios-dev@heliostraining.invalid",
-    instanceUrl: "https://helios-dev-dev-ed.develop.my.salesforce.com",
+    instanceUrl: instanceUrlFor("helios-dev"),
     sandboxName: "helios-dev"
   };
   plan.parentBranch = "integration";

@@ -210,7 +210,7 @@ the comment, not the commit.
 
 ## Check your work
 
-Welcome page > **Training** > **Check my work**, then pick level 3 and lab 2.
+Welcome page > **Training: Level 3** > **Check my work**, then pick lab 2.
 
 ## Go deeper
 

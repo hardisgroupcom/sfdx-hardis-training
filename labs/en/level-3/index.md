@@ -39,26 +39,28 @@ Your first week is finishing the pipeline. Then you run it.
 
 ## The Training menu
 
-Everything this course asks you to run outside the product's own buttons lives in one menu, and it
-is worth knowing where before you need it. Open the **SFDX HARDIS** view in the left bar of VS Code
-and expand **Training (custom)** **(1)**:
+Everything this course asks you to run outside the product's own buttons lives in one menu. Open the
+**Welcome page**, and under **CUSTOM MENUS** click the **Training: Level 3** card. Its commands take
+over the page:
 
-![The Training menu of the sfdx-hardis command list](../../_assets/annotated/vscode/sidebar-commands-custom-menu--training-menu.png)
+![The Level 3 training menu, opened on the Welcome page](../../_assets/annotated/vscode/welcome-custom-menu-3.png)
 
-Seven commands **(2)**, and the labs call them by these names:
+Six of them, and the labs call them by these names:
 
-| Command                            | What it does                                                  |
-|------------------------------------|---------------------------------------------------------------|
-| **Set up my pipeline**             | Forks the repository, turns Actions on, gives the CI a way in |
-| **Where am I?**                    | Says which level and lab you reached, and what to do next     |
-| **Set up one of my training orgs** | Deploys the Helios app and its data into an org you choose    |
-| **Check my work**                  | Verifies the lab you just finished and prints your receipt    |
-| **Simulate my teammates**          | Creates the teammate branches and Pull Requests a lab needs   |
-| **Reset this level**               | Puts your repository back to the start of a level             |
-| **Clean up a training org**        | Removes the Helios app and its data from an org               |
+| Command                              | What it does                                                  |
+|--------------------------------------|---------------------------------------------------------------|
+| **Where am I?**                      | Says which level and lab you reached, and what to do next     |
+| **Set up one of my training orgs**   | Deploys the Helios app and its data into an org you choose    |
+| **Simulate my teammates**            | Creates the teammate branches and Pull Requests a lab needs   |
+| **Check my work**                    | Verifies the lab you just finished and prints your receipt    |
+| **Reset this level**                 | Puts your repository back to the start of Level 3             |
+| **Clean up a training org**          | Removes the Helios app and its data from an org               |
 
-The same seven are on the **Welcome page**, as a card called **Training**. Either route runs the
-same thing.
+There is one menu per level, and each holds only what that level needs, so nothing in front of you is
+for a lab you have not reached.
+
+The same commands are in the **SFDX HARDIS** view of the left bar, under **Training: Level 3**.
+Either route runs the same thing.
 
 ## What you will do
 
@@ -83,7 +85,7 @@ Levels 1 and 2 needed two orgs. This level needs four.
 Before Lab 0, sign up for two more free Developer Edition orgs at
 [developer.salesforce.com/signup](https://developer.salesforce.com/signup), connect them in **Orgs
 Manager** with the aliases `helios-uat` and `helios-prod`, and seed each one with
-**Training > Set up one of my training orgs**.
+**Training: Level 3 > Set up one of my training orgs**.
 
 `helios-prod` gets the same sources as the other three, plus one thing the seeding adds by hand: a
 `Needs Reinspection` value on the `Installation__c.Status__c` picklist, which exists in no branch.

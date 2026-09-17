@@ -77,12 +77,14 @@ every answer you give stays visible above the next question, so you can always s
 
 ### 2. Where the work is going
 
-**What will be the target branch of your new User Story?** Pick `integration` **(1)**, the one
-described as where the team merges its work.
+**What will be the target branch of your new User Story?** There is one answer, `integration`
+**(1)**, described as the shared integration org where every contributor merges. Take it.
 
-![The target branch question, listing integration, uat and main](../../_assets/annotated/vscode/work-new-target-branch.png)
+![The target branch question, offering integration](../../_assets/annotated/vscode/work-new-target-branch.png)
 
-`uat` and `main` are under it and nothing is wired to them yet, which is why they are not offered.
+A list of one is not the command being slow. This project declares `integration` as the only branch
+a contributor may target, in `availableTargetBranches`, and the question shows what the project
+allows. Level 3 lab 0 adds `uat` and `main` to that list, and the same question then offers three.
 
 You never guess where your work is going: the command asks first, writes the answer down, and every
 later step reads it back.
@@ -210,7 +212,7 @@ expire.
 
 ## Check your work
 
-Welcome page > **Training** > **Check my work**, then pick level 1 and lab 2.
+Welcome page > **Training: Level 1** > **Check my work**, then pick lab 2.
 
 ## Go deeper
 

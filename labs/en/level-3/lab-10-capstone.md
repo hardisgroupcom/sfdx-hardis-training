@@ -144,7 +144,7 @@ nothing carries an unfinished state into the next.
 
 ## Check your work
 
-Welcome page > **Training** > **Check my work**, then pick level 3 and **Everything in level 3**.
+Welcome page > **Training: Level 3** > **Check my work**, then pick **Everything in level 3**.
 
 Eleven checks. Keep the receipts.
 

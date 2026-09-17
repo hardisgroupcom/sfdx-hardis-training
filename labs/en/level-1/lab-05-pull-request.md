@@ -25,7 +25,7 @@ depends_on:
 
 **Time**: ~20 min
 
-**You will**: have a robot check your work before a human does, fix what it finds, and put US-014
+**You will**: have a robot check your work before a human does, read what it says, and put US-014
 into the shared integration org.
 
 ## The situation
@@ -116,47 +116,7 @@ Below those, a summary of your commits and the name of the job that wrote the co
     It is a real comment from a real run on this repository, kept as it came out. Yours will carry
     your own story and your own counts.
 
-### 4. Fix the warning
-
-Your Pull Request is green, but MegaLinter reports one finding on a file you did not write:
-
-```
-InstallationScheduler.cls:46  pmd:AvoidDebugStatements  (Moderate)
-Avoid debug statements since they impact on performance
-```
-
-Open `force-app/main/default/classes/InstallationScheduler.cls` and look at line 46:
-
-```apex
-// Left over from debugging the October planning incident. Harmless, and it
-// has been in every release since.
-System.debug('installationsReadyToSchedule called');
-```
-
-Somebody added it during an incident a year ago and never took it out. It is real technical debt,
-it is not blocking, and you could ignore it. Do not.
-
-Two reasons the rule exists, and neither is tidiness:
-
-- **Every `System.debug` costs time in production**, on every execution, whether or not anybody is
-  reading a log
-- **A debug line is where data leaks.** This one prints nothing sensitive. The next one somebody
-  copies from it might
-
-Delete the three lines. Commit from the **Source Control** panel with the message
-`US-014 remove a leftover debug statement`, and push. The checks run again on their own.
-
-!!! note "Why the warning appeared now and not before"
-    MegaLinter runs on the whole repository for every Pull Request into a major branch, so a
-    pre-existing problem surfaces on the first Pull Request anybody opens. That is how legacy debt
-    actually behaves on a real project: it waits until someone comes near it.
-
-!!! tip "Why this one does not block you"
-    The Apex analyzer is configured as **non blocking** on this project: it reports, it does not
-    refuse. The deployment check and the test coverage do refuse, and you meet both at Level 2.
-    A project decides that balance for itself, in `.mega-linter.yml`.
-
-### 5. Merge
+### 4. Merge
 
 Both checks green, the comment says success. Back on the **Conversation** tab, scroll to the bottom:
 the merge box says **All checks have passed** and **No conflicts with base branch**, and the button
@@ -169,7 +129,14 @@ Click **Merge pull request** **(1)**, then **Confirm merge**.
 Then delete the branch. GitHub offers a button for it. A merged branch that stays around is one
 more thing in everyone's list for no benefit.
 
-### 6. Watch the real deployment
+!!! note "What the linter is for, since it had nothing to say"
+    MegaLinter reads the whole repository, not only your change, and reports anything that breaks
+    the project's quality rules. It found nothing here because this repository is clean. When it
+    does find something, it writes it on the Pull Request the same way the deployment check does,
+    and whether a finding blocks the merge is a choice the project makes in `.mega-linter.yml`.
+    Level 2 has a lab where one blocks you, on purpose.
+
+### 5. Watch the real deployment
 
 Merging into `integration` starts a second job, and this one is not a check: it deploys for real.
 
@@ -234,7 +201,7 @@ That is one full delivery loop. Every story for the rest of your life on this pr
 ## If it goes wrong
 
 **The checks never start.**
-Actions are still disabled on your fork. Run **Training > Set up my pipeline** again: it turns them
+Actions are still disabled on your fork. Run **Training: Level 1 > Set up my pipeline** again: it turns them
 on, and tells you what to click if GitHub will not let it.
 
 **The check fails at authentication:** *No authentication found for org integration*.
@@ -256,7 +223,7 @@ Look at the deployed components list in the comment. If the field is not there, 
 
 ## Check your work
 
-Welcome page > **Training** > **Check my work**, then pick level 1 and lab 5.
+Welcome page > **Training: Level 1** > **Check my work**, then pick lab 5.
 
 ## Go deeper
 

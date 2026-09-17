@@ -206,7 +206,7 @@ The workflow only triggers on pushes to major branches. Check that the merge rea
 
 ## Check your work
 
-Welcome page > **Training** > **Check my work**, then pick level 3 and lab 3.
+Welcome page > **Training: Level 3** > **Check my work**, then pick lab 3.
 
 ## Go deeper
 

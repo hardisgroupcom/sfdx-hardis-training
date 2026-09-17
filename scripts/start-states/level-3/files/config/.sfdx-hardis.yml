@@ -12,7 +12,7 @@ productionBranch: main
 availableTargetBranches:
   - integration
 availableTargetBranchesLabels:
-  - "integration: shared integration org, where every contributor merges"
+  - "The shared integration org, where every contributor merges"
 
 # Branch naming for new User Stories
 branchPrefixChoices:

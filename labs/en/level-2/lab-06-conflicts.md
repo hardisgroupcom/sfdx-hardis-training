@@ -46,7 +46,7 @@ flow and the same permission set as you. He merged this morning. You did not.
 Marco does not exist. His work does, and the training reproduces it inside **your own** fork so you
 can genuinely review and merge it.
 
-**Training** **(1)** > **Simulate my teammates** **(2)**, from the Welcome page or from the
+**Training: Level 2** **(1)** > **Simulate my teammates** **(2)**, from the Welcome page or from the
 sfdx-hardis command list, and choose
 **US-018 Cap the crew size a planner can assign**.
 
@@ -261,12 +261,12 @@ Search the whole repository for `<<<<<<<`, `=======` and `>>>>>>>`. A marker in 
 sometimes syntactically tolerated by git and always fatal to Salesforce.
 
 **You cannot untangle it at all.**
-**Training > Reset this level**, then redo from step 1. Losing twenty minutes is better than
+**Training: Level 2 > Reset this level**, then redo from step 1. Losing twenty minutes is better than
 merging something you do not understand.
 
 ## Check your work
 
-Welcome page > **Training** > **Check my work**, then pick level 2 and lab 6.
+Welcome page > **Training: Level 2** > **Check my work**, then pick lab 6.
 
 The check asserts **outcomes, not procedure**: both changes present and correct on `integration`,
 no markers left. However you got there, including resolving in the GitHub web editor or redoing the

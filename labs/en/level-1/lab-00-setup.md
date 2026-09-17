@@ -9,7 +9,6 @@ screenshots:
   - annotated/web/vscode-download
   - annotated/web/nodejs-download
   - annotated/vscode/extensions-install
-  - annotated/web/vscode-marketplace
   - annotated/vscode/welcome--first-open
   - annotated/vscode/welcome--setup-button
   - annotated/vscode/setup
@@ -101,6 +100,14 @@ get right on that page:
 
 Both are next-next-finish installers.
 
+!!! warning "Restart VS Code after installing Git or Node.js"
+    Both installers add themselves to the **PATH**, the list of places your machine looks for a
+    command. A program only reads that list when it starts, so a VS Code that was already open when
+    you installed them still cannot find them, and the Setup panel in step 2 reports them missing
+    even though they are there. Close VS Code completely, windows and all, and open it again.
+
+    The same applies to a terminal you already had open.
+
 Then open VS Code and install the extensions. The **Extensions** icon **(1)** sits in the narrow bar
 down the left, and looks like four small squares with one lifted away. Click it, type `hardis` in
 the search box **(2)**, and click **Install** on **SFDX Hardis Extension Pack for Salesforce**
@@ -111,13 +118,6 @@ the search box **(2)**, and click **Install** on **SFDX Hardis Extension Pack fo
 The pack installs sfdx-hardis itself along with the tools that go with it: Git Graph, which draws
 your branches, the YAML and Markdown support the configuration files use, and the Apex log viewer.
 Later levels use them, so take the pack rather than the single extension above it.
-
-The extension also has a page on the Visual Studio Marketplace, and its **Install** button **(1)**
-opens VS Code for you:
-
-<https://marketplace.visualstudio.com/items?itemName=NicolasVuillamy.vscode-sfdx-hardis>
-
-![The sfdx-hardis extension page on the Visual Studio Marketplace](../../_assets/annotated/web/vscode-marketplace.png)
 
 A new icon appears in the left bar **(1)**. Click it: the **Welcome** tab **(2)** opens, and that
 tab is where every lab of this course starts.
@@ -154,6 +154,11 @@ the whole list in one go. Use that one: the panel queues the installations and r
 finishes.
 
 This takes a few minutes. It is the longest part of this lab and the only one you never repeat.
+
+!!! warning "Restart VS Code once the installs are finished"
+    The Salesforce CLI lands on the PATH as well, so the same rule applies: close VS Code and open
+    it again before you carry on. Then press **Re-check** on the Setup panel. Anything that was
+    still red for this reason turns green.
 
 <details markdown="1"><summary>Under the hood: what the Setup panel just did</summary>
 

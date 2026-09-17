@@ -123,7 +123,7 @@ export const RULES = [
     title: "Your fork has an integration branch and knows which org it deploys to",
     check: (ctx) => {
       if (!ctx.hasBranch(DEV)) {
-        return miss(`no branch named "${DEV}"`, "your fork. Lab 1 creates it, or Training > Reset this level restores it");
+        return miss(`no branch named "${DEV}"`, "your fork. Lab 1 creates it, or Reset this level restores it");
       }
       const config = ctx.readOn(DEV, "config/branches/.sfdx-hardis.integration.yml");
       if (!config) {
@@ -135,7 +135,7 @@ export const RULES = [
         ? pass("The integration branch names its org")
         : miss(
           "targetUsername is still empty in config/branches/.sfdx-hardis.integration.yml",
-          `branch ${DEV}. Run Training > Set up my pipeline again: it writes the file and pushes it`
+          `branch ${DEV}. Run Set up my pipeline again: it writes the file and pushes it`
         );
     }
   },
@@ -187,16 +187,9 @@ export const RULES = [
     title: "US-014 reached integration through a Pull Request",
     check: (ctx) => {
       const field = ctx.readOn(DEV, FIELD("Installation__c", "Panels_Required__c"));
-      if (!field) {
-        return miss("Panels_Required__c is not on integration yet", `branch ${DEV}`);
-      }
-      const scheduler = ctx.readOn(DEV, "force-app/main/default/classes/InstallationScheduler.cls") || "";
-      return !/System\.debug\s*\(/.test(scheduler)
-        ? pass("The field is on integration and the quality warning was fixed")
-        : miss(
-          "InstallationScheduler still has the leftover System.debug, so the quality finding on your Pull Request was never fixed",
-          `force-app/main/default/classes/InstallationScheduler.cls on branch ${DEV}`
-        );
+      return field
+        ? pass("The field reached integration through a Pull Request")
+        : miss("Panels_Required__c is not on integration yet", `branch ${DEV}`);
     }
   },
   {
@@ -210,17 +203,9 @@ export const RULES = [
           `${FIELD("Installation__c", "Crew_Notes__c")} on branch ${DEV}`
         );
       }
-      const views = ctx.listOn(DEV, "force-app/main/default/objects/Installation__c/listViews/");
-      const hasView = views.some((v) => /my[_-]?open/i.test(v));
-      if (!hasView) {
-        return miss(
-          "no list view of open installations was found",
-          `force-app/main/default/objects/Installation__c/listViews/ on branch ${DEV}`
-        );
-      }
       const crew = ctx.readOn(DEV, PERMSET("Helios_Delivery_Crew"));
       return fieldGrantedIn(crew, "Installation__c.Crew_Notes__c")
-        ? pass("Crew Notes, the list view and the permission are all on integration")
+        ? pass("Crew Notes and its permission are both on integration")
         : miss(
           "Crew_Notes__c is not granted on Helios_Delivery_Crew",
           `${PERMSET("Helios_Delivery_Crew")} on branch ${DEV}`

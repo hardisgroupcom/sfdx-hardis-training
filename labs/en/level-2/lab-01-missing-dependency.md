@@ -256,7 +256,7 @@ something specific to your org. Simplify: subject and WhatId are enough.
 
 ## Check your work
 
-Welcome page > **Training** > **Check my work**, then pick level 2 and lab 1.
+Welcome page > **Training: Level 2** > **Check my work**, then pick lab 1.
 
 ## Go deeper
 

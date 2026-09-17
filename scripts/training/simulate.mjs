@@ -23,9 +23,18 @@ const SIMULATE_DIR = path.join(ROOT, "scripts", "simulate");
 export default async function simulate(args) {
   title("Simulate my teammates");
 
-  const scenarios = loadScenarios();
-  if (scenarios.length === 0) {
+  const all = loadScenarios();
+  if (all.length === 0) {
     abort("No teammate scenario was found.", `Expected folders with a scenario.json inside ${path.relative(ROOT, SIMULATE_DIR)}`);
+  }
+
+  // The Training menu of a level passes its own number, so the list only offers
+  // the teammate work that level actually uses. Run without it and you get all
+  // of them.
+  const level = args.level ? Number(args.level) : null;
+  const scenarios = level ? all.filter((s) => (s.levels || []).includes(level)) : all;
+  if (scenarios.length === 0) {
+    abort(`No teammate work is used by level ${level}.`, `Known scenarios: ${all.map((s) => s.id).join(", ")}`);
   }
 
   const id = await select(
@@ -67,7 +76,7 @@ export default async function simulate(args) {
   title("1 of 4  Creating the teammate branch");
   run("git", ["fetch", "origin", "--prune"]);
   if (run("git", ["checkout", "integration"]).code !== 0) {
-    abort("There is no integration branch to branch from.", "Run Training > Reset this level first.");
+    abort("There is no integration branch to branch from.", "Run Reset this level first, from the Training menu of your level.");
   }
   run("git", ["pull", "--ff-only", "origin", "integration"], { quiet: true });
   const existing = gitOut(["rev-parse", "--verify", scenario.branch]);

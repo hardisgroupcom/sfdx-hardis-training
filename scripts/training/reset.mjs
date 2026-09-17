@@ -75,7 +75,7 @@ export default async function reset(args) {
   info(`  ${c.cyan(`${u.course.site}/en/${levelDef.slug}/`)}`);
   info("");
   info(c.dim("  Your training orgs still hold whatever you built. If a lab needs a clean org,"));
-  info(c.dim("  run Training > Clean up a training org, then Training > Set up one of my training orgs."));
+  info(c.dim("  run Clean up a training org, then Set up one of my training orgs, from the Training menu."));
 }
 
 function startBranch(level) {

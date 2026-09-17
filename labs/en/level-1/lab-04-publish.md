@@ -102,7 +102,24 @@ retrieve wrote are waiting there **(2)**.
 ![The Source Control panel with the three retrieved files](../../_assets/annotated/vscode/source-control-retrieved--commit.png)
 
 Click each one and read the diff. It takes a minute and it is the last moment where a mistake is
-free. Then type a message **(3)** and click **Commit** **(4)**.
+free.
+
+Then put them in the commit **one at a time**. Point at a file: a row of small icons appears at the
+right of its name. The **+** is **Stage Changes**, and it moves that one file into a group called
+**Staged Changes** just above. Do it for each of the three, and read the name as you click.
+
+!!! danger "Never use Stage All Changes"
+    The **+** on the **Changes** group header stages everything the panel can see, including files
+    you have never looked at: a stray log, something an installer left behind, a file another
+    command wrote while you were working. The panel above is showing exactly that, a fourth file
+    nobody asked for.
+
+    Staging is the only moment where you decide what your story contains. Doing it file by file
+    takes ten seconds and it is the difference between a Pull Request a reviewer can read and one
+    that has to be untangled. On a real project this is the habit people notice.
+
+With the three files staged, type a message **(3)** and click **Commit** **(4)**. The button commits
+what is staged and leaves everything else alone.
 
 Write the message for the person reviewing tomorrow, not for yourself today. First line short, then
 a blank line, then why:
@@ -115,9 +132,11 @@ a blank line, then why:
 That text follows your branch everywhere: it is what the reviewer sees in the Pull Request, and it
 is what anybody reading the history of this project in two years will find.
 
-!!! tip "Nothing else must be in that list"
-    If a fourth file appears that you did not retrieve, do not commit it. Right-click it and
-    **Discard Changes**. A file you cannot explain is a file that does not belong in your story.
+!!! tip "What to do with the file you did not ask for"
+    Leave it unstaged and it stays out of your commit, which is enough for now. If you know what it
+    is and you know it is rubbish, right-click it and **Discard Changes**. If you do not know what
+    it is, leave it alone and ask: a file you cannot explain is a file that does not belong in your
+    story, and deleting it blindly is not better than committing it blindly.
 
 Your work is now in the repository, on your branch, on your machine. What is left is to prepare it
 for the team, and that is what Save / Publish does.
@@ -266,7 +285,7 @@ Your fork moved, usually because you reset a level. Pull first: Source Control p
 
 ## Check your work
 
-Welcome page > **Training** > **Check my work**, then pick level 1 and lab 4.
+Welcome page > **Training: Level 1** > **Check my work**, then pick lab 4.
 
 ## Go deeper
 

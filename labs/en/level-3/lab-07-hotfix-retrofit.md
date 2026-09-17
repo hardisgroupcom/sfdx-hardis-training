@@ -273,7 +273,7 @@ It reached the repository on a branch that never got merged. Check that it is re
 
 ## Check your work
 
-Welcome page > **Training** > **Check my work**, then pick level 3 and lab 7.
+Welcome page > **Training: Level 3** > **Check my work**, then pick lab 7.
 
 !!! warning "This check looks at `main`, not at `integration`"
     It wants `Needs Reinspection` on the production branch, and step 8 only put it on `integration`.

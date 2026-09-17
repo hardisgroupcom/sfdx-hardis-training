@@ -47,7 +47,7 @@ Deciding what goes in, in what order, and what waits, is the job.
 
 ### 1. Create the Pull Requests you still can
 
-**Training** **(1)** > **Simulate my teammates** **(2)**, from the Welcome page or from the
+**Training: Level 3** **(1)** > **Simulate my teammates** **(2)**, from the Welcome page or from the
 sfdx-hardis command list, twice: **US-020 Refactor
 InstallationScheduler**, and **US-019 Generate a quote PDF from an opportunity**.
 
@@ -233,7 +233,7 @@ branch is how a release manager loses an evening.
 
 ## Check your work
 
-Welcome page > **Training** > **Check my work**, then pick level 3 and lab 4.
+Welcome page > **Training: Level 3** > **Check my work**, then pick lab 4.
 
 ## Go deeper
 

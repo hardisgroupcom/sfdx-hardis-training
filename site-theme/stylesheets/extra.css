@@ -88,6 +88,7 @@
   --md-footer-bg-color: var(--cloudity-plum);
   --md-footer-bg-color--dark: #120628;
   --md-footer-fg-color: #FFF;
+  --md-footer-fg-color--light: rgb(255 255 255 / 76%);
   --md-header-bg-color: var(--cloudity-purple);
   --md-header-fg-color: #FFF;
 }
@@ -111,6 +112,7 @@
   --md-footer-bg-color: var(--cloudity-plum);
   --md-footer-bg-color--dark: #120628;
   --md-footer-fg-color: #FFF;
+  --md-footer-fg-color--light: rgb(255 255 255 / 76%);
   --md-header-bg-color: var(--cloudity-plum);
   --md-header-fg-color: #FFF;
 }
@@ -270,4 +272,179 @@
 .md-banner__inner {
   font-size: 0.72rem;
   margin: 0.6rem auto;
+}
+
+/* The footer band is plum in both schemes, but the theme paints the text inside it from the
+   page foreground token rather than from --md-footer-fg-color. In the light scheme that
+   resolves to navy on plum: about 1.1:1, so the previous and next links, the copyright and
+   the social icons were all there and none of them could be read. */
+.md-footer,
+.md-footer a,
+.md-footer .md-footer__title,
+.md-footer .md-ellipsis,
+.md-footer .md-copyright__highlight,
+.md-footer .md-social__link,
+.md-footer .md-footer__button {
+  color: var(--md-footer-fg-color);
+}
+
+.md-footer .md-footer__direction,
+.md-footer .md-copyright {
+  color: var(--md-footer-fg-color--light);
+}
+
+/* The theme pins the links in the bottom band to the page foreground with a selector
+   specific enough to win on its own, so this one has to match it shape for shape. */
+html .md-footer-meta.md-typeset a:not(:focus, :hover) {
+  color: var(--md-footer-fg-color);
+}
+
+.md-footer a:hover,
+.md-footer a:focus-visible,
+.md-footer .md-social__link:hover {
+  color: #FFF;
+}
+
+.md-footer .md-footer__link:hover .md-footer__direction,
+.md-footer .md-footer__link:focus-visible .md-footer__direction {
+  color: var(--md-footer-fg-color);
+}
+
+.md-footer-meta {
+  background-color: var(--md-footer-bg-color--dark);
+}
+
+/* Full screen viewer for the screenshots, driven by theme/javascripts/lightbox.js.
+   The pictures carry small text, so a click has to be able to blow one up. */
+.md-typeset a.glightbox,
+.md-typeset a.glightbox img {
+  cursor: zoom-in;
+}
+
+.sfh-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.4rem 1.2rem 1.2rem;
+  background-color: rgb(0 8 26 / 88%);
+  cursor: zoom-out;
+  overscroll-behavior: contain;
+}
+
+.sfh-lightbox[hidden] {
+  display: none;
+}
+
+body.sfh-lightbox-open {
+  overflow: hidden;
+}
+
+.sfh-lightbox__figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0;
+}
+
+.sfh-lightbox__image {
+  max-width: 100%;
+  max-height: calc(100vh - 6rem);
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 4px 24px rgb(0 0 0 / 55%);
+  cursor: default;
+}
+
+.sfh-lightbox__caption {
+  max-width: 40rem;
+  color: rgb(255 255 255 / 82%);
+  font-size: 0.68rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.sfh-lightbox__close {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  padding: 0;
+  color: #FFF;
+  background-color: rgb(255 255 255 / 14%);
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.sfh-lightbox__close svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.sfh-lightbox__close:hover,
+.sfh-lightbox__close:focus-visible {
+  background-color: rgb(255 255 255 / 28%);
+}
+
+/* The "If it goes wrong" block.
+
+   scripts/build/site.mjs turns that section of every lab into a collapsed
+   admonition of this type. It is the one part of a lab nobody should read in
+   order: it lists the ways the step above it fails, and a reader whose step
+   worked wants the next instruction, not four paragraphs of symptoms. So it is
+   deliberately quiet, grey rather than a colour, and shut until it is needed. */
+:root {
+  --md-admonition-icon--troubleshoot: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>');
+}
+
+.md-typeset .admonition.troubleshoot,
+.md-typeset details.troubleshoot {
+  border-color: var(--cloudity-grey);
+  background-color: rgb(100 110 115 / 6%);
+}
+
+.md-typeset .troubleshoot > .admonition-title,
+.md-typeset .troubleshoot > summary {
+  background-color: rgb(100 110 115 / 12%);
+}
+
+.md-typeset .troubleshoot > .admonition-title::before,
+.md-typeset .troubleshoot > summary::before {
+  background-color: var(--cloudity-grey);
+  -webkit-mask-image: var(--md-admonition-icon--troubleshoot);
+  mask-image: var(--md-admonition-icon--troubleshoot);
+}
+
+.md-typeset .troubleshoot > .admonition-title::after,
+.md-typeset .troubleshoot > summary::after {
+  color: var(--cloudity-grey);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .admonition.troubleshoot,
+[data-md-color-scheme="slate"] .md-typeset details.troubleshoot {
+  border-color: #8B96A0;
+  background-color: rgb(255 255 255 / 6%);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .troubleshoot > summary,
+[data-md-color-scheme="slate"] .md-typeset .troubleshoot > .admonition-title {
+  background-color: rgb(255 255 255 / 10%);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .troubleshoot > summary::before,
+[data-md-color-scheme="slate"] .md-typeset .troubleshoot > .admonition-title::before,
+[data-md-color-scheme="slate"] .md-typeset .troubleshoot > summary::after {
+  background-color: #C2B8D9;
+  color: #C2B8D9;
 }

@@ -83,7 +83,7 @@ export default async function seed(args) {
   if (dataImport.code !== 0) {
     abort(
       `The data load into ${target} failed.`,
-      "The deployment worked, so the app is there and only the records are missing. Run Training > Set up one of my training orgs again: the load is an upsert and repeats safely."
+      "The deployment worked, so the app is there and only the records are missing. Run Set up one of my training orgs again: the load is an upsert and repeats safely."
     );
   }
   ok("Accounts, contacts, opportunities, installations and panel batches are loaded");

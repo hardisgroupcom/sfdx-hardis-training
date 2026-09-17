@@ -50,7 +50,7 @@ day one, and finishing the pipeline gets postponed until the day somebody needs 
 - [ ] Levels 1 and 2 finished
 - [ ] Four orgs connected in **Orgs Manager**: `helios-dev`, `helios-integration`, `helios-uat`,
       `helios-prod`
-- [ ] `helios-uat` and `helios-prod` seeded with **Training > Set up one of my training orgs**
+- [ ] `helios-uat` and `helios-prod` seeded with **Training: Level 3 > Set up one of my training orgs**
 
 ## Steps
 
@@ -83,11 +83,14 @@ Two fields matter here, and they are **two separate text boxes, one value per li
 pairs them except their order, so line 2 of one belongs to line 2 of the other. Get the order wrong
 and contributors see the wrong description next to the right branch, with no error anywhere.
 
-| Line | Branch      | Label                                                                 |
-|------|-------------|-----------------------------------------------------------------------|
-| 1    | integration | `integration: shared integration org, where every contributor merges` |
-| 2    | uat         | `uat: user acceptance, only a release manager targets this`           |
-| 3    | main        | `main: production, hotfixes only`                                     |
+| Line | Branch      | Label                                                    |
+|------|-------------|----------------------------------------------------------|
+| 1    | integration | `The shared integration org, where every contributor merges` |
+| 2    | uat         | `User acceptance, only a release manager targets this`   |
+| 3    | main        | `Production, hotfixes only`                              |
+
+The label is what a contributor reads next to the branch name when the question is asked, so it
+says what the branch is for rather than repeating what it is called.
 
 **Save**.
 
@@ -176,9 +179,9 @@ conversation with a stakeholder who asks "so where is it".
       - uat
       - main
     availableTargetBranchesLabels:
-      - "integration: shared integration org, where every contributor merges"
-      - "uat: user acceptance, only a release manager targets this"
-      - "main: production, hotfixes only"
+      - "The shared integration org, where every contributor merges"
+      - "User acceptance, only a release manager targets this"
+      - "Production, hotfixes only"
     productionBranch: main
 
 and the two files you wrote under `config/branches/` now hold `targetUsername`, `instanceUrl` and
@@ -266,7 +269,7 @@ so nothing is broken.
 
 ## Check your work
 
-Welcome page > **Training** > **Check my work**, then pick level 3 and lab 0.
+Welcome page > **Training: Level 3** > **Check my work**, then pick lab 0.
 
 ## Go deeper
 

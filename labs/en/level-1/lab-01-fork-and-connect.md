@@ -215,16 +215,17 @@ That last one is empty of your details until step 5 fills it in.
 ### 4. Seed each org
 
 Open the Welcome page again. Above the built-in cards there is a **CUSTOM MENUS** heading **(1)**,
-holding a single card: **Training (custom)** **(2)**.
+holding three cards **(2)**, one per level.
 
-![The Welcome page, with the CUSTOM MENUS group and the Training card](../../_assets/annotated/vscode/welcome--training-menu.png)
+![The Welcome page, with the CUSTOM MENUS group and the three Training cards](../../_assets/annotated/vscode/welcome--training-menu.png)
 
-!!! note "Why the card says \"Training (custom)\""
-    The extension appends `(custom)` to every menu a project declares in its own
-    `config/.sfdx-hardis.yml`, so you can always tell a project's commands from the ones the
-    product ships. The rest of these labs call it the **Training** menu.
+!!! note "Where those cards come from"
+    They are not part of the product. Any project can declare its own menus in its
+    `config/.sfdx-hardis.yml`, and the extension shows them here, marked `(custom)`, so you can
+    always tell a project's commands from the ones sfdx-hardis ships. This project declares one
+    menu per level, and each holds only the commands that level uses.
 
-Click it, then click **Set up one of my training orgs**.
+Click **Training: Level 1**, then click **Set up one of my training orgs**.
 
 The command asks which org. Pick `helios-dev`. It then:
 
@@ -284,18 +285,15 @@ browser at that moment.
     On a real project you would join a repository that already exists, with its automation already
     running, and you would never install this.
 
-Now, on the Welcome page, the **CUSTOM MENUS** heading **(1)** holds a single card, **Training
-(custom)** **(2)**.
+Back on the Welcome page, open **Training: Level 1** again and click **Set up my pipeline**.
 
-![The Welcome page, with the CUSTOM MENUS group and the Training card](../../_assets/annotated/vscode/welcome--training-menu.png)
-
-Click it. The seven Training commands appear, the ones the
-[level index](index.md#the-training-menu) lists. Click **Set up my pipeline**.
-
-It asks one question, which of your orgs is the shared integration org, and then does four things
-and tells you as it goes:
+It does not ask which org. You have two, both from the Org Farm, and only one of them has
+`integ` in its alias, so it picks that one, says so, and asks only for a yes before it changes
+anything. Then it does four things, telling you as it goes:
 
 ```text
+Integration org: helios-integration (the only Org Farm org whose alias says integration)
+
 1 of 4  Your own copy of the repository
 OK  origin is now your-handle/sfdx-hardis-training, and the shared repository is upstream.
 
@@ -426,7 +424,7 @@ Sign out of GitHub in VS Code (**Accounts** icon, bottom left) and sign in again
 
 ## Check your work
 
-Welcome page > **Training** > **Check my work**, then pick level 1 and lab 1.
+Welcome page > **Training: Level 1** > **Check my work**, then pick lab 1.
 
 ## Go deeper
 

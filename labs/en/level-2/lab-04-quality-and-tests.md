@@ -276,7 +276,7 @@ the org.
 
 ## Check your work
 
-Welcome page > **Training** > **Check my work**, then pick level 2 and lab 4.
+Welcome page > **Training: Level 2** > **Check my work**, then pick lab 4.
 
 ## Go deeper
 

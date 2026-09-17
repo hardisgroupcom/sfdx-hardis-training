@@ -290,7 +290,7 @@ The auth URL secret is still there and still winning. That is exactly what step 
 
 ## Check your work
 
-Welcome page > **Training** > **Check my work**, then pick level 3 and lab 1.
+Welcome page > **Training: Level 3** > **Check my work**, then pick lab 1.
 
 ## Go deeper
 

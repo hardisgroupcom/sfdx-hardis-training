@@ -70,7 +70,7 @@ root of the repository. Do not guess: look.
 the object and the flow into `helios-integration` and the checklist will be empty there, and the
 feature will do nothing at all. Build a data workspace and declare an action.
 
-**Three: the conflict.** Before you open your Pull Request, run **Training > Simulate my
+**Three: the conflict.** Before you open your Pull Request, run **Training: Level 2 > Simulate my
 teammates** and pick **US-019**, then merge it. Amina adds a quote PDF field and grants it on
 `Helios Delivery Manager`, the same permission set your checklist fields need. Bring `integration`
 into your branch from the **Source Control** panel and resolve the conflict in the merge editor, the
@@ -103,12 +103,12 @@ In `helios-integration`, after the merge:
 Everything you need is in labs 1, 3 and 6. Look up the one step you are stuck on rather than
 rereading the labs.
 
-**Training > Reset this level** if the repository gets away from you. It resets to the start of
+**Training: Level 2 > Reset this level** if the repository gets away from you. It resets to the start of
 Level 2, which means redoing the capstone, not the whole level.
 
 ## Check your work
 
-Welcome page > **Training** > **Check my work**, then pick level 2 and **Everything in level 2**.
+Welcome page > **Training: Level 2** > **Check my work**, then pick **Everything in level 2**.
 
 Nine checks. Keep the receipts.
 

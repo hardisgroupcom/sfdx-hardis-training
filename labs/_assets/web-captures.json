@@ -61,20 +61,6 @@
       }
     },
     {
-      "name": "vscode-marketplace",
-      "url": "https://marketplace.visualstudio.com/items?itemName=NicolasVuillamy.vscode-sfdx-hardis",
-      "width": 1440,
-      "height": 820,
-      "click": ["button:has-text('Reject')"],
-      "settle": 2500,
-      "clip": {
-        "x": 0,
-        "y": 30,
-        "width": 1440,
-        "height": 400
-      }
-    },
-    {
       "name": "sf-signup",
       "url": "https://developer.salesforce.com/signup",
       "width": 1440,

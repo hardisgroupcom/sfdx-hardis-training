@@ -37,7 +37,7 @@ contributor accidentally undoes a teammate's work.
 
 ## Before you start
 
-- [ ] Level 1 finished, or **Training > Reset this level** on level 2
+- [ ] Level 1 finished, or **Training: Level 2 > Reset this level** on level 2
 - [ ] `helios-dev` connected in **Orgs Manager**
 - [ ] No uncommitted changes you care about
 
@@ -190,7 +190,7 @@ committed it, and the deployment only changed the org.
 
 ## Check your work
 
-Welcome page > **Training** > **Check my work**, then pick level 2 and lab 0.
+Welcome page > **Training: Level 2** > **Check my work**, then pick lab 0.
 
 ## Go deeper
 

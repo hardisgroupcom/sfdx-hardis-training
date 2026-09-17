@@ -220,7 +220,7 @@ or the range is wrong.
 
 ## Check your work
 
-Welcome page > **Training** > **Check my work**, then pick level 3 and lab 5.
+Welcome page > **Training: Level 3** > **Check my work**, then pick lab 5.
 
 ## Go deeper
 

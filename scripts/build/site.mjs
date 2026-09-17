@@ -76,6 +76,34 @@ function rewriteEscapingLinks(content, source, target) {
   });
 }
 
+/**
+ * Folds the "If it goes wrong" section of a lab into a collapsed block.
+ *
+ * It is the one section of a lab that is not meant to be read in order. It
+ * lists the two or three ways the step before it fails, and a reader whose
+ * step worked has to scroll past all of it to reach the next thing to do.
+ * Collapsed, it stays one click away for the reader who needs it, and out of
+ * the way of the one who does not.
+ *
+ * The markdown keeps an ordinary heading, so the labs stay readable on GitHub
+ * and an author has nothing to indent by hand. The section runs from its
+ * heading to the next heading of the same level, or to the end of the page.
+ */
+function foldTroubleshooting(content) {
+  return content.replace(/^## If it goes wrong\r?\n([\s\S]*?)(?=^## |$(?![\s\S]))/m, (whole, body) => {
+    const indented = body
+      .replace(/\s+$/, "")
+      .split(/\r?\n/)
+      .map((line) => (line.trim() === "" ? "" : "    " + line))
+      .join("\n");
+    return '??? troubleshoot "If it goes wrong"\n\n' + indented + "\n\n";
+  });
+}
+
+function prepareLab(content, source, target) {
+  return foldTroubleshooting(rewriteEscapingLinks(content, source, target));
+}
+
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
 
@@ -93,7 +121,7 @@ for (const locale of locales) {
     path.join(localesDir, locale),
     path.join(OUT, locale),
     (name) => name.endsWith(".md"),
-    rewriteEscapingLinks
+    prepareLab
   );
 }
 
@@ -156,7 +184,7 @@ const badgeIndex = [
   "",
   `[Open a claim issue](https://github.com/${universe.course.upstreamRepo}/issues/new/choose) with your`,
   "level, your Trailblazer username, the URL of your public fork and the receipt lines printed by",
-  "**Training > Check my work**.",
+  "**Check my work**, in the Training menu of your level.",
   ""
 ].join("\n");
 fs.mkdirSync(path.join(OUT, "badges"), { recursive: true });

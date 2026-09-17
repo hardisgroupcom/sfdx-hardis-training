@@ -30,6 +30,31 @@ const UPSTREAM = "hardisgroupcom/sfdx-hardis-training";
 const SECRET = "SFDX_AUTH_URL_INTEGRATION";
 const BRANCH = "integration";
 
+/**
+ * The integration org, when there is nothing to choose.
+ *
+ * A learner who followed Lab 0 has two orgs, both created in the Salesforce Org
+ * Farm, and named one of them with "integ" in the alias because the lab told
+ * them to. That pair of facts identifies the org on its own, and a question
+ * with one sensible answer is a question worth not asking.
+ *
+ * Both conditions have to hold, and exactly one org has to match. Anything
+ * else, including somebody who brought their own sandbox, falls through to the
+ * question.
+ */
+function obviousIntegrationOrg(orgs) {
+  const matches = orgs.filter(
+    (org) =>
+      [org.alias, ...(org.aliases || [])].some((alias) => /integ/i.test(alias || "")) &&
+      /orgfarm/i.test(org.instanceUrl || "")
+  );
+  if (matches.length !== 1) {
+    return null;
+  }
+  info(`Integration org: ${c.green(matches[0].alias)} ${c.dim("(the only Org Farm org whose alias says integration)")}`);
+  return matches[0].alias;
+}
+
 /** gh, installed and signed in. Both are worth telling apart: the fixes differ. */
 function checkGh() {
   if (!hasGh()) {
@@ -179,7 +204,7 @@ function writeBranchConfig(org) {
   const previous = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : "";
   const lines = [
     "# Which org the integration branch deploys to.",
-    "# Written by Training > Set up my pipeline, and editable in the",
+    "# Written by Set up my pipeline, and editable in the",
     "# DevOps Pipeline panel: gear menu > Pipeline Settings, scope Branch: integration.",
     `targetUsername: ${username}`,
     `instanceUrl: ${loginUrl}`,
@@ -311,7 +336,7 @@ export default async function init(args) {
   }
   const known = universe().orgs.map((o) => o.alias);
   const suggested = orgs.filter((o) => known.includes(o.alias));
-  const org = await select(
+  const org = args.org || obviousIntegrationOrg(orgs) || await select(
     "Which of your orgs is the shared integration org?",
     orgChoices(suggested.length > 0 ? suggested : orgs),
     args.org
@@ -335,5 +360,5 @@ export default async function init(args) {
     warn("One thing is left for you: turn Actions on, as printed above.");
     info("");
   }
-  info(`Next: ${c.bold("Training > Set up one of my training orgs")}, once per org.`);
+  info(`Next: ${c.bold("Training: Level 1 > Set up one of my training orgs")}, once per org.`);
 }

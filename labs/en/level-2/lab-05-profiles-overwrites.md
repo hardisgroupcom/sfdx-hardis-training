@@ -192,14 +192,14 @@ The field is not in the permission set's object settings until the object is gra
 
 **The deployment fails with `INSUFFICIENT_ACCESS` on the permission set.**
 The CI user cannot grant a permission it does not have itself. Assign **Helios Delivery Manager** to
-the integration org user, which **Training > Set up one of my training orgs** does.
+the integration org user, which **Training: Level 2 > Set up one of my training orgs** does.
 
 **A Profile keeps coming back in your commits.**
 Something in your selection pulls it in. Do not fight it in the file: untick it at publish time.
 
 ## Check your work
 
-Welcome page > **Training** > **Check my work**, then pick level 2 and lab 5.
+Welcome page > **Training: Level 2** > **Check my work**, then pick lab 5.
 
 ## Go deeper
 
