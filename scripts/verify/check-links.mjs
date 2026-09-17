@@ -24,7 +24,13 @@ const SELF = "https://hardisgroupcom.github.io/sfdx-hardis-training";
 // Hosts that answer 403 to anything that is not a browser. A link there cannot be
 // proved good by a fetch, so it is reported and never fails the build. Keep this
 // list short, and check these by hand when one of them is reported.
-const BOT_BLOCKED = [/^https:\/\/developer\.salesforce\.com\//, /^https:\/\/www\.salesforce\.com\//, /^https:\/\/trailhead\.salesforce\.com\//];
+const BOT_BLOCKED = [
+  /^https:\/\/developer\.salesforce\.com\//,
+  /^https:\/\/www\.salesforce\.com\//,
+  /^https:\/\/trailhead\.salesforce\.com\//,
+  // The sign-up form, which GitHub serves behind its bot verification
+  /^https:\/\/github\.com\/signup/,
+];
 
 function walk(dir, out = []) {
   if (!fs.existsSync(dir)) {

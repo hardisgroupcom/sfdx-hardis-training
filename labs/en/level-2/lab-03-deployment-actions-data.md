@@ -79,7 +79,8 @@ Helios supports.
 
 ### 2. Publish and watch nothing fail
 
-Publish, push, Pull Request. The check is green. Merge. The deployment is green.
+Retrieve the object, its fields and the Apex class with **Commit changes**, commit them, then
+**Save / Publish**, push, Pull Request. The check is green. Merge. The deployment is green.
 
 Now open `helios-integration` and look:
 
@@ -92,9 +93,10 @@ tells you.
 
 ### 3. Build a data workspace for the reference records
 
-Open the **Data Workbench** panel. **Create Workspace** **(1)** sits at the top right, and the
-workspaces the project already carries are listed on the left **(2)**: `HeliosBaseline` is the one
-the Training menu uses to seed your org.
+On the Welcome page, click **Data Workbench**. The panel that opens is titled **Data
+Import/Export Workbench**. **Create Workspace** **(1)** sits at the top right, and the workspaces
+the project already carries are listed on the left **(2)**: `HeliosBaseline` is the one the Training
+menu uses to seed your org.
 
 ![The Data Import/Export Workbench, where SFDMU workspaces are created and run](../../_assets/annotated/vscode/data-workbench.png)
 
