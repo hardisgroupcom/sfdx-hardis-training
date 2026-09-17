@@ -43,10 +43,32 @@ flow and the same permission set as you. He merged this morning. You did not.
 
 ## Steps
 
-### 1. Bring Marco into your fork
+### 1. Start your own change
+
+**New User Story** **(2)**, under **Project Contribution Workflow** **(1)**. Branch
+`US-034-crew-override`, target `integration`, org `helios-dev`.
+
+![The New User Story card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
+
+!!! warning "Do not refresh your org this time"
+    **New User Story** offers to bring `integration` down into your org. For this lab, **decline**.
+    Your org is where you build, and nothing has merged yet anyway.
+
+In `helios-dev`:
+
+1. Open the flow `Installation Assign Crew` and add a decision so that an installation whose roof
+   type is `Flat` gets a crew of at least 3, whatever else the flow decided. Connect it to the
+   **same assignment** the flow already ends on, so the new rule runs after the status change
+2. On the permission set `Helios Delivery Manager`, grant edit access on
+   `Installation__c.Crew_Notes__c`, so a planner can say why a crew was raised
+
+Retrieve the flow and the permission set, commit them, and **stop there**: do not publish yet.
+
+### 2. While you were building it, Marco merged
 
 Marco does not exist. His work does, and the training reproduces it inside **your own** fork so you
-can genuinely review and merge it.
+can genuinely review and merge it. Do this **after** your own change exists, because that is the
+situation the lab is about: you branched, he merged, and neither of you knew about the other.
 
 **Training: Level 2** **(1)** > **Simulate my teammates** **(2)**, from the Welcome page or from the
 sfdx-hardis command list, and choose
@@ -79,28 +101,9 @@ what you are reviewing is byte for byte what the screenshots show.
 
 </details>
 
-### 2. Build your own change on top of an out-of-date branch
+### 3. Publish, and watch the Pull Request refuse to merge
 
-**New User Story** **(2)**, under **Project Contribution Workflow** **(1)**. Branch
-`US-034-crew-override`, target `integration`, org `helios-dev`.
-
-![The New User Story card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
-
-!!! warning "Do not refresh your org this time"
-    **New User Story** offers to bring `integration` down into your org. For this lab, **decline**.
-    You are deliberately reproducing the situation of somebody who started before Marco merged.
-
-In `helios-dev`:
-
-1. Open the flow `Installation Assign Crew` and add a decision so that an installation whose roof
-   type is `Flat` gets a crew of at least 3, whatever else the flow decided. Connect it to the
-   **same assignment** the flow already ends on, so the new rule runs after the status change
-2. On the permission set `Helios Delivery Manager`, grant edit access on
-   `Installation__c.Crew_Notes__c`, so a planner can say why a crew was raised
-
-Retrieve the flow and the permission set, commit them, publish and push.
-
-### 3. Open the Pull Request and watch it refuse to merge
+Now publish your own change: **Save / Publish**, push, and open the Pull Request into `integration`.
 
 GitHub shows:
 
