@@ -66,7 +66,7 @@ thousands of components an org contains. Click **Search Metadata** **(3)**.
 
 ![The Metadata Retriever listing the recent changes of the org](../../_assets/annotated/vscode/metadata-retriever-recent-changes--find.png)
 
-A few dozen results come back **(4)**, each with what it is, its name, who last touched it and
+A dozen or so results come back **(4)**, each with what it is, its name, who last touched it and
 when. Every one of them carries your name, and most of them are not your story.
 
 !!! info "Why the list is longer than your story"
@@ -108,8 +108,9 @@ retrieve wrote are waiting there **(2)**.
 
 ![The Source Control panel with the three retrieved files](../../_assets/annotated/vscode/source-control-retrieved--commit.png)
 
-Click each one and read the diff. It takes a minute and it is the last moment where a mistake is
-free.
+Click each one. VS Code opens the file's *diff*, the before and the after side by side, with the
+added lines in green and the removed ones in red. Reading the three takes a minute, and it is the
+last moment where a mistake is free.
 
 Then put them in the commit **one at a time**. Point at a file: a row of small icons appears at the
 right of its name. The **+** is **Stage Changes**, and it moves that one file into a group called
@@ -163,13 +164,15 @@ steps above. **(2)** asks the command to pull the org for you instead, and the t
 what a commit is, which costs nothing to read.
 
 !!! warning "Why this course never takes answer (2)"
-    That answer runs `sf project retrieve start`, which needs **source tracking**. Scratch orgs and
-    source-tracked sandboxes have it. The free Developer Edition orgs this course uses, and plenty
-    of real sandboxes, do not, and the command fails with an error about source tracking that reads
-    like something is broken.
+    That answer asks the org to hand over everything it has noticed changing, which only works on an
+    org with **source tracking**: an org that keeps a running note of what changed in it. Scratch
+    orgs and source-tracked sandboxes do. The free Developer Edition orgs this course uses, and
+    plenty of real sandboxes, do not, and the answer fails with an error about source tracking that
+    reads like something is broken.
 
-    The Metadata Retriever works on every org, which is why the whole course goes through it. Take
-    the same route on a real project and you will never meet that error.
+    The Metadata Retriever asks the org a question instead, which works everywhere, and that is why
+    the whole course goes through it. Take the same route on a real project and you will never meet
+    that error.
 
 ### 6. Read the manifest before you push
 
@@ -183,7 +186,20 @@ components it holds.
 
 ![The Save / Publish command waiting for an answer, with the package.xml report at the bottom](../../_assets/annotated/vscode/work-save-package-xml.png)
 
-It should say something close to:
+You are looking for one block per kind of thing you changed, each naming what it holds. Your three
+should all be there: the field `Installation__c.Panels_Required__c`, the layout
+`Installation__c-Installation Layout`, and the permission set `Helios_Delivery_Crew`.
+
+**This file is the contract.** It is the list of what will be deployed to the next org, and nothing
+outside it travels. If a component you expected is missing here, it will be missing in integration
+too, and the deployment will either fail or, worse, succeed while doing half of what you meant.
+
+Reading this file before every push is the single habit that separates a contributor who has
+trouble with deployments from one who does not.
+
+<details markdown="1"><summary>Under the hood: what those blocks look like</summary>
+
+The file is XML, and every block pairs a list of `members` with the `name` of what they are:
 
 ```xml
 <types>
@@ -200,20 +216,22 @@ It should say something close to:
 </types>
 ```
 
-**This file is the contract.** It is the list of what will be deployed to the next org, and nothing
-outside it travels. If a component you expected is missing here, it will be missing in integration
-too, and the deployment will either fail or, worse, succeed while doing half of what you meant.
+Salesforce calls this a manifest, and every deployment tool on the platform reads the same format.
+The counter on the report button counts entries rather than blocks, so it can read one more than
+you expect when a change pulls its parent object in with it.
 
-Reading this file before every push is the single habit that separates a contributor who has
-trouble with deployments from one who does not.
+</details>
 
-### 7. Look at what the cleaning removed
+### 7. Read what the command did to your files
 
-Open the **Source Control** panel and look at the diff of
-`force-app/main/default/permissionsets/Helios_Delivery_Crew.permissionset-meta.xml`.
+Scroll back up the command's own panel. Between your answers it printed a few lines about cleaning:
+references to deleted components, and the pixel positions inside Flows. That is the project's
+automated cleaning, and it runs on every publish, on everybody's work, so that nobody has to
+remember the house rules.
 
-You will see your `Panels_Required__c` grant added. You may also see things you never touched being
-**removed**. That is automated cleaning, and it is deliberate.
+On this story it has almost nothing to do, because you changed a field, a layout and a permission
+set, and the rules here are aimed at Profiles and Flows. It also committed what it changed, on top
+of your own commit. Level 2 has a whole lab on the day cleaning takes away something you wanted.
 
 <details markdown="1"><summary>Under the hood: what "Save / Publish" just did</summary>
 
@@ -242,8 +260,9 @@ which performed, in order:
    everything that a Permission Set should carry. `listViewsMine` rewrites list view scopes that
    only make sense for the user who retrieved them
 
-3. **Removed the user permissions** listed under `autoRemoveUserPermissions`, which are permissions
-   this project has decided must never travel between orgs through a deployment
+3. **Removed from Profiles the user permissions** listed under `autoRemoveUserPermissions`, which
+   are permissions this project has decided must never travel between orgs through a deployment.
+   Profiles only: a Permission Set keeps everything it was given
 4. **Committed what it changed**, as `chore(sfdx-hardis): update package content` and
    `chore(sfdx-hardis): clean sfdx project`. Those commits are the tool's, not yours: yours is the
    one you wrote at step 4
@@ -262,7 +281,8 @@ panel and click **Publish Branch**.
 
 ## What you should see
 
-- `manifest/package.xml` listing exactly your three components
+- `manifest/package.xml` naming your three components and nothing you did not touch: the field, the
+  layout and the permission set
 - Your branch on GitHub, in your fork, under **Branches**
 - The DevOps Pipeline panel showing your branch feeding `integration`, with no Pull Request yet
 
@@ -281,10 +301,10 @@ the Status section of the sfdx-hardis panel agrees.
 You have no commit on this branch, so there is no difference for it to describe. Go back to step 4:
 retrieving writes files, committing is what puts them on the branch.
 
-**The permission set diff shows deletions you do not understand.**
-That is `minimizeProfiles` and `autoRemoveUserPermissions` doing their job. Read the
-`config/.sfdx-hardis.yml` block above. Nothing is lost in your org: cleaning changes what is
-committed, never what is in Salesforce.
+**A file you did not touch shows deletions you do not understand.**
+That is the automated cleaning doing its job, and Profiles are where you meet it most. Read the
+cleaning rules in the Under the hood block above. Nothing is lost in your org: cleaning changes what
+is committed, never what is in Salesforce.
 
 **Push is rejected.**
 Your fork moved, usually because you reset a level. Pull first: Source Control panel, **...** menu,
@@ -293,6 +313,10 @@ Your fork moved, usually because you reset a level. Pull first: Source Control p
 ## Check your work
 
 Welcome page > **Training: Level 1** > **Check my work**, then pick Lab 1.5.
+
+Like Labs 1.3 and 1.4 it fails until your Pull Request is merged: the check reads what has reached
+`integration`, and your branch has not been merged into it yet. Lab 1.6 is what turns all four
+green.
 
 ## Go deeper
 

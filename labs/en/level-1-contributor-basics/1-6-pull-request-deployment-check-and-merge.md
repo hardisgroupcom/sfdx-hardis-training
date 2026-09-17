@@ -33,9 +33,10 @@ into the shared integration org.
 ## The situation
 
 Your branch is on GitHub. Now you ask for it to be merged, and something interesting happens: before
-anybody looks at it, a job takes your changes, deploys them **as a check** into the integration org
-without committing anything, runs the tests, runs the linters, and writes the result back on the
-Pull Request.
+anybody looks at it, a job takes your changes and rehearses the deployment into the integration org.
+Salesforce compiles everything and runs the tests, then throws the result away rather than keeping
+it, so the org is left exactly as it was. The job also runs the linters, and writes the whole verdict
+back on the Pull Request.
 
 That is the whole point of this way of working. You find out your deployment fails while it is
 still yours to fix, not on release night.
@@ -49,7 +50,8 @@ still yours to fix, not on release night.
 ## Before you start
 
 - [ ] Lab 1.5 finished: the branch is pushed to your fork
-- [ ] Lab 1.2 finished: **Set up my pipeline** turned Actions on and set the CI credential
+- [ ] Lab 1.2 finished: **Set up my training environment** turned Actions on and set the CI
+      credential
 
 ## Steps
 
@@ -97,6 +99,9 @@ Open the **Checks** tab **(1)**. Two of them matter here, and both start on thei
 
 Click either one to read its log while it runs. The deployment check takes about two minutes, and
 you can watch it authenticate with your secret, work out what changed, and start the deployment.
+
+The pictures in this lab were taken on a later story of this same course, so the story number in the
+title is not yours. The page is the same page, and so are the two checks.
 
 ### 3. Read the sfdx-hardis comment
 
@@ -206,13 +211,14 @@ That is one full delivery loop. Every story for the rest of your life on this pr
 ## If it goes wrong
 
 **The checks never start.**
-Actions are still disabled on your fork. Run **Training: Level 1 > Set up my pipeline** again: it turns them
-on, and tells you what to click if GitHub will not let it.
+Actions are still disabled on your fork. Run **Training: Level 1 > Set up my training environment**
+again: it turns them on, and tells you what to click if GitHub will not let it.
 
 **The check fails at authentication:** *No authentication found for org integration*.
 The secret is missing, misnamed, or truncated. It must be named exactly
-`SFDX_AUTH_URL_INTEGRATION` and its value must start with `force://`. Recreate it and push an empty
-commit to re-trigger.
+`SFDX_AUTH_URL_INTEGRATION` and its value must start with `force://`. The quickest repair is
+**Training: Level 1 > Set up my training environment**, which writes it again. Then open the
+**Checks** tab of your Pull Request and click **Re-run all jobs**.
 
 **The check fails with `INVALID_CROSS_REFERENCE_KEY` on the permission set.**
 The permission set grants a field that is not in your package. You retrieved the permission set

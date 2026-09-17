@@ -112,8 +112,8 @@ Both are next-next-finish installers.
 
 Then open VS Code and install the extensions. The **Extensions** icon **(1)** sits in the narrow bar
 down the left, and looks like four small squares with one lifted away. Click it, type `hardis` in
-the search box **(2)**, and click **Install** on **SFDX Hardis Extension Pack for Salesforce**
-**(3)**, by Nicolas Vuillamy.
+the search box **(2)**, and click **Install** on **SFDX Hardis Extension Pack for Salesforce, by
+Cloudity** **(3)**, published by Nicolas Vuillamy.
 
 ![The Extensions view of VS Code, with hardis typed in the search box](../../_assets/annotated/vscode/extensions-install.png)
 
@@ -139,21 +139,27 @@ then click it.
 
 ![The Welcome page header, with the dependency-state button at its left](../../_assets/annotated/vscode/welcome--setup-button.png)
 
-The panel lists every dependency the pipeline needs, with the version you have and the version
-that is current:
+The panel lists every dependency the pipeline needs, with the version you have and the version that
+is current. The ones worth knowing by name:
 
-1. **Salesforce CLI** - the `sf` command everything else runs on
-2. **sfdx-hardis** - the plugin that adds the User Story commands
-3. **SFDMU** - loads and extracts records, which is how your orgs get their data
-4. **sfdx-git-delta** - computes what changed between two commits, used by the deployments
-5. **Salesforce Extension Pack** - the official Salesforce tooling for VS Code
+- **Salesforce CLI** - the program every Salesforce tool on your machine talks to
+- **sfdx-hardis** - the add-on that puts the User Story commands into that CLI
+- **SFDMU** - loads and extracts records, which is how your orgs get their data
+- **sfdx-git-delta** - works out what changed between two versions of the project, which is what the
+  deployments send
+- **Salesforce Extension Pack** - the official Salesforce tooling for VS Code
+
+Node.js and **Git** **(3)** have a card each as well: the panel checks what you installed in step 1
+and says so.
 
 ![The Setup panel, listing every dependency with its version](../../_assets/annotated/vscode/setup.png)
 
-A dependency that is already fine is green and offers only **Re-check** **(3)**. One that is missing
-or out of date carries its own **Upgrade** button **(2)**, and **Run pending installs** **(1)** does
-the whole list in one go. Use that one: the panel queues the installations and reports each as it
-finishes.
+The picture was taken on a machine where everything was already in place, so every card is green and
+offers nothing but **Re-check** **(2)**, and the band at the top has nothing to propose **(1)**.
+
+Your first run will not look like that. Anything missing or out of date turns amber and its button
+reads **Install** or **Upgrade**, and the band at the top then carries **Run pending installs**
+**(1)**. Use that one: it queues the whole list and reports each item as it finishes.
 
 This takes a few minutes. It is the longest part of this lab and the only one you never repeat.
 
@@ -184,10 +190,11 @@ The **Setup** panel with nothing left to install:
 ![The Setup panel once everything is installed](../../_assets/annotated/vscode/setup--ready.png)
 
 The line to read is the summary at the top **(1)**. It names anything still missing, and missing is
-the only state that stops you. An amber **Upgrade** on a dependency **(2)** is not a failure: it
-means a newer version exists, and the button fetches it whenever you feel like it.
+the only state that stops you. Every card under it is green, **Salesforce CLI** **(2)** included,
+with nothing left to do but **Re-check**.
 
-Everything else is ticked, green, and at a version the panel is happy with.
+An amber **Upgrade** on one of them is not a failure: it means a newer version exists, and the
+button fetches it whenever you feel like it.
 
 That is the whole of this lab. Your machine can now run everything the rest of the course, and every
 Salesforce project that uses sfdx-hardis, is going to ask of it.
@@ -205,7 +212,7 @@ Reload the window: **View > Command Palette**, then **Developer: Reload Window**
 Click the line. The panel tells you what it tried and what it got back, and that message is nearly
 always the answer.
 
-## Next
+## What comes next
 
 If you came here to set up a real project, you are done: open your team's repository and the
 **DevOps Pipeline** panel will tell you the rest.

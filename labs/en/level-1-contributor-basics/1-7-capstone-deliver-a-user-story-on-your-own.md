@@ -30,19 +30,20 @@ Second ticket, second day. Nobody is going to walk you through this one.
 
 > **US-016 - Let the crew leave notes on an installation**
 >
-> As a delivery crew member, I want a free text notes field on an installation, so that I hand
-> over cleanly to the next shift.
+> As a delivery crew member, I want a free text notes field and a list view of my open
+> installations, so that I hand over cleanly to the next shift.
 >
 > Acceptance criteria:
 >
 > - A **Crew Notes** field exists on Installation, long text, editable by the crew
 > - It is on the Installation page layout, where the crew can see it
-> - The crew permission set grants it
+> - A **My Open Installations** list view exists on Installation
+> - The crew permission set grants the field
 
 ## Before you start
 
 - [ ] Lab 1.6 finished: US-014 is merged into `integration` and deployed
-- [ ] You are back on a clean state
+- [ ] The Source Control panel shows nothing left uncommitted
 
 ## What to do
 
@@ -55,9 +56,11 @@ No numbered clicks this time. The loop, in order:
       description and help text
     - Grant it **Read** and **Edit** on `Helios Delivery Crew`, because a crew member writes notes
     - On the Installation page layout
+    - A list view on Installation called **My Open Installations**, filtered on installations whose
+      status is not Completed, showing the account, the status, the install date and Panels Required
 3. **Bring it down.** **Commit changes**, **Recent Changes**, **Search Metadata**, and take the
-   field, the permission set and the layout. Nothing else. Commit them
-4. **Publish**, and read `manifest/package.xml` before pushing. Three entries, all yours
+   field, the layout, the list view and the permission set. Nothing else. Commit them
+4. **Publish**, and read `manifest/package.xml` before pushing. Four things, all yours
 5. **Open the Pull Request** into `integration` in your own fork, get it green, merge
 6. **Check the integration org** after the deployment job
 
@@ -66,13 +69,21 @@ No numbered clicks this time. The loop, in order:
 **The permission set and the field travel together.** If you retrieve the field and forget the
 permission set, the deployment succeeds and nobody can see the field. If you retrieve the
 permission set and forget the field, the deployment fails outright, because a permission set cannot
-grant something that is not there. Take both, every time. It is the same pair you took in Lab 1.5.
+grant something that is not there. Take both, every time. It is the same pair you took in Lab 1.5,
+and the list view has the same habit: it names Panels Required, so it needs that field to be in the
+target org already, which it is since Lab 1.6.
 
 ## What you should see
 
 In `helios-integration`, after the merge deployment:
 
 - `Crew Notes` on the Installation record, editable, with your help text under it
+- **My Open Installations** in the list view picker on the Installations tab
+
+One thing may surprise you on the way. If you built the list view with the scope set to your own
+records, the diff shows it coming back as everything: that is the `listViewsMine` cleaning rule from
+Lab 1.5 doing its job, because "mine" means a different set of records for every person the story is
+deployed to.
 
 ## If it goes wrong
 

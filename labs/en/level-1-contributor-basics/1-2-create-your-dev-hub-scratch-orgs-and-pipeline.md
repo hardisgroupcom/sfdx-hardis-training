@@ -77,7 +77,8 @@ The form asks for your first name, last name, job title, company and country or 
 things that decide whether the signup goes through:
 
 1. **Work email** **(1)**, a real address you can open, because the signup is confirmed by email
-2. the tick that accepts the master subscription agreement **(2)**
+2. the tick that accepts the **Main Services Agreement** **(2)**. The tracking-pixel box under it is
+   optional, and you can leave it alone
 3. **Sign me up** **(3)**
 
 ![The Salesforce Developer Edition signup form](../../_assets/annotated/web/sf-signup.png)
@@ -110,9 +111,12 @@ Back in VS Code, on the Welcome page, click **Orgs Manager**.
 
 The picture was taken at the end of this lab. For now your table is empty.
 
-1. Click **Add Org** **(1)**, then pick **Login to another org** in the list that opens
-2. Leave the login URL on **Production / Developer Edition** (`login.salesforce.com`), because a
-   Developer Edition org is not a sandbox
+1. Click **Add Org** **(1)**, then pick **🌍 Login to another org**, the first entry in the list that
+   opens
+2. It asks which address to sign in at, and it suggests the sandbox one. **Change it**: take
+   **☢️ Other: Dev org, Production org or DevHub org (login.salesforce.com)**, because a Developer
+   Edition org is not a sandbox. Pick the sandbox answer here and the login page refuses your
+   username
 3. Your browser opens the Salesforce login page. Sign in with the username from the email, and allow
    access
 
@@ -200,8 +204,8 @@ Those branch files are empty of your details until step 5 fills them in.
 One tool first, and only for this. The command in step 5 uses the
 [GitHub CLI](https://cli.github.com/), called `gh`, to make your copy of the repository and set its
 automation up. On its home page, open the install list **(1)** and take the download for your
-machine: **Windows - Download MSI**, or **macOS - Download binary**. Accept the installer's defaults
-**(2)**.
+machine: **Windows - Download MSI** **(2)**, or **macOS - Download binary**. Accept the installer's
+defaults.
 
 ![The GitHub CLI home page, with the install list open on the Windows MSI](../../_assets/annotated/web/gh-cli-download.png)
 
@@ -327,13 +331,13 @@ Six things, each of them real work on a real project, and none of them yours to 
 | `helios-integration` | The shared integration org, where the team's work is merged and deployed |
 | `helios-uat`         | User acceptance, where the business tests what integration has collected |
 
-- **Which org each branch deploys to**, written into `config/branches/.sfdx-hardis.integration.yml`
-  and `config/branches/.sfdx-hardis.uat.yml`, and pushed to your fork. The repository could not
-  know that: your orgs did not exist when it was written. It is pushed because the badge job clones
-  your fork and checks what is actually in it
-- **A credential for each CI job**, as repository secrets named `SFDX_AUTH_URL_INTEGRATION` and
-  `SFDX_AUTH_URL_UAT`. The jobs run on GitHub's machines, not yours, and cannot reach an org
-  without one
+- **Which org each branch deploys to**, written into the project's one configuration file per
+  branch, in `config/branches/`, and pushed to your fork. The repository could not know that: your
+  orgs did not exist when it was written. It is pushed because the badge check clones your fork and
+  reads what is actually in it
+- **A credential for each CI job.** CI jobs are the automated jobs GitHub runs for you, on its own
+  machines rather than on yours, and those machines cannot reach a Salesforce org without one. They
+  are kept as repository secrets, named `SFDX_AUTH_URL_INTEGRATION` and `SFDX_AUTH_URL_UAT`
 
 !!! warning "Scratch orgs expire after 30 days"
     That is the deal with scratch orgs, and it is fine for a course. If you come back after a month
@@ -389,8 +393,10 @@ minute because every diagram you meet later is this one with more in it.
 1. **`integration`** and **`uat`** **(1)** are git branches, the two *major* branches this project
    has so far. Major means the team shares them: everybody's work ends up there, and nobody builds
    directly on them
-2. **`helios-integration`** and **`helios-uat`** **(2)** are the Salesforce orgs those branches
-   own. One branch, one org, and that pairing is what the setup you just ran wrote down
+2. The two boxes on the right **(2)** are the Salesforce orgs those branches own, the ones the setup
+   named `helios-integration` and `helios-uat`. The diagram labels them after their branch, so they
+   read **Integration** and **Uat**. One branch, one org, and that pairing is what the setup you
+   just ran wrote down
 3. The **arrows** **(3)** are the deployments, and the way work travels. Whatever reaches
    `integration` is deployed into its org by a robot, without anybody clicking anything. Moving
    work on from `integration` to `uat` is a **promotion**, and it is the release manager's job,

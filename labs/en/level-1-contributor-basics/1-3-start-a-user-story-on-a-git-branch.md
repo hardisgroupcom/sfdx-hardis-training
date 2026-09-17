@@ -112,9 +112,9 @@ US-014-panels-required
 
 ![The question asking for the name of the User Story](../../_assets/annotated/vscode/work-new-story-name.png)
 
-The example under the field is not decoration: this project declares a pattern that names have to
-match, and the example is a name that matches it. Type something else, `Panels Required` say, and
-the command tells you what it expected and asks again.
+The greyed-out example inside the box is not decoration: this project declares a pattern that names
+have to match, and the example is a name that matches it. Type something else, `Panels Required`
+say, and the command tells you what it expected and asks again.
 
 ### 5. Which org you will build in
 
@@ -124,10 +124,11 @@ created in Lab 1.2.
 ![The question asking what kind of org this User Story is built in](../../_assets/annotated/vscode/work-new-org-type.png)
 
 The other answers are for other projects. **Sandbox org with source tracking** **(2)** is what most
-teams use, a developer sandbox the release manager hands out. The last one is for working on XML
-and configuration without an org at all.
+teams use, a developer sandbox the release manager hands out. Source tracking means the org keeps a
+running note of what changed in it since you last synchronised, which saves you looking. The last
+answer is for editing the project's files directly, with no org at all.
 
-Then the list of scratch orgs. Take **Reuse scratch org helios-dev** **(1)**.
+Then the list of orgs it could attach. Take **Reuse scratch org helios-dev** **(1)**.
 
 ![The New User Story command asking which scratch org to build in](../../_assets/annotated/vscode/work-new-org.png)
 
@@ -135,6 +136,9 @@ This is the org Lab 1.2 filled with the Helios app, and the one you are about to
 Setup. The list does not offer `helios-integration` or `helios-uat`: the command knows those two
 belong to major branches, and building directly in a shared org is exactly what this whole way of
 working exists to stop.
+
+The middle answer, **Reuse current org**, would land on the same org here, by its address rather
+than by its name. Take the named one: an address tells you nothing about which org it is.
 
 !!! danger "Never take Create new scratch org here"
     It is the first answer, and on a real project it is often the right one. Here it would ask your
@@ -225,6 +229,10 @@ again and take **Reuse scratch org helios-dev**.
 ## Check your work
 
 Welcome page > **Training: Level 1** > **Check my work**, then pick Lab 1.3.
+
+It will fail, and that is correct: the check looks at what has reached `integration`, and your work
+is still on your own branch. It turns green in Lab 1.6, once your Pull Request is merged. Run it
+once anyway, so you know what a not-yet check looks like before it matters.
 
 ## Go deeper
 

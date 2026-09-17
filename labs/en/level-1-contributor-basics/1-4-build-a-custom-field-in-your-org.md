@@ -8,6 +8,9 @@ lang: en
 source_rev: ""
 screenshots:
   - annotated/vscode/orgs-manager-actions
+  - annotated/salesforce/object-manager-fields
+  - annotated/salesforce/permission-set-object-settings
+  - annotated/salesforce/installation-record
 depends_on:
   commands: []
   flags: []
@@ -99,9 +102,9 @@ The acceptance criteria say the crew must see it. They do not have it yet: you g
 
 ![Object Settings for Installations on the Helios Delivery Crew permission set](../../_assets/annotated/salesforce/permission-set-object-settings.png)
 
-**Field Permissions** **(2)** is the table that matters, one row per field. This picture was taken
-before the field existed, so `Panels Required` is not in it yet: after your change it appears in
-that list, in alphabetical order.
+**Field Permissions** is the table that matters, one row per field, and **Read Access** **(2)** is
+the column you are here for. This picture was taken before the field existed, so `Panels Required`
+is not in it yet: after your change it appears in that list, in alphabetical order.
 
 Find `Panels Required` and tick **Read Access**. Leave **Edit Access** unticked: a crew member
 reads how many panels to load, they do not decide the number.
@@ -121,15 +124,19 @@ check the **Details** tab. `Panels Required` is there, empty.
 
 Empty fields prove nothing. Put a number in.
 
-1. On `INST-00001`, click **Edit**, set **Panels Required** to `24`, and **Save**
-2. Look at the **Panel delivery timeline** component **(2)**: it lists the pallets booked for this
-   installation, with their quantities
-
 ![An installation record in the Helios Delivery app](../../_assets/annotated/salesforce/installation-record.png)
 
-The **Installations** tab **(1)** is how you get back here from anywhere in the app.
-3. Do the quantities add up to roughly what you typed? On a real story you would ask the planner
-   whether the field should be entered by hand or computed. Here, entered by hand is the story
+The **Installations** tab **(1)** is how you get back to this list from anywhere in the app. On the
+right of the record sits the **Panel delivery timeline** **(2)**, which lists the pallets booked for
+this installation with their quantities. The picture was taken before this story existed, on an
+installation with no pallet booked, so there is no Panels Required in its Details either. Most
+installations have two or three pallets.
+
+1. On `INST-00001`, click **Edit**, set **Panels Required** to the number the timeline adds up to,
+   and **Save**
+2. Look at the two numbers side by side. On a real story you would ask the planner whether this
+   field should be typed in or worked out from the pallets. Here, typed in is the story, and that
+   question is exactly the one a good contributor asks before building anything
 
 Do the same on two more installations, so you have something to look at after the deployment.
 
@@ -163,8 +170,9 @@ Helios Delivery Manager > Manage Assignments > Add Assignment**, tick your own u
 
 Welcome page > **Training: Level 1** > **Check my work**, then pick Lab 1.4.
 
-It will fail, and that is correct: nothing is in the repository yet. Lab 1.5 is what makes this check
-pass. Run it anyway once, so you see what a failing check looks like before it matters.
+It will fail, and that is correct: nothing of your work has left the org yet. The check looks at
+what has reached `integration`, so it turns green in Lab 1.6, once your Pull Request is merged. Run
+it once anyway, so you see what a not-yet check looks like before it matters.
 
 ## Go deeper
 

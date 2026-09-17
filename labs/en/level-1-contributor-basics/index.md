@@ -8,7 +8,7 @@ lang: en
 
 # Level 1 - Salesforce DevOps contributor basics
 
-**Time**: about 2 h, in one sitting or six.
+**Time**: about 2 h 15, in one sitting or seven.
 
 **Before you start**: nothing. This is the first level.
 
@@ -45,7 +45,7 @@ part.
 | Lab                                                         | Title                                                 | Time   |
 |-------------------------------------------------------------|-------------------------------------------------------|--------|
 | [1.1](1-1-install-vs-code-and-sfdx-hardis.md)               | Install VS Code, Git and sfdx-hardis                  | 15 min |
-| [1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) | Create your Dev Hub, scratch orgs and CI/CD pipeline  | 20 min |
+| [1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) | Create your Dev Hub, scratch orgs and CI/CD pipeline  | 30 min |
 | [1.3](1-3-start-a-user-story-on-a-git-branch.md)            | Start a User Story on its own Git branch              | 10 min |
 | [1.4](1-4-build-a-custom-field-in-your-org.md)              | Build a custom field in your Salesforce org           | 15 min |
 | [1.5](1-5-retrieve-commit-and-publish-your-changes.md)      | Retrieve, commit and publish your Salesforce changes  | 20 min |
