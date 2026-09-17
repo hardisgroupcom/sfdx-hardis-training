@@ -94,5 +94,7 @@
   "vscode/welcome-custom-menu.png": "161f946342284047",
   "vscode/welcome-custom-menu-2.png": "25f2951c2819909b",
   "vscode/welcome-custom-menu-3.png": "bc48a1f6c0079bfb",
-  "vscode/orgs-manager-actions.png": "b17cde92c13748c2"
+  "vscode/orgs-manager-actions.png": "b17cde92c13748c2",
+  "vscode/configure-auth-branch.png#branch-question": "bacaf6b94124a2fa",
+  "vscode/configure-auth-variables.png#secrets": "b222c72dcd4bcc13"
 }

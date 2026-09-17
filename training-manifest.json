@@ -556,8 +556,8 @@
       ],
       "screenshots": [
         "annotated/vscode/devops-pipeline--settings-menu",
-        "annotated/vscode/command-runner-question--ci-auth",
-        "annotated/vscode/command-runner-completed--ci-auth-result",
+        "annotated/vscode/configure-auth-branch--branch-question",
+        "annotated/vscode/configure-auth-variables--secrets",
         "annotated/vscode/pipeline-config-deployment--deployment-tab"
       ]
     },

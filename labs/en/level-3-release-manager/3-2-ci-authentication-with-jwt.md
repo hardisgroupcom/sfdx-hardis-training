@@ -8,8 +8,8 @@ lang: en
 source_rev: ""
 screenshots:
   - annotated/vscode/devops-pipeline--settings-menu
-  - annotated/vscode/command-runner-question--ci-auth
-  - annotated/vscode/command-runner-completed--ci-auth-result
+  - annotated/vscode/configure-auth-branch--branch-question
+  - annotated/vscode/configure-auth-variables--secrets
   - annotated/vscode/pipeline-config-deployment--deployment-tab
 depends_on:
   commands: [hardis:project:configure:auth]
@@ -72,13 +72,16 @@ In the **DevOps Pipeline** panel, click the gear **(1)** at the top right and ch
 ![The settings menu of the DevOps Pipeline panel](../../_assets/annotated/vscode/devops-pipeline--settings-menu.png)
 
 The command runs in a panel rather than a terminal, and asks one question at a time **(1)**, with
-the answers to click below it **(2)**.
+the answers to click below it **(2)**. Here it is at the second question, with `helios-integration`
+already chosen.
 
-![A sfdx-hardis command waiting for an answer in the extension](../../_assets/annotated/vscode/command-runner-question--ci-auth.png)
+![The Add/Configure Org command asking which git branch to configure](../../_assets/annotated/vscode/configure-auth-branch--branch-question.png)
 
 It asks a dozen questions, not three, and the order is not the one you would guess:
 
-1. **Which org?** - select or log into `helios-integration`
+1. **Which org?** - select or log into `helios-integration`. The command makes it your default org
+   and, because that changed, VS Code starts the same command again. Pick `helios-integration` a
+   second time in the new panel and carry on from there
 2. **Which git branch do you want to configure deployments from?** - `integration`. The list is
    built from your **remote** branches, and branches whose name contains a `/` are filtered out of
    it
@@ -103,11 +106,11 @@ It asks a dozen questions, not three, and the order is not the one you would gue
 ### 2. Read what it produced, and copy the two values
 
 The panel keeps every question you answered **(1)**, so you can check what you told it without
-starting again. Before question 9 it prints the two values you are about to store **(2)**. Nothing
-prints them again, so do not close the panel or scroll past them. The files it wrote are listed in
-the reports bar at the bottom **(3)**.
+starting again. Just above question 9 it prints the two values you are about to store **(2)**, each
+with a copy button. Nothing prints them again, so do not close the panel. The files it wrote are
+listed in the reports bar at the bottom **(3)**.
 
-![A finished sfdx-hardis command, with its answers, its output and its reports](../../_assets/annotated/vscode/command-runner-completed--ci-auth-result.png)
+![The Add/Configure Org command printing the two secrets and waiting for them to be stored](../../_assets/annotated/vscode/configure-auth-variables--secrets.png)
 
 What it writes, and where:
 

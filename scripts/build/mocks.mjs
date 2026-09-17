@@ -218,6 +218,16 @@ writeJson(path.join(OUT, "sf-mock-overlay.json"), {
         value: o.alias,
         description: usernameFor(o.alias)
       })),
+    // What Add/Configure Org (hardis:project:configure:auth) is answered with in
+    // Lab 3.2: the integration branch and its scratch org, among the four major
+    // branches a Level 3 fork has
+    authConfig: {
+      branchName: "integration",
+      orgAlias: "helios-integration",
+      remoteBranches: ["integration", "main", "preprod", "uat"],
+      mergeTargets: ["uat"],
+      contactEmail: "release.manager@heliostraining.invalid"
+    },
     // Where this project records the manual steps a deployment needs. The base
     // fixture points at a SharePoint file that means nothing to a learner.
     manualActionsUrl: `${u.course.site}/en/level-2-contributor-advanced/2-4-ship-reference-data-and-a-batch-with-deployment-actions/`,
