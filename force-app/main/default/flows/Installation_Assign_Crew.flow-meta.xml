@@ -3,6 +3,7 @@
     <apiVersion>64.0</apiVersion>
     <assignments>
         <name>Move_To_Scheduled</name>
+        <description>A planned installation with a crew and a date is scheduled: the status follows the facts rather than waiting for somebody to change it.</description>
         <label>Move To Scheduled</label>
         <locationX>176</locationX>
         <locationY>323</locationY>

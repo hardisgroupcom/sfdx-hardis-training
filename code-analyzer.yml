@@ -50,6 +50,22 @@ engines:
   eslint:
     # Whether to turn off the 'pmd' engine so that it is not included when running Code Analyzer commands.
     disable_engine: false
+
+# ======================================================================
+# RULE OVERRIDES
+# ======================================================================
+rules:
+  flow:
+    # Installation Crew Warning creates a Task and then ticks Crew Warning Sent
+    # on the record that triggered it. The rule is right that a before-save flow
+    # is the cheap way to write your own record, and a before-save flow cannot
+    # create the Task, which is the whole point of the story. The alternative,
+    # two flows on the same object, costs more than it saves here.
+    #
+    # Silenced with a reason, which is the only acceptable way to silence a rule:
+    # anybody reading this file can see the decision and argue with it.
+    SameRecordUpdate:
+      severity: Info
 # ======================================================================
 # END OF CODE ANALYZER CONFIGURATION
 # ======================================================================

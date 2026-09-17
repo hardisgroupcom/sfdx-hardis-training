@@ -3,6 +3,7 @@
     <apiVersion>64.0</apiVersion>
     <assignments>
         <name>Move_To_Scheduled</name>
+        <description>A planned installation with a crew and a date is scheduled: the status follows the facts rather than waiting for somebody to change it.</description>
         <label>Move To Scheduled</label>
         <locationX>176</locationX>
         <locationY>323</locationY>
@@ -19,6 +20,7 @@
     </assignments>
     <assignments>
         <name>Raise_Crew_For_Flat_Roof</name>
+        <description>A flat roof needs three people whatever the panel count, so a smaller crew is raised to three.</description>
         <label>Raise Crew For Flat Roof</label>
         <locationX>50</locationX>
         <locationY>539</locationY>
@@ -35,6 +37,7 @@
     </assignments>
     <assignments>
         <name>Bring_Crew_Back_To_Cap</name>
+        <description>US-018: the crew never exceeds the cap the planner set on the installation.</description>
         <label>Bring Crew Back To Cap</label>
         <locationX>50</locationX>
         <locationY>755</locationY>
@@ -48,6 +51,7 @@
     </assignments>
     <decisions>
         <name>Flat_Roof_Crew</name>
+        <description>Is this a flat roof with fewer than three people on it?</description>
         <label>Flat Roof Crew</label>
         <locationX>176</locationX>
         <locationY>431</locationY>
@@ -80,6 +84,7 @@
     </decisions>
     <decisions>
         <name>Crew_Over_Cap</name>
+        <description>Is the crew larger than the cap this installation allows?</description>
         <label>Crew Over Cap</label>
         <locationX>176</locationX>
         <locationY>647</locationY>

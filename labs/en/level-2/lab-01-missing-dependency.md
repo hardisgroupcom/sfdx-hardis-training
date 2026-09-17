@@ -91,7 +91,24 @@ On that outcome, add a **Create Records** element that creates a Task on the ins
 subject `Crew may be too small for this installation`, then an **Update Records** element that sets
 `Crew Warning Sent` to true on the triggering record.
 
+Two things before you save, both of which the pipeline will ask you for later if you skip them now:
+
+1. **Give every element a description.** Click each one and fill in the description field with what
+   it is for, in a sentence. The Flow analyzer asks for it, and the generated documentation at Level
+   3 lab 9 is only as good as these
+2. **Give both record elements a fault path.** On the Create Records element, drag the connector
+   from its **fault** outlet to a new **Assignment** named `Log Fault`, and assign
+   `{!$Flow.FaultMessage}` to a text variable. Connect the Update Records fault outlet to the same
+   element
+
 Save and **Activate**.
+
+!!! info "Why a fault path, when nothing ever fails in a demo"
+    A record element without one fails silently: the flow stops, the user sees nothing, and the Task
+    that was supposed to warn the planner never appears. On a real project the fault path sends the
+    message somewhere a person reads, through a platform event, an error log object or an email.
+    Here it stops at recording it, because what the pipeline checks is that a fault path exists at
+    all.
 
 Test it: open an installation, set `Panels Required` to 40 and `Crew Size` to 2, save. A task
 appears, and the checkbox ticks. Save again: no second task. That is the story working, in your

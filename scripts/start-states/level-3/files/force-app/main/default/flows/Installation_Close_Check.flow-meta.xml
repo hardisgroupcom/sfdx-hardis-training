@@ -3,6 +3,7 @@
     <apiVersion>64.0</apiVersion>
     <customErrors>
         <name>Refuse_The_Close</name>
+        <description>Refuses the save and says which checklist is not finished.</description>
         <label>Refuse The Close</label>
         <locationX>50</locationX>
         <locationY>395</locationY>
@@ -13,6 +14,7 @@
     </customErrors>
     <decisions>
         <name>Checklist_Incomplete</name>
+        <description>Is anything on the handover checklist still open?</description>
         <label>Checklist Incomplete</label>
         <locationX>176</locationX>
         <locationY>287</locationY>
@@ -40,6 +42,7 @@
     <processType>AutoLaunchedFlow</processType>
     <recordLookups>
         <name>Open_Handover_Items</name>
+        <description>The handover items of this installation that are not ticked yet.</description>
         <label>Open Handover Items</label>
         <locationX>176</locationX>
         <locationY>179</locationY>

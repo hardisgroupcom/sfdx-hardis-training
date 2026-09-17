@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>64.0</apiVersion>
+    <assignments>
+        <name>Log_Fault</name>
+        <description>Where both fault paths end. A real project sends this somewhere a person reads: a platform event, an error log object, an email to the admin. The course stops at recording it, because what matters here is that the flow has a fault path at all.</description>
+        <label>Log Fault</label>
+        <locationX>314</locationX>
+        <locationY>611</locationY>
+        <assignmentItems>
+            <assignToReference>Fault_Message</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Flow.FaultMessage</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
     <decisions>
         <name>Crew_Too_Small</name>
+        <description>Is the crew smaller than the panel count needs?</description>
         <label>Crew Too Small</label>
         <locationX>176</locationX>
         <locationY>287</locationY>
@@ -27,6 +42,7 @@
     <environments>Default</environments>
     <formulas>
         <name>Crew_Is_Too_Small</name>
+        <description>One crew member fits eight panels, and the warning is only sent once per installation.</description>
         <dataType>Boolean</dataType>
         <expression>AND(
   {!$Record.Crew_Size__c} * 8 &lt; {!$Record.Panels_Required__c},
@@ -38,12 +54,16 @@
     <processType>AutoLaunchedFlow</processType>
     <recordCreates>
         <name>Create_Crew_Warning_Task</name>
+        <description>Tells the owner of the installation that the crew looks too small for the job.</description>
         <label>Create Crew Warning Task</label>
         <locationX>50</locationX>
         <locationY>395</locationY>
         <connector>
             <targetReference>Mark_Warning_Sent</targetReference>
         </connector>
+        <faultConnector>
+            <targetReference>Log_Fault</targetReference>
+        </faultConnector>
         <inputAssignments>
             <field>OwnerId</field>
             <value>
@@ -67,6 +87,7 @@
     </recordCreates>
     <recordUpdates>
         <name>Mark_Warning_Sent</name>
+        <description>Records that the warning went out, so the next save does not send it again.</description>
         <label>Mark Warning Sent</label>
         <locationX>50</locationX>
         <locationY>503</locationY>
@@ -84,6 +105,9 @@
                 <booleanValue>true</booleanValue>
             </value>
         </inputAssignments>
+        <faultConnector>
+            <targetReference>Log_Fault</targetReference>
+        </faultConnector>
         <object>Installation__c</object>
     </recordUpdates>
     <start>
@@ -101,4 +125,12 @@
         <triggerType>RecordAfterSave</triggerType>
     </start>
     <status>Active</status>
+    <variables>
+        <name>Fault_Message</name>
+        <description>What Salesforce said when the create or the update failed.</description>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
 </Flow>
