@@ -5,7 +5,8 @@ lab: 4
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/devops-pipeline
+  - annotated/vscode/pipeline-cards--new-user-story
+  - annotated/vscode/org-monitoring--apex-tests
 depends_on:
   commands: [hardis:work:save, hardis:project:deploy:smart]
   flags: []
@@ -51,8 +52,10 @@ half of working on a pipeline, so this lab makes you meet one of each.
 
 ### 1. Take the story
 
-**New User Story**, branch `US-027-schedule-by-availability`, target `integration`, org
-`helios-dev`.
+**New User Story** **(2)**, under **Project Contribution Workflow** **(1)** of the DevOps Pipeline
+panel. Branch `US-027-schedule-by-availability`, target `integration`, org `helios-dev`.
+
+![The New User Story card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
 ### 2. Add the change the way people actually write it
 
@@ -88,7 +91,9 @@ way to do it, and that is the point:
     }
 ```
 
-Publish, push, open the Pull Request.
+This one is a file, not an org change, so there is nothing to retrieve: commit
+`InstallationScheduler.cls` from the **Source Control** panel, then **Save / Publish**, push, and
+open the Pull Request.
 
 ### 3. MegaLinter warns you
 
@@ -178,10 +183,18 @@ makes the number lie.
 Two round trips through CI to find two things you could have found in two minutes locally. Do it
 the other way round from now on.
 
-**Apex tests**: open the **Org Monitoring Workbench** from the Welcome page, click the **Apex
-Tests** card, and pick `helios-dev`.
+**Apex tests**: on the Welcome page, click **Org Monitoring**. In the **Apex Tests & Security**
+section of the panel that opens, click the **Apex Tests** card **(1)** and pick `helios-dev`.
+
+![The Org Monitoring Workbench, with the Apex Tests card](../../_assets/annotated/vscode/org-monitoring--apex-tests.png)
+
 It runs the org's Apex tests and checks the same coverage threshold the pipeline checks, so you get
 the pass, the fail and the percentage without pushing anything.
+
+!!! note "The banner at the top is expected"
+    *Org Monitoring Not Present (CI/CD Repo)* means this repository is a delivery pipeline and not a
+    monitoring repository. The cards below it still work against whatever org you pick. Level 3 lab
+    8 is where monitoring gets a repository of its own.
 
 !!! note "The Apex Tests tab is a different thing"
     A Pull Request in the **DevOps Pipeline** panel can show an **Apex Tests (n) (beta)** tab. It

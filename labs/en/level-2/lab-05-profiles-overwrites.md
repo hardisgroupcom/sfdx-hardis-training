@@ -5,6 +5,7 @@ lab: 5
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/pipeline-config
 depends_on:
   commands: [hardis:work:save]
@@ -44,7 +45,10 @@ This is the failure mode that makes people distrust a pipeline, and it is entire
 
 ### 1. Take the story and do it the way an admin would
 
-**New User Story**, branch `US-033-batch-cost-visibility`, target `integration`, org `helios-dev`.
+**New User Story** **(2)**, under **Project Contribution Workflow** **(1)** of the DevOps Pipeline
+panel. Branch `US-033-batch-cost-visibility`, target `integration`, org `helios-dev`.
+
+![The New User Story card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
 In `helios-dev`, the quick way: **Setup > Object Manager > Panel Batch > Fields & Relationships >
 Cost > Set Field-Level Security**, tick **Visible** for the **System Administrator** profile and for
@@ -52,7 +56,9 @@ whatever profile your crew users have.
 
 That is how most people grant a permission, and it is what this lab is built on.
 
-Publish, selecting the Profile you changed. Push, Pull Request, green, merge.
+Bring it down the usual way: **Commit changes**, **Recent Changes**, **Search Metadata**, tick the
+Profile you changed, retrieve, and commit it from **Source Control**. Then **Save / Publish**, push,
+Pull Request, green, merge.
 
 ### 2. Discover that nothing happened
 
@@ -64,14 +70,15 @@ Profile is not in it.
 
 ### 3. Read your own diff
 
-Open the commit in your branch and look at what was actually committed for the Profile.
+Your commit had the permission in it. You saw it in the diff before you clicked Commit.
 
-Almost nothing. The Profile file is there, but the field permission you added is gone, along with
-most of the rest of it.
+Open the **Source Control** panel, look at the history of your branch, and read the commit
+**Save / Publish** made after yours, `chore(sfdx-hardis): clean sfdx project`. It takes the
+permission you added straight back out, along with most of the rest of the file.
 
-Publishing did that, deliberately, before committing. It is a project setting called
-**minimizeProfiles**, one of the cleaning rules this project switched on, and you can see it in the
-**Pipeline Settings** panel on the **Salesforce Project** tab.
+That is a project setting called **minimizeProfiles**, one of the cleaning rules this project
+switched on, and you can see it in the **Pipeline Settings** panel on the **Salesforce Project**
+tab.
 
 ### 4. Understand why a project would ever do that
 
@@ -100,8 +107,8 @@ Redo the grant where it belongs.
 In `helios-dev`: **Setup > Permission Sets > Helios Delivery Crew > Object Settings > Panel Batches
 > Edit**, tick **Read Access** on `Cost`, **Save**.
 
-Publish again, selecting the **Permission Set** this time. Read `manifest/package.xml`: it lists
-`Helios_Delivery_Crew`. Push, green, merge.
+Retrieve the **Permission Set** this time, commit it, and publish. Read `manifest/package.xml`: it
+lists `Helios_Delivery_Crew`. Push, green, merge.
 
 Now check `helios-integration`. The permission is there.
 

@@ -5,7 +5,6 @@ lab: 6
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/devops-pipeline
 depends_on:
   commands: [hardis:work:new, hardis:work:save]
   flags: []
@@ -47,20 +46,21 @@ Second ticket, second day. Nobody is going to walk you through this one.
 
 No numbered clicks this time. The loop, in order:
 
-1. **Start the User Story.** Branch `US-016-crew-notes`, target `integration`, org `helios-dev`
-2. **Refresh your org first.** `hardis:work:new` offers it. Say yes: `integration` now has US-014,
-   and your org should have it too before you build on top
-3. **Build it in `helios-dev`**
+1. **Start the User Story.** Branch `US-016-crew-notes`, target `integration`, org `helios-dev`.
+   The command asks whether to update your sandbox: answer *Continue working on the current sandbox
+   state*. Your org already has US-014, because you built it there
+2. **Build it in `helios-dev`**
     - A **Long Text Area** field `Crew_Notes__c` on `Installation__c`, 4000 characters, with a
       description and help text
     - Grant it **Read** and **Edit** on `Helios Delivery Crew`, because a crew member writes notes
     - On the layout
     - A list view `My Open Installations` on Installation, filtered to `Status not equal to
       Completed`, with the columns a crew member needs
-4. **Publish.** Select the field, the permission set, the layout and the list view. Nothing else
-5. **Read `manifest/package.xml`** before pushing. Four entries, all yours
-6. **Open the Pull Request** into `integration` in your own fork, get it green, merge
-7. **Check the integration org** after the deployment job
+3. **Bring it down.** **Commit changes**, **Recent Changes**, **Search Metadata**, and take the
+   field, the permission set, the layout and the list view. Nothing else. Commit them
+4. **Publish**, and read `manifest/package.xml` before pushing. Four entries, all yours
+5. **Open the Pull Request** into `integration` in your own fork, get it green, merge
+6. **Check the integration org** after the deployment job
 
 ## Two things that will catch you
 

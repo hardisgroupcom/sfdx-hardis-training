@@ -184,6 +184,32 @@
         "width": 890,
         "height": 335
       }
+    },
+    {
+      "name": "github-pr-closed",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/pulls?q=is%3Apr+is%3Aclosed",
+      "width": 1440,
+      "height": 900,
+      "settle": 5000,
+      "clip": {
+        "x": 0,
+        "y": 95,
+        "width": 1440,
+        "height": 490
+      }
+    },
+    {
+      "name": "github-pr-files",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/2/files",
+      "width": 1440,
+      "height": 1200,
+      "settle": 6000,
+      "clip": {
+        "x": 0,
+        "y": 95,
+        "width": 1440,
+        "height": 700
+      }
     }
   ]
 }

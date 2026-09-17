@@ -103,7 +103,7 @@ it unticked and the next promotion will still be asking you for it.
 
 ### 4. Merge and watch the deployment
 
-Merge the promotion. The **Deploy to uat** job starts.
+Merge the promotion. The **Process Deployment (sfdx-hardis)** run starts, this time on `uat`.
 
 This is the first deployment to this org through the pipeline, so it will be larger than the ones to
 integration: UAT is behind by everything the team has done. Expect several minutes.
@@ -187,7 +187,7 @@ reading about once you have done a few releases the ordinary way.
 ## What you should see
 
 - The `uat` branch carrying everything `integration` had
-- A green **Deploy to uat** job
+- A green **Process Deployment (sfdx-hardis)** run on `uat`
 - Both stories working in `helios-uat`
 - Release notes committed, and linked from `MY-PIPELINE.md`
 

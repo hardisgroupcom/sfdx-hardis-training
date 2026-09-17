@@ -5,7 +5,7 @@ lab: 6
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/devops-pipeline
+  - annotated/vscode/sidebar-commands-advanced--push
 depends_on:
   commands: [hardis:work:save, hardis:work:refresh]
   flags: []
@@ -88,7 +88,7 @@ In `helios-dev`:
 2. On the permission set `Helios Delivery Manager`, grant edit access on
    `Installation__c.Crew_Notes__c`, so a planner can say why a crew was raised
 
-Publish, selecting the flow and the permission set. Push.
+Retrieve the flow and the permission set, commit them, publish and push.
 
 ### 3. Open the Pull Request and watch it refuse to merge
 
@@ -189,8 +189,12 @@ Do it in Flow Builder, not in the file. A flow is stored as XML that nobody can 
 developers included, and a flow that deploys but behaves wrongly is worse than one that fails.
 
 1. In the merge editor, **Accept Incoming** on the flow: Marco's whole version wins for now
-2. **Save / Publish User Story** is not what you want yet. First deploy the merged flow to your dev
-   org: **DevOps Pipeline** > **Deploy to my org**, so `helios-dev` has Marco's cap
+2. **Save / Publish User Story** is not what you want yet. First send the merged flow to your dev
+   org, so `helios-dev` has Marco's cap: open the **SFDX HARDIS** view in the left bar,
+   **CI/CD (advanced)** **(1)**, and click **Push from local files to Salesforce org** **(2)**
+
+   ![The CI/CD (advanced) group of the sfdx-hardis command list](../../_assets/annotated/vscode/sidebar-commands-advanced--push.png)
+
 3. Open **Flow Builder** in the org, on `Installation_Assign_Crew`, and add your flat-roof rule
    again, **after** his cap so the cap runs last and wins
 4. Come back to VS Code and publish, which picks your rebuilt flow up from the org

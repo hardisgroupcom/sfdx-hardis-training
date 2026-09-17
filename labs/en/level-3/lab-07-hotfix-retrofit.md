@@ -112,7 +112,8 @@ of being an exception.
 
 ### 4. Publish and ship
 
-Publish, selecting only the validation rule. The Pull Request targets **`main`**.
+Retrieve the validation rule and nothing else, commit it, and publish. The Pull Request targets
+**`main`**.
 
 The check deploys against production in validation mode, which is exactly what you want at 17:40:
 the same gate, on the real org, taking two minutes.

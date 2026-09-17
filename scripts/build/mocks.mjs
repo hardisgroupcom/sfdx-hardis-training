@@ -68,6 +68,10 @@ writeJson(path.join(OUT, "universe.json"), {
   // The branch the contribution cards and the deployment action editors are
   // captured from: it is the one carrying the Level 2 deployment actions.
   featureBranch: "features/US-024-crew-size-required",
+  // Where the "integration" node lands in the diagram, for the click that opens
+  // its window. Mermaid lays it out from the branches this universe carries, so
+  // it moves whenever they change, and the click then hits empty canvas.
+  branchNode: "1190,557",
   branches: [
     ...u.branches.majors.filter((b) => b !== "integration"),
     ...u.userStories.filter((s) => s.level <= 2 && s.author === "you").map((s) => s.branch),
@@ -134,6 +138,9 @@ writeJson(path.join(OUT, "sf-mock-overlay.json"), {
           : `The ${branch} environment`
     })),
     storyName: `${STORY.id} ${STORY.title}`,
+    // What the prompt offers as an example: the project declares a branch name
+    // pattern, so the example has to be a name that pattern accepts
+    storyNameExample: u.project?.newTaskNameRegexExample || "US-014-panels-required",
     storyBranch: STORY.branch,
     devOrgs: u.orgs
       .filter((o) => o.branch === null)
@@ -158,6 +165,20 @@ writeJson(path.join(OUT, "sf-mock-overlay.json"), {
       { title: "Helios_Delivery_Crew", value: "Helios_Delivery_Crew" }
     ]
   },
+  // What the Metadata Retriever finds in Recent Changes mode, which is how a
+  // learner pulls their own work out of the org before publishing it. Three
+  // rows belong to US-014 and the rest is the noise every real org carries, so
+  // the lab can teach the one decision that matters: take yours, leave the rest.
+  sourceMembers: [
+    ["CustomField", "Installation__c.Panels_Required__c", "You", "created"],
+    ["PermissionSet", "Helios_Delivery_Crew", "You", "modified"],
+    ["Layout", "Installation__c-Installation Layout", "You", "modified"],
+    ["CustomField", "Installation__c.Internal_Note__c", "Marco Bianchi", "modified"],
+    ["Flow", "Installation_Assign_Crew", "Marco Bianchi", "modified"],
+    ["FlexiPage", "Installation_Record_Page", "Amina Diallo", "modified"],
+    ["Profile", "Admin", "Automated Process", "modified"],
+    ["ApexClass", "InstallationScheduler", "Marco Bianchi", "modified"]
+  ],
   apexClasses: [
     {
       Name: "CrewCapacityBatch",

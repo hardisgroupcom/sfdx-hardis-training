@@ -5,7 +5,9 @@ lab: 2
 lang: en
 source_rev: ""
 screenshots:
-  - vscode/devops-pipeline
+  - annotated/web/github-pr-closed
+  - annotated/web/github-pr-files
+  - annotated/vscode/pipeline-cards--new-user-story
 depends_on:
   commands: [hardis:project:deploy:smart]
   flags: [--check]
@@ -50,10 +52,19 @@ been, because the thing you missed is in your integration org right now.
 
 ### 1. Find Marco's Pull Request in your fork
 
-In your fork: **Pull requests > Closed**, and open **US-018 Cap the crew size a planner can assign**.
+In your fork: **Pull requests**, then the **Closed** filter **(1)**, and open **US-018 Cap the crew
+size a planner can assign** **(2)**.
+
+![The closed Pull Requests of a fork, with Marco's story](../../_assets/annotated/web/github-pr-closed.png)
 
 A merged Pull Request keeps everything a review needs: the diff, the checks, the sfdx-hardis
 comment. The only thing it no longer offers is the Merge button.
+
+!!! note "The red cross on that row"
+    The counter next to each row is *checks passed / checks run*, all of them, and on this project
+    one of them is **Mega-Linter** over the whole repository. It fails on Marco's story the same way
+    it reported a finding on yours in Level 1: it is looking at code nobody in this course wrote.
+    Both deployment checks passed, which is the point of this lab: the pipeline was happy.
 
 ### 2. Read the robot first
 
@@ -115,7 +126,13 @@ Request you already merged. What you can still do is leave the comment, and that
 consolation prize. A review comment on a merged Pull Request is where the next person looks when
 they ask why the layout changed.
 
-Click **Files changed**, find the layout, click the line, and comment:
+Click **Files changed** **(1)**. The file tree on the left lists the four files Marco's story
+touched, and the layout **(2)** is the one to open.
+
+![The Files changed tab of Marco's Pull Request](../../_assets/annotated/web/github-pr-files.png)
+
+Find the layout in the diff, hover the line where the field used to be, click the blue **+** that
+appears, and comment:
 
 > `Total_Capacity_kW__c`, `Panels_Required__c` and `Crew_Notes__c` came off the layout with this
 > change, because the file was replaced rather than edited. They are still on the object. I am
@@ -129,8 +146,13 @@ Two things about that comment worth copying:
 ### 6. Fix it yourself, through the pipeline
 
 The story is merged, so the fix is a story of its own. This is the ordinary path, and you already
-know it from Level 1: **New User Story**, targeting `integration`, then put the three fields back on
-the layout beside the cap field, in the second column that the layout already has and does not use.
+know it from Level 1: **New User Story** **(2)**, under **Project Contribution Workflow** **(1)**,
+targeting `integration`.
+
+![The New User Story card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
+
+Then put the three fields back on the layout beside the cap field, in the second column that the
+layout already has and does not use, retrieve the layout, commit it, and publish.
 
 Publish, open the Pull Request, and let the checks run. When they are green: **Review changes >
 Approve**, then **Merge pull request**.

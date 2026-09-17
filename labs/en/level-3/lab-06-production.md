@@ -77,7 +77,7 @@ what it is and who intended it. That is not being careful, that is the job.
 
 ### 4. Merge, and stay
 
-Merge. The **Deploy to main** job starts.
+Merge. The **Process Deployment (sfdx-hardis)** run starts, this time on `main`.
 
 Watch it. Not because you can do anything while it runs, but because knowing whether it failed at
 minute two or minute thirty-five changes what you do next.
@@ -183,7 +183,7 @@ and a release manager quoting them should know which part they cover.
 ## What you should see
 
 - `main` carrying the release
-- A green **Deploy to main** job
+- A green **Process Deployment (sfdx-hardis)** run on `main`
 - The stories working in `helios-prod`
 - A DORA report measured against `helios-prod`, and its numbers in `MY-PIPELINE.md`
 

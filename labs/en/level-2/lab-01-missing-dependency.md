@@ -5,7 +5,9 @@ lab: 1
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/metadata-retriever
+  - annotated/vscode/pipeline-cards--save-publish
 depends_on:
   commands: [hardis:work:new, hardis:work:save, hardis:project:deploy:smart]
   flags: [--check]
@@ -45,7 +47,12 @@ This lab is about the gap between "it exists in my org" and "it is in the packag
 
 ### 1. Take the story
 
-**New User Story**, branch `US-021-crew-size-warning`, target `integration`, org `helios-dev`.
+In the **DevOps Pipeline** panel, under **Project Contribution Workflow** **(1)**, click **New User
+Story** **(2)**, the same card as Level 1 lab 2.
+
+![The contribution cards of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
+
+Answer: target `integration`, type **Feature**, name `US-021-crew-size-warning`, org `helios-dev`.
 
 ### 2. Build the warning flow
 
@@ -92,7 +99,18 @@ org.
 
 ### 3. Publish and watch it fail
 
-**Save / Publish User Story**. Select the flow, and the `Crew_Warning_Sent__c` field.
+Bring it down the way Level 1 taught you: **DevOps Pipeline > Commit changes**, **Recent Changes**,
+**Search Metadata**, and tick the two things you made, the flow `Installation_Crew_Warning` and the
+field `Installation__c.Crew_Warning_Sent__c`. Retrieve them, and commit from **Source Control**.
+
+!!! warning "Look at what actually arrived"
+    Only the flow is waiting in Source Control. The field is not there, and nothing said anything.
+    Carry on and publish anyway: the point of this lab is to meet the failure that follows, and to
+    learn to read it. Step 5 is where you find out why.
+
+Then **Save / Publish** **(1)**.
+
+![The Save / Publish card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--save-publish.png)
 
 Push, open the Pull Request into `integration` in your fork, and wait.
 
@@ -118,10 +136,10 @@ The integration org is being sent a flow that reads a field the package does not
 integration org does not have that field either. From Salesforce's point of view the error is
 exactly right.
 
-So why is the field not in the package? Publishing builds the package out of what changed in your
-branch, and your field is not in that list, because the file for it never arrived in the project at
-all. Look where the fields live, `force-app/main/default/objects/Installation__c/fields/`: it is not
-there, even though you ticked it when you published.
+So why is the field not in the package? Publishing builds the package out of what your commits
+changed, and your field is not in that list, because the file for it never arrived in the project
+at all. Look where the fields live, `force-app/main/default/objects/Installation__c/fields/`: it is
+not there, even though you ticked it in the retriever and the retriever reported no error.
 
 ### 5. Find why the field never reached the repository
 
@@ -171,8 +189,8 @@ The field appears under `force-app/main/default/objects/Installation__c/fields/`
 
 ### 7. Publish again
 
-**Save / Publish User Story** again. `manifest/package.xml` now lists both the field and the flow.
-Push. The check goes green.
+The field is in `force-app/` now. Commit it from **Source Control**, then **Save / Publish** again.
+`manifest/package.xml` lists both the field and the flow. Push, and the check goes green.
 
 <details markdown="1"><summary>Under the hood: why the error said what it said</summary>
 

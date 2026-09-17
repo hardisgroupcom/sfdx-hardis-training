@@ -5,7 +5,10 @@ lab: 7
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/vscode/pipeline-cards--new-user-story
+  - annotated/vscode/metadata-retriever-recent-changes--select-all
   - annotated/vscode/sidebar
+  - annotated/vscode/pipeline-cards--save-publish
 depends_on:
   commands: [hardis:work:resetselection, hardis:work:save]
   flags: []
@@ -25,9 +28,9 @@ learn the two recovery paths.
 
 ## The situation
 
-It is late, the selection screen has ninety entries, and **Select all** is right there. You click
-it, you publish, and your Pull Request now proposes to change eighty things you have never looked
-at.
+It is late, the Metadata Retriever has ninety rows, and the tick box in the header selects all of
+them in one click. You take it, you retrieve, you commit, you publish, and your Pull Request now
+proposes to change eighty things you have never looked at.
 
 Nobody can review that. Worse, some of those eighty are other people's work as it existed in your
 org before you refreshed, which means merging your Pull Request would quietly roll them back.
@@ -43,13 +46,19 @@ This lab is short and it is the one you will actually use.
 
 ### 1. Make the mess on purpose
 
-**New User Story**, branch `US-038-installation-notes-tidy`, target `integration`, org
-`helios-dev`.
+**New User Story** **(2)**, under **Project Contribution Workflow** **(1)** of the DevOps Pipeline
+panel. Branch `US-038-installation-notes-tidy`, target `integration`, org `helios-dev`.
+
+![The New User Story card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
 In `helios-dev`, make one small real change: on the Installation layout, move `Crew Size` above
 `Install Date`.
 
-Now publish, and at the selection screen click **Select all**. Confirm. Push.
+Now open **Commit changes**, search the recent changes, and this time click the tick box in the
+**table header** **(1)**, which selects every row at once. Retrieve them all, commit them all from
+**Source Control**, publish and push.
+
+![The Metadata Retriever, with every row selected](../../_assets/annotated/vscode/metadata-retriever-recent-changes--select-all.png)
 
 ### 2. Look at what you did
 
@@ -111,8 +120,12 @@ visible.
 
 ### 5. Publish again, properly
 
-In the **DevOps Pipeline** panel, click **Save / Publish** again. This time the selection screen is
-empty, and you tick exactly one thing: the **Layout**.
+Everything the retrieve brought down is still in your working tree, uncommitted. In the **Source
+Control** panel, commit **one file only**, the layout, and discard the rest.
+
+Then **Save / Publish** **(1)** again.
+
+![The Save / Publish card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--save-publish.png)
 
 `manifest/package.xml` now has one entry. Push, and the Pull Request diff is one file.
 
@@ -136,25 +149,29 @@ In `MY-PIPELINE.md`, under Level 2:
   noticed.
 ```
 
-<details markdown="1"><summary>Under the hood: what the selection actually is</summary>
+<details markdown="1"><summary>Under the hood: what "the selection" actually is</summary>
 
 The command behind the menu entry is:
 
     sf hardis:work:resetselection
 
-The selection is not a git concept. `hardis:work:save` records what you ticked in your **user
-configuration**, `config/user/.sfdx-hardis.<your-username>.yml`, which is git-ignored. On the next
-publish it pre-ticks the same items, which is convenient when you are iterating on one story and
-poisonous when you have moved on.
+There is no list of ticked items stored anywhere. **Your selection is your commits.** What you chose
+in the Metadata Retriever became files, the files you committed became the branch, and
+`hardis:work:save` builds `manifest/package.xml` from the git diff between that branch and the
+target branch. Select too much and the diff is too wide, because the diff is all there is.
 
-`resetselection` empties that record. Nothing else: no git operation, no org operation. It is
-deliberately small, which is why it is safe to run whenever you are unsure.
+That is why the fix has to touch git, and why this command does exactly three things:
 
-The reason an over-wide selection produces deletions is worth stating plainly. `hardis:work:save`
-builds `manifest/package.xml` from the **git diff between your branch and the target branch**. If
-your org is behind `integration` and you retrieve everything from it, the retrieved files are older
-than what is on `integration`, and the diff reads as "remove what they added". A backpromote before
-starting (Lab 0) is what prevents this, and it is why `hardis:work:new` offers it.
+    git reset --soft <branch point>            undo the commits, keep every file
+    git checkout <branch point> -- manifest/   put package.xml back as it was
+    setConfig('user', { canForcePush: true })  authorize the next push to rewrite the branch
+
+Nothing touches your org, and nothing touches your files.
+
+The reason an over-wide selection produces deletions is worth stating plainly. If your org is behind
+`integration` and you retrieve everything from it, the retrieved files are older than what is on
+`integration`, and the diff reads as "remove what they added". A backpromote before starting
+(Lab 0) is what prevents that.
 
 </details>
 
@@ -169,8 +186,10 @@ starting (Lab 0) is what prevents this, and it is why `hardis:work:new` offers i
 **The reset says you have changes waiting.**
 Publish them or discard them in the **Source Control** panel first, then run the reset again.
 
-**After the reset, the publish still pre-ticks everything.**
-You reset the branch but not the selection. Run **Reset selected list of items to merge** too.
+**After the reset, `manifest/package.xml` is still long.**
+The reset put it back to the branch point, so a long file means you committed again afterwards.
+Check the Source Control panel: everything the retrieve brought down is still in your working tree,
+and only what you commit goes into the package.
 
 **You already merged the bad Pull Request.**
 Revert it on `integration` with the **Revert** button GitHub offers on a merged Pull Request, then

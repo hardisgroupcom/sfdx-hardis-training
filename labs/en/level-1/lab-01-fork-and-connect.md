@@ -127,7 +127,7 @@ Back in VS Code, on the Welcome page, click **Orgs Manager**.
 
 ![The Orgs Manager table, with both training orgs and their connection state](../../_assets/annotated/vscode/orgs-manager.png)
 
-1. Click **Add Org** **(1)**, then pick **Connect to another org** in the list that opens
+1. Click **Add Org** **(1)**, then pick **Login to another org** in the list that opens
 2. Leave the login URL on **Production / Developer Edition** (`login.salesforce.com`), because a
    Developer Edition org is not a sandbox
 3. Your browser opens the Salesforce login page. Sign in with your first org, and allow access

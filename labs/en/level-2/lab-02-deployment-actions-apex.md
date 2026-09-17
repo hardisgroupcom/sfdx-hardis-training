@@ -5,6 +5,8 @@ lab: 2
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/vscode/pipeline-cards--my-pull-request
+  - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/pipeline-pr-actions-empty
   - annotated/vscode/pipeline-edit-action-apex
   - annotated/vscode/pipeline-pr-actions-list
@@ -54,7 +56,10 @@ This lab is about the gap between a green deployment and a safe one.
 
 ### 1. Take the story and do the obvious thing
 
-**New User Story**, branch `US-024-crew-size-required`, target `integration`, org `helios-dev`.
+**New User Story** **(2)**, under **Project Contribution Workflow** **(1)** of the DevOps Pipeline
+panel. Branch `US-024-crew-size-required`, target `integration`, org `helios-dev`.
+
+![The New User Story card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
 In `helios-dev`: **Setup > Object Manager > Installation > Fields & Relationships > Crew Size >
 Edit**, tick **Required**, **Save**.
@@ -143,10 +148,18 @@ production:
 
 ### 6. Declare it as a deployment action
 
-Open the **DevOps Pipeline** panel and find your Pull Request: your feature branch **(1)**, and on
-the arrow leaving it the numbered badge **(2)**. Click the badge.
+Open the **DevOps Pipeline** panel. There are two ways to your Pull Request, and both land in the
+same place.
+
+In the diagram: your feature branch **(1)**, and on the arrow leaving it the numbered badge **(2)**.
+Click the badge.
 
 ![The DevOps Pipeline panel, with the feature branch and the badge of its Pull Request](../../_assets/annotated/vscode/pipeline-pr-actions-empty.png)
+
+Or scroll to **Project Contribution Workflow** and click the **My Pull Request** card **(1)**, which
+always points at the Pull Request of the branch you are standing on.
+
+![The My Pull Request card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--my-pull-request.png)
 
 The Pull Request opens on its **Deployment Actions** tab. Click **Add New Action**, and in the
 **Edit Deployment Action** dialog set the **Type** **(1)** to **Apex**.

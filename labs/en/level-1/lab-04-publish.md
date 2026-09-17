@@ -5,6 +5,10 @@ lab: 4
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/vscode/pipeline-cards--commit-changes
+  - annotated/vscode/metadata-retriever-recent-changes--find
+  - annotated/vscode/metadata-retriever-selected--us-014
+  - annotated/vscode/source-control-retrieved--commit
   - annotated/vscode/pipeline-cards--save-publish
   - annotated/vscode/work-save-commit-ready
   - annotated/vscode/work-save-package-xml
@@ -12,18 +16,18 @@ depends_on:
   commands: [hardis:work:save]
   flags: []
   config: [autoCleanTypes, autoRemoveUserPermissions]
-  panels: [pipeline, packageXml, commandExecution]
+  panels: [pipeline, metadataRetriever, packageXml, commandExecution]
   docs: [salesforce-devops-publish-user-story, salesforce-devops-config-cleaning]
 ---
 
-# Lab 4 - Publish it, and read what the tool selected
+# Lab 4 - Choose what to keep, and publish it
 
 **Level**: 1 Contributor basics
 
-**Time**: ~15 min
+**Time**: ~20 min
 
-**You will**: pull your org changes into the repository, understand what the tool chose to keep and
-what it removed, and push a branch that is ready to be reviewed.
+**You will**: bring your org changes into the repository, decide which of them belong to your story,
+and push a branch that is ready to be reviewed.
 
 ## The situation
 
@@ -40,10 +44,87 @@ Go slowly here once, and every following story takes five minutes.
 
 ## Steps
 
-### 1. Start the publish
+### 1. Bring your changes out of the org
 
-In the **DevOps Pipeline** panel, under **Project Contribution Workflow**, click the
-**Save / Publish** card **(1)**.
+Your field is in Salesforce. Nothing of it is on your machine yet, and git only ever sees what is
+on your machine.
+
+In the **DevOps Pipeline** panel, under **Project Contribution Workflow**, click the **Commit
+changes** card **(1)**.
+
+![The Commit changes card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--commit-changes.png)
+
+It opens the **Metadata Retriever**, which is where every publish starts.
+
+### 2. Ask the org what changed
+
+Check the org **(1)** reads `helios-dev`, the org you built in. **Recent Changes** **(2)** is
+already selected: it asks Salesforce what has been modified lately rather than listing the tens of
+thousands of components an org contains. Click **Search Metadata** **(3)**.
+
+![The Metadata Retriever listing the recent changes of the org](../../_assets/annotated/vscode/metadata-retriever-recent-changes--find.png)
+
+A handful of results comes back **(4)**, each with what it is, its name, who last touched it and
+when. Yours are the ones that say **You**.
+
+!!! info "Why other people are in this list"
+    You are alone in `helios-dev`, and the list still has rows you never touched. Some are
+    Salesforce moving things on its own, some came from the last deployment into this org. That is
+    normal, on every org, and it is exactly why the next step is a decision rather than a button.
+
+### 3. Take yours, leave the rest
+
+Tick three rows, and only three:
+
+1. **CustomField** `Installation__c.Panels_Required__c` **(1)** - the field
+2. **Layout** `Installation__c-Installation Layout` **(2)** - the placement
+3. **PermissionSet** `Helios_Delivery_Crew` **(3)** - the grant
+
+Then click **Retrieve 3 selected** **(4)**.
+
+![The Metadata Retriever with the three components of US-014 ticked](../../_assets/annotated/vscode/metadata-retriever-selected--us-014.png)
+
+Two rules make that decision for you, and they are the whole of this lab:
+
+- **If you did not mean to change it, it does not belong in your story.** Committing it makes your
+  Pull Request about something other than US-014, and the reviewer cannot tell which part is yours
+- **If you are not sure, leave it out.** Nothing is lost. It is still in your org, and you can
+  publish it in a later story once you know what it is
+
+The retriever writes those three components into `force-app/` as files. It changes nothing in
+Salesforce and nothing on your branch yet.
+
+### 4. Commit what came down
+
+Open the **Source Control** panel **(1)**, the third icon in the left bar. The three files the
+retrieve wrote are waiting there **(2)**.
+
+![The Source Control panel with the three retrieved files](../../_assets/annotated/vscode/source-control-retrieved--commit.png)
+
+Click each one and read the diff. It takes a minute and it is the last moment where a mistake is
+free. Then type a message **(3)** and click **Commit** **(4)**.
+
+Write the message for the person reviewing tomorrow, not for yourself today. First line short, then
+a blank line, then why:
+
+> US-014 Panels Required on Installation
+>
+> Adds Panels_Required__c on Installation__c so the crew knows how many panels to load.
+> Read access granted on Helios_Delivery_Crew, field added to the Installation layout.
+
+That text follows your branch everywhere: it is what the reviewer sees in the Pull Request, and it
+is what anybody reading the history of this project in two years will find.
+
+!!! tip "Nothing else must be in that list"
+    If a fourth file appears that you did not retrieve, do not commit it. Right-click it and
+    **Discard Changes**. A file you cannot explain is a file that does not belong in your story.
+
+Your work is now in the repository, on your branch, on your machine. What is left is to prepare it
+for the team, and that is what Save / Publish does.
+
+### 5. Publish it
+
+In the **DevOps Pipeline** panel, click the **Save / Publish** card **(1)**.
 
 ![The Save / Publish card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--save-publish.png)
 
@@ -51,51 +132,20 @@ The first question is the one that catches everybody out.
 
 ![The Save / Publish command asking whether the metadata is already committed](../../_assets/annotated/vscode/work-save-commit-ready.png)
 
-Answer **(1)** if you have already pulled your changes from the org, staged the files and made a
-commit. Answer **(2)** if you have not, and the command pulls the org for you so you can commit.
-There is a third answer that explains what a commit is, and taking it costs nothing.
+Answer **(1)**, *My commits are ready*, because they are: you retrieved and committed in the steps
+above. **(2)** asks the command to pull the org for you instead, and there is a third answer that
+explains what a commit is, which costs nothing to read.
 
-If you are following this lab straight through from Lab 3, you have changed the org and nothing
-else, so **(2)** is your answer. The command then lists what changed in your org since the branch
-started, and compares it with what is in the repository.
+!!! warning "Why this course never takes answer (2)"
+    That answer runs `sf project retrieve start`, which needs **source tracking**. Scratch orgs and
+    source-tracked sandboxes have it. The free Developer Edition orgs this course uses, and plenty
+    of real sandboxes, do not, and the command fails with an error about source tracking that reads
+    like something is broken.
 
-### 2. Select what belongs to US-014
+    The Metadata Retriever works on every org, which is why the whole course goes through it. Take
+    the same route on a real project and you will never meet that error.
 
-You are shown a list of changed metadata and asked to choose. This screen is the one that matters.
-
-For US-014, tick exactly three things:
-
-1. **CustomField** `Installation__c.Panels_Required__c` - the field
-2. **PermissionSet** `Helios_Delivery_Crew` - the grant
-3. **Layout** `Installation__c-Installation Layout` - the placement
-
-Leave everything else unticked, even if it looks harmless. Two rules make that decision for you:
-
-- **If you did not mean to change it, it does not belong in your story.** An org accumulates noise:
-  a Lightning page somebody touched, a setting that moved on its own. Committing it makes your
-  Pull Request about something other than US-014, and the reviewer cannot tell which part is yours
-- **If you are not sure, leave it out.** Nothing is lost. It is still in your org, and you can
-  publish it in a later story once you know what it is
-
-!!! tip "Picked the wrong things?"
-    It happens, and it is recoverable. This is the one thing in Level 1 with no card of its own:
-    open the **SFDX HARDIS** view in the left bar, **CI/CD (simple)**, and click **Reset selected
-    list of items to merge**. It clears the selection so you can start over. Level 2 lab 7 is a
-    whole lab about exactly that situation.
-
-### 3. Describe the story
-
-The command asks for a description of what you did. Write it for the person reviewing tomorrow, not
-for yourself today:
-
-> US-014 Panels Required on Installation
->
-> Adds Panels_Required__c on Installation__c so the crew knows how many panels to load.
-> Read access granted on Helios_Delivery_Crew, field added to the Installation layout.
-
-This becomes the commit message and the body of your Pull Request.
-
-### 4. Read the manifest before you push
+### 6. Read the manifest before you push
 
 The command pauses before pushing and asks you to confirm **(1)**. Take the pause: this is the
 last look you get at the package before it leaves your machine.
@@ -131,7 +181,7 @@ too, and the deployment will either fail or, worse, succeed while doing half of 
 Reading this file before every push is the single habit that separates a contributor who has
 trouble with deployments from one who does not.
 
-### 5. Look at what the cleaning removed
+### 7. Look at what the cleaning removed
 
 Open the **Source Control** panel and look at the diff of
 `force-app/main/default/permissionsets/Helios_Delivery_Crew.permissionset-meta.xml`.
@@ -147,10 +197,11 @@ The panel ran:
 
 which performed, in order:
 
-1. **Retrieved** the metadata you selected from your org into `force-app/`, in source format
-2. **Generated `manifest/package.xml`** from the git diff between your branch and `integration`.
-   Not from your selection: from what actually differs. That is why reading it is worth the minute
-3. **Applied the cleaning rules** declared in `config/.sfdx-hardis.yml`:
+1. **Generated `manifest/package.xml`** from the git diff between your branch and `integration`.
+   Not from what you ticked in the retriever: from what your commits actually changed. Those are
+   usually the same thing, and the minute you spend reading the file is the minute you find out
+   when they are not
+2. **Applied the cleaning rules** declared in `config/.sfdx-hardis.yml`:
 
         autoCleanTypes:
           - destructivechanges
@@ -165,19 +216,21 @@ which performed, in order:
    everything that a Permission Set should carry. `listViewsMine` rewrites list view scopes that
    only make sense for the user who retrieved them
 
-4. **Removed the user permissions** listed under `autoRemoveUserPermissions`, which are permissions
+3. **Removed the user permissions** listed under `autoRemoveUserPermissions`, which are permissions
    this project has decided must never travel between orgs through a deployment
-5. **Committed** the result on your branch, with the description you typed
-6. **Pushed** the branch to your fork
+4. **Committed what it changed**, as `chore(sfdx-hardis): update package content` and
+   `chore(sfdx-hardis): clean sfdx project`. Those commits are the tool's, not yours: yours is the
+   one you wrote at step 4
+5. **Pushed** the branch to your fork
 
 Every one of those steps is configuration, not magic. Everything it did is in
 `config/.sfdx-hardis.yml`, and a project that wants different behaviour changes that file.
 
 </details>
 
-### 6. Push
+### 8. Push
 
-The command asks before it pushes: that is the question marked **(1)** in the picture at step 4.
+The command asks before it pushes: that is the question marked **(1)** in the picture at step 6.
 Answer **Yes** and the branch goes to your fork. If you answered **No**, open the **Source Control**
 panel and click **Publish Branch**.
 
@@ -189,13 +242,18 @@ panel and click **Publish Branch**.
 
 ## If it goes wrong
 
-**The selection screen shows dozens of items you never touched.**
-Normal on a Developer Edition org: Salesforce records a lot of internal churn. Tick only your
-three. If you are unsure whether a line is yours, its name usually says so.
+**Recent Changes lists things I never touched.**
+Normal on any org: Salesforce records a lot of internal churn, and the last deployment into this
+org counts as a change too. Tick only your three. The **Last Updated By** column is the fastest
+way to tell: yours say **You**.
+
+**Recent Changes finds nothing at all.**
+You are looking at the wrong org. Check the selector at the top right reads `helios-dev`, and that
+the Status section of the sfdx-hardis panel agrees.
 
 **`manifest/package.xml` is empty.**
-The retrieve found nothing, which almost always means you built in a different org than the one the
-User Story is pointed at. Check the Status section, then redo Lab 3 in the right org.
+You have no commit on this branch, so there is no difference for it to describe. Go back to step 4:
+retrieving writes files, committing is what puts them on the branch.
 
 **The permission set diff shows deletions you do not understand.**
 That is `minimizeProfiles` and `autoRemoveUserPermissions` doing their job. Read the

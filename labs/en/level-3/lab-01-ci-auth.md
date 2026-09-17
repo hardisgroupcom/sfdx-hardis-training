@@ -5,6 +5,7 @@ lab: 1
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/vscode/devops-pipeline--settings-menu
   - annotated/vscode/command-runner-question--ci-auth
   - annotated/vscode/command-runner-completed--ci-auth-result
   - annotated/vscode/pipeline-config-deployment--deployment-tab
@@ -62,8 +63,10 @@ pre-authorised user, no password anywhere, and revocation by deleting one app.
 
 ### 1. Run the configuration command for integration
 
-In the **DevOps Pipeline** panel, open the settings menu (the gear, top right) and click
+In the **DevOps Pipeline** panel, click the gear **(1)** at the top right and choose
 **Add/Configure Org**.
+
+![The settings menu of the DevOps Pipeline panel](../../_assets/annotated/vscode/devops-pipeline--settings-menu.png)
 
 The command runs in a panel rather than a terminal, and asks one question at a time **(1)**, with
 the answers to click below it **(2)**.
@@ -153,7 +156,10 @@ like a bug.
 
 ### 5. Do the same for uat and main
 
-Open the same **gear menu > Add/Configure Org** twice more, once for each branch and its org.
+Open the same gear menu **(1)** and **Add/Configure Org** twice more, once for each branch and its
+org.
+
+![The settings menu of the DevOps Pipeline panel](../../_assets/annotated/vscode/devops-pipeline--settings-menu.png)
 Store four more secrets:
 
 - `SFDX_CLIENT_ID_UAT`, `SFDX_CLIENT_KEY_UAT`

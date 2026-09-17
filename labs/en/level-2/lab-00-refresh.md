@@ -42,14 +42,7 @@ contributor accidentally undoes a teammate's work.
 
 ## Steps
 
-### 1. See how far behind you are
-
-Open the **DevOps Pipeline** panel. Above the `integration` column, the Pull Requests merged since
-your last refresh are listed. Three of them.
-
-That list, not your memory, is what tells you whether a refresh is needed.
-
-### 2. Open Backpromote
+### 1. Open Backpromote
 
 In the **DevOps Pipeline** panel, under **Project Contribution Workflow**, click the
 **Backpromote (Beta)** card **(1)**.
@@ -68,6 +61,15 @@ It computes its plan before it shows you anything:
 "Backpromote" is the direction that matters: work normally flows **up**, from your branch to
 integration to uat to production. A backpromote brings it **down** again, from a major branch into
 your own environment, so you are building on what the team has rather than on what you remember.
+
+### 2. See how far behind you are
+
+The **WHERE** block at the top of the panel answers that, and it is the only place that does.
+**3 Pull Requests in the window**: three stories were merged into `integration` since the last time
+anything came down into your org.
+
+That count, not your memory, is what tells you whether a refresh is needed. On a Monday after a
+week off it is worth reading before anything else.
 
 ### 3. Choose what comes down
 

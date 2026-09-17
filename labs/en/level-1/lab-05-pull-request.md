@@ -47,8 +47,7 @@ still yours to fix, not on release night.
 ## Before you start
 
 - [ ] Lab 4 finished: the branch is pushed to your fork
-- [ ] Actions enabled on your fork (Lab 1, step 2)
-- [ ] `SFDX_AUTH_URL_INTEGRATION` set as a repository secret (Lab 1, step 6)
+- [ ] Lab 1 finished: **Set up my pipeline** turned Actions on and set the CI credential
 
 ## Steps
 
@@ -61,7 +60,7 @@ on the right page, with base and head already filled in.
 ![The end of the Save / Publish command, with its actions bar](../../_assets/annotated/vscode/work-save-completed.png)
 
 Two other things in that bar are worth knowing now, because later labs use them. **(2)** is the
-`package.xml` the command generated, the one you read in Lab 4. **(3)** opens the Deployment
+`package.xml` the command generated, the one you read in Lab 4 step 6. **(3)** opens the Deployment
 Actions of this Pull Request, which is what the whole of Level 2 lab 2 is about.
 
 !!! note "If you closed that panel"
@@ -80,7 +79,7 @@ Check two things before clicking, every single time:
     Request opened upstream cannot reach your org, will never turn green, and adds noise to a
     repository a few hundred other learners are using.
 
-The title and body are already filled in from what you wrote in Lab 4. Click **Create pull
+The title and body are already filled in from the commit message you wrote in Lab 4. Click **Create pull
 request**.
 
 ### 2. Watch the checks run
@@ -211,7 +210,7 @@ rare, and when it happens it is almost always because somebody changed the targe
 between.
 
 Both jobs authenticate first, through the sfdx-hardis hook that reads
-`SFDX_AUTH_URL_INTEGRATION` from your repository secrets (Lab 1). The workflow files are in
+`SFDX_AUTH_URL_INTEGRATION`, the secret **Set up my pipeline** wrote in Lab 1. The workflow files are in
 `.github/workflows/`, and they are worth reading once: they are about thirty lines each.
 
 The test level comes from `config/.sfdx-hardis.yml`:
@@ -227,7 +226,7 @@ minimum, and most real projects set it higher.
 ## What you should see
 
 - The Pull Request merged, with a green sfdx-hardis comment above the merge
-- The **Deploy to integration** job green in the Actions tab
+- The **Process Deployment (sfdx-hardis)** run green in the Actions tab
 - `Panels Required` present on the Installation object in `helios-integration`
 
 That is one full delivery loop. Every story for the rest of your life on this project is this loop.
@@ -235,7 +234,8 @@ That is one full delivery loop. Every story for the rest of your life on this pr
 ## If it goes wrong
 
 **The checks never start.**
-Actions are still disabled on your fork. Lab 1, step 2.
+Actions are still disabled on your fork. Run **Training > Set up my pipeline** again: it turns them
+on, and tells you what to click if GitHub will not let it.
 
 **The check fails at authentication:** *No authentication found for org integration*.
 The secret is missing, misnamed, or truncated. It must be named exactly
@@ -243,8 +243,8 @@ The secret is missing, misnamed, or truncated. It must be named exactly
 commit to re-trigger.
 
 **The check fails with `INVALID_CROSS_REFERENCE_KEY` on the permission set.**
-The permission set grants a field that is not in your package. You unticked the field but kept the
-permission set. Redo Lab 4 and select both.
+The permission set grants a field that is not in your package. You retrieved the permission set
+without the field. Redo Lab 4 step 3 and take both.
 
 **The check is stuck as "Expected".**
 The workflow is waiting for a job that will never run, usually because the base of the Pull Request
@@ -252,7 +252,7 @@ is the original repository and not your fork. Close it and open it again with th
 
 **The deployment succeeds but the field is not in the org.**
 Look at the deployed components list in the comment. If the field is not there, it is not in
-`manifest/package.xml`, and Lab 4 step 4 is where that is decided.
+`manifest/package.xml`, and Lab 4 step 6 is where you read it.
 
 ## Check your work
 

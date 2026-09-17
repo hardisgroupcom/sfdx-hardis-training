@@ -5,6 +5,7 @@ lab: 3
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/data-workbench
   - annotated/vscode/pipeline-edit-action-data
   - annotated/vscode/pipeline-edit-action-schedule-batch
@@ -55,7 +56,10 @@ or it happens once in your org and nowhere else, forever.
 
 ### 1. Take the story and build the metadata
 
-**New User Story**, branch `US-026-crew-capacity-data`, target `integration`, org `helios-dev`.
+**New User Story** **(2)**, under **Project Contribution Workflow** **(1)** of the DevOps Pipeline
+panel. Branch `US-026-crew-capacity-data`, target `integration`, org `helios-dev`.
+
+![The New User Story card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
 In `helios-dev`, create:
 

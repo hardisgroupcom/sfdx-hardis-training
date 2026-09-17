@@ -5,6 +5,8 @@ lab: 3
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/vscode/pipeline-config-deployment--delta
+  - annotated/vscode/orgs-manager
   - annotated/vscode/devops-pipeline--deployment-status
 depends_on:
   commands: [hardis:project:deploy:smart]
@@ -39,7 +41,8 @@ incidents come from.
 
 ### 1. Open the job
 
-**Actions** tab of your fork, the **Deploy to integration** run that started when you merged.
+**Actions** tab of your fork, the **Process Deployment (sfdx-hardis)** run that started when you
+merged.
 
 Or from VS Code: the **DevOps Pipeline** panel puts the job on the arrow between `integration` and
 its org **(1)**, coloured with its status, and the legend under the diagram **(2)** says what each
@@ -78,10 +81,13 @@ between the commit already deployed to this org and the new one, and sends only 
 Salesforce deployment of a mature project takes 40 minutes; a delta takes 3. The trade is that the
 org has to genuinely be at the commit the pipeline thinks it is at.
 
+![The Global Pipeline Settings panel, Deployment tab](../../_assets/annotated/vscode/pipeline-config-deployment--delta.png)
+
 !!! note "This project has delta off, on purpose"
     `useDeltaDeployment` is absent from `config/.sfdx-hardis.yml`, so every deployment in this
-    course sends the full package. Read it in **Pipeline Settings**, **Deployment** tab, global
-    scope: **Use Delta Deployment** shows **Disabled**.
+    course sends the full package. Read it for yourself: **DevOps Pipeline**, gear menu,
+    **Pipeline Settings**, scope **Global Settings** **(1)**, **Deployment** tab **(2)**.
+    **Use Delta Deployment** **(3)** shows **Disabled**.
 
     The Helios app is 30 components, so a full deployment costs a minute and delta would save
     nothing while adding a way for the course to fail confusingly on a missing dependency. Turn it
@@ -115,8 +121,13 @@ configured to stop it. That is a decision this project made, not a thing the too
 
 ### 5. Verify in the org, not in the log
 
-Open `helios-integration` from **Orgs Manager** and check your change is actually there: the three
-fields back on the Installation layout, beside Marco's cap field.
+Open `helios-integration` from **Orgs Manager**: find it by its alias **(2)**, check it still says
+**Connected** **(3)**, and open it from the actions at the end of its row.
+
+![The Orgs Manager table, with the alias and connection state of each org](../../_assets/annotated/vscode/orgs-manager.png)
+
+Check your change is actually there: the three fields back on the Installation layout, beside
+Marco's cap field.
 
 A log is a claim. The org is the fact. On a real project you check the org after every deployment to
 a major environment, and it takes thirty seconds.
@@ -173,7 +184,7 @@ Two failure modes worth recognising:
 
 ## What you should see
 
-- A green **Deploy to integration** run
+- A green **Process Deployment (sfdx-hardis)** run on `integration`
 - A log where you can name how many components went, and why that number is not one
 - The change present in `helios-integration`
 

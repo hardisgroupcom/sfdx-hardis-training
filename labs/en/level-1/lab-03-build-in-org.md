@@ -164,4 +164,4 @@ pass. Run it anyway once, so you see what a failing check looks like before it m
 - [Work in your org](https://sfdx-hardis.cloudity.com/salesforce-devops-work-on-user-story/)
 - [Configuration guidelines](https://sfdx-hardis.cloudity.com/salesforce-devops-work-on-user-story-configuration/)
 
-[Next: Lab 4 - Publish it, and read what the tool selected](lab-04-publish.md){ .md-button .md-button--primary }
+[Next: Lab 4 - Choose what to keep, and publish it](lab-04-publish.md){ .md-button .md-button--primary }

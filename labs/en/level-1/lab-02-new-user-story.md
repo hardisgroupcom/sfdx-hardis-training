@@ -7,7 +7,11 @@ source_rev: ""
 screenshots:
   - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/work-new-target-branch
+  - annotated/vscode/work-new-story-type
+  - annotated/vscode/work-new-story-name
+  - annotated/vscode/work-new-org-type
   - annotated/vscode/work-new-org
+  - annotated/vscode/work-new-completed
 depends_on:
   commands: [hardis:work:new]
   flags: []
@@ -68,42 +72,83 @@ On the Welcome page, open the **DevOps Pipeline** panel and scroll past the diag
     diagram tall enough to push them off the screen. Turn **Show feature branches** off in the
     header: the diagram shrinks to the major branches and the cards come into view.
 
-The extension asks a short series of questions, one screen at a time. Answer them:
+The extension asks four questions, one screen at a time. Each one appears in its own panel, and
+every answer you give stays visible above the next question, so you can always see what you told it.
 
-1. **What do you want to do?** - *Start a new User Story*
-2. **Target branch** - `integration` **(1)**, the choice described as where the team merges its
-   work. `uat` and `main` are under it, and nothing is wired to them yet
-3. **Type of branch** - **Feature**, because this adds something rather than fixing it
-4. **Name** - `US-014-panels-required`
+### 2. Where the work is going
+
+**What will be the target branch of your new User Story?** Pick `integration` **(1)**, the one
+described as where the team merges its work.
 
 ![The target branch question, listing integration, uat and main](../../_assets/annotated/vscode/work-new-target-branch.png)
 
-You never guess where your work is going: the command asks, and writes the answer down.
+`uat` and `main` are under it and nothing is wired to them yet, which is why they are not offered.
 
-The name is checked against a pattern the project declares, so every branch on this repository
-looks the same. Type something else and it tells you what it expected.
+You never guess where your work is going: the command asks first, writes the answer down, and every
+later step reads it back.
 
-### 2. Pick the org you will build in
+### 3. What kind of work it is
 
-The next question is which org this User Story is developed in. The list shows the orgs you
-connected in Lab 0, by their instance URL, with the username underneath.
+**What type of User Story do you want to create?** Take **Feature** **(1)**: US-014 adds something
+that was not there. **Fix** **(2)** is for correcting something already delivered.
 
-Pick the **first org** **(1)**, the one you gave the alias `helios-dev`. **(2)** authenticates an
-org that is not in the list yet, which you do not need today.
+![The question asking whether this is a feature or a fix](../../_assets/annotated/vscode/work-new-story-type.png)
+
+The answer becomes the first part of your branch name, `features/` or `fixes/`, so anybody looking
+at the list of branches can see at a glance what kind of work is in flight.
+
+### 4. What to call it
+
+**What is the name of your new User Story?** Type it in the box **(1)** and click **Validate**
+**(2)**:
+
+```
+US-014-panels-required
+```
+
+![The question asking for the name of the User Story](../../_assets/annotated/vscode/work-new-story-name.png)
+
+The example under the field is not decoration: this project declares a pattern that names have to
+match, and the example is a name that matches it. Type something else, `Panels Required` say, and
+the command tells you what it expected and asks again.
+
+### 5. Which org you will build in
+
+**Which Salesforce org do you want to work in?** Take the first answer, **Sandbox org with source
+tracking** **(1)**.
+
+![The question asking what kind of org this User Story is built in](../../_assets/annotated/vscode/work-new-org-type.png)
+
+!!! info "Your org is not a sandbox, and the first answer is still the right one"
+    That answer means "an org that already exists and that I will connect to", which is what you
+    have. **Scratch org** **(2)** creates a throwaway org on the spot, which needs a Dev Hub this
+    course does not use. **(3)** is for working on XML and configuration without an org at all.
+
+Then the list of orgs. Pick the **first one** **(1)**, the one you gave the alias `helios-dev`.
+**(2)** authenticates an org that is not in the list yet, which you do not need today.
 
 ![The New User Story command asking which org to build in](../../_assets/annotated/vscode/work-new-org.png)
 
-This is the org you seeded in Lab 0, and the one you are about to change by hand in Setup. Never
+This is the org you seeded in Lab 1, and the one you are about to change by hand in Setup. Never
 pick `helios-integration` here: that is the shared org, and building directly in it is exactly what
 this whole way of working exists to stop.
 
-### 3. Read what it tells you at the end
+### 6. Read what it tells you at the end
 
-When it finishes, the command prints a summary. Read it rather than closing it:
+The last question, *Do you want to open the org in your browser?*, is a convenience. Answer either
+way: Lab 3 opens it from Orgs Manager.
 
-- the branch it created and checked out
-- the org it associated with this User Story
-- what to do next
+Then the command finishes and prints what it did. Read it rather than closing it.
+
+![The New User Story command, finished, with its summary](../../_assets/annotated/vscode/work-new-completed.png)
+
+- the branch it created and checked out **(1)**
+- the confirmation that you are ready to work on it **(2)**
+- the org it attached to this User Story, by username and URL **(3)**
+
+Those three lines are worth a glance every time. A branch name that is not the one you expected, or
+an org that is not the one you meant, is a problem that costs thirty seconds now and an afternoon
+later.
 
 <details markdown="1"><summary>Under the hood: what "New User Story" just did</summary>
 
