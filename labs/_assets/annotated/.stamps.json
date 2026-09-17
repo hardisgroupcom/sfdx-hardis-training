@@ -96,5 +96,6 @@
   "vscode/welcome-custom-menu-3.png": "c824242627d7bfc4",
   "vscode/orgs-manager-actions.png": "b17cde92c13748c2",
   "vscode/configure-auth-branch.png#branch-question": "bacaf6b94124a2fa",
-  "vscode/configure-auth-variables.png#secrets": "b222c72dcd4bcc13"
+  "vscode/configure-auth-variables.png#secrets": "b222c72dcd4bcc13",
+  "vscode/sidebar-commands-custom-menu-2.png#training-menu": "86523a2b86bc7c77"
 }

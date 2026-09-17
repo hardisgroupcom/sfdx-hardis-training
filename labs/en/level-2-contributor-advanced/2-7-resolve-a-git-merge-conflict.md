@@ -7,7 +7,7 @@ lab: 7
 lang: en
 source_rev: ""
 screenshots:
-  - annotated/vscode/sidebar-commands-custom-menu--training-menu
+  - annotated/vscode/sidebar-commands-custom-menu-2--training-menu
   - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/sidebar-commands-advanced--push
 depends_on:
@@ -52,7 +52,7 @@ can genuinely review and merge it.
 sfdx-hardis command list, and choose
 **US-018 Cap the crew size a planner can assign**.
 
-![The Training menu of the sfdx-hardis command list](../../_assets/annotated/vscode/sidebar-commands-custom-menu--training-menu.png)
+![The Level 2 Training menu of the sfdx-hardis command list](../../_assets/annotated/vscode/sidebar-commands-custom-menu-2--training-menu.png)
 
 It creates the branch `training/mate-us-018-crew-capacity` from your current `integration`, commits
 Marco's changes under his name, pushes it to your fork, and opens the Pull Request.
