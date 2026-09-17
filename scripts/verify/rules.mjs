@@ -406,8 +406,11 @@ export const RULES = [
           "MY-PIPELINE.md. Lab 2.8 asks for one line naming what you dropped"
         );
       }
+      // Deployment.settings is the one setting this project ships on purpose: it
+      // is what lets a deployment run while the Lab 2.4 batch is scheduled.
       const stray = ctx.listOn(DEV, "force-app/main/default/").filter((f) =>
-        /\/(profiles|settings|standardValueSets|objectTranslations|networks)\//.test(f)
+        /\/(profiles|settings|standardValueSets|objectTranslations|networks)\//.test(f) &&
+        !f.endsWith("/settings/Deployment.settings-meta.xml")
       );
       return stray.length === 0
         ? pass("The recovery is recorded, and no over-committed metadata is left on integration")
