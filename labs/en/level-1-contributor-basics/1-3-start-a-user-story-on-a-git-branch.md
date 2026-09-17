@@ -98,7 +98,7 @@ that was not there. **Fix** **(2)** is for correcting something already delivere
 
 ![The question asking whether this is a feature or a fix](../../_assets/annotated/vscode/work-new-story-type.png)
 
-The answer becomes the first part of your branch name, `features/` or `fixes/`, so anybody looking
+The answer becomes the first part of your branch name, `features/` or `fix/`, so anybody looking
 at the list of branches can see at a glance what kind of work is in flight.
 
 ### 4. What to call it

@@ -77,7 +77,7 @@ Answer:
 | Question      | Answer                                                                     |
 |---------------|----------------------------------------------------------------------------|
 | Target branch | **`preprod`**, described as the hotfix branch                              |
-| Type          | **Fix: correct something that is broken**, which names the branch `fixes/` |
+| Type          | **Fix: correct something that is broken**, which names the branch `fix/`   |
 | Name          | `US-045-installation-date-hotfix`                                          |
 | Org           | **I'm hardcore, I don't need an org**: you will work in `helios-preprod`   |
 
@@ -230,9 +230,9 @@ treats `preprod` as any other major branch. What makes it a hotfix is the target
 
 The branch prefix is worth a second of thought, for a reason beyond tidiness: the DORA **rework
 rate** in Lab 3.7 counts hotfix Pull Requests, and it recognises one by a `hotfix/`, `fix/` or
-`bugfix/` branch prefix. This project calls its fix branches `fixes/`, so this hotfix does not count
-towards it. That is a naming decision somebody made here, not a bug, and it is the sort of thing to
-check before quoting a number at anybody.
+`bugfix/` branch prefix. This project calls its fix branches `fix/`, so this hotfix counts. A
+project that spells the prefix differently gets a rework rate of zero and no warning, which is the
+sort of thing to check before quoting a number at anybody.
 
 **The retrofit** used the Metadata Retriever, which runs a plain targeted retrieve:
 

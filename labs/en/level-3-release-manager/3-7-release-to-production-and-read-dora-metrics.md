@@ -190,11 +190,11 @@ So it does not read `productionBranch`, it does not read `developmentBranch`, an
 which of your orgs is production. **The org you point it at is the scope.** Point it at a sandbox
 and it will measure the sandbox, cheerfully.
 
-**One catch, on this project.** `branchPrefixChoices` in `config/.sfdx-hardis.yml` names the two
-User Story types `features` and `fixes`, so the hotfix you ship in Lab 3.8 lands on a branch called
-`fixes/US-045-...`. The rework rate looks for `hotfix/`, `fix/` or `bugfix/`, and `fixes/` is none
-of those, so it does not count. Nothing warns you. A metric that reads branch names is only ever as
-good as the naming convention nobody wrote down, and that is worth checking before quoting one.
+**One thing to check on any project.** The rework rate recognises a corrective change by its
+branch name, and it looks for `hotfix/`, `fix/` or `bugfix/`. This project names its fix branches
+`fix/`, so the hotfix you ship in Lab 3.8 counts. Rename that prefix to something else and the
+metric quietly reads zero, with no warning. A number built on branch names is only as good as the
+naming convention, which is worth checking before quoting one at anybody.
 
 Two degradations worth recognising rather than debugging:
 

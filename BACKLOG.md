@@ -22,7 +22,7 @@ for the `Helios Delivery` app, and every one of them is a lab in this course.
 | US-034 | 2 | Flat roofs need a crew of at least three | You | `features/US-034-crew-override` |
 | US-038 | 2 | Tidy the Installation layout | You | `features/US-038-installation-notes-tidy` |
 | US-041 | 2 | Installation handover checklist | You | `features/US-041-handover-checklist` |
-| US-045 | 3 | Installations can no longer be saved | You | `fixes/US-045-installation-date-hotfix` |
+| US-045 | 3 | Installations can no longer be saved | You | `fix/US-045-installation-date-hotfix` |
 
 ## The stories in full
 
@@ -199,7 +199,7 @@ Acceptance criteria:
 ### US-045 - Installations can no longer be saved
 
 **Owner**: You  
-**Branch**: `fixes/US-045-installation-date-hotfix`  
+**Branch**: `fix/US-045-installation-date-hotfix`  
 **Lab**: 3.8
 
 > As a planner, I want to be able to save an installation whose date is already in the past, so that I can update a job that has slipped.
