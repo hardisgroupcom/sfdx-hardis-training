@@ -22,8 +22,8 @@ nav:
       - "Lab 8 - Capstone: Deliver US-041, which has all of it at once": en/level-2/lab-08-capstone.md
   - Level 3 - Release Manager:
       - Start here: en/level-3/index.md
-      - "Lab 0 - Your pipeline stops at integration: finish it": en/level-3/lab-00-finish-the-pipeline.md
-      - "Lab 1 - Wire CI authentication for three orgs": en/level-3/lab-01-ci-auth.md
+      - "Lab 0 - Your pipeline stops at uat: finish it": en/level-3/lab-00-finish-the-pipeline.md
+      - "Lab 1 - Wire CI authentication for four orgs": en/level-3/lab-01-ci-auth.md
       - "Lab 2 - Review and merge a contributor Pull Request": en/level-3/lab-02-review-pr.md
       - "Lab 3 - Deploy to integration and read what happened": en/level-3/lab-03-deploy-integration.md
       - "Lab 4 - Three Pull Requests collide": en/level-3/lab-04-overwrite-cleaning.md

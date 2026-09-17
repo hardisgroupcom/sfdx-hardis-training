@@ -1,60 +1,79 @@
 /**
- * Training > Set up my pipeline.
+ * Training > Set up my training environment.
  *
- * Everything a learner had to do by hand in Level 1 before their first Pull
- * Request could reach an org: fork the repository, point the clone at the fork,
- * turn Actions on, tell the integration branch which org it deploys to, and put
- * the CI credential in the fork's secrets.
+ * Everything that stands between one free Developer Edition org and a pipeline a
+ * beginner can push a User Story through:
  *
- * It exists because that list is training scaffolding, not the job. On a real
- * project the repository is already there, Actions are already on and the
- * secrets were set once by whoever built the pipeline. A beginner who spends
- * their first hour on it learns the wrong lesson about what this work is like.
+ *   - the learner's own copy of the repository, with Actions on and the branches
+ *     the pipeline uses
+ *   - the Developer Edition org turned into a Dev Hub
+ *   - three scratch orgs created from it: helios-dev to build in,
+ *     helios-integration and helios-uat for the two stages of the pipeline
+ *   - the Helios app and its data in each of them
+ *   - integration and uat pointed at their orgs, and the CI credentials in the
+ *     fork's secrets
+ *
+ * Why scratch orgs. Signing up for four Developer Edition orgs, confirming four
+ * emails and connecting four orgs by hand is an afternoon a beginner spends on
+ * something that is not the job. One signup and one connection is ten minutes,
+ * and this command does the rest. The Developer Edition org itself stays out of
+ * the pipeline until Level 3, where it becomes production.
+ *
+ * The limit to respect. A Developer Edition Dev Hub allows 3 active scratch orgs,
+ * and only a few new ones a day. This command never creates a scratch org that
+ * already exists and is still alive, so running it again costs nothing, and it
+ * checks the allowance before asking for more.
  *
  * Design rules, the same ones seed.mjs follows:
  *   - Idempotent. Every step checks before it acts, so running it twice is
- *     harmless and running it after a half-finished manual attempt fixes it.
- *   - It never authenticates to Salesforce. Orgs Manager owns that.
+ *     harmless, and running it after a scratch org expired rebuilds that one.
+ *   - It authenticates to one org only, the Dev Hub, and Orgs Manager does that.
+ *     The scratch orgs are authenticated by the command that creates them.
  *   - It stops at the first failure and says which button to click instead. The
  *     course never asks anybody to type a command, so a failure has to end in
  *     something clickable.
  */
 import fs from "fs";
+import os from "os";
 import path from "path";
 import {
-  ROOT, c, title, info, ok, warn, abort, run, runJson, git, gitOut,
+  ROOT, c, title, info, ok, warn, abort, run, runAsync, runJson, parseJsonOutput, git, gitOut,
   select, confirm, connectedOrgs, orgChoices, universe, hasGh, repoSlug
 } from "../lib/util.mjs";
+import { deployAppToAll, grantManager, loadData, recordSeeded, alreadySeeded } from "./seed.mjs";
 
 const UPSTREAM = "hardisgroupcom/sfdx-hardis-training";
-const SECRET = "SFDX_AUTH_URL_INTEGRATION";
-const BRANCH = "integration";
+const SCRATCH_DEF = path.join("config", "project-scratch-def.json");
+// The longest a scratch org can live. Setting the maximum is what lets a learner
+// take the course over a few weeks without meeting an expired org.
+const DURATION_DAYS = 30;
+// Branches the fork needs. preprod and main are not in the pipeline before Level 3,
+// and exist from the start so that Level 3 only has to configure them.
+const PIPELINE_BRANCHES = ["integration", "uat", "preprod"];
+const STEPS = 7;
 
-/**
- * The integration org, when there is nothing to choose.
- *
- * A learner who followed Lab 0 has two orgs, both created in the Salesforce Org
- * Farm, and named one of them with "integ" in the alias because the lab told
- * them to. That pair of facts identifies the org on its own, and a question
- * with one sensible answer is a question worth not asking.
- *
- * Both conditions have to hold, and exactly one org has to match. Anything
- * else, including somebody who brought their own sandbox, falls through to the
- * question.
- */
-function obviousIntegrationOrg(orgs) {
-  const matches = orgs.filter(
-    (org) =>
-      [org.alias, ...(org.aliases || [])].some((alias) => /integ/i.test(alias || "")) &&
-      /orgfarm/i.test(org.instanceUrl || "")
-  );
-  if (matches.length !== 1) {
-    return null;
-  }
-  info(`Integration org: ${c.green(matches[0].alias)} ${c.dim("(the only Org Farm org whose alias says integration)")}`);
-  return matches[0].alias;
+/** The orgs this command owns, read from the universe so the labs and the code agree. */
+function trainingOrgs() {
+  const orgs = universe().orgs;
+  const devHub = orgs.find((o) => o.kind === "developer-edition" && o.neededFrom === 1);
+  const scratch = orgs.filter((o) => o.kind === "scratch");
+  return { devHub, scratch };
 }
 
+/** The major branches Levels 1 and 2 use, each with its org and where it merges next. */
+export function levelOnePipeline(aliasOf = (alias) => alias) {
+  const { scratch } = trainingOrgs();
+  const stages = scratch.filter((o) => o.branch && o.branchFrom === 1);
+  return stages.map((stage, index) => ({
+    branch: stage.branch,
+    alias: aliasOf(stage.alias),
+    mergeTargets: stages[index + 1] ? [stages[index + 1].branch] : []
+  }));
+}
+
+const step = (n, text) => title(`${n} of ${STEPS}  ${text}`);
+
+// -------------------------------------------------------------------- GitHub
 /** gh, installed and signed in. Both are worth telling apart: the fixes differ. */
 function checkGh() {
   if (!hasGh()) {
@@ -62,7 +81,7 @@ function checkGh() {
       "The GitHub CLI (gh) is not installed.",
       [
         "Install it from https://cli.github.com/, then click this command again.",
-        "Level 1 lab 0 step 1 shows which download to take."
+        "Level 1 lab 1 shows which download to take."
       ].join("\n  ")
     );
   }
@@ -81,7 +100,7 @@ function checkGh() {
   if (login.code !== 0 || run("gh", ["auth", "status"], { capture: true, quiet: true }).code !== 0) {
     abort(
       "The GitHub sign-in did not finish.",
-      "Click Set up my pipeline again and complete the sign-in in the browser it opens."
+      "Click Set up my training environment again and complete the sign-in in the browser it opens."
     );
   }
   ok("Signed in to GitHub.");
@@ -89,14 +108,7 @@ function checkGh() {
 
 function ghJson(args) {
   const res = run("gh", args, { capture: true, quiet: true });
-  if (res.code !== 0) {
-    return null;
-  }
-  try {
-    return JSON.parse(res.stdout);
-  } catch {
-    return null;
-  }
+  return res.code === 0 ? parseJsonOutput(res.stdout) : null;
 }
 
 /** The handle gh is signed in as, which is who the fork will belong to. */
@@ -105,13 +117,291 @@ function currentHandle() {
   return user?.login || null;
 }
 
-// --------------------------------------------------------------- 1. the fork
+// ------------------------------------------------------------ the Dev Hub org
+/**
+ * The Developer Edition org the learner connected, when there is nothing to choose.
+ *
+ * Lab 1 tells them to name it helios-prod, so that alias wins. Somebody who
+ * named it something else and has exactly one Org Farm org connected is not
+ * asked either: that org is the only candidate. Anything else is a question.
+ */
+export async function findDevHub(orgs, preselected) {
+  const { devHub } = trainingOrgs();
+  const candidates = orgs.filter((o) => !o.isScratch);
+  if (preselected) {
+    return select("Which org is your Developer Edition org?", orgChoices(candidates), preselected);
+  }
+  const byAlias = candidates.find((o) => (o.aliases || []).includes(devHub.alias));
+  if (byAlias) {
+    info(`Developer Edition org: ${c.green(devHub.alias)}`);
+    return devHub.alias;
+  }
+  const orgFarm = candidates.filter((o) => /orgfarm/i.test(o.instanceUrl || ""));
+  if (orgFarm.length === 1) {
+    const chosen = orgFarm[0].alias || orgFarm[0].username;
+    info(`Developer Edition org: ${c.green(chosen)} ${c.dim("(the only Org Farm org connected)")}`);
+    return chosen;
+  }
+  return select("Which org is your Developer Edition org?", orgChoices(candidates), null);
+}
+
+/** True when the org answers the one query only a Dev Hub can. */
+function isDevHub(alias) {
+  const res = runJson("sf", ["data", "query", "--query", "SELECT Id FROM ScratchOrgInfo LIMIT 1", "--target-org", alias, "--json"]);
+  return res?.status === 0;
+}
+
+/**
+ * Turns Dev Hub on, which is one setting in Setup and cannot be turned off again.
+ * On a throwaway Developer Edition org that costs nothing. It is deployed as
+ * metadata rather than clicked, so nobody has to find the page.
+ */
+export async function ensureDevHub(alias) {
+  if (isDevHub(alias)) {
+    ok(`${c.bold(alias)} is already a Dev Hub.`);
+    return;
+  }
+  info(`Turning Dev Hub on in ${c.bold(alias)}.`);
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "helios-devhub-"));
+  fs.mkdirSync(path.join(dir, "settings"));
+  fs.writeFileSync(
+    path.join(dir, "package.xml"),
+    [
+      '<?xml version="1.0" encoding="UTF-8"?>',
+      '<Package xmlns="http://soap.sforce.com/2006/04/metadata">',
+      "    <types>",
+      "        <members>DevHub</members>",
+      "        <name>Settings</name>",
+      "    </types>",
+      "    <version>64.0</version>",
+      "</Package>",
+      ""
+    ].join("\n"),
+    "utf8"
+  );
+  fs.writeFileSync(
+    path.join(dir, "settings", "DevHub.settings"),
+    [
+      '<?xml version="1.0" encoding="UTF-8"?>',
+      '<DevHubSettings xmlns="http://soap.sforce.com/2006/04/metadata">',
+      // The Dev Hub switch of Setup, under the name the Metadata API gives it
+      "    <enableScratchOrgManagementPref>true</enableScratchOrgManagementPref>",
+      "</DevHubSettings>",
+      ""
+    ].join("\n"),
+    "utf8"
+  );
+  const res = run(
+    "sf",
+    ["project", "deploy", "start", "--metadata-dir", dir, "--target-org", alias, "--wait", "10", "--json"],
+    { quiet: true, capture: true }
+  );
+  fs.rmSync(dir, { recursive: true, force: true });
+  if (res.code !== 0) {
+    const json = parseJsonOutput(res.stdout);
+    warn(json?.message || (res.stderr || res.stdout).trim().split("\n").slice(-5).join("\n"));
+  }
+  // The setting is saved before the objects behind it answer queries
+  for (let attempt = 0; res.code === 0 && attempt < 12 && !isDevHub(alias); attempt++) {
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+  }
+  if (res.code !== 0 || !isDevHub(alias)) {
+    abort(
+      `Dev Hub could not be turned on in ${alias}.`,
+      "Open the org, go to Setup > Dev Hub, switch Enable Dev Hub on, then click Set up my training environment again."
+    );
+  }
+  ok(`${c.bold(alias)} is a Dev Hub now.`);
+}
+
+// ------------------------------------------------------------ scratch orgs
+/** Scratch orgs the Dev Hub may still create today, and may keep alive at once. */
+function scratchAllowance(devHub) {
+  const res = runJson("sf", ["org", "list", "limits", "--target-org", devHub, "--json"]);
+  const limit = (name) => (res?.result || []).find((l) => l.name === name);
+  return { active: limit("ActiveScratchOrgs"), daily: limit("DailyScratchOrgs") };
+}
+
+/**
+ * Creates the scratch orgs that do not exist yet, all at once, and returns the
+ * username of every one of them. An alias that names an org that is not a live
+ * scratch org of this Dev Hub is taken over: it is a leftover, often from an
+ * older version of this course that used Developer Edition orgs everywhere.
+ */
+export async function ensureScratchOrgs(devHub, aliases) {
+  const orgs = connectedOrgs();
+  const hubUsername = (orgs.find((o) => (o.aliases || []).includes(devHub) || o.username === devHub) || {}).username;
+  const usernames = {};
+  const missing = [];
+  for (const alias of aliases) {
+    const existing = orgs.find((o) => (o.aliases || []).includes(alias));
+    const alive = existing && existing.isScratch && existing.connected &&
+      (!existing.devHubUsername || !hubUsername || existing.devHubUsername === hubUsername);
+    if (alive) {
+      usernames[alias] = existing.username;
+      ok(`${c.bold(alias)} already exists${existing.expirationDate ? `, until ${existing.expirationDate}` : ""}.`);
+    } else {
+      if (existing) {
+        info(c.dim(`    ${alias} names an org that is not a live scratch org of ${devHub}. A new one takes the name.`));
+      }
+      missing.push(alias);
+    }
+  }
+  if (missing.length === 0) {
+    return usernames;
+  }
+
+  const { active, daily } = scratchAllowance(devHub);
+  const short = (limit) => limit && limit.remaining < missing.length;
+  if (short(active) || short(daily)) {
+    const which = short(active)
+      ? `${devHub} already has ${active.max - active.remaining} active scratch orgs out of ${active.max}`
+      : `${devHub} has created all the scratch orgs it may create today (${daily.max})`;
+    abort(
+      `${missing.length} scratch org(s) are needed, and ${which}.`,
+      short(active)
+        ? `Open ${devHub}, App Launcher > Active Scratch Orgs, and delete the ones this course does not use. Then click Set up my training environment again.`
+        : "The allowance comes back within 24 hours. Click Set up my training environment again tomorrow: everything already done is kept."
+    );
+  }
+
+  info(`Creating ${missing.join(", ")} from ${c.bold(devHub)}, all at once.`);
+  info(c.dim("    Each one takes a few minutes. Nothing prints until they are ready."));
+  const results = await Promise.all(
+    missing.map(async (alias) => ({
+      alias,
+      res: await runAsync("sf", [
+        "org", "create", "scratch",
+        "--definition-file", SCRATCH_DEF,
+        "--alias", alias,
+        "--target-dev-hub", devHub,
+        "--duration-days", String(DURATION_DAYS),
+        "--wait", "30",
+        "--json"
+      ])
+    }))
+  );
+  const failures = [];
+  for (const { alias, res } of results) {
+    const json = parseJsonOutput(res.stdout);
+    const username = json?.result?.username;
+    if (res.code === 0 && username) {
+      usernames[alias] = username;
+      ok(`${c.bold(alias)} is created, for ${DURATION_DAYS} days.`);
+    } else {
+      failures.push(alias);
+      warn(`${alias} could not be created: ${json?.message || (res.stderr || res.stdout).trim().split("\n").pop()}`);
+    }
+  }
+  if (failures.length > 0) {
+    abort(
+      `${failures.length} scratch org(s) could not be created.`,
+      "Click Set up my training environment again: the orgs that were created are kept, and only the missing ones are retried."
+    );
+  }
+  return usernames;
+}
+
+/** Deploys the app into every scratch org that has not had it yet, then its permissions and data. */
+export async function seedScratchOrgs(usernames, options = {}) {
+  const todo = Object.keys(usernames).filter((alias) => options.force || !alreadySeeded(alias, usernames[alias]));
+  Object.keys(usernames)
+    .filter((alias) => !todo.includes(alias))
+    .forEach((alias) => ok(`${c.bold(alias)} already has the Helios app and its data.`));
+  if (todo.length === 0) {
+    return;
+  }
+
+  info(`Deploying the Helios Delivery app into ${todo.join(", ")}.`);
+  info(c.dim("    A few minutes, all three at once."));
+  const failed = await deployAppToAll(todo);
+  if (failed.length > 0) {
+    failed.forEach(({ target, output }) => {
+      warn(`The deployment to ${target} failed:`);
+      info(c.dim(output.split("\n").slice(-25).join("\n")));
+    });
+    abort(
+      "The Helios app could not be deployed everywhere.",
+      "Click Set up my training environment again: orgs that are already done are skipped."
+    );
+  }
+  ok("The app is deployed.");
+
+  const owner = options.ownerName || null;
+  for (const alias of todo) {
+    if (owner) {
+      nameAdminUser(alias, usernames[alias], owner);
+    }
+    if (!grantManager(alias, { quiet: true })) {
+      warn(`The Helios Delivery Manager permission set could not be assigned in ${alias}.`);
+    }
+    info(`Loading the sample data into ${c.bold(alias)}.`);
+    const data = loadData(alias, { quiet: true });
+    if (!data.ok) {
+      info(c.dim(data.output.split("\n").slice(-25).join("\n")));
+      abort(
+        `The data load into ${alias} failed.`,
+        "Click Set up my training environment again: the load is an upsert and repeats safely."
+      );
+    }
+    recordSeeded(alias, usernames[alias]);
+    ok(`${c.bold(alias)} holds the app, your permission set and the sample data.`);
+  }
+}
+
+/**
+ * The first and last name of the person who signed up for the Dev Hub.
+ *
+ * A scratch org's own user is called "User User". Every change a learner makes
+ * is recorded under that name, and a list of changes where every row says
+ * "User User" teaches nothing about reading who did what.
+ */
+export function devHubOwnerName(devHub) {
+  const display = runJson("sf", ["org", "display", "--target-org", devHub, "--json"]);
+  const username = display?.result?.username;
+  if (!username) {
+    return null;
+  }
+  const res = runJson("sf", [
+    "data", "query", "--query", `SELECT FirstName, LastName FROM User WHERE Username = '${username}'`,
+    "--target-org", devHub, "--json"
+  ]);
+  const user = res?.result?.records?.[0];
+  return user?.LastName ? { firstName: user.FirstName || "", lastName: user.LastName } : null;
+}
+
+/** Gives the scratch org's user the learner's name. Cosmetic, so a failure is silent. */
+function nameAdminUser(alias, username, owner) {
+  const quote = (value) => String(value).replace(/'/g, "");
+  run("sf", [
+    "data", "update", "record", "--sobject", "User",
+    "--where", `Username='${quote(username)}'`,
+    "--values", `FirstName='${quote(owner.firstName)}' LastName='${quote(owner.lastName)}'`,
+    "--target-org", alias
+  ], { quiet: true, capture: true });
+}
+
+/**
+ * Makes the project know its Dev Hub and your development org.
+ *
+ * New User Story lists the scratch orgs of the default Dev Hub, and every
+ * command without an explicit org acts on the default org. Both are local to
+ * this folder, in the git-ignored .sf directory, so nothing is committed.
+ */
+function pointProjectAt(devHub, devAlias) {
+  run("sf", ["config", "set", `target-dev-hub=${devHub}`, `target-org=${devAlias}`], { quiet: true, capture: true });
+  ok(`This project now uses ${c.bold(devHub)} as its Dev Hub and ${c.bold(devAlias)} as its default org.`);
+}
+
+// --------------------------------------------------------------- the fork
 async function ensureFork(handle) {
-  title("1 of 4  Your own copy of the repository");
+  step(1, "Your own copy of the repository");
 
   const slug = repoSlug();
   if (slug && slug.toLowerCase() !== UPSTREAM.toLowerCase()) {
     ok(`origin already points at ${c.bold(slug)}.`);
+    git(["fetch", "origin"], { quiet: true });
+    ensurePipelineBranches();
     return slug;
   }
 
@@ -138,7 +428,12 @@ async function ensureFork(handle) {
   }
   git(["remote", "rename", "origin", "upstream"]);
   git(["remote", "add", "origin", `https://github.com/${fork}.git`]);
-  const fetched = git(["fetch", "origin"]);
+  // A fork that was created a second ago can refuse the first read
+  let fetched = git(["fetch", "origin"]);
+  for (let attempt = 0; fetched.code !== 0 && attempt < 5; attempt++) {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    fetched = git(["fetch", "origin"], { quiet: true });
+  }
   if (fetched.code !== 0) {
     abort(
       "Your fork exists but git could not read it.",
@@ -146,12 +441,34 @@ async function ensureFork(handle) {
     );
   }
   ok(`origin is now ${c.bold(fork)}, and the shared repository is upstream.`);
+  ensurePipelineBranches();
   return fork;
 }
 
-// ------------------------------------------------------------- 2. actions on
+/**
+ * integration, uat and preprod, created from the state a Level 1 learner starts
+ * from when the fork does not carry them yet. main exists in every fork.
+ */
+export function ensurePipelineBranches() {
+  const base = ["origin/training/start-level-1", "origin/main"].find((ref) => gitOut(["rev-parse", "--verify", "--quiet", ref]));
+  for (const branch of PIPELINE_BRANCHES) {
+    if (gitOut(["ls-remote", "--heads", "origin", branch])) {
+      continue;
+    }
+    if (!base || git(["push", "origin", `${base}:refs/heads/${branch}`], { quiet: true, capture: true }).code !== 0) {
+      abort(
+        `The ${branch} branch could not be created in your fork.`,
+        "Check that VS Code can push to GitHub (Accounts, bottom left), then run this again."
+      );
+    }
+    ok(`Created the ${c.bold(branch)} branch in your fork.`);
+  }
+  git(["fetch", "origin"], { quiet: true, capture: true });
+}
+
+// ------------------------------------------------------------- actions on
 function ensureActions(slug) {
-  title("2 of 4  Actions turned on");
+  step(2, "Actions turned on");
 
   const permissions = ghJson(["api", `repos/${slug}/actions/permissions`]);
   if (permissions?.enabled === true) {
@@ -179,186 +496,192 @@ function ensureActions(slug) {
   return false;
 }
 
-// ------------------------------------------------------- 3. the branch config
-function writeBranchConfig(org) {
-  title("3 of 4  Which org the integration branch deploys to");
-
-  const file = path.join(ROOT, "config", "branches", `.sfdx-hardis.${BRANCH}.yml`);
-  const details = runJson("sf", ["org", "display", "--target-org", org, "--json"]);
-  const username = details?.result?.username;
-  const instanceUrl = details?.result?.instanceUrl;
-  if (!username) {
-    abort(
-      `Could not read the username of ${org}.`,
-      "Open Orgs Manager in VS Code and check the org is still connected."
-    );
-  }
-
-  // A Developer Edition org logs in through login.salesforce.com whatever its My
-  // Domain is, and that is what the CI job needs.
-  const loginUrl = (instanceUrl || "").includes(".sandbox.")
-    ? "https://test.salesforce.com"
-    : "https://login.salesforce.com";
-
-  fs.mkdirSync(path.dirname(file), { recursive: true });
-  const previous = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : "";
-  const lines = [
-    "# Which org the integration branch deploys to.",
-    "# Written by Set up my pipeline, and editable in the",
-    "# DevOps Pipeline panel: gear menu > Pipeline Settings, scope Branch: integration.",
+// ------------------------------------------------------- the branch config
+function branchConfigText(stage, username) {
+  return [
+    `# Which org the ${stage.branch} branch deploys to, and where its work goes next.`,
+    "# Written by Set up my training environment, and editable in the",
+    `# DevOps Pipeline panel: gear menu > Pipeline Settings, scope Branch: ${stage.branch}.`,
     `targetUsername: ${username}`,
-    `instanceUrl: ${loginUrl}`,
-    "mergeTargets: []",
+    // A scratch org logs in through test.salesforce.com, like a sandbox. The CI
+    // job of Levels 1 and 2 does not read it, the JWT login of Level 3 does.
+    "instanceUrl: https://test.salesforce.com",
+    `mergeTargets: [${stage.mergeTargets.join(", ")}]`,
     ""
   ].join("\n");
-  fs.writeFileSync(file, lines, "utf8");
-
-  if (previous === lines) {
-    ok(`${path.relative(ROOT, file)} was already right.`);
-  } else {
-    ok(`${path.relative(ROOT, file)} now names ${c.bold(username)}.`);
-  }
-  publishBranchConfig(file);
-  return username;
 }
 
-/* Commits the branch configuration on the major branch and pushes it.
+/**
+ * Writes one file per stage, on every stage branch, and pushes them.
+ *
+ * Every major branch carries the configuration of all of them, because the
+ * pipeline panel and the deployment job read it from whichever branch they are
+ * on. The badge job clones the fork and re-runs the checks against what is in
+ * it, so a setting that never left the machine counts as not done. Doing it here
+ * also spares the learner a commit straight to a major branch, which the rest of
+ * the course tells them never to make.
+ */
+export function writeBranchConfigs(pipeline, usernames) {
+  const files = pipeline.map((stage) => ({
+    relative: `config/branches/.sfdx-hardis.${stage.branch}.yml`,
+    content: branchConfigText(stage, usernames[stage.alias])
+  }));
+  const original = gitOut(["rev-parse", "--abbrev-ref", "HEAD"]);
+  let published = true;
 
-   The badge job clones the fork and re-runs the checks against what is actually
-   in it, so a setting that never left the machine counts as not done. Doing it
-   here also spares the learner the one commit straight to a major branch that
-   the rest of the course tells them never to make.
-*/
-function publishBranchConfig(file) {
-  const relative = path.relative(ROOT, file).split(path.sep).join("/");
-  const changed = gitOut(["status", "--porcelain", "--", relative]) !== "";
-  // A previous run may have committed it and failed to push, so "nothing to
-  // commit" is not the same question as "nothing to publish"
-  const unpushed = gitOut(["log", "--oneline", `origin/${BRANCH}..${BRANCH}`, "--", relative]) !== "";
-  if (!changed && !unpushed) {
-    ok("Already published: nothing changed since last time.");
-    return;
-  }
-
-  const current = gitOut(["rev-parse", "--abbrev-ref", "HEAD"]);
-  if (current !== BRANCH && git(["checkout", BRANCH], { quiet: true }).code !== 0) {
-    warn(`Could not switch to ${BRANCH} to publish the configuration.`);
-    info(`    Commit ${relative} yourself from the Source Control panel, on ${BRANCH}.`);
-    return;
-  }
-
-  if (changed) {
-    git(["add", "--", relative], { quiet: true });
-    const committed = run(
-      "git",
-      ["commit", "-m", `Point ${BRANCH} at my org`, "--", relative],
-      { capture: true, quiet: true }
-    );
-    if (committed.code !== 0) {
-      warn("Could not commit the branch configuration.");
-      info("    Commit it from the Source Control panel: git needs a name and an email first.");
-      info("    File > Preferences > Settings, or your teammate's usual way of setting them.");
-      return;
+  for (const stage of pipeline) {
+    const branch = stage.branch;
+    if (gitOut(["rev-parse", "--abbrev-ref", "HEAD"]) !== branch) {
+      const checkout = gitOut(["rev-parse", "--verify", "--quiet", branch])
+        ? git(["checkout", branch], { quiet: true, capture: true })
+        : git(["checkout", "-b", branch, "--track", `origin/${branch}`], { quiet: true, capture: true });
+      if (checkout.code !== 0) {
+        warn(`Could not switch to ${branch}: you have changes git would have to overwrite.`);
+        info(`    Commit or discard them in the Source Control panel, then run this again.`);
+        published = false;
+        continue;
+      }
     }
-  }
+    git(["pull", "--ff-only", "origin", branch], { quiet: true, capture: true });
 
-  if (git(["push", "origin", BRANCH]).code !== 0) {
-    // Someone merged something since the clone, which is normal on a shared
-    // branch. Replay the one commit on top of theirs and try once more.
-    info(c.dim(`    ${BRANCH} moved on the server, replaying on top of it`));
-    if (git(["pull", "--rebase", "--autostash", "origin", BRANCH]).code !== 0 ||
-        git(["push", "origin", BRANCH]).code !== 0) {
-      warn(`Committed, but could not push to ${BRANCH}.`);
+    const changed = [];
+    for (const file of files) {
+      const absolute = path.join(ROOT, file.relative);
+      const previous = fs.existsSync(absolute) ? fs.readFileSync(absolute, "utf8") : "";
+      if (previous !== file.content) {
+        fs.mkdirSync(path.dirname(absolute), { recursive: true });
+        fs.writeFileSync(absolute, file.content, "utf8");
+        changed.push(file.relative);
+      }
+    }
+    if (changed.length > 0) {
+      git(["add", "--", ...changed], { quiet: true });
+      const committed = run("git", ["commit", "-m", "Point the pipeline at my training orgs", "--", ...changed], { capture: true, quiet: true });
+      if (committed.code !== 0) {
+        warn(`Could not commit the branch configuration on ${branch}.`);
+        info("    Git needs a name and an email first: Source Control panel, then commit once by hand.");
+        published = false;
+        continue;
+      }
+    }
+    const unpushed = gitOut(["log", "--oneline", `origin/${branch}..${branch}`]) !== "";
+    if (unpushed && git(["push", "origin", branch], { quiet: true, capture: true }).code !== 0) {
+      warn(`Committed on ${branch}, but could not push it.`);
       info("    Push it from the Source Control panel when you can.");
-      return;
+      published = false;
+      continue;
     }
+    ok(changed.length > 0 ? `${c.bold(branch)} now names its org, and is pushed.` : `${c.bold(branch)} was already right.`);
   }
-  ok(`Published on ${c.bold(BRANCH)}, so the badge job can see it too.`);
+
+  // Leave the learner on integration, where Lab 2 starts. Coming from main, the
+  // branch the clone opened on, there is nothing to go back to.
+  const home = original === "main" || original === "HEAD" ? pipeline[0].branch : original;
+  if (gitOut(["rev-parse", "--abbrev-ref", "HEAD"]) !== home) {
+    git(["checkout", home], { quiet: true, capture: true });
+  }
+  return published;
 }
 
-// ------------------------------------------------------------ 4. the secret
-function setSecret(slug, org) {
-  title("4 of 4  The credential the CI job uses");
-
-  const auth = runJson("sf", [
-    "org", "auth", "show-sfdx-auth-url", "--target-org", org, "--no-prompt", "--json"
-  ]);
-  const url = auth?.result?.sfdxAuthUrl;
-  if (!url || !url.startsWith("force://")) {
-    abort(
-      `Could not read an auth URL for ${org}.`,
-      "Reconnect the org in Orgs Manager, then run this again."
-    );
+// ----------------------------------------------------------- the secrets
+export function setSecrets(slug, pipeline) {
+  for (const stage of pipeline) {
+    const secret = `SFDX_AUTH_URL_${stage.branch.toUpperCase()}`;
+    const auth = runJson("sf", ["org", "auth", "show-sfdx-auth-url", "--target-org", stage.alias, "--json"]);
+    const url = auth?.result?.sfdxAuthUrl;
+    if (!url || !url.startsWith("force://")) {
+      abort(
+        `Could not read an auth URL for ${stage.alias}.`,
+        "Click Set up my training environment again. If it fails the same way, the scratch org may have expired."
+      );
+    }
+    const res = run("gh", ["secret", "set", secret, "--repo", slug, "--body", url], { quiet: true, capture: true });
+    if (res.code !== 0) {
+      // The value is printed so the secrets form can be filled without a terminal.
+      // It is a refresh token for a throwaway scratch org, in the learner's own
+      // repository, and Level 3 replaces it with a certificate.
+      warn(`Could not write the ${secret} secret from here.`);
+      info(`    Open https://github.com/${slug}/settings/secrets/actions`);
+      info(`    New repository secret, named ${c.bold(secret)}, with this value:`);
+      info("");
+      info(`    ${url}`);
+      info("");
+      continue;
+    }
+    ok(`${secret} is set on ${c.bold(slug)}.`);
   }
-
-  const res = run("gh", ["secret", "set", SECRET, "--repo", slug, "--body", url], { quiet: true });
-  if (res.code !== 0) {
-    // The value is printed so the secrets form can be filled without a terminal.
-    // It is a refresh token for a throwaway training org, in the learner's own
-    // repository, and Level 3 replaces it with a certificate.
-    warn(`Could not write the ${SECRET} secret from here.`);
-    info(`    Open https://github.com/${slug}/settings/secrets/actions`);
-    info(`    New repository secret, named ${c.bold(SECRET)}, with this value:`);
-    info("");
-    info(`    ${url}`);
-    info("");
-    return;
-  }
-  ok(`${SECRET} is set on ${c.bold(slug)}.`);
-  info(c.dim("    It holds a long-lived refresh token for a throwaway training org."));
-  info(c.dim("    Level 3 lab 1 replaces it with a JWT certificate and deletes it."));
+  info(c.dim("    Each holds a long-lived refresh token for a throwaway scratch org."));
+  info(c.dim("    Level 3 lab 1 replaces them with JWT certificates and deletes them."));
 }
 
 // --------------------------------------------------------------------- main
 export default async function init(args) {
-  title("Set up my pipeline");
-  info("Four things stand between a fresh clone and a Pull Request that deploys:");
-  info("  your own copy of the repository, Actions turned on, the org the");
-  info("  integration branch deploys to, and the credential the job logs in with.");
+  const { devHub: devHubDef, scratch } = trainingOrgs();
+  const pipeline = levelOnePipeline();
+  const devAlias = scratch.find((o) => o.branch === null).alias;
+
+  title("Set up my training environment");
+  info("From your one Developer Edition org to a pipeline you can push a User Story through:");
+  info("  your copy of the repository, three scratch orgs holding the Helios app,");
+  info(`  and the ${pipeline.map((s) => s.branch).join(" and ")} branches deploying to two of them.`);
   info("");
-  info(c.dim("This exists for the course only. On a real project the pipeline is already"));
-  info(c.dim("there, and nobody asks a new contributor to build one on their first day."));
+  info(c.dim("This exists for the course only. On a real project the orgs and the pipeline are"));
+  info(c.dim("already there, and nobody asks a new contributor to build them on their first day."));
   info("");
 
   checkGh();
   const handle = currentHandle();
   if (!handle) {
-    abort("Could not read your GitHub account.", "Run: gh auth login");
+    abort("Could not read your GitHub account.", "Click Set up my training environment again.");
   }
   info(`Signed in to GitHub as ${c.bold(handle)}.`);
 
   const orgs = connectedOrgs().filter((o) => o.connected);
-  if (orgs.length === 0) {
+  if (orgs.filter((o) => !o.isScratch).length === 0) {
     abort(
       "No connected org was found.",
-      "Connect your two training orgs in the Orgs Manager panel first. Level 1 lab 0 shows how."
+      `Connect your Developer Edition org in the Orgs Manager panel first, and name it ${devHubDef.alias}. Level 1 lab 1 shows how.`
     );
   }
-  const known = universe().orgs.map((o) => o.alias);
-  const suggested = orgs.filter((o) => known.includes(o.alias));
-  const org = args.org || obviousIntegrationOrg(orgs) || await select(
-    "Which of your orgs is the shared integration org?",
-    orgChoices(suggested.length > 0 ? suggested : orgs),
-    args.org
-  );
+  const devHub = await findDevHub(orgs, args.org);
 
-  if (!args.yes && !(await confirm(`Set up the pipeline against ${org}?`, true))) {
+  if (!args.yes && !(await confirm(`Build your training environment from ${devHub}?`, true))) {
     info("Nothing was changed.");
     return;
   }
 
   const slug = await ensureFork(handle);
   const actionsOn = ensureActions(slug);
-  writeBranchConfig(org);
-  setSecret(slug, org);
+
+  step(3, "Your Dev Hub");
+  await ensureDevHub(devHub);
+
+  step(4, "Your three scratch orgs");
+  const usernames = await ensureScratchOrgs(devHub, scratch.map((o) => o.alias));
+  pointProjectAt(devHub, devAlias);
+
+  step(5, "The Helios app in each of them");
+  await seedScratchOrgs(usernames, { force: args.reseed === true, ownerName: devHubOwnerName(devHub) });
+
+  step(6, "Which org each branch deploys to");
+  const published = writeBranchConfigs(pipeline, usernames);
+
+  step(7, "The credentials the CI jobs use");
+  setSecrets(slug, pipeline);
 
   title("Done");
-  info(`Your fork:        https://github.com/${slug}`);
-  info(`Integration org:  ${org}`);
+  info(`Your fork:          https://github.com/${slug}`);
+  info(`Your Dev Hub:       ${devHub}`);
+  info(`Where you build:    ${devAlias}`);
+  for (const stage of pipeline) {
+    info(`${`${stage.branch} deploys to:`.padEnd(20)}${stage.alias}`);
+  }
   info("");
   if (!actionsOn) {
     warn("One thing is left for you: turn Actions on, as printed above.");
-    info("");
   }
-  info(`Next: ${c.bold("Training: Level 1 > Set up one of my training orgs")}, once per org.`);
+  if (!published) {
+    warn("The branch configuration is not published yet: see the messages above.");
+  }
+  info(c.dim(`The scratch orgs live ${DURATION_DAYS} days. When one expires, click this again: it rebuilds only that one.`));
 }

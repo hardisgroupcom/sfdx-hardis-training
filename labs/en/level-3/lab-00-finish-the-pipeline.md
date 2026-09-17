@@ -19,55 +19,67 @@ depends_on:
   docs: [salesforce-devops-setup-home, salesforce-devops-setup-init-project, salesforce-devops-setup-existing-org]
 ---
 
-# Lab 0 - Your pipeline stops at integration: finish it
+# Lab 0 - Your pipeline stops at uat: finish it
 
 **Level**: 3 Release Manager
 
 **Time**: ~30 min
 
-**You will**: turn a one-stage pipeline into a three-stage one, and understand every line of
-configuration you add.
+**You will**: turn a two-stage pipeline into a four-stage one that reaches production, and
+understand every line of configuration you add.
 
 ## The situation
 
 Open the **DevOps Pipeline** panel and look at what Sofia left.
 
-![The DevOps Pipeline panel with a single major branch column](../../_assets/annotated/vscode/devops-pipeline--one-column.png)
+![The DevOps Pipeline panel with integration and uat only](../../_assets/annotated/vscode/devops-pipeline--one-column.png)
 
-One column. `integration` **(1)**, with its org **(2)**, and the feature branches your teammates
-have in flight. The `uat` and `main` branches exist in git, and nothing here knows about them: no
-org, no merge path, no deployment job. A branch is only part of a pipeline once somebody writes
-down which org it deploys to, and for those two nobody has.
+`integration` **(1)** and `uat`, each with its org **(2)**, and the feature branches your teammates
+have in flight. Work reaches the business testers, and then it stops. The `preprod` and `main`
+branches exist in git, and nothing here knows about them: no org, no merge path, no deployment job.
+A branch is only part of a pipeline once somebody writes down which org it deploys to, and for those
+two nobody has.
 
-That is your first week, and this lab is the first half of it. The second half is the next lab: the
-credential that lets a job reach an org it is trusted with.
+So every release so far reached production by hand, which is exactly the kind of release nobody can
+say anything about afterwards. That is your first week, and this lab is the first half of it. The
+second half is the next lab: the credentials that let a job reach an org it is trusted with.
 
-None of this is unusual. Most projects start with one shared org because that is all they need on
-day one, and finishing the pipeline gets postponed until the day somebody needs to release.
+None of this is unusual. Most projects start with the stages they need on day one, and finishing the
+pipeline gets postponed until the day somebody needs to release properly.
 
 ## Before you start
 
 - [ ] Levels 1 and 2 finished
-- [ ] Four orgs connected in **Orgs Manager**: `helios-dev`, `helios-integration`, `helios-uat`,
-      `helios-prod`
-- [ ] `helios-uat` and `helios-prod` seeded with **Training: Level 3 > Set up one of my training orgs**
+- [ ] `helios-prod` still connected in **Orgs Manager**. It is the Developer Edition org you signed
+      up for in Level 1, and the Dev Hub of your scratch orgs. From this lab on, it is also
+      production
+- [ ] One more free Developer Edition org, signed up at
+      [developer.salesforce.com/signup](https://developer.salesforce.com/signup) exactly like the
+      first one, and connected in **Orgs Manager** with the alias `helios-preprod`
+- [ ] Both seeded: Welcome page > **Training: Level 3** > **Set up one of my training orgs**, once
+      for `helios-preprod` and once for `helios-prod`
 
 ## Steps
 
 ### 1. Decide the shape before you type anything
 
-Three questions, and their answers are the whole pipeline:
+Four questions, and their answers are the whole pipeline:
 
-| Question                                                                     | Helios answer                                                      |
-|------------------------------------------------------------------------------|--------------------------------------------------------------------|
-| Which branches are **major**, meaning they have an org and a deployment job? | `integration`, `uat`, `main`                                       |
-| Which branch can merge into which?                                           | `integration` into `uat`, `uat` into `main`. Nothing skips a stage |
-| Which branch is production?                                                  | `main`                                                             |
+| Question                                                                     | Helios answer                                                                            |
+|------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
+| Which branches are **major**, meaning they have an org and a deployment job? | `integration`, `uat`, `preprod`, `main`                                                  |
+| Which branch can merge into which?                                           | `integration` into `uat`, `uat` into `preprod`, `preprod` into `main`. Nothing skips one |
+| Which branch is production?                                                  | `main`                                                                                   |
+| Where does an urgent fix start?                                              | From `preprod`, so it never carries the work still waiting in `integration` and `uat`    |
 
-Write those three lines in `MY-PIPELINE.md` now, before you configure anything. If you cannot state
+Write those four lines in `MY-PIPELINE.md` now, before you configure anything. If you cannot state
 them in one sentence each, configuring them will not help.
 
-### 2. Declare uat and main as targets
+`preprod` earns its place in two ways. It is the last rehearsal before production, an org that holds
+what production holds and that nobody works in, so a release that deploys there cleanly has very few
+surprises left. And it is where hotfixes start, which Lab 7 is about.
+
+### 2. Let contributors start a hotfix
 
 Open the **DevOps Pipeline** panel, then its settings menu at the top right, and **Pipeline
 Settings**. The page title reads **Global Pipeline Settings**, and the configuration scope selector
@@ -83,14 +95,16 @@ Two fields matter here, and they are **two separate text boxes, one value per li
 pairs them except their order, so line 2 of one belongs to line 2 of the other. Get the order wrong
 and contributors see the wrong description next to the right branch, with no error anywhere.
 
-| Line | Branch      | Label                                                        |
-|------|-------------|--------------------------------------------------------------|
-| 1    | integration | `The shared integration org, where every contributor merges` |
-| 2    | uat         | `User acceptance, only a release manager targets this`       |
-| 3    | main        | `Production, hotfixes only`                                  |
+| Line | Branch      | Label                                                                 |
+|------|-------------|-----------------------------------------------------------------------|
+| 1    | integration | `The shared integration org, where every contributor merges`          |
+| 2    | preprod     | `Hotfixes on the production version, agreed with the release manager` |
 
 The label is what a contributor reads next to the branch name when the question is asked, so it
 says what the branch is for rather than repeating what it is called.
+
+`uat` and `main` are not in that list, on purpose. Nobody builds a User Story against them: work
+reaches `uat` by promotion from `integration`, and reaches `main` by promotion from `preprod`.
 
 **Save**.
 
@@ -107,31 +121,35 @@ says what the branch is for rather than repeating what it is called.
     this course keep showing you the file. The file is the truth; the panel is a convenience over
     it.
 
-### 3. Give uat and main their orgs
+### 3. Give preprod and main their orgs
 
-Refresh the pipeline diagram and `uat` and `main` are still not on it. Declaring them as target
-branches told the contribution screen they exist. It did not make them major branches.
+Refresh the pipeline diagram and `preprod` and `main` are still not on it. Declaring `preprod` as a
+target branch told the contribution screen it exists. It did not make it a major branch.
 
 **A branch becomes major by having a file in `config/branches/`, and no screen creates the first
-one.** The scope selector only lists branches that already have such a file, so `Branch: uat` is not
-in it yet, and the panel cannot bootstrap itself out of that.
+one.** The scope selector only lists branches that already have such a file, so `Branch: preprod` is
+not in it yet, and the panel cannot bootstrap itself out of that.
 
-So write the two files by hand, next to the `integration` one that is already there:
+So write the two files by hand, next to the `integration` and `uat` ones Level 1 wrote for you:
 
-    config/branches/.sfdx-hardis.uat.yml
+    config/branches/.sfdx-hardis.preprod.yml
     config/branches/.sfdx-hardis.main.yml
 
 with two keys each. Get the usernames from **Orgs Manager**, and check them twice: pointing `main`
 at the wrong org is the single most expensive mistake available in this lab.
 
-| Branch | `targetUsername`               | `instanceUrl`                  |
-|--------|--------------------------------|--------------------------------|
-| uat    | the `helios-uat` org username  | `https://login.salesforce.com` |
-| main   | the `helios-prod` org username | `https://login.salesforce.com` |
+| Branch  | `targetUsername`                  | `instanceUrl`                  |
+|---------|-----------------------------------|--------------------------------|
+| preprod | the `helios-preprod` org username | `https://login.salesforce.com` |
+| main    | the `helios-prod` org username    | `https://login.salesforce.com` |
 
-Now reopen **Pipeline Settings**. The scope selector **(1)** offers `Branch: uat` and `Branch: main`,
-and picking one changes the title to **Pipeline Settings for major git branch uat**. Click **Edit**
-**(2)** and the two fields of the **Salesforce Org** tab **(3)** hold what you just wrote:
+Open the `integration` file next to them and compare: it says `https://test.salesforce.com`. A
+scratch org logs in the way a sandbox does, and a Developer Edition org the way production does.
+
+Now reopen **Pipeline Settings**. The scope selector **(1)** offers `Branch: preprod` and
+`Branch: main`, and picking one changes the title to **Pipeline Settings for major git branch**
+followed by its name. Click **Edit** **(2)** and the two fields of the **Salesforce Org** tab **(3)**
+hold what you just wrote:
 
 ![The Pipeline Settings panel scoped to one major branch](../../_assets/annotated/vscode/pipeline-config-branch.png)
 
@@ -151,11 +169,12 @@ Doing it by hand once is how you know what it wrote.
 Still in the branch settings, on the **Deployment** tab of the same panel, set **Merge target
 branches**, one value per line:
 
-| Branch      | Merge targets |
-|-------------|---------------|
-| integration | `uat`         |
-| uat         | `main`        |
-| main        | none          |
+| Branch      | Merge targets                              |
+|-------------|--------------------------------------------|
+| integration | `uat`, already there since Level 1         |
+| uat         | `preprod`. It was empty: `uat` was the end |
+| preprod     | `main`                                     |
+| main        | none                                       |
 
 **Save**.
 
@@ -165,7 +184,7 @@ someone doing it at 18:00 on a Friday.
 
 ### 5. Look at the diagram again
 
-Refresh the panel. Three columns, each with its org, connected by arrows in one direction.
+Refresh the panel. Four columns, each with its org, connected by arrows in one direction.
 
 That diagram is now the truth about this project, and it is the thing you will point at in every
 conversation with a stakeholder who asks "so where is it".
@@ -176,15 +195,13 @@ conversation with a stakeholder who asks "so where is it".
 
     availableTargetBranches:
       - integration
-      - uat
-      - main
+      - preprod
     availableTargetBranchesLabels:
       - "The shared integration org, where every contributor merges"
-      - "User acceptance, only a release manager targets this"
-      - "Production, hotfixes only"
+      - "Hotfixes on the production version, agreed with the release manager"
     productionBranch: main
 
-and the two files you wrote under `config/branches/` now hold `targetUsername`, `instanceUrl` and
+and `config/branches/` now holds four files, each with `targetUsername`, `instanceUrl` and
 `mergeTargets`.
 
 **A major branch is not declared anywhere as "major".** It becomes one by having a branch
@@ -228,8 +245,8 @@ buttons Level 1 used.
 ![The contribution cards of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
 Under **Project Contribution Workflow** **(1)**: **New User Story** **(2)** targeting `integration`,
-then commit the three files from **Source Control**, then **Save / Publish**, then **Create Pull
-Request** from the bar at the end of it. Get the check green and merge.
+then commit the files from **Source Control**, then **Save / Publish**, then **Create Pull Request**
+from the bar at the end of it. Get the check green and merge.
 
 There is nothing to retrieve here: you edited configuration files, not an org.
 
@@ -239,24 +256,25 @@ Yes, even as the release manager. Especially as the release manager.
 
 Open the **DevOps Pipeline** panel and click **Refresh**. This is the pipeline you built:
 
-![The DevOps Pipeline panel with three major branches, each deploying to its org](../../_assets/annotated/vscode/devops-pipeline-level3--three-stages.png)
+![The DevOps Pipeline panel with four major branches, each deploying to its org](../../_assets/annotated/vscode/devops-pipeline-level3--three-stages.png)
 
 1. **`integration`** **(1)**, where contributors merge, with the promotion arrow leaving it
 2. **`uat`** **(2)**, where the business signs off
-3. **`main`** **(3)**, production
-4. The three orgs **(4)**, one per branch, in the order the work travels through them
+3. **`preprod`** **(3)**, the rehearsal of production, and where hotfixes start
+4. **`main`** **(4)**, production
+5. The four orgs **(5)**, one per branch, in the order the work travels through them
 
 The **+ PR** buttons on the arrows are the promotion Pull Requests, and Lab 5 is the first time you
 click one.
 
 Also true, and worth checking:
 
-- `config/branches/` holding three files
+- `config/branches/` holding four files
 - A merged Pull Request carrying the configuration change
 
 ## If it goes wrong
 
-**The uat column appears with no org even after saving.**
+**The preprod column appears with no org even after saving.**
 The file was written for a different branch name. Check `config/branches/` for a typo: the file name
 has to match the branch exactly.
 
@@ -266,6 +284,11 @@ Click **Refresh pipeline data** in the panel. It caches the git state.
 **You pointed a branch at the wrong org.**
 Fix the branch configuration in **Pipeline Settings** and publish again. Nothing has deployed yet,
 so nothing is broken.
+
+**Set up one of my training orgs fails on `helios-prod`.**
+It is the org that created your scratch orgs, and it is a normal Developer Edition org apart from
+that. The usual cause is an expired connection: reconnect it in **Orgs Manager** under the same
+alias, and run it again.
 
 ## Check your work
 
@@ -277,4 +300,4 @@ Welcome page > **Training: Level 3** > **Check my work**, then pick lab 0.
 - [Initialize the SFDX project](https://sfdx-hardis.cloudity.com/salesforce-devops-setup-init-project/)
 - [Retrieve an existing org](https://sfdx-hardis.cloudity.com/salesforce-devops-setup-existing-org/)
 
-[Next: Lab 1 - Wire CI authentication for three orgs](lab-01-ci-auth.md){ .md-button .md-button--primary }
+[Next: Lab 1 - Wire CI authentication for four orgs](lab-01-ci-auth.md){ .md-button .md-button--primary }

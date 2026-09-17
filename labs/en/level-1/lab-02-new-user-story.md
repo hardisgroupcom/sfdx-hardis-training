@@ -55,8 +55,8 @@ and repeat for the rest of your career on this project.
 
 ## Before you start
 
-- [ ] Lab 1 finished: your fork is cloned and `integration` names your org
-- [ ] `helios-dev` connected in **Orgs Manager**
+- [ ] Lab 1 finished: your fork is cloned, and `integration` and `uat` name their orgs
+- [ ] `helios-dev` listed as **Connected** in **Orgs Manager**
 
 ## Steps
 
@@ -116,31 +116,33 @@ the command tells you what it expected and asks again.
 
 ### 5. Which org you will build in
 
-**Which Salesforce org do you want to work in?** Take the first answer, **Sandbox org with source
-tracking** **(1)**.
+**Which Salesforce org do you want to work in?** Take **Scratch org** **(1)**: `helios-dev` is one,
+created in Lab 1.
 
 ![The question asking what kind of org this User Story is built in](../../_assets/annotated/vscode/work-new-org-type.png)
 
-!!! info "Your org is not a sandbox, and the first answer is still the right one"
-    That answer means "an org that already exists and that I will connect to", which is what you
-    have. **Scratch org** **(2)** creates a throwaway org on the spot, which needs a Dev Hub this
-    course does not use. **(3)** is for working on XML and configuration without an org at all.
+The other answers are for other projects. **Sandbox org with source tracking** **(2)** is what most
+teams use, a developer sandbox the release manager hands out. The last one is for working on XML
+and configuration without an org at all.
 
-Then the list of orgs. Pick the **first one** **(1)**, the one you gave the alias `helios-dev`.
-**(2)** authenticates an org that is not in the list yet, which you do not need today.
+Then the list of scratch orgs. Take **Reuse scratch org helios-dev** **(1)**.
 
-![The New User Story command asking which org to build in](../../_assets/annotated/vscode/work-new-org.png)
+![The New User Story command asking which scratch org to build in](../../_assets/annotated/vscode/work-new-org.png)
 
-This is the org you seeded in Lab 1, and the one you are about to change by hand in Setup. Never
-pick `helios-integration` here: that is the shared org, and building directly in it is exactly what
-this whole way of working exists to stop.
+This is the org Lab 1 filled with the Helios app, and the one you are about to change by hand in
+Setup. The list does not offer `helios-integration` or `helios-uat`: the command knows those two
+belong to major branches, and building directly in a shared org is exactly what this whole way of
+working exists to stop.
+
+!!! danger "Never take Create new scratch org here"
+    It is the first answer, and on a real project it is often the right one. Here it would ask your
+    Dev Hub for a fourth scratch org, and a Developer Edition Dev Hub keeps only three alive: the
+    command fails after a long wait, with nothing to show for it.
 
 ### 6. Read what it tells you at the end
 
-The last question, *Do you want to open the org in your browser?*, is a convenience. Answer either
-way: Lab 3 opens it from Orgs Manager.
-
-Then the command finishes and prints what it did. Read it rather than closing it.
+The command opens `helios-dev` in your browser: you can leave that tab for Lab 3. Then it finishes
+and prints what it did. Read it rather than closing it.
 
 ![The New User Story command, finished, with its summary](../../_assets/annotated/vscode/work-new-completed.png)
 
@@ -168,8 +170,12 @@ which did five things, in order:
 3. **Wrote your user configuration** in `config/user/.sfdx-hardis.<your-username>.yml`, recording
    the org for this User Story. That file is git-ignored: it is yours, nobody else needs it
 4. **Selected the org** as the default target for the following commands
-5. **Offered to refresh the org** with what is currently on `integration`, so you are not building
-   on top of a stale org
+5. **Opened the org** in your browser, since you are about to work in it
+
+The list of scratch orgs is the ones your default Dev Hub created, which Lab 1 set to `helios-prod`,
+minus the ones named in `config/branches/`. With a sandbox instead, the command would also have
+offered to update it with what is on `integration`: that is a backpromote, and Level 2 starts with
+one.
 
 The branch prefix `features/` and the name pattern come from `config/.sfdx-hardis.yml`:
 
@@ -207,8 +213,13 @@ You changed something before starting. Either commit it on the branch you are on
 from the Source Control panel. `hardis:work:new` will not carry stray work onto a fresh branch.
 
 **The org list does not show `helios-dev`.**
-It is not connected any more. Open **Orgs Manager** and reconnect it. Developer Edition sessions do
-expire.
+The scratch org expired: they live 30 days. Click **Training: Level 1 > Set up my training
+environment** again. It creates a new `helios-dev` with the Helios app, and leaves everything else
+as it is.
+
+**It fails with a message about the scratch org limit.**
+You took **Create new scratch org**. Nothing was created and nothing is broken: start the User Story
+again and take **Reuse scratch org helios-dev**.
 
 ## Check your work
 

@@ -32,7 +32,7 @@ nobody is going to tell you the order to do things in.
 ## Before you start
 
 - [ ] Labs 0 to 9 finished
-- [ ] All four orgs working, all three branches deploying
+- [ ] All four pipeline orgs working, all four branches deploying
 
 ## The week
 
@@ -74,8 +74,9 @@ Verify in `helios-uat` that the stories are usable, not only deployed.
 
 ### Thursday: release to production
 
-Create the promotion from `uat` into `main`. Read the counts line in the sfdx-hardis comment and stop
-if anything is being deleted that you were not expecting. Merge, watch, verify, do the manual steps.
+Promote `uat` into `preprod` first, and check `helios-preprod` behaves. Then create the promotion from
+`preprod` into `main`. Read the counts line in the sfdx-hardis comment and stop if anything is being
+deleted that you were not expecting. Merge, watch, verify, do the manual steps.
 
 This release is also what finally carries the Lab 7 retrofit into `main`, so the `Needs Reinspection`
 picklist value reaches production through the pipeline and the check for Lab 7 passes.
@@ -112,8 +113,8 @@ point of having it.
 ## What you should see
 
 - Two Pull Requests reviewed, one merged, one sent back with a reason
-- `integration`, `uat` and `main` all carrying the release, in that order, each through its own
-  deployment
+- `integration`, `uat`, `preprod` and `main` all carrying the release, in that order, each through
+  its own deployment
 - Release notes committed, with a human sentence at the top
 - A DORA report, and a `MY-PIPELINE.md` that a successor could actually use
 
@@ -169,10 +170,11 @@ Three things worth doing in the week after you finish, in order of usefulness:
 of everything a real pipeline needs. You have now done most of it once. Go through it against
 whatever project you actually work on and count what is missing.
 
-**Two: delete your training orgs, or keep them deliberately.** Four Developer Edition orgs holding a
-fictional solar company are fine to keep as a sandbox for trying things. If you keep them, delete
-the `SFDX_AUTH_URL_INTEGRATION` secret if it is somehow still there, and remember the JWT
-certificates in your fork are real credentials to real orgs.
+**Two: delete your training orgs, or keep them deliberately.** The scratch orgs delete themselves
+after 30 days. The two Developer Edition orgs holding a fictional solar company are fine to keep as a
+place to try things, and `helios-prod` stays a Dev Hub you can create scratch orgs from. If you keep
+them, delete the `SFDX_AUTH_URL_INTEGRATION` and `SFDX_AUTH_URL_UAT` secrets if they are somehow
+still there, and remember the JWT certificates in your fork are real credentials to real orgs.
 
 **Three: the promotion branches feature.** Everything you did promotes **everything waiting** from
 one branch to the next. Some teams need to promote a subset. That is what

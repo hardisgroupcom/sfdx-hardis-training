@@ -5,8 +5,9 @@
 projectName: HeliosEnergy
 
 # --- Pipeline -------------------------------------------------------------
-# At Levels 1 and 2 the pipeline stops at integration on purpose.
-# Level 3 lab 0 is where uat and main are declared as major branches.
+# At Levels 1 and 2 the pipeline is integration then uat, both deploying to
+# scratch orgs that Set up my training environment creates. preprod and main
+# exist in the fork and have no org yet: Level 3 lab 0 is where they join.
 developmentBranch: integration
 productionBranch: main
 availableTargetBranches:

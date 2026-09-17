@@ -13,7 +13,7 @@ Three free learning paths that take you from "I have never used Git" to "I own t
 | **3 - Release Manager**      | The person who owns the pipeline, the orgs and the releases      | 6 h  | Levels 1 and 2 |
 
 You work on a real repository for a fictional solar installer, **Helios Energy**, with free
-Developer Edition orgs that come pre-loaded with the app and its data. Everything is free: no paid
+Salesforce orgs that come pre-loaded with the app and its data. Everything is free: no paid
 service, no licence, no credit card.
 
 Each level awards a **Cloudity badge**. It is a badge, not a certification.
@@ -29,13 +29,14 @@ Each level awards a **Cloudity badge**. It is a badge, not a certification.
 
 **Then the course**, which is the part that only makes sense here:
 
-4. Sign up for two free [Developer Edition orgs](https://developer.salesforce.com/signup) and
-   connect them in **Orgs Manager**, naming them `helios-dev` and `helios-integration`
+4. Sign up for one free [Developer Edition org](https://developer.salesforce.com/signup) and
+   connect it in **Orgs Manager**, naming it `helios-prod`
 5. Clone this repository, and install the [GitHub CLI](https://cli.github.com/), which the next
    step uses and nothing else does
-6. Welcome page > **Training** > **Set up my pipeline**, which forks the repository, turns Actions
-   on and gives the CI job a way into your org
-7. Welcome page > **Training** > **Set up one of my training orgs**, once per org
+6. Welcome page > **Training: Level 1** > **Set up my training environment**, which forks the
+   repository, makes that org a Dev Hub, creates three scratch orgs holding the Helios app
+   (`helios-dev`, `helios-integration`, `helios-uat`), and wires the `integration` and `uat`
+   branches to them
 
 [Level 1 lab 0](https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-00-setup/) is
 the first block, with screenshots, and it stands on its own: finish it and stop if you only came to
@@ -61,15 +62,15 @@ bury the repository.
 The labs are done by clicking in the extension. What the product does not already own a button for,
 this project declares itself as a **Training** menu, rendered on the Welcome page:
 
-| Card                               | What it does                                                |
-|------------------------------------|-------------------------------------------------------------|
-| **Set up my pipeline**             | Forks this repository, turns Actions on, sets the CI secret |
-| **Where am I?**                    | The level and lab you reached, and what to open next        |
-| **Set up one of my training orgs** | Deploys the Helios app and its data into an org you pick    |
-| **Check my work**                  | Verifies a lab and prints your receipt                      |
-| **Simulate my teammates**          | Creates the teammate branches and Pull Requests a lab needs |
-| **Reset this level**               | Puts your repository back to the start of a level           |
-| **Clean up a training org**        | Removes the Helios app and its data from an org             |
+| Card                               | What it does                                                         |
+|------------------------------------|----------------------------------------------------------------------|
+| **Set up my training environment** | Forks this repository, creates the scratch orgs, sets the CI secrets |
+| **Where am I?**                    | The level and lab you reached, and what to open next                 |
+| **Set up one of my training orgs** | Deploys the Helios app and its data into an org you pick             |
+| **Check my work**                  | Verifies a lab and prints your receipt                               |
+| **Simulate my teammates**          | Creates the teammate branches and Pull Requests a lab needs          |
+| **Reset this level**               | Puts your repository back to the start of a level                    |
+| **Clean up a training org**        | Removes the Helios app and its data from an org                      |
 
 All seven run `node scripts/training.mjs <verb>`, declared under `customCommands` in
 `config/.sfdx-hardis.yml`. They need no `npm install`: everything under `scripts/` is dependency-free

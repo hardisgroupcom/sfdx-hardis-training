@@ -10,6 +10,11 @@ config/user/
 hardis-report/
 .cache/
 time-logs/
+# What SFDMU writes next to a data workspace on every load
+scripts/data/*/target/
+scripts/data/*/logs/
+scripts/data/*/source/
+scripts/data/*/reports/
 
 # Node
 node_modules/

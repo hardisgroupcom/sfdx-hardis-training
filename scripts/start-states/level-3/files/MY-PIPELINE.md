@@ -6,11 +6,13 @@ that the next person can see how the pipeline was put together.
 
 ## Orgs
 
-| Branch      | Org alias          | What it is for                                                              |
-|-------------|--------------------|-----------------------------------------------------------------------------|
-| integration | helios-integration | Where every contributor merges. Deployed on every merge into `integration`. |
-| uat         | helios-uat         | Not wired yet. Level 3 lab 0 is where it becomes a major branch.            |
-| main        | helios-prod        | Not wired yet either. Level 3 finishes the pipeline up to here.             |
+| Branch      | Org alias          | What it is for                                                                  |
+|-------------|--------------------|---------------------------------------------------------------------------------|
+| (none)      | helios-dev         | My own scratch org, where I build a story before I publish it.                  |
+| integration | helios-integration | Where every contributor merges. A scratch org, deployed on every merge.         |
+| uat         | helios-uat         | Where the business tests. A scratch org, deployed when integration is promoted. |
+| preprod     | helios-preprod     | Not wired yet. Level 3 lab 0 is where it becomes a major branch.                |
+| main        | helios-prod        | My Dev Hub since Level 1. Level 3 lab 0 makes it production.                    |
 
 ## Level 2
 
@@ -40,7 +42,7 @@ that the next person can see how the pipeline was put together.
 
 ## Level 3
 
-- **Lab 1, CI authentication**: the date I deleted the `SFDX_AUTH_URL_INTEGRATION` secret, and why it should never have been there for a real org.
+- **Lab 1, CI authentication**: the date I deleted the `SFDX_AUTH_URL_INTEGRATION` and `SFDX_AUTH_URL_UAT` secrets, and why they should never have been there for a real org.
 - **Lab 3, Smart Deploy**: what the deployment sent, and what it skipped.
 - **Lab 6, DORA**: deployment frequency, lead time, change failure rate, time to restore.
 - **Lab 8, monitoring**: the URL of the monitoring repository this created.

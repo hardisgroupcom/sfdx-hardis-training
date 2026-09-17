@@ -17,20 +17,20 @@ depends_on:
   docs: [salesforce-devops-setup-auth, salesforce-devops-setup-auth-github]
 ---
 
-# Lab 1 - Wire CI authentication for three orgs
+# Lab 1 - Wire CI authentication for four orgs
 
 **Level**: 3 Release Manager
 
 **Time**: ~40 min
 
 **You will**: replace the shortcut Level 1 gave you with the credential a real project uses, for all
-three orgs, and delete the shortcut.
+four orgs, and delete the shortcut.
 
 ## The situation
 
-Your CI reaches `helios-integration` through `SFDX_AUTH_URL_INTEGRATION`, a secret containing a
-long-lived OAuth refresh token. Level 1 told you it was a deliberate exception for a throwaway org
-and that you would fix it here.
+Your CI reaches `helios-integration` and `helios-uat` through `SFDX_AUTH_URL_INTEGRATION` and
+`SFDX_AUTH_URL_UAT`, two secrets containing long-lived OAuth refresh tokens. Level 1 told you they
+were a deliberate exception for throwaway scratch orgs and that you would fix them here.
 
 This is here.
 
@@ -49,8 +49,9 @@ pre-authorised user, no password anywhere, and revocation by deleting one app.
 
 ## Before you start
 
-- [ ] Lab 0 finished: three major branches with their orgs
-- [ ] All four orgs connected in **Orgs Manager**
+- [ ] Lab 0 finished: four major branches with their orgs
+- [ ] `helios-integration`, `helios-uat`, `helios-preprod` and `helios-prod` connected in
+      **Orgs Manager**
 - [ ] Nothing else. The command generates the certificate itself, using `openssl`, which came with
       Git when you installed it in Level 1
 
@@ -79,8 +80,10 @@ It asks a dozen questions, not three, and the order is not the one you would gue
 2. **Which git branch do you want to configure deployments from?** - `integration`. The list is
    built from your **remote** branches, and branches whose name contains a `/` are filtered out of
    it
-3. **What is the base URL or domain?** - `https://login.salesforce.com`. **The highlighted answer is
-   the sandbox one**, so this is a question to read rather than confirm
+3. **What is the base URL or domain?** - `https://test.salesforce.com`, the highlighted sandbox
+   answer. `helios-integration` is a scratch org, and a scratch org logs in like a sandbox. It is
+   the wrong answer for `preprod` and `main` in step 5, which are Developer Edition orgs, so this is
+   a question to read rather than confirm
 4. **Which target branches can this one merge into?** - `uat`. This writes `mergeTargets` again, on
    top of what you set in Lab 0, so give the same answer
 5. **Which Salesforce username will the CI server deploy as?** - the `helios-integration` username
@@ -154,45 +157,47 @@ certificate. They say nothing about permitted users or profiles. Follow them lit
 CI login fails with `user hasn't approved this consumer`, which is an accurate message that reads
 like a bug.
 
-### 5. Do the same for uat and main
+### 5. Do the same for uat, preprod and main
 
-Open the same gear menu **(1)** and **Add/Configure Org** twice more, once for each branch and its
-org.
+Open the same gear menu **(1)** and **Add/Configure Org** three more times, once for each branch and
+its org. `uat` is a scratch org like `integration`; `preprod` and `main` answer the base URL question
+with `https://login.salesforce.com`.
 
 ![The settings menu of the DevOps Pipeline panel](../../_assets/annotated/vscode/devops-pipeline--settings-menu.png)
-Store four more secrets:
+Store six more secrets:
 
 - `SFDX_CLIENT_ID_UAT`, `SFDX_CLIENT_KEY_UAT`
+- `SFDX_CLIENT_ID_PREPROD`, `SFDX_CLIENT_KEY_PREPROD`
 - `SFDX_CLIENT_ID_MAIN`, `SFDX_CLIENT_KEY_MAIN`
 
 The command pre-authorises each app as it creates it, so there is nothing to do in Setup unless a
 deployment failed.
 
-Six secrets, three External Client Apps, three certificates. Tedious once, then never again.
+Eight secrets, four External Client Apps, four certificates. Tedious once, then never again.
 
 ### 6. Prove it works before you delete anything
 
-Start with `uat`, because it is the one that can be proven right now. Open a Pull Request from
-`integration` into `uat` and watch the check job authenticate. That branch has no auth URL secret to
+Start with `preprod`, because it is the one that can be proven right now. Open a Pull Request from
+`uat` into `preprod` and watch the check job authenticate. That branch has no auth URL secret to
 fall back on, so a green authentication there is a JWT authentication and nothing else. Do not merge
-it yet, Lab 5 is the real promotion.
+it yet, Lab 6 is the real release.
 
-**`integration` cannot be proven the same way, and that is the point of this step.**
-`SFDX_AUTH_URL_INTEGRATION` still exists, the authentication hook looks for it first, and it stops
-there. Re-run the last deployment job from the **Actions** tab of your fork and the log shows an auth
-URL login, not a JWT one, no matter how correct your certificate is.
+**`integration` and `uat` cannot be proven the same way, and that is the point of this step.**
+`SFDX_AUTH_URL_INTEGRATION` and `SFDX_AUTH_URL_UAT` still exist, the authentication hook looks for
+them first, and it stops there. Re-run the last deployment job from the **Actions** tab of your fork
+and the log shows an auth URL login, not a JWT one, no matter how correct your certificate is.
 
-So there is nothing you can check on `integration` while the shortcut is there. Which is why the
-next step is a test and not a formality:
+So there is nothing you can check on those two while the shortcut is there. Which is why the next
+step is a test and not a formality:
 
 ### 7. Delete the shortcut
 
-In your fork: **Settings > Secrets and variables > Actions**, find `SFDX_AUTH_URL_INTEGRATION`, and
-delete it.
+In your fork: **Settings > Secrets and variables > Actions**, find `SFDX_AUTH_URL_INTEGRATION` and
+`SFDX_AUTH_URL_UAT`, and delete both.
 
-Now go back to **Actions**, open the last **Process Deployment (sfdx-hardis)** run, and click
-**Re-run all jobs**. Nothing has changed except the secret you just deleted, so if the job still
-passes, the JWT path is genuinely what is being used and it was not quietly falling back.
+Now go back to **Actions**, open the last **Process Deployment (sfdx-hardis)** run on `integration`,
+and click **Re-run all jobs**. Nothing has changed except the secrets you just deleted, so if the job
+still passes, the JWT path is genuinely what is being used and it was not quietly falling back.
 
 ### 8. Tell the panel what the project now uses
 
@@ -221,9 +226,9 @@ commit is exactly the failure that only shows up in a job, at the worst moment.
 In `MY-PIPELINE.md`, under Level 3:
 
 ```markdown
-- **Lab 1, CI authentication**: deleted the SFDX_AUTH_URL_INTEGRATION secret. It carried a
-  long-lived refresh token that could not be rotated, was not scoped, and was tied to one person.
-  All three orgs now authenticate with JWT through an External Client App.
+- **Lab 1, CI authentication**: deleted the SFDX_AUTH_URL_INTEGRATION and SFDX_AUTH_URL_UAT
+  secrets. They carried long-lived refresh tokens that could not be rotated, were not scoped, and
+  were tied to one person. All four orgs now authenticate with JWT through an External Client App.
 ```
 
 The badge audit looks for that line. More to the point, it is the answer to the question the next
@@ -267,11 +272,12 @@ default and what step 8 sets, means every major branch should have one committed
 
 ## What you should see
 
-- Six secrets in your fork, none of them an auth URL
-- Three `config/branches/.jwt/*.key` files, encrypted
-- A green check job on the Pull Request into `uat`, authenticating with JWT
-- `SFDX_AUTH_URL_INTEGRATION` gone, and `integration` still deploying green after it went
-- The DevOps Pipeline panel quiet: no warning about a missing key file, on any of the three branches
+- Eight secrets in your fork, none of them an auth URL
+- Four `config/branches/.jwt/*.key` files, encrypted
+- A green check job on the Pull Request into `preprod`, authenticating with JWT
+- `SFDX_AUTH_URL_INTEGRATION` and `SFDX_AUTH_URL_UAT` gone, and `integration` still deploying green
+  after they went
+- The DevOps Pipeline panel quiet: no warning about a missing key file, on any of the four branches
 
 ## If it goes wrong
 
@@ -279,14 +285,15 @@ default and what step 8 sets, means every major branch should have one committed
 Step 4. The External Client App exists but the user is not pre-authorised.
 
 **`invalid_grant: audience is invalid`.**
-The instance URL does not match the org type. A Developer Edition org uses
-`https://login.salesforce.com`, never `test.salesforce.com`.
+The instance URL does not match the org type. A scratch org uses `https://test.salesforce.com`, and a
+Developer Edition org uses `https://login.salesforce.com`. Check the branch file of the job that
+failed.
 
 **The job cannot decrypt the key.**
 `SFDX_CLIENT_KEY_<ALIAS>` is wrong or was copied with a trailing newline. Recreate it.
 
 **Everything passes even with the JWT secrets missing.**
-The auth URL secret is still there and still winning. That is exactly what step 7 catches.
+An auth URL secret is still there and still winning. That is exactly what step 7 catches.
 
 ## Check your work
 

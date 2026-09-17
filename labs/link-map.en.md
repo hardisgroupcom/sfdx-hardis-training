@@ -38,8 +38,8 @@ so a renamed documentation page fails CI here rather than surprising a learner.
 | Lab | URL |
 |---|---|
 | Level home | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3/ |
-| Lab 0 - Your pipeline stops at integration: finish it | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3/lab-00-finish-the-pipeline/ |
-| Lab 1 - Wire CI authentication for three orgs | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3/lab-01-ci-auth/ |
+| Lab 0 - Your pipeline stops at uat: finish it | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3/lab-00-finish-the-pipeline/ |
+| Lab 1 - Wire CI authentication for four orgs | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3/lab-01-ci-auth/ |
 | Lab 2 - Review and merge a contributor Pull Request | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3/lab-02-review-pr/ |
 | Lab 3 - Deploy to integration and read what happened | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3/lab-03-deploy-integration/ |
 | Lab 4 - Three Pull Requests collide | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3/lab-04-overwrite-cleaning/ |

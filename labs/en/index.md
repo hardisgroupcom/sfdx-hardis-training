@@ -8,7 +8,7 @@ lang: en
 Three free learning paths that take you from "I have never used Git" to "I own the pipeline".
 
 You will work on a real repository for a fictional solar installer, **Helios Energy**, with free
-Developer Edition orgs that come pre-loaded with the app and its data. Everything you do here is
+Salesforce orgs that come pre-loaded with the app and its data. Everything you do here is
 what a real Salesforce team does every day, with the same tools.
 
 If Git is new to you, that is the expected starting point. Level 1 defines the six words you need,
@@ -41,15 +41,17 @@ conflicts and deployment actions. Someone who has never solved one cannot review
 
     They also assume you work through a lab rather than stopping to explore, and that you read the
     **Under the hood** panels once rather than twice. Take longer if you like: none of this is a
-    race, and nothing expires.
+    race. The one thing with a clock is the scratch orgs, which live 30 days, and one click
+    rebuilds them.
 
 ## What you need
 
 - A computer you are allowed to install software on. Level 1 lab 0 walks through what to install,
   one download at a time, with screenshots.
 - A [GitHub](https://github.com/) account, free.
-- Two free [Salesforce Developer Edition orgs](https://developer.salesforce.com/signup) to start
-  with, two more at Level 3. Level 1 lab 1 signs you up for them.
+- One free [Salesforce Developer Edition org](https://developer.salesforce.com/signup) to start
+  with, and one more at Level 3. Level 1 lab 1 signs you up, and creates the other orgs the course
+  needs from that one.
 - Nothing else. No paid service, no licence, no credit card.
 
 ## What you get

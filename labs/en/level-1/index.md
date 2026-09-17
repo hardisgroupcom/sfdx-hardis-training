@@ -58,15 +58,14 @@ over the page:
 
 ![The Level 1 training menu, opened on the Welcome page](../../_assets/annotated/vscode/welcome-custom-menu.png)
 
-Five of them, and the labs call them by these names:
+Four of them, and the labs call them by these names:
 
-| Command                            | What it does                                                  |
-|------------------------------------|---------------------------------------------------------------|
-| **Set up my pipeline**             | Forks the repository, turns Actions on, gives the CI a way in |
-| **Set up one of my training orgs** | Deploys the Helios app and its data into an org you choose    |
-| **Where am I?**                    | Says which level and lab you reached, and what to do next     |
-| **Check my work**                  | Verifies the lab you just finished and prints your receipt    |
-| **Reset this level**               | Puts your repository back to the start of Level 1             |
+| Command                            | What it does                                                                     |
+|------------------------------------|----------------------------------------------------------------------------------|
+| **Set up my training environment** | Forks the repository, creates your scratch orgs with the app, wires the pipeline |
+| **Where am I?**                    | Says which level and lab you reached, and what to do next                        |
+| **Check my work**                  | Verifies the lab you just finished and prints your receipt                       |
+| **Reset this level**               | Puts your repository back to the start of Level 1                                |
 
 There is one menu per level, and each holds only what that level needs, so nothing in front of you is
 for a lab you have not reached.

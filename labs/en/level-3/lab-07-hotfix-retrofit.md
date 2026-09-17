@@ -43,7 +43,7 @@ Both are normal. Handling them badly is what turns a normal week into a bad quar
 ## Before you start
 
 - [ ] Lab 6 finished: the release is in production
-- [ ] `helios-prod` connected in **Orgs Manager**
+- [ ] `helios-preprod` and `helios-prod` connected in **Orgs Manager**
 
 ## Part 1: the hotfix
 
@@ -53,17 +53,18 @@ A hotfix skips the pipeline. That is its point, and its cost. Use it when **all 
 
 1. Production is broken for real users right now
 2. The fix is small and you can describe its blast radius in one sentence
-3. Waiting for `integration` to `uat` to `main` is genuinely not acceptable
+3. Waiting for `integration` to `uat` to `preprod` to `main` is genuinely not acceptable
 
 If any one is false, it is an ordinary story that happens to be urgent. Most things called hotfixes
 are ordinary stories.
 
-### 2. Branch from main, not from integration
+### 2. Branch from preprod, not from integration
 
 This is the part people get wrong, and it produces an incident on top of an incident.
 
 `integration` carries next week's work. Branch a hotfix from it and you ship next week's work to
-production tonight.
+production tonight. `preprod` carries exactly what production runs, which is why Lab 0 made it the
+branch a hotfix starts from.
 
 In VS Code, **New User Story** **(2)**, under **Project Contribution Workflow** **(1)**:
 
@@ -71,16 +72,20 @@ In VS Code, **New User Story** **(2)**, under **Project Contribution Workflow** 
 
 Answer:
 
-| Question      | Answer                                                        |
-|---------------|---------------------------------------------------------------|
-| Target branch | **`main`**                                                    |
-| Type          | **Fix**                                                       |
-| Name          | `US-045-installation-date-hotfix`                             |
-| Org           | `helios-prod`, because that is where you have to reproduce it |
+| Question      | Answer                                                                   |
+|---------------|--------------------------------------------------------------------------|
+| Target branch | **`preprod`**, described as the hotfix branch                            |
+| Type          | **Fix**                                                                  |
+| Name          | `US-045-installation-date-hotfix`                                        |
+| Org           | **I'm hardcore, I don't need an org**: you will work in `helios-preprod` |
+
+The org question only lists development orgs, and `helios-preprod` is a major org, rightly kept out
+of that list. You still reproduce and fix in it, because it holds what production holds and nobody
+works in it: open it from **Orgs Manager** when step 3 asks.
 
 ### 3. Fix it
 
-In `helios-prod`: **Setup > Object Manager > Installation > Validation Rules** **(1)**, then open
+In `helios-preprod`: **Setup > Object Manager > Installation > Validation Rules** **(1)**, then open
 `Installation_Date_Not_Past` **(2)**.
 
 ![The validation rules of the Installation object in Setup](../../_assets/annotated/salesforce/validation-rule.png)
@@ -117,24 +122,27 @@ of being an exception.
 
 ### 4. Publish and ship
 
-Retrieve the validation rule and nothing else, commit it, and publish. The Pull Request targets
-**`main`**.
+Retrieve the validation rule and nothing else, from `helios-preprod`, commit it, and publish. The
+Pull Request targets **`preprod`**.
 
-The check deploys against production in validation mode, which is exactly what you want at 17:40:
-the same gate, on the real org, taking two minutes.
+Green. Merge. The fix is already in `helios-preprod`, because you made it there, so this deployment
+changes nothing and proves the branch and the org agree.
 
-Green. Merge. Watch the deployment. Confirm with a planner, or by saving a record yourself.
+Then a second Pull Request, from `preprod` into `main`. Its check deploys against production in
+validation mode, which is exactly what you want at 17:40: the same gate, on the real org, taking two
+minutes. Green. Merge. Watch the deployment. Confirm with a planner, or by saving a record
+yourself.
 
 ### 5. Put the fix back into the pipeline
 
-Production now has a fix that `uat` and `integration` do not. Leave it there and the next release
-overwrites it.
+Production and `preprod` now have a fix that `uat` and `integration` do not. Leave it there and the
+next release overwrites it.
 
 Open a second Pull Request, from your hotfix branch into `integration`. Same content, ordinary path.
 Merge it, and the fix flows back up to `uat` on the next promotion.
 
-**A hotfix is two Pull Requests.** One to production, one back into the pipeline. Doing only the
-first is how a fix gets shipped twice and regressed once.
+**A hotfix goes two ways.** Up to production, through `preprod`, and back down into the pipeline.
+Doing only the first is how a fix gets shipped twice and regressed once.
 
 ## Part 2: the retrofit
 
@@ -153,8 +161,9 @@ reports both the same way, and the second kind, accepted, rolls the repository b
 So you recover the change the way you would build it: as an ordinary User Story, retrieving exactly
 what you know changed.
 
-Start a User Story targeting `integration`, and pick `helios-prod` as the org to work in. Then open
-the **Metadata Retriever** from the Welcome page.
+Start a User Story targeting `integration`, and answer **I'm hardcore, I don't need an org** to the
+org question: the org you read from is production, and nobody builds in production. Then open the
+**Metadata Retriever** from the Welcome page.
 
 ![The Metadata Retriever, with the org selector, the name filter and the search button](../../_assets/annotated/vscode/metadata-retriever--retrofit.png)
 
@@ -196,8 +205,8 @@ Stage the picklist hunk. Leave the rest.
 
 Publish and open a Pull Request into `integration`, like any other story. Review it, merge it.
 
-It flows to `uat`, and comes back to `main` on the next release, at which point production and the
-repository agree again.
+It flows to `uat`, then to `preprod` and `main` on the next release, at which point production and
+the repository agree again.
 
 That last sentence is the whole point: **not to change production, but to stop production being
 changed back.**
@@ -205,17 +214,17 @@ changed back.**
 ### 9. Write both down
 
 ```markdown
-- **Lab 7, hotfix**: US-045 shipped straight to main, then merged back into integration so the next
-  release does not regress it.
+- **Lab 7, hotfix**: US-045 shipped through preprod to main, then merged back into integration so the
+  next release does not regress it.
 - **Lab 7, retrofit**: took the Needs Reinspection picklist value an admin added in production, put
   it through the pipeline from integration.
 ```
 
 <details markdown="1"><summary>Under the hood: the two commands and the two configuration keys</summary>
 
-**The hotfix** used nothing special. `hardis:work:new` with `main` as the target branch produces a
-branch from `main`, and `hardis:work:save` computes the package against `main`. The pipeline treats
-`main` as any other major branch. What makes it a hotfix is the target, not a mode.
+**The hotfix** used nothing special. `hardis:work:new` with `preprod` as the target branch produces a
+branch from `preprod`, and `hardis:work:save` computes the package against `preprod`. The pipeline
+treats `preprod` as any other major branch. What makes it a hotfix is the target, not a mode.
 
 The branch prefix matters for a reason beyond tidiness: the DORA change failure rate in Lab 6 counts
 releases followed by a fix, and it recognises a fix by its branch name.
@@ -248,7 +257,8 @@ it. Then you retrieve that one thing, knowingly. Detection is automatic, the jud
 
 ## What you should see
 
-- The validation rule fixed in `helios-prod`, through a Pull Request into `main`
+- The validation rule fixed in `helios-prod`, through a Pull Request into `preprod` and then one into
+  `main`
 - The same fix merged into `integration`
 - `Needs Reinspection` present on `integration`, in
   `force-app/main/default/objects/Installation__c/fields/Status__c.field-meta.xml`
@@ -257,7 +267,7 @@ it. Then you retrieve that one thing, knowingly. Detection is automatic, the jud
 ## If it goes wrong
 
 **The hotfix Pull Request wants to bring next week's work with it.**
-You branched from `integration`. Start again from `main`.
+You branched from `integration`. Start again, with `preprod` as the target branch.
 
 **The retrieve brought back far more than the picklist value.**
 Expected. A retrieve returns the org's whole current version of the component. Stage the hunk you

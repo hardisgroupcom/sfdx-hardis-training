@@ -321,8 +321,10 @@ that the next person can see how the pipeline was put together.
 
 | Branch | Org alias | What it is for |
 |---|---|---|
+| (none) | helios-dev | |
 | integration | helios-integration | |
 | uat | helios-uat | |
+| preprod | helios-preprod | |
 | main | helios-prod | |
 
 ## Level 2
@@ -332,7 +334,7 @@ that the next person can see how the pipeline was put together.
 
 ## Level 3
 
-- **Lab 1, CI authentication**: the date I deleted the \`SFDX_AUTH_URL_INTEGRATION\` secret, and why it should never have been there for a real org.
+- **Lab 1, CI authentication**: the date I deleted the \`SFDX_AUTH_URL_INTEGRATION\` and \`SFDX_AUTH_URL_UAT\` secrets, and why they should never have been there for a real org.
 - **Lab 3, Smart Deploy**: what the deployment sent, and what it skipped.
 - **Lab 6, DORA**: deployment frequency, lead time, change failure rate, time to restore.
 - **Lab 8, monitoring**: the URL of the monitoring repository this created.

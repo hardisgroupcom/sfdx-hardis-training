@@ -46,9 +46,8 @@ Second ticket, second day. Nobody is going to walk you through this one.
 
 No numbered clicks this time. The loop, in order:
 
-1. **Start the User Story.** Branch `US-016-crew-notes`, target `integration`, org `helios-dev`.
-   The command asks whether to update your sandbox: answer *Continue working on the current sandbox
-   state*. Your org already has US-014, because you built it there
+1. **Start the User Story.** Branch `US-016-crew-notes`, target `integration`, then **Scratch org**
+   and **Reuse scratch org helios-dev**. Your org already has US-014, because you built it there
 2. **Build it in `helios-dev`**
     - A **Long Text Area** field `Crew_Notes__c` on `Installation__c`, 4000 characters, with a
       description and help text

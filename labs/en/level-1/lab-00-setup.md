@@ -208,8 +208,9 @@ always the answer.
 If you came here to set up a real project, you are done: open your team's repository and the
 **DevOps Pipeline** panel will tell you the rest.
 
-If you are taking the course, Lab 1 builds you a small environment to work in: two free Salesforce
-orgs, a copy of the project, and a pipeline. It is the last of the setup.
+If you are taking the course, Lab 1 builds you a small environment to work in: one free Salesforce
+org, three scratch orgs created from it, a copy of the project, and a pipeline. It is the last of
+the setup.
 
 ## Go deeper
 

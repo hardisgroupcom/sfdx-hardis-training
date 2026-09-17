@@ -8,6 +8,7 @@ on:
     # Add your major branches names here
     branches:
       - main
+      - preprod
       - uat
       - integration
 
@@ -52,16 +53,19 @@ jobs:
       - name: Login & Process Deployment
         if: ${{ !startsWith(github.ref_name, 'auto-fix/') }}
         env:
-          # Level 1 of this training uses SFDX_AUTH_URL_INTEGRATION, a shortcut that is
-          # acceptable only for a throwaway Developer Edition org. Level 3 lab 1 replaces it
-          # with the JWT secrets below and deletes it.
+          # Levels 1 and 2 of this training use SFDX_AUTH_URL_INTEGRATION and SFDX_AUTH_URL_UAT,
+          # a shortcut that is acceptable only for throwaway scratch orgs. Level 3 lab 1 replaces
+          # them with the JWT secrets below and deletes them.
           SFDX_AUTH_URL_INTEGRATION: ${{ secrets.SFDX_AUTH_URL_INTEGRATION }}
           SFDX_AUTH_URL_UAT: ${{ secrets.SFDX_AUTH_URL_UAT }}
+          SFDX_AUTH_URL_PREPROD: ${{ secrets.SFDX_AUTH_URL_PREPROD }}
           SFDX_AUTH_URL_MAIN: ${{ secrets.SFDX_AUTH_URL_MAIN }}
           SFDX_CLIENT_ID_INTEGRATION: ${{ secrets.SFDX_CLIENT_ID_INTEGRATION}}
           SFDX_CLIENT_KEY_INTEGRATION: ${{ secrets.SFDX_CLIENT_KEY_INTEGRATION}}
           SFDX_CLIENT_ID_UAT: ${{ secrets.SFDX_CLIENT_ID_UAT}}
           SFDX_CLIENT_KEY_UAT: ${{ secrets.SFDX_CLIENT_KEY_UAT}}
+          SFDX_CLIENT_ID_PREPROD: ${{ secrets.SFDX_CLIENT_ID_PREPROD}}
+          SFDX_CLIENT_KEY_PREPROD: ${{ secrets.SFDX_CLIENT_KEY_PREPROD}}
           SFDX_CLIENT_ID_MAIN: ${{ secrets.SFDX_CLIENT_ID_MAIN}}
           SFDX_CLIENT_KEY_MAIN: ${{ secrets.SFDX_CLIENT_KEY_MAIN}}
           SFDX_AUTH_URL_TECHNICAL_ORG: ${{ secrets.SFDX_AUTH_URL_TECHNICAL_ORG }}

@@ -26,11 +26,11 @@ Requests and understanding them.
 Sofia Marchetti left. She was the release manager, she set the pipeline up two years ago, and she
 never finished it.
 
-What you inherit works, in the sense that contributors deliver into `integration` every day. What
-it does not have:
+What you inherit works, in the sense that contributors deliver into `integration` every day and the
+business tests in `uat`. What it does not have:
 
-- **No UAT and no production in the pipeline.** The branches exist. Nothing deploys to them
-- **No proper CI authentication.** There is one refresh-token secret somebody added in a hurry
+- **No preprod and no production in the pipeline.** The branches exist. Nothing deploys to them
+- **No proper CI authentication.** There are two refresh-token secrets somebody added in a hurry
 - **No monitoring.** Nobody finds out about a problem in production until a user calls
 - **No release notes and no metrics.** Nobody can say what shipped last month or how long it took
 - **No generated documentation.** The org is two years old and the only description of it is Sofia
@@ -45,16 +45,17 @@ over the page:
 
 ![The Level 3 training menu, opened on the Welcome page](../../_assets/annotated/vscode/welcome-custom-menu-3.png)
 
-Six of them, and the labs call them by these names:
+Seven of them, and the labs call them by these names:
 
-| Command                            | What it does                                                |
-|------------------------------------|-------------------------------------------------------------|
-| **Where am I?**                    | Says which level and lab you reached, and what to do next   |
-| **Set up one of my training orgs** | Deploys the Helios app and its data into an org you choose  |
-| **Simulate my teammates**          | Creates the teammate branches and Pull Requests a lab needs |
-| **Check my work**                  | Verifies the lab you just finished and prints your receipt  |
-| **Reset this level**               | Puts your repository back to the start of Level 3           |
-| **Clean up a training org**        | Removes the Helios app and its data from an org             |
+| Command                            | What it does                                                       |
+|------------------------------------|--------------------------------------------------------------------|
+| **Set up my training environment** | Rebuilds a scratch org that expired, and points the pipeline at it |
+| **Where am I?**                    | Says which level and lab you reached, and what to do next          |
+| **Set up one of my training orgs** | Deploys the Helios app and its data into an org you choose         |
+| **Simulate my teammates**          | Creates the teammate branches and Pull Requests a lab needs        |
+| **Check my work**                  | Verifies the lab you just finished and prints your receipt         |
+| **Reset this level**               | Puts your repository back to the start of Level 3                  |
+| **Clean up a training org**        | Removes the Helios app and its data from an org                    |
 
 There is one menu per level, and each holds only what that level needs, so nothing in front of you is
 for a lab you have not reached.
@@ -66,8 +67,8 @@ Either route runs the same thing.
 
 | Lab                                | Title                                                  | Time   |
 |------------------------------------|--------------------------------------------------------|--------|
-| [0](lab-00-finish-the-pipeline.md) | Your pipeline stops at integration: finish it          | 30 min |
-| [1](lab-01-ci-auth.md)             | Wire CI authentication for three orgs                  | 40 min |
+| [0](lab-00-finish-the-pipeline.md) | Your pipeline stops at uat: finish it                  | 30 min |
+| [1](lab-01-ci-auth.md)             | Wire CI authentication for four orgs                   | 40 min |
 | [2](lab-02-review-pr.md)           | Review and merge a contributor Pull Request            | 25 min |
 | [3](lab-03-deploy-integration.md)  | Deploy to integration and read what happened           | 25 min |
 | [4](lab-04-overwrite-cleaning.md)  | Three Pull Requests collide                            | 35 min |
@@ -78,19 +79,25 @@ Either route runs the same thing.
 | [9](lab-09-documentation.md)       | Generate the project documentation                     | 20 min |
 | [10](lab-10-capstone.md)           | Capstone: run one full weekly release cycle            | 45 min |
 
-## Two more orgs
+## One more org
 
-Levels 1 and 2 needed two orgs. This level needs four.
+Levels 1 and 2 ran on one Developer Edition org, `helios-prod`, and the three scratch orgs it
+created: `helios-dev`, `helios-integration` and `helios-uat`. This level adds production and the
+stage before it, and needs one more signup.
 
-Before Lab 0, sign up for two more free Developer Edition orgs at
-[developer.salesforce.com/signup](https://developer.salesforce.com/signup), connect them in **Orgs
-Manager** with the aliases `helios-uat` and `helios-prod`, and seed each one with
-**Training: Level 3 > Set up one of my training orgs**.
+Before Lab 0, sign up for one more free Developer Edition org at
+[developer.salesforce.com/signup](https://developer.salesforce.com/signup) and connect it in **Orgs
+Manager** with the alias `helios-preprod`. Then seed both Developer Edition orgs with
+**Training: Level 3 > Set up one of my training orgs**: `helios-preprod`, and `helios-prod`, which
+until now only created the others and held nothing.
 
-`helios-prod` gets the same sources as the other three, plus one thing the seeding adds by hand: a
+`helios-prod` gets the same sources as the other orgs, plus one thing the seeding adds by hand: a
 `Needs Reinspection` value on the `Installation__c.Status__c` picklist, which exists in no branch.
 That is what Lab 7 retrofits. Nothing seeds a deployment history, so the DORA report in Lab 6 sees
 only the deployments you make yourself.
+
+If a scratch org expired since Level 2, **Training: Level 3 > Set up my training environment**
+rebuilds it first.
 
 ## Keep MY-PIPELINE.md open
 

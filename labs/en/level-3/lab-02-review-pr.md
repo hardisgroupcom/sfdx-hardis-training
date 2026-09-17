@@ -40,7 +40,7 @@ been, because the thing you missed is in your integration org right now.
 
 ## Before you start
 
-- [ ] Lab 1 finished: JWT authentication on all three orgs
+- [ ] Lab 1 finished: JWT authentication on all four orgs
 - [ ] A clean working tree
 
 !!! note "Do not re-run Simulate my teammates for US-018"

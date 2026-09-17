@@ -27,15 +27,16 @@ depends_on:
 
 UAT signed off. The release goes to production this evening.
 
-This is the same mechanism as Lab 5, with one difference that is not technical: if you get it wrong,
-real people cannot do their jobs tomorrow. Everything in this lab that looks like ceremony is there
-because somebody skipped it once.
+This is the same mechanism as Lab 5, twice: `uat` into `preprod`, then `preprod` into `main`. With one
+difference that is not technical: if you get it wrong, real people cannot do their jobs tomorrow.
+Everything in this lab that looks like ceremony is there because somebody skipped it once.
 
 ## Before you start
 
 - [ ] Lab 5 finished: `uat` carries the release and the testers signed it off
-- [ ] `helios-prod` connected, seeded and configured as the `main` org
-- [ ] JWT authentication working for `main`
+- [ ] `helios-preprod` and `helios-prod` connected, seeded, and configured as the `preprod` and
+      `main` orgs in Lab 0
+- [ ] JWT authentication working for `preprod` and `main`
 
 ## Steps
 
@@ -54,16 +55,30 @@ release is. Know about it now.
 sources as the other orgs plus one thing an admin added by hand, which is what Lab 7 is about.
 Assume nothing.
 
-### 2. Create the production Pull Request
+### 2. Rehearse in preprod
 
-On GitHub, from `uat` into `main`, the same way you created the promotion in Lab 5. There is no
+On GitHub, from `uat` into `preprod`, the same way you created the promotion in Lab 5. If you opened
+this Pull Request in Lab 1 to prove the JWT authentication, it is still there: use it. There is no
 button for it in the panel unless the project turns on promotion branches, and this one does not.
 
 Title it plainly:
 
+> Release 2026-09-3 to preprod
+
+Read the check, merge, and watch the **Process Deployment (sfdx-hardis)** run on `preprod`. Then
+open `helios-preprod` and do the checks of step 5 there first.
+
+This is what `preprod` is for. It holds what production holds, nobody works in it, and a release
+that deploys there cleanly and behaves has very little left to surprise you with in production. A
+release that fails here has cost you nothing.
+
+### 3. Create the production Pull Request
+
+From `preprod` into `main`. Title it plainly:
+
 > Release 2026-09-3 to production
 
-### 3. Read the check like it matters
+### 4. Read the check like it matters
 
 When the check finishes, read the sfdx-hardis comment the way Lab 2 taught, and add two questions
 that only apply to production:
@@ -76,7 +91,7 @@ that only apply to production:
 If the destructive changes section is not empty and you were not expecting it, **stop**. Find out
 what it is and who intended it. That is not being careful, that is the job.
 
-### 4. Merge, and stay
+### 5. Merge, and stay
 
 Merge. The **Process Deployment (sfdx-hardis)** run starts, this time on `main`.
 
@@ -85,7 +100,7 @@ minute two or minute thirty-five changes what you do next.
 
 When it finishes, do any manual steps, then check the org.
 
-### 5. Verify in production
+### 6. Verify in production
 
 Open `helios-prod` from **Orgs Manager**: find it by its alias **(2)**, check it says **Connected**
 **(3)**, and open it from the actions at the end of its row. **Add Org** **(1)** reconnects it if
@@ -102,7 +117,7 @@ Then check, the same as UAT and with more care:
 That last check exists because the most common production incident after a release is not the new
 feature failing. It is an old one.
 
-### 6. Now measure the pipeline
+### 7. Now measure the pipeline
 
 You have shipped. The question a release manager gets asked next is "how are we doing", and it
 deserves a better answer than a feeling.
@@ -133,7 +148,7 @@ here is a deployment failure rate**: a release that deployed green and broke pro
 does not appear in it. **Time to restore is the gap between a broken deployment and a working one**,
 not between an incident and its fix. They measure your pipeline, not your org.
 
-### 7. Read what is there, and know what is missing
+### 8. Read what is there, and know what is missing
 
 You have shipped once. On a fresh production org, that is roughly what the report will show: a small
 number of deployments, most of them yours, over a 90 day window that was empty until this week.
@@ -189,17 +204,17 @@ and a release manager quoting them should know which part they cover.
 
 ## What you should see
 
-- `main` carrying the release
-- A green **Process Deployment (sfdx-hardis)** run on `main`
+- `preprod` and `main` carrying the release
+- A green **Process Deployment (sfdx-hardis)** run on `preprod`, then one on `main`
 - The stories working in `helios-prod`
 - A DORA report measured against `helios-prod`, and its numbers in `MY-PIPELINE.md`
 
 ## If it goes wrong
 
-**The deployment to production fails on a component that worked in UAT.**
-Production has drifted, or has something UAT does not: an extra validation rule, a record type, real
-data that violates a new constraint. Read the error. This is the single most common production
-deployment failure, and it is the argument for keeping the orgs close to each other.
+**The deployment to production fails on a component that worked in preprod.**
+Production has drifted, or has something preprod does not: an extra validation rule, a record type,
+real data that violates a new constraint. Read the error. This is the single most common production
+deployment failure, and it is the argument for keeping preprod as close to production as you can.
 
 **The deployment half-succeeded.**
 Salesforce deployments are atomic per deployment, so this usually means a post-deploy action failed

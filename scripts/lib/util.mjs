@@ -4,7 +4,7 @@
  * Zero dependencies on purpose: a learner clones this repository and runs the
  * Training menu straight away, with no npm install and no node_modules.
  */
-import { spawnSync } from "child_process";
+import { spawn, spawnSync } from "child_process";
 import fs from "fs";
 import path from "path";
 import readline from "readline";
@@ -104,14 +104,35 @@ export function run(command, args, options = {}) {
   };
 }
 
-/** Runs a command, captures stdout, and parses it as JSON. Returns null on any problem. */
-export function runJson(command, args, options = {}) {
-  const res = run(command, args, { ...options, capture: true, quiet: true });
-  const text = res.stdout.trim();
-  if (!text) {
-    return null;
-  }
-  const start = text.indexOf("{");
+/**
+ * The same as run(), without blocking, and always captured.
+ *
+ * For the few steps that are slow and independent, like creating three scratch
+ * orgs: running them one after the other would triple a wait that is already
+ * the longest part of the setup. Output is captured rather than streamed,
+ * because three commands writing to one terminal at once is unreadable.
+ */
+export function runAsync(command, args, options = {}) {
+  const spawnCommand = WINDOWS ? [command, ...args.map(quoteArg)].join(" ") : command;
+  const spawnArgs = WINDOWS ? [] : args;
+  return new Promise((resolve) => {
+    const child = spawn(spawnCommand, spawnArgs, {
+      cwd: options.cwd || ROOT,
+      shell: WINDOWS,
+      env: { ...process.env, ...(options.env || {}) }
+    });
+    let stdout = "";
+    let stderr = "";
+    child.stdout.on("data", (chunk) => (stdout += chunk));
+    child.stderr.on("data", (chunk) => (stderr += chunk));
+    child.on("error", (error) => resolve({ code: 1, stdout, stderr: stderr + error.message }));
+    child.on("close", (code) => resolve({ code: code === null ? 1 : code, stdout, stderr }));
+  });
+}
+
+/** Parses the JSON a command printed, ignoring any warning written before it. */
+export function parseJsonOutput(text) {
+  const start = (text || "").indexOf("{");
   if (start < 0) {
     return null;
   }
@@ -120,6 +141,12 @@ export function runJson(command, args, options = {}) {
   } catch {
     return null;
   }
+}
+
+/** Runs a command, captures stdout, and parses it as JSON. Returns null on any problem. */
+export function runJson(command, args, options = {}) {
+  const res = run(command, args, { ...options, capture: true, quiet: true });
+  return parseJsonOutput(res.stdout.trim());
 }
 
 export function git(args, options = {}) {
@@ -242,12 +269,20 @@ export function connectedOrgs() {
       const known = aliasMap.get(org.username) || [];
       const reported = [org.alias, ...(Array.isArray(org.aliases) ? org.aliases : [])].filter(Boolean);
       const aliases = [...new Set([...known, ...reported])];
+      const isScratch = bucket === "scratchOrgs" || org.isScratch === true;
+      // A scratch org reports a lifecycle status rather than a connection
+      // status, and an expired one still sits in the list until it is cleaned
+      const expired = isScratch && (org.isExpired === true || (org.status && org.status !== "Active"));
       orgs.push({
         alias: aliases[0] || "",
         aliases,
         username: org.username,
         instanceUrl: org.instanceUrl,
-        connected: org.connectedStatus === "Connected"
+        isScratch,
+        isDevHub: org.isDevHub === true,
+        devHubUsername: org.devHubUsername || null,
+        expirationDate: org.expirationDate || null,
+        connected: !expired && (org.connectedStatus === "Connected" || (isScratch && org.status === "Active"))
       });
     }
   }

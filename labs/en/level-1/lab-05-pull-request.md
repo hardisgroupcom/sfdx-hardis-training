@@ -161,6 +161,9 @@ Then open `helios-integration` from **Orgs Manager** and look at an installation
 `Panels Required` is there. You built it in one org and it arrived in another, and you never
 deployed anything by hand.
 
+`helios-uat` does not have it, and it should not yet. Work moves from `integration` to `uat` when a
+release manager promotes it, several stories at a time, and that is Level 3.
+
 <details markdown="1"><summary>Under the hood: what the two jobs ran</summary>
 
 The Pull Request check ran:
@@ -177,7 +180,7 @@ rare, and when it happens it is almost always because somebody changed the targe
 between.
 
 Both jobs authenticate first, through the sfdx-hardis hook that reads
-`SFDX_AUTH_URL_INTEGRATION`, the secret **Set up my pipeline** wrote in Lab 1. The workflow files are in
+`SFDX_AUTH_URL_INTEGRATION`, the secret **Set up my training environment** wrote in Lab 1. The workflow files are in
 `.github/workflows/`, and they are worth reading once: they are about thirty lines each.
 
 The test level comes from `config/.sfdx-hardis.yml`:

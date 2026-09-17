@@ -64,13 +64,18 @@ thousands of components an org contains. Click **Search Metadata** **(3)**.
 
 ![The Metadata Retriever listing the recent changes of the org](../../_assets/annotated/vscode/metadata-retriever-recent-changes--find.png)
 
-A handful of results comes back **(4)**, each with what it is, its name, who last touched it and
-when. Yours are the ones that say **You**.
+A few dozen results come back **(4)**, each with what it is, its name, who last touched it and
+when. Every one of them carries your name, and most of them are not your story.
 
-!!! info "Why other people are in this list"
-    You are alone in `helios-dev`, and the list still has rows you never touched. Some are
-    Salesforce moving things on its own, some came from the last deployment into this org. That is
-    normal, on every org, and it is exactly why the next step is a decision rather than a button.
+!!! info "Why the list is longer than your story"
+    A scratch org remembers every component that arrived in it, however it arrived. In Lab 1,
+    **Set up my training environment** deployed the whole Helios app into `helios-dev` under your
+    user, so every object, field and permission set of the app is in this list, dated Lab 1. Your
+    three changes are the ones dated a few minutes ago.
+
+    Click the **Last Updated Date** column header, twice if needed, so the newest come first. On a
+    team org the older rows would be your colleagues and Salesforce moving things on its own. Either
+    way it is exactly why the next step is a decision rather than a button.
 
 ### 3. Take yours, leave the rest
 
@@ -262,9 +267,9 @@ panel and click **Publish Branch**.
 ## If it goes wrong
 
 **Recent Changes lists things I never touched.**
-Normal on any org: Salesforce records a lot of internal churn, and the last deployment into this
-org counts as a change too. Tick only your three. The **Last Updated By** column is the fastest
-way to tell: yours say **You**.
+Normal on any org: the deployment Lab 1 made into this org counts as a change too, and so does
+Salesforce's own internal churn. Tick only your three. The **Last Updated Date** column is the
+fastest way to tell: sort on it, and yours are on top.
 
 **Recent Changes finds nothing at all.**
 You are looking at the wrong org. Check the selector at the top right reads `helios-dev`, and that

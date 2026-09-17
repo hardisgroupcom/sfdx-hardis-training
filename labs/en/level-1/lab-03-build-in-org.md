@@ -39,9 +39,9 @@ your own org, never in the shared one.
 ### 1. Open your org
 
 In **Orgs Manager**, find the row whose **ALIAS** column says `helios-dev`. Read the alias, not the
-address: Salesforce hands out free orgs from its Org Farm and the address it gives them says nothing
-about what the org is for, so your orgs all look alike. The picture below has four rows because it
-was taken at the end of the course; you have two.
+address: none of the addresses says what the org is for. The Developer Edition org has an
+`orgfarm-` string Salesforce invented, and the scratch orgs have two random words and a number, so
+your four orgs look alike everywhere except in that column.
 
 At the end of that row, click the chevron. It opens everything you can do to that org, and the first
 entry is **Open** **(1)**.
@@ -153,8 +153,9 @@ The Helios org has a rule that refuses moving an installation date into the past
 date by accident, put it back to a future date.
 
 **You cannot edit the Permission Set.**
-You are not assigned **Helios Delivery Manager**. Run **Training: Level 1 > Set up one of my training orgs**
-on `helios-dev` again: it assigns it, and repeating it is harmless.
+You are not assigned **Helios Delivery Manager**. In `helios-dev`: **Setup > Permission Sets >
+Helios Delivery Manager > Manage Assignments > Add Assignment**, tick your own user, and click
+**Next** then **Assign**.
 
 ## Check your work
 

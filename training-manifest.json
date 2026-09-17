@@ -40,6 +40,7 @@
       "file": "labs/en/level-1/lab-01-fork-and-connect.md",
       "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-1/lab-01-fork-and-connect/",
       "commands": [
+        "hardis:org:select",
         "hardis:org:data:import"
       ],
       "flags": [],
@@ -48,6 +49,7 @@
         "availableTargetBranches",
         "targetUsername",
         "instanceUrl",
+        "mergeTargets",
         "customCommands"
       ],
       "docs": [
@@ -494,7 +496,7 @@
       "id": "l3-lab-00-finish-the-pipeline",
       "level": 3,
       "lab": 0,
-      "title": "Your pipeline stops at integration: finish it",
+      "title": "Your pipeline stops at uat: finish it",
       "file": "labs/en/level-3/lab-00-finish-the-pipeline.md",
       "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3/lab-00-finish-the-pipeline/",
       "commands": [
@@ -531,7 +533,7 @@
       "id": "l3-lab-01-ci-auth",
       "level": 3,
       "lab": 1,
-      "title": "Wire CI authentication for three orgs",
+      "title": "Wire CI authentication for four orgs",
       "file": "labs/en/level-3/lab-01-ci-auth.md",
       "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3/lab-01-ci-auth/",
       "commands": [
@@ -1046,6 +1048,9 @@
       ]
     },
     "commands": {
+      "hardis:org:select": [
+        "l1-lab-01-fork-and-connect"
+      ],
       "hardis:org:data:import": [
         "l1-lab-01-fork-and-connect",
         "l2-lab-03-deployment-actions-data",
@@ -1137,6 +1142,13 @@
         "l3-lab-00-finish-the-pipeline",
         "l3-lab-01-ci-auth"
       ],
+      "mergeTargets": [
+        "l1-lab-01-fork-and-connect",
+        "l3-lab-00-finish-the-pipeline",
+        "l3-lab-05-uat-release-notes",
+        "l3-lab-06-production",
+        "l3-lab-10-capstone"
+      ],
       "customCommands": [
         "l1-lab-01-fork-and-connect"
       ],
@@ -1201,12 +1213,6 @@
         "l3-lab-00-finish-the-pipeline",
         "l3-lab-06-production",
         "l3-lab-07-hotfix-retrofit",
-        "l3-lab-10-capstone"
-      ],
-      "mergeTargets": [
-        "l3-lab-00-finish-the-pipeline",
-        "l3-lab-05-uat-release-notes",
-        "l3-lab-06-production",
         "l3-lab-10-capstone"
       ],
       "orgAuthenticationMode": [

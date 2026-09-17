@@ -5,8 +5,10 @@
  * botched lab ends the course, which is the most common way a free course
  * loses a learner halfway through.
  */
+import fs from "fs";
+import path from "path";
 import {
-  c, title, info, ok, warn, abort, run, git, gitOut,
+  ROOT, c, title, info, ok, warn, abort, run, git, gitOut,
   select, confirm, universe
 } from "../lib/util.mjs";
 
@@ -58,8 +60,10 @@ export default async function reset(args) {
     warn("You have uncommitted changes. They are being stashed, not deleted.");
     run("git", ["stash", "push", "-u", "-m", `before training reset to ${start}`]);
   }
+  const pipelineConfig = branchConfigOn("integration");
   run("git", ["checkout", "-B", "integration", `upstream/${start}`]);
   ok(`integration now matches ${start}`);
+  keepBranchConfig(pipelineConfig);
 
   title("3 of 3  Publishing it to your fork");
   const push = run("git", ["push", "origin", "integration", "--force-with-lease"]);
@@ -75,7 +79,44 @@ export default async function reset(args) {
   info(`  ${c.cyan(`${u.course.site}/en/${levelDef.slug}/`)}`);
   info("");
   info(c.dim("  Your training orgs still hold whatever you built. If a lab needs a clean org,"));
-  info(c.dim("  run Clean up a training org, then Set up one of my training orgs, from the Training menu."));
+  info(c.dim("  run Set up one of my training orgs on it again, from the Training menu."));
+}
+
+/**
+ * The branch configuration files as they are on a branch before the reset.
+ *
+ * They name your orgs, which the reference branches cannot know, and Set up my
+ * training environment wrote them in Lab 1. A reset that dropped them would
+ * leave a pipeline that deploys nowhere.
+ */
+function branchConfigOn(branch) {
+  const files = gitOut(["ls-tree", "-r", "--name-only", branch, "--", "config/branches/"])
+    .split("\n")
+    .map((f) => f.trim())
+    .filter((f) => /\.sfdx-hardis\.[^/]+\.yml$/.test(f));
+  return files.map((file) => ({ file, content: run("git", ["show", `${branch}:${file}`], { capture: true, quiet: true }).stdout }));
+}
+
+function keepBranchConfig(files) {
+  const changed = [];
+  for (const { file, content } of files) {
+    const absolute = path.join(ROOT, file);
+    if (!content || (fs.existsSync(absolute) && fs.readFileSync(absolute, "utf8") === content)) {
+      continue;
+    }
+    fs.mkdirSync(path.dirname(absolute), { recursive: true });
+    fs.writeFileSync(absolute, content, "utf8");
+    changed.push(file);
+  }
+  if (changed.length === 0) {
+    return;
+  }
+  git(["add", "--", ...changed], { quiet: true });
+  if (run("git", ["commit", "-m", "Keep my pipeline configuration", "--", ...changed], { capture: true, quiet: true }).code === 0) {
+    ok("Your branch configuration, which names your orgs, is kept");
+  } else {
+    warn("Could not commit your branch configuration. Run Set up my training environment to write it again.");
+  }
 }
 
 function startBranch(level) {

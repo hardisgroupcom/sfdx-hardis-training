@@ -45,15 +45,16 @@ over the page:
 
 ![The Level 2 training menu, opened on the Welcome page](../../_assets/annotated/vscode/welcome-custom-menu-2.png)
 
-Five of them, and the labs call them by these names:
+Six of them, and the labs call them by these names:
 
-| Command                            | What it does                                                |
-|------------------------------------|-------------------------------------------------------------|
-| **Where am I?**                    | Says which level and lab you reached, and what to do next   |
-| **Simulate my teammates**          | Creates the teammate branches and Pull Requests a lab needs |
-| **Set up one of my training orgs** | Deploys the Helios app and its data into an org you choose  |
-| **Check my work**                  | Verifies the lab you just finished and prints your receipt  |
-| **Reset this level**               | Puts your repository back to the start of Level 2           |
+| Command                            | What it does                                                       |
+|------------------------------------|--------------------------------------------------------------------|
+| **Set up my training environment** | Rebuilds a scratch org that expired, and points the pipeline at it |
+| **Where am I?**                    | Says which level and lab you reached, and what to do next          |
+| **Simulate my teammates**          | Creates the teammate branches and Pull Requests a lab needs        |
+| **Set up one of my training orgs** | Deploys the Helios app and its data into an org you choose         |
+| **Check my work**                  | Verifies the lab you just finished and prints your receipt         |
+| **Reset this level**               | Puts your repository back to the start of Level 2                  |
 
 There is one menu per level, and each holds only what that level needs, so nothing in front of you is
 for a lab you have not reached.
@@ -67,11 +68,21 @@ You can start Level 2 without having done Level 1, as long as you accept that th
 loop. Get to a known state first:
 
 1. Do [Level 1 lab 0](../level-1/lab-00-setup.md) and [lab 1](../level-1/lab-01-fork-and-connect.md)
-   in full: tools, orgs, fork, Actions, the integration secret
+   in full: tools, your Developer Edition org, the scratch orgs, fork, Actions, the secrets
 2. Welcome page > **Training: Level 2** > **Reset this level**
 
 That puts your `integration` branch at `training/start-level-2`, which is what the repository looks
 like once Level 1 is done.
+
+## If you are coming back after a break
+
+The three scratch orgs Level 1 created live 30 days. If **Orgs Manager** no longer lists one of them
+as **Connected**, it expired: Welcome page > **Training: Level 2** > **Set up my training
+environment**. It creates a new one with the Helios app, points the pipeline at it, and leaves the
+others alone.
+
+A new `helios-dev` starts from the app as it ships, without the stories you already merged. Lab 0
+is precisely how you bring them in.
 
 ## One thing to keep open
 

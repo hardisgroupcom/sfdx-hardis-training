@@ -61,9 +61,20 @@
   ],
   "orgs": [
     {
+      "alias": "helios-prod",
+      "label": "Helios Production",
+      "role": "the one Developer Edition org a learner signs up for: the Dev Hub that creates the scratch orgs, and from Level 3 the production stand-in, target of the main branch",
+      "kind": "developer-edition",
+      "neededFrom": 1,
+      "branch": "main",
+      "branchFrom": 3,
+      "seed": "full+drift"
+    },
+    {
       "alias": "helios-dev",
       "label": "Helios Dev",
-      "role": "your own development org",
+      "role": "your own development org, a scratch org",
+      "kind": "scratch",
       "neededFrom": 1,
       "branch": null,
       "seed": "full"
@@ -71,30 +82,36 @@
     {
       "alias": "helios-integration",
       "label": "Helios Integration",
-      "role": "shared integration org, target of the integration branch",
+      "role": "shared integration org, a scratch org, target of the integration branch",
+      "kind": "scratch",
       "neededFrom": 1,
       "branch": "integration",
+      "branchFrom": 1,
       "seed": "full"
     },
     {
       "alias": "helios-uat",
       "label": "Helios UAT",
-      "role": "user acceptance org, target of the uat branch",
-      "neededFrom": 3,
+      "role": "user acceptance org, a scratch org, target of the uat branch",
+      "kind": "scratch",
+      "neededFrom": 1,
       "branch": "uat",
+      "branchFrom": 1,
       "seed": "full"
     },
     {
-      "alias": "helios-prod",
-      "label": "Helios Production",
-      "role": "production stand-in, target of the main branch",
+      "alias": "helios-preprod",
+      "label": "Helios Preprod",
+      "role": "pre-production org, a second Developer Edition signup, target of the preprod branch",
+      "kind": "developer-edition",
       "neededFrom": 3,
-      "branch": "main",
-      "seed": "full+drift"
+      "branch": "preprod",
+      "branchFrom": 3,
+      "seed": "full"
     }
   ],
   "branches": {
-    "majors": ["integration", "uat", "main"],
+    "majors": ["integration", "uat", "preprod", "main"],
     "training": [
       {
         "name": "training/start-level-1",
@@ -106,7 +123,7 @@
       },
       {
         "name": "training/start-level-3",
-        "purpose": "the fork after Level 2: app and integration pipeline, no uat, no main pipeline, no JWT"
+        "purpose": "the fork after Level 2: app and the integration to uat pipeline, no preprod, no main pipeline, no JWT"
       },
       {
         "name": "training/mate-us-018-crew-capacity",
@@ -387,7 +404,7 @@
           "lab": 1,
           "slug": "lab-01-fork-and-connect",
           "title": "Set up your training environment",
-          "time": "20 min"
+          "time": "30 min"
         },
         {
           "lab": 2,
@@ -496,13 +513,13 @@
         {
           "lab": 0,
           "slug": "lab-00-finish-the-pipeline",
-          "title": "Your pipeline stops at integration: finish it",
+          "title": "Your pipeline stops at uat: finish it",
           "time": "30 min"
         },
         {
           "lab": 1,
           "slug": "lab-01-ci-auth",
-          "title": "Wire CI authentication for three orgs",
+          "title": "Wire CI authentication for four orgs",
           "time": "40 min"
         },
         {

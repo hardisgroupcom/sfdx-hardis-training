@@ -36,7 +36,7 @@ deploys to has real testers in it.
 ## Before you start
 
 - [ ] Lab 4 finished: US-018 and US-019 merged into `integration`
-- [ ] `helios-uat` connected, seeded, and configured as the `uat` org in Lab 0
+- [ ] `helios-uat` connected: the scratch org Level 1 created, configured as the `uat` org since then
 - [ ] JWT authentication working for `uat` (Lab 1)
 
 ## Steps
@@ -67,7 +67,8 @@ promoted, **(4)** previews the notes for what has not.
 
     ![The same window on a branch with no merge target](../../_assets/annotated/vscode/pipeline-branch-modal--no-merge-target.png)
 
-    Lab 0 of this level is what gives `integration` a merge target. Go back and finish it.
+    `integration` has had `uat` as its merge target since Level 1 lab 1. If it is missing, the branch
+    file lost it: click **Training: Level 3 > Set up my training environment**, which writes it again.
 
 ### 2. Create the promotion Pull Request
 
@@ -134,8 +135,8 @@ in step 1. In the footer of that window, the button marked **(3)** in the pictur
 reads **Generate Promotion Notes for uat**. Click it: it covers the promotion you have just
 merged.
 
-The button is named after what the branch is. `uat` still merges into `main`, so what arrived there
-is a promotion. On a branch with no merge target, `main`, the same button reads **Generate Release
+The button is named after what the branch is. `uat` merges into `preprod`, so what arrived there is
+a promotion. On a branch with no merge target, `main`, the same button reads **Generate Release
 Notes for Latest Release in main**, and once you pick a go-live in the selector at the top of the
 window it reads **Generate Release Notes for** that go-live.
 

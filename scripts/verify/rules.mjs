@@ -120,23 +120,25 @@ export const RULES = [
   },
   {
     id: "1-01", level: 1, lab: 1,
-    title: "Your fork has an integration branch and knows which org it deploys to",
+    title: "Your fork has integration and uat branches, and each knows which org it deploys to",
     check: (ctx) => {
       if (!ctx.hasBranch(DEV)) {
         return miss(`no branch named "${DEV}"`, "your fork. Lab 1 creates it, or Reset this level restores it");
       }
-      const config = ctx.readOn(DEV, "config/branches/.sfdx-hardis.integration.yml");
-      if (!config) {
-        return miss("config/branches/.sfdx-hardis.integration.yml is missing", `branch ${DEV}`);
+      const rerun = "Run Set up my training environment again: it writes the file and pushes it";
+      for (const branch of ["integration", "uat"]) {
+        const file = `config/branches/.sfdx-hardis.${branch}.yml`;
+        const config = ctx.readOn(DEV, file);
+        if (!config) {
+          return miss(`${file} is missing`, `branch ${DEV}. ${rerun}`);
+        }
+        const hasOrg = /targetUsername:\s*["']?[^"'\s][^\n]*/.test(config) &&
+          !/targetUsername:\s*["']{2}\s*$/m.test(config);
+        if (!hasOrg) {
+          return miss(`targetUsername is still empty in ${file}`, `branch ${DEV}. ${rerun}`);
+        }
       }
-      const hasOrg = /targetUsername:\s*["']?[^"'\s][^\n]*/.test(config) &&
-        !/targetUsername:\s*["']{2}\s*$/m.test(config);
-      return hasOrg
-        ? pass("The integration branch names its org")
-        : miss(
-          "targetUsername is still empty in config/branches/.sfdx-hardis.integration.yml",
-          `branch ${DEV}. Run Set up my pipeline again: it writes the file and pushes it`
-        );
+      return pass("integration and uat both name their org");
     }
   },
   {
@@ -438,35 +440,29 @@ export const RULES = [
     id: "3-00", level: 3, lab: 0,
     title: "The pipeline reaches production",
     check: (ctx) => {
-      const missingBranches = ["uat", "main"].filter((b) => !ctx.hasBranch(b));
+      const missingBranches = ["uat", "preprod", "main"].filter((b) => !ctx.hasBranch(b));
       if (missingBranches.length > 0) {
         return miss(`these branches do not exist: ${missingBranches.join(", ")}`, "your fork");
       }
       const project = ctx.readOn("main", "config/.sfdx-hardis.yml") || ctx.readOn(DEV, "config/.sfdx-hardis.yml") || "";
-      const declared = /availableTargetBranches:[\s\S]{0,200}uat/.test(project) &&
-        /availableTargetBranches:[\s\S]{0,200}main/.test(project);
-      if (!declared) {
+      if (!/availableTargetBranches:[\s\S]{0,200}preprod/.test(project)) {
         return miss(
-          "uat and main are not both listed under availableTargetBranches",
+          "preprod is not listed under availableTargetBranches, so nobody can start a hotfix",
           "config/.sfdx-hardis.yml"
         );
       }
       const configs = ctx.listOn("main", "config/branches/").concat(ctx.listOn(DEV, "config/branches/"));
-      const haveUat = configs.some((f) => /\.sfdx-hardis\.uat\.yml$/.test(f));
-      const haveMain = configs.some((f) => /\.sfdx-hardis\.main\.yml$/.test(f));
-      return haveUat && haveMain
-        ? pass("uat and main are major branches with their own configuration")
-        : miss(
-          `missing branch configuration: ${[!haveUat ? "uat" : null, !haveMain ? "main" : null].filter(Boolean).join(", ")}`,
-          "config/branches/"
-        );
+      const missing = ["preprod", "main"].filter((b) => !configs.some((f) => f.endsWith(`.sfdx-hardis.${b}.yml`)));
+      return missing.length === 0
+        ? pass("preprod and main are major branches with their own configuration")
+        : miss(`missing branch configuration: ${missing.join(", ")}`, "config/branches/");
     }
   },
   {
     id: "3-01", level: 3, lab: 1,
-    title: "CI authentication is wired for the three orgs, and the Level 1 shortcut is gone",
+    title: "CI authentication is wired for the four orgs, and the Level 1 shortcut is gone",
     check: (ctx) => {
-      const branches = ["integration", "uat", "main"];
+      const branches = ["integration", "uat", "preprod", "main"];
       const notConfigured = [];
       for (const b of branches) {
         const cfg = ctx.readOn("main", `config/branches/.sfdx-hardis.${b}.yml`) ||
@@ -485,7 +481,7 @@ export const RULES = [
       }
       const notes = pipelineNotes(ctx);
       return mentions(notes, "SFDX_AUTH_URL_INTEGRATION")
-        ? pass("The three orgs are configured, and the Level 1 shortcut is accounted for")
+        ? pass("The four orgs are configured, and the Level 1 shortcut is accounted for")
         : miss(
           "MY-PIPELINE.md does not record that the SFDX_AUTH_URL_INTEGRATION secret was deleted",
           "MY-PIPELINE.md. Lab 1 ends by deleting it and writing down why"
