@@ -254,6 +254,17 @@ If either side is missing, the resolution lost work, and the badge audit will sa
 
 ## If it goes wrong
 
+**`Error parsing file: Element assignments is duplicated at this location in type Flow`.**
+Your resolution left the flow with its elements out of order. A flow file groups every element of
+the same kind together: all the assignments, then all the decisions. If your merge dropped a kept
+element between two blocks of another kind, move it back up next to its own kind. The order inside
+each group does not matter, the grouping does.
+
+**`Element field is duplicated at this location in type PermissionSetFieldPermissions`.**
+You kept both sides inside a single grant instead of keeping both grants. One `<fieldPermissions>`
+block names one field: the fix is two blocks, not one block with two `<field>` lines.
+
+
 **The flow will not deploy after the merge: "duplicate element name".**
 You kept both sides of an element that can only exist once. Flow element names are unique. Rename or
 remove one.
