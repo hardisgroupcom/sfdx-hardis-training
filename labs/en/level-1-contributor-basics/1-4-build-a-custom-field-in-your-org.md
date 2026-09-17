@@ -161,10 +161,9 @@ Installation Layout**, drag `Panels Required` into the Information section, **Sa
 The Helios org has a rule that refuses moving an installation date into the past. If you edited the
 date by accident, put it back to a future date.
 
-**You cannot edit the Permission Set.**
-You are not assigned **Helios Delivery Manager**. In `helios-dev`: **Setup > Permission Sets >
-Helios Delivery Manager > Manage Assignments > Add Assignment**, tick your own user, and click
-**Next** then **Assign**.
+**The permission set has no Object Settings for Installation.**
+A permission set only lists an object once something in it is granted. Use **Field Permissions** at
+the top of the page instead: pick `Installation` there, and the object appears with its fields.
 
 ## Check your work
 

@@ -204,11 +204,20 @@ export const RULES = [
         );
       }
       const crew = ctx.readOn(DEV, PERMSET("Helios_Delivery_Crew"));
-      return fieldGrantedIn(crew, "Installation__c.Crew_Notes__c")
-        ? pass("Crew Notes and its permission are both on integration")
-        : miss(
+      if (!fieldGrantedIn(crew, "Installation__c.Crew_Notes__c")) {
+        return miss(
           "Crew_Notes__c is not granted on Helios_Delivery_Crew",
           `${PERMSET("Helios_Delivery_Crew")} on branch ${DEV}`
+        );
+      }
+      // US-016 asks for the list view as well, and it is the one piece of the
+      // story that automated cleaning rewrites on the way in
+      const listView = ctx.readOn(DEV, "force-app/main/default/objects/Installation__c/listViews/My_Open_Installations.listView-meta.xml");
+      return listView
+        ? pass("Crew Notes, its permission and the My Open Installations list view are on integration")
+        : miss(
+          "the My Open Installations list view was not found",
+          `force-app/main/default/objects/Installation__c/listViews/My_Open_Installations.listView-meta.xml on branch ${DEV}`
         );
     }
   },
