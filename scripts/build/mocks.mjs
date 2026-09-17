@@ -102,7 +102,11 @@ writeJson(path.join(OUT, "universe.json"), {
   // Where the "integration" node lands in the diagram, for the click that opens
   // its window. Mermaid lays it out from the branches this universe carries, so
   // it moves whenever they change, and the click then hits empty canvas.
-  branchNode: "1190,557",
+  branchNode: "1063,539",
+  // The heights of the three US-014 rows in the Metadata Retriever, for the
+  // clicks that tick them. They follow the sourceMembers list below: the panel
+  // sorts by type then name, and the seeded app rows sit between them.
+  retrieverRows: "611,863,914",
   branches: [
     ...u.branches.majors.filter((b) => b !== "integration"),
     ...u.userStories.filter((s) => s.level <= 2 && s.author === "you").map((s) => s.branch),

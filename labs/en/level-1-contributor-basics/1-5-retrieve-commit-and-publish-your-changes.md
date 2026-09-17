@@ -118,8 +118,8 @@ right of its name. The **+** is **Stage Changes**, and it moves that one file in
 !!! danger "Never use Stage All Changes"
     The **+** on the **Changes** group header stages everything the panel can see, including files
     you have never looked at: a stray log, something an installer left behind, a file another
-    command wrote while you were working. The panel above is showing exactly that, a fourth file
-    nobody asked for.
+    command wrote while you were working. The panel above shows only your three files, and yours
+    will not always be that tidy.
 
     Staging is the only moment where you decide what your story contains. Doing it file by file
     takes ten seconds and it is the difference between a Pull Request a reviewer can read and one
