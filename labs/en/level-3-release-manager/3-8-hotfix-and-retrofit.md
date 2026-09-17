@@ -74,12 +74,12 @@ In VS Code, **New User Story** **(2)**, under **Project Contribution Workflow** 
 
 Answer:
 
-| Question      | Answer                                                                     |
-|---------------|----------------------------------------------------------------------------|
-| Target branch | **`preprod`**, described as the hotfix branch                              |
-| Type          | **Fix: correct something that is broken**, which names the branch `fix/`   |
-| Name          | `US-045-installation-date-hotfix`                                          |
-| Org           | **I'm hardcore, I don't need an org**: you will work in `helios-preprod`   |
+| Question      | Answer                                                                   |
+|---------------|--------------------------------------------------------------------------|
+| Target branch | **`preprod`**, described as the hotfix branch                            |
+| Type          | **Fix: correct something that is broken**, which names the branch `fix/` |
+| Name          | `US-045-installation-date-hotfix`                                        |
+| Org           | **I'm hardcore, I don't need an org**: you will work in `helios-preprod` |
 
 The org question only lists development orgs, and `helios-preprod` is a major org, rightly kept out
 of that list. You still reproduce and fix in it, because it holds what production holds and nobody
