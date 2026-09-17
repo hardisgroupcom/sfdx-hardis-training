@@ -70,7 +70,11 @@ promoted, **(4)** previews the notes for what has not.
     ![The same window on a branch with no merge target](../../_assets/annotated/vscode/pipeline-branch-modal--no-merge-target.png)
 
     `integration` has had `uat` as its merge target since Lab 1.2. If it is missing, the branch
-    file lost it: click **Training: Level 3 > Set up my training environment**, which writes it again.
+    file lost it: click **Training: Level 3 > Set up my training environment**, which writes it
+    again. That command rewrites `config/branches/.sfdx-hardis.integration.yml` and
+    `.sfdx-hardis.uat.yml` whole, back to the Level 1 shape, so afterwards put `preprod` back as the
+    merge target of `uat` in **Pipeline Settings**. It never touches the `preprod` and `main` files
+    you wrote in Lab 3.1.
 
 ### 2. Create the promotion Pull Request
 
@@ -84,18 +88,19 @@ Create it on GitHub, from `integration` into `uat`, like any other Pull Request.
 
 Title it for the humans who will read it, not for git:
 
-> Release 2026-09-3: crew capacity cap, quote PDF
+> Release 2026-09: crew capacity cap, quote PDF
 
 ### 3. Read the deployment actions it carries
 
-Once the check runs, the sfdx-hardis comment gains a section headed **Post-deployment Actions
-Results** (the merge job adds **Pre-deployment Actions Results** in the same shape). This is the part
-of a promotion that has no equivalent in a contributor Pull Request.
+Once the check runs, the sfdx-hardis comment gains two sections, **Pre-deployment Actions Results**
+and **Post-deployment Actions Results**. What a promotion adds on top is the paragraph naming the
+scope: which branch into which, and everything it carries.
 
 Every action any contributor declared on any of the merged stories is collected into one table, with
 its label, its type, its status and a link back to the Pull Request it came from. Anything needing a
-human gets a **checklist above the table**, under a heading that says whether it happens before or
-after the deployment.
+human gets a **checklist above the table**, headed *Manual Actions to perform before proceeding with
+deployment* or *after deployment*. The two checklists land on different jobs: the check job carries
+the before one, so you can act on it while deciding, and the merge job carries the after one.
 
 **Read it before merging.** Two things to look for:
 
@@ -148,8 +153,9 @@ what Thursday's release will contain.
 
 You get a markdown document listing the Pull Requests, their authors, their stories and the manual
 steps, generated from the merge history rather than from anybody's memory. It lands under
-`hardis-report/release-notes/`, in a folder named after the version and the date, as markdown, PDF
-and spreadsheet.
+`hardis-report/release-notes/`, in a folder named after the release tag and the date, or after the
+target branch and the date when there is no tag, so here `uat-<date>`. Markdown and PDF every time,
+plus a spreadsheet when there is anything to put in it.
 
 Read it and then improve it. Generated notes are a complete list, and a release note the business
 reads needs two things the generator cannot know:

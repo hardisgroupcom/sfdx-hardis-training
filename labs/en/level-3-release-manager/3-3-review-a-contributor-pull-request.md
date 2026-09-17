@@ -72,18 +72,19 @@ comment. The only thing it no longer offers is the Merge button.
 
 Read the sfdx-hardis comment, top to bottom. Four things, in this order:
 
-1. **Did it deploy?** The comment is titled *Validation Results (deployment simulation)* on a check
-   job, *Deployment Results* on a merge job. The Salesforce deployment id is not printed anywhere in
-   it: it is carried as an invisible HTML marker, which is how the next run finds this comment again
+1. **Did it deploy?** The comment opens on a banner reading *Validation Results (deployment
+   simulation)* on a check job and *Deployment Results* on a merge job, with a line under it saying
+   whether it passed. The Salesforce deployment id is not printed anywhere: it is carried as an
+   invisible HTML marker, so that a merge job can reuse the validation as a Quick Deploy
 2. **How much does it deploy?** Not a list. One line of counts: how many components were sent, how
    many changed, and how many of those were created, updated, deleted or left unchanged. If the
    counts do not match the size of the story, that is your cue to go and read the diff
-3. **What does it delete?** The `deleted` count on that same line, plus a **Flow changes** table
-   when a Flow is involved. There is no separate destructive changes section, so a deletion that is
-   not a Flow shows up as one number and nothing else. That is worth knowing before you rely on the
-   comment to catch one
-4. **Tests and coverage.** Coverage always, with the test classes folded into a collapsed block.
-   Failures only when there are failures
+3. **What does it delete?** The `deleted` count on that same line. Flows get more: a **Flow changes**
+   list linking to a diff comment per Flow, and a **Flow deletion** table when versions are being
+   removed. There is no destructive changes section for anything else, so a deleted field shows up
+   as one number and nothing else. That is worth knowing before you rely on the comment to catch one
+4. **Tests and coverage.** Coverage every time, and a collapsed *Apex test classes* block when the
+   job ran named test classes. Failures only when there are failures
 
 Reading it in that order takes two minutes. It also tells you what the comment cannot do for you,
 which is step 3.
@@ -178,10 +179,12 @@ and then posted the comment through the GitHub API with the token the workflow a
 **The comment is updated in place** on every push rather than added again, which is why the Pull
 Request does not fill up with twenty robot comments. It finds itself again through a hidden marker
 carrying a message key, and there are in fact **two** such comments, each updated independently: one
-for the check job, one for the merge job.
+for the check job, one for the merge job. A third one collects the deployment actions, and Flows get
+one each.
 
-The counts it prints come from the package the deployment computed, not from the git diff. The two
-can differ, and when they do the package is the truth: it is what Salesforce will receive.
+The counts it prints come from what Salesforce reported back about the deployment, not from the git
+diff. The two can differ, and when they do the deployment is the truth: it is what the org received,
+or would have received.
 
 Deletions are the weak spot. `hardis:work:save` writes `manifest/destructiveChanges.xml` when a
 contributor removes something, and a contributor can produce one **without meaning to**, by

@@ -43,7 +43,7 @@ Monitoring is the part of the release manager job that happens when nothing is b
 - [ ] Lab 3.8 finished
 - [ ] `helios-prod` connected in **Orgs Manager**
 - [ ] An empty GitHub repository of your own, with `monitoring` in its name
-- [ ] About 20 minutes of the 50 will be the first monitoring run
+- [ ] About 20 of those 35 minutes will be the first monitoring run
 
 ## Steps
 
@@ -54,12 +54,16 @@ from. Not usually, not by preference: always. This is the part people get wrong,
 that is expensive to undo once a year of nightly commits has piled up in the wrong place.
 
 `sf hardis:org:configure:monitoring` does not create that repository for you. It checks the name of
-the one it is standing in, and if that name does not contain `monitoring` it asks whether you really
-mean to mix monitoring and deployment sources.
+the one it is standing in, and if that name does not contain `monitoring` it asks
+**Do you use a separate repository for your monitoring deployment sources?**, with two answers:
 
-**The answer is no.** The question exists because the command cannot be certain from a name alone,
-not because the two are alternatives. Answer no, and it stops so you can go and make the right
-repository.
+- *Yes, I'm sure because I know what I'm doing, like Roman 😊*, which carries on regardless
+- *Mmmmm no, let me create another repo with the word "monitoring" in its name !*, which stops the
+  command
+
+**Take the second one.** The question exists because the command cannot be certain from a name
+alone, not because the two are alternatives. In a repository whose name does contain `monitoring`
+the question is never asked at all, which is the state you want to be in before you start.
 
 So, before anything else: create an empty private repository called
 `sfdx-hardis-training-monitoring` on GitHub. Then bring it down the way Lab 1.2 brought this
@@ -97,19 +101,24 @@ From the monitoring repository, open the **Org Monitoring Workbench** from the W
 
 It runs in a command panel and asks its questions one at a time, the way Lab 3.2 did:
 
-1. **Did you configure the monitoring pre-requisites on your Git server?** Answering no opens the
-   documentation and ends the command, so read that page first if you have not
-2. **Which org do you want to monitor?** - `helios-prod`
-3. Then the certificate questions from Lab 3.2, unchanged: self-signed, let sfdx-hardis configure the
-   External Client App, encrypted certificate as a file
-4. **Push the monitoring branch to the remote?** - yes
-5. **Save the configuration on the remote server?** - yes
+1. **Did you configure the sfdx-hardis monitoring pre-requisites on your Git server ?** The second
+   answer, *ℹ️ No, bring me to the documentation!*, opens that page and ends the command, so read it
+   first if you have not
+2. **Please select or connect to the org that you want to monitor** - `helios-prod`. As in Lab 3.2,
+   making it the default org restarts the command, so pick it again in the new panel
+3. **Branch monitoring_... does not exist on the remote server. Do you want to push it?** - yes.
+   This one comes before the certificate, not after, and it only appears the first time
+4. Then the four certificate questions from Lab 3.2, unchanged and in the same order: self-signed,
+   let sfdx-hardis configure the External Client App, encrypted certificate as a file, then the same
+   stop while you store the two secrets
+5. **Do you want to save the configuration on the remote server (auto-commit)?** - yes
 
 It never asks for a repository name, a git provider or a schedule, because it does none of those
 three. The authentication is the same code as Lab 3.2: External Client App, JWT, two secrets to store,
 this time in the **monitoring** repository. The key lands in `./.ssh/` rather than
 `config/branches/.jwt/`, and the configuration in a `.sfdx-hardis.yml` at the repository root, on a
-branch named after the org.
+branch called `monitoring_` plus the org's domain, cut from `main`. One branch per monitored org is
+how one repository watches several.
 
 ### 3. Choose what it watches
 
@@ -221,8 +230,8 @@ generated for GitHub has four jobs:
 
 1. **Backup** runs first, on its own: `sf hardis:org:monitor:backup` retrieves the whole org in
    source format and commits it. The git history of that repository becomes an answer to "what
-   changed in production, and when", which nothing else gives you. It also regenerates the project
-   documentation as it goes
+   changed in production, and when", which nothing else gives you. When the retrieve is done, the
+   same command regenerates the project documentation of Lab 3.10 before it finishes
 2. Then three jobs in parallel, each waiting only on the backup: `sf hardis:org:test:apex`,
    MegaLinter, and `sf hardis:org:monitor:all`
 
@@ -233,7 +242,8 @@ the workflow.
 `monitoringCommands` in the monitoring repository's `.sfdx-hardis.yml` is **not** the list of checks:
 the list is built into the product, around thirty of them, and this key only overrides entries by key
 or appends new ones. Leaving it empty still runs everything. `monitoringDisable` is the per-check
-off switch, by name, and setting a check's `frequency` to `off` does the same thing.
+off switch, by the check's key rather than its label, and setting a check's `frequency` to `off`
+takes it out of the run too.
 `notificationConfig` decides what is sent where, and at what severity.
 
 The nightly backup is the underrated part. When somebody asks "when did that validation rule
@@ -272,7 +282,8 @@ Expected on a first run against any real org, and unlikely on a Developer Editio
 old. Step 6 is the lab either way.
 
 **The command refuses to run.**
-You answered no to the question about mixing monitoring and deployment sources, which is the right answer. You are in the CI/CD repository: go back to step 1 and make the monitoring one.
+You told it you are not in a separate monitoring repository, which is the right answer when you are
+not. Go back to step 1 and make the monitoring one.
 
 ## Check your work
 

@@ -54,7 +54,7 @@ colour means. Click the marker to open the run.
 
 ### 2. Read it in five parts
 
-A sfdx-hardis deployment log has the same shape every time:
+An sfdx-hardis deployment log has the same shape every time:
 
 **One: authentication.** Which org, which mechanism. After Lab 3.2 this says JWT. If it ever says
 something else, something changed that you did not change.
@@ -124,8 +124,9 @@ configured to stop it. That is a decision this project made, not a thing the too
 ### 5. Verify in the org, not in the log
 
 Open `helios-integration` from **Orgs Manager**: find it by its alias **(2)**, check it still says
-**Connected** **(3)**, and open it from the actions at the end of its row. **Add Org** **(1)** is
-how you reconnect it if the session expired.
+**Connected** **(3)**, then **Open** from the actions menu at the end of its row. If it says
+disconnected instead, that same menu offers **Reconnect**, and **Add Org** **(1)** is how you
+connect an org the table does not have at all.
 
 ![The Orgs Manager table, with the alias and connection state of each org](../../_assets/annotated/vscode/orgs-manager.png)
 

@@ -54,8 +54,8 @@ Everything in this lab happens on this one screen. Three parts of it matter:
 2. **Generate Documentation** **(2)**, the button that produces the pages
 3. **Deploy Documentation** **(3)**, further down, which publishes them
 
-Next to **Include** there is a second column, **Formats & History**. Leave it alone for now, but note
-that **With Flow History** is ticked by default. That one checkbox is what step 4 is about, and
+To the left of **Include** sits a second column, **Formats & History**. Leave it alone for now, but
+note that **With Flow History** is ticked by default. That one checkbox is what step 4 is about, and
 without it the flow pages have no history diagrams at all.
 
 ### 2. Generate
@@ -154,8 +154,10 @@ which reads:
 - the **git history**, for the "what changed and when" diagrams, when `--with-history` is passed
 
 and writes markdown under `docs/`, plus a `mkdocs.yml` so the result is a site rather than a pile of
-files. It does not overwrite a `mkdocs.yml` you already have, so your own navigation survives a
-regeneration.
+files. It does not replace a `mkdocs.yml` you already have, but it does edit it: it rewrites the
+`nav` block and adds the scripts, styles and theme features the generated pages need. So a
+navigation you hand-wrote is rebuilt on the next run, which is worth knowing before you spend an
+evening on one.
 
 The flow diagrams are Mermaid, generated from the flow XML. That means they are text in the
 repository, so they diff, review and version like everything else, and they never go stale relative

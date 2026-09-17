@@ -150,18 +150,20 @@ scratch org logs in the way a sandbox does, and a Developer Edition org the way 
 
 Now reopen **Pipeline Settings**. The scope selector **(1)** offers `Branch: preprod` and
 `Branch: main`, and picking one changes the title to **Pipeline Settings for major git branch**
-followed by its name. Click **Edit** **(2)** and the two fields of the **Salesforce Org** tab **(3)**
-hold what you just wrote:
+followed by its name. The **Salesforce Org** tab opens on a read-only summary card **(3)** carrying
+the two values you just wrote, and **Edit** **(2)** is what turns it into fields. The picture below
+is that panel on `integration`, which already had its file since Level 1:
 
 ![The Pipeline Settings panel scoped to one major branch](../../_assets/annotated/vscode/pipeline-config-branch.png)
 
-**Edit** **(2)** turns that read-only card into the two fields you fill: **Instance URL** **(1)**
-and **Target Username** **(2)**, then **Save** **(3)**.
+One summary card rather than two boxes is the view mode, not a missing setting. Click **Edit** and
+the card becomes **Instance URL** **(1)** and **Target Username** **(2)**, with **Save** **(3)**
+where the **Edit** button was:
 
 ![The same panel with the org fields unlocked](../../_assets/annotated/vscode/pipeline-config-branch-edit.png)
 
-Before **Edit**, that tab shows one summary card reading `Instance URL` and `Target Username` rather
-than two editable fields. That is the view mode, not a missing setting.
+Check both branches this way. `preprod` and `main` read `https://login.salesforce.com`, and only
+`integration` and `uat` read `https://test.salesforce.com`.
 
 The next lab writes these same two keys for you, as a side effect of configuring CI authentication.
 Doing it by hand once is how you know what it wrote.
@@ -242,13 +244,14 @@ point of most projects: not an empty repository, but a two-year-old org nobody h
 ### 6. Commit the configuration
 
 This is configuration, so it goes through the same pipeline as everything else, and through the same
-buttons Level 1 used.
+buttons Level 1 used. The picture below was taken in Level 1, which is why its diagram still has two
+columns. The cards under the diagram are the part this step is about, and they do not change.
 
 ![The contribution cards of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
 Under **Project Contribution Workflow** **(1)**: **New User Story** **(2)** targeting `integration`,
 then commit the files from **Source Control**, then **Save / Publish**, then **Create Pull Request**
-from the bar at the end of it. Get the check green and merge.
+in the reports bar at the end of it. Get the check green and merge.
 
 There is nothing to retrieve here: you edited configuration files, not an org.
 

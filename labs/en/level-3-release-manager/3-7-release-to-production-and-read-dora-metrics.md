@@ -65,7 +65,7 @@ button for it in the panel unless the project turns on promotion branches, and t
 
 Title it plainly:
 
-> Release 2026-09-3 to preprod
+> Release 2026-09 to preprod
 
 Read the check, merge, and watch the **Process Deployment (sfdx-hardis)** run on `preprod`. Then
 open `helios-preprod` and do the checks of step 5 there first.
@@ -78,7 +78,7 @@ release that fails here has cost you nothing.
 
 From `preprod` into `main`. Title it plainly:
 
-> Release 2026-09-3 to production
+> Release 2026-09 to production
 
 ### 4. Read the check like it matters
 
@@ -87,11 +87,12 @@ that only apply to production:
 
 | Question                     | Where to look                                                                                                               |
 |------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
-| **Does it delete anything?** | The destructive changes section. A deletion in production is permanent and takes data with it                               |
+| **Does it delete anything?** | The `deleted` figure in the counts line. A deletion in production is permanent and takes data with it                       |
 | **How long will it take?**   | The check duration is a reasonable estimate. If it is 40 minutes, that is 40 minutes during which the org is being modified |
 
-If the destructive changes section is not empty and you were not expecting it, **stop**. Find out
-what it is and who intended it. That is not being careful, that is the job.
+If that figure is not zero and you were not expecting it, **stop**. The comment will not tell you
+what is going: `manifest/destructiveChanges.xml` and the diff will. Find out what it is and who
+intended it. That is not being careful, that is the job.
 
 ### 5. Merge, and stay
 
@@ -105,8 +106,8 @@ When it finishes, do any manual steps, then check the org.
 ### 6. Verify in production
 
 Open `helios-prod` from **Orgs Manager**: find it by its alias **(2)**, check it says **Connected**
-**(3)**, and open it from the actions at the end of its row. **Add Org** **(1)** reconnects it if
-the session expired.
+**(3)**, then **Open** from the actions menu at the end of its row. A disconnected row offers
+**Reconnect** in that same menu; **Add Org** **(1)** is for an org the table does not have.
 
 ![The Orgs Manager table, with the alias and connection state of each org](../../_assets/annotated/vscode/orgs-manager.png)
 
@@ -129,11 +130,11 @@ choose **Set as Default Org** in its actions menu. The report measures whatever 
 at: run it while `helios-dev` is your current org and you get a report about your sandbox, correctly
 formatted and completely irrelevant.
 
-Then open the **DevOps Pipeline** panel, open the gear menu at the top right **(1)**, and choose
-**Generate DORA Metrics Report**. It sits in the same menu as **Pipeline Settings**, which you used
-in Lab 3.1.
+Then open the **DevOps Pipeline** panel, click the gear **(1)** at the top right, and choose
+**Generate DORA Metrics Report**. The menu holds three entries and you have used the other two:
+**Pipeline Settings** in Lab 3.1, **Add/Configure Org** in Lab 3.2.
 
-![The DevOps Pipeline panel header, with the gear menu that holds the DORA report](../../_assets/annotated/vscode/devops-pipeline--settings-menu.png)
+![The gear button at the top right of the DevOps Pipeline panel](../../_assets/annotated/vscode/devops-pipeline--settings-menu.png)
 
 It covers the last 90 days by default, and it reports five numbers, not four:
 
@@ -143,7 +144,7 @@ It covers the last 90 days by default, and it reports five numbers, not four:
 | **Lead time for changes** | Per Pull Request: its creation, to the deployment that landed within 14 days | Days, not weeks. A long lead time means work is sitting somewhere |
 | **Change failure rate**   | Failed deployments divided by all deployments                                | Below 15%. Above that, the check is not catching what it should   |
 | **Time to restore**       | Median hours from a failed deployment to the next successful one             | Hours                                                             |
-| **Rework rate**           | Hotfix Pull Requests, and deployments that follow a failure within a day     | Low. This is the one Lab 3.8 moves                                |
+| **Rework rate**           | Hotfix Pull Requests, and deployments that follow a failure within a day     | Low. Read the note below before you expect Lab 3.8 to move it     |
 
 Two of those are not what the names suggest, and it is worth knowing which. **Change failure rate
 here is a deployment failure rate**: a release that deployed green and broke production on Tuesday
@@ -182,11 +183,18 @@ and it reads **two** sources, which is the thing to know about it:
   rate and time to restore are computed from that and from nothing else
 - **The git provider**, for the merged Pull Requests into the current branch. Lead time pairs each
   one with the first successful deployment that completed within 14 days of its merge. The rework
-  rate uses the branch names, recognising a fix by a `hotfix/`, `fix/` or `bugfix/` prefix
+  rate uses the branch names, recognising a fix by a `hotfix/`, `fix/` or `bugfix/` prefix, and it
+  takes the larger of that count and the deployments that followed a failed one within 24 hours
 
 So it does not read `productionBranch`, it does not read `developmentBranch`, and it has no idea
 which of your orgs is production. **The org you point it at is the scope.** Point it at a sandbox
 and it will measure the sandbox, cheerfully.
+
+**One catch, on this project.** `branchPrefixChoices` in `config/.sfdx-hardis.yml` names the two
+User Story types `features` and `fixes`, so the hotfix you ship in Lab 3.8 lands on a branch called
+`fixes/US-045-...`. The rework rate looks for `hotfix/`, `fix/` or `bugfix/`, and `fixes/` is none
+of those, so it does not count. Nothing warns you. A metric that reads branch names is only ever as
+good as the naming convention nobody wrote down, and that is worth checking before quoting one.
 
 Two degradations worth recognising rather than debugging:
 

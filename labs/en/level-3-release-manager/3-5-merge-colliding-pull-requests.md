@@ -7,7 +7,7 @@ lab: 5
 lang: en
 source_rev: ""
 screenshots:
-  - annotated/vscode/sidebar-commands-custom-menu--training-menu
+  - annotated/vscode/welcome-custom-menu-3
   - annotated/vscode/pipeline-config--cleaning-overwrite
 depends_on:
   commands: [hardis:project:deploy:smart]
@@ -49,11 +49,13 @@ Deciding what goes in, in what order, and what waits, is the job.
 
 ### 1. Create the Pull Requests you still can
 
-**Training: Level 3** **(1)** > **Simulate my teammates** **(2)**, from the Welcome page or from the
-sfdx-hardis command list, twice: **US-020 Refactor
-InstallationScheduler**, and **US-019 Generate a quote PDF from an opportunity**.
+**Training: Level 3** > **Simulate my teammates**, twice: **US-020 Refactor InstallationScheduler**,
+and **US-019 Generate a quote PDF from an opportunity**.
 
-![The Training menu of the sfdx-hardis command list](../../_assets/annotated/vscode/sidebar-commands-custom-menu--training-menu.png)
+It is on the Welcome page, where each level menu is a page of cards, and in the **SFDX HARDIS** view
+of the left bar, where each level is a folder you unfold. Either route runs the same thing:
+
+![The Level 3 training menu on the Welcome page](../../_assets/annotated/vscode/welcome-custom-menu-3.png)
 
 **US-018 is not among them.** You merged it in Lab 2.7, and each teammate scenario is used
 once: replaying one onto a branch that already has its files reports "Nothing to commit" and opens

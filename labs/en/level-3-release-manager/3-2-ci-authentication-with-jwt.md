@@ -69,7 +69,7 @@ pre-authorised user, no password anywhere, and revocation by deleting one app.
 In the **DevOps Pipeline** panel, click the gear **(1)** at the top right and choose
 **Add/Configure Org**.
 
-![The settings menu of the DevOps Pipeline panel](../../_assets/annotated/vscode/devops-pipeline--settings-menu.png)
+![The gear button at the top right of the DevOps Pipeline panel](../../_assets/annotated/vscode/devops-pipeline--settings-menu.png)
 
 The command runs in a panel rather than a terminal, and asks one question at a time **(1)**, with
 the answers to click below it **(2)**. Here it is at the second question, with `helios-integration`
@@ -79,27 +79,31 @@ already chosen.
 
 It asks a dozen questions, not three, and the order is not the one you would guess:
 
-1. **Which org?** - select or log into `helios-integration`. The command makes it your default org
-   and, because that changed, VS Code starts the same command again. Pick `helios-integration` a
-   second time in the new panel and carry on from there
-2. **Which git branch do you want to configure deployments from?** - `integration`. The list is
-   built from your **remote** branches, and branches whose name contains a `/` are filtered out of
-   it
-3. **What is the base URL or domain?** - `https://test.salesforce.com`, the highlighted sandbox
-   answer. `helios-integration` is a scratch org, and a scratch org logs in like a sandbox. It is
-   the wrong answer for `preprod` and `main` in step 5, which are Developer Edition orgs, so this is
-   a question to read rather than confirm
-4. **Which target branches can this one merge into?** - `uat`. This writes `mergeTargets` again, on
-   top of what you set in Lab 3.1, so give the same answer
-5. **Which Salesforce username will the CI server deploy as?** - the `helios-integration` username
-6. **How do you want to provide the SSL certificate?** - self-signed. The other answer, CA-signed,
-   generates nothing at all and only prints instructions
-7. **Do you want sfdx-hardis to configure the External Client App?** - yes
-8. **Which JWT certificate storage mode?** - **ClientId + decryption key as secret variables +
-   encrypted certificate as file**, the default. The other mode puts the certificate itself in a
-   third secret and deletes the file
+1. **Please select or login into the org you want to configure the SF CLI Authentication** -
+   `helios-integration`. The command makes it your default org and, because that changed, VS Code
+   starts the same command again. Pick `helios-integration` a second time in the new panel and carry
+   on from there
+2. **What is the name of the git branch you want to configure Automated CI/CD deployments from?** -
+   `integration`. The list is built from your **remote** branches, and branches whose name contains
+   a `/` are filtered out of it, which is why no feature branch is offered
+3. **What is the base URL or domain or the org you want to connect to, as integration related
+   org ?** Pick **🧪 Sandbox or Scratch org (test.salesforce.com)**. `helios-integration` is a scratch
+   org, and a scratch org logs in like a sandbox. The highlighted answer is the one above it,
+   **📝 Custom login URL**, so read this list rather than pressing Enter. It is also the wrong answer
+   for `preprod` and `main` in step 5, which are Developer Edition orgs
+4. **What are the target git branches that integration will be able to merge in?** - `uat`. This
+   writes `mergeTargets` again, on top of what you set in Lab 3.1, so give the same answer
+5. **What is the Salesforce username that will be used for deployments by CI server ?** - the
+   `helios-integration` username, which it offers you already filled in
+6. **How do you want to provide the SSL certificate?** - **Generate a self-signed certificate
+   (default)**. The other answer, CA-signed, generates nothing at all and only prints instructions
+7. **Do you want sfdx-hardis to configure the SF CLI External Client App or Connected App on your
+   org ?** - yes
+8. **Which JWT certificate storage mode do you want?** - **ClientId + decryption key as secret
+   variables + encrypted certificate as file (default)**. The other mode puts the certificate itself
+   in a third secret, `SFDX_CLIENT_CERT_INTEGRATION`, and deletes the file
 9. **Please confirm when variables have been set.** This one is a stop, and step 3 is what it is
-   waiting for. Do not answer yes yet
+   waiting for. Do not click **Validate** yet
 10. Then, after you confirm: the **name** of the External Client App, a **contact email**, and the
     **profile to pre-authorise** (`System Administrator`)
 
@@ -143,7 +147,15 @@ In your fork: **Settings > Secrets and variables > Actions > New repository secr
 The `<ALIAS>` suffix is **the branch name in upper case**. That is the entire convention, and it is
 why the names are not arbitrary.
 
-Now answer yes to question 9, and let the command create the app.
+!!! note "The orange warning about your pipeline YAML"
+    Under the two values, the panel warns that on GitHub and Azure a secret also has to be passed to
+    the job in `.github/workflows/*.yml`. It is right, and it is the step people forget: a secret
+    GitHub holds and the workflow never reads is a secret the job does not have. This course's
+    workflows already pass all eight, `SFDX_CLIENT_ID_*` and `SFDX_CLIENT_KEY_*`, for the four
+    branches. Open `.github/workflows/process-deploy.yml` and read the `env:` block once, because on
+    your own project that block is yours to write.
+
+Now click **Validate** on question 9, and let the command create the app.
 
 ### 4. Check the org authorisation it did for you
 
@@ -153,8 +165,10 @@ The External Client App it deploys carries `Admin approved users are pre-authori
 you named at the last question, which is why that question exists. Go and look at it once, so you
 know where it is when it matters:
 
-In `helios-integration`: **Setup > External Client App Manager > sfdx-hardis > Policies**. Permitted
-Users reads *Admin approved users are pre-authorized*, and the profile is listed.
+In `helios-integration`: **Setup > External Client App Manager**, open the app you named at the last
+question, then **Policies**. The name it offered you was `sfdxhardisintegration`, built from
+`sfdxhardis` plus the branch. Permitted Users reads *Admin approved users are pre-authorized*, and
+the profile is listed.
 
 It matters because of the one path where it is **not** done for you: if the app deployment fails and
 the command falls back to printing manual instructions, those instructions stop at uploading the
@@ -164,11 +178,11 @@ like a bug.
 
 ### 5. Do the same for uat, preprod and main
 
-Open the same gear menu **(1)** and **Add/Configure Org** three more times, once for each branch and
-its org. `uat` is a scratch org like `integration`; `preprod` and `main` answer the base URL question
-with `https://login.salesforce.com`.
+Same gear button, **Add/Configure Org** three more times, once for each branch and its org. `uat` is
+a scratch org like `integration`, so it takes the same sandbox answer. `preprod` and `main` are
+Developer Edition orgs, so at the base URL question they take **☢️ Other: Dev org, Production org or
+DevHub org (login.salesforce.com)**.
 
-![The settings menu of the DevOps Pipeline panel](../../_assets/annotated/vscode/devops-pipeline--settings-menu.png)
 Store six more secrets:
 
 - `SFDX_CLIENT_ID_UAT`, `SFDX_CLIENT_KEY_UAT`

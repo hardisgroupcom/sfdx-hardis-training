@@ -8,7 +8,6 @@ lang: en
 source_rev: ""
 screenshots:
   - annotated/vscode/pipeline-cards--new-user-story
-  - vscode/devops-pipeline
 depends_on:
   commands: [hardis:project:deploy:smart, hardis:doc:release-notes, hardis:doc:dora-report]
   flags: []
@@ -93,7 +92,7 @@ than your sandbox, then run the DORA report and compare it with the baseline you
 
 Update `MY-PIPELINE.md` with:
 
-- What went out this week
+- What went out this week, with the link to the release notes you generated on Thursday
 - What did not, and why
 - Anything you had to do by hand, which is a candidate for a deployment action next time
 
