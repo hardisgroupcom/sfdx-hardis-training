@@ -71,10 +71,8 @@ promoted, **(4)** previews the notes for what has not.
 
     `integration` has had `uat` as its merge target since Lab 1.2. If it is missing, the branch
     file lost it: click **Training: Level 3 > Set up my training environment**, which writes it
-    again. That command rewrites `config/branches/.sfdx-hardis.integration.yml` and
-    `.sfdx-hardis.uat.yml` whole, back to the Level 1 shape, so afterwards put `preprod` back as the
-    merge target of `uat` in **Pipeline Settings**. It never touches the `preprod` and `main` files
-    you wrote in Lab 3.1.
+    again. It refreshes the org and the login URL of a file that already exists and leaves the rest
+    alone, so what you set in Lab 3.1 survives.
 
 ### 2. Create the promotion Pull Request
 

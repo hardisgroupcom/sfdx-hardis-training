@@ -465,6 +465,37 @@ function ensureActions(slug) {
 }
 
 // ------------------------------------------------------- the branch config
+/**
+ * The file a stage carries, keeping what a later level added to it.
+ *
+ * Level 3 gives uat a preprod merge target, and preprod and main a login URL of
+ * their own. Rewriting the file whole on every setup would quietly undo that
+ * work, and the learner would find out from a failed deployment. So an existing
+ * file only has its org and its login URL refreshed, and everything else it
+ * carries is left alone.
+ */
+function mergeBranchConfigText(previous, stage, username) {
+  if (!previous.trim()) {
+    return branchConfigText(stage, username);
+  }
+  let text = previous;
+  const set = (key, value) => {
+    const line = `${key}: ${value}`;
+    const pattern = new RegExp(`^${key}:.*$`, "m");
+    text = pattern.test(text) ? text.replace(pattern, line) : `${text.replace(/\s*$/, "")}\n${line}\n`;
+  };
+  set("targetUsername", username);
+  // A scratch org logs in like a sandbox. An org somebody pointed elsewhere on
+  // purpose, a Developer Edition at Level 3, keeps the URL it was given.
+  if (!/^instanceUrl:/m.test(text) || /test\.salesforce\.com/.test(text)) {
+    set("instanceUrl", "https://test.salesforce.com");
+  }
+  if (!/^mergeTargets:/m.test(text) && stage.mergeTargets.length > 0) {
+    set("mergeTargets", `[${stage.mergeTargets.join(", ")}]`);
+  }
+  return text;
+}
+
 function branchConfigText(stage, username) {
   return [
     `# Which org the ${stage.branch} branch deploys to, and where its work goes next.`,
@@ -492,7 +523,8 @@ function branchConfigText(stage, username) {
 export function writeBranchConfigs(pipeline, usernames) {
   const files = pipeline.map((stage) => ({
     relative: `config/branches/.sfdx-hardis.${stage.branch}.yml`,
-    content: branchConfigText(stage, usernames[stage.alias])
+    stage,
+    username: usernames[stage.alias]
   }));
   const original = gitOut(["rev-parse", "--abbrev-ref", "HEAD"]);
   let published = true;
@@ -516,9 +548,10 @@ export function writeBranchConfigs(pipeline, usernames) {
     for (const file of files) {
       const absolute = path.join(ROOT, file.relative);
       const previous = fs.existsSync(absolute) ? fs.readFileSync(absolute, "utf8") : "";
-      if (previous !== file.content) {
+      const content = mergeBranchConfigText(previous, file.stage, file.username);
+      if (previous !== content) {
         fs.mkdirSync(path.dirname(absolute), { recursive: true });
-        fs.writeFileSync(absolute, file.content, "utf8");
+        fs.writeFileSync(absolute, content, "utf8");
         changed.push(file.relative);
       }
     }

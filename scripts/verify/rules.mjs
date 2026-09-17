@@ -80,6 +80,14 @@ export function makeContext(dir) {
 
 // --------------------------------------------------------------- helpers
 const DEV = "integration";
+
+// A learner clicks Check my work when a lab is finished, which for Labs 1.3,
+// 1.4 and 1.5 is before the Pull Request of Lab 1.6 puts anything into
+// integration. Their work is real, it just lives on their story branch, so
+// these rules look there too. Three red ticks in a row would teach them to
+// stop clicking the button.
+const readAnywhere = (ctx, file) => ctx.readOn(DEV, file) || ctx.readOn(ctx.currentBranch(), file);
+const logAnywhere = (ctx) => `${ctx.log(DEV)}\n${ctx.log(ctx.currentBranch())}`;
 const FIELD = (obj, field) => `force-app/main/default/objects/${obj}/fields/${field}.field-meta.xml`;
 const PERMSET = (name) => `force-app/main/default/permissionsets/${name}.permissionset-meta.xml`;
 
@@ -135,29 +143,29 @@ export const RULES = [
     id: "1.3", level: 1, lab: 3,
     title: "US-014 was taken from the backlog on its own branch",
     check: (ctx) => {
-      const history = ctx.log(DEV);
+      const history = logAnywhere(ctx);
       return mentions(history, "US-014")
-        ? pass("US-014 appears in the integration history")
-        : miss("no commit mentioning US-014", `the history of ${DEV}`);
+        ? pass("US-014 appears in the history")
+        : miss("no commit mentioning US-014", `the history of ${DEV} and of your current branch`);
     }
   },
   {
     id: "1.4", level: 1, lab: 4,
     title: "Panels Required exists on Installation and the crew can read it",
     check: (ctx) => {
-      const field = ctx.readOn(DEV, FIELD("Installation__c", "Panels_Required__c"));
+      const field = readAnywhere(ctx, FIELD("Installation__c", "Panels_Required__c"));
       if (!field) {
         return miss(
           "Installation__c.Panels_Required__c was not found",
-          `${FIELD("Installation__c", "Panels_Required__c")} on branch ${DEV}`
+          `${FIELD("Installation__c", "Panels_Required__c")} on ${DEV} or on your current branch`
         );
       }
-      const crew = ctx.readOn(DEV, PERMSET("Helios_Delivery_Crew"));
+      const crew = readAnywhere(ctx, PERMSET("Helios_Delivery_Crew"));
       return fieldGrantedIn(crew, "Installation__c.Panels_Required__c")
         ? pass("The field exists and the crew permission set grants it")
         : miss(
           "the field exists, but Helios_Delivery_Crew does not grant read access to it",
-          `${PERMSET("Helios_Delivery_Crew")} on branch ${DEV}`
+          `${PERMSET("Helios_Delivery_Crew")} on ${DEV} or on your current branch`
         );
     }
   },
@@ -165,12 +173,12 @@ export const RULES = [
     id: "1.5", level: 1, lab: 5,
     title: "Panels Required is on the Installation layout",
     check: (ctx) => {
-      const layout = ctx.readOn(DEV, "force-app/main/default/layouts/Installation__c-Installation Layout.layout-meta.xml");
+      const layout = readAnywhere(ctx, "force-app/main/default/layouts/Installation__c-Installation Layout.layout-meta.xml");
       return mentions(layout, "Panels_Required__c")
         ? pass("The layout carries the new field")
         : miss(
           "Panels_Required__c is not on the Installation layout",
-          `force-app/main/default/layouts/Installation__c-Installation Layout.layout-meta.xml on branch ${DEV}`
+          "force-app/main/default/layouts/Installation__c-Installation Layout.layout-meta.xml on integration or on your current branch"
         );
     }
   },
