@@ -523,7 +523,7 @@
       ],
       "screenshots": [
         "annotated/vscode/pipeline-cards--new-user-story",
-        "annotated/vscode/devops-pipeline-level3--three-stages",
+        "annotated/vscode/devops-pipeline-level3--four-stages",
         "annotated/vscode/devops-pipeline--one-column",
         "annotated/vscode/pipeline-config--target-branches",
         "annotated/vscode/pipeline-config-branch",
@@ -666,7 +666,8 @@
         "availableTargetBranches"
       ],
       "docs": [
-        "salesforce-devops-deploy-major-branches"
+        "salesforce-devops-deploy-major-branches",
+        "hardis/doc/salesforce-devops-release-notes"
       ],
       "panels": [
         "pipeline",
@@ -694,7 +695,8 @@
         "mergeTargets"
       ],
       "docs": [
-        "salesforce-devops-deploy-major-branches"
+        "salesforce-devops-deploy-major-branches",
+        "hardis/doc/salesforce-devops-dora-report"
       ],
       "panels": [
         "pipeline"
@@ -929,6 +931,12 @@
       ],
       "salesforce-devops-config-delta-deployment": [
         "lab-3-5"
+      ],
+      "hardis/doc/salesforce-devops-release-notes": [
+        "lab-3-6"
+      ],
+      "hardis/doc/salesforce-devops-dora-report": [
+        "lab-3-7"
       ],
       "salesforce-devops-hotfixes": [
         "lab-3-8"

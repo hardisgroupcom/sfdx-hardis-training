@@ -8,7 +8,7 @@ lang: en
 source_rev: ""
 screenshots:
   - annotated/vscode/pipeline-cards--new-user-story
-  - annotated/vscode/devops-pipeline-level3--three-stages
+  - annotated/vscode/devops-pipeline-level3--four-stages
   - annotated/vscode/devops-pipeline--one-column
   - annotated/vscode/pipeline-config--target-branches
   - annotated/vscode/pipeline-config-branch
@@ -261,7 +261,7 @@ Yes, even as the release manager. Especially as the release manager.
 
 Open the **DevOps Pipeline** panel and click **Refresh**. This is the pipeline you built:
 
-![The DevOps Pipeline panel with four major branches, each deploying to its org](../../_assets/annotated/vscode/devops-pipeline-level3--three-stages.png)
+![The DevOps Pipeline panel with four major branches, each deploying to its org](../../_assets/annotated/vscode/devops-pipeline-level3--four-stages.png)
 
 1. **`integration`** **(1)**, where contributors merge, with the promotion arrow leaving it
 2. **`uat`** **(2)**, where the business signs off

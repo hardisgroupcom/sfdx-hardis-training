@@ -14,7 +14,7 @@ depends_on:
   flags: []
   config: [mergeTargets, availableTargetBranches]
   panels: [pipeline, deploymentAction]
-  docs: [salesforce-devops-deploy-major-branches]
+  docs: [salesforce-devops-deploy-major-branches, hardis/doc/salesforce-devops-release-notes]
 ---
 
 # Lab 3.6 - Promote to UAT and write the release notes

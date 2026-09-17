@@ -14,7 +14,7 @@ depends_on:
   flags: []
   config: [productionBranch, mergeTargets]
   panels: [pipeline]
-  docs: [salesforce-devops-deploy-major-branches]
+  docs: [salesforce-devops-deploy-major-branches, hardis/doc/salesforce-devops-dora-report]
 ---
 
 # Lab 3.7 - Release to production and read your DORA metrics

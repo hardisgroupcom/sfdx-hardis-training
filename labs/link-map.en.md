@@ -54,6 +54,8 @@ so a renamed documentation page fails CI here rather than surprising a learner.
 
 | Page | URL |
 |---|---|
+| hardis/doc/salesforce-devops-dora-report | https://sfdx-hardis.cloudity.com/hardis/doc/salesforce-devops-dora-report/ |
+| hardis/doc/salesforce-devops-release-notes | https://sfdx-hardis.cloudity.com/hardis/doc/salesforce-devops-release-notes/ |
 | salesforce-devops-agent-data-workspaces | https://sfdx-hardis.cloudity.com/salesforce-devops-agent-data-workspaces/ |
 | salesforce-devops-backpromote | https://sfdx-hardis.cloudity.com/salesforce-devops-backpromote/ |
 | salesforce-devops-clone-repository | https://sfdx-hardis.cloudity.com/salesforce-devops-clone-repository/ |
