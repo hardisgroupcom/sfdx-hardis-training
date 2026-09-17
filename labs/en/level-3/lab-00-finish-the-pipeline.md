@@ -5,6 +5,7 @@ lab: 0
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/vscode/devops-pipeline-level3--three-stages
   - annotated/vscode/devops-pipeline--one-column
   - annotated/vscode/pipeline-config--target-branches
   - annotated/vscode/pipeline-config-branch
@@ -226,7 +227,20 @@ Yes, even as the release manager. Especially as the release manager.
 
 ## What you should see
 
-- Three columns in the DevOps Pipeline panel, each naming its org
+Open the **DevOps Pipeline** panel and click **Refresh**. This is the pipeline you built:
+
+![The DevOps Pipeline panel with three major branches, each deploying to its org](../../_assets/annotated/vscode/devops-pipeline-level3--three-stages.png)
+
+1. **`integration`** **(1)**, where contributors merge, with the promotion arrow leaving it
+2. **`uat`** **(2)**, where the business signs off
+3. **`main`** **(3)**, production
+4. The three orgs **(4)**, one per branch, in the order the work travels through them
+
+The **+ PR** buttons on the arrows are the promotion Pull Requests, and Lab 5 is the first time you
+click one.
+
+Also true, and worth checking:
+
 - `config/branches/` holding three files
 - A merged Pull Request carrying the configuration change
 

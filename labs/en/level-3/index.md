@@ -37,6 +37,29 @@ it does not have:
 
 Your first week is finishing the pipeline. Then you run it.
 
+## The Training menu
+
+Everything this course asks you to run outside the product's own buttons lives in one menu, and it
+is worth knowing where before you need it. Open the **SFDX HARDIS** view in the left bar of VS Code
+and expand **Training (custom)** **(1)**:
+
+![The Training menu of the sfdx-hardis command list](../../_assets/annotated/vscode/sidebar-commands-custom-menu--training-menu.png)
+
+Seven commands **(2)**, and the labs call them by these names:
+
+| Command                         | What it does                                                    |
+|---------------------------------|-----------------------------------------------------------------|
+| **Set up my pipeline**          | Forks the repository, turns Actions on, gives the CI a way in   |
+| **Where am I?**                 | Says which level and lab you reached, and what to do next       |
+| **Set up one of my training orgs** | Deploys the Helios app and its data into an org you choose   |
+| **Check my work**               | Verifies the lab you just finished and prints your receipt      |
+| **Simulate my teammates**       | Creates the teammate branches and Pull Requests a lab needs     |
+| **Reset this level**            | Puts your repository back to the start of a level               |
+| **Clean up a training org**     | Removes the Helios app and its data from an org                 |
+
+The same seven are on the **Welcome page**, as a card called **Training**. Either route runs the
+same thing.
+
 ## What you will do
 
 | Lab                                | Title                                                  | Time   |

@@ -5,6 +5,7 @@ lab: 8
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/vscode/org-monitoring--not-a-monitoring-repo
   - annotated/vscode/monitoring-config--what-it-watches
   - annotated/vscode/org-monitoring--first-report
 depends_on:
@@ -82,9 +83,15 @@ From the monitoring repository, open the **Org Monitoring Workbench** from the W
 **Install Org Monitoring**.
 
 !!! note "No such button?"
-    Then you are in the wrong folder. In a CI/CD repository the panel shows **Org Monitoring Not
-    Present (CI/CD Repo)** and offers **Open Monitoring Repository** and **Learn More** instead. The
-    button only exists where the thing it installs belongs.
+    Then you are in the wrong folder. Open the same panel from the repository you have been working
+    in all course and you get this instead:
+
+    ![The Org Monitoring Workbench opened from a CI/CD repository](../../_assets/annotated/vscode/org-monitoring--not-a-monitoring-repo.png)
+
+    **Org Monitoring Not Present (CI/CD Repo)** **(1)** is the panel telling you it will not install
+    monitoring here, and **Learn More** **(2)** is all it offers. A project that has recorded where
+    its monitoring repository lives gets an **Open Monitoring Repository** button beside it. The
+    install button only exists where the thing it installs belongs.
 
 It runs in a command panel and asks its questions one at a time, the way Lab 1 did:
 

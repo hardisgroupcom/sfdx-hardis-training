@@ -122,7 +122,8 @@ configured to stop it. That is a decision this project made, not a thing the too
 ### 5. Verify in the org, not in the log
 
 Open `helios-integration` from **Orgs Manager**: find it by its alias **(2)**, check it still says
-**Connected** **(3)**, and open it from the actions at the end of its row.
+**Connected** **(3)**, and open it from the actions at the end of its row. **Add Org** **(1)** is
+how you reconnect it if the session expired.
 
 ![The Orgs Manager table, with the alias and connection state of each org](../../_assets/annotated/vscode/orgs-manager.png)
 

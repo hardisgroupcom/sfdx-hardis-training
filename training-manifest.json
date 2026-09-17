@@ -68,8 +68,8 @@
         "annotated/vscode/clone-repository",
         "annotated/vscode/org-select-alias",
         "annotated/vscode/welcome--training-menu",
-        "annotated/vscode/devops-pipeline--github-auth",
-        "annotated/vscode/devops-pipeline--read-it"
+        "annotated/vscode/devops-pipeline-disconnected--github-auth",
+        "annotated/vscode/devops-pipeline-fresh--read-it"
       ]
     },
     {
@@ -100,7 +100,11 @@
       "screenshots": [
         "annotated/vscode/pipeline-cards--new-user-story",
         "annotated/vscode/work-new-target-branch",
-        "annotated/vscode/work-new-org"
+        "annotated/vscode/work-new-story-type",
+        "annotated/vscode/work-new-story-name",
+        "annotated/vscode/work-new-org-type",
+        "annotated/vscode/work-new-org",
+        "annotated/vscode/work-new-completed"
       ]
     },
     {
@@ -145,10 +149,15 @@
       ],
       "panels": [
         "pipeline",
+        "metadataRetriever",
         "packageXml",
         "commandExecution"
       ],
       "screenshots": [
+        "annotated/vscode/pipeline-cards--commit-changes",
+        "annotated/vscode/metadata-retriever-recent-changes--find",
+        "annotated/vscode/metadata-retriever-selected--us-014",
+        "annotated/vscode/source-control-retrieved--commit",
         "annotated/vscode/pipeline-cards--save-publish",
         "annotated/vscode/work-save-commit-ready",
         "annotated/vscode/work-save-package-xml"
@@ -210,9 +219,7 @@
         "pipeline",
         "orgManager"
       ],
-      "screenshots": [
-        "vscode/devops-pipeline"
-      ]
+      "screenshots": []
     },
     {
       "id": "l2-lab-00-refresh",
@@ -267,7 +274,9 @@
         "packageXml"
       ],
       "screenshots": [
-        "annotated/vscode/metadata-retriever"
+        "annotated/vscode/pipeline-cards--new-user-story",
+        "annotated/vscode/metadata-retriever",
+        "annotated/vscode/pipeline-cards--save-publish"
       ]
     },
     {
@@ -295,6 +304,8 @@
         "deploymentAction"
       ],
       "screenshots": [
+        "annotated/vscode/pipeline-cards--my-pull-request",
+        "annotated/vscode/pipeline-cards--new-user-story",
         "annotated/vscode/pipeline-pr-actions-empty",
         "annotated/vscode/pipeline-edit-action-apex",
         "annotated/vscode/pipeline-pr-actions-list"
@@ -326,6 +337,7 @@
         "pipeline"
       ],
       "screenshots": [
+        "annotated/vscode/pipeline-cards--new-user-story",
         "annotated/vscode/data-workbench",
         "annotated/vscode/pipeline-edit-action-data",
         "annotated/vscode/pipeline-edit-action-schedule-batch",
@@ -358,7 +370,8 @@
         "pipeline"
       ],
       "screenshots": [
-        "vscode/devops-pipeline"
+        "annotated/vscode/pipeline-cards--new-user-story",
+        "annotated/vscode/org-monitoring--apex-tests"
       ]
     },
     {
@@ -387,6 +400,7 @@
         "packageXml"
       ],
       "screenshots": [
+        "annotated/vscode/pipeline-cards--new-user-story",
         "annotated/vscode/pipeline-config"
       ]
     },
@@ -414,7 +428,7 @@
         "commandExecution"
       ],
       "screenshots": [
-        "vscode/devops-pipeline"
+        "annotated/vscode/sidebar-commands-advanced--push"
       ]
     },
     {
@@ -439,7 +453,10 @@
         "packageXml"
       ],
       "screenshots": [
-        "annotated/vscode/sidebar"
+        "annotated/vscode/pipeline-cards--new-user-story",
+        "annotated/vscode/metadata-retriever-recent-changes--select-all",
+        "annotated/vscode/sidebar",
+        "annotated/vscode/pipeline-cards--save-publish"
       ]
     },
     {
@@ -500,6 +517,7 @@
         "pipelineConfig"
       ],
       "screenshots": [
+        "annotated/vscode/devops-pipeline-level3--three-stages",
         "annotated/vscode/devops-pipeline--one-column",
         "annotated/vscode/pipeline-config--target-branches",
         "annotated/vscode/pipeline-config-branch",
@@ -532,8 +550,10 @@
         "promptInput"
       ],
       "screenshots": [
+        "annotated/vscode/devops-pipeline--settings-menu",
         "annotated/vscode/command-runner-question--ci-auth",
-        "annotated/vscode/command-runner-completed--ci-auth-result"
+        "annotated/vscode/command-runner-completed--ci-auth-result",
+        "annotated/vscode/pipeline-config-deployment--deployment-tab"
       ]
     },
     {
@@ -558,7 +578,9 @@
         "pipeline"
       ],
       "screenshots": [
-        "vscode/devops-pipeline"
+        "annotated/web/github-pr-closed",
+        "annotated/web/github-pr-files",
+        "annotated/vscode/pipeline-cards--new-user-story"
       ]
     },
     {
@@ -585,6 +607,8 @@
         "pipeline"
       ],
       "screenshots": [
+        "annotated/vscode/pipeline-config-deployment--delta",
+        "annotated/vscode/orgs-manager",
         "annotated/vscode/devops-pipeline--deployment-status"
       ]
     },
@@ -642,7 +666,8 @@
         "deploymentAction"
       ],
       "screenshots": [
-        "annotated/vscode/pipeline-branch-modal"
+        "annotated/vscode/pipeline-branch-modal-level3--what-it-carries",
+        "annotated/vscode/pipeline-branch-modal--no-merge-target"
       ]
     },
     {
@@ -728,6 +753,7 @@
         "orgMonitoring"
       ],
       "screenshots": [
+        "annotated/vscode/org-monitoring--not-a-monitoring-repo",
         "annotated/vscode/monitoring-config--what-it-watches",
         "annotated/vscode/org-monitoring--first-report"
       ]
@@ -961,6 +987,10 @@
         "l1-lab-02-new-user-story",
         "l3-lab-01-ci-auth"
       ],
+      "metadataRetriever": [
+        "l1-lab-04-publish",
+        "l3-lab-07-hotfix-retrofit"
+      ],
       "packageXml": [
         "l1-lab-04-publish",
         "l2-lab-01-missing-dependency",
@@ -994,9 +1024,6 @@
         "l2-lab-05-profiles-overwrites",
         "l3-lab-00-finish-the-pipeline",
         "l3-lab-04-overwrite-cleaning"
-      ],
-      "metadataRetriever": [
-        "l3-lab-07-hotfix-retrofit"
       ],
       "monitoringConfig": [
         "l3-lab-08-monitoring"

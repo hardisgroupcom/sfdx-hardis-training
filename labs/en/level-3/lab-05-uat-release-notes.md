@@ -5,7 +5,8 @@ lab: 5
 lang: en
 source_rev: ""
 screenshots:
-  - annotated/vscode/pipeline-branch-modal
+  - annotated/vscode/pipeline-branch-modal-level3--what-it-carries
+  - annotated/vscode/pipeline-branch-modal--no-merge-target
 depends_on:
   commands: [hardis:doc:release-notes, hardis:project:deploy:smart]
   flags: []
@@ -43,24 +44,30 @@ deploys to has real testers in it.
 ### 1. See what you are about to ship
 
 Open the **DevOps Pipeline** panel and click the `integration` node in the diagram. A window opens
-on that branch, titled **Pull Requests in integration**, with up to four tabs: **Pull Requests**,
-**Tickets**, **Deployment Actions** and **Apex Tests**.
+on that branch, titled **Pull Requests in integration**.
 
-![The branch window of integration, listing what it carries](../../_assets/annotated/vscode/pipeline-branch-modal.png)
+![The branch window of integration, listing what it carries](../../_assets/annotated/vscode/pipeline-branch-modal-level3--what-it-carries.png)
 
 **Pull Requests** **(1)** is the list that matters: every Pull Request merged into `integration`
-since the last promotion to `uat`. That list **is** the release. Read it before you create anything:
-if a story in it should not go out this week, now is the moment, not after the deployment.
+since the last promotion to `uat`, with who merged it and when. That list **is** the release. Read
+it before you create anything: if a story in it should not go out this week, now is the moment, not
+after the deployment.
 
-**Deployment Actions** **(2)** is the same list of actions those Pull Requests carried, gathered in
-one place, and step 3 comes back to it. **Tickets** is the same again for whatever ticketing system
-the project declares, which this one does not, so it will be empty. **(3)** generates the notes,
-which is step 6.
+**Deployment Actions** **(2)** is the list of actions those Pull Requests carried, gathered in one
+place, and step 3 comes back to it. **Tickets** beside it is the same again for whatever ticketing
+system the project declares. A fourth tab, **Apex Tests**, appears only on a project that sets
+`enableDeploymentApexTestClasses`, and this one does not.
+
+The footer holds the two buttons step 6 uses: **(3)** generates the notes for what has already been
+promoted, **(4)** previews the notes for what has not.
 
 !!! note "Empty, with a Go Live selector instead?"
-    Then this branch has no merge target yet, and the panel is showing you its go-lives rather than
-    what is waiting to be promoted. Lab 0 of this level is what gives `integration` a merge target.
-    Go back and finish it.
+    Then this branch has no merge target yet, and the panel is showing you its go-lives **(1)**
+    rather than what is waiting to be promoted:
+
+    ![The same window on a branch with no merge target](../../_assets/annotated/vscode/pipeline-branch-modal--no-merge-target.png)
+
+    Lab 0 of this level is what gives `integration` a merge target. Go back and finish it.
 
 ### 2. Create the promotion Pull Request
 
@@ -122,18 +129,19 @@ a piece of reference data.
 
 ### 6. Generate the release notes
 
-Open the **DevOps Pipeline** panel and click the `uat` column, the same way you clicked
-`integration` in step 1. In the footer of the branch window, click **Generate Promotion Notes for
-uat**: it covers the promotion you have just merged.
+Open the **DevOps Pipeline** panel and click the `uat` node, the same way you clicked `integration`
+in step 1. In the footer of that window, the button marked **(3)** in the picture at step 1 now
+reads **Generate Promotion Notes for uat**. Click it: it covers the promotion you have just
+merged.
 
 The button is named after what the branch is. `uat` still merges into `main`, so what arrived there
 is a promotion. On a branch with no merge target, `main`, the same button reads **Generate Release
 Notes for Latest Release in main**, and once you pick a go-live in the selector at the top of the
 window it reads **Generate Release Notes for** that go-live.
 
-Next to it sits **Preview Upcoming Promotion Notes from uat**, which does the same thing for what has
-not been promoted yet. It is the one to use on a Wednesday, when somebody asks what Thursday's
-release will contain.
+Next to it, the button marked **(4)**, **Preview Upcoming Promotion Notes from uat**, does the same
+thing for what has not been promoted yet. It is the one to use on a Wednesday, when somebody asks
+what Thursday's release will contain.
 
 You get a markdown document listing the Pull Requests, their authors, their stories and the manual
 steps, generated from the merge history rather than from anybody's memory. It lands under
