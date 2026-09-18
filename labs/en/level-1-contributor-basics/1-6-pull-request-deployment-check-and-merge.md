@@ -83,8 +83,11 @@ Check two things before clicking, every single time:
     Request opened upstream cannot reach your org, will never turn green, and adds noise to a
     repository a few hundred other learners are using.
 
-The title and body are already filled in from the commit message you wrote in Lab 1.5. Click **Create pull
-request**.
+The title reads **Features/us 014 panels required**: GitHub makes it up from the branch name
+whenever a branch carries more than one commit, and yours carries two, the one you wrote and the
+one Save / Publish added. Replace it with the first line of your commit message,
+`US-014 Panels Required on Installation`, and paste the rest of that message into the
+description. It is what the reviewer reads first. Click **Create pull request**.
 
 ### 2. Watch the checks run
 

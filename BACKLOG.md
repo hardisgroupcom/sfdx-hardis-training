@@ -27,6 +27,8 @@ for the `Helios Delivery` app, and every one of them is a lab in this course.
 
 ## The stories in full
 
+<a id="US-014"></a>
+
 ### US-014 - Show the crew how many panels a job needs
 
 **Owner**: You  
@@ -42,6 +44,8 @@ Acceptance criteria:
 - Planners can fill it in
 - It appears on the Installation record page
 
+<a id="US-016"></a>
+
 ### US-016 - Let the crew leave notes on an installation
 
 **Owner**: You  
@@ -56,6 +60,8 @@ Acceptance criteria:
 - A My Open Installations list view exists
 - The crew permission set grants the field, and so does the planners' one
 
+<a id="US-017"></a>
+
 ### US-017 - Record who signed an installation off
 
 **Owner**: Amina Diallo  
@@ -68,6 +74,8 @@ Acceptance criteria:
 
 - The field is on the layout
 - Managers can read and write it
+
+<a id="US-018"></a>
 
 ### US-018 - Cap the crew size a planner can assign
 
@@ -82,6 +90,8 @@ Acceptance criteria:
 - Installation_Assign_Crew checks the cap
 - Planners can override it
 
+<a id="US-019"></a>
+
 ### US-019 - Generate a quote PDF from an opportunity
 
 **Owner**: Amina Diallo  
@@ -93,6 +103,8 @@ Acceptance criteria:
 Acceptance criteria:
 
 - The permission is granted to managers
+
+<a id="US-020"></a>
 
 ### US-020 - Refactor InstallationScheduler
 
@@ -107,6 +119,8 @@ Acceptance criteria:
 - Behaviour unchanged
 - Coverage above the threshold
 
+<a id="US-021"></a>
+
 ### US-021 - Warn the planner when a crew is too small
 
 **Owner**: You  
@@ -120,6 +134,8 @@ Acceptance criteria:
 - The flow reads Crew Size
 - A warning is shown
 
+<a id="US-024"></a>
+
 ### US-024 - Crew size becomes mandatory
 
 **Owner**: You  
@@ -132,6 +148,8 @@ Acceptance criteria:
 
 - Crew Size is required
 - Existing records are backfilled with the default of 2
+
+<a id="US-026"></a>
 
 ### US-026 - Crew capacity reference data and nightly recalculation
 
@@ -147,6 +165,8 @@ Acceptance criteria:
 - The batch is scheduled nightly
 - The planner receives the morning summary email
 
+<a id="US-027"></a>
+
 ### US-027 - Check several installations against panel availability at once
 
 **Owner**: You  
@@ -160,6 +180,8 @@ Acceptance criteria:
 - InstallationScheduler returns the installations that can take a crew on a given day
 - Coverage stays above the threshold
 
+<a id="US-033"></a>
+
 ### US-033 - Crews can read the panel batch cost
 
 **Owner**: You  
@@ -171,6 +193,8 @@ Acceptance criteria:
 Acceptance criteria:
 
 - The crew can read Panel Batch Cost
+
+<a id="US-034"></a>
 
 ### US-034 - Flat roofs need a crew of at least three
 
@@ -185,6 +209,8 @@ Acceptance criteria:
 - Installation_Assign_Crew raises the crew on flat roofs
 - Marco crew cap from US-018 still wins when the two disagree
 
+<a id="US-038"></a>
+
 ### US-038 - Tidy the Installation layout
 
 **Owner**: You  
@@ -196,6 +222,8 @@ Acceptance criteria:
 Acceptance criteria:
 
 - Crew Size sits above Install Date on the Installation layout
+
+<a id="US-041"></a>
 
 ### US-041 - Installation handover checklist
 
@@ -210,6 +238,8 @@ Acceptance criteria:
 - A Handover_Item__c object exists
 - 10 reference checklist items are loaded in every org
 - The close flow blocks on an incomplete checklist
+
+<a id="US-045"></a>
 
 ### US-045 - Installations can no longer be saved
 

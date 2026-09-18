@@ -307,7 +307,8 @@ function ticketsOf(story) {
     {
       provider: "GENERIC",
       id: story.id,
-      url: `${u.course.site}/BACKLOG/#${story.id.toLowerCase()}-${story.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
+      // The link the project's generic ticketing provider builds from the story id
+      url: `${u.course.site}/BACKLOG/#${story.id}`,
       subject: story.title,
       status: "In Progress",
       statusLabel: "In Progress"

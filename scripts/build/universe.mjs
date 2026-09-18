@@ -187,7 +187,9 @@ function backlog() {
   lines.push("", "## The stories in full", "");
   for (const story of universe.userStories) {
     const owner = universe.cast.find((p) => p.handle === story.author);
-    lines.push(`### ${story.id} - ${story.title}`, "");
+    // An anchor named after the story id, so a ticket link can be built from the id
+    // alone: that is all the generic ticketing provider of sfdx-hardis knows
+    lines.push(`<a id="${story.id}"></a>`, "", `### ${story.id} - ${story.title}`, "");
     lines.push(`**Owner**: ${owner ? owner.name : story.author}  `);
     lines.push(`**Branch**: \`${story.branch}\`  `);
     lines.push(`**Lab**: ${story.level}.${story.lab}`, "");
