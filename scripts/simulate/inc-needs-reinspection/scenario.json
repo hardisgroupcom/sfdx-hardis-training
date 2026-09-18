@@ -3,9 +3,7 @@
   "kind": "org",
   "title": "Monday morning: an admin adds a picklist value in production",
   "usedBy": "Lab 3.8",
-  "levels": [
-    3
-  ],
+  "levels": [3],
   "description": "While the Friday incident was being handled, an admin added a Needs Reinspection value to the installation status, live in helios-prod, to unblock the planners. It exists in production and in no branch.",
   "org": "helios-prod",
   "change": {
