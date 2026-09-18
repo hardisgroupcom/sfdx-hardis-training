@@ -237,6 +237,21 @@
       "metadata": ["config/.sfdx-hardis.yml", "config/branches/"]
     },
     {
+      "id": "US-051",
+      "level": 3,
+      "lab": 2,
+      "author": "you",
+      "title": "CI authentication with JWT",
+      "story": "As the release manager, I want every CI job to log in with a certificate through an External Client App, so that no pipeline depends on one person's refresh token.",
+      "acceptance": [
+        "integration, uat, preprod and main each have an encrypted key file and two secrets",
+        "No SFDX_AUTH_URL secret is left in the repository",
+        "The integration check job logs in with JWT"
+      ],
+      "branch": "features/US-051-ci-authentication",
+      "metadata": ["config/.sfdx-hardis.yml", "config/branches/"]
+    },
+    {
       "id": "US-020",
       "level": 3,
       "lab": 5,

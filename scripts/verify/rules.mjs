@@ -674,6 +674,15 @@ export const RULES = [
           "config/branches/. sf hardis:project:configure:auth writes both"
         );
       }
+      // The encrypted key files are committed with the story that configured them
+      const keys = ctx.listOn(DEV, "config/branches/.jwt/").concat(ctx.listOn("main", "config/branches/.jwt/"));
+      const noKey = branches.filter((b) => !keys.some((f) => f.endsWith(`/${b}.key`)));
+      if (noKey.length > 0) {
+        return miss(
+          `no encrypted key file for: ${noKey.join(", ")}`,
+          "config/branches/.jwt/ on integration. Add/Configure Org writes them, and they reach integration with your Lab 3.2 story"
+        );
+      }
       const notes = pipelineNotes(ctx);
       return mentions(notes, "SFDX_AUTH_URL_INTEGRATION")
         ? pass("The four orgs are configured, and the Level 1 shortcut is accounted for")

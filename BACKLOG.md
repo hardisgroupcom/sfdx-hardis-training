@@ -15,6 +15,7 @@ for the `Helios Delivery` app, and every one of them is a lab in this course.
 | US-018 | 2 | Cap the crew size a planner can assign | Marco Bianchi | `training/mate-us-018-crew-capacity` |
 | US-019 | 2 | Generate a quote PDF from an opportunity | Amina Diallo | `training/mate-us-019-quote-pdf` |
 | US-050 | 3 | The pipeline reaches production | You | `features/US-050-pipeline-to-production` |
+| US-051 | 3 | CI authentication with JWT | You | `features/US-051-ci-authentication` |
 | US-020 | 3 | Refactor InstallationScheduler | Marco Bianchi | `training/mate-us-020-apex-refactor` |
 | US-021 | 2 | Warn the planner when a crew is too small | You | `features/US-021-crew-size-warning` |
 | US-024 | 2 | Crew size becomes mandatory | You | `features/US-024-crew-size-required` |
@@ -120,6 +121,22 @@ Acceptance criteria:
 - preprod and main are major branches with their own org
 - integration merges into uat, uat into preprod, preprod into main
 - Contributors can target preprod for a hotfix
+
+<a id="US-051"></a>
+
+### US-051 - CI authentication with JWT
+
+**Owner**: You  
+**Branch**: `features/US-051-ci-authentication`  
+**Lab**: 3.2
+
+> As the release manager, I want every CI job to log in with a certificate through an External Client App, so that no pipeline depends on one person's refresh token.
+
+Acceptance criteria:
+
+- integration, uat, preprod and main each have an encrypted key file and two secrets
+- No SFDX_AUTH_URL secret is left in the repository
+- The integration check job logs in with JWT
 
 <a id="US-020"></a>
 

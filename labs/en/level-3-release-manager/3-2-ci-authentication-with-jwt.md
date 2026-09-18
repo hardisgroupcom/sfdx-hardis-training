@@ -54,6 +54,9 @@ pre-authorised user, no password anywhere, and revocation by deleting one app.
 - [ ] Lab 3.1 finished: four major branches with their orgs
 - [ ] `helios-integration`, `helios-uat`, `helios-preprod` and `helios-prod` connected in
       **Orgs Manager**
+- [ ] A story started for it, like in Lab 3.1: **New User Story**, name `US-051-ci-authentication`,
+      and answer **I'm hardcore, I don't need an org**. The command writes files and never commits
+      them, and a story started afterwards would put them aside in a stash
 - [ ] Nothing else. The command generates the certificate itself, using `openssl`, which came with
       Git when you installed it in Level 1
 
@@ -105,7 +108,8 @@ It asks a dozen questions, not three, and the order is not the one you would gue
 9. **Please confirm when variables have been set.** This one is a stop, and step 3 is what it is
    waiting for. Do not click **Validate** yet
 10. Then, after you confirm: the **name** of the External Client App, a **contact email**, and the
-    **profile to pre-authorise** (`System Administrator`)
+    **profile to pre-authorise** (`System Administrator`). The list shows the profile names in the
+    language of the org's user, so an org set to French lists `Administrateur système` instead
 
 ### 2. Read what it produced, and copy the two values
 
@@ -181,7 +185,8 @@ like a bug.
 Same gear button, **Add/Configure Org** three more times, once for each branch and its org. `uat` is
 a scratch org like `integration`, so it takes the same sandbox answer. `preprod` and `main` are
 Developer Edition orgs, so at the base URL question they take **☢️ Other: Dev org, Production org or
-DevHub org (login.salesforce.com)**.
+DevHub org (login.salesforce.com)**. At the merge targets question, `uat` merges into `preprod` and
+`preprod` into `main`, as in Lab 3.1. `main` is production and merges into nothing: tick nothing.
 
 Store six more secrets:
 
@@ -194,31 +199,17 @@ deployment failed.
 
 Eight secrets, four External Client Apps, four certificates. Tedious once, then never again.
 
-### 6. Prove it works before you delete anything
-
-Start with `preprod`, because it is the one that can be proven right now. Open a Pull Request from
-`uat` into `preprod` and watch the check job authenticate. That branch has no auth URL secret to
-fall back on, so a green authentication there is a JWT authentication and nothing else. Do not merge
-it yet, Lab 3.7 is the real release.
-
-**`integration` and `uat` cannot be proven the same way, and that is the point of this step.**
-`SFDX_AUTH_URL_INTEGRATION` and `SFDX_AUTH_URL_UAT` still exist, the authentication hook looks for
-them first, and it stops there. Re-run the last deployment job from the **Actions** tab of your fork
-and the log shows an auth URL login, not a JWT one, no matter how correct your certificate is.
-
-So there is nothing you can check on those two while the shortcut is there. Which is why the next
-step is a test and not a formality:
-
-### 7. Delete the shortcut
+### 6. Delete the shortcut, before anything proves anything
 
 In your fork: **Settings > Secrets and variables > Actions**, find `SFDX_AUTH_URL_INTEGRATION` and
 `SFDX_AUTH_URL_UAT`, and delete both.
 
-Now go back to **Actions**, open the last **Process Deployment (sfdx-hardis)** run on `integration`,
-and click **Re-run all jobs**. Nothing has changed except the secrets you just deleted, so if the job
-still passes, the JWT path is genuinely what is being used and it was not quietly falling back.
+Do it now, before the Pull Request of step 9, and not after. The authentication step of every job
+looks for `SFDX_AUTH_URL_<BRANCH>` first and stops there when it finds one. While the two secrets
+exist, a green job proves nothing about your certificates: it logged in the old way. Once they are
+gone, the only way in is the JWT one, so the next green job is the proof.
 
-### 8. Tell the panel what the project now uses
+### 7. Tell the panel what the project now uses
 
 One line of configuration is still describing the old world.
 
@@ -240,18 +231,35 @@ From now on the panel checks `config/branches/.jwt/<branch>.key` for every major
 when one is missing. That is the check you want switched on: a key file that never made it into a
 commit is exactly the failure that only shows up in a job, at the worst moment.
 
-### 9. Write down why
+### 8. Write down why
 
-In `MY-PIPELINE.md`, under Level 3:
+In `MY-PIPELINE.md`, under Level 3, replace the Lab 3.2 line with what you did:
 
 ```markdown
 - **Lab 3.2, CI authentication**: deleted the SFDX_AUTH_URL_INTEGRATION and SFDX_AUTH_URL_UAT
-  secrets. They carried long-lived refresh tokens that could not be rotated, were not scoped, and
-  were tied to one person. All four orgs now authenticate with JWT through an External Client App.
+  secrets on <the date>. They carried long-lived refresh tokens that could not be rotated, were not
+  scoped, and were tied to one person. All four orgs now authenticate with JWT through an External
+  Client App.
 ```
 
 The badge audit looks for that line. More to the point, it is the answer to the question the next
 release manager will ask.
+
+### 9. Commit, and let the Pull Request prove it
+
+Same buttons as Lab 3.1. **Source Control** lists what this lab wrote: the four
+`config/branches/.jwt/*.key` files, the branch files the command touched, `config/.sfdx-hardis.yml`
+and `MY-PIPELINE.md`. Commit them, then **Save / Publish**, then **Create Pull Request** into
+`integration` from the reports bar.
+
+The check job of that Pull Request logs into `helios-integration`, and there is no auth URL secret
+left for it to use. Open it from the **Checks** tab of the Pull Request, expand **Login & Simulate
+deployment** and look for `sf org login jwt`: that line, and a green job, are your certificate
+working. Merge, and the deployment job on `integration` logs in the same way.
+
+`uat`, `preprod` and `main` prove themselves the first time a Pull Request goes into them: the
+promotion to `uat` in Lab 3.6, then `preprod` and `main` in Lab 3.7. Their check jobs log in with
+their own key and secrets, the same way.
 
 <details markdown="1"><summary>Under the hood: what the JWT flow actually does</summary>
 
@@ -274,7 +282,7 @@ never written anywhere persistent.
 **How the authentication hook chooses.** For a branch `<B>`, it looks for `SFDX_AUTH_URL_<B>` first,
 in that spelling and then upper-cased. If it finds one, it uses it and returns, before the JWT
 variables are even read. Only if there is none does it go on to `SFDX_CLIENT_ID_<B>` plus the
-certificate. That order is why step 7 is a real test: while the auth URL secret existed, the JWT
+certificate. That order is why step 6 comes before the Pull Request: while the auth URL secret existed, the JWT
 path was never being exercised.
 
 One detail worth knowing before you debug this on a real project: the JWT lookup also accepts a
@@ -285,7 +293,7 @@ unsuffixed secret left over from an old setup will answer for every branch.
 command reads it. It only tells the VS Code pipeline panel which shape to expect, so that it can
 warn you when a major org is not configured the way the project declared. `secretsOnly` means the
 credentials live entirely in CI secrets and there is no key file to look for; `encryptedCert`, the
-default and what step 8 sets, means every major branch should have one committed.
+default and what step 7 sets, means every major branch should have one committed.
 
 </details>
 
@@ -293,9 +301,9 @@ default and what step 8 sets, means every major branch should have one committed
 
 - Eight secrets in your fork, none of them an auth URL
 - Four `config/branches/.jwt/*.key` files, encrypted
-- A green check job on the Pull Request into `preprod`, authenticating with JWT
-- `SFDX_AUTH_URL_INTEGRATION` and `SFDX_AUTH_URL_UAT` gone, and `integration` still deploying green
-  after they went
+- `SFDX_AUTH_URL_INTEGRATION` and `SFDX_AUTH_URL_UAT` gone
+- A green check job on your `US-051` Pull Request into `integration`, with `sf org login jwt` in its
+  log, and `integration` deploying green after the merge
 - The DevOps Pipeline panel quiet: no warning about a missing key file, on any of the four branches
 
 ## If it goes wrong
@@ -311,8 +319,12 @@ failed.
 **The job cannot decrypt the key.**
 `SFDX_CLIENT_KEY_<ALIAS>` is wrong or was copied with a trailing newline. Recreate it.
 
+**The job says it cannot find `config/branches/.jwt/<branch>.key`.**
+The key file never reached the branch the job runs on. Check that the `.jwt` folder is in your
+commit: it starts with a dot, and some tools hide such folders.
+
 **Everything passes even with the JWT secrets missing.**
-An auth URL secret is still there and still winning. That is exactly what step 7 catches.
+An auth URL secret is still there and still winning. That is exactly what step 6 removes.
 
 ## Check your work
 
