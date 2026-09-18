@@ -226,25 +226,35 @@ export const RULES = [
         if (!ctx.sfQuery) {
           return miss("your dev org could not be read from here", `${DEV_ORG}. Check it is connected in Orgs Manager`);
         }
-        const fields = ctx.sfQuery(
-          DEV_ORG,
-          "SELECT QualifiedApiName FROM FieldDefinition WHERE EntityDefinition.QualifiedApiName = 'Installation__c' AND QualifiedApiName = 'Panels_Required__c'"
-        );
-        if (fields === null) {
+        // The Tooling API, because FieldDefinition hides a field from a user who
+        // cannot see it, and not seeing it is one of the mistakes this checks for
+        const objects = ctx.sfQuery(DEV_ORG, "SELECT Id FROM CustomObject WHERE DeveloperName = 'Installation'", { tooling: true });
+        if (objects === null || objects.length === 0) {
           return miss("your dev org could not be queried", `${DEV_ORG}. Reconnect it in Orgs Manager, then run this again`);
         }
-        if (fields.length === 0) {
+        const fields = ctx.sfQuery(
+          DEV_ORG,
+          `SELECT Id FROM CustomField WHERE DeveloperName = 'Panels_Required' AND TableEnumOrId = '${objects[0].Id}'`,
+          { tooling: true }
+        );
+        if (!fields || fields.length === 0) {
           return miss("there is no Panels_Required__c field on Installation", `the org ${DEV_ORG}. Step 2 creates it`);
         }
-        const grants = ctx.sfQuery(
+        const granted = (permset, access) => (ctx.sfQuery(
           DEV_ORG,
-          "SELECT Id FROM FieldPermissions WHERE Parent.Name = 'Helios_Delivery_Crew' AND Field = 'Installation__c.Panels_Required__c' AND PermissionsRead = true"
-        );
-        return grants && grants.length > 0
-          ? pass(`Panels Required exists in ${DEV_ORG}, and Helios_Delivery_Crew can read it`)
-          : miss(
+          `SELECT Id FROM FieldPermissions WHERE Parent.Name = '${permset}' AND Field = 'Installation__c.Panels_Required__c' AND ${access} = true`
+        ) || []).length > 0;
+        if (!granted("Helios_Delivery_Crew", "PermissionsRead")) {
+          return miss(
             "the field exists, but the Helios_Delivery_Crew permission set does not grant read access to it",
             `the org ${DEV_ORG}, Setup > Permission Sets > Helios Delivery Crew > Object Settings > Installations`
+          );
+        }
+        return granted("Helios_Delivery_Manager", "PermissionsEdit")
+          ? pass(`Panels Required exists in ${DEV_ORG}, the crew can read it and the planners can fill it in`)
+          : miss(
+            "the crew can read the field, but Helios_Delivery_Manager does not grant edit access to it, so no planner can fill it in",
+            `the org ${DEV_ORG}, Setup > Permission Sets > Helios Delivery Manager > Object Settings > Installations`
           );
       }
     ),
@@ -291,9 +301,12 @@ export const RULES = [
         if (!fieldGrantedIn(ctx.readOn(ref, PERMSET("Helios_Delivery_Crew")), "Installation__c.Panels_Required__c")) {
           return miss("Helios_Delivery_Crew in the published branch does not grant the field", `${PERMSET("Helios_Delivery_Crew")} on ${where}`);
         }
+        if (!fieldGrantedIn(ctx.readOn(ref, PERMSET("Helios_Delivery_Manager")), "Installation__c.Panels_Required__c")) {
+          return miss("Helios_Delivery_Manager in the published branch does not grant the field", `${PERMSET("Helios_Delivery_Manager")} on ${where}`);
+        }
         const layout = ctx.readOn(ref, "force-app/main/default/layouts/Installation__c-Installation Layout.layout-meta.xml");
         return mentions(layout, "Panels_Required__c")
-          ? pass(`The field, its permission and the layout are published on ${branch}`)
+          ? pass(`The field, both permission sets and the layout are published on ${branch}`)
           : miss("the Installation layout in the published branch does not carry the field", `the Installation layout on ${where}`);
       }
     ),

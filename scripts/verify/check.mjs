@@ -60,8 +60,12 @@ export function printResults(results, handle, commit, { record = false } = {}) {
 }
 
 /** Records returned by a SOQL query on an org, or null when the org could not be read. */
-export function sfQuery(alias, soql) {
-  const res = runJson("sf", ["data", "query", "--target-org", alias, "--query", soql, "--json"], { quiet: true });
+export function sfQuery(alias, soql, { tooling = false } = {}) {
+  const res = runJson(
+    "sf",
+    ["data", "query", "--target-org", alias, "--query", soql, "--json", ...(tooling ? ["--use-tooling-api"] : [])],
+    { quiet: true }
+  );
   return Array.isArray(res?.result?.records) ? res.result.records : null;
 }
 

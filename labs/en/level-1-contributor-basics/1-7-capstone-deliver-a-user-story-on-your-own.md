@@ -54,13 +54,15 @@ No numbered clicks this time. The loop, in order:
 2. **Build it in `helios-dev`**
     - A **Long Text Area** field `Crew_Notes__c` on `Installation__c`, 4000 characters, with a
       description and help text
-    - Grant it **Read** and **Edit** on `Helios Delivery Crew`, because a crew member writes notes
+    - Grant it **Read** and **Edit** on `Helios Delivery Crew`, because a crew member writes notes,
+      and on `Helios Delivery Manager`, because planners read the handover and it is the permission
+      set you look through
     - On the Installation page layout
     - A list view on Installation called **My Open Installations**, filtered on installations whose
       status is not Completed, showing the account, the status, the install date and Panels Required
 3. **Bring it down.** **Commit changes**, **Recent Changes**, **Search Metadata**, and take the
-   field, the layout, the list view and the permission set. Nothing else. Commit them
-4. **Publish**, and read `manifest/package.xml` before pushing. Four things, all yours
+   field, the layout, the list view and the two permission sets. Nothing else. Commit them
+4. **Publish**, and read `manifest/package.xml` before pushing. Five things, all yours
 5. **Open the Pull Request** into `integration` in your own fork, get it green, merge
 6. **Check the integration org** after the deployment job
 

@@ -73,7 +73,7 @@ when. Every one of them carries your name, and most of them are not your story.
     A scratch org remembers every component that arrived in it, however it arrived. In Lab 1.2,
     **Set up my training environment** deployed the whole Helios app into `helios-dev` under your
     user, so every object, field and permission set of the app is in this list, dated Lab 1.2. Your
-    three changes are the ones dated a few minutes ago.
+    four changes are the ones dated a few minutes ago.
 
     Click the **Last Updated Date** column header, twice if needed, so the newest come first. On a
     team org the older rows would be your colleagues and Salesforce moving things on its own. Either
@@ -81,15 +81,16 @@ when. Every one of them carries your name, and most of them are not your story.
 
 ### 3. Take yours, leave the rest
 
-Tick three rows, and only three:
+Tick four rows, and only four:
 
 1. **CustomField** `Installation__c.Panels_Required__c` **(1)** - the field
 2. **Layout** `Installation__c-Installation Layout` **(2)** - the placement
-3. **PermissionSet** `Helios_Delivery_Crew` **(3)** - the grant
+3. **PermissionSet** `Helios_Delivery_Crew` **(3)** - the crew's read access
+4. **PermissionSet** `Helios_Delivery_Manager` **(4)** - the planners' edit access
 
-Then click **Retrieve 3 selected** **(4)**.
+Then click **Retrieve 4 selected** **(5)**.
 
-![The Metadata Retriever with the three components of US-014 ticked](../../_assets/annotated/vscode/metadata-retriever-selected--us-014.png)
+![The Metadata Retriever with the four components of US-014 ticked](../../_assets/annotated/vscode/metadata-retriever-selected--us-014.png)
 
 Two rules make that decision for you, and they are the whole of this lab:
 
@@ -98,35 +99,35 @@ Two rules make that decision for you, and they are the whole of this lab:
 - **If you are not sure, leave it out.** Nothing is lost. It is still in your org, and you can
   publish it in a later story once you know what it is
 
-The retriever writes those three components into `force-app/` as files. It changes nothing in
+The retriever writes those four components into `force-app/` as files. It changes nothing in
 Salesforce and nothing on your branch yet.
 
 ### 4. Commit what came down
 
-Open the **Source Control** panel **(1)**, the third icon in the left bar. The three files the
+Open the **Source Control** panel **(1)**, the third icon in the left bar. The four files the
 retrieve wrote are waiting there **(2)**.
 
-![The Source Control panel with the three retrieved files](../../_assets/annotated/vscode/source-control-retrieved--commit.png)
+![The Source Control panel with the four retrieved files](../../_assets/annotated/vscode/source-control-retrieved--commit.png)
 
 Click each one. VS Code opens the file's *diff*, the before and the after side by side, with the
-added lines in green and the removed ones in red. Reading the three takes a minute, and it is the
+added lines in green and the removed ones in red. Reading the four takes a minute, and it is the
 last moment where a mistake is free.
 
 Then put them in the commit **one at a time**. Point at a file: a row of small icons appears at the
 right of its name. The **+** is **Stage Changes**, and it moves that one file into a group called
-**Staged Changes** just above. Do it for each of the three, and read the name as you click.
+**Staged Changes** just above. Do it for each of the four, and read the name as you click.
 
 !!! danger "Never use Stage All Changes"
     The **+** on the **Changes** group header stages everything the panel can see, including files
     you have never looked at: a stray log, something an installer left behind, a file another
-    command wrote while you were working. The panel above shows only your three files, and yours
+    command wrote while you were working. The panel above shows only your four files, and yours
     will not always be that tidy.
 
     Staging is the only moment where you decide what your story contains. Doing it file by file
     takes ten seconds and it is the difference between a Pull Request a reviewer can read and one
     that has to be untangled. On a real project this is the habit people notice.
 
-With the three files staged, type a message **(3)** and click **Commit** **(4)**. The button commits
+With the four files staged, type a message **(3)** and click **Commit** **(4)**. The button commits
 what is staged and leaves everything else alone.
 
 Write the message for the person reviewing tomorrow, not for yourself today. First line short, then
@@ -135,7 +136,8 @@ a blank line, then why:
 > US-014 Panels Required on Installation
 >
 > Adds Panels_Required__c on Installation__c so the crew knows how many panels to load.
-> Read access granted on Helios_Delivery_Crew, field added to the Installation layout.
+> Read access for the crew on Helios_Delivery_Crew, edit access for planners on
+> Helios_Delivery_Manager, field added to the Installation layout.
 
 That text follows your branch everywhere: it is what the reviewer sees in the Pull Request, and it
 is what anybody reading the history of this project in two years will find.
@@ -186,9 +188,10 @@ components it holds.
 
 ![The Save / Publish command waiting for an answer, with the package.xml report at the bottom](../../_assets/annotated/vscode/work-save-package-xml.png)
 
-You are looking for one block per kind of thing you changed, each naming what it holds. Your three
+You are looking for one block per kind of thing you changed, each naming what it holds. Your four
 should all be there: the field `Installation__c.Panels_Required__c`, the layout
-`Installation__c-Installation Layout`, and the permission set `Helios_Delivery_Crew`.
+`Installation__c-Installation Layout`, and the permission sets `Helios_Delivery_Crew` and
+`Helios_Delivery_Manager`.
 
 **This file is the contract.** It is the list of what will be deployed to the next org, and nothing
 outside it travels. If a component you expected is missing here, it will be missing in integration
@@ -212,6 +215,7 @@ The file is XML, and every block pairs a list of `members` with the `name` of wh
 </types>
 <types>
     <members>Helios_Delivery_Crew</members>
+    <members>Helios_Delivery_Manager</members>
     <name>PermissionSet</name>
 </types>
 ```
@@ -281,8 +285,8 @@ panel and click **Publish Branch**.
 
 ## What you should see
 
-- `manifest/package.xml` naming your three components and nothing you did not touch: the field, the
-  layout and the permission set
+- `manifest/package.xml` naming your four components and nothing you did not touch: the field, the
+  layout and the two permission sets
 - Your branch on GitHub, in your fork, under **Branches**
 - The DevOps Pipeline panel showing your branch feeding `integration`, with no Pull Request yet
 
@@ -290,7 +294,7 @@ panel and click **Publish Branch**.
 
 **Recent Changes lists things I never touched.**
 Normal on any org: the deployment Lab 1.2 made into this org counts as a change too, and so does
-Salesforce's own internal churn. Tick only your three. The **Last Updated Date** column is the
+Salesforce's own internal churn. Tick only your four. The **Last Updated Date** column is the
 fastest way to tell: sort on it, and yours are on top.
 
 **Recent Changes finds nothing at all.**

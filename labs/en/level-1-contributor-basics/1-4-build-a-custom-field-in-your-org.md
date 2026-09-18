@@ -93,9 +93,11 @@ Click **Save**.
     written by a person. Empty descriptions are the most common reason that documentation is
     useless.
 
-### 3. Grant it to the crew
+### 3. Grant it to the crew, and to the planners
 
-The acceptance criteria say the crew must see it. They do not have it yet: you granted nothing.
+The acceptance criteria say the crew must see it, and planners must fill it in. Nobody has it yet,
+not even you: you granted nothing, and a field that no permission grants is invisible to everybody,
+the administrator who created it included.
 
 **Setup > Permission Sets > Helios Delivery Crew**, then **Object Settings** **(1)** and
 **Installations**, then **Edit**.
@@ -110,6 +112,14 @@ Find `Panels Required` and tick **Read Access**. Leave **Edit Access** unticked:
 reads how many panels to load, they do not decide the number.
 
 **Save**.
+
+Then the same screens on **Helios Delivery Manager**, the planners' permission set. It is also the
+one **Set up my training environment** gave you, which is how you see the Helios app at all. Tick
+both **Read Access** and **Edit Access** on `Panels Required`: planners are the people who decide
+the number. **Save**.
+
+Skip this and step 4 shows you nothing: you would be looking for a field your own permission set
+does not grant.
 
 ### 4. Put it where people will look
 

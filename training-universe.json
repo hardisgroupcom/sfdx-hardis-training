@@ -150,10 +150,11 @@
       "acceptance": [
         "A Panels Required field exists on Installation",
         "It is visible to the crew permission set",
+        "Planners can fill it in",
         "It appears on the Installation record page"
       ],
       "branch": "features/US-014-panels-required",
-      "metadata": ["Installation__c.Panels_Required__c", "Helios_Delivery_Crew"]
+      "metadata": ["Installation__c.Panels_Required__c", "Helios_Delivery_Crew", "Helios_Delivery_Manager"]
     },
     {
       "id": "US-016",
@@ -165,7 +166,7 @@
       "acceptance": [
         "A Crew Notes field exists on Installation",
         "A My Open Installations list view exists",
-        "The crew permission set grants the field"
+        "The crew permission set grants the field, and so does the planners' one"
       ],
       "branch": "features/US-016-crew-notes",
       "metadata": [

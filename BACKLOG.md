@@ -39,6 +39,7 @@ Acceptance criteria:
 
 - A Panels Required field exists on Installation
 - It is visible to the crew permission set
+- Planners can fill it in
 - It appears on the Installation record page
 
 ### US-016 - Let the crew leave notes on an installation
@@ -53,7 +54,7 @@ Acceptance criteria:
 
 - A Crew Notes field exists on Installation
 - A My Open Installations list view exists
-- The crew permission set grants the field
+- The crew permission set grants the field, and so does the planners' one
 
 ### US-017 - Record who signed an installation off
 

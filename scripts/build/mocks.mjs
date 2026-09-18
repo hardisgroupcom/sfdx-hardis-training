@@ -281,7 +281,7 @@ writeJson(path.join(OUT, "sf-mock-overlay.json"), {
     ["CustomField", "Installation__c.Status__c", "You", "created", "2026-09-15T09:12:00.000+0000"],
     ["Flow", "Installation_Assign_Crew", "You", "created", "2026-09-15T09:12:00.000+0000"],
     ["ApexClass", "InstallationScheduler", "You", "created", "2026-09-15T09:12:00.000+0000"],
-    ["PermissionSet", "Helios_Delivery_Manager", "You", "created", "2026-09-15T09:12:00.000+0000"]
+    ["PermissionSet", "Helios_Delivery_Manager", "You", "modified", "2026-09-17T14:47:00.000+0000"]
   ],
   apexClasses: [
     {

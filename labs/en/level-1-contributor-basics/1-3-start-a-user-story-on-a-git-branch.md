@@ -42,6 +42,7 @@ The backlog is in [BACKLOG.md](../../../BACKLOG.md). Your first story is at the 
 >
 > - A Panels Required field exists on Installation
 > - It is visible to the crew permission set
+> - Planners can fill it in
 > - It appears on the Installation record page
 
 Small on purpose. What matters in this lab is not the field, it is the loop you are about to learn
