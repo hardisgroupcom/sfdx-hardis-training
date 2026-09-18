@@ -8,7 +8,6 @@ lang: en
 source_rev: ""
 screenshots:
   - annotated/vscode/pipeline-cards--new-user-story
-  - annotated/vscode/work-new-target-branch
   - annotated/vscode/work-new-story-type
   - annotated/vscode/work-new-story-name
   - annotated/vscode/work-new-org-type
@@ -76,28 +75,26 @@ On the Welcome page, open the **DevOps Pipeline** panel and scroll past the diag
 
 The extension asks four questions, one screen at a time. Each one appears in its own panel, and
 every answer you give stays visible above the next question, so you can always see what you told it.
+Before the first one, it tells you something instead of asking.
 
 ### 2. Where the work is going
 
-**What will be the target branch of your new User Story?** There is one answer, `integration`
-**(1)**, described as the shared integration org where every contributor merges. Take it.
+The first line under the header reads **Automatically selected target branch is integration**
+**(1)**. It is not a question, because there is nothing to choose: this project declares
+`integration` as the only branch a contributor may target, in `availableTargetBranches`. Lab 3.1
+adds `preprod`, where urgent fixes start, and from then on the command asks, offering both.
 
-![The target branch question, offering integration](../../_assets/annotated/vscode/work-new-target-branch.png)
+![The first question of New User Story, under the line naming the target branch](../../_assets/annotated/vscode/work-new-story-type.png)
 
-A list of one is not the command being slow. This project declares `integration` as the only branch
-a contributor may target, in `availableTargetBranches`, and the question shows what the project
-allows. Lab 3.1 adds `preprod` to that list, where urgent fixes start, and the same question then
-offers two.
-
-You never guess where your work is going: the command asks first, writes the answer down, and every
-later step reads it back.
+You never guess where your work is going: the command says it first, writes it down, and every later
+step reads it back.
 
 ### 3. What kind of work it is
 
-**What type of User Story do you want to create?** Take **Feature** **(1)**: US-014 adds something
-that was not there. **Fix** **(2)** is for correcting something already delivered.
-
-![The question asking whether this is a feature or a fix](../../_assets/annotated/vscode/work-new-story-type.png)
+**What type of User Story do you want to create?** Take **Feature: a new capability or an
+improvement** **(2)**: US-014 adds something that was not there. **Fix: correct something that is
+broken** **(3)** is for correcting something already delivered. Both answers are worded by this
+project, in `branchPrefixChoices`.
 
 The answer becomes the first part of your branch name, `features/` or `fix/`, so anybody looking
 at the list of branches can see at a glance what kind of work is in flight.
@@ -126,8 +123,10 @@ created in Lab 1.2.
 
 The other answers are for other projects. **Sandbox org with source tracking** **(2)** is what most
 teams use, a developer sandbox the release manager hands out. Source tracking means the org keeps a
-running note of what changed in it since you last synchronised, which saves you looking. The last
-answer is for editing the project's files directly, with no org at all.
+running note of what changed in it since you last synchronised, which saves you looking. **Current
+org** names whatever org your project points at, by its address: it is `helios-dev` today, but an
+address tells you nothing, so do not rely on it. The last answer is for editing the project's files
+directly, with no org at all.
 
 Then the list of orgs it could attach. Take **Reuse scratch org helios-dev** **(1)**.
 
@@ -167,17 +166,19 @@ The panel ran:
 
     sf hardis:work:new
 
-which did five things, in order:
+which did six things, in order:
 
-1. **Fetched and updated the target branch.** `git fetch`, then `git checkout integration` and
+1. **Picked the target branch.** With a single entry in `availableTargetBranches` it takes that one
+   without asking; with several it asks, and it remembers the answer for this branch
+2. **Fetched and updated the target branch.** `git fetch`, then `git checkout integration` and
    `git pull`, so your branch starts from what the team has now rather than from whatever you had
    last week. This is the step people skip by hand and regret a week later
-2. **Created the branch**, named from your answers:
+3. **Created the branch**, named from your answers:
    `git checkout -b features/US-014-panels-required`
-3. **Wrote your user configuration** in `config/user/.sfdx-hardis.<your-username>.yml`, recording
+4. **Wrote your user configuration** in `config/user/.sfdx-hardis.<your-username>.yml`, recording
    the org for this User Story. That file is git-ignored: it is yours, nobody else needs it
-4. **Selected the org** as the default target for the following commands
-5. **Opened the org** in your browser, since you are about to work in it
+5. **Selected the org** as the default target for the following commands
+6. **Opened the org** in your browser, since you are about to work in it
 
 The list of scratch orgs is the ones your default Dev Hub created, which Lab 1.2 set to `helios-prod`,
 minus the ones named in `config/branches/`. Nothing here brings what is on `integration` into your

@@ -692,11 +692,11 @@ export default async function init(args) {
   setSecrets(slug, pipeline);
 
   title("Done");
-  info(`Your fork:          https://github.com/${slug}`);
-  info(`Your Dev Hub:       ${devHub}`);
-  info(`Where you build:    ${devAlias}`);
+  info(`Your fork:               https://github.com/${slug}`);
+  info(`Your Dev Hub:            ${devHub}`);
+  info(`Where you build:         ${devAlias}`);
   for (const stage of pipeline) {
-    info(`${`${stage.branch} deploys to:`.padEnd(20)}${stage.alias}`);
+    info(`${`${stage.branch} deploys to:`.padEnd(25)}${stage.alias}`);
   }
   info("");
   if (!actionsOn) {

@@ -83,6 +83,17 @@ const PROJECT_TARGET_BRANCHES = targetBranchNames.map((branch, index) => ({
   description: targetBranchLabels[index] || undefined
 }));
 
+// The Feature / Fix question offers the project's branchPrefixChoices, with their
+// titles, in their order. Same hand-rolled read: value and title pairs only.
+const prefixBlock = projectConfigText.match(/^branchPrefixChoices:\r?\n((?:\s+.*\r?\n)+)/m);
+const BRANCH_PREFIX_CHOICES = prefixBlock
+  ? [...prefixBlock[1].matchAll(/-\s*value:\s*(\S+)\s*\r?\n\s*title:\s*"?([^"\r\n]+)"?/g)].map((m) => ({ title: m[2], value: m[1] }))
+  : [];
+if (BRANCH_PREFIX_CHOICES.length === 0) {
+  console.error("config/.sfdx-hardis.yml has no branchPrefixChoices the mock can read.");
+  process.exit(1);
+}
+
 const [owner, repo] = u.course.upstreamRepo.split("/");
 const WEB = `https://github.com/${owner}/${repo}`;
 const person = (handle) => u.cast.find((p) => p.handle === handle) || { name: handle, handle };
@@ -206,6 +217,11 @@ writeJson(path.join(OUT, "sf-mock-overlay.json"), {
     // integration, and a screenshot showing uat and main would be offering a
     // contributor two answers the config refuses.
     targetBranches: PROJECT_TARGET_BRANCHES,
+    // The two story types this project declares, worded as the command shows them
+    branchPrefixChoices: BRANCH_PREFIX_CHOICES,
+    // A learner has a default org from Lab 1.2 on, so the org question also
+    // offers "Current org", between Scratch org and no org at all
+    currentOrgChoice: true,
     storyName: `${STORY.id} ${STORY.title}`,
     // What the prompt offers as an example: the project declares a branch name
     // pattern, so the example has to be a name that pattern accepts
