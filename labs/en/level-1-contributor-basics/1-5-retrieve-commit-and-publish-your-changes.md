@@ -176,15 +176,14 @@ what a commit is, which costs nothing to read.
     the whole course goes through it. Take the same route on a real project and you will never meet
     that error.
 
-### 6. Read the manifest before you push
+### 6. Read the package before you push
 
 The command pauses before pushing and asks you to confirm **(1)**. Take the pause: this is the
-last look you get at the package before it leaves your machine.
+last look you get at your story before it leaves your machine.
 
-Open `manifest/package.xml` in VS Code, or open the **Deployment Packages** menu at the top of the
-DevOps Pipeline panel and choose **Package XML**. The command hands it to you as well, as the
-**Git Delta package.xml** report at the bottom of its own panel **(2)**, with the number of
-components it holds.
+Click the **Git Delta package.xml** report at the bottom of the command's panel **(2)**. It is the
+list of what your commits changed compared with `integration`, worked out from git, and the
+number on the button is how many components it holds: **4**.
 
 ![The Save / Publish command waiting for an answer, with the package.xml report at the bottom](../../_assets/annotated/vscode/work-save-package-xml.png)
 
@@ -193,12 +192,18 @@ should all be there: the field `Installation__c.Panels_Required__c`, the layout
 `Installation__c-Installation Layout`, and the permission sets `Helios_Delivery_Crew` and
 `Helios_Delivery_Manager`.
 
-**This file is the contract.** It is the list of what will be deployed to the next org, and nothing
-outside it travels. If a component you expected is missing here, it will be missing in integration
-too, and the deployment will either fail or, worse, succeed while doing half of what you meant.
+**This list is your story, as the pipeline sees it.** If a component you expected is missing here,
+git does not know you changed it, and it will be missing in integration too: the deployment will
+either fail or, worse, succeed while doing half of what you meant. Reading it before every push is
+the single habit that separates a contributor who has trouble with deployments from one who does
+not.
 
-Reading this file before every push is the single habit that separates a contributor who has
-trouble with deployments from one who does not.
+Then open `manifest/package.xml` itself, from the Explorer. It is much longer, and that is correct:
+it is the list of **everything this project deploys**, the whole Helios app, and every story adds its
+new components to it. Save / Publish just merged your delta into it, which for US-014 means one new
+line, `Installation__c.Panels_Required__c`: the layout and the two permission sets were listed
+already, because the app has always had them. Every deployment of `integration` sends that whole
+file, and Salesforce works out what actually changed.
 
 <details markdown="1"><summary>Under the hood: what those blocks look like</summary>
 
@@ -224,6 +229,10 @@ Salesforce calls this a manifest, and every deployment tool on the platform read
 The counter on the report button counts entries rather than blocks, so it can read one more than
 you expect when a change pulls its parent object in with it.
 
+`manifest/package.xml` has the same shape, with every component of the app. A project can ask the
+pipeline to deploy only the delta instead, with `useDeltaDeployment`, and this one does not: a
+full deployment is slower and never forgets anything, which is the right trade for a course.
+
 </details>
 
 ### 7. Read what the command did to your files
@@ -245,10 +254,10 @@ The panel ran:
 
 which performed, in order:
 
-1. **Generated `manifest/package.xml`** from the git diff between your branch and `integration`.
-   Not from what you ticked in the retriever: from what your commits actually changed. Those are
-   usually the same thing, and the minute you spend reading the file is the minute you find out
-   when they are not
+1. **Worked out the delta**, the Git Delta package.xml, from the git diff between your branch and
+   `integration`, and **merged it into `manifest/package.xml`**. Not from what you ticked in the
+   retriever: from what your commits actually changed. Those are usually the same thing, and the
+   minute you spend reading the report is the minute you find out when they are not
 2. **Applied the cleaning rules** declared in `config/.sfdx-hardis.yml`:
 
         autoCleanTypes:
@@ -285,8 +294,9 @@ panel and click **Publish Branch**.
 
 ## What you should see
 
-- `manifest/package.xml` naming your four components and nothing you did not touch: the field, the
-  layout and the two permission sets
+- The **Git Delta package.xml** report naming your four components and nothing you did not touch:
+  the field, the layout and the two permission sets
+- `manifest/package.xml` gaining one line, the new field, in a commit the tool made
 - Your branch on GitHub, in your fork, under **Branches**
 - The DevOps Pipeline panel showing your branch feeding `integration`, with no Pull Request yet
 
@@ -296,6 +306,12 @@ panel and click **Publish Branch**.
 Normal on any org: the deployment Lab 1.2 made into this org counts as a change too, and so does
 Salesforce's own internal churn. Tick only your four. The **Last Updated Date** column is the
 fastest way to tell: sort on it, and yours are on top.
+
+**The retrieve fails with "Failed to retrieve metadata due to source conflicts".**
+A scratch org keeps track of what it last exchanged with your project. When the files on your
+machine changed behind its back, after **Reset this level** or a branch you threw away, it refuses
+to overwrite them without asking. Click **I don't care, overwrite!**: what you want is the org's
+version, and git still shows you the diff before anything is committed.
 
 **Recent Changes finds nothing at all.**
 You are looking at the wrong org. Check the selector at the top right reads `helios-dev`, and that

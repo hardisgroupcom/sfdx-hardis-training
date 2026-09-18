@@ -62,7 +62,8 @@ No numbered clicks this time. The loop, in order:
       status is not Completed, showing the account, the status, the install date and Panels Required
 3. **Bring it down.** **Commit changes**, **Recent Changes**, **Search Metadata**, and take the
    field, the layout, the list view and the two permission sets. Nothing else. Commit them
-4. **Publish**, and read `manifest/package.xml` before pushing. Five things, all yours
+4. **Publish**, and read the **Git Delta package.xml** report before pushing. Five things, all
+   yours
 5. **Open the Pull Request** into `integration` in your own fork, get it green, merge
 6. **Check the integration org** after the deployment job
 
