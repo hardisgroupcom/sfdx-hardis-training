@@ -17,3 +17,13 @@
 # Temporary technical fields from the 2025 capacity spike, not versioned.
 # TODO remove once the spike is over  (Sofia, 2025-11)
 **/objects/Installation__c/fields/Crew_W*.field-meta.xml
+
+# The lines sfdx-hardis expects in every project. Without them, the release manager
+# commands of Level 3 stop to offer an upgrade of this file.
+**/appMenu/**
+**/appSwitcher/**
+**/connectedApps/**
+**/certs/**
+**/profilePasswordPolicies/**
+**/__tests__/**
+**SfdxHardisDeferSharingRecalc**

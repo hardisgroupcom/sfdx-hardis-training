@@ -38,3 +38,13 @@ Thumbs.db
 
 # Your own progress record, written by Check my work. It is yours, not the project's.
 .training-progress.json
+
+# The lines sfdx-hardis expects in every project. Without them, the release manager
+# commands of Level 3 stop to offer an upgrade of this file.
+tmp/
+**/__tests__/**
+**/cleanDataServices/
+**/siteDotComSites/*.site
+**/data/**/source/**
+**/data/**/target/**
+force-app/main/default/appMenus/AppSwitcher.appMenu-meta.xml
