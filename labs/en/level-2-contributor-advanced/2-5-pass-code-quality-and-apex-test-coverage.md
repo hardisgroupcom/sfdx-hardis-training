@@ -33,15 +33,17 @@ run the checks before pushing.
 > As a planner, I want the scheduler to refuse a date before the panels arrive, so that crews stop
 > turning up to an empty warehouse.
 
-An Apex change in `InstallationScheduler`. Two things will stop you, and neither is Salesforce
-refusing your metadata:
+An Apex change in `InstallationScheduler`. Two things will stop you, and neither is about your
+metadata being wrong:
 
 1. **PMD**, the Apex code analyzer, run for you by MegaLinter, on a query inside a loop that you are
    about to write by copying an existing pattern. It **warns**
 2. **Code coverage**, because the new branch of logic has no test. It **blocks**
 
-Both are the project's rules, not Salesforce's. Knowing which of your gates warn and which refuse is
-half of working on a pipeline, so this lab makes you meet one of each.
+The first is this project's choice: it could make the analyzer refuse, and it does not. The second
+is Salesforce's own floor, 75% of the Apex in the org run by tests, which this project keeps as its
+threshold. Knowing which of your gates warn and which refuse is half of working on a pipeline, so
+this lab makes you meet one of each.
 
 ## Before you start
 
@@ -100,9 +102,13 @@ open the Pull Request.
 ### 3. MegaLinter warns you
 
 ```
-InstallationScheduler.cls:56  pmd:OperationWithLimitsInLoop  (Moderate)
+(Moderate)  pmd:OperationWithLimitsInLoop  force-app/main/default/classes/InstallationScheduler.cls
 Avoid operations in loops that may hit governor limits
 ```
+
+It is in the MegaLinter comment on your Pull Request, under **code-analyzer-apex**, among a few
+findings on code that was there before you. The deployment check next to it is green: the tests
+still run more than 75% of the org's Apex, at about 78%.
 
 A SOQL query inside a `for` loop. Salesforce allows 100 queries per transaction, so this method
 works perfectly for a planner checking five installations and throws
@@ -144,13 +150,16 @@ One query, whatever the size of the list.
 
 ### 4. The tests block you
 
-Push the fix. MegaLinter is clean. Now the deployment check **fails**, and this one is not advice:
+Push the fix. MegaLinter no longer reports the loop. Now the deployment check **fails**, and this
+one is not advice:
 
 ```
-Code coverage of InstallationScheduler is 71%, below the required 75%
+Average test coverage across all Apex Classes and Triggers is 73%, at least 75% test coverage is
+required.
 ```
 
-You added a method with three branches and no test. Add them to
+The loop version was short, and the org carried it at 78%. The fix is longer, and every one of its
+new lines is a line no test runs. You added a method with three branches and no test. Add them to
 `force-app/main/default/classes/InstallationSchedulerTest.cls`:
 
 ```apex
@@ -250,8 +259,10 @@ through Salesforce Code Analyzer on Apex, plus a flow scanner, plus the generic 
 the whole repository for a Pull Request into a major branch, which is why a rule can fire on a file
 you did not write.
 
-Neither gate is Salesforce refusing your deployment. Both are your team refusing it, which is the
-point: Salesforce is happy to deploy a hardcoded id.
+The linter is your team refusing, or here warning. The coverage floor is Salesforce refusing, and
+the project setting only chooses whether to ask for more. Neither of them checks that the code does
+the right thing, which is the point: Salesforce is happy to deploy a hardcoded id with 100%
+coverage.
 
 </details>
 
