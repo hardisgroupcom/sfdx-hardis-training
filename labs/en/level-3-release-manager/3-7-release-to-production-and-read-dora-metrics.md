@@ -53,15 +53,18 @@ yes. On this project that person is you, and you did it in Lab 3.6 step 5.
 A manual step in production is something you will do, live, in front of nobody, at whatever time the
 release is. Know about it now.
 
-**Three: is production where you think it is?** Open `helios-prod` and look. It carries the same
-sources as the other orgs plus one thing an admin added by hand, which is what Lab 3.8 is about.
-Assume nothing.
+**Three: is production where you think it is?** Open `helios-prod` and look. It should carry what
+the course seeded into it and nothing else yet. On a real project, admins change production by hand
+between two releases, and Lab 3.8 is about exactly that. Assume nothing.
 
 ### 2. Rehearse in preprod
 
-On GitHub, from `uat` into `preprod`, the same way you created the promotion in Lab 3.6. If you opened
-this Pull Request in Lab 3.2 to prove the JWT authentication, it is still there: use it. There is no
-button for it in the panel unless the project turns on promotion branches, and this one does not.
+The same way you created the promotion in Lab 3.6: the **+ PR** chip on the arrow from `uat` to
+`preprod`, in the DevOps Pipeline diagram. GitHub opens on the Pull Request from `uat` into
+`preprod`.
+
+Its check job is the first one to log into `helios-preprod`, and it does so with the key and the
+secrets of Lab 3.2: a green check here is your `preprod` JWT set-up working.
 
 Title it plainly:
 
@@ -76,7 +79,8 @@ release that fails here has cost you nothing.
 
 ### 3. Create the production Pull Request
 
-From `preprod` into `main`. Title it plainly:
+The **+ PR** chip on the arrow from `preprod` to `main`, from `preprod` into `main`. Its check job is
+the first JWT login into `helios-prod`. Title it plainly:
 
 > Release 2026-09 to production
 
