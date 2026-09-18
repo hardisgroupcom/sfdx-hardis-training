@@ -271,7 +271,10 @@
       "author": "you",
       "title": "Release notes of the 2026-09 promotion",
       "story": "As the release manager, I want the notes of each promotion in the repository, so that the business reads what changed without asking.",
-      "acceptance": ["The notes open with what the release is for", "The manual steps name who does them"],
+      "acceptance": [
+        "The notes open with what the release is for",
+        "The manual steps name who does them"
+      ],
       "branch": "features/US-053-release-notes-2026-09",
       "metadata": ["release-notes/"]
     },
