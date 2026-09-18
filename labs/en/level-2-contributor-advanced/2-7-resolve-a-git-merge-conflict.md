@@ -264,7 +264,6 @@ each group does not matter, the grouping does.
 You kept both sides inside a single grant instead of keeping both grants. One `<fieldPermissions>`
 block names one field: the fix is two blocks, not one block with two `<field>` lines.
 
-
 **The flow will not deploy after the merge: "duplicate element name".**
 You kept both sides of an element that can only exist once. Flow element names are unique. Rename or
 remove one.

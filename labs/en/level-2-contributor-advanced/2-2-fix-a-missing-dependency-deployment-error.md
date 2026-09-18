@@ -118,8 +118,9 @@ Save and **Activate**.
     all.
 
 Test it: open an installation, set `Panels Required` to 40 and `Crew Size` to 2, save. A task
-appears, and the checkbox ticks. Save again: no second task. That is the story working, in your
-org.
+appears in its **Activity**. Save again: no second task. That is the story working, in your org.
+The checkbox itself stays out of sight: no permission set grants it, because nobody but the flow
+needs it.
 
 ### 3. Publish and watch it fail
 
@@ -138,12 +139,15 @@ Then **Save / Publish** **(1)**.
 
 Push, open the Pull Request into `integration` in your fork, and wait.
 
-The check fails:
+The check fails, and the sfdx-hardis comment on the Pull Request names the component:
 
 ```
-Error: Installation_Crew_Warning - The flow references a field that does not exist:
-Installation__c.Crew_Warning_Sent__c
+Installation_Crew_Warning field integrity exception: unknown (The field "Crew_Warning_Sent__c"
+for the object "Installation__c" doesn't exist.)
 ```
+
+Your Pull Request cannot be merged while that check is red: `integration` refuses it, for you as
+for anybody.
 
 Read that twice. The field **does** exist. You can see it in the org. You created it ten minutes
 ago and the flow you just tested reads it.
@@ -222,8 +226,8 @@ The check job ran:
 
     sf hardis:project:deploy:smart --check
 
-which computed the package from the git diff between your branch and `integration`, then handed it
-to Salesforce as a validation deployment. Salesforce compiled the flow, looked for
+which handed `manifest/package.xml` to Salesforce as a validation deployment: the list Save /
+Publish keeps up to date from the git diff between your branch and `integration`. Salesforce compiled the flow, looked for
 `Installation__c.Crew_Warning_Sent__c` in the package **and** in the target org, found it in
 neither, and refused.
 
