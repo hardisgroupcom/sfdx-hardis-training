@@ -113,6 +113,11 @@ Spend fifteen minutes adding what only a person can:
 Those three paragraphs are worth more than the other forty pages, and they are the reason this lab
 exists at the end of a level rather than at the start.
 
+**Protect every page you edit.** Each generated page starts with two comment lines, and the second
+reads `<!-- DO_NOT_OVERWRITE_DOC=FALSE -->`. Change it to `TRUE` on the pages you write in. The next
+generation, yours or the nightly one of Lab 3.9, leaves a `TRUE` page alone, and rewrites every
+other page from the sources, paragraph included.
+
 ### 6. Publish it
 
 The **Deploy Documentation** section **(3)** offers three cards, each with the same **Deploy**
