@@ -1,14 +1,6 @@
 {
-  "_comment": "What makes helios-prod different from the other training orgs. Applied by Training > Set up one of my training orgs. Lab 3.8 is built on the first two, and Lab 3.7 on the third.",
+  "_comment": "What makes helios-prod different from the other training orgs. Applied by Training > Set up one of my training orgs. Lab 3.9 needs the first step, Lab 3.7 the second. The picklist value Lab 3.8 retrofits is added by Simulate my teammates, when that lab starts: added here, the Lab 3.7 release would have removed it first.",
   "steps": [
-    {
-      "type": "picklist-value",
-      "label": "An admin added a picklist value by hand during an incident",
-      "_comment": "Production is not the repository. An admin added this value live, to unblock planners during an incident, and it exists in no branch. Lab 3.8 retrofits it.",
-      "object": "Installation__c",
-      "field": "Status__c",
-      "value": "Needs Reinspection"
-    },
     {
       "type": "apex",
       "label": "Two users left and nobody deactivated them, so monitoring has something true to report",

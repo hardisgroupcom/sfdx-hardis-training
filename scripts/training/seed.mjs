@@ -265,7 +265,7 @@ export function applyDrift(alias) {
  * from a throwaway project: retrieve the field as the org has it, add the value, deploy that
  * one file back. Nothing in the learner's project is touched.
  */
-function addPicklistValue(alias, step) {
+export function addPicklistValue(alias, step) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "helios-drift-"));
   try {
     fs.writeFileSync(

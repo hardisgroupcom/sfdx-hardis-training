@@ -150,9 +150,13 @@ Doing only the first is how a fix gets shipped twice and regressed once.
 
 ### 6. Find what production has that the repository does not
 
-The admin added a picklist value `Needs Reinspection` to `Installation__c.Status__c`, live, on
-Monday morning. Production now has something the repository does not, and the next deployment that
-touches that field will quietly remove it.
+Monday morning first. **Training: Level 3 > Simulate my teammates**, and pick **Monday morning: an
+admin adds a picklist value in production**. It plays the admin: it adds a `Needs Reinspection` value
+to `Installation__c.Status__c`, live, in `helios-prod`, and touches nothing in your repository.
+
+Production now has something the repository does not, and the next deployment that touches that
+field will quietly remove it. That is why the course makes the change now rather than when you set
+`helios-prod` up: your Lab 3.7 release deployed that field, and would have removed it already.
 
 There used to be a command that swept an org for every such difference and put them all on a branch.
 It is deprecated, deliberately: the command name still exists, and running it now prints an error,

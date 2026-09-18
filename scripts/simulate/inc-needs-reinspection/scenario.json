@@ -1,0 +1,18 @@
+{
+  "id": "inc-needs-reinspection",
+  "kind": "org",
+  "title": "Monday morning: an admin adds a picklist value in production",
+  "usedBy": "Lab 3.8",
+  "levels": [
+    3
+  ],
+  "description": "While the Friday incident was being handled, an admin added a Needs Reinspection value to the installation status, live in helios-prod, to unblock the planners. It exists in production and in no branch.",
+  "org": "helios-prod",
+  "change": {
+    "type": "picklist-value",
+    "object": "Installation__c",
+    "field": "Status__c",
+    "value": "Needs Reinspection"
+  },
+  "nextStep": "Production now has a value the repository does not. Lab 3.8 step 6 finds it and brings it back through the pipeline."
+}
