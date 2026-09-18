@@ -258,7 +258,9 @@
       "author": "you",
       "title": "Total Capacity back on the Installation layout",
       "story": "As a planner, I want to see the installed capacity on an installation again, so that I stop opening the report to find it.",
-      "acceptance": ["Total Capacity (kW) is on the Installation layout, beside the crew capacity cap"],
+      "acceptance": [
+        "Total Capacity (kW) is on the Installation layout, beside the crew capacity cap"
+      ],
       "branch": "features/US-052-installation-layout-capacity",
       "metadata": ["Installation__c-Installation Layout"]
     },
