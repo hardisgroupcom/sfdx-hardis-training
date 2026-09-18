@@ -45,7 +45,9 @@
       "url": "https://code.visualstudio.com/download",
       "width": 1440,
       "height": 820,
-      "click": ["button:has-text('Reject')"],
+      "click": [
+        "button:has-text('Reject')"
+      ],
       "settle": 2000,
       "hideText": [
         {
@@ -191,6 +193,33 @@
         "y": 95,
         "width": 1440,
         "height": 700
+      }
+    },
+    {
+      "name": "github-branch-rules",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/settings/branches",
+      "width": 1440,
+      "height": 900,
+      "settle": 3000,
+      "clip": {
+        "x": 0,
+        "y": 58,
+        "width": 1340,
+        "height": 340
+      }
+    },
+    {
+      "name": "github-branch-rule",
+      "_comment": "The integration rule that Set up my training environment creates. Its id changes whenever the rule is created again: read it with gh api graphql, branchProtectionRules { databaseId pattern }.",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/settings/branch_protection_rules/83357555",
+      "width": 1440,
+      "height": 1950,
+      "settle": 3000,
+      "clip": {
+        "x": 400,
+        "y": 300,
+        "width": 940,
+        "height": 1520
       }
     }
   ]

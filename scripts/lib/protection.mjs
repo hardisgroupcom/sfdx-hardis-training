@@ -88,7 +88,7 @@ export function protectBranches(slug, branches) {
     }
     allProtected = false;
     warn(`${branch} could not be protected from here.`);
-    info(`    Open https://github.com/${slug}/settings/branches, click ${c.bold("Add classic branch protection rule")},`);
+    info(`    Open https://github.com/${slug}/settings/branches, click ${c.bold("Add rule")},`);
     info(`    type ${c.bold(branch)} as the branch name pattern, tick ${c.bold("Require status checks to pass before merging")},`);
     info(`    add ${REQUIRED_CHECKS.map((check) => c.bold(check)).join(" and ")},`);
     info(`    tick ${c.bold("Do not allow bypassing the above settings")}, then ${c.bold("Create")}.`);

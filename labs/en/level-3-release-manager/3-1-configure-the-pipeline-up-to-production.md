@@ -194,23 +194,30 @@ and `uat` refuse it: setting up the environment protected them. `preprod` and `m
 protect, and a release manager does it the day the branches join the pipeline, not after the first
 bad merge.
 
-This is a GitHub setting, not an sfdx-hardis one, so it happens on GitHub. For each of `preprod`
-and `main`:
+This is a GitHub setting, not an sfdx-hardis one, so it happens on GitHub. Open your fork, click
+**Settings** **(1)**, then **Branches** **(2)** in the left menu. The two rules **(4)** are the ones
+setting up your environment created in Lab 1.2. Click **Add rule** **(3)**.
 
-1. Open your fork on GitHub, **Settings**, then **Branches** in the left menu
-2. Click **Add classic branch protection rule**
-3. **Branch name pattern**: `preprod` (then `main` the second time)
-4. Tick **Require status checks to pass before merging**. In the search box that appears, add
-   `Simulate Deployment to Major Org` and `Mega-Linter`, the two checks every Pull Request of this
-   course runs
-5. Tick **Do not allow bypassing the above settings**. Without it, the owner of the repository, you,
-   still gets a checkbox to merge on red
-6. Leave **Require a pull request before merging** and its approvals unticked. You work alone here,
-   and GitHub never lets you approve your own Pull Request
-7. Click **Create**
+![The Branches settings of a fork, with the Add rule button and the two existing rules](../../_assets/annotated/web/github-branch-rules.png)
 
-Open **Settings** > **Branches** again: four rules, `integration`, `uat`, `preprod` and `main`,
-each requiring the same two checks.
+The form is long, and four things on it matter. The picture is the `integration` rule, opened from
+the list above, so it shows the values you are about to type:
+
+![A branch protection rule requiring two status checks, with no bypass](../../_assets/annotated/web/github-branch-rule.png)
+
+1. **Branch name pattern** **(1)**: `preprod`
+2. Tick **Require status checks to pass before merging** **(2)**. A search box appears under it
+3. Type `Simulate` in that box and pick **Simulate Deployment to Major Org**, then type `Mega` and
+   pick **Mega-Linter**. Both land in **Status checks that are required** **(3)**: they are the two
+   checks every Pull Request of this course runs
+4. Tick **Do not allow bypassing the above settings** **(4)**. Without it, the owner of the
+   repository, you, still gets a checkbox to merge on red
+5. Leave everything else unticked, **Require a pull request before merging** included: you work
+   alone here, and GitHub never lets you approve your own Pull Request
+6. Click **Create** at the bottom. On an existing rule the same button reads **Save changes** **(5)**
+
+Then **Add rule** again, for `main`, with the same four settings. Back on the list: four rules,
+`integration`, `uat`, `preprod` and `main`.
 
 The search box only suggests checks that ran on this repository in the last seven days. Both ran on
 your Level 2 Pull Requests, so they are there unless you took a long break: in that case open any

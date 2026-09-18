@@ -98,5 +98,7 @@
   "vscode/configure-auth-branch.png#branch-question": "bacaf6b94124a2fa",
   "vscode/configure-auth-variables.png#secrets": "b222c72dcd4bcc13",
   "vscode/sidebar-commands-custom-menu-2.png#training-menu": "86523a2b86bc7c77",
-  "vscode/devops-pipeline-level3.png#four-stages": "43ff17fa6c5d09aa"
+  "vscode/devops-pipeline-level3.png#four-stages": "43ff17fa6c5d09aa",
+  "web/github-branch-rules.png": "37e690db755e734f",
+  "web/github-branch-rule.png": "e04aebfae292b662"
 }
