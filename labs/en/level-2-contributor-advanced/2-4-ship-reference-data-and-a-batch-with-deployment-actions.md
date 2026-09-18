@@ -59,7 +59,7 @@ or it happens once in your org and nowhere else, forever.
 ### 1. Take the story and build the metadata
 
 **New User Story** **(2)**, under **Project Contribution Workflow** **(1)** of the DevOps Pipeline
-panel. Branch `US-026-crew-capacity-data`, target `integration`, org `helios-dev`.
+panel. Name `US-026-crew-capacity-data`, org `helios-dev`.
 
 ![The New User Story card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
@@ -75,14 +75,19 @@ In `helios-dev`, create:
   `CrewCapacityBatchTest`. **You do not have to write these.** Copy them from
   `scripts/apex/samples/` in the repository: what they compute matters far less here than the fact
   that somebody has to schedule them in every org, which is the whole point of the lab
+- The access, on **Helios Delivery Manager**: **Read**, **Create** and **Edit** on Crew Capacity,
+  and **Read** and **Edit** on its four fields. Planners maintain these numbers, and it is also the
+  permission set the pipeline's own user holds in every org: without it the data load of step 4
+  would find fields it is not allowed to write
 
 Then create 12 Crew Capacity records in your org, one per crew type and roof type combination that
 Helios supports.
 
 ### 2. Publish and watch nothing fail
 
-Retrieve the object, its fields and the Apex class with **Commit changes**, commit them, then
-**Save / Publish**, push, Pull Request. The check is green. Merge. The deployment is green.
+Retrieve the object, its fields, the two Apex classes and `Helios_Delivery_Manager` with **Commit
+changes**, commit them, then **Save / Publish**, push, Pull Request. The check is green. Merge. The
+deployment is green.
 
 Now open `helios-integration` and look:
 
@@ -94,6 +99,11 @@ The feature is in the org and completely inert. This is worse than a failure, be
 tells you.
 
 ### 3. Build a data workspace for the reference records
+
+The story is merged, so what is missing goes into a second Pull Request for the same story. **New
+User Story**, name `US-026-crew-capacity-actions`, org `helios-dev`: a follow-up branch is how a
+team finishes a story, and sfdx-hardis says it itself at the end of every Save / Publish, **do not
+reuse the same branch**.
 
 On the Welcome page, click **Data Workbench**. The panel that opens is titled **Data
 Import/Export Workbench**. **Create Workspace** **(1)** sits at the top right, and the workspaces
@@ -113,12 +123,15 @@ Create a new workspace named `HeliosCrewRefData`:
 4. External id: `External_Id__c`
 5. Fields: the four you created
 
-Then **Export data**, pointing at `helios-dev`. The panel pulls your 12 records into CSV files
-under `scripts/data/HeliosCrewRefData/`.
+Then **Export data**. It asks two questions: whether to use your default org, `helios-dev`, and
+whether you confirm the export. Yes to both. The panel pulls your 12 records into
+`scripts/data/HeliosCrewRefData/Crew_Capacity__c.csv`.
 
-Open `scripts/data/HeliosCrewRefData/Crew_Capacity__c.csv` and read it. Twelve rows, one column per
-field, each with a stable external id. That file is now versioned, reviewed and deployed like any
-other source.
+Open that file and read it. Twelve rows, one column per field, each with a stable external id, and
+an `Id` column first: the record ids of `helios-dev`, which mean nothing anywhere else and which
+the import ignores, because it matches on the external id. That file is now versioned, reviewed
+and deployed like any other source. The `logs`, `reports` and `target` folders the export also
+wrote next to it are git-ignored: nothing to commit there.
 
 !!! tip "Why the external id is not optional"
     `Upsert` on `External_Id__c` means running the import twice updates the same twelve records
@@ -127,7 +140,9 @@ other source.
 
 ### 4. Declare the three actions
 
-Open your Pull Request in the **DevOps Pipeline** panel, **Deployment Actions** tab, and add three.
+Actions belong to a Pull Request, so it has to exist first: commit the workspace, its
+`export.json` and the CSV file, **Save / Publish**, and open the Pull Request. Then open it in the
+**DevOps Pipeline** panel, **Deployment Actions** tab, and add three.
 
 **One: load the reference data.**
 
@@ -205,11 +220,17 @@ Confluence page nobody opens.
 
 ### 5. Read the Pull Request comment
 
-Push. When the check finishes, the sfdx-hardis comment now has a **Deployment actions** section
-listing all three, with what each will do and in which orgs.
+The editor wrote the three actions into `scripts/actions/`, in a file named after your Pull Request.
+Commit it, **Save / Publish**.
+
+When the check finishes, the sfdx-hardis comment carries a **Deployment Actions** section:
+
+- **Pending manual actions**: your deliverability step, with a checkbox, for `integration`
+- **Status by org branch**: one row per action, the import and the schedule marked **skipped**,
+  because a check changes nothing, and the manual step waiting for somebody
 
 Merge, and watch the deployment job: the data import runs, the batch gets scheduled, and the manual
-step is reported as pending.
+step stays pending until a person says it is done.
 
 ### 6. Verify in the integration org
 
@@ -219,8 +240,9 @@ Do not take the green tick for it. **Open the org and look:**
 - **Setup > Scheduled Jobs** lists `Helios crew capacity nightly`
 - The manual step is listed as still to do, because you have not done it
 
-Do the manual step by hand in `helios-integration`. That is the point: you did it **because the
-pipeline told you to**, not because you remembered.
+Do the manual step by hand in `helios-integration`, then tick its box under **Pending manual
+actions** in the comment on your Pull Request: the next sfdx-hardis job records it as done. That is
+the point: you did it **because the pipeline told you to**, not because you remembered.
 
 !!! warning "If the records are not there and the job was green"
     Read the deployment log for the line **Listing Post-deployment actions**. When it is followed by
@@ -305,8 +327,9 @@ built it.
 ## If it goes wrong
 
 **The data import fails on field level security.**
-The CI user cannot write the fields. Add them to `Helios_Delivery_Manager` and redeploy: a
-deployment grants no field permissions to anybody by itself.
+The CI user cannot write the fields: the grant of step 1 is missing from `Helios_Delivery_Manager`,
+or never reached the repository. A deployment grants no field permissions to anybody by itself. Add
+them in `helios-dev`, retrieve the permission set, and publish again.
 
 **The import creates duplicates every run.**
 The operation is `Insert`, not `Upsert`, or the external id is not set. Open the workspace in the
