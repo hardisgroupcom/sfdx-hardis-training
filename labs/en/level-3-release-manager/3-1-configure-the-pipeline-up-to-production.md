@@ -63,9 +63,15 @@ pipeline gets postponed until the day somebody needs to release properly.
 
 ## Steps
 
-### 1. Decide the shape before you type anything
+### 1. Start a story for it, then decide the shape
 
-Four questions, and their answers are the whole pipeline:
+Configuration is work like any other, and it reaches `integration` the same way. Start its story
+before you change a single file: **New User Story**, name `US-050-pipeline-to-production`, and
+answer **I'm hardcore, I don't need an org**, because everything this lab changes is a file.
+Starting the story afterwards does not work: **New User Story** begins its branch clean, and puts
+everything uncommitted aside in a stash.
+
+Then four questions, and their answers are the whole pipeline:
 
 | Question                                                                     | Helios answer                                                                            |
 |------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
@@ -313,9 +319,10 @@ columns. The cards under the diagram are the part this step is about, and they d
 
 ![The contribution cards of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
-Under **Project Contribution Workflow** **(1)**: **New User Story** **(2)** targeting `integration`,
-then commit the files from **Source Control**, then **Save / Publish**, then **Create Pull Request**
-in the reports bar at the end of it. Get the check green and merge.
+Under **Project Contribution Workflow** **(1)**, the story you started in step 1 is the branch you
+are on, the one **New User Story** **(2)** made. Commit the files from **Source Control**, then
+**Save / Publish**, then **Create Pull Request** in the reports bar at the end of it. Get the check
+green and merge.
 
 There is nothing to retrieve here: you edited configuration files, not an org.
 

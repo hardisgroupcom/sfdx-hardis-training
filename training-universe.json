@@ -222,6 +222,21 @@
       "metadata": ["Helios_Delivery_Manager"]
     },
     {
+      "id": "US-050",
+      "level": 3,
+      "lab": 1,
+      "author": "you",
+      "title": "The pipeline reaches production",
+      "story": "As the release manager, I want preprod and main in the pipeline, with their orgs and their merge path, so that every release reaches production the same way.",
+      "acceptance": [
+        "preprod and main are major branches with their own org",
+        "integration merges into uat, uat into preprod, preprod into main",
+        "Contributors can target preprod for a hotfix"
+      ],
+      "branch": "features/US-050-pipeline-to-production",
+      "metadata": ["config/.sfdx-hardis.yml", "config/branches/"]
+    },
+    {
       "id": "US-020",
       "level": 3,
       "lab": 5,
@@ -360,15 +375,15 @@
       "level": 3,
       "lab": 8,
       "author": "you",
-      "title": "Installations can no longer be saved",
-      "story": "As a planner, I want to be able to save an installation whose date is already in the past, so that I can update a job that has slipped.",
+      "title": "Cancelled installations can no longer be back-dated",
+      "story": "As a planner, I want to back-date an installation I cancel to the day it was called off, so that the week can be closed.",
       "acceptance": [
-        "The date validation rule only fires when the date is changed",
-        "Completed installations stay exempt"
+        "Cancelled installations are exempt from the date rule, like completed ones",
+        "The rule still refuses to move a planned installation into the past"
       ],
       "branch": "fix/US-045-installation-date-hotfix",
       "metadata": ["Installation_Date_Not_Past validation rule"],
-      "seededFailure": "The validation rule shipped without ISCHANGED, so it refuses every save of an old record"
+      "seededFailure": "The date validation rule exempts Completed installations and not Cancelled ones, so every back-dated cancellation is refused"
     }
   ],
   "pullRequests": [

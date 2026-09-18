@@ -14,6 +14,7 @@ for the `Helios Delivery` app, and every one of them is a lab in this course.
 | US-017 | 2 | Record who signed an installation off | Amina Diallo | `training/mate-us-017-sign-off` |
 | US-018 | 2 | Cap the crew size a planner can assign | Marco Bianchi | `training/mate-us-018-crew-capacity` |
 | US-019 | 2 | Generate a quote PDF from an opportunity | Amina Diallo | `training/mate-us-019-quote-pdf` |
+| US-050 | 3 | The pipeline reaches production | You | `features/US-050-pipeline-to-production` |
 | US-020 | 3 | Refactor InstallationScheduler | Marco Bianchi | `training/mate-us-020-apex-refactor` |
 | US-021 | 2 | Warn the planner when a crew is too small | You | `features/US-021-crew-size-warning` |
 | US-024 | 2 | Crew size becomes mandatory | You | `features/US-024-crew-size-required` |
@@ -23,7 +24,7 @@ for the `Helios Delivery` app, and every one of them is a lab in this course.
 | US-034 | 2 | Flat roofs need a crew of at least three | You | `features/US-034-crew-override` |
 | US-038 | 2 | Tidy the Installation layout | You | `features/US-038-installation-notes-tidy` |
 | US-041 | 2 | Installation handover checklist | You | `features/US-041-handover-checklist` |
-| US-045 | 3 | Installations can no longer be saved | You | `fix/US-045-installation-date-hotfix` |
+| US-045 | 3 | Cancelled installations can no longer be back-dated | You | `fix/US-045-installation-date-hotfix` |
 
 ## The stories in full
 
@@ -103,6 +104,22 @@ Acceptance criteria:
 Acceptance criteria:
 
 - The permission is granted to managers
+
+<a id="US-050"></a>
+
+### US-050 - The pipeline reaches production
+
+**Owner**: You  
+**Branch**: `features/US-050-pipeline-to-production`  
+**Lab**: 3.1
+
+> As the release manager, I want preprod and main in the pipeline, with their orgs and their merge path, so that every release reaches production the same way.
+
+Acceptance criteria:
+
+- preprod and main are major branches with their own org
+- integration merges into uat, uat into preprod, preprod into main
+- Contributors can target preprod for a hotfix
 
 <a id="US-020"></a>
 
@@ -241,18 +258,18 @@ Acceptance criteria:
 
 <a id="US-045"></a>
 
-### US-045 - Installations can no longer be saved
+### US-045 - Cancelled installations can no longer be back-dated
 
 **Owner**: You  
 **Branch**: `fix/US-045-installation-date-hotfix`  
 **Lab**: 3.8
 
-> As a planner, I want to be able to save an installation whose date is already in the past, so that I can update a job that has slipped.
+> As a planner, I want to back-date an installation I cancel to the day it was called off, so that the week can be closed.
 
 Acceptance criteria:
 
-- The date validation rule only fires when the date is changed
-- Completed installations stay exempt
+- Cancelled installations are exempt from the date rule, like completed ones
+- The rule still refuses to move a planned installation into the past
 
 ## The team
 
