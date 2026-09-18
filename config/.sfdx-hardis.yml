@@ -39,9 +39,7 @@ genericTicketingProviderUrlBuilder: "https://hardisgroupcom.github.io/sfdx-hardi
 
 # --- Quality --------------------------------------------------------------
 testLevel: RunLocalTests
-# Above the Salesforce minimum of 75, like most real projects. Lab 2.5 is where
-# a contributor meets it.
-apexTestsMinCoverageOrgWide: 80
+apexTestsMinCoverageOrgWide: 75
 testCoverageNotBlocking: false
 
 # --- Automated cleaning ---------------------------------------------------

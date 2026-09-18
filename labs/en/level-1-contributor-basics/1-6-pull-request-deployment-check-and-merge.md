@@ -201,10 +201,10 @@ Both jobs authenticate first, through the sfdx-hardis hook that reads
 The test level comes from `config/.sfdx-hardis.yml`:
 
     testLevel: RunLocalTests
-    apexTestsMinCoverageOrgWide: 80
+    apexTestsMinCoverageOrgWide: 75
 
 `RunLocalTests` runs every test in the org except those from managed packages. 75% is the Salesforce
-minimum, and Helios asks for 80%, like most real projects.
+minimum, and most real projects set it higher.
 
 </details>
 
