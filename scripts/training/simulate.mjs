@@ -71,12 +71,25 @@ export default async function simulate(args) {
   }
 
   const startingBranch = gitOut(["rev-parse", "--abbrev-ref", "HEAD"]);
-  const dirty = gitOut(["status", "--porcelain"]);
-  if (dirty) {
-    abort(
-      "You have uncommitted changes.",
-      "Commit or stash them first: this command switches branches and does not want to take your work with it."
-    );
+  // Uncommitted work, typically the MY-PIPELINE.md line of a lab that has no story
+  // of its own, is put aside while the teammate branch is built, and put back on
+  // the branch the learner was on, whatever happens in between
+  let stashed = gitOut(["status", "--porcelain"]) !== "";
+  const restore = () => {
+    run("git", ["checkout", startingBranch && startingBranch !== scenario.branch ? startingBranch : "integration"], { quiet: true });
+    if (stashed) {
+      stashed = false;
+      if (run("git", ["stash", "pop"], { quiet: true }).code === 0) {
+        ok("Your uncommitted changes are back where they were");
+      } else {
+        warn("Your uncommitted changes could not be put back automatically. They are in the latest stash: Source Control panel, Stashes, Pop Latest Stash.");
+      }
+    }
+  };
+  if (stashed) {
+    run("git", ["stash", "push", "--include-untracked", "-m", "Simulate my teammates: uncommitted work"], { quiet: true });
+    info("  Your uncommitted changes are put aside while the teammate branch is built, and put back at the end.");
+    process.on("exit", () => stashed && restore());
   }
 
   title("1 of 4  Creating the teammate branch");
@@ -108,7 +121,7 @@ export default async function simulate(args) {
   ]);
   if (commit.code !== 0) {
     warn("Nothing to commit: the teammate changes are already in your integration branch.");
-    run("git", ["checkout", startingBranch || "integration"]);
+    restore();
     return;
   }
   ok("Committed");
@@ -160,7 +173,7 @@ export default async function simulate(args) {
     }
   }
 
-  run("git", ["checkout", startingBranch && startingBranch !== scenario.branch ? startingBranch : "integration"]);
+  restore();
 
   title("Done");
   info(`  ${scenario.nextStep}`);
