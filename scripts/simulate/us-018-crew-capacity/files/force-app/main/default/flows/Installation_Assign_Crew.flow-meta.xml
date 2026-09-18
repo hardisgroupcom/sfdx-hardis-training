@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>64.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
-        <name>Move_To_Scheduled</name>
         <description>A planned installation with a crew and a date is scheduled: the status follows the facts rather than waiting for somebody to change it.</description>
+        <name>Move_To_Scheduled</name>
         <label>Move To Scheduled</label>
         <locationX>176</locationX>
         <locationY>323</locationY>
@@ -19,8 +20,8 @@
         </connector>
     </assignments>
     <assignments>
-        <name>Bring_Crew_Back_To_Cap</name>
         <description>US-018: the crew never exceeds the cap the planner set on the installation.</description>
+        <name>Bring_Crew_Back_To_Cap</name>
         <label>Bring Crew Back To Cap</label>
         <locationX>50</locationX>
         <locationY>539</locationY>
@@ -33,8 +34,8 @@
         </assignmentItems>
     </assignments>
     <decisions>
-        <name>Crew_Over_Cap</name>
         <description>Is the crew larger than the cap this installation allows?</description>
+        <name>Crew_Over_Cap</name>
         <label>Crew Over Cap</label>
         <locationX>176</locationX>
         <locationY>431</locationY>
@@ -76,7 +77,7 @@
         <filterFormula>AND(
   NOT(ISBLANK({!$Record.Crew_Size__c})),
   NOT(ISBLANK({!$Record.Install_Date__c})),
-  ISPICKVAL({!$Record.Status__c}, "Planned")
+  ISPICKVAL({!$Record.Status__c}, &quot;Planned&quot;)
 )</filterFormula>
         <object>Installation__c</object>
         <recordTriggerType>CreateAndUpdate</recordTriggerType>
