@@ -3,6 +3,7 @@
     <fullName>Crew_Warning_Sent__c</fullName>
     <defaultValue>false</defaultValue>
     <description>Set by Installation Crew Warning once the planner has been told the crew looks too small, so the flow does not warn twice.</description>
+    <externalId>false</externalId>
     <label>Crew Warning Sent</label>
     <trackTrending>false</trackTrending>
     <type>Checkbox</type>

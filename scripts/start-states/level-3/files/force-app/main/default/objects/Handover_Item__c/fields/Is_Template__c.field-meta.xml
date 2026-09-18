@@ -3,6 +3,7 @@
     <fullName>Is_Template__c</fullName>
     <defaultValue>false</defaultValue>
     <description>Marks the ten reference lines the checklist of a new job is copied from.</description>
+    <externalId>false</externalId>
     <label>Is Template</label>
     <trackTrending>false</trackTrending>
     <type>Checkbox</type>

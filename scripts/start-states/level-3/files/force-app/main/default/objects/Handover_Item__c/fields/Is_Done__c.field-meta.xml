@@ -3,6 +3,7 @@
     <fullName>Is_Done__c</fullName>
     <defaultValue>false</defaultValue>
     <description>Ticked by the crew on site. Installation Close Check refuses to complete a job while any line is still unticked.</description>
+    <externalId>false</externalId>
     <label>Is Done</label>
     <trackTrending>false</trackTrending>
     <type>Checkbox</type>

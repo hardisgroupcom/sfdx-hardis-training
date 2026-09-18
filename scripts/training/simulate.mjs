@@ -175,7 +175,8 @@ function loadScenarios() {
  * over it would take their work back out without a word, so a teammate says
  * what it adds and what it removes, and nothing else changes.
  *
- * Each patch is { file, block, insertBefore | insertAfter | remove }.
+ * Each patch is { file, block, insertBefore | insertAfter | remove }, or one of the structural
+ * patches of applyStructuralPatch below, which the scenarios use.
  */
 function applyPatches(scenario) {
   const written = [];
@@ -188,6 +189,12 @@ function applyPatches(scenario) {
       );
     }
     let content = fs.readFileSync(target, "utf8");
+    if (patch.fieldPermission || patch.layoutField || patch.removeLayoutField) {
+      content = applyStructuralPatch(patch, content);
+      fs.writeFileSync(target, content, "utf8");
+      written.push(`${patch.file} (patched)`);
+      continue;
+    }
     if (patch.remove) {
       if (!content.includes(patch.remove)) {
         warn(`Nothing to remove in ${patch.file}: it was already gone.`);
@@ -213,6 +220,70 @@ function applyPatches(scenario) {
     written.push(`${patch.file} (patched)`);
   }
   return written;
+}
+
+/**
+ * A teammate change described by what it means rather than by the text around it.
+ *
+ * Anchoring on exact lines broke as soon as a file was formatted differently, and
+ * a permission inserted at the top of the file put it where Salesforce never does:
+ * the learner's next retrieve then showed it moving, a diff about nothing. These
+ * find their place the way Salesforce orders the file.
+ *
+ *   { fieldPermission: { field, editable, readable } }   in alphabetical order
+ *   { layoutField: "X", after: "Y" }                      layout item X after item Y
+ *   { removeLayoutField: "Z" }                            layout item Z removed
+ */
+function applyStructuralPatch(patch, content) {
+  const cannot = () =>
+    abort(`The teammate change cannot be placed in ${patch.file}.`, "Reset the level from the Training menu, then run this again.");
+
+  if (patch.fieldPermission) {
+    const { field, editable, readable } = patch.fieldPermission;
+    const blocks = [...content.matchAll(/( *)<fieldPermissions>[\s\S]*?<field>([^<]+)<\/field>[\s\S]*?<\/fieldPermissions>\r?\n/g)];
+    if (blocks.some((m) => m[2] === field)) {
+      warn(`${patch.file} already carries this change.`);
+      return content;
+    }
+    if (blocks.length === 0) {
+      cannot();
+    }
+    const indent = blocks[0][1];
+    const inner = `${indent}    `;
+    const block =
+      `${indent}<fieldPermissions>\n${inner}<editable>${editable === true}</editable>\n` +
+      `${inner}<field>${field}</field>\n${inner}<readable>${readable !== false}</readable>\n${indent}</fieldPermissions>\n`;
+    const next = blocks.find((m) => m[2].localeCompare(field, "en") > 0);
+    const at = next ? next.index : blocks[blocks.length - 1].index + blocks[blocks.length - 1][0].length;
+    return content.slice(0, at) + block + content.slice(at);
+  }
+
+  const itemOf = (name) =>
+    new RegExp(`( *)<layoutItems>\\s*<behavior>[^<]*</behavior>\\s*<field>${name}</field>\\s*</layoutItems>\\r?\\n`).exec(content);
+
+  if (patch.removeLayoutField) {
+    const item = itemOf(patch.removeLayoutField);
+    if (!item) {
+      warn(`Nothing to remove in ${patch.file}: it was already gone.`);
+      return content;
+    }
+    return content.slice(0, item.index) + content.slice(item.index + item[0].length);
+  }
+
+  if (itemOf(patch.layoutField)) {
+    warn(`${patch.file} already carries this change.`);
+    return content;
+  }
+  const anchor = itemOf(patch.after);
+  if (!anchor) {
+    cannot();
+  }
+  const indent = anchor[1];
+  const block =
+    `${indent}<layoutItems>\n${indent}    <behavior>${patch.behavior || "Edit"}</behavior>\n` +
+    `${indent}    <field>${patch.layoutField}</field>\n${indent}</layoutItems>\n`;
+  const at = anchor.index + anchor[0].length;
+  return content.slice(0, at) + block + content.slice(at);
 }
 
 function applyFiles(scenario) {

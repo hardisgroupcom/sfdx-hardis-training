@@ -16,13 +16,16 @@
   "patches": [
     {
       "file": "force-app/main/default/permissionsets/Helios_Delivery_Manager.permissionset-meta.xml",
-      "insertBefore": "    <fieldPermissions>",
-      "block": "    <fieldPermissions>\n        <editable>true</editable>\n        <field>Installation__c.Signed_Off_By__c</field>\n        <readable>true</readable>\n    </fieldPermissions>\n"
+      "fieldPermission": {
+        "field": "Installation__c.Signed_Off_By__c",
+        "editable": true,
+        "readable": true
+      }
     },
     {
       "file": "force-app/main/default/layouts/Installation__c-Installation Layout.layout-meta.xml",
-      "insertAfter": "                <layoutItems>\n                    <behavior>Edit</behavior>\n                    <field>Crew_Notes__c</field>\n                </layoutItems>\n",
-      "block": "                <layoutItems>\n                    <behavior>Edit</behavior>\n                    <field>Signed_Off_By__c</field>\n                </layoutItems>\n"
+      "layoutField": "Signed_Off_By__c",
+      "after": "Crew_Notes__c"
     }
   ]
 }

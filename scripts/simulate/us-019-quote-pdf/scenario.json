@@ -16,8 +16,11 @@
   "patches": [
     {
       "file": "force-app/main/default/permissionsets/Helios_Delivery_Manager.permissionset-meta.xml",
-      "insertBefore": "    <fieldPermissions>",
-      "block": "    <fieldPermissions>\n        <editable>true</editable>\n        <field>Panel_Batch__c.Quote_Pdf_Url__c</field>\n        <readable>true</readable>\n    </fieldPermissions>\n"
+      "fieldPermission": {
+        "field": "Panel_Batch__c.Quote_Pdf_Url__c",
+        "editable": true,
+        "readable": true
+      }
     }
   ]
 }

@@ -2,6 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Label__c</fullName>
     <description>What the crew has to check before the job can be closed.</description>
+    <externalId>false</externalId>
     <label>Label</label>
     <length>255</length>
     <required>false</required>
