@@ -283,22 +283,32 @@ export function addPicklistValue(alias, step) {
       return false;
     }
     const xml = fs.readFileSync(file, "utf8");
-    if (xml.includes(`<fullName>${step.value}</fullName>`)) {
-      return true;
-    }
-    const value =
-      `            <value>
+    const start = xml.indexOf(`<fullName>${step.value}</fullName>`);
+    if (start >= 0) {
+      // Present but inactive: a release that deployed the field without the value
+      // deactivated it, which is not "the admin added it". Reactivate it.
+      const end = xml.indexOf("</value>", start);
+      const block = xml.slice(start, end);
+      if (!block.includes("<isActive>false</isActive>")) {
+        return true;
+      }
+      const reactivated = block.replace(/\s*<isActive>false<\/isActive>/, "");
+      fs.writeFileSync(file, xml.slice(0, start) + reactivated + xml.slice(end), "utf8");
+    } else {
+      const value =
+        `            <value>
                 <fullName>${step.value}</fullName>
                 <default>false</default>
 ` +
-      `                <label>${step.value}</label>
+        `                <label>${step.value}</label>
             </value>
 `;
-    const at = xml.lastIndexOf("        </valueSetDefinition>");
-    if (at < 0) {
-      return false;
+      const at = xml.lastIndexOf("        </valueSetDefinition>");
+      if (at < 0) {
+        return false;
+      }
+      fs.writeFileSync(file, xml.slice(0, at) + value + xml.slice(at), "utf8");
     }
-    fs.writeFileSync(file, xml.slice(0, at) + value + xml.slice(at), "utf8");
     return run("sf", ["project", "deploy", "start", "--source-dir", "force-app", "--target-org", alias], { cwd: dir, quiet: true, capture: true }).code === 0;
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });

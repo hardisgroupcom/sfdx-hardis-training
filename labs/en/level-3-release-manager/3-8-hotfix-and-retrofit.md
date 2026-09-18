@@ -85,6 +85,10 @@ The org question only lists development orgs, and `helios-preprod` is a major or
 of that list. You still reproduce and fix in it, because it holds what production holds and nobody
 works in it: open it from **Orgs Manager** when step 3 asks.
 
+The panel then says it put your uncommitted changes aside: the Lab 3.7 line of `MY-PIPELINE.md` and
+the DORA report in `docs/dora/`. Bring them onto the hotfix branch: **Source Control** panel,
+**Stashes**, **Pop Latest Stash**. They reach `integration` and `main` with this fix.
+
 ### 3. Fix it
 
 In `helios-preprod`: **Setup > Object Manager > Installation > Validation Rules** **(1)**, then open
@@ -124,13 +128,16 @@ of being an exception.
 
 ### 4. Publish and ship
 
-Retrieve the validation rule and nothing else, from `helios-preprod`, commit it, and publish. The
-Pull Request targets **`preprod`**.
+Retrieve the validation rule and nothing else: in the **Metadata Retriever**, check that the org it
+reads from is `helios-preprod`, search `Installation_Date_Not_Past`, tick it and retrieve. Commit it
+from **Source Control** with the note and the report you brought back in step 2, then **Save /
+Publish**. The Pull Request targets **`preprod`**.
 
 Green. Merge. The fix is already in `helios-preprod`, because you made it there, so this deployment
 changes nothing and proves the branch and the org agree.
 
-Then a second Pull Request, from `preprod` into `main`. Its check deploys against production in
+Then a second Pull Request, from `preprod` into `main`: the **+ PR** chip on the arrow from `preprod`
+to `main`, in the DevOps Pipeline diagram. Its check deploys against production in
 validation mode, which is exactly what you want at 17:40: the same gate, on the real org, taking two
 minutes. Green. Merge. Watch the deployment. Confirm with a planner, or by saving a record
 yourself.
@@ -167,8 +174,9 @@ reports both the same way, and the second kind, accepted, rolls the repository b
 So you recover the change the way you would build it: as an ordinary User Story, retrieving exactly
 what you know changed.
 
-Start a User Story targeting `integration`, and answer **I'm hardcore, I don't need an org** to the
-org question: the org you read from is production, and nobody builds in production. Then open the
+Start a User Story targeting `integration`, type **Feature**, named
+`US-046-needs-reinspection-status`, and answer **I'm hardcore, I don't need an org** to the org
+question: the org you read from is production, and nobody builds in production. Then open the
 **Metadata Retriever** from the Welcome page.
 
 ![The Metadata Retriever, with the org selector, the name filter and the search button](../../_assets/annotated/vscode/metadata-retriever--retrofit.png)
@@ -189,9 +197,11 @@ One component, chosen by you, from an org you named.
 
 Open the Source Control panel and read what landed.
 
-You asked for one field and you will usually get more than the picklist value: an API version bump,
-a reordered block, a `<fullName>` that differs in case. A retrieve returns the org's current
-serialisation of the whole component, not just the part that changed.
+Here the diff is the new value and nothing else, because this project keeps its files exactly as
+Salesforce retrieves them. On most projects you asked for one field and you will get more than the
+picklist value: an API version bump, a reordered block, a `<fullName>` that differs in case. A
+retrieve returns the org's current serialisation of the whole component, not just the part that
+changed.
 
 Three kinds of difference, and only one of them is yours to keep:
 
@@ -209,7 +219,9 @@ Stage the picklist hunk. Leave the rest.
 
 ### 8. Bring it in, through the pipeline
 
-Publish and open a Pull Request into `integration`, like any other story. Review it, merge it.
+Add the two lines of step 9 to `MY-PIPELINE.md` first, so they travel with this story. Then commit
+the picklist hunk and the notes, **Save / Publish**, and open a Pull Request into `integration`, like
+any other story. Review it, merge it.
 
 It flows to `uat`, then to `preprod` and `main` on the next release, at which point production and
 the repository agree again.
@@ -218,6 +230,8 @@ That last sentence is the whole point: **not to change production, but to stop p
 changed back.**
 
 ### 9. Write both down
+
+The lines step 8 added to `MY-PIPELINE.md`:
 
 ```markdown
 - **Lab 3.8, hotfix**: US-045 shipped through preprod to main, then merged back into integration so the

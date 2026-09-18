@@ -28,6 +28,7 @@ for the `Helios Delivery` app, and every one of them is a lab in this course.
 | US-038 | 2 | Tidy the Installation layout | You | `features/US-038-installation-notes-tidy` |
 | US-041 | 2 | Installation handover checklist | You | `features/US-041-handover-checklist` |
 | US-045 | 3 | Cancelled installations can no longer be back-dated | You | `fix/US-045-installation-date-hotfix` |
+| US-046 | 3 | Needs Reinspection status, added in production by an admin | You | `features/US-046-needs-reinspection-status` |
 
 ## The stories in full
 
@@ -318,6 +319,21 @@ Acceptance criteria:
 
 - Cancelled installations are exempt from the date rule, like completed ones
 - The rule still refuses to move a planned installation into the past
+
+<a id="US-046"></a>
+
+### US-046 - Needs Reinspection status, added in production by an admin
+
+**Owner**: You  
+**Branch**: `features/US-046-needs-reinspection-status`  
+**Lab**: 3.8
+
+> As the release manager, I want the status an admin added in production to be in the repository, so that the next release does not take it away from the planners.
+
+Acceptance criteria:
+
+- Needs Reinspection is a value of Installation__c.Status__c on integration
+- Nothing else from production came with it
 
 ## The team
 
