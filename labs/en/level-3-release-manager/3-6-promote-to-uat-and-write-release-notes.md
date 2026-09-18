@@ -7,6 +7,7 @@ lab: 6
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/vscode/devops-pipeline-level3--create-promotion
   - annotated/vscode/pipeline-branch-modal-level3--what-it-carries
   - annotated/vscode/pipeline-branch-modal--no-merge-target
 depends_on:
@@ -76,12 +77,19 @@ promoted, **(4)** previews the notes for what has not.
 
 ### 2. Create the promotion Pull Request
 
-Create it on GitHub, from `integration` into `uat`, like any other Pull Request.
+In the **DevOps Pipeline** diagram, the arrow from `integration` to `uat` carries a **+ PR** chip
+**(1)**. Click it: GitHub opens on a new Pull Request from `integration` into `uat`, both branches
+already filled in.
 
-!!! note "There is no button for this in the panel, and that is correct"
-    The branch window does have a **Create promotion from integration (experimental)** button, but
-    it only appears when the project turns on `enablePromotionBranches`, which this one does not.
-    That feature is for promoting a **subset** of what is waiting. What you are doing is promoting
+![The + PR chip on the arrow from integration to uat](../../_assets/annotated/vscode/devops-pipeline-level3--create-promotion.png)
+
+The chip is there because no Pull Request is open on that arrow. Once you create one, the chip is
+replaced by the Pull Request number and its status.
+
+!!! note "Not the promotion button of the branch window"
+    The branch window can also show a **Create promotion from integration (experimental)** button,
+    but only on a project that turns on `enablePromotionBranches`, which this one does not. That
+    feature is for promoting a **subset** of what is waiting. What you are doing is promoting
     everything, and everything is what a plain Pull Request from one branch to the next carries.
 
 Title it for the humans who will read it, not for git:

@@ -265,8 +265,7 @@ OK  helios-dev holds the app, your permission set and the sample data.
 ...
 
 6 of 8  Which org each branch deploys to
-OK  integration now names its org, and is pushed.
-OK  uat now names its org, and is pushed.
+OK  integration now names the org of every branch, and is pushed.
 
 7 of 8  No merge while a check is red
 OK  integration now accepts a merge only once its checks are green.
@@ -348,9 +347,10 @@ Seven things, each of them real work on a real project, and none of them yours t
 | `helios-uat`         | User acceptance, where the business tests what integration has collected |
 
 - **Which org each branch deploys to**, written into the project's one configuration file per
-  branch, in `config/branches/`, and pushed to your fork. The repository could not know that: your
-  orgs did not exist when it was written. It is pushed because the badge check clones your fork and
-  reads what is actually in it
+  branch, in `config/branches/`, committed on `integration` and pushed to your fork. The repository
+  could not know that: your orgs did not exist when it was written. It is pushed because the badge
+  check clones your fork and reads what is actually in it. `uat` receives the same files with its
+  first promotion, in Lab 3.6, the way every change reaches it
 - **`integration` and `uat` protected.** A Pull Request into either one can only be merged once
   every check GitHub runs on it has finished green, and that rule holds for you too, the owner of
   the fork. On a real project somebody set this up on day one: a merge on a red check deploys

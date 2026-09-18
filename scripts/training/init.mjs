@@ -541,7 +541,11 @@ export function writeBranchConfigs(pipeline, usernames, slug = null) {
   const original = gitOut(["rev-parse", "--abbrev-ref", "HEAD"]);
   let published = true;
 
-  for (const stage of pipeline) {
+  // Written on the development branch only. uat receives them with its first
+  // promotion, in Lab 3.6: a copy committed on uat as well would conflict with
+  // every later change to the same files on integration (Labs 3.1 and 3.2), and
+  // the pipeline panel and the audit read them from integration anyway.
+  for (const stage of pipeline.slice(0, 1)) {
     const branch = stage.branch;
     if (gitOut(["rev-parse", "--abbrev-ref", "HEAD"]) !== branch) {
       const checkout = gitOut(["rev-parse", "--verify", "--quiet", branch])
@@ -587,7 +591,7 @@ export function writeBranchConfigs(pipeline, usernames, slug = null) {
       published = false;
       continue;
     }
-    ok(changed.length > 0 ? `${c.bold(branch)} now names its org, and is pushed.` : `${c.bold(branch)} was already right.`);
+    ok(changed.length > 0 ? `${c.bold(branch)} now names the org of every branch, and is pushed.` : `${c.bold(branch)} was already right.`);
   }
 
   // Leave the learner on integration, where Lab 1.3 starts. Coming from main, the
@@ -682,7 +686,7 @@ export default async function init(args) {
   step(6, "Which org each branch deploys to");
   const published = writeBranchConfigs(pipeline, usernames, slug);
 
-  // After the branch configuration, which is pushed straight to those branches,
+  // After the branch configuration, which is pushed straight to integration,
   // and before the secrets, the one step that can stop the command.
   step(7, "No merge while a check is red");
   info(c.dim(`    A Pull Request into ${pipeline.map((s) => s.branch).join(" or ")} merges only once ${REQUIRED_CHECKS.join(" and ")} are green.`));
