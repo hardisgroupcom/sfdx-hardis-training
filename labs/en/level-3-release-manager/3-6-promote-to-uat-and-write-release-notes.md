@@ -135,7 +135,8 @@ When it finishes, do the manual steps the comment listed, in `helios-uat`.
 
 Open `helios-uat` and check the two stories are genuinely usable, not just deployed:
 
-- Assigning a crew larger than the cap is refused
+- A crew larger than the cap is brought back down to the cap when you save: put `Crew Capacity Cap`
+  at 3 and `Crew Size` at 6 on a planned installation, save, and it reads 3
 - The quote PDF permission is on the manager permission set
 
 Deployed and usable are different states, and the gap between them is almost always a permission or
@@ -145,8 +146,12 @@ a piece of reference data.
 
 Open the **DevOps Pipeline** panel and click the `uat` node, the same way you clicked `integration`
 in step 1. In the footer of that window, the button marked **(3)** in the picture at step 1 now
-reads **Generate Promotion Notes for uat**. Click it: it covers the promotion you have just
-merged.
+reads **Generate Promotion Notes for uat**. Click it.
+
+It asks one question, **Select the merge commit for this release or promotion**, listing the merges
+that landed on `uat`, newest first. Take the top one, **Merge pull request #N from
+*your-handle*/integration**: the promotion you have just merged. The notes cover what that merge
+brought into `uat`, and nothing before it.
 
 The button is named after what the branch is. `uat` merges into `preprod`, so what arrived there is
 a promotion. On a branch with no merge target, `main`, the same button reads **Generate Release
@@ -170,9 +175,22 @@ reads needs two things the generator cannot know:
    over-staffed, and sales can generate quote PDFs."
 2. **The manual steps, stated as instructions to a named person**, not as a technical list
 
-Put the result in the repository the way everything else gets there: **New User Story** targeting
-`integration`, **Save / Publish User Story**, **Create Pull Request**. Then put its link in
-`MY-PIPELINE.md`.
+Put the result in the repository the way everything else gets there, as a story:
+
+1. **New User Story**, targeting `integration`, type **Feature**, name
+   `US-053-release-notes-2026-09`, and **I'm hardcore, I don't need an org**: this story is a
+   document
+2. The panel says your uncommitted changes were put aside: the `MY-PIPELINE.md` lines of Labs 3.4
+   and 3.5. Bring them onto the new branch: **Source Control** panel, **Stashes**, **Pop Latest
+   Stash**
+3. In the Explorer, create a `release-notes` folder at the root of the project, and copy the
+   markdown file from `hardis-report/release-notes/uat-<date>/` into it. `hardis-report` is never
+   committed, so the copy is what the repository keeps
+4. Improve the copy, with the two things above
+5. In `MY-PIPELINE.md`, add a line under Level 3:
+   `- **Lab 3.6, promotion to uat**: release notes in release-notes/<the file name>`
+6. Commit from **Source Control**, then **Save / Publish**, **Create Pull Request** into
+   `integration`, and merge it once the checks are green
 
 <details markdown="1"><summary>Under the hood: what generated the notes, and what a promotion really is</summary>
 
@@ -229,9 +247,9 @@ That is expected on a first promotion: UAT is behind by the whole history. It se
 one.
 
 **The release notes are empty.**
-Three causes, in order of likelihood: no git provider token in the environment, so the Pull Request
-lookup returned nothing and only warned; the merges were squashed, so there is no link to look up;
-or the range is wrong.
+Three causes, in order of likelihood: the wrong merge commit was picked, so check that the top of
+the list was the promotion; no git provider token in the environment, so the Pull Request lookup
+returned nothing and only warned; or the merges were squashed, so there is no link to look up.
 
 ## Check your work
 

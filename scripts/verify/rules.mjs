@@ -752,18 +752,27 @@ export const RULES = [
   },
   {
     id: "3.6", level: 3, lab: 6,
-    title: "Integration was promoted to UAT",
+    title: "Integration was promoted to UAT, and the release notes are in the repository",
     check: (ctx) => {
       if (!ctx.hasBranch("uat")) {
         return miss("there is no uat branch", "your fork");
       }
       const field = ctx.readOn("uat", FIELD("Installation__c", "Panels_Required__c"));
-      return field
-        ? pass("The work reached uat")
-        : miss(
+      if (!field) {
+        return miss(
           "uat does not carry the Level 1 and Level 2 work, so integration was never promoted into it",
           `${FIELD("Installation__c", "Panels_Required__c")} on branch uat`
         );
+      }
+      // The notes reach integration with their story; right after the lab they may
+      // still be on the story branch
+      const story = storyBranch(ctx, "US-053");
+      const notes = ctx.listOn(DEV, "release-notes/")
+        .concat(story ? ctx.listOn(story, "release-notes/") : [])
+        .filter((f) => f.endsWith(".md"));
+      return notes.length > 0
+        ? pass("The work reached uat, and its release notes are in the repository")
+        : miss("no release notes in the repository", "a .md file in release-notes/, on integration or on your US-053 story branch");
     }
   },
   {

@@ -672,6 +672,7 @@
         "deploymentAction"
       ],
       "screenshots": [
+        "annotated/vscode/devops-pipeline-level3--create-promotion",
         "annotated/vscode/pipeline-branch-modal-level3--what-it-carries",
         "annotated/vscode/pipeline-branch-modal--no-merge-target"
       ]

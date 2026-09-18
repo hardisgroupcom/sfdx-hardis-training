@@ -265,6 +265,17 @@
       "metadata": ["Installation__c-Installation Layout"]
     },
     {
+      "id": "US-053",
+      "level": 3,
+      "lab": 6,
+      "author": "you",
+      "title": "Release notes of the 2026-09 promotion",
+      "story": "As the release manager, I want the notes of each promotion in the repository, so that the business reads what changed without asking.",
+      "acceptance": ["The notes open with what the release is for", "The manual steps name who does them"],
+      "branch": "features/US-053-release-notes-2026-09",
+      "metadata": ["release-notes/"]
+    },
+    {
       "id": "US-020",
       "level": 3,
       "lab": 5,

@@ -17,6 +17,7 @@ for the `Helios Delivery` app, and every one of them is a lab in this course.
 | US-050 | 3 | The pipeline reaches production | You | `features/US-050-pipeline-to-production` |
 | US-051 | 3 | CI authentication with JWT | You | `features/US-051-ci-authentication` |
 | US-052 | 3 | Total Capacity back on the Installation layout | You | `features/US-052-installation-layout-capacity` |
+| US-053 | 3 | Release notes of the 2026-09 promotion | You | `features/US-053-release-notes-2026-09` |
 | US-020 | 3 | Refactor InstallationScheduler | Marco Bianchi | `training/mate-us-020-apex-refactor` |
 | US-021 | 2 | Warn the planner when a crew is too small | You | `features/US-021-crew-size-warning` |
 | US-024 | 2 | Crew size becomes mandatory | You | `features/US-024-crew-size-required` |
@@ -152,6 +153,21 @@ Acceptance criteria:
 Acceptance criteria:
 
 - Total Capacity (kW) is on the Installation layout, beside the crew capacity cap
+
+<a id="US-053"></a>
+
+### US-053 - Release notes of the 2026-09 promotion
+
+**Owner**: You  
+**Branch**: `features/US-053-release-notes-2026-09`  
+**Lab**: 3.6
+
+> As the release manager, I want the notes of each promotion in the repository, so that the business reads what changed without asking.
+
+Acceptance criteria:
+
+- The notes open with what the release is for
+- The manual steps name who does them
 
 <a id="US-020"></a>
 
