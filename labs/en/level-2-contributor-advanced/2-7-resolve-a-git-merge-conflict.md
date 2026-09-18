@@ -9,7 +9,6 @@ source_rev: ""
 screenshots:
   - annotated/vscode/sidebar-commands-custom-menu-2--training-menu
   - annotated/vscode/pipeline-cards--new-user-story
-  - annotated/vscode/sidebar-commands-advanced--push
 depends_on:
   commands: [hardis:work:save, hardis:work:refresh]
   flags: []
@@ -134,12 +133,17 @@ guess which one meant it.
 ### 5. Resolve the permission set: take both
 
 Click the permission set file in the **Source Control** panel. VS Code opens its merge editor:
-your version on the left, Marco's on the right, and the result you are building at the bottom.
+**Incoming**, Marco's version from `integration`, on the left, **Current**, yours, on the right, and
+the result you are building at the bottom.
 
 This one is mechanical, and you can decide it without reading a single line of XML: **both entries
 belong**. Marco granted one field, you granted another, and a permission set holds as many as it
-needs. Take the button that keeps both sides, **Accept Combination** in the merge editor, then
-**Complete Merge** at the top right.
+needs. Take the button that keeps both sides, **Accept Combination (Incoming First)** in the merge
+editor, then read the result at the bottom before you click **Complete Merge**: you want two
+complete `<fieldPermissions>` blocks, each naming one field, Marco's `Crew_Capacity_Cap__c` first
+and your `Crew_Notes__c` second. If you see a single block holding two `<field>` lines, the editor
+joined the two lines rather than the two blocks: copy the lines around it so that each field gets
+its own block, as the under the hood section shows.
 
 **Take both** is the right answer for almost every permission set conflict. Choosing one side is how
 a teammate's permission quietly disappears, and nobody notices until somebody cannot see a field.
@@ -199,14 +203,19 @@ Do it in Flow Builder, not in the file. A flow is stored as XML that nobody can 
 developers included, and a flow that deploys but behaves wrongly is worse than one that fails.
 
 1. In the merge editor, **Accept Incoming** on the flow: Marco's whole version wins for now
-2. **Save / Publish User Story** is not what you want yet. First send the merged flow to your dev
-   org, so `helios-dev` has Marco's cap: open the **SFDX HARDIS** view in the left bar,
-   **CI/CD (advanced)** **(1)**, and click **Push from local files to Salesforce org** **(2)**
+2. **Save / Publish User Story** is not what you want yet. First send what the merge brought in to
+   your dev org, so `helios-dev` has Marco's field, his grant and his cap: in the **Explorer**,
+   right-click the `force-app` folder, then **SFDX: Deploy This Source to Org**, the same command
+   Lab 2.5 used on one class
 
-   ![The CI/CD (advanced) group of the sfdx-hardis command list](../../_assets/annotated/vscode/sidebar-commands-advanced--push.png)
+   It deploys every file of the folder as it is on your machine, and nothing else. The sfdx-hardis
+   **Push from local files to Salesforce org** command would send your org every change git has
+   seen since the last sync, deletions included: the Admin profile you removed from the repository
+   in Lab 2.6 would come back as a request to delete it, which Salesforce refuses
 
 3. Open **Flow Builder** in the org, on `Installation_Assign_Crew`, and add your flat-roof rule
-   again, **after** his cap so the cap runs last and wins
+   again, **before** his cap: the flow raises a flat roof crew to three first, and his cap, which
+   now runs last, has the final word
 4. Come back to VS Code, bring the rebuilt flow down with **Commit changes**, commit it, and publish
 
 Slower to describe, much faster to do, and you can see what you are building.
