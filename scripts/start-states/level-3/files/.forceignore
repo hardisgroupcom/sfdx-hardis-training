@@ -6,12 +6,11 @@
 **/profilePasswordPolicies/*
 **/appMenus/AppSwitcher.appMenu-meta.xml
 **/settings/*
+# except this one: it allows deployments while a scheduled Apex job exists,
+# which Lab 2.4 creates and every later deployment needs
+!**/settings/Deployment.settings-meta.xml
 **/networks/*
 **/siteDotComSites/*
 **/objectTranslations/*
 **/standardValueSets/*
 
-# Sofia's 2025 capacity spike field, named exactly rather than with a wildcard.
-# The wildcard that used to be here also hid Crew_Warning_Sent__c, which cost
-# US-021 a failed deployment check (Lab 2.2).
-**/objects/Installation__c/fields/Crew_Workaround__c.field-meta.xml

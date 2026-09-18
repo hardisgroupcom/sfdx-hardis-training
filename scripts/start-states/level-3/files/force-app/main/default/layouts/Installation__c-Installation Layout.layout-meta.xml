@@ -6,46 +6,46 @@
         <editHeading>true</editHeading>
         <label>Information</label>
         <layoutColumns>
-                <layoutItems>
-                    <behavior>Edit</behavior>
-                    <field>Account__c</field>
-                </layoutItems>
-                <layoutItems>
-                    <behavior>Edit</behavior>
-                    <field>Status__c</field>
-                </layoutItems>
-                <layoutItems>
-                    <behavior>Required</behavior>
-                    <field>Crew_Size__c</field>
-                </layoutItems>
-                <layoutItems>
-                    <behavior>Edit</behavior>
-                    <field>Install_Date__c</field>
-                </layoutItems>
-                <layoutItems>
-                    <behavior>Edit</behavior>
-                    <field>Roof_Type__c</field>
-                </layoutItems>
-                <layoutItems>
-                    <behavior>Edit</behavior>
-                    <field>Crew_Capacity_Cap__c</field>
-                </layoutItems>
-                <layoutItems>
-                    <behavior>Edit</behavior>
-                    <field>Panels_Required__c</field>
-                </layoutItems>
-                <layoutItems>
-                    <behavior>Edit</behavior>
-                    <field>Crew_Warning_Sent__c</field>
-                </layoutItems>
-                <layoutItems>
-                    <behavior>Edit</behavior>
-                    <field>Crew_Notes__c</field>
-                </layoutItems>
-                <layoutItems>
-                    <behavior>Edit</behavior>
-                    <field>External_Id__c</field>
-                </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Account__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Status__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Required</behavior>
+                <field>Crew_Size__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Install_Date__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Roof_Type__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Crew_Capacity_Cap__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>External_Id__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Panels_Required__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Crew_Notes__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Signed_Off_By__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns/>
         <style>TwoColumnsTopToBottom</style>
@@ -56,14 +56,10 @@
         <editHeading>true</editHeading>
         <label>Custom Links</label>
         <layoutColumns/>
+        <layoutColumns/>
+        <layoutColumns/>
         <style>CustomLinks</style>
     </layoutSections>
-    <relatedLists>
-        <fields>Label__c</fields>
-        <fields>Sequence__c</fields>
-        <fields>Is_Done__c</fields>
-        <relatedList>Handover_Item__c.Installation__c</relatedList>
-    </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>
     <showInteractionLogPanel>false</showInteractionLogPanel>

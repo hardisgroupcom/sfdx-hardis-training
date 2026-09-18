@@ -2,8 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Installation__c</fullName>
     <deleteConstraint>SetNull</deleteConstraint>
-    <description>The job this checklist line belongs to. Empty on the ten template records, which is why this is a lookup and not a master-detail.</description>
-    <externalId>false</externalId>
+    <description>The installation this item belongs to. Empty on the template items.</description>
     <label>Installation</label>
     <referenceTo>Installation__c</referenceTo>
     <relationshipLabel>Handover Items</relationshipLabel>

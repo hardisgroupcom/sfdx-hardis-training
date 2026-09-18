@@ -51,9 +51,7 @@ public with sharing class InstallationScheduler {
     }
 
     /**
-     * US-027: the installations from the list that can be scheduled on the given day.
-     * One query for the whole list, whatever its size, because a query inside the loop
-     * works for five installations and throws at a hundred and one.
+     * The installations from the list that can be scheduled on the given day.
      *
      * @param installationIds the installations to check
      * @param wanted the day the planner wants

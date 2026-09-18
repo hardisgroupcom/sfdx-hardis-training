@@ -1,11 +1,11 @@
-External_Id__c,Name,Label__c,Sequence__c,Is_Done__c,Is_Template__c
-HAND-TPL-01,Panels counted,Count the panels left on site against the delivery note,1,false,true
-HAND-TPL-02,Roof anchors checked,Check every roof anchor is torqued and logged,2,false,true
-HAND-TPL-03,Cabling labelled,Label the DC and AC runs at both ends,3,false,true
-HAND-TPL-04,Inverter commissioned,Commission the inverter and record its serial number,4,false,true
-HAND-TPL-05,Meter reading taken,Take the meter reading and photograph it,5,false,true
-HAND-TPL-06,Isolators tested,Test the AC and DC isolators in front of the customer,6,false,true
-HAND-TPL-07,Scaffolding released,Release the scaffolding and confirm the pickup slot,7,false,true
-HAND-TPL-08,Site cleared,Clear packaging and offcuts from the site,8,false,true
-HAND-TPL-09,Customer walkthrough,Walk the customer through the app and the shutdown procedure,9,false,true
-HAND-TPL-10,Handover pack signed,Get the handover pack signed and upload it,10,false,true
+﻿"Id","External_Id__c","Label__c","Sequence__c","Is_Template__c"
+"a03cb00000jqcWBAAY","HANDOVER-TPL-01","Panels fixed and torqued","10","true"
+"a03cb00000jqcWCAAY","HANDOVER-TPL-02","Inverter commissioned","20","true"
+"a03cb00000jqcWDAAY","HANDOVER-TPL-03","Isolator labelled","30","true"
+"a03cb00000jqcWEAAY","HANDOVER-TPL-04","Roof penetrations sealed","40","true"
+"a03cb00000jqcWFAAY","HANDOVER-TPL-05","Monitoring app connected","50","true"
+"a03cb00000jqcWGAAY","HANDOVER-TPL-06","Customer shown the isolator","60","true"
+"a03cb00000jqcWHAAY","HANDOVER-TPL-07","Warranty documents handed over","70","true"
+"a03cb00000jqcWIAAY","HANDOVER-TPL-08","Site cleared of offcuts","80","true"
+"a03cb00000jqcWJAAY","HANDOVER-TPL-09","Photos of the array uploaded","90","true"
+"a03cb00000jqcWKAAY","HANDOVER-TPL-10","Customer signature collected","100","true"

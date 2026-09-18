@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>64.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
+        <description>Keeps the fault message so that a failed warning leaves a trace.</description>
         <name>Log_Fault</name>
-        <description>Where both fault paths end. A real project sends this somewhere a person reads: a platform event, an error log object, an email to the admin. The course stops at recording it, because what matters here is that the flow has a fault path at all.</description>
         <label>Log Fault</label>
-        <locationX>314</locationX>
-        <locationY>611</locationY>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <assignmentItems>
-            <assignToReference>Fault_Message</assignToReference>
+            <assignToReference>faultMessage</assignToReference>
             <operator>Assign</operator>
             <value>
                 <elementReference>$Flow.FaultMessage</elementReference>
@@ -16,48 +17,57 @@
         </assignmentItems>
     </assignments>
     <decisions>
+        <description>Warns only when the crew cannot lay the panels, and only once.</description>
         <name>Crew_Too_Small</name>
-        <description>Is the crew smaller than the panel count needs?</description>
         <label>Crew Too Small</label>
-        <locationX>176</locationX>
-        <locationY>287</locationY>
-        <defaultConnectorLabel>Crew is big enough</defaultConnectorLabel>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
-            <name>Too_Few_People</name>
+            <name>Too_Small</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Crew_Is_Too_Small</leftValueReference>
+                <leftValueReference>crewTooSmall</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Create_Crew_Warning_Task</targetReference>
+                <targetReference>Create_Warning_Task</targetReference>
             </connector>
-            <label>Fewer people than the panels need</label>
+            <label>Too Small</label>
         </rules>
     </decisions>
-    <description>US-021: warns the planner when the crew assigned to an installation is smaller than the panel count needs. Warns once, which is what Crew Warning Sent is for.</description>
+    <description>Warns the planner when the crew assigned to an installation is too small for the panels it needs.</description>
     <environments>Default</environments>
     <formulas>
-        <name>Crew_Is_Too_Small</name>
-        <description>One crew member fits eight panels, and the warning is only sent once per installation.</description>
+        <description>True when eight panels a person cannot cover the job and no warning was sent yet.</description>
+        <name>crewTooSmall</name>
         <dataType>Boolean</dataType>
-        <expression>AND(
-  {!$Record.Crew_Size__c} * 8 &lt; {!$Record.Panels_Required__c},
-  NOT({!$Record.Crew_Warning_Sent__c})
-)</expression>
+        <expression>AND({!$Record.Crew_Size__c} * 8 &lt; {!$Record.Panels_Required__c}, NOT({!$Record.Crew_Warning_Sent__c}))</expression>
     </formulas>
     <interviewLabel>Installation Crew Warning {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Installation Crew Warning</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordCreates>
-        <name>Create_Crew_Warning_Task</name>
-        <description>Tells the owner of the installation that the crew looks too small for the job.</description>
-        <label>Create Crew Warning Task</label>
-        <locationX>50</locationX>
-        <locationY>395</locationY>
+        <description>Gives the planner a task on the installation, so the warning cannot be missed.</description>
+        <name>Create_Warning_Task</name>
+        <label>Create Warning Task</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
         <connector>
             <targetReference>Mark_Warning_Sent</targetReference>
         </connector>
@@ -86,48 +96,51 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
     <recordUpdates>
+        <description>Records that the warning was sent, so that saving again does not warn twice.</description>
         <name>Mark_Warning_Sent</name>
-        <description>Records that the warning went out, so the next save does not send it again.</description>
         <label>Mark Warning Sent</label>
-        <locationX>50</locationX>
-        <locationY>503</locationY>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>$Record.Id</elementReference>
-            </value>
-        </filters>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <faultConnector>
+            <targetReference>Log_Fault</targetReference>
+        </faultConnector>
         <inputAssignments>
             <field>Crew_Warning_Sent__c</field>
             <value>
                 <booleanValue>true</booleanValue>
             </value>
         </inputAssignments>
-        <faultConnector>
-            <targetReference>Log_Fault</targetReference>
-        </faultConnector>
-        <object>Installation__c</object>
+        <inputReference>$Record</inputReference>
     </recordUpdates>
     <start>
-        <locationX>50</locationX>
+        <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Crew_Too_Small</targetReference>
         </connector>
-        <filterFormula>AND(
-  NOT(ISBLANK({!$Record.Crew_Size__c})),
-  NOT(ISBLANK({!$Record.Panels_Required__c}))
-)</filterFormula>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Crew_Size__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Panels_Required__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
         <object>Installation__c</object>
         <recordTriggerType>CreateAndUpdate</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
     <status>Active</status>
     <variables>
-        <name>Fault_Message</name>
-        <description>What Salesforce said when the create or the update failed.</description>
+        <description>The error a failed record element reported.</description>
+        <name>faultMessage</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>

@@ -1,18 +1,14 @@
-# Deployment actions for Pull Request #3 (US-026).
-# Written by the Deployment Actions tab of the DevOps Pipeline panel.
 commandsPostDeploy:
-  - id: 9c2f1a40-0b11-4d33-9f21-026000000001
+  - id: 5b2e8c71-0a3d-4f6e-9c1b-026000000001
     label: Load crew capacity reference data
     type: data
-    when: post-deploy
     parameters:
       sfdmuProject: HeliosCrewRefData
-    command: sf hardis:org:data:import --path scripts/data/HeliosCrewRefData
-    context: all
-  - id: 9c2f1a40-0b11-4d33-9f21-026000000002
+    command: ""
+    context: process-deployment-only
+  - id: 5b2e8c71-0a3d-4f6e-9c1b-026000000002
     label: Schedule the nightly crew capacity recalculation
     type: schedule-batch
-    when: post-deploy
     parameters:
       className: CrewCapacityBatch
       cronExpression: 0 0 2 * * ?
@@ -20,10 +16,9 @@ commandsPostDeploy:
     command: ""
     context: process-deployment-only
     runOnlyOnceByOrg: true
-  - id: 9c2f1a40-0b11-4d33-9f21-026000000003
+  - id: 5b2e8c71-0a3d-4f6e-9c1b-026000000003
     label: Let the org send the batch summary email
     type: manual
-    when: post-deploy
     parameters:
       instructions: |
         1. Open **Setup**, type `Deliverability` in the Quick Find box, and open it.

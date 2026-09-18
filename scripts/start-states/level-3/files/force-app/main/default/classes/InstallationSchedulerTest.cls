@@ -15,6 +15,14 @@ private class InstallationSchedulerTest {
             Arrival_Date__c = Date.today().addDays(10),
             External_Id__c = 'TEST-BATCH-001'
         );
+        // Still waiting for a date, so the Installation Assign Crew flow leaves
+        // it alone and it stays Planned. The record above does not: that flow
+        // moves any Planned installation with a crew and a date to Scheduled.
+        insert new Installation__c(
+            Status__c = 'Planned',
+            Crew_Size__c = 2,
+            External_Id__c = 'TEST-INST-900'
+        );
     }
 
     @isTest
@@ -32,11 +40,7 @@ private class InstallationSchedulerTest {
 
     @isTest
     static void earliestInstallDateIsNullWhenNothingHasArrived() {
-        Installation__c lonely = new Installation__c(
-            Status__c = 'Planned',
-            Crew_Size__c = 2,
-            External_Id__c = 'TEST-INST-002'
-        );
+        Installation__c lonely = new Installation__c(Status__c = 'Planned', Crew_Size__c = 2, External_Id__c = 'TEST-INST-002');
         insert lonely;
         Test.startTest();
         Date earliest = InstallationScheduler.earliestInstallDate(lonely.Id);
@@ -53,14 +57,6 @@ private class InstallationSchedulerTest {
 
     @isTest
     static void installationsReadyToScheduleReturnsPlannedOnes() {
-        // No install date on purpose: Installation Assign Crew only moves an
-        // installation to Scheduled once it has both a crew and a date, and since
-        // US-024 made the crew mandatory every record has one.
-        insert new Installation__c(
-            Status__c = 'Planned',
-            Crew_Size__c = 2,
-            External_Id__c = 'TEST-INST-004'
-        );
         Test.startTest();
         List<Installation__c> ready = InstallationScheduler.installationsReadyToSchedule();
         Test.stopTest();
@@ -69,7 +65,7 @@ private class InstallationSchedulerTest {
 
     @isTest
     static void schedulableOnRefusesBeforeThePanelsArrive() {
-        Installation__c inst = [SELECT Id FROM Installation__c WHERE External_Id__c = 'TEST-INST-001' LIMIT 1];
+        Installation__c inst = [SELECT Id FROM Installation__c LIMIT 1];
         Test.startTest();
         List<Id> tooEarly = InstallationScheduler.schedulableOn(new List<Id>{ inst.Id }, Date.today());
         List<Id> lateEnough = InstallationScheduler.schedulableOn(new List<Id>{ inst.Id }, Date.today().addDays(60));
@@ -80,11 +76,7 @@ private class InstallationSchedulerTest {
 
     @isTest
     static void schedulableOnIgnoresInstallationsWithNoBatch() {
-        Installation__c lonely = new Installation__c(
-            Status__c = 'Planned',
-            Crew_Size__c = 2,
-            External_Id__c = 'TEST-INST-003'
-        );
+        Installation__c lonely = new Installation__c(Status__c = 'Planned', Crew_Size__c = 2, External_Id__c = 'TEST-INST-003');
         insert lonely;
         Test.startTest();
         List<Id> allowed = InstallationScheduler.schedulableOn(new List<Id>{ lonely.Id }, Date.today().addDays(30));
