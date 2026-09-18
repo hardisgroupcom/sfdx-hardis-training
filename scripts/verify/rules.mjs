@@ -34,6 +34,13 @@ export function makeContext(dir, { local = false, sfQuery = null } = {}) {
     const res = spawnSync("git", args, { cwd: dir, encoding: "utf8", shell: false });
     return (res.stdout || "").trim();
   };
+  // On the learner's machine the local branches are whatever they were at the last pull: a Pull
+  // Request merged on GitHub is not in the local integration yet. What counts is the fork, so fetch
+  // it first, and read the published branch before the local one.
+  if (local) {
+    spawnSync("git", ["fetch", "origin", "--prune", "--quiet"], { cwd: dir, encoding: "utf8", shell: false });
+  }
+  const refsOf = (branch) => (branch.startsWith("origin/") ? [branch] : [`origin/${branch}`, branch]);
   const branches = git(["branch", "-a", "--format=%(refname:short)"])
     .split("\n")
     .map((b) => b.replace(/^origin\//, "").trim())
@@ -47,7 +54,7 @@ export function makeContext(dir, { local = false, sfQuery = null } = {}) {
       return cache.get(key);
     }
     let content = null;
-    for (const ref of [branch, `origin/${branch}`]) {
+    for (const ref of refsOf(branch)) {
       const res = spawnSync("git", ["show", `${ref}:${file}`], { cwd: dir, encoding: "utf8", shell: false });
       if (res.status === 0) {
         content = res.stdout;
@@ -64,7 +71,7 @@ export function makeContext(dir, { local = false, sfQuery = null } = {}) {
     return content;
   };
   const listOn = (branch, prefix) => {
-    for (const ref of [branch, `origin/${branch}`]) {
+    for (const ref of refsOf(branch)) {
       const res = spawnSync("git", ["ls-tree", "-r", "--name-only", ref], { cwd: dir, encoding: "utf8", shell: false });
       if (res.status === 0) {
         return res.stdout.split("\n").map((s) => s.trim()).filter((s) => s && s.startsWith(prefix));
@@ -76,7 +83,7 @@ export function makeContext(dir, { local = false, sfQuery = null } = {}) {
     return git(["rev-parse", "--abbrev-ref", "HEAD"]);
   }
   const log = (branch) => {
-    for (const ref of [branch, `origin/${branch}`]) {
+    for (const ref of refsOf(branch)) {
       const res = spawnSync("git", ["log", "--format=%s%n%b", ref], { cwd: dir, encoding: "utf8", shell: false });
       if (res.status === 0) {
         return res.stdout;

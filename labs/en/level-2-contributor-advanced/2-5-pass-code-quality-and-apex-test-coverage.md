@@ -196,16 +196,23 @@ real price of making a field required.
 
 ### 5. Run the checks before pushing this time
 
-Two round trips through CI to find two things you could have found in two minutes locally. Do it
-the other way round from now on.
+Two round trips through CI to find two things you could have found on your own machine. Do it the
+other way round from now on.
 
-**Apex tests**: on the Welcome page, click **Org Monitoring**. In the **Apex Tests & Security**
+**Apex tests** run in an org, and so far your change only exists in the project's files: the Apex
+in `helios-dev` is still the old version. Send it there first. In the **Explorer**, right-click
+`InstallationScheduler.cls`, then **SFDX: Deploy This Source to Org**, and do the same for
+`InstallationSchedulerTest.cls`. It is the Salesforce extension that comes with the extension pack,
+and it sends that one file to your default org.
+
+Then, on the Welcome page, click **Org Monitoring**. In the **Apex Tests & Security**
 section of the panel that opens, click the **Apex Tests** card **(1)** and pick `helios-dev`.
 
 ![The Org Monitoring Workbench, with the Apex Tests card](../../_assets/annotated/vscode/org-monitoring--apex-tests.png)
 
 It runs the org's Apex tests and checks the same coverage threshold the pipeline checks, so you get
-the pass, the fail and the percentage without pushing anything.
+the pass, the fail and the percentage without pushing anything. Give it a few minutes: a scratch
+org queues its test runs, and the first one of the day can take ten.
 
 !!! note "The banner at the top is expected"
     *Org Monitoring Not Present (CI/CD Repo)* means this repository is a delivery pipeline and not a
