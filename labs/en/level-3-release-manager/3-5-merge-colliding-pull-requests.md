@@ -135,7 +135,7 @@ US-018 granted `Installation__c.Crew_Capacity_Cap__c`, near the top of the same 
 `integration` and both grants are there, in order, as if one person had written them.
 
 That is not luck and it is not git being clever. A conflict needs the two edits to land in the same
-place, within the few lines of context git compares. These two are about fifty lines apart in an
+place, within the few lines of context git compares. These two are about seventy lines apart in an
 alphabetically sorted file, so git took both and moved on. Lab 2.7 gave you the other case:
 your `Crew_Notes__c` grant sat one line from Marco's `Crew_Capacity_Cap__c`, git could not choose,
 and it stopped and asked.
@@ -192,7 +192,7 @@ In `MY-PIPELINE.md`:
 
 ```markdown
 - **Lab 3.5, three Pull Requests**: US-019 and US-018 both edited Helios_Delivery_Manager and git
-  merged them silently, fifty lines apart, so both grants survived and nothing asked me. Checked the
+  merged them silently, seventy lines apart, so both grants survived and nothing asked me. Checked the
   org rather than trusting that. Sent US-020 back to its author with the compilation error named.
 ```
 
