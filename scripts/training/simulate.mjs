@@ -129,6 +129,9 @@ export default async function simulate(args) {
     for (let attempt = 1; attempt <= 3; attempt++) {
       pr = run("gh", [
         "pr", "create",
+        // Named explicitly: in a fork with no default repository set, gh picks
+        // the parent, the shared training repository, as the base
+        "--repo", slug,
         "--base", "integration",
         "--head", scenario.branch,
         "--title", scenario.prTitle,
