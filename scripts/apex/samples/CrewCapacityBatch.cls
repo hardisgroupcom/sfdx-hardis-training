@@ -9,9 +9,12 @@
  * It is both Batchable, so it can work through thousands of records, and
  * Schedulable, so Salesforce can run it every night.
  */
-public with sharing class CrewCapacityBatch implements Database.Batchable<SObject>, Schedulable {
+public with sharing class CrewCapacityBatch implements Database.Batchable<SObject>, Database.Stateful, Schedulable {
   // Rough panel output, used only to turn a panel count into kW
   private static final Decimal KW_PER_PANEL = 0.4;
+
+  // Kept across the chunks of one run, for the summary email
+  private Integer recalculated = 0;
 
   public Database.QueryLocator start(Database.BatchableContext context) {
     return Database.getQueryLocator(
@@ -39,10 +42,24 @@ public with sharing class CrewCapacityBatch implements Database.Batchable<SObjec
         : (crewSize * panelsPerDay * KW_PER_PANEL).setScale(2);
     }
     update installations;
+    recalculated += installations.size();
   }
 
+  /**
+   * Emails the summary to whoever scheduled the job. An org whose email
+   * deliverability is not All email refuses to send it, which is why Lab 2.4
+   * declares a manual step: no deployment can change that setting.
+   */
   public void finish(Database.BatchableContext context) {
-    // Nothing to report: the records are the result
+    Messaging.SingleEmailMessage summary = new Messaging.SingleEmailMessage();
+    summary.setToAddresses(new List<String>{ UserInfo.getUserEmail() });
+    summary.setSubject('Crew capacity recalculated');
+    summary.setPlainTextBody(recalculated + ' planned installation(s) recalculated.');
+    try {
+      Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ summary });
+    } catch (EmailException e) {
+      System.debug(LoggingLevel.WARN, 'Summary email not sent: ' + e.getMessage());
+    }
   }
 
   /** Entry point when Salesforce runs this on a schedule. */

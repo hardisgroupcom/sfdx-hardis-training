@@ -225,13 +225,22 @@ export async function ensureScratchOrgs(devHub, aliases) {
   const { active, daily } = scratchAllowance(devHub);
   const short = (limit) => limit && limit.remaining < missing.length;
   if (short(active) || short(daily)) {
+    const used = active ? active.max - active.remaining : 0;
+    // Naming them is what lets somebody tell a leftover of this course from an
+    // org another team or a CI job keeps alive on the same Dev Hub.
+    const holders = short(active)
+      ? (runJson("sf", ["data", "query", "--target-org", devHub, "--json", "--query",
+        "SELECT SignupUsername FROM ActiveScratchOrg"])?.result?.records || []).map((r) => r.SignupUsername)
+      : [];
     const which = short(active)
-      ? `${devHub} already has ${active.max - active.remaining} active scratch orgs out of ${active.max}`
+      ? `${devHub} already keeps ${used} of its ${active.max} active scratch org${active.max === 1 ? "" : "s"} alive` +
+        (holders.length > 0 ? `: ${holders.join(", ")}` : "")
       : `${devHub} has created all the scratch orgs it may create today (${daily.max})`;
     abort(
       `${missing.length} scratch org(s) are needed, and ${which}.`,
       short(active)
-        ? `Open ${devHub}, App Launcher > Active Scratch Orgs, and delete the ones this course does not use. Then click Set up my training environment again.`
+        ? `Open ${devHub}, App Launcher > Active Scratch Orgs, and delete the ones this course does not use. Then click Set up my training environment again.\n` +
+          "  If they belong to somebody else, a CI job for instance, leave them: sign up for a new Developer Edition org instead, and connect it as helios-prod."
         : "The allowance comes back within 24 hours. Click Set up my training environment again tomorrow: everything already done is kept."
     );
   }

@@ -21,13 +21,14 @@ commandsPostDeploy:
     context: process-deployment-only
     runOnlyOnceByOrg: true
   - id: 9c2f1a40-0b11-4d33-9f21-026000000003
-    label: Turn on the planning board in Setup
+    label: Let the org send the batch summary email
     type: manual
     when: post-deploy
     parameters:
       instructions: |
-        1. Open **Setup**, type `Installed Packages` in the Quick Find box.
-        2. Find **Helios Planning** and click **Configure**.
-        3. Tick **Use crew capacity rules**, then click **Save**.
+        1. Open **Setup**, type `Deliverability` in the Quick Find box, and open it.
+        2. Under **Access to Send Email**, set **Access level** to **All email**.
+        3. Click **Save**.
+        4. Check: the page reads **All email**. If it already did, there is nothing to do.
     command: ""
     context: all

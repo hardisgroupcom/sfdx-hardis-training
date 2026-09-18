@@ -86,7 +86,8 @@ every answer you give stays visible above the next question, so you can always s
 
 A list of one is not the command being slow. This project declares `integration` as the only branch
 a contributor may target, in `availableTargetBranches`, and the question shows what the project
-allows. Lab 3.1 adds `uat` and `main` to that list, and the same question then offers three.
+allows. Lab 3.1 adds `preprod` to that list, where urgent fixes start, and the same question then
+offers two.
 
 You never guess where your work is going: the command asks first, writes the answer down, and every
 later step reads it back.
@@ -187,7 +188,7 @@ The branch prefix `features/` and the name pattern come from `config/.sfdx-hardi
     branchPrefixChoices:
       - value: features
         title: "Feature: a new capability or an improvement"
-      - value: fixes
+      - value: fix
         title: "Fix: correct something that is broken"
     newTaskNameRegex: '^US-\d{3}-[a-z0-9-]+$'
 

@@ -25,7 +25,7 @@ that the next person can see how the pipeline was put together.
   deployment would have been too late: the constraint refuses the very update that fixes it.
 - **Lab 2.4, data and batch**: a green deployment carried the object and the class and nothing else.
   Three actions now travel with the story: the `HeliosCrewRefData` import, the `CrewCapacityBatch`
-  nightly schedule, and the manual planning board toggle nobody can automate.
+  nightly schedule, and the manual email deliverability check nobody can automate.
 - **Lab 2.5, quality and tests**: PMD warns on a query in a loop, coverage blocks. `schedulableOn`
   now queries once with `IN :installationIds`, and two tests cover both of its branches.
 - **Lab 2.6, profiles**: permissions go on Permission Sets. minimizeProfiles strips them from

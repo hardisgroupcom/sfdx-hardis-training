@@ -264,11 +264,11 @@
       "lab": 4,
       "author": "you",
       "title": "Crew capacity reference data and nightly recalculation",
-      "story": "As a planner, I want capacity rules per crew type and a nightly job that recalculates them, so that the planning board is right every morning.",
+      "story": "As a planner, I want capacity rules per crew type and a nightly job that recalculates them, so that the planning board is right every morning and I get a summary of it in my inbox.",
       "acceptance": [
         "12 Crew Capacity records exist in every org",
         "The batch is scheduled nightly",
-        "The planning board setting is on"
+        "The planner receives the morning summary email"
       ],
       "branch": "features/US-026-crew-capacity-data",
       "metadata": ["Crew_Capacity__c", "CrewCapacityBatch"],

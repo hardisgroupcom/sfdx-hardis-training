@@ -138,13 +138,13 @@ Acceptance criteria:
 **Branch**: `features/US-026-crew-capacity-data`  
 **Lab**: 2.4
 
-> As a planner, I want capacity rules per crew type and a nightly job that recalculates them, so that the planning board is right every morning.
+> As a planner, I want capacity rules per crew type and a nightly job that recalculates them, so that the planning board is right every morning and I get a summary of it in my inbox.
 
 Acceptance criteria:
 
 - 12 Crew Capacity records exist in every org
 - The batch is scheduled nightly
-- The planning board setting is on
+- The planner receives the morning summary email
 
 ### US-027 - Check several installations against panel availability at once
 

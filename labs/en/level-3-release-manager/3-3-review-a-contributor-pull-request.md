@@ -62,11 +62,11 @@ size a planner can assign** **(2)**.
 A merged Pull Request keeps everything a review needs: the diff, the checks, the sfdx-hardis
 comment. The only thing it no longer offers is the Merge button.
 
-!!! note "The red cross on that row"
-    The counter next to each row is *checks passed / checks run*, all of them, and on this project
-    one of them is **Mega-Linter** over the whole repository. It fails on Marco's story the same way
-    it reported a finding on yours in Level 1: it is looking at code nobody in this course wrote.
-    Both deployment checks passed, which is the point of this lab: the pipeline was happy.
+!!! note "The green tick on that row"
+    The tick next to each row sums up every check the Pull Request ran: the deployment simulation
+    and **Mega-Linter**. Both passed on Marco's story, or it could not have been merged: `integration`
+    only accepts a merge once they are green. That is the point of this lab. The pipeline was happy,
+    and what it missed is something no check looks for.
 
 ### 2. Read the robot first
 

@@ -34,13 +34,13 @@ deployment actions of three different kinds.
 > **US-026 - Crew capacity reference data and nightly recalculation**
 >
 > As a planner, I want capacity rules per crew type and a nightly job that recalculates them, so
-> that the planning board is right every morning.
+> that the planning board is right every morning and I get a summary of it in my inbox.
 >
 > Acceptance criteria:
 >
 > - 12 Crew Capacity records exist in every org
 > - The batch is scheduled nightly
-> - The planning board setting is on
+> - The planner receives the morning summary email
 
 You build it, the deployment is green, everyone signs it off, and three weeks later a planner says
 the board has never updated. The metadata arrived. Nothing else did.
@@ -88,7 +88,7 @@ Now open `helios-integration` and look:
 
 - `Crew_Capacity__c` exists, **with zero records**
 - `CrewCapacityBatch` exists, **scheduled nowhere**
-- The planning board setting is off
+- Nobody checked that the org is allowed to send the batch's summary email
 
 The feature is in the org and completely inert. This is worse than a failure, because a failure
 tells you.
@@ -171,23 +171,28 @@ which the dialog explains with examples under the field.
 
 ![The Edit Deployment Action dialog, with the Manual type selected](../../_assets/annotated/vscode/pipeline-edit-action-manual.png)
 
-Some things have no API. The planning board setting is one of them: it is a toggle in a managed
-package's Setup screen, and no deployment will ever touch it.
+Some things have no API. Email deliverability is the best known one: whether an org may send
+email at all is a setting in Setup that no deployment can change. The batch emails the planner a
+summary when it finishes, and in an org where deliverability is not **All email**, that email is
+dropped without a word.
 
-| Field        | Value                                 |
-|--------------|---------------------------------------|
-| Type         | **Manual**                            |
-| Label        | `Turn on the planning board in Setup` |
-| Instructions | the four numbered lines below         |
-| Target orgs  | All target orgs                       |
+| Field        | Value                                      |
+|--------------|--------------------------------------------|
+| Type         | **Manual**                                 |
+| Label        | `Let the org send the batch summary email` |
+| Instructions | the four numbered lines below              |
+| Target orgs  | All target orgs                            |
 
 ```
-1. Open **Setup**, type `Installed Packages` in the Quick Find box.
-2. Find **Helios Planning** and click **Configure**.
-3. Tick **"Use crew capacity rules"**, then click **Save**.
-4. Check: the planning board shows a capacity column. If it was already ticked, there is nothing to
-   do: tick the box anyway.
+1. Open **Setup**, type `Deliverability` in the Quick Find box, and open it.
+2. Under **Access to Send Email**, set **Access level** to **All email**.
+3. Click **Save**.
+4. Check: the page reads **All email**. If it already did, there is nothing to do.
 ```
+
+On your scratch orgs it already reads **All email**, so the step takes ten seconds. On a real
+project it is the step people forget: every sandbox refresh puts a sandbox back to **System email
+only**, and the first sign of it is a planner asking why the summary stopped arriving.
 
 **Manual** **(1)** leaves one field that matters, **Instructions** **(2)**, a multi-line box that
 takes Markdown: number the clicks, and finish with what the person should see afterwards.
@@ -272,12 +277,12 @@ All three are entries in the same YAML file under `scripts/actions/`:
           jobName: Helios crew capacity nightly
         context: process-deployment-only
         runOnlyOnceByOrg: true
-      - id: planning-board-setting
-        label: Turn on the planning board in Setup
+      - id: email-deliverability
+        label: Let the org send the batch summary email
         type: manual
         parameters:
           instructions: |
-            1. Open **Setup**, type `Installed Packages` in the Quick Find box.
+            1. Open **Setup**, type `Deliverability` in the Quick Find box, and open it.
             ...
 
 The data import runs SFDMU through `sf hardis:org:data:import`, the same command the Training menu
