@@ -50,9 +50,6 @@ engines:
   eslint:
     # Whether to turn off the 'pmd' engine so that it is not included when running Code Analyzer commands.
     disable_engine: false
-
-# The Flow rules are configured in code-analyzer-flow.yml, which is the file name
-# the Mega-Linter job looks for.
 # ======================================================================
 # END OF CODE ANALYZER CONFIGURATION
 # ======================================================================
