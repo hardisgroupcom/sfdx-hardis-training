@@ -3,7 +3,7 @@
  * Renders the built site at phone width and reports pages whose content is
  * wider than the screen.
  *
- *   node scripts/build/site.mjs && python -m zensical build
+ *   node scripts/build/site.mjs && python -m zensical build -f course-site.yml
  *   node scripts/verify/check-mobile.mjs
  *   node scripts/verify/check-mobile.mjs --shots        also saves the PNGs
  *
@@ -38,7 +38,7 @@ const PHONE = { width: 412, height: 915 };
 
 if (!fs.existsSync(SITE)) {
   console.error("No site/ directory. Build it first:");
-  console.error("  node scripts/build/site.mjs && python -m zensical build");
+  console.error("  node scripts/build/site.mjs && python -m zensical build -f course-site.yml");
   process.exit(2);
 }
 

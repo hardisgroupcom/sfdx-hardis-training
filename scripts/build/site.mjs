@@ -138,7 +138,7 @@ if (fs.existsSync(enHome)) {
 const assets = copyTree(path.join(localesDir, "_assets"), path.join(OUT, "_assets"));
 
 // The theme's own files: the stylesheet and its self-hosted fonts, the logo and
-// the favicon, the table sorting script. mkdocs.yml points at them under theme/,
+// the favicon, the table sorting script. course-site.yml points at them under theme/,
 // which is where they land in the built site.
 const themeFiles = copyTree(path.join(ROOT, "site-theme"), path.join(OUT, "theme"));
 

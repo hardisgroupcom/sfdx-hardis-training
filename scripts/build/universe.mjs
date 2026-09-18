@@ -4,7 +4,7 @@
  *
  *   BACKLOG.md                the Helios backlog, from training-universe.json
  *   MY-PIPELINE.template.md   the notebook a learner fills in as they go
- *   mkdocs.yml nav            from the lab files actually present
+ *   course-site.yml nav            from the lab files actually present
  *   labs/link-map.en.md       every URL the three Trailmixes point at
  *   training-manifest.json    what each lab depends on, read by the sfdx-hardis skills
  *

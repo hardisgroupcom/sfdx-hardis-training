@@ -38,7 +38,12 @@ exactly the part worth a person's time.
 ## Before you start
 
 - [ ] Lab 3.9 finished
-- [ ] The repository up to date on `integration`
+- [ ] A story started for it, before anything is generated: **New User Story**, targeting
+      `integration`, type **Feature**, named `US-054-project-documentation`, and **I'm hardcore, I
+      don't need an org**. The generator writes dozens of files, and a story started afterwards
+      would put all of them aside in a stash
+- [ ] The Lab 3.9 line of `MY-PIPELINE.md` back on the new branch: New User Story put it aside, so
+      **Source Control** panel, **Stashes**, **Pop Latest Stash**
 
 ## Steps
 
@@ -128,8 +133,10 @@ both on and only the Salesforce one runs.
 
 For this lab, generate and commit. Publishing is a project decision.
 
-Put the `docs/` folder into `integration` through an ordinary Pull Request: **New User Story**,
-**Save / Publish User Story**, **Create Pull Request**, like any other change.
+Put it into `integration` through an ordinary Pull Request, on the story you started before
+generating. Add the step 7 line to `MY-PIPELINE.md` first, then commit from **Source Control**:
+`docs/`, the `mkdocs.yml` the generator created, the section it added to `README.md`, and
+`MY-PIPELINE.md`. Then **Save / Publish** and **Create Pull Request**.
 
 ### 7. Make it a habit, not an event
 

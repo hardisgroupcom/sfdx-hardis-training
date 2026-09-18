@@ -1,3 +1,6 @@
+# The configuration of this course site. It is not named mkdocs.yml on purpose: the repository is
+# also the Helios Salesforce project, and Lab 3.10 generates the project documentation, whose
+# mkdocs.yml is the project's own. Build with: python -m zensical build -f course-site.yml
 site_name: Salesforce DevOps with sfdx-hardis
 site_description: Free hands-on Salesforce DevOps training in three levels, from your first Pull Request to owning the CI/CD pipeline, with sfdx-hardis and VS Code
 site_url: https://hardisgroupcom.github.io/sfdx-hardis-training/

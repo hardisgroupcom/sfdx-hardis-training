@@ -108,17 +108,24 @@ It runs in a command panel and asks its questions one at a time, the way Lab 3.2
    making it the default org restarts the command, so pick it again in the new panel
 3. **Branch monitoring_... does not exist on the remote server. Do you want to push it?** - yes.
    This one comes before the certificate, not after, and it only appears the first time
-4. Then the four certificate questions from Lab 3.2, unchanged and in the same order: self-signed,
+4. Then the certificate questions from Lab 3.2, unchanged and in the same order: self-signed,
    let sfdx-hardis configure the External Client App, encrypted certificate as a file, then the same
-   stop while you store the two secrets
+   stop while you store the two secrets, this time in the **monitoring** repository, then the name,
+   the contact email and the profile of the app. The profile list is in the language of the org's
+   user, as in Lab 3.2
 5. **Do you want to save the configuration on the remote server (auto-commit)?** - yes
 
-It never asks for a repository name, a git provider or a schedule, because it does none of those
-three. The authentication is the same code as Lab 3.2: External Client App, JWT, two secrets to store,
+Last, it writes the workflow on `main` and says so: *The monitoring workflow on main now runs
+monitoring_...*. GitHub only schedules the workflows of the default branch, and only offers **Run
+workflow** for those, so the workflow that runs every monitored org lives on `main` and lists each
+monitoring branch.
+
+It never asks for a repository name or a git provider, because it creates neither. The authentication is the same code as Lab 3.2: External Client App, JWT, two secrets to store,
 this time in the **monitoring** repository. The key lands in `./.ssh/` rather than
 `config/branches/.jwt/`, and the configuration in a `.sfdx-hardis.yml` at the repository root, on a
-branch called `monitoring_` plus the org's domain, cut from `main`. One branch per monitored org is
-how one repository watches several.
+branch called `monitoring_` plus the org's domain, cut from `main`. The repository was empty, so it
+first gives `main` an empty commit to start from. One branch per monitored org is how one repository
+watches several.
 
 ### 3. Choose what it watches
 
@@ -137,9 +144,9 @@ For a first run, leave it all on. You are about to find out which of them say so
 
 ### 4. Run it once by hand
 
-Do not wait for tonight. The generated workflow, **Org Monitoring sfdx-hardis**, is scheduled at
-`0 0 * * *` (midnight UTC) and also accepts a manual run, so trigger it from the Actions tab of the
-monitoring repository.
+Do not wait for tonight. The workflow, **Org Monitoring sfdx-hardis**, is scheduled at `0 0 * * *`
+(midnight UTC) and also accepts a manual run: in the monitoring repository, **Actions**, **Org
+Monitoring sfdx-hardis** in the list on the left, **Run workflow**, branch `main`, **Run workflow**.
 
 It takes a while, most of it the org backup. When it finishes, the repository holds a full source
 backup of production and a set of reports.
@@ -217,6 +224,9 @@ In `MY-PIPELINE.md`:
   because <reason>.
 ```
 
+Replace the Lab 3.9 line of the template with it. It goes to `integration` with your Lab 3.10 story,
+like the notes of Labs 3.4 and 3.5 went with Lab 3.6.
+
 The badge audit looks for that URL. The next release manager will need it on their first day.
 
 <details markdown="1"><summary>Under the hood: what runs every night</summary>
@@ -268,6 +278,11 @@ scope here, and worth knowing exists.
 **The monitoring workflow fails at authentication.**
 Same as Lab 3.2: the External Client App needs the user pre-authorised, and the secrets have to be in
 the **monitoring** repository, not the source one.
+
+**Actions offers no Run workflow for Org Monitoring sfdx-hardis.**
+The workflow is not on `main`. The command writes it there at the end, on GitHub, and says so. If it
+said it could not, copy `.github/workflows/org-monitoring.yml` from the monitoring branch to `main`
+and follow the `MANUAL` comments in it.
 
 **The backup times out.**
 A large org takes a long time. On a Developer Edition org it should not, so if it does, look at

@@ -3,7 +3,7 @@
  * Checks the built site: every page exists, and every asset every page references
  * is really there.
  *
- *   node scripts/build/site.mjs && python -m zensical build
+ *   node scripts/build/site.mjs && python -m zensical build -f course-site.yml
  *   node scripts/verify/check-site.mjs
  *
  * It reads the generated HTML and resolves each reference against the built
@@ -22,7 +22,7 @@ const SITE = path.join(ROOT, "site");
 
 if (!fs.existsSync(SITE)) {
   console.error("No site/ directory. Build it first:");
-  console.error("  node scripts/build/site.mjs && python -m zensical build");
+  console.error("  node scripts/build/site.mjs && python -m zensical build -f course-site.yml");
   process.exit(2);
 }
 
@@ -38,10 +38,10 @@ function walk(dir, out = []) {
   return out;
 }
 
-// The path the site is published under, from mkdocs.yml site_url
+// The path the site is published under, from course-site.yml site_url
 function sitePathPrefix() {
   try {
-    const mkdocs = fs.readFileSync(path.join(ROOT, "mkdocs.yml"), "utf8");
+    const mkdocs = fs.readFileSync(path.join(ROOT, "course-site.yml"), "utf8");
     const match = mkdocs.match(/^site_url:\s*(\S+)/m);
     if (!match) {
       return "/";

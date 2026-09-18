@@ -49,9 +49,10 @@ jobs:
         with:
           python-version: 3.x
 
-      # Zensical is the successor of mkdocs-material and reads the same mkdocs.yml
+      # Zensical is the successor of mkdocs-material and reads the same configuration format.
+      # The course site's is course-site.yml: mkdocs.yml belongs to the Helios project documentation
       - run: pip install zensical mdx_truly_sane_lists
-      - run: python -m zensical build
+      - run: python -m zensical build -f course-site.yml
 
       - name: Every page resolves every asset it references
         run: node scripts/verify/check-site.mjs

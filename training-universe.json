@@ -279,6 +279,20 @@
       "metadata": ["release-notes/"]
     },
     {
+      "id": "US-054",
+      "level": 3,
+      "lab": 10,
+      "author": "you",
+      "title": "Project documentation",
+      "story": "As the release manager, I want the project documented from its sources, so that an admin can read what an object or a flow does without opening Setup.",
+      "acceptance": [
+        "The generated pages are in docs/ on integration",
+        "The Installation page says what an installation is"
+      ],
+      "branch": "features/US-054-project-documentation",
+      "metadata": ["docs/", "mkdocs.yml"]
+    },
+    {
       "id": "US-020",
       "level": 3,
       "lab": 5,

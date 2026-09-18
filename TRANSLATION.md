@@ -22,7 +22,7 @@ rewrite.
    translated from
 4. `node scripts/build/universe.mjs`
 5. `node scripts/build/site.mjs`
-6. Add the locale nav to `mkdocs.yml`
+6. Add the locale nav to `course-site.yml`
 
 The site already serves `/en/...`, so `/fr/...` needs no restructuring.
 
