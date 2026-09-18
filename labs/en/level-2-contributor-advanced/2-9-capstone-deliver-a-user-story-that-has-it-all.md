@@ -1,7 +1,7 @@
 ---
 id: lab-2-9
 title: "Lab 2.9 - Capstone: deliver a User Story that has it all"
-description: "Deliver one Salesforce User Story with a dependency error, a data deployment action and a merge conflict, with no step-by-step."
+description: "Deliver one Salesforce User Story with a dependency to check, a data deployment action and a teammate on the same permission set, with no step-by-step."
 level: 2
 lab: 9
 lang: en
