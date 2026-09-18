@@ -789,10 +789,11 @@ export const RULES = [
           `${FIELD("Installation__c", "Panels_Required__c")} on branch main`
         );
       }
-      const notes = pipelineNotes(ctx);
-      return mentions(notes, "dora") || mentions(notes, "lead time") || mentions(notes, "deployment frequency")
+      // The template line names the metrics without a number: the lab's line has the numbers
+      const entries = pipelineNotes(ctx).match(/Lab 3\.7[^]*?(?=\n\s*[-*] |\n#|$)/gi) || [];
+      return entries.some((entry) => /\d/.test(entry.replace(/Lab 3\.7/i, "")))
         ? pass("Production has the work, and the DORA reading is recorded")
-        : miss("MY-PIPELINE.md records no DORA numbers", "MY-PIPELINE.md");
+        : miss("the Lab 3.7 line of MY-PIPELINE.md has no DORA numbers in it", "MY-PIPELINE.md, the Lab 3.7 line");
     }
   },
   {

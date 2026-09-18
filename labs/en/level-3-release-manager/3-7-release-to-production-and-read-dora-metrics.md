@@ -142,25 +142,25 @@ Then open the **DevOps Pipeline** panel, click the gear **(1)** at the top right
 
 It covers the last 90 days by default, and it reports five numbers, not four:
 
-| Metric                    | What it actually counts                                                      | What good looks like                                              |
-|---------------------------|------------------------------------------------------------------------------|-------------------------------------------------------------------|
-| **Deployment frequency**  | Successful deployments recorded **in the org**, divided by the period        | Weekly is fine. Quarterly means every release is enormous         |
-| **Lead time for changes** | Per Pull Request: its creation, to the deployment that landed within 14 days | Days, not weeks. A long lead time means work is sitting somewhere |
-| **Change failure rate**   | Failed deployments divided by all deployments                                | Below 15%. Above that, the check is not catching what it should   |
-| **Time to restore**       | Median hours from a failed deployment to the next successful one             | Hours                                                             |
-| **Rework rate**           | Hotfix Pull Requests, and deployments that follow a failure within a day     | Low. Read the note below before you expect Lab 3.8 to move it     |
+| Metric                     | What it actually counts                                                      | What good looks like                                              |
+|----------------------------|------------------------------------------------------------------------------|-------------------------------------------------------------------|
+| **Deployment Frequency**   | Successful deployments recorded **in the org**, divided by the period        | Weekly is fine. Quarterly means every release is enormous         |
+| **Lead Time for Changes**  | Per Pull Request: its creation, to the deployment that landed within 14 days | Days, not weeks. A long lead time means work is sitting somewhere |
+| **Change Failure Rate**    | Failed deployments divided by all deployments                                | Below 15%. Above that, the check is not catching what it should   |
+| **Mean Time to Recovery**  | Median hours, despite the name, from a failed deployment to the next success | Hours                                                             |
+| **Deployment Rework Rate** | Hotfix Pull Requests, and deployments that follow a failure within a day     | Low. Read the note below before you expect Lab 3.8 to move it     |
 
 Two of those are not what the names suggest, and it is worth knowing which. **Change failure rate
 here is a deployment failure rate**: a release that deployed green and broke production on Tuesday
-does not appear in it. **Time to restore is the gap between a broken deployment and a working one**,
+does not appear in it. **Mean Time to Recovery is the gap between a broken deployment and a working one**,
 not between an incident and its fix. They measure your pipeline, not your org.
 
 ### 8. Read what is there, and know what is missing
 
-You have shipped once. On a fresh production org, that is roughly what the report will show: a small
-number of deployments, most of them yours, over a 90 day window that was empty until this week.
-Nothing seeds a deployment history into `helios-prod`, so there is no curve to read yet, and a report
-that says so is telling the truth.
+You have shipped once. On a fresh production org, that is roughly what the report will show: a
+handful of deployments over a 90 day window that was empty until this week, the ones **Set up one of
+my training orgs** made to seed `helios-prod` and your release. There is no curve to read yet, and a
+report that says so is telling the truth.
 
 That is the honest version of this step, and it is also the point. A DORA report on a pipeline that
 has run once is an empty baseline. It becomes useful at the fourth or fifth release, when the numbers
@@ -173,6 +173,10 @@ Write the numbers in `MY-PIPELINE.md`:
   lead time Y days, change failure rate Z%, time to restore W hours, rework rate V%. Measured
   against helios-prod over 90 days.
 ```
+
+Replace the Lab 3.7 line of the template with it, numbers included. Like the Lab 3.4 and 3.5 lines,
+it stays uncommitted and goes with your next story, in Lab 3.8. The report itself landed in
+`docs/dora/`, and goes with it.
 
 <details markdown="1"><summary>Under the hood: where the DORA numbers come from</summary>
 
