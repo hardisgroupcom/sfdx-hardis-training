@@ -79,8 +79,10 @@ export default async function main(args) {
   const lab = args.lab === undefined ? null : Number.parseInt(String(args.lab).split(".").pop(), 10);
 
   const ctx = makeContext(args.dir || ROOT, { local: true, sfQuery });
-  const handle = githubHandle();
-  const commit = gitOut(["rev-parse", "--short", "HEAD"]) || "unknown";
+  // The clone being checked, which is not this script's own repository with --dir
+  const origin = args.dir ? ctx.git(["remote", "get-url", "origin"]).match(/github\.com[/:]([^/]+)\//i) : null;
+  const handle = args.dir ? origin?.[1] || null : githubHandle();
+  const commit = (args.dir ? ctx.git(["rev-parse", "--short", "HEAD"]) : gitOut(["rev-parse", "--short", "HEAD"])) || "unknown";
 
   let rules;
   if (lab === null) {
