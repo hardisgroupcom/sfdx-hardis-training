@@ -52,12 +52,12 @@ Acceptance criteria:
 **Branch**: `features/US-016-crew-notes`  
 **Lab**: 1.7
 
-> As a delivery crew member, I want a free text notes field and a list view of my open installations, so that I hand over cleanly to the next shift.
+> As a delivery crew member, I want a free text notes field and a list view of the installations still open, so that I hand over cleanly to the next shift.
 
 Acceptance criteria:
 
 - A Crew Notes field exists on Installation
-- A My Open Installations list view exists
+- An Open Installations list view exists, for every user
 - The crew permission set grants the field, and so does the planners' one
 
 <a id="US-017"></a>

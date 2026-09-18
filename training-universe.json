@@ -166,16 +166,16 @@
       "lab": 7,
       "author": "you",
       "title": "Let the crew leave notes on an installation",
-      "story": "As a delivery crew member, I want a free text notes field and a list view of my open installations, so that I hand over cleanly to the next shift.",
+      "story": "As a delivery crew member, I want a free text notes field and a list view of the installations still open, so that I hand over cleanly to the next shift.",
       "acceptance": [
         "A Crew Notes field exists on Installation",
-        "A My Open Installations list view exists",
+        "An Open Installations list view exists, for every user",
         "The crew permission set grants the field, and so does the planners' one"
       ],
       "branch": "features/US-016-crew-notes",
       "metadata": [
         "Installation__c.Crew_Notes__c",
-        "Installation__c listView My_Open_Installations",
+        "Installation__c listView Open_Installations",
         "Helios_Delivery_Crew"
       ]
     },

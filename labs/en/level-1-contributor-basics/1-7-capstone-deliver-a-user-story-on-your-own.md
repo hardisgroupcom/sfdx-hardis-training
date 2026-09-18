@@ -37,7 +37,7 @@ Second ticket, second day. Nobody is going to walk you through this one.
 >
 > - A **Crew Notes** field exists on Installation, long text, editable by the crew
 > - It is on the Installation page layout, where the crew can see it
-> - A **My Open Installations** list view exists on Installation
+> - An **Open Installations** list view exists on Installation, for every user
 > - The crew permission set grants the field
 
 ## Before you start
@@ -58,8 +58,9 @@ No numbered clicks this time. The loop, in order:
       and on `Helios Delivery Manager`, because planners read the handover and it is the permission
       set you look through
     - On the Installation page layout
-    - A list view on Installation called **My Open Installations**, filtered on installations whose
-      status is not Completed, showing the account, the status, the install date and Panels Required
+    - A list view on Installation called **Open Installations**, visible to all users, with
+      **Filter by Owner** on **All installations**, filtered on a status that is not Completed, and
+      showing the account, the status, the install date and Panels Required
 3. **Bring it down.** **Commit changes**, **Recent Changes**, **Search Metadata**, and take the
    field, the layout, the list view and the two permission sets. Nothing else. Commit them
 4. **Publish**, and read the **Git Delta package.xml** report before pushing. Five things, all
@@ -81,15 +82,16 @@ target org already, which it is since Lab 1.6.
 In `helios-integration`, after the merge deployment:
 
 - `Crew Notes` on the Installation record, editable, with your help text under it
-- **My Open Installations** in the list view picker on the Installations tab
+- **Open Installations** in the list view picker on the Installations tab
 
-One thing may surprise you on the way. If you built the list view with the scope set to your own
-records, the commit Save / Publish adds shows it as **Everything**, and `config/.sfdx-hardis.yml`
-gains a `listViewsToSetToMine` entry naming it. That is the `listViewsMine` cleaning rule from Lab
-1.5: a deployment refuses a list view scoped to **Mine** in many orgs, so the file travels as
-Everything, and the deployment job sets it back to Mine in the org afterwards, through a browser it
-drives itself. The line **Successfully set Installation__c.My_Open_Installations as "Mine"** in the
-job log is that step.
+!!! note "Why All installations, and not My installations"
+    A list view scoped to **My installations** is a different list for every person who opens it,
+    and Salesforce refuses to deploy that scope in many orgs. sfdx-hardis has an answer for it: the
+    `listViewsMine` cleaning rule of Lab 1.5 turns the scope into **Everything** before the commit,
+    records the list view under `listViewsToSetToMine` in `config/.sfdx-hardis.yml`, and after each
+    deployment the job sets it back to **Mine** by driving a browser through the org's Setup pages.
+    It works, and it is one more moving part in every deployment job. This story does not need it,
+    so it does without.
 
 ## If it goes wrong
 

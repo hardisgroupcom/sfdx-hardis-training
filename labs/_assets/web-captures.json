@@ -113,7 +113,7 @@
     },
     {
       "name": "github-pr-merge",
-      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/5",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/23",
       "width": 1440,
       "height": 1000,
       "settle": 4000,
@@ -123,7 +123,13 @@
         "y": 295,
         "width": 850,
         "height": 250
-      }
+      },
+      "hideText": [
+        {
+          "text": "successful checks",
+          "max": 25
+        }
+      ]
     },
     {
       "name": "gh-cli-download",
