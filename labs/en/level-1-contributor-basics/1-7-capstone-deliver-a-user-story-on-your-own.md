@@ -54,16 +54,15 @@ No numbered clicks this time. The loop, in order:
 2. **Build it in `helios-dev`**
     - A **Long Text Area** field `Crew_Notes__c` on `Installation__c`, 4000 characters, with a
       description and help text
-    - Grant it **Read** and **Edit** on `Helios Delivery Crew`, because a crew member writes notes,
-      and on `Helios Delivery Manager`, because planners read the handover and it is the permission
-      set you look through
+    - Grant it **Read** and **Edit** on `Helios Delivery Crew`, because a crew member writes notes.
+      Nobody else gets it yet: the planners' turn comes in Level 2
     - On the Installation page layout
     - A list view on Installation called **Open Installations**, visible to all users, with
       **Filter by Owner** on **All installations**, filtered on a status that is not Completed, and
       showing the account, the status, the install date and Panels Required
 3. **Bring it down.** **Commit changes**, **Recent Changes**, **Search Metadata**, and take the
-   field, the layout, the list view and the two permission sets. Nothing else. Commit them
-4. **Publish**, and read the **Git Delta package.xml** report before pushing. Five things, all
+   field, the layout, the list view and the permission set. Nothing else. Commit them
+4. **Publish**, and read the **Git Delta package.xml** report before pushing. Four things, all
    yours
 5. **Open the Pull Request** into `integration` in your own fork, get it green, merge
 6. **Check the integration org** after the deployment job
@@ -81,7 +80,10 @@ target org already, which it is since Lab 1.6.
 
 In `helios-integration`, after the merge deployment:
 
-- `Crew Notes` on the Installation record, editable, with your help text under it
+- `Crew Notes` granted, **Read** and **Edit**, on the **Helios Delivery Crew** permission set:
+  **Setup > Permission Sets > Helios Delivery Crew > Object Settings > Installations**. You will not
+  see the field on the record yourself: you hold the planners' permission set, and this story does
+  not grant it to them
 - **Open Installations** in the list view picker on the Installations tab
 
 !!! note "Why All installations, and not My installations"

@@ -58,7 +58,7 @@ Acceptance criteria:
 
 - A Crew Notes field exists on Installation
 - An Open Installations list view exists, for every user
-- The crew permission set grants the field, and so does the planners' one
+- The crew permission set grants the field
 
 <a id="US-017"></a>
 

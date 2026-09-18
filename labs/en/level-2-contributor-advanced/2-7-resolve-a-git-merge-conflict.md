@@ -45,14 +45,10 @@ flow and the same permission set as you. He merged this morning. You did not.
 
 ### 1. Start your own change
 
-**New User Story** **(2)**, under **Project Contribution Workflow** **(1)**. Branch
-`US-034-crew-override`, target `integration`, org `helios-dev`.
+**New User Story** **(2)**, under **Project Contribution Workflow** **(1)**. Name
+`US-034-crew-override`, org `helios-dev`.
 
 ![The New User Story card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
-
-!!! warning "Do not refresh your org this time"
-    **New User Story** offers to bring `integration` down into your org. For this lab, **decline**.
-    Your org is where you build, and nothing has merged yet anyway.
 
 In `helios-dev`:
 
