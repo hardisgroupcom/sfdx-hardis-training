@@ -88,7 +88,8 @@ export default async function simulate(args) {
   ok(`On ${scenario.branch}`);
 
   title("2 of 4  Applying the teammate changes");
-  const applied = [...applyFiles(scenario), ...applyPatches(scenario)];
+  const planned = planPatches(scenario);
+  const applied = [...applyFiles(scenario), ...writePlanned(planned)];
   applied.forEach((f) => info(c.dim(`    ${f}`)));
   ok(`${applied.length} file(s) written`);
 
@@ -178,21 +179,22 @@ function loadScenarios() {
  * Each patch is { file, block, insertBefore | insertAfter | remove }, or one of the structural
  * patches of applyStructuralPatch below, which the scenarios use.
  */
-function applyPatches(scenario) {
-  const written = [];
+function planPatches(scenario) {
+  // Every patch is worked out in memory first, and nothing is written until all
+  // of them fit: a scenario that stopped half way used to leave the permission
+  // set changed and the field file written, on a branch the learner never asked for.
+  const planned = new Map();
   for (const patch of scenario.patches || []) {
     const target = path.join(ROOT, patch.file);
-    if (!fs.existsSync(target)) {
+    if (!planned.has(target) && !fs.existsSync(target)) {
       abort(
         `The teammate change expects ${patch.file}, which is not in your project.`,
         "Reset the level from the Training menu, then run this again."
       );
     }
-    let content = fs.readFileSync(target, "utf8");
+    let content = planned.has(target) ? planned.get(target) : fs.readFileSync(target, "utf8");
     if (patch.fieldPermission || patch.layoutField || patch.removeLayoutField) {
-      content = applyStructuralPatch(patch, content);
-      fs.writeFileSync(target, content, "utf8");
-      written.push(`${patch.file} (patched)`);
+      planned.set(target, applyStructuralPatch(patch, content));
       continue;
     }
     if (patch.remove) {
@@ -216,8 +218,16 @@ function applyPatches(scenario) {
         content = content.slice(0, at) + patch.block + content.slice(at);
       }
     }
+    planned.set(target, content);
+  }
+  return planned;
+}
+
+function writePlanned(planned) {
+  const written = [];
+  for (const [target, content] of planned) {
     fs.writeFileSync(target, content, "utf8");
-    written.push(`${patch.file} (patched)`);
+    written.push(`${path.relative(ROOT, target).replace(/\\/g, "/")} (patched)`);
   }
   return written;
 }
