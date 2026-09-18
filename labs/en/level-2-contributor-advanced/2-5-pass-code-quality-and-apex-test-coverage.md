@@ -234,13 +234,13 @@ Both green. Merge, and check `helios-integration`.
 **The coverage gate** is `config/.sfdx-hardis.yml`:
 
     testLevel: RunLocalTests
-    apexTestsMinCoverageOrgWide: 75
+    apexTestsMinCoverageOrgWide: 80
     testCoverageNotBlocking: false
 
 `RunLocalTests` runs every test in the org except managed package ones. The threshold is checked
 **org-wide**, not per class, which is why one badly covered class can be carried by the rest of the
 org for a while and then suddenly block somebody else's Pull Request. 75% is the Salesforce
-minimum; most real projects set 80 or 85.
+minimum; Helios asks for 80, and most real projects set 80 or 85.
 
 `testCoverageNotBlocking: true` turns the gate into a warning. It exists for projects taking over a
 legacy org, and it is a temporary measure, not a setting.
@@ -258,7 +258,7 @@ point: Salesforce is happy to deploy a hardcoded id.
 ## What you should see
 
 - The MegaLinter check reporting no findings
-- The deployment check green, with coverage above 75% in the comment
+- The deployment check green, with coverage above 80% in the comment
 - `schedulableOn` in `helios-integration`, with one query outside the loop
 
 ## If it goes wrong
