@@ -45,9 +45,7 @@
       "url": "https://code.visualstudio.com/download",
       "width": 1440,
       "height": 820,
-      "click": [
-        "button:has-text('Reject')"
-      ],
+      "click": ["button:has-text('Reject')"],
       "settle": 2000,
       "hideText": [
         {
