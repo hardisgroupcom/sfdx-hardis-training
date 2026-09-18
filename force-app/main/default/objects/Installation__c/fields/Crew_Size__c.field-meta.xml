@@ -2,6 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Crew_Size__c</fullName>
     <description>How many people are assigned to this job. Level 2 makes it mandatory.</description>
+    <externalId>false</externalId>
     <label>Crew Size</label>
     <precision>2</precision>
     <required>false</required>

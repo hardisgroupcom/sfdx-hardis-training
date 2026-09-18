@@ -10,10 +10,26 @@
         <restricted>true</restricted>
         <valueSetDefinition>
             <sorted>false</sorted>
-            <value><fullName>Tile</fullName><default>true</default><label>Tile</label></value>
-            <value><fullName>Slate</fullName><default>false</default><label>Slate</label></value>
-            <value><fullName>Flat</fullName><default>false</default><label>Flat</label></value>
-            <value><fullName>Metal</fullName><default>false</default><label>Metal</label></value>
+            <value>
+                <fullName>Tile</fullName>
+                <default>true</default>
+                <label>Tile</label>
+            </value>
+            <value>
+                <fullName>Slate</fullName>
+                <default>false</default>
+                <label>Slate</label>
+            </value>
+            <value>
+                <fullName>Flat</fullName>
+                <default>false</default>
+                <label>Flat</label>
+            </value>
+            <value>
+                <fullName>Metal</fullName>
+                <default>false</default>
+                <label>Metal</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

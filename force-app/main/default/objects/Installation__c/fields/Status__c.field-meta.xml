@@ -10,11 +10,31 @@
         <restricted>true</restricted>
         <valueSetDefinition>
             <sorted>false</sorted>
-            <value><fullName>Planned</fullName><default>true</default><label>Planned</label></value>
-            <value><fullName>Scheduled</fullName><default>false</default><label>Scheduled</label></value>
-            <value><fullName>In Progress</fullName><default>false</default><label>In Progress</label></value>
-            <value><fullName>Completed</fullName><default>false</default><label>Completed</label></value>
-            <value><fullName>Cancelled</fullName><default>false</default><label>Cancelled</label></value>
+            <value>
+                <fullName>Planned</fullName>
+                <default>true</default>
+                <label>Planned</label>
+            </value>
+            <value>
+                <fullName>Scheduled</fullName>
+                <default>false</default>
+                <label>Scheduled</label>
+            </value>
+            <value>
+                <fullName>In Progress</fullName>
+                <default>false</default>
+                <label>In Progress</label>
+            </value>
+            <value>
+                <fullName>Completed</fullName>
+                <default>false</default>
+                <label>Completed</label>
+            </value>
+            <value>
+                <fullName>Cancelled</fullName>
+                <default>false</default>
+                <label>Cancelled</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

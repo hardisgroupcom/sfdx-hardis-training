@@ -66,7 +66,7 @@ thousands of components an org contains. Click **Search Metadata** **(3)**.
 
 ![The Metadata Retriever listing the recent changes of the org](../../_assets/annotated/vscode/metadata-retriever-recent-changes--find.png)
 
-A dozen or so results come back **(4)**, each with what it is, its name, who last touched it and
+About thirty results come back **(4)**, each with what it is, its name, who last touched it and
 when. Every one of them carries your name, and most of them are not your story.
 
 !!! info "Why the list is longer than your story"

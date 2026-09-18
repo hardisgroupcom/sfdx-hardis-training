@@ -27,9 +27,9 @@
         <type>Region</type>
     </flexiPageRegions>
     <masterLabel>Installation Record Page</masterLabel>
+    <sobjectType>Installation__c</sobjectType>
     <template>
         <name>flexipage:recordHomeTemplateDesktop</name>
     </template>
-    <sobjectType>Installation__c</sobjectType>
     <type>RecordPage</type>
 </FlexiPage>
