@@ -48,7 +48,7 @@ This is the failure mode that makes people distrust a pipeline, and it is entire
 ### 1. Take the story and do it the way an admin would
 
 **New User Story** **(2)**, under **Project Contribution Workflow** **(1)** of the DevOps Pipeline
-panel. Branch `US-033-batch-cost-visibility`, target `integration`, org `helios-dev`.
+panel. Name `US-033-batch-cost-visibility`, org `helios-dev`.
 
 ![The New User Story card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
@@ -67,8 +67,8 @@ Pull Request, green, merge.
 Open `helios-integration`, log in as a crew user or check the field-level security on **Panel Batch
 > Cost**. The permission is not there.
 
-Go back to the Pull Request. The comment says success. Look at the list of deployed components: the
-Profile is not in it.
+Go back to the Pull Request. The comment says success, and its counts say that a few components
+changed: the Profile was deployed. What was deployed is not what you committed, though.
 
 ### 3. Read your own diff
 
@@ -104,21 +104,27 @@ delete somebody else's.
 
 ### 5. Do it the way the project expects
 
-Redo the grant where it belongs.
+Redo the grant where it belongs. Your first Pull Request is merged, so this is a second one for the
+same story: **New User Story**, name `US-033-crew-permission-set`, org `helios-dev`.
 
 In `helios-dev`: **Setup > Permission Sets > Helios Delivery Crew > Object Settings > Panel Batches
 > Edit**, tick **Read Access** on `Cost`, **Save**.
 
-Retrieve the **Permission Set** this time, commit it, and publish. Read `manifest/package.xml`: it
-lists `Helios_Delivery_Crew`. Push, green, merge.
+Retrieve the **Permission Set** this time, and while the branch is fresh, add your line to
+`MY-PIPELINE.md`, under Level 2:
 
-Now check `helios-integration`. The permission is there.
+```markdown
+- **Lab 2.6, profiles**: permissions go on Permission Sets. minimizeProfiles strips them from
+  Profiles before the commit, so a Profile grant is silently dropped rather than deployed.
+```
 
-One tidy-up before you move on. The Profile file you retrieved in step 1 is still in your branch,
+Commit both, **Save / Publish**, and open the Pull Request. The **Git Delta package.xml** report
+names `Helios_Delivery_Crew`.
+
+One tidy-up before you merge. The Profile file you retrieved in step 1 is in the repository now,
 emptied of everything the cleaning took out and carrying nothing this project wants. Delete
-`force-app/main/default/profiles/` from the **Source Control** panel and commit that too. This
-repository held no Profile before you arrived, and it should hold none after: the check at the end
-of the lab looks for exactly that.
+`force-app/main/default/profiles/` from the **Explorer**. This repository held no Profile before you
+arrived, and it should hold none after: the check at the end of the lab looks for exactly that.
 
 **Open `manifest/package.xml` and delete the Profile block as well**, the three lines naming
 `Admin`:
@@ -135,6 +141,15 @@ is only ever added to. A package that names a component the branch does not carr
 deployment with *an object 'Admin' of type Profile was named in package.xml, but was not found in
 zipped directory*, which is a confusing way of saying the two disagree. Reading the manifest before
 pushing, the habit from Lab 1.5, is what catches it.
+
+Commit the deletion and the edited manifest from **Source Control**, and push them with **Sync
+Changes**, not with Save / Publish. Publishing works the package out again from the git diff, and a
+file deleted from git reads as a component to delete from the org: it would ask every org to delete
+its Admin profile, which Salesforce refuses, and the check would fail on *cannot delete profile*.
+Recent versions of sfdx-hardis recognise a standard profile and leave it alone; pushing the tidy-up
+yourself works with every version.
+
+The check goes green. Merge, and check `helios-integration`: the crew can read the cost.
 
 ### 6. Look at the other protection while you are here
 
@@ -158,19 +173,10 @@ setting holding an environment-specific value, a remote site setting. It is also
 three that is set per branch rather than globally, so the scope selector **(1)** has to name a
 branch before the **Deployment** tab shows it.
 
-### 7. Write it down
-
-In `MY-PIPELINE.md`, under Level 2, add a line saying what you learned. Something like:
-
-```markdown
-- **Lab 2.6, profiles**: permissions go on Permission Sets. minimizeProfiles strips them from
-  Profiles before the commit, so a Profile grant is silently dropped rather than deployed.
-```
-
 <details markdown="1"><summary>Under the hood: what cleaning actually did to the file</summary>
 
-`hardis:work:save` retrieved the Profile, then ran the cleaning pass before committing. For
-`minimizeProfiles` it rewrote the Profile XML.
+The cleaning pass of `hardis:work:save` ran over the Profile you had committed, and for
+`minimizeProfiles` it rewrote its XML in a commit of its own.
 
 Whole sections are deleted, because a Permission Set can carry all of them:
 
