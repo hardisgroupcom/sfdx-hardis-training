@@ -59,23 +59,24 @@ This lab is about the gap between a green deployment and a safe one.
 ### 1. Take the story and do the obvious thing
 
 **New User Story** **(2)**, under **Project Contribution Workflow** **(1)** of the DevOps Pipeline
-panel. Branch `US-024-crew-size-required`, target `integration`, org `helios-dev`.
+panel. Name `US-024-crew-size-required`, org `helios-dev`.
 
 ![The New User Story card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
 In `helios-dev`: **Setup > Object Manager > Installation > Fields & Relationships > Crew Size >
 Edit**, tick **Required**, **Save**.
 
-If your own org has records without a crew size, Salesforce refuses here too. Fill them in by hand
-for now, or note that it already refused: either way you have just met the problem one org early.
+Salesforce accepts it without a word, although most installations in your org have no crew size.
+Remember that: it is the whole of this lab.
 
-Publish, push, open the Pull Request.
+Bring the field down with **Commit changes** (the field, nothing else), commit it, **Save /
+Publish**, push, and open the Pull Request.
 
 ### 2. Read the first failure
 
 ```
-Helios_Delivery_Crew     Cannot deploy to a required field: Installation__c.Crew_Size__c
-Helios_Delivery_Manager  Cannot deploy to a required field: Installation__c.Crew_Size__c
+Helios_Delivery_Crew     You cannot deploy to a required field: Installation__c.Crew_Size__c
+Helios_Delivery_Manager  You cannot deploy to a required field: Installation__c.Crew_Size__c
 ```
 
 Not a word about your data. The problem is the permission sets.
@@ -85,9 +86,11 @@ for everyone, by definition. So the moment the field becomes required, every fie
 entry that mentions it becomes invalid, and the deployment refuses the permission sets rather than
 the field.
 
-The fix takes a minute and you do it in the org, not in a file. In `helios-dev` the entries
-disappear from the permission sets on their own once the field is required, so publish again and let
-the tool pick up the new versions of both permission sets.
+The fix takes a minute, and the org has already done it: in `helios-dev` the entries disappeared
+from both permission sets the moment the field became required. Bring them down: **Commit changes**,
+tick `Helios_Delivery_Crew` and `Helios_Delivery_Manager`, retrieve. Source Control shows each of
+them losing its `Crew_Size__c` entry and nothing else. Commit, **Save / Publish** again. The
+sfdx-hardis comment even said so, under each error, with a link to the rule.
 
 !!! note "This is a good error"
     It is precise, it names both offending components, and the fix is obvious once you know the rule.
@@ -96,21 +99,22 @@ the tool pick up the new versions of both permission sets.
 
 ### 3. Watch it go green, and understand why that is the problem
 
-Push the fix. The check passes. Merge. The deployment to `helios-integration` succeeds.
+The check passes. **Do not merge yet.**
 
-Now open `helios-integration`, find an installation, change anything at all on it, and save.
+Open `helios-dev`, find an installation with no crew size, change anything at all on it, and save.
 
 ```
 Required fields are missing: [Crew_Size__c]
 ```
 
-**Salesforce enforces a required field on save, not on the data that is already there.** The
-deployment was perfectly happy to make the field required while thirty installations had it empty.
-Those thirty records are now unsaveable: not just for you, for everybody, for any edit, until
-somebody puts a crew size on them.
+**Salesforce enforces a required field on save, not on the data that is already there.** It was
+perfectly happy to make the field required while most installations had it empty, and the green
+check says the same: `helios-integration` has thirty installations with no crew size, and the
+deployment would make every one of them unsaveable. Not just for you, for everybody, for any edit,
+until somebody puts a crew size on them.
 
-Nothing failed. No check went red. The first person to find out is a planner who cannot save a
-record.
+Nothing failed. No check went red. Merge now, and the first person to find out is a planner who
+cannot save a record.
 
 **Anything you have to do by hand in one org, you will have to do in every org.** That is what a
 deployment action is for.
@@ -176,13 +180,18 @@ Fill it in:
 | Label                | `Backfill Crew Size on existing installations` |
 | When                 | **After Metadata Deployment**                  |
 | Apex Script          | `backfill-crew-size.apex`                      |
-| Execution Contexts   | **Validation and Deployment jobs**             |
+| Execution Contexts   | **Deployment job only**                        |
 | Target orgs          | **All target orgs**                            |
 | Run Only Once By Org | **yes**                                        |
 
 **Apex Script** **(2)** is a dropdown of what it found under `scripts/apex/`, not a free text path,
 so the file has to exist in your branch before it appears. **Run Only Once By Org** **(3)** is the
 toggle below it.
+
+**Deployment job only**, because the Pull Request check is a rehearsal: it validates the metadata
+and changes nothing in the org. A script that updates thirty records does it for real, so it waits
+for the merge. The check still lists the action in its comment, marked skipped, so the reviewer sees
+it coming.
 
 **Save**. The action joins the list on the **Deployment Actions** tab, whose counter **(1)** goes up
 by one. **Add New Action** **(2)** stays there for the next one, and your row **(3)** carries a
@@ -212,13 +221,23 @@ is ever in an invalid state.
     lands is pre-deploy. Reference records that need an object that does not exist yet are
     post-deploy, which is Lab 2.4. The answer is never a habit, it is that question.
 
-### 8. Watch it run
+### 8. Commit it, and watch it run
 
-Push and watch the check. In the job log you will see the action fire before the deployment starts,
-with the `System.debug` line reporting how many records it fixed.
+Two files wait in **Source Control**, neither of them committed: the Apex script you created in
+step 5, and the action the editor wrote under `scripts/actions/`, in a file named after your Pull
+Request. Commit both, then **Save / Publish**.
 
-Merge. The deployment job to integration runs the action there too, for real, and the field becomes
-required in `helios-integration` without anyone opening Setup.
+The check passes again, and its comment now has a **Pre-deployment Actions Results** table: your
+backfill, **skipped**, because this is the validation job. Merge.
+
+The deployment job to `integration` runs it, for real, **before** the deployment: open its log in the
+**Actions** tab and you find the action starting, then the `System.debug` line of your script,
+`Backfilled 30 installations`, then the deployment. The field becomes required in
+`helios-integration` with every installation already carrying a crew size, and without anyone
+opening Setup.
+
+`helios-dev` still has its empty crew sizes, and that is fine: the next backpromote runs the actions
+of the Pull Requests it brings down, this one included.
 
 <details markdown="1"><summary>Under the hood: where the action is stored and how it runs</summary>
 
@@ -230,7 +249,7 @@ The editor wrote a YAML file named after your Pull Request, under `scripts/actio
         type: apex
         parameters:
           apexScript: scripts/apex/backfill-crew-size.apex
-        context: all
+        context: process-deployment-only
         runOnlyOnceByOrg: true
 
 `sf hardis:project:deploy:smart` reads it, and around the Salesforce deployment it:
