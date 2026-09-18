@@ -240,35 +240,39 @@ holding three cards **(2)**, one per level.
 Click **Training: Level 1**, then click **Set up my training environment**.
 
 It does not ask which org to use: you connected one, named `helios-prod`, so it takes that one, says
-so, and asks only for a yes before it changes anything. Then it works through seven steps and tells
+so, and asks only for a yes before it changes anything. Then it works through eight steps and tells
 you as it goes:
 
 ```text
 Developer Edition org: helios-prod
 
-1 of 7  Your own copy of the repository
+1 of 8  Your own copy of the repository
 OK  origin is now your-handle/sfdx-hardis-training, and the shared repository is upstream.
 
-2 of 7  Actions turned on
+2 of 8  Actions turned on
 OK  Actions are on.
 
-3 of 7  Your Dev Hub
+3 of 8  Your Dev Hub
 OK  helios-prod is a Dev Hub now.
 
-4 of 7  Your three scratch orgs
+4 of 8  Your three scratch orgs
 OK  helios-dev is created, for 30 days.
 OK  helios-integration is created, for 30 days.
 OK  helios-uat is created, for 30 days.
 
-5 of 7  The Helios app in each of them
+5 of 8  The Helios app in each of them
 OK  helios-dev holds the app, your permission set and the sample data.
 ...
 
-6 of 7  Which org each branch deploys to
+6 of 8  Which org each branch deploys to
 OK  integration now names its org, and is pushed.
 OK  uat now names its org, and is pushed.
 
-7 of 7  The credentials the CI jobs use
+7 of 8  No merge while a check is red
+OK  integration now accepts a merge only once its checks are green.
+OK  uat now accepts a merge only once its checks are green.
+
+8 of 8  The credentials the CI jobs use
 OK  SFDX_AUTH_URL_INTEGRATION is set on your-handle/sfdx-hardis-training.
 OK  SFDX_AUTH_URL_UAT is set on your-handle/sfdx-hardis-training.
 ```
@@ -307,15 +311,27 @@ message that says nothing about permissions.
 The data load is an **upsert on an external id**, so running it twice updates the same 235 records
 instead of creating 470. Anything in this course that can be run twice, can be run twice.
 
-Last, it made this folder point at your orgs, in the git-ignored `.sf` directory:
+It made this folder point at your orgs, in the git-ignored `.sf` directory:
 
     sf config set target-dev-hub=helios-prod target-org=helios-dev
+
+And it protected `integration` and `uat` with one call to the GitHub API per branch, the same
+settings you will set by hand on `preprod` and `main` in Lab 3.1:
+
+    gh api -X PUT repos/<your-handle>/sfdx-hardis-training/branches/integration/protection \
+      -f "required_status_checks[contexts][]=Simulate Deployment to Major Org" \
+      -f "required_status_checks[contexts][]=Mega-Linter" \
+      -F enforce_admins=true ...
+
+`enforce_admins` is the part that matters: without it, the owner of the fork, you, could still
+merge on red. Setting up the environment and resetting a level lift that protection for the one
+push they make to those branches themselves, and put it back straight after.
 
 </details>
 
 ### 6. What it just did
 
-Six things, each of them real work on a real project, and none of them yours to repeat:
+Seven things, each of them real work on a real project, and none of them yours to repeat:
 
 - **Your own copy of the repository**, its *fork*, under your GitHub account. Your clone pushes
   there now, and still pulls from the team's repository. The fork carries the branches the
@@ -335,6 +351,10 @@ Six things, each of them real work on a real project, and none of them yours to 
   branch, in `config/branches/`, and pushed to your fork. The repository could not know that: your
   orgs did not exist when it was written. It is pushed because the badge check clones your fork and
   reads what is actually in it
+- **`integration` and `uat` protected.** A Pull Request into either one can only be merged once
+  every check GitHub runs on it has finished green, and that rule holds for you too, the owner of
+  the fork. On a real project somebody set this up on day one: a merge on a red check deploys
+  nothing, or half of something, and the next person to merge finds out
 - **A credential for each CI job.** CI jobs are the automated jobs GitHub runs for you, on its own
   machines rather than on yours, and those machines cannot reach a Salesforce org without one. They
   are kept as repository secrets, named `SFDX_AUTH_URL_INTEGRATION` and `SFDX_AUTH_URL_UAT`

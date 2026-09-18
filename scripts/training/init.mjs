@@ -12,6 +12,8 @@
  *   - the Helios app and its data in each of them
  *   - integration and uat pointed at their orgs, and the CI credentials in the
  *     fork's secrets
+ *   - integration and uat protected, so a Pull Request merges only once every
+ *     GitHub Actions check on it finished green
  *
  * Why scratch orgs. Signing up for four Developer Edition orgs, confirming four
  * emails and connecting four orgs by hand is an afternoon a beginner spends on
@@ -41,6 +43,7 @@ import {
   select, confirm, connectedOrgs, orgChoices, universe, ensureGh, repoSlug
 } from "../lib/util.mjs";
 import { deployAppToAll, grantManager, loadData, recordSeeded, alreadySeeded } from "./seed.mjs";
+import { REQUIRED_CHECKS, protectBranches, withProtectionLifted } from "../lib/protection.mjs";
 
 const UPSTREAM = "hardisgroupcom/sfdx-hardis-training";
 const SCRATCH_DEF = path.join("config", "project-scratch-def.json");
@@ -50,7 +53,7 @@ const DURATION_DAYS = 30;
 // Branches the fork needs. preprod and main are not in the pipeline before Level 3,
 // and exist from the start so that Level 3 only has to configure them.
 const PIPELINE_BRANCHES = ["integration", "uat", "preprod"];
-const STEPS = 7;
+const STEPS = 8;
 
 /** The orgs this command owns, read from the universe so the labs and the code agree. */
 function trainingOrgs() {
@@ -520,7 +523,7 @@ function branchConfigText(stage, username) {
  * also spares the learner a commit straight to a major branch, which the rest of
  * the course tells them never to make.
  */
-export function writeBranchConfigs(pipeline, usernames) {
+export function writeBranchConfigs(pipeline, usernames, slug = null) {
   const files = pipeline.map((stage) => ({
     relative: `config/branches/.sfdx-hardis.${stage.branch}.yml`,
     stage,
@@ -566,7 +569,10 @@ export function writeBranchConfigs(pipeline, usernames) {
       }
     }
     const unpushed = gitOut(["log", "--oneline", `origin/${branch}..${branch}`]) !== "";
-    if (unpushed && git(["push", "origin", branch], { quiet: true, capture: true }).code !== 0) {
+    // From the second run on, the branch is protected and refuses a direct push:
+    // this one is the course fixing its own configuration, so it goes through.
+    const pushed = () => withProtectionLifted(slug, [branch], () => git(["push", "origin", branch], { quiet: true, capture: true }));
+    if (unpushed && pushed().code !== 0) {
       warn(`Committed on ${branch}, but could not push it.`);
       info("    Push it from the Source Control panel when you can.");
       published = false;
@@ -665,9 +671,15 @@ export default async function init(args) {
   await seedScratchOrgs(usernames, { force: args.reseed === true, ownerName: devHubOwnerName(devHub) });
 
   step(6, "Which org each branch deploys to");
-  const published = writeBranchConfigs(pipeline, usernames);
+  const published = writeBranchConfigs(pipeline, usernames, slug);
 
-  step(7, "The credentials the CI jobs use");
+  // After the branch configuration, which is pushed straight to those branches,
+  // and before the secrets, the one step that can stop the command.
+  step(7, "No merge while a check is red");
+  info(c.dim(`    A Pull Request into ${pipeline.map((s) => s.branch).join(" or ")} merges only once ${REQUIRED_CHECKS.join(" and ")} are green.`));
+  const protectedBranches = protectBranches(slug, pipeline.map((s) => s.branch));
+
+  step(8, "The credentials the CI jobs use");
   setSecrets(slug, pipeline);
 
   title("Done");
@@ -683,6 +695,9 @@ export default async function init(args) {
   }
   if (!published) {
     warn("The branch configuration is not published yet: see the messages above.");
+  }
+  if (!protectedBranches) {
+    warn("A branch is not protected yet: see the messages above.");
   }
   info(c.dim(`The scratch orgs live ${DURATION_DAYS} days. When one expires, click this again: it rebuilds only that one.`));
 }

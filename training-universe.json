@@ -551,7 +551,7 @@
           "slug": "3-1-configure-the-pipeline-up-to-production",
           "title": "Configure the CI/CD pipeline up to production",
           "description": "Turn a two-stage Salesforce pipeline into four stages up to production: major branches, their orgs and merge targets in sfdx-hardis Pipeline Settings.",
-          "time": "30 min"
+          "time": "35 min"
         },
         {
           "lab": 2,

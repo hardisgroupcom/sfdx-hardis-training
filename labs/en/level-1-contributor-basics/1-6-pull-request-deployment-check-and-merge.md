@@ -129,6 +129,11 @@ Both checks green, the comment says success. Back on the **Conversation** tab, s
 the merge box says **All checks have passed** and **No conflicts with base branch**, and the button
 is live.
 
+It is live *because* both are green. Setting up your environment in Lab 1.2 protected `integration`:
+while a check is running or red, the box reads **Merging is blocked** and the button stays grey, for
+you as for anybody else. That is the rule of every real pipeline, and here GitHub enforces it rather
+than trusting everybody to read the checks first.
+
 ![The merge box of a Pull Request, with all checks passed](../../_assets/annotated/web/github-pr-merge.png)
 
 Click **Merge pull request** **(1)**, then **Confirm merge**.
@@ -140,7 +145,8 @@ more thing in everyone's list for no benefit.
     MegaLinter reads the whole repository, not only your change, and reports anything that breaks
     the project's quality rules. It found nothing here because this repository is clean. When it
     does find something, it writes it on the Pull Request the same way the deployment check does,
-    and whether a finding blocks the merge is a choice the project makes in `.mega-linter.yml`.
+    and whether a finding fails the job is a choice the project makes in `.mega-linter.yml`. A job that
+    fails blocks the merge, like the deployment check.
     Level 2 has a lab where one blocks you, on purpose.
 
 ### 5. Watch the real deployment
@@ -227,6 +233,11 @@ without the field. Redo Lab 1.5 step 3 and take both.
 **The check is stuck as "Expected".**
 The workflow is waiting for a job that will never run, usually because the base of the Pull Request
 is the original repository and not your fork. Close it and open it again with the right base.
+
+**The merge box says Merging is blocked, and the button is grey.**
+A required check is still running, or it failed. Wait for it, or open it from the **Checks** tab,
+fix what it reports on your branch, and push again: the checks run again on their own. There is no
+way around it, and there is not meant to be.
 
 **The deployment succeeds but the field is not in the org.**
 Look at the deployed components list in the comment. If the field is not there, it is not in

@@ -9,8 +9,9 @@ import fs from "fs";
 import path from "path";
 import {
   ROOT, c, title, info, ok, warn, abort, run, git, gitOut,
-  select, confirm, universe
+  select, confirm, universe, repoSlug
 } from "../lib/util.mjs";
+import { withProtectionLifted } from "../lib/protection.mjs";
 
 export default async function reset(args) {
   const u = universe();
@@ -66,7 +67,9 @@ export default async function reset(args) {
   keepBranchConfig(pipelineConfig);
 
   title("3 of 3  Publishing it to your fork");
-  const push = run("git", ["push", "origin", "integration", "--force-with-lease"]);
+  // integration is protected against force pushes, and a reset is one. The
+  // protection is lifted for this push only, and put back right after.
+  const push = withProtectionLifted(repoSlug(), ["integration"], () => run("git", ["push", "origin", "integration", "--force-with-lease"]));
   if (push.code !== 0) {
     warn("The push was refused. Your local branch is reset; push it yourself when you are ready.");
   } else {

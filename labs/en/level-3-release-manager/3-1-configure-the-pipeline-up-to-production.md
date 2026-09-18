@@ -25,7 +25,7 @@ depends_on:
 
 **Level**: 3 Release Manager
 
-**Time**: ~30 min
+**Time**: ~35 min
 
 **You will**: turn a two-stage pipeline into a four-stage one that reaches production, and
 understand every line of configuration you add.
@@ -186,7 +186,64 @@ This is what stops a contributor opening a Pull Request straight from a feature 
 production. It is not a permission, it is a guardrail, and it exists because the alternative is
 someone doing it at 18:00 on a Friday.
 
-### 5. Look at the diagram again
+### 5. Protect preprod and main
+
+A merge path says where work may go. It does not stop anybody merging a Pull Request whose check is
+red, and on a production branch that is the one merge you cannot afford. Since Lab 1.2, `integration`
+and `uat` refuse it: setting up the environment protected them. `preprod` and `main` are yours to
+protect, and a release manager does it the day the branches join the pipeline, not after the first
+bad merge.
+
+This is a GitHub setting, not an sfdx-hardis one, so it happens on GitHub. For each of `preprod`
+and `main`:
+
+1. Open your fork on GitHub, **Settings**, then **Branches** in the left menu
+2. Click **Add classic branch protection rule**
+3. **Branch name pattern**: `preprod` (then `main` the second time)
+4. Tick **Require status checks to pass before merging**. In the search box that appears, add
+   `Simulate Deployment to Major Org` and `Mega-Linter`, the two checks every Pull Request of this
+   course runs
+5. Tick **Do not allow bypassing the above settings**. Without it, the owner of the repository, you,
+   still gets a checkbox to merge on red
+6. Leave **Require a pull request before merging** and its approvals unticked. You work alone here,
+   and GitHub never lets you approve your own Pull Request
+7. Click **Create**
+
+Open **Settings** > **Branches** again: four rules, `integration`, `uat`, `preprod` and `main`,
+each requiring the same two checks.
+
+The search box only suggests checks that ran on this repository in the last seven days. Both ran on
+your Level 2 Pull Requests, so they are there unless you took a long break: in that case open any
+Pull Request into `integration` first, and its checks put them back in the list.
+
+<details markdown="1"><summary>Under the hood: what the rule enforces</summary>
+
+A required check is matched by **its job name**, not by the workflow file. `Simulate Deployment to
+Major Org` is the job of `.github/workflows/check-deploy.yml`, which runs on every Pull Request into
+the four major branches. `Mega-Linter` is the job of `.github/workflows/megalinter.yml`, which runs
+on every push, so on the last commit of every Pull Request opened from a branch of your fork.
+
+A workflow that only runs when some files change, like `link-check.yml` here, must never be
+required: a Pull Request that does not touch those files waits for it forever, and GitHub shows it
+as **Expected**, never as failed.
+
+The same rule, set through the GitHub API, is what **Set up my training environment** did for
+`integration` and `uat`:
+
+    gh api -X PUT repos/<your-handle>/sfdx-hardis-training/branches/preprod/protection \
+      -f "required_status_checks[contexts][]=Simulate Deployment to Major Org" \
+      -f "required_status_checks[contexts][]=Mega-Linter" \
+      -F "required_status_checks[strict]=false" -F enforce_admins=true \
+      -F required_pull_request_reviews=null -F restrictions=null
+
+`strict=false` is a choice: `true` would also require every Pull Request to be up to date with its
+target before merging, which on a busy `integration` means updating every open branch after every
+merge. GitLab, Azure DevOps and Bitbucket have the same setting under other names: protected
+branches, branch policies, merge checks.
+
+</details>
+
+### 6. Look at the diagram again
 
 Refresh the panel. Four columns, each with its org, connected by arrows in one direction.
 
@@ -241,7 +298,7 @@ point of most projects: not an empty repository, but a two-year-old org nobody h
 
 </details>
 
-### 6. Commit the configuration
+### 7. Commit the configuration
 
 This is configuration, so it goes through the same pipeline as everything else, and through the same
 buttons Level 1 used. The picture below was taken in Level 1, which is why its diagram still has two
@@ -275,6 +332,7 @@ click one.
 Also true, and worth checking:
 
 - `config/branches/` holding four files
+- Four branch protection rules in your fork's **Settings** > **Branches**, one per major branch
 - A merged Pull Request carrying the configuration change
 
 ## If it goes wrong
@@ -289,6 +347,14 @@ Click **Refresh pipeline data** in the panel. It caches the git state.
 **You pointed a branch at the wrong org.**
 Fix the branch configuration in **Pipeline Settings** and publish again. Nothing has deployed yet,
 so nothing is broken.
+
+**The check you want to require is not suggested.**
+GitHub only lists checks that reported on this repository in the last seven days. Open a Pull
+Request into `integration`, let its checks run, and come back to the rule.
+
+**A merge into `preprod` or `main` is still allowed on a red check.**
+**Do not allow bypassing the above settings** is not ticked, and as the owner of the fork you are
+let through. Edit the rule and tick it.
 
 **Set up one of my training orgs fails on `helios-prod`.**
 It is the org that created your scratch orgs, and it is a normal Developer Edition org apart from

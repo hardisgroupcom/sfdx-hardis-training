@@ -70,7 +70,7 @@ Either route runs the same thing.
 
 | Lab                                                       | Title                                               | Time   |
 |-----------------------------------------------------------|-----------------------------------------------------|--------|
-| [3.1](3-1-configure-the-pipeline-up-to-production.md)     | Configure the CI/CD pipeline up to production       | 30 min |
+| [3.1](3-1-configure-the-pipeline-up-to-production.md)     | Configure the CI/CD pipeline up to production       | 35 min |
 | [3.2](3-2-ci-authentication-with-jwt.md)                  | Set up CI authentication with JWT for four orgs     | 40 min |
 | [3.3](3-3-review-a-contributor-pull-request.md)           | Review and merge a contributor Pull Request         | 25 min |
 | [3.4](3-4-deploy-to-integration-and-read-the-log.md)      | Deploy to integration and read the deployment log   | 25 min |
