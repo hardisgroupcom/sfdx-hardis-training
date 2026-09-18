@@ -174,16 +174,19 @@ token: without one it cannot read its own history, and it stops.
 
 </details>
 
-### 6. Write it down
+### 6. Write it down, with your next story
 
-Open `MY-PIPELINE.md` (copy `MY-PIPELINE.template.md` if you have not yet) and add one line under
-Level 2:
+`MY-PIPELINE.md` is the notebook this level keeps, and the badge audit reads it on `integration`.
+Like everything else it gets there through a Pull Request, so the line for this lab travels with
+your next story: as soon as **New User Story** has made its branch in Lab 2.2, open
+`MY-PIPELINE.md` (copy `MY-PIPELINE.template.md` the first time) and add one line under Level 2:
 
 ```markdown
-- **Lab 2.1, backpromote**: took the three merged stories, left my own work in progress alone.
+- **Lab 2.1, backpromote**: took the merged stories, left my own work in progress alone.
 ```
 
-The badge audit reads this file. More usefully, it is the note your successor will want.
+Writing it now, before starting the story, does not work: **New User Story** starts its branch
+clean, and puts anything uncommitted aside in a stash.
 
 ## What you should see
 

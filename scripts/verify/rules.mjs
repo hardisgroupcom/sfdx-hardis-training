@@ -363,6 +363,32 @@ export const RULES = [
   {
     id: "2.1", level: 2, lab: 1, auditable: false,
     title: "Your dev org is level with integration",
+    // Right after the lab the proof is in the org: Amina's field reached helios-dev.
+    // The notebook line is written with the next story, which is how it reaches
+    // integration, where check() reads it at the end of the level.
+    now: (ctx) => firstPassing(
+      () => ruleCheck("2.1")(ctx),
+      () => {
+        if (!ctx.sfQuery) {
+          return miss("your dev org could not be read from here", `${DEV_ORG}. Check it is connected in Orgs Manager`);
+        }
+        const objects = ctx.sfQuery(DEV_ORG, "SELECT Id FROM CustomObject WHERE DeveloperName = 'Installation'", { tooling: true });
+        if (!objects || objects.length === 0) {
+          return miss("your dev org could not be queried", `${DEV_ORG}. Reconnect it in Orgs Manager, then run this again`);
+        }
+        const fields = ctx.sfQuery(
+          DEV_ORG,
+          `SELECT Id FROM CustomField WHERE DeveloperName = 'Signed_Off_By' AND TableEnumOrId = '${objects[0].Id}'`,
+          { tooling: true }
+        );
+        return fields && fields.length > 0
+          ? pass(`Amina's Signed Off By field reached ${DEV_ORG}: your org is level with integration`)
+          : miss(
+            "Amina's Signed_Off_By__c field is not in your dev org, so the backpromote did not bring it",
+            `the org ${DEV_ORG}. Merge her US-017 Pull Request first (step 1), then run the backpromote again`
+          );
+      }
+    ),
     check: (ctx) => {
       const notes = pipelineNotes(ctx);
       return mentions(notes, "backpromote")

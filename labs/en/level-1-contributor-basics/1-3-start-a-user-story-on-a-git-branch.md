@@ -218,9 +218,11 @@ something.
 The pattern this project uses is `US-014-panels-required`: three digits, then lowercase words
 separated by hyphens. `US14-PanelsRequired` is rejected on purpose.
 
-**It says you have uncommitted changes.**
-You changed something before starting. Either commit it on the branch you are on, or discard it
-from the Source Control panel. `hardis:work:new` will not carry stray work onto a fresh branch.
+**A file you were editing has disappeared.**
+You changed something before starting, and `hardis:work:new` never carries stray work onto a fresh
+branch: it puts it aside in a *stash*, and says so in its panel, naming the files. To get them back
+on the new branch: **Source Control** panel, the **...** menu at the top, **Stash**, then **Pop
+Latest Stash**.
 
 **The org list does not show `helios-dev`.**
 The scratch org expired: they live 30 days. Click **Training: Level 1 > Set up my training

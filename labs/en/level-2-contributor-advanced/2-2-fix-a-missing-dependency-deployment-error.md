@@ -54,7 +54,12 @@ Story** **(2)**, the same card as Lab 1.3.
 
 ![The contribution cards of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
-Answer: target `integration`, type **Feature**, name `US-021-crew-size-warning`, org `helios-dev`.
+Answer: type **Feature**, name `US-021-crew-size-warning`, org `helios-dev`. The target is
+`integration` without asking, as in Level 1.
+
+Then write the line Lab 2.1 left for this moment: open `MY-PIPELINE.md` (copy
+`MY-PIPELINE.template.md` the first time) and add the backpromote line under Level 2. It will be
+committed with this story.
 
 ### 2. Build the warning flow
 
