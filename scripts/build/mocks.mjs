@@ -114,10 +114,20 @@ writeJson(path.join(OUT, "universe.json"), {
   // its window. Mermaid lays it out from the branches this universe carries, so
   // it moves whenever they change, and the click then hits empty canvas.
   branchNode: "1063,539",
-  // The heights of the three US-014 rows in the Metadata Retriever, for the
-  // clicks that tick them. They follow the sourceMembers list below: the panel
-  // sorts by type then name, and the seeded app rows sit between them.
-  retrieverRows: "611,863,914",
+  // Lab 1.5 sorts the Metadata Retriever on Last Updated Date, newest first:
+  // two clicks on that column header. The four US-014 rows are then the four
+  // at the top, whose heights the next setting lists for the clicks that tick
+  // them. They follow the dates of the sourceMembers list below.
+  retrieverSortClicks: "1680,413;1680,413",
+  retrieverRows: "459,510,561,611",
+  // The files the Source Control shot shows after that retrieve: the four
+  // components of US-014, the planners' permission set included
+  retrievedFiles: [
+    "force-app/main/default/objects/Installation__c/fields/Panels_Required__c.field-meta.xml",
+    "force-app/main/default/layouts/Installation__c-Installation Layout.layout-meta.xml",
+    "force-app/main/default/permissionsets/Helios_Delivery_Crew.permissionset-meta.xml",
+    "force-app/main/default/permissionsets/Helios_Delivery_Manager.permissionset-meta.xml"
+  ].join(","),
   // The order the Deployment Actions tab lists them in, for the editor shots:
   // this project loads its reference data after the metadata deployment
   actionEditorOrder:
@@ -273,7 +283,7 @@ writeJson(path.join(OUT, "sf-mock-overlay.json"), {
   sourceMembers: [
     ["CustomField", "Installation__c.Panels_Required__c", "You", "created", "2026-09-17T14:42:00.000+0000"],
     ["PermissionSet", "Helios_Delivery_Crew", "You", "modified", "2026-09-17T14:46:00.000+0000"],
-    ["Layout", "Installation__c-Installation Layout", "You", "modified", "2026-09-17T14:49:00.000+0000"],
+    ["Layout", "Installation__c-Installation Layout", "You", "modified", "2026-09-17T14:43:00.000+0000"],
     ["CustomObject", "Installation__c", "You", "created", "2026-09-15T09:12:00.000+0000"],
     ["CustomObject", "Panel_Batch__c", "You", "created", "2026-09-15T09:12:00.000+0000"],
     ["CustomField", "Installation__c.Crew_Size__c", "You", "created", "2026-09-15T09:12:00.000+0000"],
@@ -281,7 +291,7 @@ writeJson(path.join(OUT, "sf-mock-overlay.json"), {
     ["CustomField", "Installation__c.Status__c", "You", "created", "2026-09-15T09:12:00.000+0000"],
     ["Flow", "Installation_Assign_Crew", "You", "created", "2026-09-15T09:12:00.000+0000"],
     ["ApexClass", "InstallationScheduler", "You", "created", "2026-09-15T09:12:00.000+0000"],
-    ["PermissionSet", "Helios_Delivery_Manager", "You", "modified", "2026-09-17T14:47:00.000+0000"]
+    ["PermissionSet", "Helios_Delivery_Manager", "You", "modified", "2026-09-17T14:48:00.000+0000"]
   ],
   apexClasses: [
     {

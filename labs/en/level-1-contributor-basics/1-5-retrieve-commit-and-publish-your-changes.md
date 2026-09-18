@@ -81,12 +81,13 @@ when. Every one of them carries your name, and most of them are not your story.
 
 ### 3. Take yours, leave the rest
 
-Tick four rows, and only four:
+Sorted newest first, your four are the four at the top. Tick them, and only them:
 
-1. **CustomField** `Installation__c.Panels_Required__c` **(1)** - the field
-2. **Layout** `Installation__c-Installation Layout` **(2)** - the placement
-3. **PermissionSet** `Helios_Delivery_Crew` **(3)** - the crew's read access
-4. **PermissionSet** `Helios_Delivery_Manager` **(4)** - the planners' edit access
+1. **PermissionSet** `Helios_Delivery_Manager` **(1)** - the planners' edit access
+2. **PermissionSet** `Helios_Delivery_Crew` **(2)** - the crew's read access
+3. **Layout** `Installation__c-Installation Layout` **(3)** - the placement, changed when you
+   ticked the layout in the field wizard
+4. **CustomField** `Installation__c.Panels_Required__c` **(4)** - the field
 
 Then click **Retrieve 4 selected** **(5)**.
 

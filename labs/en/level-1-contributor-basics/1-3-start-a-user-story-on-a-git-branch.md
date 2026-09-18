@@ -84,6 +84,8 @@ The first line under the header reads **Automatically selected target branch is 
 **(1)**. It is not a question, because there is nothing to choose: this project declares
 `integration` as the only branch a contributor may target, in `availableTargetBranches`. Lab 3.1
 adds `preprod`, where urgent fixes start, and from then on the command asks, offering both.
+Under that line, the first real question already waits, with its two answers **(2)** and **(3)**:
+the next step is about them.
 
 ![The first question of New User Story, under the line naming the target branch](../../_assets/annotated/vscode/work-new-story-type.png)
 
@@ -125,7 +127,7 @@ created in Lab 1.2.
 The other answers are for other projects. **Sandbox org with source tracking** **(2)** is what most
 teams use, a developer sandbox the release manager hands out. Source tracking means the org keeps a
 running note of what changed in it since you last synchronised, which saves you looking. **Current
-org** names whatever org your project points at, by its address: it is `helios-dev` today, but an
+org** **(3)** names whatever org your project points at, by its address: it is `helios-dev` today, but an
 address tells you nothing, so do not rely on it. The last answer is for editing the project's files
 directly, with no org at all.
 

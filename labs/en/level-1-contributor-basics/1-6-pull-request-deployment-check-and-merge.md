@@ -103,9 +103,6 @@ Open the **Checks** tab **(1)**. Two of them matter here, and both start on thei
 Click either one to read its log while it runs. The deployment check takes about two minutes, and
 you can watch it authenticate with your secret, work out what changed, and start the deployment.
 
-The pictures in this lab were taken on a later story of this same course, so the story number in the
-title is not yours. The page is the same page, and so are the two checks.
-
 ### 3. Read the sfdx-hardis comment
 
 When the deployment check finishes, sfdx-hardis writes a comment on the **Conversation** tab. It is
@@ -114,17 +111,19 @@ the most useful thing on the page.
 ![The sfdx-hardis comment on a Pull Request](../../_assets/annotated/web/github-pr-comment.png)
 
 1. **The banner** **(1)** says whether the simulated deployment succeeded
-2. **What would change** **(2)**. Not a list of your files: sfdx-hardis sends the package and
-   Salesforce answers how much of it differs, as in `34 sent to the org, 10 would change (0 created,
-   10 updated, 0 deleted, 24 unchanged)`
+2. **What would change** **(2)**. Not a list of your files: sfdx-hardis sends the whole package,
+   `manifest/package.xml`, and Salesforce answers how much of it differs: `31 sent to the org, 5
+   would change (1 created, 4 updated, 0 deleted, 26 unchanged)`. The one created is your field, and the
+   updated ones include the layout and the two permission sets you changed
 3. **Apex coverage** **(3)**, against the target this project sets
 4. **Tickets** **(4)**, the stories it recognised in your branch name and commit messages
 
 Below those, a summary of your commits and the name of the job that wrote the comment.
 
-!!! note "The numbers in that picture are from another story"
-    It is a real comment from a real run on this repository, kept as it came out. Yours will carry
-    your own story and your own counts.
+!!! note "Your counts may differ by one or two"
+    The picture is a real comment from a real run of this lab, kept as it came out. A component
+    Salesforce stores slightly differently in your org can move from unchanged to updated, and that
+    is not a problem: what matters is that your field is the one created.
 
 ### 4. Merge
 
@@ -166,8 +165,8 @@ When it finishes, it writes a second comment on the Pull Request you just merged
 ![The comment sfdx-hardis writes after the merge deployment](../../_assets/annotated/web/github-pr-deployed.png)
 
 1. **Deployment successful** **(1)**, and this time the org really changed
-2. **What changed** **(2)**, in the same shape as the check said it would: `10 changed` where the
-   check said `10 would change`
+2. **What changed** **(2)**, in the same shape as the check said it would: `5 changed` where the
+   check said `5 would change`
 3. **Quick Deploy** **(3)**. The merge job did not start from nothing. It released the validation
    the Pull Request check had already done, which is why it did not run the Apex tests a second
    time and why it took two minutes rather than five
