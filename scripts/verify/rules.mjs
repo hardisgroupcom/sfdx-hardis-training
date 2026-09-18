@@ -169,6 +169,12 @@ function firstPassing(...attempts) {
 
 const ruleCheck = (id) => (ctx) => RULES.find((r) => r.id === id).check(ctx);
 
+/**
+ * A hotfix in a history: the word itself, or a merge of a fix/ branch, which is how Lab 3.8 names
+ * it (branchPrefixChoices) and how the DORA report of Lab 3.7 recognises one.
+ */
+const isHotfix = (history) => mentions(history, "hotfix") || /(^|[\s/:])(hot|bug)?fix\//im.test(history || "");
+
 /** The dev org alias, as the universe names it. */
 const DEV_ORG = "helios-dev";
 
@@ -778,7 +784,7 @@ export const RULES = [
             `${FIELD("Installation__c", "Status__c")} on branch ${DEV}, expected a "Needs Reinspection" value`
           );
         }
-        const hotfix = ["main", "preprod"].some((b) => mentions(ctx.log(b), "hotfix"));
+        const hotfix = ["main", "preprod"].some((b) => isHotfix(ctx.log(b)));
         return hotfix
           ? pass("The hotfix reached production, and the retrofit is on integration, waiting for the next release")
           : miss("no hotfix in the history of preprod or main", "the history of branches preprod and main");
@@ -794,7 +800,7 @@ export const RULES = [
         );
       }
       const history = ctx.log("main");
-      return mentions(history, "hotfix")
+      return isHotfix(history)
         ? pass("The hotfix and the retrofit are both on main")
         : miss("no hotfix in the history of main", "the history of branch main");
     }
