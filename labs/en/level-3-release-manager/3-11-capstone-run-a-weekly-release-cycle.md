@@ -56,7 +56,7 @@ For each of the two:
 - Read the sfdx-hardis comment
 - Read the diff with the four questions from Lab 3.3: does it match the story, does anything
   disappear, are permissions on a permission set, is it reversible
-- Approve or request changes, and say why
+- Merge it or send it back with a comment, and say why
 
 US-020 still fails its check. It stays with its author, with the failure named. Do not fix it
 yourself.

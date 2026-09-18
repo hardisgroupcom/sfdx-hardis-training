@@ -96,17 +96,20 @@ Open it and read the failure. It is a genuine failure, in his code, and it is hi
 
 Read it properly before you write anything, because it is not what the words "failing tests" suggest.
 `earliestInstallDate` now returns a `Datetime`, and `InstallationSchedulerTest` still assigns it to a
-`Date`. The class does not compile, so no test runs at all. What the log gives you is a compilation
-error with a class name and a line number, not a failed assertion.
+`Date`, in two places. The class does not compile, so no test runs at all. What the sfdx-hardis
+comment gives you, under **Deployment errors**, is a compilation error with a class name, twice, not
+a failed assertion.
 
 Leave one review comment that does three things:
 
 > The check fails to compile `InstallationSchedulerTest`: `earliestInstallDate` returns a `Datetime`
-> now and line 23 still assigns it to a `Date`. No tests ran. Not blocking anything else, so US-019
+> now and the test still assigns it to a `Date`, in two places. No tests ran. Not blocking anything else, so US-019
 > and US-018 go out in this week's release and this one can land on Monday.
 
-Names the failure, says who owns it, says what happens to the release. Then **Request changes** and
-move on.
+Names the failure, says who owns it, says what happens to the release. Leave the Pull Request open
+and move on. On a real project you would send it as **Request changes**. GitHub does not offer that
+on a Pull Request opened from your own account, and in this fork the teammate Pull Requests are
+opened from yours, so a plain comment does the job here.
 
 !!! tip "Do not fix a contributor's Pull Request yourself"
     It is faster once and expensive every time after. The author does not learn the failure, and you
@@ -118,7 +121,7 @@ Look at its diff on `Helios_Delivery_Manager`: one new `<fieldPermissions>` bloc
 `Panel_Batch__c.Quote_Pdf_Url__c`, added near the bottom of the file where the `Panel_Batch__c`
 grants live.
 
-Green, small, nothing in its way. Review it the way Lab 3.3 taught, approve, merge. If it is already
+Green, small, nothing in its way. Review it the way Lab 3.3 taught, then merge. If it is already
 merged, read the merged one instead and note how little there was to it.
 
 Nothing here was hard, which is exactly why it is worth knowing what happened next.
