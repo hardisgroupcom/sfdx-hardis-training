@@ -537,7 +537,7 @@
           "lab": 9,
           "slug": "2-9-capstone-deliver-a-user-story-that-has-it-all",
           "title": "Capstone: deliver a User Story that has it all",
-          "description": "Deliver one Salesforce User Story with a dependency error, a data deployment action and a merge conflict, with no step-by-step.",
+          "description": "Deliver one Salesforce User Story with a dependency to check, a data deployment action and a teammate on the same permission set, with no step-by-step.",
           "time": "30 min"
         }
       ]

@@ -21,8 +21,8 @@ depends_on:
 
 **Time**: ~30 min
 
-**You will**: deliver one story that contains a dependency error, a data deployment action and a
-conflict with a teammate, with no step-by-step.
+**You will**: deliver one story that contains a dependency to check, a data deployment action and a
+teammate working on the same permission set, with no step-by-step.
 
 ## The situation
 
@@ -37,8 +37,8 @@ conflict with a teammate, with no step-by-step.
 > - 10 reference checklist items are loaded in every org
 > - The close flow blocks on an incomplete checklist
 
-Three of the failures you met separately are waiting in this one story. You already know all three
-fixes.
+Three of the situations you met separately are waiting in this one story. You already know how to
+handle all three.
 
 ## Before you start
 
@@ -49,7 +49,7 @@ fixes.
 
 ### The story
 
-1. **Take it.** Branch `US-041-handover-checklist`, target `integration`, org `helios-dev`
+1. **Take it.** Name `US-041-handover-checklist`, org `helios-dev`
 2. **Build the object**: `Handover_Item__c`, with `External_Id__c` (Text 40, external id, unique),
    `Installation__c` (lookup), `Label__c`, `Sequence__c`, `Is_Done__c`, `Is_Template__c`
 3. **Build the reference data**: 10 template `Handover_Item__c` records with no installation, the
@@ -57,8 +57,10 @@ fixes.
 4. **Build the close check**: a record-triggered flow `Installation_Close_Check` on Installation
    that blocks a save into `Completed` while any related handover item is not done. Describe every
    element, the way Lab 2.2 had you do
-5. **Grant the new fields** on the `Helios Delivery Manager` permission set, never on a Profile,
-   the way Lab 2.6 had you do
+5. **Grant the new object and its fields** on the `Helios Delivery Manager` permission set, never
+   on a Profile, the way Lab 2.6 had you do: **Read**, **Create** and **Edit** on Handover Item, and
+   **Read** and **Edit** on its fields. The pipeline's user holds that permission set too, and the
+   data load of the second trap needs it, as in Lab 2.4
 6. **Bring it down**: **Commit changes**, **Recent Changes**, and take what you made and nothing
    else. Commit it
 7. **Publish, Pull Request, green, merge**
@@ -66,7 +68,7 @@ fixes.
 ### The three things waiting for you
 
 **One: the dependency.** Do not assume every field you created reached the repository. Count them in
-`force-app/` and count them again in `manifest/package.xml` before you push. When one is missing,
+`force-app/` and count them again in the **Git Delta package.xml** report before you push. When one is missing,
 the cause is the file at the root of the repository you met in Lab 2.2, and the deployment error you
 get three steps later will name the field and not the cause. Do not guess: look.
 
@@ -74,15 +76,25 @@ get three steps later will name the field and not the cause. Do not guess: look.
 the object and the flow into `helios-integration` and the checklist will be empty there, and the
 feature will do nothing at all. Build a data workspace and declare an action.
 
-**Three: the conflict.** Before you open your Pull Request, run **Training: Level 2 > Simulate my
-teammates** and pick **US-019**, then merge it. Amina adds a quote PDF field and grants it on
-`Helios Delivery Manager`, the same permission set your checklist fields need. Bring `integration`
-into your branch from the **Source Control** panel and resolve the conflict in the merge editor, the
-way Lab 2.7 taught: on a permission set, keep both sides.
+**Three: the teammate on the same file.** Before you open your Pull Request, run **Training:
+Level 2 > Simulate my teammates** and pick **US-019**, then merge it. Amina adds a quote PDF field
+and grants it on `Helios Delivery Manager`, the same permission set your checklist needs. Bring
+`integration` into your branch from the **Source Control** panel.
+
+This time git merges it on its own, with no conflict: Salesforce keeps the permissions of a
+permission set in alphabetical order, so her `Panel_Batch__c` grant and your `Handover_Item__c`
+ones land far apart in the file. **A clean merge is not proof.** Open the permission set and find
+both, `Panel_Batch__c.Quote_Pdf_Url__c` and your `Handover_Item__c` fields, before you publish. A
+merge that git did alone and nobody read is how a grant goes missing without a conflict to warn
+anybody.
 
 !!! note "Not US-018 again"
     Lab 2.7 already merged US-018, so simulating it a second time reports nothing to commit. Each
     teammate story merges once per level.
+
+**And the data action.** Declare it the way Lab 2.4 did: the Pull Request has to exist first, so
+publish, open it, then add the **Data** action on its **Deployment Actions** tab, **Deployment job
+only**, commit the file the editor wrote and publish again.
 
 ### A hint on sequencing, because getting this wrong costs an hour
 
