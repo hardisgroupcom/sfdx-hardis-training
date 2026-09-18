@@ -16,6 +16,7 @@ for the `Helios Delivery` app, and every one of them is a lab in this course.
 | US-019 | 2 | Generate a quote PDF from an opportunity | Amina Diallo | `training/mate-us-019-quote-pdf` |
 | US-050 | 3 | The pipeline reaches production | You | `features/US-050-pipeline-to-production` |
 | US-051 | 3 | CI authentication with JWT | You | `features/US-051-ci-authentication` |
+| US-052 | 3 | Total Capacity back on the Installation layout | You | `features/US-052-installation-layout-capacity` |
 | US-020 | 3 | Refactor InstallationScheduler | Marco Bianchi | `training/mate-us-020-apex-refactor` |
 | US-021 | 2 | Warn the planner when a crew is too small | You | `features/US-021-crew-size-warning` |
 | US-024 | 2 | Crew size becomes mandatory | You | `features/US-024-crew-size-required` |
@@ -137,6 +138,20 @@ Acceptance criteria:
 - integration, uat, preprod and main each have an encrypted key file and two secrets
 - No SFDX_AUTH_URL secret is left in the repository
 - The integration check job logs in with JWT
+
+<a id="US-052"></a>
+
+### US-052 - Total Capacity back on the Installation layout
+
+**Owner**: You  
+**Branch**: `features/US-052-installation-layout-capacity`  
+**Lab**: 3.3
+
+> As a planner, I want to see the installed capacity on an installation again, so that I stop opening the report to find it.
+
+Acceptance criteria:
+
+- Total Capacity (kW) is on the Installation layout, beside the crew capacity cap
 
 <a id="US-020"></a>
 

@@ -64,7 +64,10 @@ step 3 is about it.
 
 **Three: pre-deploy actions.** Anything declared to run before, with its result.
 
-**Four: the Salesforce deployment.** Components deployed, tests run, coverage, duration.
+**Four: the Salesforce deployment.** Components deployed, tests run, coverage, duration. On a merge
+job, look for `Deployment mode: FULL + Quick Deploy`. The check job of your Pull Request already
+validated this exact package, tests included, and the merge job asked Salesforce to apply that
+validation rather than deploy again. That is why it takes seconds, and why it runs no test itself.
 
 **Five: post-deploy actions**, then the notification.
 
@@ -72,7 +75,7 @@ step 3 is about it.
 
 You changed one component. Now read what the job actually sent.
 
-Open `manifest/package.xml`. It lists the whole Helios app, about thirty components, and **that is
+Open `manifest/package.xml`. It lists the whole Helios app, about fifty components, and **that is
 the package**: on this project every deployment to `integration` sends all of it, whatever the diff
 said. The log's count of components sent will say so.
 
@@ -91,15 +94,16 @@ org has to genuinely be at the commit the pipeline thinks it is at.
     **Pipeline Settings**, scope **Global Settings** **(1)**, **Deployment** tab **(2)**.
     **Use Delta Deployment** **(3)** shows **Disabled**.
 
-    The Helios app is 30 components, so a full deployment costs a minute and delta would save
+    The Helios app is about fifty components, so a full deployment costs a minute and delta would save
     nothing while adding a way for the course to fail confusingly on a missing dependency. Turn it
     on when a deployment starts costing you real time, which on a real project is soon. There is a
     second key for promotions between major branches,
     `enableDeltaDeploymentBetweenMajorBranches`, on the **Danger Zone** tab, and it is off by
     default for the same reason: a promotion carries more, and is the riskiest place to send less.
 
-Find the number of components the log says it sent. Compare it with the number of files in your
-Pull Request. The gap is the cost of having delta off, and it is the argument for turning it on.
+Find the line `Components: N deployed` in the log, under *Deployment summary*. On a standard run of
+this course it is a little over fifty. Compare it with the one file of your Pull Request. The gap
+is the cost of having delta off, and it is the argument for turning it on.
 
 ### 4. Know what Smart Deploy is, and what it is not
 
@@ -118,7 +122,7 @@ Two things are often assumed to be part of it and are not:
 - **Cleaning is not a deployment filter.** It ran on a contributor's machine, at commit time. Step 3
   of the under the hood section below is about that
 
-So the honest answer to "why did it deploy thirty components to change one" is: because nothing was
+So the honest answer to "why did it deploy fifty components to change one" is: because nothing was
 configured to stop it. That is a decision this project made, not a thing the tool does for you.
 
 ### 5. Verify in the org, not in the log
@@ -130,21 +134,24 @@ connect an org the table does not have at all.
 
 ![The Orgs Manager table, with the alias and connection state of each org](../../_assets/annotated/vscode/orgs-manager.png)
 
-Check your change is actually there: the three fields back on the Installation layout, beside
-Marco's cap field.
+Check your change is actually there: open an Installation record, and **Total Capacity (kW)** is
+back on the layout, in the right-hand column beside Marco's cap field.
 
 A log is a claim. The org is the fact. On a real project you check the org after every deployment to
 a major environment, and it takes thirty seconds.
 
 ### 6. Write down what you read
 
-In `MY-PIPELINE.md`, under Level 3:
+In `MY-PIPELINE.md`, under Level 3, replace the Lab 3.4 line with what you read, numbers included:
 
 ```markdown
 - **Lab 3.4, Smart Deploy**: the deployment sent N components to change M. Delta is off on this
   project, there is no package-no-overwrite file and no deploy-on-change file, so the whole declared
   package goes every time.
 ```
+
+Leave it uncommitted. This lab has no story of its own, so the line goes to `integration` with your
+next one, in Lab 3.6.
 
 <details markdown="1"><summary>Under the hood: where the package comes from, and where cleaning really happens</summary>
 

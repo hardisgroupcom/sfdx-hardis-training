@@ -694,7 +694,7 @@ export const RULES = [
   },
   {
     id: "3.3", level: 3, lab: 3,
-    title: "Marco's US-018 was reviewed and merged into integration",
+    title: "Marco's US-018 was reviewed, and the field it took off the layout is back",
     check: (ctx) => {
       const history = ctx.log(DEV);
       if (!mentions(history, "US-018")) {
@@ -703,9 +703,15 @@ export const RULES = [
       const flows = ctx.listOn(DEV, "force-app/main/default/flows/");
       const assign = flows.find((f) => /Assign_Crew/i.test(f));
       const flow = assign ? ctx.readOn(DEV, assign) || "" : "";
-      return /cap|maximum|too large/i.test(flow)
-        ? pass("US-018 is merged and its cap is in the flow")
-        : miss("the US-018 crew cap is not in Installation_Assign_Crew", `${assign || "the flow folder"} on branch ${DEV}`);
+      if (!/cap|maximum|too large/i.test(flow)) {
+        return miss("the US-018 crew cap is not in Installation_Assign_Crew", `${assign || "the flow folder"} on branch ${DEV}`);
+      }
+      // The outcome of the review: the field US-018 took off the layout is back on it
+      const layoutFile = "force-app/main/default/layouts/Installation__c-Installation Layout.layout-meta.xml";
+      const layout = ctx.readOn(DEV, layoutFile) || "";
+      return /<field>Total_Capacity_kW__c<\/field>/.test(layout)
+        ? pass("US-018 is merged, and Total_Capacity_kW__c is back on the Installation layout")
+        : miss("Total_Capacity_kW__c is not on the Installation layout. Step 6 puts it back", `${layoutFile} on branch ${DEV}`);
     }
   },
   {
@@ -713,9 +719,11 @@ export const RULES = [
     title: "The integration deployment was read, not just watched",
     check: (ctx) => {
       const notes = pipelineNotes(ctx);
-      return mentions(notes, "smart deploy") || mentions(notes, "delta")
+      // The template line has no number in it: the lab's line says how many components went
+      const entries = notes.match(/Lab 3\.4[^]*?(?=\n\s*[-*] |\n#|$)/gi) || [];
+      return entries.some((entry) => /\d/.test(entry.replace(/Lab 3\.4/i, "")))
         ? pass("The deployment reading is recorded in MY-PIPELINE.md")
-        : miss("no note about what Smart Deploy sent and skipped", "MY-PIPELINE.md");
+        : miss("the Lab 3.4 line of MY-PIPELINE.md does not say how many components the deployment sent", "MY-PIPELINE.md, the Lab 3.4 line");
     }
   },
   {

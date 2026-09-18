@@ -43,7 +43,7 @@ Deciding what goes in, in what order, and what waits, is the job.
 ## Before you start
 
 - [ ] Lab 3.4 finished
-- [ ] A clean working tree
+- [ ] Nothing uncommitted, except the line Lab 3.4 added to `MY-PIPELINE.md`
 
 ## Steps
 
@@ -192,6 +192,8 @@ In `MY-PIPELINE.md`:
   merged them silently, fifty lines apart, so both grants survived and nothing asked me. Checked the
   org rather than trusting that. Sent US-020 back to its author with the compilation error named.
 ```
+
+Uncommitted, like the Lab 3.4 line: both go with your Lab 3.6 story.
 
 <details markdown="1"><summary>Under the hood: the three mechanisms and where each one lives</summary>
 

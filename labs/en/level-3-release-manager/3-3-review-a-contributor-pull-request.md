@@ -107,19 +107,20 @@ Go through Marco's diff file by file with four questions:
 In Marco's diff, the flow now reads `Installation__c.Crew_Capacity_Cap__c`, and the permission set
 grants it. Both fine.
 
-Now open `Installation__c-Installation Layout.layout-meta.xml`. Marco added his cap field to the
-layout, and `Total_Capacity_kW__c` went with it.
+Now open `Installation__c-Installation Layout.layout-meta.xml`. The change is two lines: one
+removed, one added, at the same place. Read fast, it looks like Marco slotted his cap into the
+layout. Read again: the line that went is `Total_Capacity_kW__c`. The cap did not join the layout,
+it **took the place** of the installed capacity.
 
 Nothing fails. The field still exists, the deployment was green, the tests passed. But nobody can
 see a capacity on an installation record any more, and the first person to notice will be whoever
 reads that number on a Monday morning.
 
-Then count the lines. Marco did not edit the layout, he **replaced the file** with the one he had,
-and the one he had did not know about the fields Level 1 delivered. Check your own diff for what
-else left with `Total_Capacity_kW__c`: on a standard run of this course, `Panels_Required__c` and
-`Crew_Notes__c` are in there too. Three fields off a layout, in a story about a crew cap.
+Then compare with what Marco wrote. The description says *Installation layout: the cap added*. It
+says nothing about a field going. That is the gap a review is for: the diff says one thing, the
+description another, and only one of them is what gets deployed.
 
-**Nothing in the pipeline can catch that.** A whole-file replacement is a valid deployment, the
+**Nothing in the pipeline can catch that.** A layout with one field fewer is a valid deployment, the
 counts line says `updated: 1`, and only somebody who knows the org can see what is missing.
 
 ### 5. Say what you found, where it will be found again
@@ -137,9 +138,9 @@ touched, and the layout **(2)** is the one to open.
 Find the layout in the diff, hover the line where the field used to be, click the blue **+** that
 appears, and comment:
 
-> `Total_Capacity_kW__c`, `Panels_Required__c` and `Crew_Notes__c` came off the layout with this
-> change, because the file was replaced rather than edited. They are still on the object. I am
-> putting them back in a follow-up, second column, so the cap keeps its place.
+> `Total_Capacity_kW__c` came off the layout with this change: the cap took its place instead of
+> joining it. The field is still on the object. I am putting it back in a follow-up, in the second
+> column, so both show.
 
 Two things about that comment worth copying:
 
@@ -149,16 +150,40 @@ Two things about that comment worth copying:
 ### 6. Fix it yourself, through the pipeline
 
 The story is merged, so the fix is a story of its own. This is the ordinary path, and you already
-know it from Level 1: **New User Story** **(2)**, under **Project Contribution Workflow** **(1)**,
-targeting `integration`.
+know it from Level 1: **New User Story** **(2)**, under **Project Contribution Workflow** **(1)**.
 
 ![The New User Story card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
-Then put the three fields back on the layout beside the cap field, in the second column that the
-layout already has and does not use, retrieve the layout, commit it, and publish.
+The questions have changed a little since Level 1, because of what you did in Labs 3.1 and 3.2:
 
-Publish, open the Pull Request, and let the checks run. When they are green: **Review changes >
-Approve**, then **Merge pull request**.
+- **Target branch**: it asks now, because Lab 3.1 added `preprod` for hotfixes. Take `integration`:
+  this is not urgent, it goes through the pipeline like everything else
+- **Type**: **Feature**, and name it `US-052-installation-layout-capacity`
+- **Which Salesforce org**: take **Scratch org**, then **Reuse scratch org helios-dev**, as in
+  Lab 1.3. **Not Current org**: the last org Lab 3.2 configured became your default org, and that
+  was `helios-prod`. Current org would have you build a story in production
+
+!!! warning "Check the Status section before you change anything"
+    The sfdx-hardis panel, **Status** section, names the current org. It must read `helios-dev`
+    before you open Setup. Every Add/Configure Org of Lab 3.2 changed it, and nothing changed it
+    back.
+
+Then, in `helios-dev`:
+
+1. Make sure the org has the layout as it is on `integration`, with Marco's cap: in the Explorer,
+   right-click `force-app/main/default/layouts/Installation__c-Installation Layout.layout-meta.xml`,
+   then **SFDX: Deploy This Source to Org**. Your org may still have the layout from before Marco's
+   story, and building on it would lose his cap this time
+2. **Setup > Object Manager > Installation > Page Layouts > Installation Layout**. Drag **Total
+   Capacity (kW)** from the palette into the empty right-hand column of the **Information** section,
+   and **Save**
+3. In the **Metadata Retriever**, tick `Installation__c-Installation Layout` and retrieve it. The
+   diff in **Source Control** is the field coming back into the second column, and nothing else
+
+Commit it from **Source Control**, then **Save / Publish**, then **Create Pull Request** in the
+reports bar. When the checks are green, **Merge pull request**. GitHub does not let you approve your
+own Pull Request, and on this fork every Pull Request is yours: on a real project, this is where a
+second person approves.
 
 Use **Create a merge commit**, not squash. On a pipeline where the release notes and the DORA report
 are built from merged Pull Requests, the merge commit is what carries the link back to the Pull
@@ -197,7 +222,7 @@ anything deleted, the comment has told you everything it is going to: the rest i
 ## What you should see
 
 - A review comment on Marco's merged Pull Request, naming what came off the layout
-- A follow-up Pull Request of yours, reviewed and merged into `integration`
+- A follow-up Pull Request of yours, `US-052`, merged into `integration`
 - `Total_Capacity_kW__c` back on the Installation layout in `integration`
 
 ## If it goes wrong
@@ -209,8 +234,12 @@ scenario is used once.
 **The checks never run on your follow-up Pull Request.**
 Actions are disabled, or the JWT secrets are missing for `integration`. Lab 3.2.
 
-**The layout fields are already back.**
-Then you or a teammate restored them earlier. Say so in `MY-PIPELINE.md` and move on: the lesson is
+**The retrieved layout has lost `Crew_Capacity_Cap__c`.**
+Your org had the layout from before Marco's story, and step 6.1 was skipped. Deploy the layout file
+from `integration` to `helios-dev`, add the field again in Setup, and retrieve again.
+
+**The field is already back on the layout.**
+Then you or a teammate restored it earlier. Say so in `MY-PIPELINE.md` and move on: the lesson is
 the comment, not the commit.
 
 ## Check your work
