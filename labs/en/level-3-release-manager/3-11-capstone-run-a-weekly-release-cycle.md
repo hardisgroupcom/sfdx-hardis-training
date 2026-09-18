@@ -126,9 +126,10 @@ Read what it says it looked for. The checks assert outcomes on the `integration`
 a story built in your org but never merged does not count, and neither does one merged into a branch
 that is not `integration`.
 
-**The Lab 3.8 check wants the hotfix on `main`.**
-That is check `3.8`, and it looks at `main`, not `integration`. Thursday is what satisfies it: the
-release that takes the week's work to production carries the hotfix with it. If you have not run
+**The Lab 3.8 check wants `Needs Reinspection` on `main`.**
+That is check `3.8`, and at the end of the level it looks at `main`, not `integration`. The hotfix is
+there since Lab 3.8; the retrofit only went to `integration`. Thursday is what satisfies it: the
+release that takes the week's work to production carries the retrofit with it. If you have not run
 Thursday yet, run it.
 
 **A teammate simulation says there is nothing to commit.**

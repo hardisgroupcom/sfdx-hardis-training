@@ -864,8 +864,9 @@ export const RULES = [
     id: "3.11", level: 3, lab: 11,
     title: "Capstone: a full release cycle",
     check: (ctx) => {
-      const notes = pipelineNotes(ctx);
-      const hasRelease = /release notes/i.test(notes);
+      // The template line says "release notes" already: the capstone line points at the notes
+      const entries = pipelineNotes(ctx).match(/Lab 3\.11[^]*?(?=\n\s*[-*] |\n#|$)/gi) || [];
+      const hasRelease = entries.some((entry) => /release-notes\/\S+|https?:\/\/\S+/i.test(entry));
       const mainHasWork = Boolean(ctx.readOn("main", FIELD("Installation__c", "Crew_Notes__c")));
       if (!mainHasWork) {
         return miss(
@@ -875,7 +876,7 @@ export const RULES = [
       }
       return hasRelease
         ? pass("The cycle ran end to end and the release notes are recorded")
-        : miss("MY-PIPELINE.md does not link the release notes you published", "MY-PIPELINE.md");
+        : miss("the Lab 3.11 line of MY-PIPELINE.md does not point to the release notes you published", "MY-PIPELINE.md, the Lab 3.11 line: the path of the notes in release-notes/, or their link");
     }
   }
 ];
