@@ -49,7 +49,7 @@ This lab is short and it is the one you will actually use.
 ### 1. Make the mess on purpose
 
 **New User Story** **(2)**, under **Project Contribution Workflow** **(1)** of the DevOps Pipeline
-panel. Branch `US-038-installation-notes-tidy`, target `integration`, org `helios-dev`.
+panel. Name `US-038-installation-notes-tidy`, org `helios-dev`.
 
 ![The New User Story card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
@@ -64,14 +64,25 @@ Now open **Commit changes**, search the recent changes, and this time click the 
 
 ### 2. Look at what you did
 
-Open `manifest/package.xml`. It is long. Open the Pull Request: dozens of files changed, most of
-them metadata you have never opened.
+Look at the **Git Delta package.xml** report the publish offered: several components for a story
+that moved one field. Open the Pull Request: a dozen files changed, most of them metadata you have
+never opened.
 
-Read three of them in the diff. You will find at least one that is not an addition but a
-**deletion** or a downgrade: something that exists on `integration` and not in your org, because
-your org is a few days behind.
+Read them in the diff. What a whole-org retrieve brings is rarely yours:
 
-That is the real damage. An over-wide selection adds noise, and it proposes to undo work.
+- **a Profile**, and a **transaction security policy** Salesforce created on its own
+- **a list view** left over from an earlier story, still in your org, and with it a change to
+  `config/.sfdx-hardis.yml` that the cleaning made on the way
+- **Apex and LWC files that differ by nothing but their last line break**: Salesforce drops it, the
+  repository keeps it
+- **a field whose description now reads `&apos;` where it read `'`**: the same text, spelled
+  differently
+
+None of it is your story, and some of it would travel to every org. And when your org is behind
+`integration`, which it is whenever a teammate merged since your last backpromote, the same retrieve
+brings their components back as they were before: the diff then reads as **deletions**, and merging
+it undoes their work. That is the real damage: an over-wide selection adds noise, and it can
+propose to undo work.
 
 ### 3. Recover: reset the selection
 
@@ -124,33 +135,34 @@ visible.
 ### 5. Publish again, properly
 
 Everything the retrieve brought down is still in your files, uncommitted. In the **Source
-Control** panel, commit **one file only**, the layout, and discard the rest.
-
-Then **Save / Publish** **(1)** again.
-
-![The Save / Publish card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--save-publish.png)
-
-`manifest/package.xml` now has one entry. Push, and the Pull Request diff is one file.
-
-### 6. The habit that prevents this
-
-Three checks, each about ten seconds, before every push:
-
-1. **Read `manifest/package.xml`.** If it has entries you cannot explain, stop
-2. **Count the files in the Source Control panel.** A one-field story is two to four files. Eighty
-   is never right
-3. **Skim the diff for deletions.** Additions are usually yours. Deletions are usually somebody
-   else's
-
-### 7. Write it down
-
-In `MY-PIPELINE.md`, under Level 2:
+Control** panel, stage **one file only**, the layout. Add your line to `MY-PIPELINE.md` under
+Level 2 while you are here, and stage it too:
 
 ```markdown
 - **Lab 2.8, resetselection**: I had selected the whole org. Reset selected list of items to merge
   cleared the selection and undid my commit, my change stayed in my files, and the org never
   noticed.
 ```
+
+Commit the two, then discard the rest: right-click **Changes**, **Discard All Changes**.
+
+Then **Save / Publish** **(1)** again.
+
+![The Save / Publish card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--save-publish.png)
+
+The **Git Delta package.xml** report now names one component, the layout, and the publish pushes
+over the old branch without asking: the reset authorised it. The Pull Request now shows two files,
+your layout and your notebook line.
+
+### 6. The habit that prevents this
+
+Three checks, each about ten seconds, before every push:
+
+1. **Read the Git Delta package.xml report.** If it has entries you cannot explain, stop
+2. **Count the files in the Source Control panel.** A one-field story is two to four files. Eighty
+   is never right
+3. **Skim the diff for deletions.** Additions are usually yours. Deletions are usually somebody
+   else's
 
 <details markdown="1"><summary>Under the hood: what "the selection" actually is</summary>
 
@@ -160,8 +172,8 @@ The command behind the menu entry is:
 
 There is no list of ticked items stored anywhere. **Your selection is your commits.** What you chose
 in the Metadata Retriever became files, the files you committed became the branch, and
-`hardis:work:save` builds `manifest/package.xml` from the git diff between that branch and the
-target branch. Select too much and the diff is too wide, because the diff is all there is.
+`hardis:work:save` works out the delta from the git diff between that branch and the target branch,
+and adds it to `manifest/package.xml`. Select too much and the diff is too wide, because the diff is all there is.
 
 That is why the fix has to touch git, and why this command does exactly three things:
 
@@ -180,8 +192,8 @@ The reason an over-wide selection produces deletions is worth stating plainly. I
 
 ## What you should see
 
-- `manifest/package.xml` with a single `Layout` entry
-- A Pull Request diff of one file
+- The **Git Delta package.xml** report naming a single `Layout`
+- A Pull Request diff of two files: the layout and your notebook line
 - Your layout change still present in `helios-dev`
 
 ## If it goes wrong
@@ -189,10 +201,9 @@ The reason an over-wide selection produces deletions is worth stating plainly. I
 **The reset says you have changes waiting.**
 Publish them or discard them in the **Source Control** panel first, then run the reset again.
 
-**After the reset, `manifest/package.xml` is still long.**
-The reset put it back to the branch point, so a long file means you committed again afterwards.
-Check the Source Control panel: everything the retrieve brought down is still in your files, and
-only what you commit goes into the package.
+**After the new publish, the Git Delta report still names several components.**
+You committed more than the layout after the reset. Everything the retrieve brought down is still in
+your files, and only what you commit goes into the package: reset again, and stage one file.
 
 **You already merged the bad Pull Request.**
 Revert it on `integration` with the **Revert** button GitHub offers on a merged Pull Request, then
