@@ -154,7 +154,11 @@
         "It appears on the Installation record page"
       ],
       "branch": "features/US-014-panels-required",
-      "metadata": ["Installation__c.Panels_Required__c", "Helios_Delivery_Crew", "Helios_Delivery_Manager"]
+      "metadata": [
+        "Installation__c.Panels_Required__c",
+        "Helios_Delivery_Crew",
+        "Helios_Delivery_Manager"
+      ]
     },
     {
       "id": "US-016",
