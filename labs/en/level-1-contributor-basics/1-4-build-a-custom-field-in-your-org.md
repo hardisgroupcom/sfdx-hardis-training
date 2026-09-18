@@ -169,9 +169,9 @@ the top of the page instead: pick `Installation` there, and the object appears w
 
 Welcome page > **Training: Level 1** > **Check my work**, then pick Lab 1.4.
 
-It will fail, and that is correct: nothing of your work has left the org yet. The check looks at
-what has reached `integration`, so it turns green in Lab 1.6, once your Pull Request is merged. Run
-it once anyway, so you see what a not-yet check looks like before it matters.
+Nothing of your work has left the org yet, so the check reads the org itself: it asks `helios-dev`
+whether `Panels_Required__c` exists on Installation and whether `Helios_Delivery_Crew` can read it.
+The repository learns about the field in the next lab.
 
 ## Go deeper
 

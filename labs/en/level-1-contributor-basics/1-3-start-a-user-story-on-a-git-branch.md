@@ -230,9 +230,8 @@ again and take **Reuse scratch org helios-dev**.
 
 Welcome page > **Training: Level 1** > **Check my work**, then pick Lab 1.3.
 
-It will fail, and that is correct: the check looks at what has reached `integration`, and your work
-is still on your own branch. It turns green in Lab 1.6, once your Pull Request is merged. Run it
-once anyway, so you know what a not-yet check looks like before it matters.
+It looks for your story branch, `features/US-014-...`, the one thing this lab leaves behind. Your
+work has not reached `integration` yet, and nothing here expects it to: that is Lab 1.6.
 
 ## Go deeper
 

@@ -314,9 +314,9 @@ Your fork moved, usually because you reset a level. Pull first: Source Control p
 
 Welcome page > **Training: Level 1** > **Check my work**, then pick Lab 1.5.
 
-Like Labs 1.3 and 1.4 it fails until your Pull Request is merged: the check reads what has reached
-`integration`, and your branch has not been merged into it yet. Lab 1.6 is what turns all four
-green.
+It reads the copy of your branch in your fork, the one Save / Publish pushed: the field, the
+permission set granting it, and the layout carrying it. A commit that stayed on your machine does
+not count, because nobody else can see it.
 
 ## Go deeper
 

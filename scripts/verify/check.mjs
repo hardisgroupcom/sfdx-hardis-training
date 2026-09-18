@@ -9,7 +9,7 @@
  * Usually you click Welcome page > Training: Level N > Check my work instead.
  */
 import { pathToFileURL } from "url";
-import { ROOT, c, title, info, ok, fail, warn, parseArgs, githubHandle, gitOut, recordReceipt } from "../lib/util.mjs";
+import { ROOT, c, title, info, ok, fail, warn, parseArgs, githubHandle, gitOut, recordReceipt, runJson } from "../lib/util.mjs";
 import { makeContext, rulesForLevel, findRule } from "./rules.mjs";
 
 export function receiptLine(rule, handle, commit) {
@@ -17,11 +17,15 @@ export function receiptLine(rule, handle, commit) {
   return `LAB ${rule.id} OK  handle=${handle || "unknown"}  commit=${commit}  ${stamp}`;
 }
 
-export function runRules(ctx, rules) {
+/**
+ * Runs each rule. With { now: true }, a rule that has a now() check runs that one
+ * instead: what is true right after the lab, rather than at the end of the level.
+ */
+export function runRules(ctx, rules, { now = false } = {}) {
   return rules.map((rule) => {
     let result;
     try {
-      result = rule.check(ctx);
+      result = now && rule.now ? rule.now(ctx) : rule.check(ctx);
     } catch (error) {
       result = { ok: false, detail: `the check itself failed: ${error.message}`, where: "scripts/verify/rules.mjs" };
     }
@@ -55,6 +59,12 @@ export function printResults(results, handle, commit, { record = false } = {}) {
   return passed;
 }
 
+/** Records returned by a SOQL query on an org, or null when the org could not be read. */
+export function sfQuery(alias, soql) {
+  const res = runJson("sf", ["data", "query", "--target-org", alias, "--query", soql, "--json"], { quiet: true });
+  return Array.isArray(res?.result?.records) ? res.result.records : null;
+}
+
 export default async function main(args) {
   const level = Number.parseInt(args.level, 10);
   if (!Number.isInteger(level) || level < 1 || level > 3) {
@@ -64,7 +74,7 @@ export default async function main(args) {
   // A lab is named N.M everywhere a learner sees it, and "--lab 1.4" works as well as "--lab 4"
   const lab = args.lab === undefined ? null : Number.parseInt(String(args.lab).split(".").pop(), 10);
 
-  const ctx = makeContext(args.dir || ROOT);
+  const ctx = makeContext(args.dir || ROOT, { local: true, sfQuery });
   const handle = githubHandle();
   const commit = gitOut(["rev-parse", "--short", "HEAD"]) || "unknown";
 
@@ -82,7 +92,9 @@ export default async function main(args) {
     title(`Checking Lab ${level}.${lab}`);
   }
 
-  const results = runRules(ctx, rules);
+  // One lab: what that lab leaves behind right after it. The whole level: what
+  // the badge claim checks, the same rules the audit runs on your fork.
+  const results = runRules(ctx, rules, { now: lab !== null });
   const passed = printResults(results, handle, commit, { record: true });
 
   console.log("");

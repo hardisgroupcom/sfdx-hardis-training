@@ -6,6 +6,16 @@
  *   - scripts/verify/audit.mjs, in the claim workflow, against a clone of their
  *     public repository
  *
+ * Each rule has one or two checks:
+ *   - check(ctx): what the level leaves behind in the fork, once every lab of it
+ *     is done. The badge audit runs only this one, against a clone, and so does
+ *     "Everything in level N".
+ *   - now(ctx), when the lab needs it: what is true right after the lab, done
+ *     well. "Check my work" on one lab runs it, on the learner's machine, where it
+ *     may read the working copy and the orgs (ctx.local). A lab done right never
+ *     fails it, whether it is run the minute the lab ends or three labs later, so
+ *     every now() also passes once check() does.
+ *
  * Two hard rules for anything written here, from section 15.4 of the spec:
  *
  *  1. Assert outcomes, never procedures. A learner who rebased, squashed or
@@ -19,7 +29,7 @@ import path from "path";
 import { spawnSync } from "child_process";
 
 // --------------------------------------------------------------- context
-export function makeContext(dir) {
+export function makeContext(dir, { local = false, sfQuery = null } = {}) {
   const git = (args) => {
     const res = spawnSync("git", args, { cwd: dir, encoding: "utf8", shell: false });
     return (res.stdout || "").trim();
@@ -75,7 +85,16 @@ export function makeContext(dir) {
     return "";
   };
 
-  return { dir, git, branches, readOn, listOn, log, currentBranch, hasBranch: (b) => branches.includes(b) };
+  /** A file of the working copy, uncommitted changes included. Local checks only. */
+  const readWorking = (file) => {
+    const p = path.join(dir, file);
+    return local && fs.existsSync(p) ? fs.readFileSync(p, "utf8") : null;
+  };
+
+  return {
+    dir, git, branches, readOn, listOn, log, currentBranch, readWorking, local, sfQuery,
+    hasBranch: (b) => branches.includes(b)
+  };
 }
 
 // --------------------------------------------------------------- helpers
@@ -109,9 +128,42 @@ function mentions(text, needle) {
   return typeof text === "string" && text.toLowerCase().includes(needle.toLowerCase());
 }
 
+// The badge reads the notebook where the level leaves it, on integration or main.
+// Right after a lab, the line is often only in the working copy, or on the story
+// branch that will carry it, and that is the lab done right.
 function pipelineNotes(ctx) {
-  return ctx.readOn(DEV, "MY-PIPELINE.md") || ctx.readOn("main", "MY-PIPELINE.md") || "";
+  const committed = [ctx.readOn(DEV, "MY-PIPELINE.md"), ctx.readOn("main", "MY-PIPELINE.md")];
+  const local = ctx.local ? [ctx.readWorking("MY-PIPELINE.md"), ctx.readOn(ctx.currentBranch(), "MY-PIPELINE.md")] : [];
+  return committed.concat(local).filter(Boolean).join("\n");
 }
+
+/** The story branch a lab created, local or published, or null. */
+function storyBranch(ctx, story) {
+  const prefix = `features/${story}`;
+  return ctx.branches.find((b) => b.startsWith(prefix)) || null;
+}
+
+/** True when the published copy of a branch exists: what Save / Publish pushed. */
+function published(ctx, branch) {
+  return ctx.git(["rev-parse", "--verify", "--quiet", `origin/${branch}`]) !== "";
+}
+
+/** The first rule result that passed, or the last one, whose message says what is missing. */
+function firstPassing(...attempts) {
+  let last = null;
+  for (const attempt of attempts) {
+    last = attempt();
+    if (last.ok) {
+      return last;
+    }
+  }
+  return last;
+}
+
+const ruleCheck = (id) => (ctx) => RULES.find((r) => r.id === id).check(ctx);
+
+/** The dev org alias, as the universe names it. */
+const DEV_ORG = "helios-dev";
 
 // --------------------------------------------------------------- the rules
 export const RULES = [
@@ -142,6 +194,20 @@ export const RULES = [
   {
     id: "1.3", level: 1, lab: 3,
     title: "US-014 was taken from the backlog on its own branch",
+    // Right after the lab there is a branch and nothing in it yet: that is the lab
+    // done. Once the story is merged, the branch may be gone and the history says it.
+    now: (ctx) => {
+      const branch = storyBranch(ctx, "US-014");
+      if (branch) {
+        return pass(`Your story branch ${branch} exists`);
+      }
+      return mentions(ctx.log(DEV), "US-014")
+        ? pass("US-014 is already merged into integration")
+        : miss(
+          "no branch starting with features/US-014",
+          "your local branches and your fork. New User Story creates it: pick US-014 and answer the questions as step 3 shows"
+        );
+    },
     check: (ctx) => {
       const history = logAnywhere(ctx);
       return mentions(history, "US-014")
@@ -152,6 +218,36 @@ export const RULES = [
   {
     id: "1.4", level: 1, lab: 4,
     title: "Panels Required exists on Installation and the crew can read it",
+    // Lab 1.4 ends with the field in the org and nowhere else: the repository only
+    // learns about it in Lab 1.5. So right after the lab, the org is what to read.
+    now: (ctx) => firstPassing(
+      () => ruleCheck("1.4")(ctx),
+      () => {
+        if (!ctx.sfQuery) {
+          return miss("your dev org could not be read from here", `${DEV_ORG}. Check it is connected in Orgs Manager`);
+        }
+        const fields = ctx.sfQuery(
+          DEV_ORG,
+          "SELECT QualifiedApiName FROM FieldDefinition WHERE EntityDefinition.QualifiedApiName = 'Installation__c' AND QualifiedApiName = 'Panels_Required__c'"
+        );
+        if (fields === null) {
+          return miss("your dev org could not be queried", `${DEV_ORG}. Reconnect it in Orgs Manager, then run this again`);
+        }
+        if (fields.length === 0) {
+          return miss("there is no Panels_Required__c field on Installation", `the org ${DEV_ORG}. Step 2 creates it`);
+        }
+        const grants = ctx.sfQuery(
+          DEV_ORG,
+          "SELECT Id FROM FieldPermissions WHERE Parent.Name = 'Helios_Delivery_Crew' AND Field = 'Installation__c.Panels_Required__c' AND PermissionsRead = true"
+        );
+        return grants && grants.length > 0
+          ? pass(`Panels Required exists in ${DEV_ORG}, and Helios_Delivery_Crew can read it`)
+          : miss(
+            "the field exists, but the Helios_Delivery_Crew permission set does not grant read access to it",
+            `the org ${DEV_ORG}, Setup > Permission Sets > Helios Delivery Crew > Object Settings > Installations`
+          );
+      }
+    ),
     check: (ctx) => {
       const field = readAnywhere(ctx, FIELD("Installation__c", "Panels_Required__c"));
       if (!field) {
@@ -172,6 +268,35 @@ export const RULES = [
   {
     id: "1.5", level: 1, lab: 5,
     title: "Panels Required is on the Installation layout",
+    // Lab 1.5 ends with the story published on its own branch, before any Pull
+    // Request: the published branch is what has to carry the three components.
+    now: (ctx) => firstPassing(
+      () => ruleCheck("1.6")(ctx),
+      () => {
+        const branch = storyBranch(ctx, "US-014");
+        if (!branch) {
+          return miss("no branch starting with features/US-014", "your local branches and your fork. Lab 1.3 creates it");
+        }
+        const where = `branch ${branch} in your fork`;
+        if (!published(ctx, branch)) {
+          return miss(
+            `${branch} exists on your machine but was never published`,
+            "your fork. Save / Publish pushes it: answer Yes when it asks"
+          );
+        }
+        const ref = `origin/${branch}`;
+        if (!ctx.readOn(ref, FIELD("Installation__c", "Panels_Required__c"))) {
+          return miss("the Panels_Required__c field is not in the published branch", `${where}. Retrieve it (step 1), commit it and publish again`);
+        }
+        if (!fieldGrantedIn(ctx.readOn(ref, PERMSET("Helios_Delivery_Crew")), "Installation__c.Panels_Required__c")) {
+          return miss("Helios_Delivery_Crew in the published branch does not grant the field", `${PERMSET("Helios_Delivery_Crew")} on ${where}`);
+        }
+        const layout = ctx.readOn(ref, "force-app/main/default/layouts/Installation__c-Installation Layout.layout-meta.xml");
+        return mentions(layout, "Panels_Required__c")
+          ? pass(`The field, its permission and the layout are published on ${branch}`)
+          : miss("the Installation layout in the published branch does not carry the field", `the Installation layout on ${where}`);
+      }
+    ),
     check: (ctx) => {
       const layout = readAnywhere(ctx, "force-app/main/default/layouts/Installation__c-Installation Layout.layout-meta.xml");
       return mentions(layout, "Panels_Required__c")
@@ -596,6 +721,24 @@ export const RULES = [
   {
     id: "3.8", level: 3, lab: 8,
     title: "The hotfix shipped and the admin change was retrofitted",
+    // Right after the lab the retrofit is on integration, and reaches main with the
+    // next release, in the capstone. That is the lab done right, so it passes now.
+    now: (ctx) => firstPassing(
+      () => ruleCheck("3.8")(ctx),
+      () => {
+        const status = ctx.readOn(DEV, FIELD("Installation__c", "Status__c")) || "";
+        if (!/Needs_Reinspection|Needs Reinspection/i.test(status)) {
+          return miss(
+            "the picklist value an admin added by hand in production is not in the sources",
+            `${FIELD("Installation__c", "Status__c")} on branch ${DEV}, expected a "Needs Reinspection" value`
+          );
+        }
+        const hotfix = ["main", "preprod"].some((b) => mentions(ctx.log(b), "hotfix"));
+        return hotfix
+          ? pass("The hotfix reached production, and the retrofit is on integration, waiting for the next release")
+          : miss("no hotfix in the history of preprod or main", "the history of branches preprod and main");
+      }
+    ),
     check: (ctx) => {
       const status = ctx.readOn("main", FIELD("Installation__c", "Status__c")) || "";
       const hasRetrofit = /Needs_Reinspection|Needs Reinspection/i.test(status);

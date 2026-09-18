@@ -290,11 +290,13 @@ It reached the repository on a branch that never got merged. Check that it is re
 
 Welcome page > **Training: Level 3** > **Check my work**, then pick Lab 3.8.
 
-!!! warning "This check looks at `main`, not at `integration`"
-    It wants `Needs Reinspection` on the production branch, and step 8 only put it on `integration`.
-    That is deliberate: the retrofit is not finished until production and the repository agree, and
-    they only agree after the next release carries it up. So this one passes at the end of the
-    capstone, not here. Run it now to see it fail for a reason you can name, and again after Lab 3.11.
+It wants the hotfix in the history of `preprod` or `main`, and `Needs Reinspection` on
+`integration`, which is where step 8 put it.
+
+!!! note "The badge asks for a little more"
+    **Everything in level 3**, and the badge audit, want `Needs Reinspection` on `main`. The retrofit
+    is not finished until production and the repository agree, and they agree once the next release
+    carries it up, which is the capstone. Nothing to do about it here.
 
 ## Go deeper
 
