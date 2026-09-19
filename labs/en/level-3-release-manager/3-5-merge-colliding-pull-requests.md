@@ -33,7 +33,7 @@ Friday afternoon. Three stories carry this week:
 | Pull Request                              | Author        | Checks      | What it touches                            |
 |-------------------------------------------|---------------|-------------|--------------------------------------------|
 | **US-018** Cap the crew size              | Florian Rames | green       | the assign flow, `Helios_Delivery_Manager` |
-| **US-019** Quote PDF                      | Julie Verbeke  | green       | `Helios_Delivery_Manager`                  |
+| **US-019** Quote PDF                      | Julie Verbeke | green       | `Helios_Delivery_Manager`                  |
 | **US-020** Refactor InstallationScheduler | Florian Rames | **failing** | `InstallationScheduler`                    |
 
 Two of them edit the same permission set. One does not deploy. Everyone wants to go home.
