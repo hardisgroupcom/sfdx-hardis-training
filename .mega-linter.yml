@@ -26,3 +26,9 @@ DISABLE_LINTERS:
 SALESFORCE_SFDX_SCANNER_APEX_ARGUMENTS: --workspace force-app
 SALESFORCE_SFDX_SCANNER_AURA_ARGUMENTS: --workspace force-app
 SALESFORCE_SFDX_SCANNER_LWC_ARGUMENTS: --workspace force-app
+
+# trivy downloads its vulnerability database on every run, and when the download
+# is refused it fails the whole check of a Pull Request that changed nothing it
+# scans. It still runs and reports; it no longer blocks a merge on a network error.
+DISABLE_ERRORS_LINTERS:
+  - REPOSITORY_TRIVY
