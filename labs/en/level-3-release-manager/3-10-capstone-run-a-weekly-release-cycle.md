@@ -73,7 +73,7 @@ Promote `uat` into `preprod` first, and check `helios-preprod` behaves. Then cre
 Request from `preprod` into `main`, titled `Release ...`. Read the counts line in the sfdx-hardis comment and stop if anything is being
 deleted that you were not expecting. Merge, watch, verify, do the manual steps.
 
-This release is also what finally carries the Lab 3.7 retrofit into `main`, so the `Needs Reinspection`
+This release is also what finally carries the Lab 3.7 picklist value into `main`, so the `Needs Reinspection`
 picklist value reaches production through the pipeline and the check for Lab 3.7 passes.
 
 Then generate the release notes of the release to `main`, add the sentence at the top that says what
@@ -126,8 +126,8 @@ that is not `integration`.
 
 **The Lab 3.7 check wants `Needs Reinspection` on `main`.**
 That is check `3.8`, and at the end of the level it looks at `main`, not `integration`. The hotfix is
-there since Lab 3.7; the retrofit only went to `integration`. Thursday is what satisfies it: the
-release that takes the week's work to production carries the retrofit with it. If you have not run
+there since Lab 3.7, which only took it as far as `integration`. Thursday is what satisfies it: the
+release that takes the week's work to production carries it along. If you have not run
 Thursday yet, run it.
 
 **A teammate simulation says there is nothing to commit.**

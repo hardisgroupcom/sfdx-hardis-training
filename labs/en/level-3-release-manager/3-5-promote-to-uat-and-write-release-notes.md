@@ -70,15 +70,18 @@ The footer holds the two buttons step 7 uses: **(3)** generates the notes for wh
 promoted, **(4)** previews the notes for what has not.
 
 !!! note "Empty, with a Go Live selector instead?"
-    Then this branch has no merge target yet, and the panel is showing you its go-lives **(1)**
-    rather than what is waiting to be promoted:
+    The window shows what is waiting to be promoted **to the next stage**. A branch that has no next
+    stage, meaning its `mergeTargets` is empty, has nothing to promote, so the panel shows a **Go
+    Live** selector **(1)** and the release notes of a go-live already merged into it instead:
 
     ![The same window on a branch with no merge target](../../_assets/annotated/vscode/pipeline-branch-modal-uat--no-merge-target.png)
 
-    `integration` has had `uat` as its merge target since Lab 1.2. If it is missing, the branch
-    file lost it: click **Training: Level 3 > Set up my training environment**, which writes it
-    again. It refreshes the org and the login URL of a file that already exists and leaves the rest
-    alone, so what you set in Lab 3.1 survives.
+    On `main` that is the normal view and always will be: production is the end of the pipeline.
+
+    On `integration` it means the branch file lost its merge target, which it has had since Lab 1.2.
+    Click **Training: Level 3 > Set up my training environment**, which writes it again. It
+    refreshes the org and the login URL of a file that already exists and leaves the rest alone, so
+    what you set in Lab 3.1 survives.
 
 ### 2. Protect what UAT keeps for itself
 
@@ -216,8 +219,8 @@ a piece of reference data.
 ### 7. Generate the release notes
 
 Open the **DevOps Pipeline** panel and click the `uat` node, the same way you clicked `integration`
-in step 1. In the footer of that window, the button marked **(3)** in the picture at step 1 now
-reads **Generate Promotion Notes for uat**. Click it.
+in step 1. In the footer of that window, the left button now reads **Generate Promotion Notes for
+uat**. Click it.
 
 It asks one question, **Select the merge commit for this release or promotion**, listing the merges
 that landed on `uat`, newest first. Take the top one, **Merge pull request #N from
@@ -229,8 +232,8 @@ a promotion. On a branch with no merge target, `main`, the same button reads **G
 Notes for Latest Release in main**, and once you pick a go-live in the selector at the top of the
 window it reads **Generate Release Notes for** that go-live.
 
-Next to it, the button marked **(4)**, **Preview Upcoming Promotion Notes from uat**, does the same
-thing for what has not been promoted yet. It is the one to use on a Wednesday, when somebody asks
+Next to it, **Preview Upcoming Promotion Notes from uat** does the same thing for what has not been
+promoted yet. It is the one to use on a Wednesday, when somebody asks
 what Thursday's release will contain.
 
 You get a markdown document listing the Pull Requests, their authors, their stories and the manual

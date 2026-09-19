@@ -82,7 +82,7 @@ which is step 3.
 The robot checks that the deployment works. It cannot check that the deployment is a good idea.
 
 Click **Files changed** **(1)**. The file tree on the left lists what the story touched: one file,
-the layout **(2)**.
+the layout **(2)**. One removed line is marked **(3)**: leave it for now, step 4 is about it.
 
 ![The Files changed tab of Mariia's Pull Request](../../_assets/annotated/web/github-pr-files.png)
 

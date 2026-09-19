@@ -845,7 +845,7 @@ export const RULES = [
   },
   {
     id: "3.7", level: 3, lab: 7,
-    title: "The hotfix shipped and the admin change was retrofitted",
+    title: "The hotfix shipped and the admin change is back in the sources",
     // Right after the lab the retrofit is on integration, and reaches main with the
     // next release, in the capstone. That is the lab done right, so it passes now.
     now: (ctx) => firstPassing(
@@ -860,7 +860,7 @@ export const RULES = [
         }
         const hotfix = ["main", "preprod"].some((b) => hasHotfix(ctx, b));
         return hotfix
-          ? pass("The hotfix reached production, and the retrofit is on integration, waiting for the next release")
+          ? pass("The hotfix reached production, and the admin change is on integration, waiting for the next release")
           : miss("the US-045 fix is not on preprod or main: the validation rule still refuses a back-dated cancellation", `${HOTFIX_RULE} on branches preprod and main`);
       }
     ),
@@ -869,12 +869,12 @@ export const RULES = [
       const hasRetrofit = /Needs_Reinspection|Needs Reinspection/i.test(status);
       if (!hasRetrofit) {
         return miss(
-          "the picklist value an admin added by hand in production is not in the sources, so the retrofit never happened",
+          "the picklist value an admin added by hand in production is not in the sources",
           `${FIELD("Installation__c", "Status__c")} on branch main, expected a "Needs Reinspection" value`
         );
       }
       return hasHotfix(ctx, "main")
-        ? pass("The hotfix and the retrofit are both on main")
+        ? pass("The hotfix and the admin change are both on main")
         : miss("the US-045 fix is not on main: the validation rule still refuses a back-dated cancellation", `${HOTFIX_RULE} on branch main`);
     }
   },
@@ -913,7 +913,7 @@ export const RULES = [
     id: "3.10", level: 3, lab: 10,
     title: "Capstone: a full release cycle",
     check: (ctx) => {
-      // The week's release carried Romain's US-055 and the Lab 3.7 retrofit to production
+      // The week's release carried Romain's US-055 and the Lab 3.7 picklist value to production
       const installDate = ctx.readOn("main", FIELD("Installation__c", "Install_Date__c")) || "";
       if (!/<inlineHelpText>/.test(installDate)) {
         return miss(
@@ -923,9 +923,9 @@ export const RULES = [
       }
       const status = ctx.readOn("main", FIELD("Installation__c", "Status__c")) || "";
       return /Needs Reinspection/.test(status)
-        ? pass("The week's release reached production, the Lab 3.7 retrofit with it")
+        ? pass("The week's release reached production, the Lab 3.7 picklist value with it")
         : miss(
-          "the release reached main without the Needs Reinspection retrofit of Lab 3.7",
+          "the release reached main without the Needs Reinspection value of Lab 3.7",
           `${FIELD("Installation__c", "Status__c")} on branch main`
         );
     }

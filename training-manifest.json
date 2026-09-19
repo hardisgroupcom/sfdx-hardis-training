@@ -548,9 +548,13 @@
         "annotated/vscode/pipeline-settings-menu--add-org",
         "annotated/vscode/configure-auth-branch--branch-question",
         "annotated/vscode/configure-auth-variables--secrets",
+        "annotated/web/github-secrets-actions",
+        "annotated/web/github-secret-new",
         "annotated/vscode/pipeline-config--target-branches",
+        "annotated/vscode/pipeline-config-user-stories--target-branches",
         "annotated/vscode/pipeline-config-deployment--deployment-tab",
-        "annotated/vscode/welcome-custom-menu-3",
+        "annotated/vscode/pipeline-cards--save-publish",
+        "annotated/vscode/work-save-completed",
         "annotated/vscode/devops-pipeline-level3--four-stages"
       ]
     },

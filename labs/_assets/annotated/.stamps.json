@@ -4,7 +4,7 @@
   "web/sf-signup.png": "e2c440650bf5b4f8",
   "web/github-fork.png": "94465b592914b28b",
   "web/github-create-fork.png": "3240204175725a89",
-  "web/github-secret-new.png": "a7c02afe55515046",
+  "web/github-secret-new.png": "34f43bce5e0ea486",
   "vscode/welcome.png#first-open": "465f1bf97fb464c5",
   "vscode/welcome.png#setup-button": "e4ab6f3374f96422",
   "vscode/welcome.png#training-menu": "c6c5695279663452",
@@ -74,7 +74,7 @@
   "vscode/pipeline-cards.png#commit-changes": "2283e105d750aa29",
   "vscode/pipeline-cards.png#my-pull-request": "efb341df54184b93",
   "vscode/source-control-retrieved.png#commit": "9480cfe4e9e7d66e",
-  "vscode/work-new-story-type.png": "434196780e85c067",
+  "vscode/work-new-story-type.png": "a1549953b1fd751e",
   "vscode/work-new-org-type.png": "37787c53c905be1f",
   "vscode/work-new-story-name.png": "73d31d3df3069953",
   "vscode/work-new-completed.png": "a3d174b019d2483e",
@@ -125,5 +125,7 @@
   "web/github-pr-flow-diff.png": "37fc86d82e9f8327",
   "web/github-pr-deployment-actions.png": "abfad0205764d822",
   "web/github-pr-promotion-actions.png": "cdaf6ebeac616e46",
-  "web/github-pr-release-notes.png": "c1c1df7b8752e365"
+  "web/github-pr-release-notes.png": "c1c1df7b8752e365",
+  "web/github-secrets-actions.png": "0f68971b2033cec6",
+  "vscode/pipeline-config-user-stories--target-branches.png": "26546b3d431ff956"
 }

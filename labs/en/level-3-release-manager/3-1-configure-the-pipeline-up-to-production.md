@@ -14,9 +14,13 @@ screenshots:
   - annotated/vscode/pipeline-settings-menu--add-org
   - annotated/vscode/configure-auth-branch--branch-question
   - annotated/vscode/configure-auth-variables--secrets
+  - annotated/web/github-secrets-actions
+  - annotated/web/github-secret-new
   - annotated/vscode/pipeline-config--target-branches
+  - annotated/vscode/pipeline-config-user-stories--target-branches
   - annotated/vscode/pipeline-config-deployment--deployment-tab
-  - annotated/vscode/welcome-custom-menu-3
+  - annotated/vscode/pipeline-cards--save-publish
+  - annotated/vscode/work-save-completed
   - annotated/vscode/devops-pipeline-level3--four-stages
 depends_on:
   commands: [hardis:project:configure:auth]
@@ -244,8 +248,19 @@ Nothing prints them again, so do not close the panel. The panel keeps every ques
 
 ![The Add/Configure Org command printing the two secrets and waiting for them to be stored](../../_assets/annotated/vscode/configure-auth-variables--secrets.png)
 
-In your fork (`github.com/my-username/sfdx-hardis-training`): **Settings > Secrets and variables >
-Actions > New repository secret**, twice:
+In your fork (`github.com/my-username/sfdx-hardis-training`), open **Settings > Secrets and
+variables > Actions (1)**, then click **New repository secret (2)**:
+
+![Where a fork keeps the values its CI reads](../../_assets/annotated/web/github-secrets-actions.png)
+
+The page lists the **names** of the secrets the repository holds and never their values **(3)**.
+Nothing, not even GitHub, can show you a stored value again. That is the whole reason the panel asks
+you not to close it.
+
+Each secret is one form: the **Name (1)**, the **Secret (2)** pasted from the panel, then **Add
+secret (3)**. Do it twice:
+
+![The New secret form, with the name and the value copied from the panel](../../_assets/annotated/web/github-secret-new.png)
 
 | Name                          | Value                                |
 |-------------------------------|--------------------------------------|
@@ -320,10 +335,16 @@ Open the **DevOps Pipeline** panel, the gear menu, **Pipeline Settings**. The pa
 
 ![The Global Pipeline Settings screen, with the scope selector, the Edit button and the User Stories tab](../../_assets/annotated/vscode/pipeline-config--target-branches.png)
 
-Click **Edit** **(2)**, then the **User Stories** tab **(3)**. Two fields matter, and they are **two
-separate text boxes, one value per line**: **Available PR/MR target branches** and **Labels for
-available PR/MR target branches**. Nothing pairs them except their order, so line 2 of one belongs
-to line 2 of the other.
+Click **Edit** **(2)**, then the **User Stories** tab **(3)**.
+
+Two fields matter, and they are **two separate text boxes, one value per line**: **Available PR/MR
+target branches (1)** and **Labels for available PR/MR target branches (2)**. Nothing pairs them
+except their order, so line 2 of one belongs to line 2 of the other.
+
+![The two target branch lists of the User Stories tab, unlocked for editing](../../_assets/annotated/vscode/pipeline-config-user-stories--target-branches.png)
+
+Today each holds a single line, the one a contributor has been choosing since Level 1. Add a second
+line to each, in the same position:
 
 | Line | Branch      | Label                                                                 |
 |------|-------------|-----------------------------------------------------------------------|
@@ -333,7 +354,7 @@ to line 2 of the other.
 `uat` and `main` are not in that list, on purpose. Nobody builds a User Story against them: work
 reaches `uat` by promotion from `integration`, and `main` by promotion from `preprod`.
 
-**Save**.
+**Save (3)**.
 
 !!! note "Looking for the production branch?"
     `productionBranch` has no field in the settings panel, and this project already carries it:
@@ -373,13 +394,35 @@ Everything you did is files on your disk, on `integration`: the four branch file
 the target branches and the authentication mode. They reach `integration` the way every change
 does, through a Pull Request with green checks. The protection of step 3 would refuse anything else.
 
-Welcome page > **Training: Level 3** > **Publish my pipeline configuration**.
+You publish them the way you published a User Story in Level 1, with the same two buttons.
 
-![The Level 3 training menu on the Welcome page](../../_assets/annotated/vscode/welcome-custom-menu-3.png)
+**Put them on a branch of their own.** Your changes are sitting on `integration`, which accepts
+nothing directly. **Ctrl+Shift+P**, **Git: Create Branch...**, and name it
+`config/pipeline-up-to-production`. VS Code carries the uncommitted files across with you, so
+nothing is lost and nothing is on `integration` any more.
 
-It lists the configuration files you changed, and leaves out anything that is not configuration.
-Confirm, and it puts them on a branch of their own, `config/pipeline-<date>`, pushes it, opens the
-Pull Request into `integration`, and brings VS Code back to `integration`.
+**Commit them.** In the **Source Control** panel, stage the configuration files and commit them as
+`Configure the pipeline up to production`, exactly as you staged metadata in Lab 1.5.
+
+**Publish.** In the **DevOps Pipeline** panel, click the **Save / Publish** card **(1)**, the one
+every story has gone through since Lab 1.5. It asks the target branch: `integration`. It commits
+what is left, runs the cleaning, and pushes the branch.
+
+![The Save / Publish card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--save-publish.png)
+
+**Open the Pull Request.** When it finishes, the actions bar along the bottom starts with **Create
+Pull Request** **(1)**. Click it: the extension opens GitHub on the Pull Request page for this
+branch, already pointing at `integration`.
+
+![The end of the Save / Publish command, with its actions bar](../../_assets/annotated/vscode/work-save-completed.png)
+
+The same bar carries the `package.xml` the command generated **(2)** and the deployment actions of
+this Pull Request **(3)**, as in Lab 1.6. This branch changes no metadata, so both are short.
+
+!!! tip "The shortcut this course keeps for later"
+    **Training: Level 3** > **Publish my pipeline configuration** does all of the above in one
+    click: branch, commit, push, Pull Request. Labs 3.5 and 3.8 use it, now that you have seen what
+    it stands for. A real project has no such menu entry, which is why this lab does it by hand.
 
 Open the Pull Request in your fork. Its **Simulate Deployment to Major Org** check logs into
 `helios-integration` with no auth URL secret left to use: open it from **Checks**, expand **Login &
@@ -511,9 +554,10 @@ and publish again.
 **Everything passes even with the JWT secrets missing.**
 An auth URL secret is still there and still winning. Step 10.
 
-**Publish my pipeline configuration says the branch could not be created.**
-A configuration file you changed was also changed on GitHub. Pull in the **Source Control** panel,
-then run it again.
+**Save / Publish has nothing to publish, or the branch could not be created.**
+You are still on `integration`: create the branch first, with **Git: Create Branch...**. If instead
+a configuration file you changed was also changed on GitHub, pull in the **Source Control** panel,
+then publish again.
 
 **The check you want to require is not suggested.**
 GitHub only lists checks that reported on this repository in the last seven days. Open a Pull

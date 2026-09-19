@@ -122,20 +122,72 @@ Its check deploys against production in validation mode, which is exactly what y
 the same gate, on the real org, taking two minutes. Green. Merge. Watch the deployment. Confirm with
 a planner, or by cancelling and back-dating an installation in `helios-prod` yourself.
 
-### 5. Put the fix back into the pipeline
+## Part 2: the retrofit
+
+### 5. Bring `main` back down into `integration`
 
 Production and `preprod` now have a fix that `uat` and `integration` do not. Leave it there and the
-next release overwrites it.
+next release overwrites it: the story that deployed the rule last will deploy it again, without
+Romain's exception, and the incident comes back.
 
-Romain opens the second Pull Request of his hotfix: **Simulate my teammates** > **US-045 The hotfix
-goes back into integration**. Same branch, same commit, into `integration` this time. Review it: the
-diff is the one you already approved. Merge it, and the fix flows up to `uat` on the next
-promotion.
+**That is what a retrofit is.** A hotfix goes up a shortcut, `preprod` then `main`, skipping the
+branches below. The retrofit takes `main` and merges it back down into `integration`, so the
+pipeline holds everything production holds. It is a Git operation from end to end, and nothing is
+retrieved from any org.
 
-**A hotfix goes two ways.** Up to production, through `preprod`, and back into the pipeline.
+It is yours to do, not a contributor's: you are the one who knows what went live tonight, and
+conflicts between a hotfix and work in progress are a release manager's call.
+
+**Start the branch.** In the **DevOps Pipeline** panel, **New User Story**:
+
+| Question       | Your answer                                                                  |
+|----------------|------------------------------------------------------------------------------|
+| Target branch  | `integration`, the branch the retrofit goes back into                         |
+| Type of branch | **Retrofit**, the type this project keeps for production coming back down     |
+| Name           | `US-045-retrofit`, the story whose hotfix you are bringing back               |
+| Org to work in | `helios-dev`: nothing is built here, so the org hardly matters                |
+
+It creates `retrofit/US-045-retrofit` from the latest `integration`. The **Retrofit** type is a line
+in `branchPrefixChoices` of `config/.sfdx-hardis.yml`: its prefix tells everybody reading the branch
+list that this is production coming back, not new work.
+
+**Merge `main` into it.** Exactly the way you merged `integration` into a story branch in Lab 2.7:
+**Ctrl+Shift+P**, **Git: Fetch**, then **Ctrl+Shift+P**, **Git: Merge...**, and pick
+**`origin/main`** in the branch list. Take the remote copy, not the local `main`, which you have not
+updated tonight.
+
+**Solve the conflicts, if there are any.** A retrofit conflicts when somebody changed, in
+`integration`, the same lines the hotfix changed in production. Tonight the validation rule is the
+likely one. Open each file under **Merge Changes**, click **Resolve in Merge Editor**, and keep both
+intents: the hotfix exception **and** whatever `integration` added. Lab 2.7 is the reference for the
+merge editor, and the rule is the same here: neither side loses its work.
+
+When nothing conflicts, the merge commits by itself and there is nothing to resolve. That is the
+normal case and it is not a sign you did it wrong.
+
+<details markdown="1"><summary>Under the hood: what the retrofit is, in Git</summary>
+
+    git checkout -b retrofit/main-to-integration origin/integration
+    git fetch origin
+    git merge origin/main
+    # solve conflicts if git reports any, then commit
+
+Nothing else. No org is contacted, no metadata is retrieved. A retrofit is `main` travelling back
+down the pipeline, and a Pull Request is how it gets in, like every other change.
+
+</details>
+
+**Publish and open the Pull Request.** **Save / Publish User Story**, then **Create Pull Request**
+in the actions bar when it finishes, the way Lab 1.6 opened yours. Target `integration`. Its check
+runs like any other, because it is a Pull Request like any other.
+
+Merge it with **Merge pull request**, not with a squash: a retrofit keeps the commits it carries,
+like every merge that is not a plain feature.
+
+**A hotfix goes two ways.** Up to production, through `preprod`, and back down through a retrofit.
 Doing only the first is how a fix gets shipped twice and regressed once.
 
-## Part 2: the retrofit
+## Part 3: production changed outside the pipeline
 
 ### 6. Find what production has that the repository does not
 
@@ -151,32 +203,34 @@ already.
 See it for yourself: in `helios-prod`, **Setup > Object Manager > Installation > Fields &
 Relationships > Status**, and **Needs Reinspection** is at the end of the values.
 
-There used to be a command that swept an org for every such difference and put them all on a branch.
-It is deprecated, deliberately: the command name still exists, and running it now prints an error,
-does nothing and exits non-zero. The reason is worth understanding before you reach for anything
-automatic: **a sweep cannot tell you whether a difference means production is ahead or behind.** It
-reports both the same way, and the second kind, accepted, rolls the repository back.
+**This is not a retrofit.** A retrofit is Git: `main` merged back down, which is what you just did.
+Nothing in `main` holds this picklist value, because it was never in a branch at all. It exists only
+in the org, so the only place to get it is the org.
+
+There used to be a command that swept an org for every such difference and put them all on a branch,
+confusingly named after the retrofit. It is deprecated, deliberately: the command name still exists,
+and running it now prints an error, does nothing and exits non-zero. The reason is worth
+understanding before you reach for anything automatic: **a sweep cannot tell you whether a
+difference means production is ahead or behind.** It reports both the same way, and the second kind,
+accepted, rolls the repository back.
 
 So the change comes back the way any change reaches the repository: on a branch, retrieving exactly
-what changed, from the org that has it, through a Pull Request. And this one is yours to do. A
-retrofit is not a feature anybody asked a contributor for: it is the release manager making the
-repository agree with production again, because you are the one who knows what went live and when.
+what changed, from the org that has it, through a Pull Request. And this one is yours to do, because
+you are the one who knows what went live and when.
 
-### 7. Retrofit it yourself, on a branch of its own
+### 7. Bring it into the sources, on a branch of its own
 
 **Start the branch.** In the **DevOps Pipeline** panel, **New User Story**, as a contributor would,
 with four answers of your own:
 
-| Question       | Your answer                                                                  |
-|----------------|------------------------------------------------------------------------------|
-| Target branch  | `integration`, so the retrofit travels up with the next release              |
-| Type of branch | **Retrofit**, the type this project keeps for changes coming from production |
-| Name           | `US-046-needs-reinspection`                                                  |
-| Org to work in | `helios-dev`, as usual: nothing is built, only retrieved                     |
+| Question       | Your answer                                                         |
+|----------------|----------------------------------------------------------------------|
+| Target branch  | `integration`, so it travels up with the next release               |
+| Type of branch | **Fix**: the repository is wrong about production, and you fix that |
+| Name           | `US-046-needs-reinspection`                                         |
+| Org to work in | `helios-dev`, as usual: nothing is built, only retrieved            |
 
-It creates `retrofit/US-046-needs-reinspection` from the latest `integration`. The **Retrofit** type
-is a line in `branchPrefixChoices` of `config/.sfdx-hardis.yml`: its prefix tells everybody reading
-the branch list that this is production coming back, not new work.
+It creates `fix/US-046-needs-reinspection` from the latest `integration`.
 
 **Retrieve from production, and only what changed.** Open the **Metadata Retriever**. At the top,
 switch the org **(1)** from `helios-dev` to `helios-prod`, where the value exists and nowhere else,
@@ -187,7 +241,7 @@ one row it finds, and click **Retrieve**.
 ![The Metadata Retriever, its org selector and its search](../../_assets/annotated/vscode/metadata-retriever--retrofit.png)
 
 **Review your own diff as you would a teammate's.** In the **Source Control** panel, click the field
-file. A retrofit diff gets one more question than the four of Lab 3.2: **is every line something
+file. A diff retrieved from an org gets one more question than the four of Lab 3.2: **is every line something
 production has, and that the repository should have?** Three kinds of difference turn up in a
 retrieve from production, and only one belongs in the commit:
 
@@ -199,12 +253,11 @@ retrieve from production, and only one belongs in the commit:
 
 The third one is the trap: production being behind looks exactly like production being ahead in a
 file diff. Here the diff is the new value, a few lines, and nothing else. Stage the file, commit it
-as `US-046 Retrofit the Needs Reinspection status from production`.
+as `US-046 Bring the Needs Reinspection status back from production`.
 
-**Publish and open the Pull Request.** **Save / Publish User Story**, as in Lab 1.5, then open the
-Pull Request into `integration` on GitHub, as in Lab 1.6. When both checks are green, merge it with
-**Merge pull request**, not with a squash: a retrofit keeps its commits as they are, like every
-merge that is not a plain feature (Lab 1.6).
+**Publish and open the Pull Request.** **Save / Publish User Story**, as in Lab 1.5, then **Create
+Pull Request** in the actions bar, as in Lab 1.6. When both checks are green, **Squash and merge**
+it: this one is an ordinary story, one change, one commit.
 
 ### 8. Let the next release carry it
 
@@ -227,12 +280,15 @@ rate** in Lab 3.6 counts hotfix Pull Requests, and it recognises one by a `hotfi
 project that spells the prefix differently gets a rework rate of zero and no warning, which is the
 sort of thing to check before quoting a number at anybody.
 
-**The retrofit** was your Metadata Retriever, pointed at `helios-prod`, which runs a plain targeted
-retrieve:
+**The retrofit** was Git and nothing else: a branch off `integration`, `git merge origin/main`, the
+conflicts you solved, and a Pull Request. No org was contacted at any point.
+
+**Bringing the admin's picklist value back** was your Metadata Retriever, pointed at `helios-prod`,
+which runs a plain targeted retrieve:
 
     sf project retrieve start --metadata "CustomField:Installation__c.Status__c" --target-org <the org username> --json
 
-and nothing else. The branch came from **New User Story**, `hardis:work:new` with the `retrofit`
+and nothing else. The branch came from **New User Story**, `hardis:work:new` with the `fix`
 prefix, and no comparison is made on your behalf, and that is the point. Two details if you ever read the command it ran: `--target-org` gets the org's username
 rather than its alias, and the **Full metadata** toggle swaps the whole thing for
 `sf hardis mdapi read`, which reads through the Metadata API instead.
@@ -260,8 +316,8 @@ it. Then you retrieve that one thing, knowingly. Detection is automatic, the jud
   `main`
 - The same fix merged into `integration`, by Romain's second Pull Request
 - `Needs Reinspection` present on `integration`, in
-  `force-app/main/default/objects/Installation__c/fields/Status__c.field-meta.xml`, by your retrofit
-  Pull Request from `retrofit/US-046-needs-reinspection`, merged with a merge commit
+  `force-app/main/default/objects/Installation__c/fields/Status__c.field-meta.xml`, by your Pull
+  Request from `fix/US-046-needs-reinspection`
 
 ## If it goes wrong
 
@@ -269,9 +325,9 @@ it. Then you retrieve that one thing, knowingly. Detection is automatic, the jud
 Its branch was cut from `integration`. Send it back: the branch has to start from `preprod`, which
 **New User Story** does when the target is `preprod`.
 
-**The retrofit diff wants to remove things.**
+**The diff retrieved from production wants to remove things.**
 Production is behind the repository for those components. Undo those lines before you commit: that
-is a deployment problem, not a retrofit one.
+is a deployment problem, not a retrieve one.
 
 **The Metadata Retriever finds nothing in `helios-prod`.**
 It is still on **Recent Changes**, which a production org cannot answer. Click **All Metadata**.
@@ -285,11 +341,11 @@ It reached the repository on a branch that never got merged. Check that it is re
 Welcome page > **Training: Level 3** > **Check my work**, then pick Lab 3.7.
 
 It wants the hotfix in the history of `preprod` or `main`, and `Needs Reinspection` on
-`integration`, which is where your retrofit Pull Request put it.
+`integration`, which is where your Pull Request put it.
 
 !!! note "The badge asks for a little more"
-    **Everything in level 3**, and the badge audit, want `Needs Reinspection` on `main`. The retrofit
-    is not finished until production and the repository agree, and they agree once the next release
+    **Everything in level 3**, and the badge audit, want `Needs Reinspection` on `main`. The job is
+    not finished until production and the repository agree, and they agree once the next release
     carries it up, which is the capstone. Nothing to do about it here.
 
 ## Go deeper
