@@ -499,10 +499,11 @@ function mergeBranchConfigText(previous, stage, username) {
   set("targetUsername", username);
   // A scratch org logs in like a sandbox. An org somebody pointed elsewhere on
   // purpose, a Developer Edition at Level 3, keeps the URL it was given.
-  if (!/^instanceUrl:/m.test(text) || /test\.salesforce\.com/.test(text)) {
+  // An empty value is the course template, not a choice somebody made
+  if (!/^instanceUrl:[ \t]*["']?https?:/m.test(text) || /test\.salesforce\.com/.test(text)) {
     set("instanceUrl", "https://test.salesforce.com");
   }
-  if (!/^mergeTargets:/m.test(text) && stage.mergeTargets.length > 0) {
+  if (!/^mergeTargets:[ \t]*(\[[ \t]*[^\]\s]|\r?\n[ \t]*-)/m.test(text) && stage.mergeTargets.length > 0) {
     set("mergeTargets", `[${stage.mergeTargets.join(", ")}]`);
   }
   return text;
@@ -523,9 +524,9 @@ function branchConfigText(stage, username) {
 }
 
 /**
- * Writes one file per stage, on every stage branch, and pushes them.
+ * Writes one file per stage, on integration, and pushes them.
  *
- * Every major branch carries the configuration of all of them, because the
+ * integration carries the configuration of every major branch, because the
  * pipeline panel and the deployment job read it from whichever branch they are
  * on. The badge job clones the fork and re-runs the checks against what is in
  * it, so a setting that never left the machine counts as not done. Doing it here
