@@ -36,7 +36,7 @@ const CHECK = process.argv.includes("--check");
 
 // One colour per number, so "the 3" is findable in a busy screenshot even before
 // you read the digit. Deliberately high contrast against both VS Code themes.
-const PALETTE = [
+export const PILL_PALETTE = [
   "#e5322d", // 1 red
   "#0b72d9", // 2 blue
   "#e08800", // 3 amber
@@ -50,7 +50,7 @@ const PALETTE = [
 ];
 
 export function pillColor(n) {
-  return PALETTE[(Number(n) - 1) % PALETTE.length];
+  return PILL_PALETTE[(Number(n) - 1) % PILL_PALETTE.length];
 }
 
 // Width and height straight out of the PNG IHDR chunk, so this needs no image library

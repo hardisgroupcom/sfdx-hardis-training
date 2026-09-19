@@ -26,7 +26,11 @@ export default async function status() {
 
   // ------------------------------------------------------------ the orgs
   const orgs = connectedOrgs().filter((o) => o.connected);
-  const known = u.orgs.filter((o) => orgs.some((c2) => c2.alias === o.alias));
+  // An org answers to several names: match any of its aliases, or an org the CI
+  // aliased in Level 1 is reported as not connected
+  const known = u.orgs.filter((o) =>
+    orgs.some((c2) => c2.alias === o.alias || (c2.aliases || []).includes(o.alias))
+  );
   info(`  Orgs       : ${known.length === 0 ? c.yellow("none connected yet") : known.map((o) => o.alias).join(", ")}`);
 
   const progress = readProgress();

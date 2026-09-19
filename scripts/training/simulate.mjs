@@ -89,7 +89,11 @@ export default async function simulate(args) {
   // Uncommitted work, a configuration change not published yet for instance, is put
   // aside while the teammate branch is built, and put back on the branch the learner
   // was on, whatever happens in between
-  let stashed = gitOut(["status", "--porcelain"]) !== "";
+  // Set below from the exit code of the stash itself, never from the working
+  // tree being dirty: git refuses to stash during an unresolved merge, which is
+  // the state Labs 2.7 and 3.4 put a learner in on purpose, and the recovery
+  // path further down deletes files on the strength of this flag.
+  let stashed = false;
   const restore = () => {
     run("git", ["checkout", startingBranch && startingBranch !== scenario.branch ? startingBranch : "integration"], { quiet: true });
     if (stashed) {
@@ -101,10 +105,20 @@ export default async function simulate(args) {
       }
     }
   };
-  if (stashed) {
-    run("git", ["stash", "push", "--include-untracked", "-m", "Simulate my teammates: uncommitted work"], { quiet: true });
-    info("  Your uncommitted changes are put aside while the teammate branch is built, and put back at the end.");
-    process.on("exit", () => stashed && restore());
+  if (gitOut(["status", "--porcelain"]) !== "") {
+    stashed =
+      run("git", ["stash", "push", "--include-untracked", "-m", "Simulate my teammates: uncommitted work"], {
+        quiet: true
+      }).code === 0;
+    if (stashed) {
+      info("  Your uncommitted changes are put aside while the teammate branch is built, and put back at the end.");
+      process.on("exit", () => stashed && restore());
+    } else {
+      abort(
+        "Your uncommitted changes could not be put aside, so nothing was simulated.",
+        "Git refuses to stash during an unresolved merge. Finish or abandon it, then run Simulate my teammates again."
+      );
+    }
   }
 
   title("1 of 4  Creating the teammate branch");
@@ -152,7 +166,9 @@ export default async function simulate(args) {
     ]);
     fs.rmSync(messageFile, { force: true });
     if (commit.code !== 0) {
-      // The teammate files go: the learner's own work was put aside before any of this
+      // The teammate files go. Safe because nothing of the learner's is in the
+      // working tree: it was either clean or stashed, and a stash that failed
+      // stopped the command above.
       run("git", ["reset", "--hard", "--quiet"]);
       run("git", ["clean", "-fdq"]);
       restore();

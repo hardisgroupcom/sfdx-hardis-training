@@ -25,6 +25,16 @@ function git(args) {
   return res.status === 0 ? (res.stdout || "").trim() : "";
 }
 
+/**
+ * Whether this clone knows that commit. A source_rev naming one it does not,
+ * a squashed or rebased SHA for instance, cannot be compared with anything,
+ * and staying silent would pass a stale translation forever.
+ */
+function isKnownCommit(rev) {
+  const res = spawnSync("git", ["cat-file", "-e", `${rev}^{commit}`], { cwd: ROOT, encoding: "utf8" });
+  return res.status === 0;
+}
+
 function sourceRev(file) {
   const text = fs.readFileSync(file, "utf8");
   const match = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
@@ -94,6 +104,11 @@ for (const locale of locales) {
       continue;
     }
     if (latest === rev) {
+      continue;
+    }
+    if (!isKnownCommit(rev)) {
+      console.log(`  UNKNOWN   ${rel}  (source_rev ${rev} is not a commit this clone knows)`);
+      behind++;
       continue;
     }
     const changed = git(["log", "--oneline", `${rev}..HEAD`, "--", englishPath]);

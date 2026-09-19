@@ -580,14 +580,22 @@ export const RULES = [
         );
       }
       const hasCap = /cap|maximum|Crew_Capacity|too large/i.test(flow);
-      const manager = ctx.readOn(DEV, PERMSET("Helios_Delivery_Manager")) || "";
-      const hasBoth = hasCap && !/<{7}|>{7}/.test(manager);
-      return hasBoth
-        ? pass("Mariia's cap and your change are both in integration, with no conflict markers left")
-        : miss(
+      if (!hasCap) {
+        return miss(
           "the crew capacity cap from US-018 is not in the flow, so one side of the conflict was lost",
           `${assign} on branch ${DEV}`
         );
+      }
+      // Its own message: a learner told to look at the flow while the markers
+      // are in the permission set can stare at a correct flow forever
+      const manager = ctx.readOn(DEV, PERMSET("Helios_Delivery_Manager")) || "";
+      if (/<{7}|>{7}|={7}/.test(manager)) {
+        return miss(
+          "the permission set still contains git conflict markers",
+          `${PERMSET("Helios_Delivery_Manager")} on branch ${DEV}`
+        );
+      }
+      return pass("Mariia's cap and your change are both in integration, with no conflict markers left");
     }
   },
   {

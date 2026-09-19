@@ -143,6 +143,11 @@ async function main() {
       await element.evaluate((node) => node.scrollIntoView({ block: "start" }));
       await view.waitForTimeout(800);
       const box = await element.boundingBox();
+      if (!box) {
+        // A selector that matches something not rendered: say which capture,
+        // and keep the rest of the batch
+        throw new Error(`${target.name}: "${target.selector}" matches nothing visible on the page`);
+      }
       options.clip = { x: box.x, y: box.y, width: box.width, height: Math.min(box.height, target.maxHeight) };
       await view.screenshot(options);
     } else if (target.selector) {

@@ -59,14 +59,32 @@ export default async function reset(args) {
   const dirty = gitOut(["status", "--porcelain"]);
   if (dirty) {
     warn("You have uncommitted changes. They are being stashed, not deleted.");
-    run("git", ["stash", "push", "-u", "-m", `before training reset to ${start}`]);
+    if (run("git", ["stash", "push", "-u", "-m", `before training reset to ${start}`]).code !== 0) {
+      abort(
+        "Your changes could not be put aside, so nothing was reset.",
+        "Git refuses to stash during an unresolved merge. Finish or abandon it, then run Reset this level again."
+      );
+    }
   }
   const pipelineConfig = branchConfigOn("integration");
-  run("git", ["checkout", "-B", "integration", `upstream/${start}`]);
+  // The one command a learner runs to get out of a broken state: if the
+  // checkout is refused, say so instead of reporting a reset that never
+  // happened and force-pushing a branch that never moved.
+  if (run("git", ["checkout", "-B", "integration", `upstream/${start}`]).code !== 0) {
+    abort(
+      "Your integration branch could not be moved to the reset point.",
+      "Close anything holding a file of this folder open, then run Reset this level again."
+    );
+  }
   ok(`integration now matches ${start}`);
   keepBranchConfig(pipelineConfig);
 
   title("3 of 3  Publishing it to your fork");
+  // --force-with-lease compares the fork against what this clone last saw of
+  // it, and a learner who merged a Pull Request on github.com has not seen it
+  // since. Without this fetch the push is refused with "stale info", on the
+  // one command meant to rescue them.
+  run("git", ["fetch", "origin", "--prune"]);
   // integration is protected against force pushes, and a reset is one. The
   // protection is lifted for this push only, and put back right after.
   const push = withProtectionLifted(repoSlug(), ["integration"], () => run("git", ["push", "origin", "integration", "--force-with-lease"]));
