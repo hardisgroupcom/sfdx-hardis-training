@@ -25,7 +25,7 @@ for the `Helios Delivery` app, and every one of them is a lab in this course.
 | [US-038](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-038/) | 2 | Tidy the Installation layout | You | `features/US-038-installation-notes-tidy` |
 | [US-041](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-041/) | 2 | Installation handover checklist | You | `features/US-041-handover-checklist` |
 | [US-045](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-045/) | 3 | Cancelled installations can no longer be back-dated | Romain Panda | `fix/US-045-installation-date-hotfix` |
-| [US-046](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-046/) | 3 | Needs Reinspection status, added in production by an admin | Mariia Pyvovarchuk | `training/mate-us-046-needs-reinspection` |
+| [US-046](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-046/) | 3 | Needs Reinspection status, added in production by an admin | You | `retrofit/US-046-needs-reinspection` |
 | [US-055](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-055/) | 3 | Install Date says which day it means | Romain Panda | `training/mate-us-055-install-date-help` |
 | [US-056](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-056/) | 3 | Show the panels each crew member has to lay | Romain Panda | `training/mate-us-056-crew-workload` |
 
@@ -277,8 +277,8 @@ Acceptance criteria:
 
 ### US-046 - Needs Reinspection status, added in production by an admin
 
-**Owner**: Mariia Pyvovarchuk  
-**Branch**: `training/mate-us-046-needs-reinspection`  
+**Owner**: You  
+**Branch**: `retrofit/US-046-needs-reinspection`  
 **Lab**: 3.7
 
 > As the release manager, I want the status an admin added in production to be in the repository, so that the next release does not take it away from the planners.

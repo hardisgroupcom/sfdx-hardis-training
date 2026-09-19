@@ -157,31 +157,54 @@ does nothing and exits non-zero. The reason is worth understanding before you re
 automatic: **a sweep cannot tell you whether a difference means production is ahead or behind.** It
 reports both the same way, and the second kind, accepted, rolls the repository back.
 
-So the change comes back the way any change reaches the repository: as a User Story, retrieving
-exactly what changed, from the org that has it. It is a contributor's job, and yours is to ask for it
-and to review it.
+So the change comes back the way any change reaches the repository: on a branch, retrieving exactly
+what changed, from the org that has it, through a Pull Request. And this one is yours to do. A
+retrofit is not a feature anybody asked a contributor for: it is the release manager making the
+repository agree with production again, because you are the one who knows what went live and when.
 
-### 7. Review the retrofit against production
+### 7. Retrofit it yourself, on a branch of its own
 
-Mariia takes it. **Simulate my teammates** > **US-046 Retrofit the Needs Reinspection status from
-production**. It opens her Pull Request into `integration`.
+**Start the branch.** In the **DevOps Pipeline** panel, **New User Story**, as a contributor would,
+with four answers of your own:
 
-A retrofit Pull Request gets one more question than the four of Lab 3.2: **is every line of the diff
-something production has, and that the repository should have?** Three kinds of difference turn up
-in a retrieve from production, and only one belongs in the Pull Request:
+| Question            | Your answer                                                                  |
+|---------------------|------------------------------------------------------------------------------|
+| Target branch       | `integration`, so the retrofit travels up with the next release              |
+| Type of branch      | **Retrofit**, the type this project keeps for changes coming from production |
+| Name                | `US-046-needs-reinspection`                                                  |
+| Org to work in      | `helios-dev`, as usual: nothing is built, only retrieved                     |
 
-| What the diff carries                                | What the review says                                              |
-|------------------------------------------------------|-------------------------------------------------------------------|
-| The picklist value an admin added to fix an incident | **Keep it.** It is real, it is needed, and it belongs in the repo |
-| Noise: API version, attribute order, whitespace      | **Send it back.** It hides the real change from every reviewer    |
-| Something that differs because production is behind  | **Send it back.** Merged, it rolls the repository back            |
+It creates `retrofit/US-046-needs-reinspection` from the latest `integration`. The **Retrofit** type
+is a line in `branchPrefixChoices` of `config/.sfdx-hardis.yml`: its prefix tells everybody reading
+the branch list that this is production coming back, not new work.
 
-The third one is the trap, and it is why a retrofit is reviewed by somebody who knows what went
-into production and when. Production being behind looks exactly like production being ahead in a
-file diff.
+**Retrieve from production, and only what changed.** Open the **Metadata Retriever**. At the top,
+switch the org **(1)** from `helios-dev` to `helios-prod`, where the value exists and nowhere else,
+and click **All Metadata** next to it: a production org keeps no list of recent changes. Type
+`Installation__c.Status__c` in **Metadata Name** **(2)**, click **Search Metadata** **(3)**, tick the
+one row it finds, and click **Retrieve**.
 
-Mariia's diff is the value, five lines, and nothing else: she retrieved one field, not the org. Compare
-it with what you saw in Setup, and merge.
+![The Metadata Retriever, its org selector and its search](../../_assets/annotated/vscode/metadata-retriever--retrofit.png)
+
+**Review your own diff as you would a teammate's.** In the **Source Control** panel, click the field
+file. A retrofit diff gets one more question than the four of Lab 3.2: **is every line something
+production has, and that the repository should have?** Three kinds of difference turn up in a
+retrieve from production, and only one belongs in the commit:
+
+| What the diff carries                                 | What you do with it                                                  |
+|-------------------------------------------------------|----------------------------------------------------------------------|
+| The picklist value an admin added to fix an incident  | **Keep it.** It is real, it is needed, and it belongs in the repo    |
+| Noise: API version, attribute order, whitespace       | **Undo those lines.** They hide the real change from every reviewer  |
+| Something that differs because production is behind  | **Undo those lines.** Committed, they roll the repository back       |
+
+The third one is the trap: production being behind looks exactly like production being ahead in a
+file diff. Here the diff is the new value, a few lines, and nothing else. Stage the file, commit it
+as `US-046 Retrofit the Needs Reinspection status from production`.
+
+**Publish and open the Pull Request.** **Save / Publish User Story**, as in Lab 1.5, then open the
+Pull Request into `integration` on GitHub, as in Lab 1.6. When both checks are green, merge it with
+**Merge pull request**, not with a squash: a retrofit keeps its commits as they are, like every
+merge that is not a plain feature (Lab 1.6).
 
 ### 8. Let the next release carry it
 
@@ -204,13 +227,13 @@ rate** in Lab 3.6 counts hotfix Pull Requests, and it recognises one by a `hotfi
 project that spells the prefix differently gets a rework rate of zero and no warning, which is the
 sort of thing to check before quoting a number at anybody.
 
-**The retrofit** was Mariia's Metadata Retriever, pointed at `helios-prod`, which runs a plain
-targeted retrieve:
+**The retrofit** was your Metadata Retriever, pointed at `helios-prod`, which runs a plain targeted
+retrieve:
 
     sf project retrieve start --metadata "CustomField:Installation__c.Status__c" --target-org <the org username> --json
 
-and nothing else. No branch is created for you, no comparison is made on your behalf, and that is
-the point. Two details if you ever read the command it ran: `--target-org` gets the org's username
+and nothing else. The branch came from **New User Story**, `hardis:work:new` with the `retrofit`
+prefix, and no comparison is made on your behalf, and that is the point. Two details if you ever read the command it ran: `--target-org` gets the org's username
 rather than its alias, and the **Full metadata** toggle swaps the whole thing for
 `sf hardis mdapi read`, which reads through the Metadata API instead.
 
@@ -237,7 +260,8 @@ it. Then you retrieve that one thing, knowingly. Detection is automatic, the jud
   `main`
 - The same fix merged into `integration`, by Romain's second Pull Request
 - `Needs Reinspection` present on `integration`, in
-  `force-app/main/default/objects/Installation__c/fields/Status__c.field-meta.xml`, by Mariia's
+  `force-app/main/default/objects/Installation__c/fields/Status__c.field-meta.xml`, by your retrofit
+  Pull Request from `retrofit/US-046-needs-reinspection`, merged with a merge commit
 
 ## If it goes wrong
 
@@ -245,9 +269,12 @@ it. Then you retrieve that one thing, knowingly. Detection is automatic, the jud
 Its branch was cut from `integration`. Send it back: the branch has to start from `preprod`, which
 **New User Story** does when the target is `preprod`.
 
-**A retrofit diff wants to remove things.**
-Production is behind the repository for those components. Send it back: that is a deployment
-problem, not a retrofit one.
+**The retrofit diff wants to remove things.**
+Production is behind the repository for those components. Undo those lines before you commit: that
+is a deployment problem, not a retrofit one.
+
+**The Metadata Retriever finds nothing in `helios-prod`.**
+It is still on **Recent Changes**, which a production org cannot answer. Click **All Metadata**.
 
 **The picklist value disappears again after the next release.**
 It reached the repository on a branch that never got merged. Check that it is really on

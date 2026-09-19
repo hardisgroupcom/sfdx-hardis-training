@@ -391,14 +391,14 @@
       "id": "US-046",
       "level": 3,
       "lab": 7,
-      "author": "mariia",
+      "author": "you",
       "title": "Needs Reinspection status, added in production by an admin",
       "story": "As the release manager, I want the status an admin added in production to be in the repository, so that the next release does not take it away from the planners.",
       "acceptance": [
         "Needs Reinspection is a value of Installation__c.Status__c on integration",
         "Nothing else from production came with it"
       ],
-      "branch": "training/mate-us-046-needs-reinspection",
+      "branch": "retrofit/US-046-needs-reinspection",
       "metadata": ["Installation__c.Status__c"]
     },
     {
