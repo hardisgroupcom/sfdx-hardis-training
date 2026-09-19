@@ -27,8 +27,10 @@ SALESFORCE_SFDX_SCANNER_APEX_ARGUMENTS: --workspace force-app
 SALESFORCE_SFDX_SCANNER_AURA_ARGUMENTS: --workspace force-app
 SALESFORCE_SFDX_SCANNER_LWC_ARGUMENTS: --workspace force-app
 
-# trivy downloads its vulnerability database on every run, and when the download
-# is refused it fails the whole check of a Pull Request that changed nothing it
-# scans. It still runs and reports; it no longer blocks a merge on a network error.
+# trivy and grype download their vulnerability database on every run, and when
+# the download is refused they fail the whole check of a Pull Request that changed
+# nothing they scan. They still run and report; they no longer block a merge on a
+# network error.
 DISABLE_ERRORS_LINTERS:
+  - REPOSITORY_GRYPE
   - REPOSITORY_TRIVY
