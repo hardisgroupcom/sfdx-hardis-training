@@ -1,7 +1,7 @@
 ---
 id: lab-2-2
 title: "Lab 2.2 - Fix a deployment error caused by a missing dependency"
-description: "A Pull Request deployment check fails. Read the Salesforce error properly and find the component a .forceignore entry silently left out."
+description: "Update an existing Salesforce flow, then read a failing Pull Request deployment check properly and add the field the package forgot."
 level: 2
 lab: 2
 lang: en
@@ -24,19 +24,21 @@ depends_on:
 
 **Time**: ~25 min
 
-**You will**: meet your first failing deployment check, read the error properly, and find the cause
-in a file most people never open.
+**You will**: update a flow that already runs in production, meet your first failing deployment
+check, read the error properly, and find what your package forgot.
 
 ## The situation
 
 > **US-021 - Warn the planner when a crew is too small**
 >
-> As a planner, I want a warning on the installation when the assigned crew is smaller than the job
-> needs, so that I fix it before the van leaves.
+> As a planner, I want one warning on the installation when the assigned crew is smaller than the
+> panels need, so that I fix it before the van leaves, and not a new task every time I save.
 
-Straightforward: a record-triggered flow that compares `Crew_Size__c` with what the panels
-require. You build it, you publish it, and the check fails with an error about a field that is
-right there in front of you in the org.
+The flow already exists. `Installation Crew Warning` came with the Helios app when you set up your
+orgs in Level 1: it creates a task for the planner whenever fewer than two people are assigned, and
+it does so on **every** save, which is what the planners complain about. You update it, you
+publish it, and the check fails with an error about a field that is right there in front of you in
+the org.
 
 This lab is about the gap between "it exists in my org" and "it is in the package".
 
@@ -57,11 +59,7 @@ Story** **(2)**, the same card as Lab 1.3.
 Answer: type **Feature**, name `US-021-crew-size-warning`, org `helios-dev`. The target is
 `integration` without asking, as in Level 1.
 
-Then write the line Lab 2.1 left for this moment: open `MY-PIPELINE.md` (copy
-`MY-PIPELINE.template.md` the first time) and add the backpromote line under Level 2. It will be
-committed with this story.
-
-### 2. Build the warning flow
+### 2. Update the warning flow
 
 First, the field the flow needs so it does not warn twice. In `helios-dev`,
 **Setup > Object Manager > Installation > Fields & Relationships > New**:
@@ -73,65 +71,51 @@ First, the field the flow needs so it does not warn twice. In `helios-dev`,
 | Field Name    | `Crew_Warning_Sent__c` |
 | Default Value | Unchecked              |
 
-Then the flow. **Setup > Flows > New Flow > Record-Triggered Flow**:
+Then the flow. **Setup > Flows**, open **Installation Crew Warning**. It is active, so Flow Builder
+opens the running version: every change you make is saved as a **new version**, and the old one
+keeps running until you activate yours.
 
-| Setting          | Value                                                         |
-|------------------|---------------------------------------------------------------|
-| Object           | `Installation`                                                |
-| Trigger          | A record is created or updated                                |
-| Entry conditions | `Crew Size` is not null **and** `Panels Required` is not null |
-| Optimize for     | Actions and Related Records                                   |
-| Flow Label       | `Installation Crew Warning`                                   |
-| Flow API Name    | `Installation_Crew_Warning`                                   |
+1. **Start** element: add a second entry condition, `Panels Required` is not null, next to
+   `Crew Size` is not null
+2. The **Crew Too Small** decision reads a formula resource, `crewTooSmall`. Open it from the
+   **Toolbox** and replace its formula with:
 
-Inside, add a **Decision** named `Crew Too Small` whose outcome condition is a
-formula:
+    ```
+    AND(
+      {!$Record.Crew_Size__c} * 8 < {!$Record.Panels_Required__c},
+      NOT({!$Record.Crew_Warning_Sent__c})
+    )
+    ```
 
-```
-AND(
-  {!$Record.Crew_Size__c} * 8 < {!$Record.Panels_Required__c},
-  NOT({!$Record.Crew_Warning_Sent__c})
-)
-```
+    One person lays about eight panels a day: the crew is too small when eight panels each do not
+    cover the job, and the warning goes only if it was not sent yet. Copy it rather than typing it
+3. After **Create Warning Task**, add an **Update Records** element, `Mark Warning Sent`, that
+   updates the triggering record and sets `Crew Warning Sent` to true. Give it a description, and
+   connect its **fault** path to the existing `Log Fault` element, like the task element
 
-On that outcome, add a **Create Records** element that creates a Task on the installation's owner,
-subject `Crew may be too small for this installation`, then an **Update Records** element that sets
-`Crew Warning Sent` to true on the triggering record.
+**Save As New Version**, then **Activate**.
 
-Two things before you save, both of which the pipeline will ask you for later if you skip them now:
-
-1. **Give every element a description.** Click each one and fill in the description field with what
-   it is for, in a sentence. The Flow analyzer asks for it, and the generated documentation of Lab
-   3.10 is only as good as these
-2. **Give both record elements a fault path.** On the Create Records element, drag the connector
-   from its **fault** outlet to a new **Assignment** named `Log Fault`, and assign
-   `{!$Flow.FaultMessage}` to a text variable. Connect the Update Records fault outlet to the same
-   element
-
-Save and **Activate**.
-
-!!! info "Why a fault path, when nothing ever fails in a demo"
+!!! info "Why the flow has a fault path at all"
     A record element without one fails silently: the flow stops, the user sees nothing, and the Task
     that was supposed to warn the planner never appears. On a real project the fault path sends the
-    message somewhere a person reads, through a platform event, an error log object or an email.
-    Here it stops at recording it, because what the pipeline checks is that a fault path exists at
-    all.
+    message somewhere a person reads. Here it only keeps it, because what the pipeline checks is
+    that a fault path exists. The original flow already had one, and your new element follows it.
 
 Test it: open an installation, set `Panels Required` to 40 and `Crew Size` to 2, save. A task
 appears in its **Activity**. Save again: no second task. That is the story working, in your org.
 The checkbox itself stays out of sight: no permission set grants it, because nobody but the flow
 needs it.
 
-### 3. Publish and watch it fail
+### 3. Publish the flow, and watch the check fail
 
 Bring it down the way Level 1 taught you: **DevOps Pipeline > Commit changes**, **Recent Changes**,
-**Search Metadata**, and tick the two things you made, the flow `Installation_Crew_Warning` and the
-field `Installation__c.Crew_Warning_Sent__c`. Retrieve them, and commit from **Source Control**.
+**Search Metadata**. The story is about the flow, so tick the flow `Installation_Crew_Warning`,
+retrieve it, and commit it from **Source Control**.
 
-!!! warning "Look at what actually arrived"
-    Only the flow is waiting in Source Control. The field is not there, and nothing said anything.
-    Carry on and publish anyway: the point of this lab is to meet the failure that follows, and to
-    learn to read it. Step 5 is where you find out why.
+!!! warning "Look at what you did not retrieve"
+    The retriever also listed `Installation__c.Crew_Warning_Sent__c`, the field you created first.
+    You left it unticked, and nothing said anything. Carry on and publish anyway: the point of this
+    lab is to meet the failure that follows, and to learn to read it.
 
 Then **Save / Publish** **(1)**.
 
@@ -164,48 +148,13 @@ The integration org is being sent a flow that reads a field the package does not
 integration org does not have that field either. From Salesforce's point of view the error is
 exactly right.
 
-So why is the field not in the package? Publishing builds the package out of what your commits
-changed, and your field is not in that list, because the file for it never arrived in the project
-at all. Look where the fields live, `force-app/main/default/objects/Installation__c/fields/`: it is
-not there, even though you ticked it in the retriever and the retriever reported no error.
+The package is built from what your commits changed, and the field was never committed: look where
+the fields live, `force-app/main/default/objects/Installation__c/fields/`, and it is not there. It
+exists in one place only, `helios-dev`, and a pipeline never reads a developer's org.
 
-### 5. Find why the field never reached the repository
+### 5. Retrieve what the flow depends on
 
-Open `.forceignore` at the root of the repository.
-
-```
-# Local artifacts, never versioned
-**/jsconfig.json
-...
-# Temporary technical fields from the 2025 capacity spike, not versioned.
-# TODO remove once the spike is over  (Sofia, 2025-11)
-**/objects/Installation__c/fields/Crew_W*.field-meta.xml
-```
-
-Those lines are patterns, not file names. A `*` stands for any text, so the last one matches every
-field on Installation whose name starts with `Crew_W`.
-
-Sofia left a year ago and the spike is long over, but the pattern she wrote for her
-`Crew_Workaround__c` field is still there, and it matches the field you created this morning too.
-
-`.forceignore` tells the Salesforce CLI what to ignore when retrieving **and** when deploying. A
-component listed there is invisible in both directions, with no error and no warning: the retrieve
-quietly skipped your field, the publish quietly built a package without it, and the first thing
-that noticed was Salesforce, in the integration org, three steps later.
-
-### 6. Fix it
-
-Delete the stale pattern. If you would rather keep Sofia's field excluded, name that one file
-exactly, with no `*` in it, so nothing else can ever match by accident:
-
-```
-**/objects/Installation__c/fields/Crew_Workaround__c.field-meta.xml
-```
-
-An exact path ages badly too, but it ages **loudly**: the day the file disappears, nothing else
-starts being ignored.
-
-Then retrieve your field properly. Open the **Metadata Retriever** panel:
+Open the **Metadata Retriever** panel:
 
 1. Check that the org at the top right **(1)** is `helios-dev`
 2. Type `Crew_Warning_Sent__c` into **Metadata Name** **(2)**
@@ -215,10 +164,14 @@ Then retrieve your field properly. Open the **Metadata Retriever** panel:
 
 The field appears under `force-app/main/default/objects/Installation__c/fields/`.
 
-### 7. Publish again
+The habit to take away: when you change something that **reads** another component, retrieve that
+component too. A flow reads fields, a layout shows them, a permission set grants them. Anything new
+among them travels with the story, or the story does not deploy.
+
+### 6. Publish again
 
 The field is in `force-app/` now. Commit it from **Source Control**, then **Save / Publish** again.
-`manifest/package.xml` lists both the field and the flow. Push, and the check goes green.
+`manifest/package.xml` lists both the field and the flow. Push, and the check goes green. Merge it.
 
 <details markdown="1"><summary>Under the hood: why the error said what it said</summary>
 
@@ -233,13 +186,16 @@ neither, and refused.
 
 The important part is the order of the two questions:
 
-1. **Is it in the package?** `manifest/package.xml`, and behind it the git diff, and behind that
-   `.forceignore`
+1. **Is it in the package?** `manifest/package.xml`, and behind it the git diff: what you retrieved
+   and committed
 2. **Is it in the target org?** Only ask this once the answer to the first is yes
 
 Most deployment errors that say "does not exist" are question 1, and most people spend twenty
-minutes on question 2 first. `.forceignore` is where the trail usually ends, because it is the one
-file that makes metadata invisible without any error anywhere.
+minutes on question 2 first.
+
+**The flow went up as a new version.** A flow is versioned in the org: Flow Builder saved yours as
+version 2, and the deployment sends its definition. The integration org keeps its version 1 as
+history, inactive, exactly like `helios-dev` does.
 
 </details>
 
@@ -253,8 +209,8 @@ file that makes metadata invisible without any error anywhere.
 ## If it goes wrong
 
 **The retrieve brings nothing.**
-The `.forceignore` change was not saved, or the pattern still matches. Check it by retrieving again
-and looking for the file on disk.
+The org selector of the Metadata Retriever points at another org. It must read `helios-dev`, where
+you created the field.
 
 **The check now fails on the flow being inactive.**
 Salesforce will not deploy an active flow over an active flow of the same version in some

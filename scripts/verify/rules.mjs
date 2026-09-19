@@ -414,28 +414,22 @@ export const RULES = [
   },
   {
     id: "2.2", level: 2, lab: 2,
-    title: "US-021: the excluded field was un-excluded and the flow deploys",
+    title: "US-021: the warning flow warns once, and the field it needs deployed with it",
     check: (ctx) => {
-      const forceignore = ctx.readOn(DEV, ".forceignore") || "";
-      if (/Crew_W\*/.test(forceignore)) {
+      const flowFile = "force-app/main/default/flows/Installation_Crew_Warning.flow-meta.xml";
+      const flow = ctx.readOn(DEV, flowFile) || "";
+      if (!/Crew_Warning_Sent__c/.test(flow)) {
         return miss(
-          "the Crew_W* pattern is still in .forceignore, so any field whose name starts with Crew_W stays invisible",
-          `.forceignore on branch ${DEV}`
+          "Installation_Crew_Warning does not read Crew_Warning_Sent__c yet, so it still warns on every save",
+          `${flowFile} on branch ${DEV}`
         );
       }
       const field = ctx.readOn(DEV, FIELD("Installation__c", "Crew_Warning_Sent__c"));
-      if (!field) {
-        return miss(
-          "Installation__c.Crew_Warning_Sent__c never reached the sources",
-          `${FIELD("Installation__c", "Crew_Warning_Sent__c")} on branch ${DEV}`
-        );
-      }
-      const flows = ctx.listOn(DEV, "force-app/main/default/flows/");
-      return flows.some((f) => /Crew_Warning/i.test(f))
-        ? pass("The field is versioned and the warning flow is there")
+      return field
+        ? pass("The flow warns once, and the field it reads is versioned")
         : miss(
-          "no crew warning flow was found",
-          `force-app/main/default/flows/ on branch ${DEV}, expected something like Installation_Crew_Warning.flow-meta.xml`
+          "Installation__c.Crew_Warning_Sent__c never reached the sources: the flow reads a field the package does not carry",
+          `${FIELD("Installation__c", "Crew_Warning_Sent__c")} on branch ${DEV}`
         );
     }
   },
@@ -614,10 +608,11 @@ export const RULES = [
           `scripts/data/ on branch ${DEV}`
         );
       }
-      const flows = ctx.listOn(DEV, "force-app/main/default/flows/");
-      return flows.some((f) => /Close/i.test(f))
+      // The close check exists from Level 1: US-041 is done when it reads the checklist
+      const closeCheck = "force-app/main/default/flows/Installation_Close_Check.flow-meta.xml";
+      return /Handover_Item__c/.test(ctx.readOn(DEV, closeCheck) || "")
         ? pass("Object, reference data and the close check are all in integration")
-        : miss("no flow blocks the close on an incomplete checklist", `force-app/main/default/flows/ on branch ${DEV}`);
+        : miss("Installation Close Check does not look at the handover checklist yet", `${closeCheck} on branch ${DEV}`);
     }
   },
 

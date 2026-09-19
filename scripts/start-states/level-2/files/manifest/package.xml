@@ -43,6 +43,8 @@
     </types>
     <types>
         <members>Installation_Assign_Crew</members>
+        <members>Installation_Close_Check</members>
+        <members>Installation_Crew_Warning</members>
         <name>Flow</name>
     </types>
     <types>

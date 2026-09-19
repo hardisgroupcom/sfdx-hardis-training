@@ -27,6 +27,17 @@
             <isFieldError>false</isFieldError>
         </customErrorMessages>
     </customErrors>
+    <customErrors>
+        <description>Refuses to close an installation that was never given an install date.</description>
+        <name>Install_Date_Missing</name>
+        <label>Install Date Missing</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <customErrorMessages>
+            <errorMessage>Set the install date before closing this installation.</errorMessage>
+            <isFieldError>false</isFieldError>
+        </customErrorMessages>
+    </customErrors>
     <decisions>
         <description>Is any handover item of this installation still not done?</description>
         <name>Any_Item_Open</name>
@@ -50,7 +61,33 @@
             <label>Item open</label>
         </rules>
     </decisions>
-    <description>An installation cannot be closed while its handover checklist has an item not done.</description>
+    <decisions>
+        <description>Was the installation ever given an install date?</description>
+        <name>No_Install_Date</name>
+        <label>No Install Date</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Get_Open_Item</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Install date set</defaultConnectorLabel>
+        <rules>
+            <name>Date_Missing</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Install_Date__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Install_Date_Missing</targetReference>
+            </connector>
+            <label>Date missing</label>
+        </rules>
+    </decisions>
+    <description>An installation cannot be closed without an install date, or while its handover checklist has an item not done.</description>
     <environments>Default</environments>
     <interviewLabel>Installation Close Check {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Installation Close Check</label>
@@ -103,7 +140,7 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Get_Open_Item</targetReference>
+            <targetReference>No_Install_Date</targetReference>
         </connector>
         <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
         <filterLogic>and</filterLogic>

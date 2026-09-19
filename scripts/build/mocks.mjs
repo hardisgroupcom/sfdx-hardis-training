@@ -747,14 +747,10 @@ write(path.join(PROJECT, "scripts", "actions", `.sfdx-hardis.${MY_PR_NUMBER}.yml
 write(
   path.join(PROJECT, "scripts", "apex", "backfill-crew-size.apex"),
   [
-    "// Gives every installation without a crew the default crew of two, so that",
-    "// Crew_Size__c can be made mandatory in the next deployment.",
-    "List<Installation__c> toFix = [SELECT Id FROM Installation__c WHERE Crew_Size__c = null LIMIT 10000];",
-    "for (Installation__c installation : toFix) {",
-    "    installation.Crew_Size__c = 2;",
-    "}",
-    "update toFix;",
-    "System.debug('Backfilled ' + toFix.size() + ' installations');",
+    "// Starts the backfill as a batch: the script returns at once, and Salesforce",
+    "// works through the installations without a crew size, 200 at a time.",
+    "Id jobId = Database.executeBatch(new CrewSizeBackfillBatch(), 200);",
+    "System.debug('Crew size backfill started, batch job ' + jobId);",
     ""
   ].join("\n")
 );

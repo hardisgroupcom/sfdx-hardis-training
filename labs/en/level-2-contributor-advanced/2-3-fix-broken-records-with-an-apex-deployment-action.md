@@ -1,7 +1,7 @@
 ---
 id: lab-2-3
 title: "Lab 2.3 - Fix broken records with an Apex deployment action"
-description: "Making a field required deploys green and breaks existing records. Fix it with a pre-deployment Apex script declared as an sfdx-hardis deployment action."
+description: "Making a field required deploys green and breaks existing records. Fix them with a batch Apex deployment action that scales to millions of records."
 level: 2
 lab: 3
 lang: en
@@ -126,31 +126,40 @@ The shape of the fix, and it is the shape of most "the data is in the way" probl
 1. Make the data valid
 2. Make the field required
 
-Both can travel in the same Pull Request, as long as the tool knows to run them in that order. That
-is exactly what a **pre-deploy action** is.
+Both can travel in the same Pull Request, as long as the first one runs in every org the story
+reaches. That is what a **deployment action** is: something the pipeline runs around the
+deployment, in each org, without anybody opening Setup.
 
-### 5. Add the backfill script
+### 5. Add the backfill
 
-Deployment actions of this kind run a short Apex script. You do not have to write one: create the
-file `scripts/apex/backfill-crew-size.apex` in the project and copy this into it. The two comments
-are the whole of what it does.
+Thirty installations in `helios-integration`, but a production org can hold millions, and a
+deployment action runs in production too. A script that updates every record in one go stops at
+the first Salesforce governor limit it meets: 10,000 records updated in one transaction, ten seconds
+of processing. So the work goes into a **batch**, which Salesforce runs in chunks of 200 records,
+each in a transaction of its own, whatever the size of the table.
+
+You do not have to write it. From `scripts/apex/samples/` in the repository, copy these four files
+into `force-app/main/default/classes/`, in the Explorer, with copy and paste:
+
+- `CrewSizeBackfillBatch.cls` and `CrewSizeBackfillBatch.cls-meta.xml`: the batch. It gives the
+  default crew of two to every installation that has none
+- `CrewSizeBackfillBatchTest.cls` and `CrewSizeBackfillBatchTest.cls-meta.xml`: its test. Salesforce
+  deploys no Apex without one, and Lab 2.5 is about that gate
+
+Then the script the action runs: create the file `scripts/apex/backfill-crew-size.apex` and copy
+this into it.
 
 ```apex
-// Gives every installation without a crew the default crew of two, so that
-// Crew_Size__c can be made mandatory in the next deployment.
-List<Installation__c> toFix = [SELECT Id FROM Installation__c WHERE Crew_Size__c = null LIMIT 10000];
-for (Installation__c installation : toFix) {
-    installation.Crew_Size__c = 2;
-}
-update toFix;
-System.debug('Backfilled ' + toFix.size() + ' installations');
+// Starts the backfill as a batch: the script returns at once, and Salesforce
+// works through the installations without a crew size, 200 at a time.
+Id jobId = Database.executeBatch(new CrewSizeBackfillBatch(), 200);
+System.debug('Crew size backfill started, batch job ' + jobId);
 ```
 
-Two things worth noticing, because they are what makes a script like this safe to run in
-production:
+Two things worth noticing, because they are what makes this safe to run in production:
 
-- It only touches records that are actually wrong (`WHERE Crew_Size__c = null`)
-- It says how many it changed, so the deployment log is readable afterwards
+- The batch only touches records that are actually wrong (`WHERE Crew_Size__c = null`)
+- The script says what it started, so the deployment log is readable afterwards
 
 ### 6. Declare it as a deployment action
 
@@ -205,36 +214,36 @@ by one. **Add New Action** **(2)** stays there for the next one, and your row **
     integration, once in UAT, once in production, and never again. Leave it unticked for a script
     that does no harm if it runs twice and is meant to run on every deployment.
 
-### 7. Order it correctly
+### 7. Check the order
 
-If the action runs **after** the deployment, the field is already required by the time the backfill
-runs, and every one of those thirty updates is refused for the very reason you are trying to fix.
-The backfill has to run **first**.
+The action runs **after** the deployment, and here that is not a detail. The script starts
+`CrewSizeBackfillBatch`, and that class travels in the very deployment the action goes with: before
+the deployment, the target org does not have it, and a script that uses it fails to compile.
 
-Open the action again from its row in the list and set its **When** to
-**Before Metadata Deployment**. The chip in the **WHEN** column flips from **Post-Deploy** to
-**Pre-Deploy**. Now the order is: fill in the crew sizes, then make the field required, and nothing
-is ever in an invalid state.
+For a few minutes after the deployment, the installations without a crew size cannot be saved, as
+you saw in `helios-dev`. Then the batch has given them one. That window is the price of the order,
+and on a table of millions it is worth telling the planners about before the release.
 
 !!! tip "How to decide pre or post, every time"
-    Ask what the action needs to already exist. Data that has to be valid **before** a constraint
-    lands is pre-deploy. Reference records that need an object that does not exist yet are
-    post-deploy, which is Lab 2.4. The answer is never a habit, it is that question.
+    Ask what the action needs to already exist. An action that uses a class, an object or a field
+    the story brings is post-deploy: they only exist once the deployment is done, which is this lab
+    and Lab 2.4. Pre-deploy is for what must happen with the org as it was, before anything
+    changes: disabling a scheduled job the deployment would collide with, for instance. The answer
+    is never a habit, it is that question.
 
 ### 8. Commit it, and watch it run
 
-Two files wait in **Source Control**, neither of them committed: the Apex script you created in
-step 5, and the action the editor wrote under `scripts/actions/`, in a file named after your Pull
-Request. Commit both, then **Save / Publish**.
+Files wait in **Source Control**, none of them committed: the four class files and the Apex script
+you created in step 5, and the action the editor wrote under `scripts/actions/`, in a file named
+after your Pull Request. Commit them all, then **Save / Publish**.
 
-The check passes again, and its comment now has a **Pre-deployment Actions Results** table: your
+The check passes again, and its comment now has a **Post-deployment Actions Results** table: your
 backfill, **skipped**, because this is the validation job. Merge.
 
-The deployment job to `integration` runs it, for real, **before** the deployment: open its log in the
-**Actions** tab and you find the action starting, then the `System.debug` line of your script,
-`Backfilled 30 installations`, then the deployment. The field becomes required in
-`helios-integration` with every installation already carrying a crew size, and without anyone
-opening Setup.
+The deployment job to `integration` runs it, for real, right **after** the deployment: open its log
+in the **Actions** tab and you find the deployment, then the action starting, then the
+`System.debug` line of your script, `Crew size backfill started, batch job ...`. A minute later every
+installation in `helios-integration` carries a crew size, and nobody opened Setup.
 
 `helios-dev` still has its empty crew sizes, and that is fine: the next backpromote runs the actions
 of the Pull Requests it brings down, this one included.
@@ -243,7 +252,7 @@ of the Pull Requests it brings down, this one included.
 
 The editor wrote a YAML file named after your Pull Request, under `scripts/actions/`:
 
-    commandsPreDeploy:
+    commandsPostDeploy:
       - id: backfill-crew-size
         label: Backfill Crew Size on existing installations
         type: apex
@@ -255,7 +264,7 @@ The editor wrote a YAML file named after your Pull Request, under `scripts/actio
 `sf hardis:project:deploy:smart` reads it, and around the Salesforce deployment it:
 
 1. Collects the actions of every Pull Request included in this deployment
-2. Runs the `commandsPreDeploy` ones, in order
+2. Runs the `commandsPreDeploy` ones, in order, of which this story has none
 3. Deploys the metadata
 4. Runs the `commandsPostDeploy` ones
 5. Records in the target org which `runOnlyOnceByOrg` actions have already fired, so the next
@@ -286,18 +295,17 @@ whole value: **the knowledge is in the repository, not in someone's head.**
 The panel reads the Pull Request from your fork. If the Pull Request was opened against the original
 repository, it cannot see it. Close it and reopen it with the right base.
 
-**The Apex script fails with `Too many DML rows`.**
-Raise the number after `LIMIT` in the script. Thirty records is nowhere near the Salesforce ceiling,
-so if you see this you are running against an org with far more data than the training one, and that
-org needs a developer to split the correction into chunks.
+**The Apex script fails with `Invalid type: CrewSizeBackfillBatch`.**
+The class is not in the org the script ran in. Either the action runs **before** the deployment,
+when the class does not exist yet, or the class files were not committed with the story.
 
 **The deployment still fails on the permission sets.**
 They still carry `fieldPermissions` for `Installation__c.Crew_Size__c`. A required field cannot have
 any. Re-publish from an org where the field is already required, or delete the two blocks by hand.
 
-**The backfill updated nothing, and records are still unsaveable.**
-The action ran after the deployment, so every update hit the constraint it was meant to prevent.
-Change **When** to **Before Metadata Deployment** and run it again.
+**The script ran, and records are still unsaveable a minute later.**
+The batch is still running, or it failed. In the org, **Setup > Apex Jobs** lists
+`CrewSizeBackfillBatch` with its status and its errors.
 
 **The action ran but nothing changed.**
 `runOnlyOnceByOrg` is ticked and it already ran in that org during an earlier attempt. That is

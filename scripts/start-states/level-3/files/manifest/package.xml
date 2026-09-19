@@ -3,6 +3,8 @@
     <types>
         <members>CrewCapacityBatch</members>
         <members>CrewCapacityBatchTest</members>
+        <members>CrewSizeBackfillBatch</members>
+        <members>CrewSizeBackfillBatchTest</members>
         <members>InstallationScheduler</members>
         <members>InstallationSchedulerTest</members>
         <name>ApexClass</name>

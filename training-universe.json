@@ -310,14 +310,17 @@
       "lab": 2,
       "author": "you",
       "title": "Warn the planner when a crew is too small",
-      "story": "As a planner, I want a warning on the installation when the assigned crew is smaller than the job needs, so that I fix it before the van leaves.",
-      "acceptance": ["The flow reads Crew Size", "A warning is shown"],
+      "story": "As a planner, I want one warning on the installation when the assigned crew is smaller than the panels need, so that I fix it before the van leaves, and not a new task every time I save.",
+      "acceptance": [
+        "The existing Installation Crew Warning flow compares the crew with the panels",
+        "The warning is sent once"
+      ],
       "branch": "features/US-021-crew-size-warning",
       "metadata": [
-        "Installation__c.Crew_Size__c",
+        "Installation__c.Crew_Warning_Sent__c",
         "Installation_Crew_Warning flow"
       ],
-      "seededFailure": "The Crew Size field is excluded by an over-eager .forceignore entry, so the flow deploys against a field that is not in the package"
+      "seededFailure": "The flow is published without the new field it reads, so the deployment check fails on a field that exists in the developer org and nowhere else"
     },
     {
       "id": "US-024",
@@ -328,10 +331,10 @@
       "story": "As a planner, I want Crew Size to be mandatory on every installation, so that no job is scheduled without a crew.",
       "acceptance": [
         "Crew Size is required",
-        "Existing records are backfilled with the default of 2"
+        "Existing records are backfilled with the default of 2, by a batch that holds on any volume"
       ],
       "branch": "features/US-024-crew-size-required",
-      "metadata": ["Installation__c.Crew_Size__c"],
+      "metadata": ["Installation__c.Crew_Size__c", "CrewSizeBackfillBatch"],
       "seededFailure": "The permission sets still grant field level security on the field, which a required field cannot have, so the deployment fails on them. Once that is fixed the deployment goes green and silently makes the 30 installations with no crew size unsaveable, because Salesforce enforces a required field on save rather than on the data already there"
     },
     {
@@ -416,7 +419,7 @@
       "acceptance": [
         "A Handover_Item__c object exists",
         "10 reference checklist items are loaded in every org",
-        "The close flow blocks on an incomplete checklist"
+        "The existing close check also blocks on an incomplete checklist"
       ],
       "branch": "features/US-041-handover-checklist",
       "metadata": [

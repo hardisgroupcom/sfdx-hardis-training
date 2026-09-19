@@ -209,12 +209,12 @@ Acceptance criteria:
 **Branch**: `features/US-021-crew-size-warning`  
 **Lab**: 2.2
 
-> As a planner, I want a warning on the installation when the assigned crew is smaller than the job needs, so that I fix it before the van leaves.
+> As a planner, I want one warning on the installation when the assigned crew is smaller than the panels need, so that I fix it before the van leaves, and not a new task every time I save.
 
 Acceptance criteria:
 
-- The flow reads Crew Size
-- A warning is shown
+- The existing Installation Crew Warning flow compares the crew with the panels
+- The warning is sent once
 
 <a id="US-024"></a>
 
@@ -229,7 +229,7 @@ Acceptance criteria:
 Acceptance criteria:
 
 - Crew Size is required
-- Existing records are backfilled with the default of 2
+- Existing records are backfilled with the default of 2, by a batch that holds on any volume
 
 <a id="US-026"></a>
 
@@ -319,7 +319,7 @@ Acceptance criteria:
 
 - A Handover_Item__c object exists
 - 10 reference checklist items are loaded in every org
-- The close flow blocks on an incomplete checklist
+- The existing close check also blocks on an incomplete checklist
 
 <a id="US-045"></a>
 

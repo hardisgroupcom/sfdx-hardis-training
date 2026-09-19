@@ -14,3 +14,12 @@
 **/objectTranslations/*
 **/standardValueSets/*
 
+# The lines sfdx-hardis expects in every project. Without them, the release manager
+# commands of Level 3 stop to offer an upgrade of this file.
+**/appMenu/**
+**/appSwitcher/**
+**/connectedApps/**
+**/certs/**
+**/profilePasswordPolicies/**
+**/__tests__/**
+**SfdxHardisDeferSharingRecalc**

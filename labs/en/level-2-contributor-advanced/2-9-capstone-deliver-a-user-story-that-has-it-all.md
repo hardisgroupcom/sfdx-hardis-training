@@ -54,9 +54,12 @@ handle all three.
    `Installation__c` (lookup), `Label__c`, `Sequence__c`, `Is_Done__c`, `Is_Template__c`
 3. **Build the reference data**: 10 template `Handover_Item__c` records with no installation, the
    checklist every job starts from
-4. **Build the close check**: a record-triggered flow `Installation_Close_Check` on Installation
-   that blocks a save into `Completed` while any related handover item is not done. Describe every
-   element, the way Lab 2.2 had you do
+4. **Update the close check**: the flow `Installation Close Check` already refuses to close an
+   installation with no install date. Save a new version of it that also refuses while any related
+   handover item is not done: after its date decision, a **Get Records** of one `Handover Item` of
+   this installation with `Is Done` false, a decision on whether one was found, and a **Custom
+   Error**. Describe every element you add, and give the Get Records a fault path, the way Lab 2.2
+   had you do
 5. **Grant the new object and its fields** on the `Helios Delivery Manager` permission set, never
    on a Profile, the way Lab 2.6 had you do: **Read**, **Create** and **Edit** on Handover Item, and
    **Read** and **Edit** on its fields. The pipeline's user holds that permission set too, and the
@@ -67,10 +70,10 @@ handle all three.
 
 ### The three things waiting for you
 
-**One: the dependency.** Do not assume every field you created reached the repository. Count them in
-`force-app/` and count them again in the **Git Delta package.xml** report before you push. When one is missing,
-the cause is the file at the root of the repository you met in Lab 2.2, and the deployment error you
-get three steps later will name the field and not the cause. Do not guess: look.
+**One: the dependency.** The flow now reads `Handover_Item__c` and two of its fields. Do not assume
+every component it reads reached the repository: count what you created, count it again in
+`force-app/` and in the **Git Delta package.xml** report before you push. Whatever is missing, the
+deployment error three steps later names it, as in Lab 2.2, and it is cheaper to find it now.
 
 **Two: the data.** Ten records in your org are ten records in your org. A green deployment will put
 the object and the flow into `helios-integration` and the checklist will be empty there, and the
