@@ -45,9 +45,7 @@
       "url": "https://code.visualstudio.com/download",
       "width": 1440,
       "height": 820,
-      "click": [
-        "button:has-text('Reject')"
-      ],
+      "click": ["button:has-text('Reject')"],
       "settle": 2000,
       "hideText": [
         {
@@ -217,15 +215,8 @@
       "width": 1440,
       "height": 900,
       "settle": 2000,
-      "clickFirst": [
-        "button:has-text('New branch')"
-      ],
-      "fill": [
-        [
-          "div[role='dialog'] input[type='text']",
-          "preprod"
-        ]
-      ],
+      "clickFirst": ["button:has-text('New branch')"],
+      "fill": [["div[role='dialog'] input[type='text']", "preprod"]],
       "selector": "div[role='dialog']"
     },
     {
@@ -270,13 +261,8 @@
           "max": 300
         }
       ],
-      "hide": [
-        "img.avatar",
-        "img[src*='avatars.githubusercontent.com']"
-      ],
-      "clickFirst": [
-        "summary:has-text('Run workflow')"
-      ],
+      "hide": ["img.avatar", "img[src*='avatars.githubusercontent.com']"],
+      "clickFirst": ["summary:has-text('Run workflow')"],
       "clipAround": {
         "selector": "details[open]",
         "padding": {
