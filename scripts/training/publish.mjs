@@ -13,7 +13,9 @@
  * holds the right to push to the development branch, or has an administrator
  * push the configuration.
  */
-import { c, title, info, ok, warn, abort, run, gitOut, confirm, repoSlug } from "../lib/util.mjs";
+import fs from "fs";
+import path from "path";
+import { ROOT, c, title, info, ok, warn, abort, run, gitOut, confirm, repoSlug } from "../lib/util.mjs";
 import { withProtectionLifted } from "../lib/protection.mjs";
 
 // What a release manager configures, and nothing else: a feature never goes this way
@@ -36,7 +38,10 @@ export default async function publish(args) {
     );
   }
 
-  const changed = gitOut(["status", "--porcelain", "--", ...CONFIGURATION])
+  // git refuses a path that is neither on disk nor tracked: the no-overwrite list only
+  // exists from Lab 3.6 on
+  const paths = CONFIGURATION.filter((p) => fs.existsSync(path.join(ROOT, p)) || gitOut(["ls-files", "--", p]) !== "");
+  const changed = gitOut(["status", "--porcelain", "--", ...paths])
     .split("\n")
     .map((line) => line.trim())
     .filter(Boolean);
@@ -64,9 +69,9 @@ export default async function publish(args) {
 
   title("1 of 2  Committing the configuration");
   run("git", ["pull", "--ff-only", "origin", BRANCH], { quiet: true });
-  run("git", ["add", "--all", "--", ...CONFIGURATION]);
+  run("git", ["add", "--all", "--", ...paths]);
   const message = args.message || "Pipeline configuration, from the release manager";
-  if (run("git", ["commit", "-m", message, "--", ...CONFIGURATION]).code !== 0) {
+  if (run("git", ["commit", "-m", message, "--", ...paths]).code !== 0) {
     abort("The configuration could not be committed.", "Git needs a name and an email first: Source Control panel, then commit once by hand.");
   }
   ok("Committed on integration");
