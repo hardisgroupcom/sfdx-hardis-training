@@ -64,15 +64,16 @@ Now open **Commit changes**, search the recent changes, and this time click the 
 
 ### 2. Look at what you did
 
-Look at the **Git Delta package.xml** report the publish offered: several components for a story
-that moved one field. Open the Pull Request: a dozen files changed, most of them metadata you have
-never opened.
+Look at the **Git Delta package.xml** report the publish offered: more than the one layout your story
+changed. Open the Pull Request and read the diff.
 
-Read them in the diff. What a whole-org retrieve brings is rarely yours:
+At the very least there is **a Profile**, `Admin`, the System Administrator profile, thousands of
+lines of it. Every field you created in Setup since Level 1 gave that profile field-level security,
+and a whole-org retrieve brings it along. What else comes depends on what your org went through, and
+a whole-org retrieve on a real project usually carries some of it:
 
-- **a Profile**, and a **transaction security policy** Salesforce created on its own
-- **a list view** left over from an earlier story, still in your org, and with it a change to
-  `config/.sfdx-hardis.yml` that the cleaning made on the way
+- **a list view** left over from an earlier story, still in your org, or a **transaction security
+  policy** Salesforce created on its own
 - **Apex and LWC files that differ by nothing but their last line break**: Salesforce drops it, the
   repository keeps it
 - **a field whose description now reads `&apos;` where it read `'`**: the same text, spelled

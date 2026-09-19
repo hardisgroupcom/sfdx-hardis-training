@@ -106,8 +106,9 @@ The reference records need the object to exist before they can be loaded. So:
 - The object and the flow deploy as metadata
 - The data action runs **after** the deployment, not before
 
-That is the opposite of Lab 2.3, where the backfill had to run first. The rule is not "always before"
-or "always after": it is **what does this action need to already exist?**
+Same order as Lab 2.3, for the same reason: the batch class there, the object here, only exist once
+the deployment is done. The rule is not "always after" either: it is **what does this action need
+to already exist?**
 
 ## What you should see
 
