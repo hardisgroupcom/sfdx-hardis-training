@@ -45,6 +45,12 @@ is this project's threshold too: 80% of the Apex in the org run by tests, above 
 itself requires. Knowing which of your gates warn and which refuse is half of working on a pipeline, so
 this lab makes you meet one of each.
 
+!!! note "Admins, this lab is for you too"
+    There is Apex in it, and you will not write a line of it: every block is copied from this page
+    and pasted into a file. What you practise is what an admin meets on every real project, a
+    Pull Request blocked by a code analyzer or by test coverage, and how to read what the robots
+    say before asking a developer for help.
+
 ## Before you start
 
 - [ ] Lab 2.4 finished and merged

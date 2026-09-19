@@ -541,13 +541,21 @@ export const RULES = [
           `${PERMSET("Helios_Delivery_Crew")} on branch ${DEV}`
         );
       }
-      const profiles = ctx.listOn(DEV, "force-app/main/default/profiles/");
-      return profiles.length === 0
-        ? pass("The permission lives on the permission set, and no Profile was committed")
-        : miss(
-          "a Profile is committed in the sources, which is what made the permission disappear in the first place",
-          `force-app/main/default/profiles/ on branch ${DEV}`
+      // The Profiles stay in the sources, short: the permission must not live there
+      const crewProfile = "force-app/main/default/profiles/Helios Crew.profile-meta.xml";
+      const profile = ctx.readOn(DEV, crewProfile);
+      if (!profile) {
+        return miss(
+          "the Helios Crew profile is gone from the sources. Profiles stay in the repository and are deployed; only their permissions move to permission sets",
+          `${crewProfile} on branch ${DEV}`
         );
+      }
+      return /<fieldPermissions>/.test(profile)
+        ? miss(
+          "the Helios Crew profile carries field permissions, which minimizeProfiles removes on every publish. Publish it again with Save / Publish",
+          `${crewProfile} on branch ${DEV}`
+        )
+        : pass("The permission lives on the permission set, and the Helios Crew profile is still in the sources");
     }
   },
   {

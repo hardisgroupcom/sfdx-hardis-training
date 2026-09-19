@@ -52,23 +52,26 @@ panel. Name `US-033-batch-cost-visibility`, org `helios-dev`.
 
 ![The New User Story card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
+The crews log in with the **Helios Crew** profile. It is one of the two Profiles this repository
+carries, next to `Admin`, the System Administrator profile: in the **DevOps Pipeline** panel, open
+the **Deployment packages** menu, then **Package XML**, and the **Profile** row lists both.
+
 In `helios-dev`, the quick way: **Setup > Object Manager > Panel Batch > Fields & Relationships >
-Cost > Set Field-Level Security**, tick **Visible** for the **System Administrator** profile and for
-whatever profile your crew users have.
+Cost > Set Field-Level Security**, tick **Visible** for the **Helios Crew** profile, **Save**.
 
 That is how most people grant a permission, and it is what this lab is built on.
 
 Bring it down the usual way: **Commit changes**, **Recent Changes**, **Search Metadata**, tick the
-Profile you changed, retrieve, and commit it from **Source Control**. Then **Save / Publish**, push,
-Pull Request, green, merge.
+`Helios Crew` Profile, retrieve, and commit it from **Source Control**. Then **Save / Publish**,
+push, Pull Request, green, merge.
 
 ### 2. Discover that nothing happened
 
-Open `helios-integration`, log in as a crew user or check the field-level security on **Panel Batch
-> Cost**. The permission is not there.
+Open `helios-integration` and check the field-level security of **Panel Batch > Cost**: the
+**Helios Crew** column is not ticked. The permission is not there.
 
-Go back to the Pull Request. The comment says success, and its counts say that a few components
-changed: the Profile was deployed. What was deployed is not what you committed, though.
+Go back to the Pull Request. The comment says success, and the Profile is among the deployed
+components. What was deployed is not what you committed, though.
 
 ### 3. Read your own diff
 
@@ -76,7 +79,8 @@ Your commit had the permission in it. You saw it in the diff before you clicked 
 
 Open the **Source Control** panel, look at the history of your branch, and read the commit
 **Save / Publish** made after yours, `chore(sfdx-hardis): clean sfdx project`. It takes the
-permission you added straight back out, along with most of the rest of the file.
+permission you added straight back out, along with every other section of the file that a
+Permission Set could carry. What is left is what only a Profile can hold.
 
 That is a project setting called **minimizeProfiles**, one of the cleaning rules this project
 switched on, and you can see it in the **Pipeline Settings** panel on the **Salesforce Project**
@@ -89,8 +93,9 @@ Profiles are the single worst metadata type to version, for three reasons that a
 1. **They are enormous and they are shared.** One Profile file lists every object, field, tab, app
    and class permission in the org. Two people touching two unrelated stories both produce a
    thousand-line diff of the same file, and they conflict every time
-2. **They are not additive.** Deploying a Profile replaces the whole thing. If your file was
-   retrieved before a colleague's permission existed, deploying yours **removes theirs**, silently
+2. **A retrieved Profile says no to what it did not have.** It lists the fields and objects of your
+   package with `false` wherever the profile had no access when you retrieved it. If a colleague
+   granted one of them since, deploying your file **switches theirs off**, silently
 3. **What you retrieve depends on your package.** A Profile is retrieved with only the permissions
    for the components in your package, so the same Profile looks different depending on who
    retrieved it and when
@@ -101,6 +106,19 @@ default record types, page layout assignments.
 
 So the pipeline did not lose your work. It refused to carry it, because carrying it would eventually
 delete somebody else's.
+
+!!! note "Why the Profiles stay in the repository all the same"
+    Removing Profiles from the sources would be the wrong conclusion. A user logs in with a
+    Profile, and what only a Profile holds, the default app, the page layout of each object, the tab
+    settings, the login hours, has to be the same in every org. So `Admin` and `Helios Crew` stay in
+    `force-app/main/default/profiles/`, stay in `manifest/package.xml`, and are deployed with
+    everything else.
+
+    They stay **short** on purpose. A Profile retrieved whole lists hundreds of user permissions, and
+    Salesforce adds and removes some at every release, three times a year: a full Profile committed
+    in spring can fail to deploy in autumn on a permission that no longer exists. The short version
+    names only what this project decided, and `minimizeProfiles` keeps it short every time somebody
+    publishes one.
 
 ### 5. Do it the way the project expects
 
@@ -114,35 +132,12 @@ Retrieve the **Permission Set** this time, commit it, **Save / Publish**, and op
 Request. The **Git Delta package.xml** report
 names `Helios_Delivery_Crew`.
 
-One tidy-up before you merge. The Profile file you retrieved in step 1 is in the repository now,
-emptied of everything the cleaning took out and carrying nothing this project wants. Delete
-`force-app/main/default/profiles/` from the **Explorer**. This repository held no Profile before you
-arrived, and it should hold none after: the check at the end of the lab looks for exactly that.
+Nothing to tidy up: the Profile you published in step 1 stays in the repository, cleaned, and it
+keeps being deployed as it always was.
 
-**Open `manifest/package.xml` and delete the Profile block as well**, the three lines naming
-`Admin`:
-
-```xml
-<types>
-    <members>Admin</members>
-    <name>Profile</name>
-</types>
-```
-
-The first publish put it there, and nothing takes it back out when you delete the file: the package
-is only ever added to. A package that names a component the branch does not carry fails the next
-deployment with *an object 'Admin' of type Profile was named in package.xml, but was not found in
-zipped directory*, which is a confusing way of saying the two disagree. Reading the manifest before
-pushing, the habit from Lab 1.5, is what catches it.
-
-Commit the deletion and the edited manifest from **Source Control**, and push them with **Sync
-Changes**, not with Save / Publish. Publishing works the package out again from the git diff, and a
-file deleted from git reads as a component to delete from the org: it would ask every org to delete
-its Admin profile, which Salesforce refuses, and the check would fail on *cannot delete profile*.
-Recent versions of sfdx-hardis recognise a standard profile and leave it alone; pushing the tidy-up
-yourself works with every version.
-
-The check goes green. Merge, and check `helios-integration`: the crew can read the cost.
+The check goes green. Merge, and check `helios-integration`: **Setup > Permission Sets > Helios
+Delivery Crew > Object Settings > Panel Batches**, `Cost` is readable. Every crew member holds that
+permission set, whatever their Profile.
 
 ### 6. Look at the other protection while you are here
 
@@ -200,9 +195,9 @@ enforces it rather than hoping.
 
 ## What you should see
 
-- `manifest/package.xml` listing `Helios_Delivery_Crew`, not a Profile
-- `Cost` readable by the crew in `helios-integration`
-- No Profile file left in `force-app/main/default/profiles/`
+- `Cost` granted on the **Helios Delivery Crew** permission set in `helios-integration`
+- `Admin` and `Helios Crew` still in `force-app/main/default/profiles/`, with no field permission
+  in them
 
 ## If it goes wrong
 
@@ -214,12 +209,10 @@ The field is not in the permission set's object settings until the object is gra
 The CI user cannot grant a permission it does not have itself. Assign **Helios Delivery Manager** to
 the integration org user, which **Training: Level 2 > Set up one of my training orgs** does.
 
-**A Profile keeps coming back in your commits.**
-Something in your selection pulls it in. Do not fight it in the file: untick it at publish time.
-
-**`an object 'Admin' of type Profile was named in package.xml, but was not found in zipped directory`.**
-You deleted the Profile file and left its three lines in `manifest/package.xml`. Delete them too, as
-step 5 says, and push again.
+**The Profile comes back a thousand lines long.**
+It was committed after a retrieve and never went through the cleaning. Check that
+`minimizeProfiles` is still listed on the **Salesforce Project** tab of **Pipeline Settings**, then
+**Save / Publish** again. Do not shorten the file by hand.
 
 ## Check your work
 
