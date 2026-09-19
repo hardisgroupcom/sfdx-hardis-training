@@ -156,7 +156,7 @@ for (const lab of labs) {
 
 const castFirstNames = [...knownNames];
 for (const lab of labs) {
-  const capitalised = lab.body.match(/\b(Marco|Amina|Sofia|Elena|Diego|Nina)\b/g) || [];
+  const capitalised = lab.body.match(/\b(Florian|Julie|Olga|Marco|Amina|Sofia|Elena|Diego|Nina)\b/g) || [];
   for (const name of capitalised) {
     if (!castFirstNames.includes(name)) {
       problems.push(`${lab.rel} uses the character "${name}", who is not in the cast`);
@@ -181,13 +181,15 @@ function backlog() {
   ];
   for (const story of universe.userStories) {
     const owner = universe.cast.find((p) => p.handle === story.author);
-    lines.push(`| ${story.id} | ${story.level} | ${story.title} | ${owner ? owner.name : story.author} | \`${story.branch}\` |`);
+    // Each story has its own page on the site, BACKLOG/<id>/, which is where the
+    // Pull Request comments link: see storyPages() in scripts/build/site.mjs
+    const link = `[${story.id}](${universe.course.site}/BACKLOG/${story.id}/)`;
+    lines.push(`| ${link} | ${story.level} | ${story.title} | ${owner ? owner.name : story.author} | \`${story.branch}\` |`);
   }
   lines.push("", "## The stories in full", "");
   for (const story of universe.userStories) {
     const owner = universe.cast.find((p) => p.handle === story.author);
-    // An anchor named after the story id, so a ticket link can be built from the id
-    // alone: that is all the generic ticketing provider of sfdx-hardis knows
+    // Kept for the links written before each story had its own page
     lines.push(`<a id="${story.id}"></a>`, "", `### ${story.id} - ${story.title}`, "");
     lines.push(`**Owner**: ${owner ? owner.name : story.author}  `);
     lines.push(`**Branch**: \`${story.branch}\`  `);

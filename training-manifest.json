@@ -181,12 +181,16 @@
       ],
       "config": [
         "testLevel",
-        "apexTestsMinCoverageOrgWide"
+        "apexTestsMinCoverageOrgWide",
+        "genericTicketingProviderRegex",
+        "genericTicketingProviderUrlBuilder",
+        "genericTicketingProviderDetailsUrlBuilder"
       ],
       "docs": [
         "salesforce-devops-pull-request-github",
         "salesforce-devops-handle-merge-request-results",
-        "salesforce-devops-solve-megalinter-errors"
+        "salesforce-devops-solve-megalinter-errors",
+        "salesforce-devops-setup-integration-generic-ticketing"
       ],
       "panels": [
         "pipeline"
@@ -870,6 +874,9 @@
         "lab-1-6",
         "lab-2-5"
       ],
+      "salesforce-devops-setup-integration-generic-ticketing": [
+        "lab-1-6"
+      ],
       "salesforce-devops-use-home": [
         "lab-1-7"
       ],
@@ -1184,6 +1191,15 @@
       "apexTestsMinCoverageOrgWide": [
         "lab-1-6",
         "lab-2-5"
+      ],
+      "genericTicketingProviderRegex": [
+        "lab-1-6"
+      ],
+      "genericTicketingProviderUrlBuilder": [
+        "lab-1-6"
+      ],
+      "genericTicketingProviderDetailsUrlBuilder": [
+        "lab-1-6"
       ],
       "backpromoteScanLimit": [
         "lab-2-1"

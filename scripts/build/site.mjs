@@ -11,6 +11,7 @@
  *   labs/_assets/**                -> site-src/_assets/**
  *   site-theme/**                  -> site-src/theme/**
  *   BACKLOG.md                     -> site-src/BACKLOG.md
+ *   training-universe.json stories -> site-src/BACKLOG/US-nnn.md and US-nnn.json
  *   badges/<handle>.md             -> site-src/badges/<handle>.md
  *
  *   node scripts/build/site.mjs
@@ -163,6 +164,65 @@ for (const file of ["BACKLOG.md", "TRANSLATION.md"]) {
     fs.writeFileSync(path.join(OUT, file), frontMatter(PAGE_META[file]) + fs.readFileSync(source, "utf8"), "utf8");
   }
 }
+// On the site, the story links of the backlog stay on the site being built
+const backlogOut = path.join(OUT, "BACKLOG.md");
+if (fs.existsSync(backlogOut)) {
+  const siteStoryLink = new RegExp(`\\]\\(${universe.course.site.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/BACKLOG/(US-\\d+)/\\)`, "g");
+  fs.writeFileSync(backlogOut, fs.readFileSync(backlogOut, "utf8").replace(siteStoryLink, "](BACKLOG/$1.md)"), "utf8");
+}
+
+/**
+ * One page per User Story, BACKLOG/<id>/, and its JSON twin, BACKLOG/<id>.json.
+ *
+ * The page is where a ticket link lands: config/.sfdx-hardis.yml builds it from the id alone
+ * (genericTicketingProviderUrlBuilder). The JSON is what sfdx-hardis reads to write the story
+ * title next to that link in Pull Request comments and release notes
+ * (genericTicketingProviderDetailsUrlBuilder): the course has no ticketing tool, and a static
+ * file per story is all the generic provider needs.
+ */
+function storyPages() {
+  const dir = path.join(OUT, "BACKLOG");
+  fs.mkdirSync(dir, { recursive: true });
+  let count = 0;
+  for (const story of universe.userStories) {
+    const owner = universe.cast.find((person) => person.handle === story.author);
+    const level = universe.levels.find((one) => one.level === story.level);
+    const lab = level?.labs.find((one) => one.lab === story.lab);
+    const labLink = lab ? `[Lab ${story.level}.${story.lab} - ${lab.title}](../en/${level.slug}/${lab.slug}.md)` : `Lab ${story.level}.${story.lab}`;
+    const page = [
+      frontMatter({ title: `${story.id} - ${story.title}`, description: story.story }) + `# ${story.id} - ${story.title}`,
+      "",
+      `> ${story.story}`,
+      "",
+      "Acceptance criteria:",
+      "",
+      ...story.acceptance.map((criterion) => `- ${criterion}`),
+      "",
+      "| | |",
+      "|---|---|",
+      `| Owner | ${owner ? owner.name : story.author} |`,
+      `| Branch | \`${story.branch}\` |`,
+      `| Delivered in | ${labLink} |`,
+      "",
+      "[All the stories of the backlog](../BACKLOG.md)",
+      ""
+    ].join("\n");
+    fs.writeFileSync(path.join(dir, `${story.id}.md`), page, "utf8");
+    const details = {
+      id: story.id,
+      subject: story.title,
+      url: `${universe.course.site}/BACKLOG/${story.id}/`,
+      owner: owner ? owner.name : story.author,
+      branch: story.branch,
+      lab: `${story.level}.${story.lab}`
+    };
+    fs.writeFileSync(path.join(dir, `${story.id}.json`), JSON.stringify(details, null, 2) + "\n", "utf8");
+    count++;
+  }
+  return count;
+}
+const stories = storyPages();
+
 const linkMap = path.join(ROOT, "labs", "link-map.en.md");
 if (fs.existsSync(linkMap)) {
   fs.mkdirSync(path.join(OUT, "labs"), { recursive: true });
@@ -214,4 +274,4 @@ const badgeIndex = [
 fs.mkdirSync(path.join(OUT, "badges"), { recursive: true });
 fs.writeFileSync(path.join(OUT, "badges", "index.md"), badgeIndex, "utf8");
 
-console.log(`site-src assembled: ${pages} lab page(s), ${assets} asset(s), ${themeFiles} theme file(s), ${badgePages} badge page(s), ${locales.length} locale(s)`);
+console.log(`site-src assembled: ${pages} lab page(s), ${stories} story page(s), ${assets} asset(s), ${themeFiles} theme file(s), ${badgePages} badge page(s), ${locales.length} locale(s)`);

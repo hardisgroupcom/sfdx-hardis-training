@@ -16,9 +16,9 @@ screenshots:
 depends_on:
   commands: [hardis:project:deploy:smart]
   flags: [--check]
-  config: [testLevel, apexTestsMinCoverageOrgWide]
+  config: [testLevel, apexTestsMinCoverageOrgWide, genericTicketingProviderRegex, genericTicketingProviderUrlBuilder, genericTicketingProviderDetailsUrlBuilder]
   panels: [pipeline]
-  docs: [salesforce-devops-pull-request-github, salesforce-devops-handle-merge-request-results, salesforce-devops-solve-megalinter-errors]
+  docs: [salesforce-devops-pull-request-github, salesforce-devops-handle-merge-request-results, salesforce-devops-solve-megalinter-errors, salesforce-devops-setup-integration-generic-ticketing]
 ---
 
 # Lab 1.6 - Open a Pull Request, pass the deployment check, merge
@@ -116,9 +116,25 @@ the most useful thing on the page.
    would change (1 created, 4 updated, 0 deleted, 26 unchanged)`. The one created is your field, and the
    updated ones include the layout and the two permission sets you changed
 3. **Apex coverage** **(3)**, against the target this project sets
-4. **Tickets** **(4)**, the stories it recognised in your branch name and commit messages
+4. **Tickets** **(4)**, the stories it recognised in your branch name and commit messages, each
+   with its title and a link to its page in the backlog
 
 Below those, a summary of your commits and the name of the job that wrote the comment.
+
+<details markdown="1"><summary>Under the hood: where the story titles come from</summary>
+
+The course has no ticketing tool: its backlog is the ticketing system. `config/.sfdx-hardis.yml`
+declares it with three keys of the generic ticketing provider:
+
+- `genericTicketingProviderRegex: "(US-[0-9]{3})"` finds `US-014` in the branch name and the commits
+- `genericTicketingProviderUrlBuilder` turns it into the link, `.../BACKLOG/US-014/`
+- `genericTicketingProviderDetailsUrlBuilder` points at `.../BACKLOG/US-014.json`, a small file the
+  course site publishes for each story. sfdx-hardis reads its `subject` and writes it next to the link
+
+A real project points these keys at its own ticketing tool, or uses the JIRA, Azure Boards or
+ServiceNow connector instead.
+
+</details>
 
 !!! note "Your counts may differ by one or two"
     The picture is a real comment from a real run of this lab, kept as it came out. A component

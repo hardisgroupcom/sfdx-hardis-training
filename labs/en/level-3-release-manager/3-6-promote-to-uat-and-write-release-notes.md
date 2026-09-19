@@ -58,8 +58,8 @@ it before you create anything: if a story in it should not go out this week, now
 after the deployment.
 
 **Deployment Actions** **(2)** is the list of actions those Pull Requests carried, gathered in one
-place, and step 4 comes back to it. **Tickets** beside it is the same again for whatever ticketing
-system the project declares. A fourth tab, **Apex Tests**, appears only on a project that sets
+place, and step 4 comes back to it. **Tickets** beside it is the same again for the stories, each with its
+title, read from the backlog the project declares as its ticketing system. A fourth tab, **Apex Tests**, appears only on a project that sets
 `enableDeploymentApexTestClasses`, and this one does not.
 
 The footer holds the two buttons step 7 uses: **(3)** generates the notes for what has already been

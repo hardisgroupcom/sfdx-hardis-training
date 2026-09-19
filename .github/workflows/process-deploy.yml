@@ -60,6 +60,21 @@ jobs:
             echo "ready=false" >> "$GITHUB_OUTPUT"
             echo "::notice::${BRANCH} has no org in its configuration yet: nothing to deploy"
           fi
+      # TEMPORARY, remove before hardisgroupcom/sfdx-hardis-training#1 merges: runs
+      # sfdx-hardis from the branch of hardisgroupcom/sfdx-hardis#2206, so the story
+      # titles of genericTicketingProviderDetailsUrlBuilder can be checked in real
+      # Pull Request comments before that version is released.
+      - name: TEMPORARY - sfdx-hardis from feat/training-skills
+        if: ${{ steps.pipeline.outputs.ready == 'true' }}
+        run: |
+          git clone --depth 1 --branch feat/training-skills https://github.com/hardisgroupcom/sfdx-hardis.git /tmp/sfdx-hardis
+          cd /tmp/sfdx-hardis
+          command -v yarn >/dev/null || npm install -g yarn
+          yarn install --frozen-lockfile --ignore-scripts --network-timeout 600000
+          npx tsc -p . --outDir lib
+          sf plugins link /tmp/sfdx-hardis --no-install
+          sf plugins --core | grep -i hardis
+
       # Login & check deploy with test classes & code coverage
       - name: Login & Process Deployment
         if: ${{ !startsWith(github.ref_name, 'auto-fix/') && steps.pipeline.outputs.ready == 'true' }}
@@ -92,10 +107,6 @@ jobs:
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
           SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
           NOTIF_EMAIL_ADDRESS: ${{ secrets.NOTIF_EMAIL_ADDRESS }}
-          JIRA_HOST: ${{ secrets.JIRA_HOST }}
-          JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
-          JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
-          JIRA_PAT: ${{ secrets.JIRA_PAT }}
           # Uncomment to provide API keys for coding agent auto-fix of deployment errors
           # ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           # OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
