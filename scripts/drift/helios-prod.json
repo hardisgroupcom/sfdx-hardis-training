@@ -1,15 +1,4 @@
 {
-  "_comment": "What makes helios-prod different from the other training orgs. Applied by Training > Set up one of my training orgs. Lab 3.9 needs the first step, Lab 3.7 the second. The picklist value Lab 3.8 retrofits is added by Simulate my teammates, when that lab starts: added here, the Lab 3.7 release would have removed it first.",
-  "steps": [
-    {
-      "type": "apex",
-      "label": "Two users left and nobody deactivated them, so monitoring has something true to report",
-      "code": "// Lab 3.9 needs findings that are real rather than staged. Inactive people\n// still holding a licence is the most common one on any org older than a year.\nList<User> stale = [SELECT Id, LastLoginDate FROM User WHERE IsActive = true AND Profile.UserLicense.Name = 'Salesforce' LIMIT 5];\nSystem.debug('Users monitoring will look at: ' + stale.size());"
-    },
-    {
-      "type": "apex",
-      "label": "A short deployment history, so the DORA report has a curve rather than one point",
-      "code": "// Lab 3.7 reads DORA metrics. They come from the git history, not from the\n// org, so nothing is written here: this step only records that the seeded history\n// in the repository is what the report will walk.\nSystem.debug('DORA history comes from the git history of your fork, see Lab 3.7');"
-    }
-  ]
+  "_comment": "What makes helios-prod different from the other training orgs, applied by Training > Set up one of my training orgs. Nothing today: the picklist value Lab 3.8 retrofits is added by Simulate my teammates when that lab starts, because added here, the Lab 3.7 release would have deactivated it first. Lab 3.9 reads the findings a young org really has, and Lab 3.7 the deployments the seeding and the learner really made.",
+  "steps": []
 }
