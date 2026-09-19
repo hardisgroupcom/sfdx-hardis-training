@@ -89,7 +89,7 @@ On the page layout screen, tick **Installation Layout** so the field appears on 
 Click **Save**.
 
 !!! tip "Fill in Description and Help Text"
-    Two seconds now, and the generated project documentation at Lab 3.10 reads like something
+    Two seconds now, and the generated project documentation at Lab 3.9 reads like something
     written by a person. Empty descriptions are the most common reason that documentation is
     useless.
 

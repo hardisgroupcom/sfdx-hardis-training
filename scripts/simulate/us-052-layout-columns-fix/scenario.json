@@ -1,7 +1,7 @@
 {
   "id": "us-052-layout-columns-fix",
   "title": "US-052 Mariia puts Total Capacity back, beside the cap",
-  "usedBy": "Lab 3.3",
+  "usedBy": "Lab 3.2",
   "levels": [3],
   "description": "Mariia answers your review: Total Capacity (kW) goes back on the Installation layout, read only, in the second column under the crew capacity cap.",
   "branch": "training/mate-us-052-layout-columns",

@@ -1,9 +1,9 @@
 ---
-id: lab-3-5
-title: "Lab 3.5 - Three Pull Requests collide: choose the merge order"
+id: lab-3-4
+title: "Lab 3.4 - Three Pull Requests collide: choose the merge order"
 description: "Decide the order three Pull Requests are merged in when two change the same file and one fails its check, as a Salesforce release manager."
 level: 3
-lab: 5
+lab: 4
 lang: en
 source_rev: ""
 screenshots:
@@ -17,7 +17,7 @@ depends_on:
   docs: [salesforce-devops-config-cleaning, salesforce-devops-config-delta-deployment, salesforce-devops-config-overwrite]
 ---
 
-# Lab 3.5 - Three Pull Requests collide: choose the merge order
+# Lab 3.4 - Three Pull Requests collide: choose the merge order
 
 **Level**: 3 Release Manager
 
@@ -42,7 +42,7 @@ Deciding what goes in, in what order, and what waits, is the job.
 
 ## Before you start
 
-- [ ] Lab 3.4 finished
+- [ ] Lab 3.3 finished
 - [ ] Nothing uncommitted
 
 ## Steps
@@ -121,7 +121,7 @@ Look at its diff on `Helios_Delivery_Manager`: one new `<fieldPermissions>` bloc
 `Panel_Batch__c.Quote_Pdf_Url__c`, added near the bottom of the file where the `Panel_Batch__c`
 grants live.
 
-Green, small, nothing in its way. Review it the way Lab 3.3 taught, then merge. If it is already
+Green, small, nothing in its way. Review it the way Lab 3.2 taught, then merge. If it is already
 merged, read the merged one instead and note how little there was to it.
 
 Nothing here was hard, which is exactly why it is worth knowing what happened next.
@@ -176,12 +176,12 @@ project bans permissions on Profiles.
 different per org. Anything listed in `manifest/package-no-overwrite.xml` is removed from the package
 when the target org already has it, so a deployment cannot flatten a named credential that points at
 a different endpoint in each environment. The file does not exist in this project yet, so nothing is
-protected: Lab 3.6 creates it, before the first promotion to `uat`. Its location can be changed per
+protected: Lab 3.5 creates it, before the first promotion to `uat`. Its location can be changed per
 branch, which is why you will not find it on the global **Deployment** tab **(2)**: switch the scope
 to `Branch: integration` and it is there, as **Branch-scoped custom Package-No-Overwrite path**.
 
 **Delta deployment** is **Use Delta Deployment** **(3)**, on the global **Deployment** tab, and
-Lab 3.4 showed you it is **Disabled** here. With it on, each merge deploys the components that changed
+Lab 3.3 showed you it is **Disabled** here. With it on, each merge deploys the components that changed
 rather than the declared package. It is a speed and blast-radius decision, not a safety net: it does
 not stop one merge overwriting another, because both deployments send what their own commit
 contains.
@@ -230,7 +230,7 @@ branch is how a release manager loses an evening.
 
 ## Check your work
 
-Welcome page > **Training: Level 3** > **Check my work**, then pick Lab 3.5.
+Welcome page > **Training: Level 3** > **Check my work**, then pick Lab 3.4.
 
 ## Go deeper
 
@@ -238,4 +238,4 @@ Welcome page > **Training: Level 3** > **Check my work**, then pick Lab 3.5.
 - [Delta deployments](https://sfdx-hardis.cloudity.com/salesforce-devops-config-delta-deployment/)
 - [Overwrite management](https://sfdx-hardis.cloudity.com/salesforce-devops-config-overwrite/)
 
-[Next: Lab 3.6 - Promote to UAT and write the release notes](3-6-promote-to-uat-and-write-release-notes.md){ .md-button .md-button--primary }
+[Next: Lab 3.5 - Promote to UAT and write the release notes](3-5-promote-to-uat-and-write-release-notes.md){ .md-button .md-button--primary }

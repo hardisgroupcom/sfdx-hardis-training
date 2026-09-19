@@ -1,5 +1,5 @@
 # The configuration of this course site. It is not named mkdocs.yml on purpose: the repository is
-# also the Helios Salesforce project, and Lab 3.10 generates the project documentation, whose
+# also the Helios Salesforce project, and Lab 3.9 generates the project documentation, whose
 # mkdocs.yml is the project's own. Build with: python -m zensical build -f course-site.yml
 site_name: Salesforce DevOps with sfdx-hardis
 site_description: Free hands-on Salesforce DevOps training in three levels, from your first Pull Request to owning the CI/CD pipeline, with sfdx-hardis and VS Code
@@ -159,16 +159,15 @@ nav:
   - "Level 3 - Release Manager":
       - Start here: en/level-3-release-manager/index.md
       - en/level-3-release-manager/3-1-configure-the-pipeline-up-to-production.md
-      - en/level-3-release-manager/3-2-ci-authentication-with-jwt.md
-      - en/level-3-release-manager/3-3-review-a-contributor-pull-request.md
-      - en/level-3-release-manager/3-4-deploy-to-integration-and-read-the-log.md
-      - en/level-3-release-manager/3-5-merge-colliding-pull-requests.md
-      - en/level-3-release-manager/3-6-promote-to-uat-and-write-release-notes.md
-      - en/level-3-release-manager/3-7-release-to-production-and-read-dora-metrics.md
-      - en/level-3-release-manager/3-8-hotfix-and-retrofit.md
-      - en/level-3-release-manager/3-9-monitor-your-production-org.md
-      - en/level-3-release-manager/3-10-generate-the-project-documentation.md
-      - en/level-3-release-manager/3-11-capstone-run-a-weekly-release-cycle.md
+      - en/level-3-release-manager/3-2-review-a-contributor-pull-request.md
+      - en/level-3-release-manager/3-3-deploy-to-integration-and-read-the-log.md
+      - en/level-3-release-manager/3-4-merge-colliding-pull-requests.md
+      - en/level-3-release-manager/3-5-promote-to-uat-and-write-release-notes.md
+      - en/level-3-release-manager/3-6-release-to-production-and-read-dora-metrics.md
+      - en/level-3-release-manager/3-7-hotfix-and-retrofit.md
+      - en/level-3-release-manager/3-8-monitor-your-production-org.md
+      - en/level-3-release-manager/3-9-generate-the-project-documentation.md
+      - en/level-3-release-manager/3-10-capstone-run-a-weekly-release-cycle.md
   - Backlog: BACKLOG.md
   - Badges: badges/index.md
   - Link map: labs/link-map.en.md

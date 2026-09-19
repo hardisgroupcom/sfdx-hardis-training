@@ -314,10 +314,12 @@ It made this folder point at your orgs, in the git-ignored `.sf` directory:
 
     sf config set target-dev-hub=helios-prod target-org=helios-dev
 
-And it protected `integration` and `uat` with one call to the GitHub API per branch, the same
-settings you will set by hand on `preprod` and `main` in Lab 3.1:
+And it protected `integration` and `uat` with one call to the GitHub API per branch: changes only
+through a Pull Request, merged only once its checks are green, for everybody. You will set the same
+rule on `preprod` and `main` in Lab 3.1:
 
     gh api -X PUT repos/<your-handle>/sfdx-hardis-training/branches/integration/protection \
+      -F "required_pull_request_reviews[required_approving_review_count]=0" \
       -f "required_status_checks[contexts][]=Simulate Deployment to Major Org" \
       -f "required_status_checks[contexts][]=Mega-Linter" \
       -F enforce_admins=true ...
@@ -350,7 +352,7 @@ Seven things, each of them real work on a real project, and none of them yours t
   branch, in `config/branches/`, committed on `integration` and pushed to your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`). The repository
   could not know that: your orgs did not exist when it was written. It is pushed because the badge
   check clones your fork (`github.com/my-username/sfdx-hardis-training`) and reads what is actually in it. `uat` receives the same files with its
-  first promotion, in Lab 3.6, the way every change reaches it
+  first promotion, in Lab 3.5, the way every change reaches it
 - **`integration` and `uat` protected.** A Pull Request into either one can only be merged once
   every check GitHub runs on it has finished green, and that rule holds for you too, the owner of
   the fork. On a real project somebody set this up on day one: a merge on a red check deploys
@@ -378,7 +380,7 @@ Seven things, each of them real work on a real project, and none of them yours t
     holding fictional solar installations, in a repository you own, for a course. The trade is: a
     beginner reaches a working pipeline in their first hour instead of their second day.
 
-    **Lab 3.2 sets up JWT properly for all four orgs, and deletes these secrets.** If you only
+    **Lab 3.1 sets up JWT properly for all four orgs, and deletes these secrets.** If you only
     ever do Levels 1 and 2, delete the secrets when you are done: the scratch orgs delete themselves.
 
 ### 7. Let the extension talk to GitHub
@@ -430,8 +432,9 @@ Your own `helios-dev` is not in the diagram either, and that is correct: the dia
 is deployed, and nothing is ever deployed into the org you build in.
 
 !!! note "`preprod` and `main` are missing on purpose"
-    Your fork (`github.com/my-username/sfdx-hardis-training`) carries those two branches, and the diagram ignores them: a branch becomes part of
-    the pipeline only once somebody says which org it deploys to, and nobody has.
+    Your fork (`github.com/my-username/sfdx-hardis-training`) has a `main` branch, and no
+    `preprod` yet, and the diagram shows neither: a branch becomes part of the pipeline only once
+    somebody says which org it deploys to, and nobody has.
 
     That is the shape of this course. Levels 1 and 2 are the work of a contributor, which happens
     between a feature branch and `integration`. Level 3 is the work of a release manager, and its

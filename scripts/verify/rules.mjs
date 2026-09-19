@@ -161,8 +161,8 @@ function firstPassing(...attempts) {
 const ruleCheck = (id) => (ctx) => RULES.find((r) => r.id === id).check(ctx);
 
 /**
- * A hotfix in a history: the word itself, or a merge of a fix/ branch, which is how Lab 3.8 names
- * it (branchPrefixChoices) and how the DORA report of Lab 3.7 recognises one.
+ * A hotfix in a history: the word itself, or a merge of a fix/ branch, which is how Lab 3.7 names
+ * it (branchPrefixChoices) and how the DORA report of Lab 3.6 recognises one.
  */
 const isHotfix = (history) => mentions(history, "hotfix") || /(^|[\s/:])(hot|bug)?fix\//im.test(history || "");
 
@@ -632,7 +632,7 @@ export const RULES = [
   // ------------------------------------------------------------- level 3
   {
     id: "3.1", level: 3, lab: 1,
-    title: "The pipeline reaches production",
+    title: "The pipeline reaches production, and every org authenticates with JWT",
     check: (ctx) => {
       const missingBranches = ["uat", "preprod", "main"].filter((b) => !ctx.hasBranch(b));
       if (missingBranches.length > 0) {
@@ -652,15 +652,9 @@ export const RULES = [
       }
       const configs = ctx.listOn("main", "config/branches/").concat(ctx.listOn(DEV, "config/branches/"));
       const missing = ["preprod", "main"].filter((b) => !configs.some((f) => f.endsWith(`.sfdx-hardis.${b}.yml`)));
-      return missing.length === 0
-        ? pass("preprod and main are major branches with their own configuration")
-        : miss(`missing branch configuration: ${missing.join(", ")}`, "config/branches/");
-    }
-  },
-  {
-    id: "3.2", level: 3, lab: 2,
-    title: "CI authentication is wired for the four orgs, and the Level 1 shortcut is gone",
-    check: (ctx) => {
+      if (missing.length > 0) {
+        return miss(`missing branch configuration: ${missing.join(", ")}`, "config/branches/. Add/Configure Org writes it, Lab 3.1 steps 4 to 7");
+      }
       const branches = ["integration", "uat", "preprod", "main"];
       const notConfigured = [];
       for (const b of branches) {
@@ -691,11 +685,11 @@ export const RULES = [
           "config/branches/.jwt/ on integration. Add/Configure Org writes them, and Publish my pipeline configuration puts them there"
         );
       }
-      const project = ctx.readOn(DEV, "config/.sfdx-hardis.yml") || "";
-      if (!/orgAuthenticationMode:\s*["']?encryptedCert/.test(project)) {
+      const devProject = ctx.readOn(DEV, "config/.sfdx-hardis.yml") || "";
+      if (!/orgAuthenticationMode:\s*["']?encryptedCert/.test(devProject)) {
         return miss(
           "orgAuthenticationMode still says the pipeline has no certificates",
-          `config/.sfdx-hardis.yml on branch ${DEV}, expected orgAuthenticationMode: encryptedCert (Lab 3.2 step 7)`
+          `config/.sfdx-hardis.yml on branch ${DEV}, expected orgAuthenticationMode: encryptedCert (Lab 3.1 step 9)`
         );
       }
       // The secrets of the fork are only visible from the learner's machine, through gh
@@ -705,12 +699,12 @@ export const RULES = [
         ? pass("The four orgs authenticate with JWT, and the Level 1 shortcut is gone")
         : miss(
           `the Level 1 shortcut is still there: ${shortcuts.join(", ")}`,
-          "your fork, Settings > Secrets and variables > Actions. Lab 3.2 step 6 deletes them"
+          "your fork, Settings > Secrets and variables > Actions. Lab 3.1 step 10 deletes them"
         );
     }
   },
   {
-    id: "3.3", level: 3, lab: 3,
+    id: "3.2", level: 3, lab: 2,
     title: "Mariia's US-052 was reviewed before the merge, and no field left the layout",
     check: (ctx) => {
       const history = ctx.log(DEV);
@@ -730,14 +724,14 @@ export const RULES = [
     }
   },
   {
-    id: "3.4", level: 3, lab: 4,
+    id: "3.3", level: 3, lab: 3,
     title: "Romain's US-056 deploys, and .forceignore hides nothing it should not",
     check: (ctx) => {
       const forceignore = ctx.readOn(DEV, ".forceignore") || "";
       if (/Crew_W\*/.test(forceignore)) {
         return miss(
           "the Crew_W* wildcard is still in .forceignore, so any field whose name starts with Crew_W stays out of every deployment",
-          `.forceignore on branch ${DEV}. Lab 3.4 step 8 sends it back to Romain`
+          `.forceignore on branch ${DEV}. Lab 3.3 step 8 sends it back to Romain`
         );
       }
       return ctx.readOn(DEV, FIELD("Installation__c", "Crew_Workload__c"))
@@ -749,10 +743,10 @@ export const RULES = [
     }
   },
   {
-    id: "3.5", level: 3, lab: 5,
+    id: "3.4", level: 3, lab: 4,
     title: "The colliding Pull Requests were ordered, and both grants survived",
     check: (ctx) => {
-      // US-020 is deliberately NOT checked here: Lab 3.5 sends it back to its author
+      // US-020 is deliberately NOT checked here: Lab 3.4 sends it back to its author
       // and no lab ever merges it. Requiring it would make this check unpassable.
       const history = ctx.log(DEV);
       const missing = ["US-018", "US-019"].filter((id) => !mentions(history, id));
@@ -773,7 +767,7 @@ export const RULES = [
     }
   },
   {
-    id: "3.6", level: 3, lab: 6,
+    id: "3.5", level: 3, lab: 5,
     title: "Integration was promoted to UAT, without overwriting what UAT keeps for itself",
     check: (ctx) => {
       if (!ctx.hasBranch("uat")) {
@@ -792,12 +786,12 @@ export const RULES = [
         ? pass("The work reached uat, and the warehouse address UAT keeps for itself is protected")
         : miss(
           "Helios_Warehouse is not in the overwrite manager's list, so a promotion puts the production address back in UAT",
-          `manifest/package-no-overwrite.xml on branch ${DEV}. Lab 3.6 step 2 creates it`
+          `manifest/package-no-overwrite.xml on branch ${DEV}. Lab 3.5 step 2 creates it`
         );
     }
   },
   {
-    id: "3.7", level: 3, lab: 7,
+    id: "3.6", level: 3, lab: 6,
     title: "UAT was released to production, and the DORA report was read",
     // Right after the lab, the DORA report is a file on the learner's machine: never committed,
     // so only Check my work can see it
@@ -810,7 +804,7 @@ export const RULES = [
       const reports = fs.existsSync(doraDir) ? fs.readdirSync(doraDir).filter((f) => /^dora-report.*\.md$/.test(f)) : [];
       return reports.length > 0
         ? pass("Production has the work, and the DORA report is there to read")
-        : miss("no DORA report was generated", "docs/dora/ in your project. Lab 3.7 step 7, Generate DORA Metrics Report");
+        : miss("no DORA report was generated", "docs/dora/ in your project. Lab 3.6 step 7, Generate DORA Metrics Report");
     },
     check: (ctx) => {
       if (!ctx.hasBranch("main")) {
@@ -827,7 +821,7 @@ export const RULES = [
     }
   },
   {
-    id: "3.8", level: 3, lab: 8,
+    id: "3.7", level: 3, lab: 7,
     title: "The hotfix shipped and the admin change was retrofitted",
     // Right after the lab the retrofit is on integration, and reaches main with the
     // next release, in the capstone. That is the lab done right, so it passes now.
@@ -863,7 +857,7 @@ export const RULES = [
     }
   },
   {
-    id: "3.9", level: 3, lab: 9,
+    id: "3.8", level: 3, lab: 8,
     title: "Production is under monitoring, and the project says where",
     check: (ctx) => {
       const project = ctx.readOn(DEV, "config/.sfdx-hardis.yml") || "";
@@ -872,32 +866,32 @@ export const RULES = [
         ? pass(`Monitoring repository recorded: ${url[1]}`)
         : miss(
           "the project does not say where its monitoring repository is",
-          `monitoringRepository in config/.sfdx-hardis.yml on branch ${DEV}. Lab 3.9 step 8 sets it in Pipeline Settings`
+          `monitoringRepository in config/.sfdx-hardis.yml on branch ${DEV}. Lab 3.8 step 8 sets it in Pipeline Settings`
         );
     }
   },
   {
-    id: "3.10", level: 3, lab: 10, auditable: false,
+    id: "3.9", level: 3, lab: 9, auditable: false,
     title: "The project documentation is generated, and a person wrote in it",
     // Generated on demand and never committed: only the learner's machine has it
     check: (ctx) => {
       const page = path.join(ctx.dir, "docs", "objects", "Installation__c.md");
       if (!fs.existsSync(page)) {
-        return miss("no generated documentation was found", "docs/objects/Installation__c.md in your project. Lab 3.10 step 2, Generate Documentation");
+        return miss("no generated documentation was found", "docs/objects/Installation__c.md in your project. Lab 3.9 step 2, Generate Documentation");
       }
       return /DO_NOT_OVERWRITE_DOC=TRUE/.test(fs.readFileSync(page, "utf8"))
         ? pass("The documentation is generated, and the Installation page keeps what you wrote")
         : miss(
           "the Installation page can still be overwritten, and the paragraph you wrote with it",
-          "docs/objects/Installation__c.md, its second line. Lab 3.10 step 5 sets DO_NOT_OVERWRITE_DOC to TRUE"
+          "docs/objects/Installation__c.md, its second line. Lab 3.9 step 5 sets DO_NOT_OVERWRITE_DOC to TRUE"
         );
     }
   },
   {
-    id: "3.11", level: 3, lab: 11,
+    id: "3.10", level: 3, lab: 10,
     title: "Capstone: a full release cycle",
     check: (ctx) => {
-      // The week's release carried Romain's US-055 and the Lab 3.8 retrofit to production
+      // The week's release carried Romain's US-055 and the Lab 3.7 retrofit to production
       const installDate = ctx.readOn("main", FIELD("Installation__c", "Install_Date__c")) || "";
       if (!/<inlineHelpText>/.test(installDate)) {
         return miss(
@@ -907,9 +901,9 @@ export const RULES = [
       }
       const status = ctx.readOn("main", FIELD("Installation__c", "Status__c")) || "";
       return /Needs Reinspection/.test(status)
-        ? pass("The week's release reached production, the Lab 3.8 retrofit with it")
+        ? pass("The week's release reached production, the Lab 3.7 retrofit with it")
         : miss(
-          "the release reached main without the Needs Reinspection retrofit of Lab 3.8",
+          "the release reached main without the Needs Reinspection retrofit of Lab 3.7",
           `${FIELD("Installation__c", "Status__c")} on branch main`
         );
     }

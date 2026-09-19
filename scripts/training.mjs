@@ -43,7 +43,7 @@ ${c.bold("Salesforce DevOps with sfdx-hardis - training commands")}
   ${c.cyan("check")}      Check my work: verifies a lab and prints your receipt
   ${c.cyan("claim")}      Claim my badge: checks the whole level, then opens the claim form filled in
   ${c.cyan("simulate")}   Simulate my teammates: creates the branches and Pull Requests a lab needs
-  ${c.cyan("publish")}    Publish my pipeline configuration: the release manager's configuration, straight to integration
+  ${c.cyan("publish")}    Publish my pipeline configuration: the release manager's configuration, through a Pull Request into integration
   ${c.cyan("reset")}      Reset this level: puts your repository back to a known state
   ${c.cyan("teardown")}   Clean up a training org: removes the Helios app and its data
 

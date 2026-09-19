@@ -114,7 +114,7 @@ Acceptance criteria:
 
 **Owner**: Mariia Pyvovarchuk  
 **Branch**: `training/mate-us-052-layout-columns`  
-**Lab**: 3.3
+**Lab**: 3.2
 
 > As a planner, I want the Information section of an installation to use both of its columns, so that I see the whole installation without scrolling.
 
@@ -129,7 +129,7 @@ Acceptance criteria:
 
 **Owner**: Mariia Pyvovarchuk  
 **Branch**: `training/mate-us-020-apex-refactor`  
-**Lab**: 3.5
+**Lab**: 3.4
 
 > As a developer, I want the scheduler split into testable methods, so that we stop being afraid of it.
 
@@ -264,7 +264,7 @@ Acceptance criteria:
 
 **Owner**: Romain Panda  
 **Branch**: `fix/US-045-installation-date-hotfix`  
-**Lab**: 3.8
+**Lab**: 3.7
 
 > As a planner, I want to back-date an installation I cancel to the day it was called off, so that the week can be closed.
 
@@ -279,7 +279,7 @@ Acceptance criteria:
 
 **Owner**: Mariia Pyvovarchuk  
 **Branch**: `training/mate-us-046-needs-reinspection`  
-**Lab**: 3.8
+**Lab**: 3.7
 
 > As the release manager, I want the status an admin added in production to be in the repository, so that the next release does not take it away from the planners.
 
@@ -294,7 +294,7 @@ Acceptance criteria:
 
 **Owner**: Romain Panda  
 **Branch**: `training/mate-us-055-install-date-help`  
-**Lab**: 3.11
+**Lab**: 3.10
 
 > As a crew lead, I want Install Date to say whether it is the day we go on site or the day the panels arrive, so that nobody drives to an empty site.
 
@@ -308,7 +308,7 @@ Acceptance criteria:
 
 **Owner**: Romain Panda  
 **Branch**: `training/mate-us-056-crew-workload`  
-**Lab**: 3.4
+**Lab**: 3.3
 
 > As a planner, I want to see how many panels each person of the crew has to lay, so that I stop working it out in my head.
 

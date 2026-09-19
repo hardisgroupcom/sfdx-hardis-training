@@ -501,7 +501,7 @@
       "file": "labs/en/level-3-release-manager/3-1-configure-the-pipeline-up-to-production.md",
       "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-1-configure-the-pipeline-up-to-production/",
       "commands": [
-        "hardis:project:create"
+        "hardis:project:configure:auth"
       ],
       "flags": [],
       "config": [
@@ -510,65 +510,43 @@
         "productionBranch",
         "mergeTargets",
         "targetUsername",
-        "instanceUrl"
+        "instanceUrl",
+        "orgAuthenticationMode"
       ],
       "docs": [
         "salesforce-devops-setup-home",
-        "salesforce-devops-setup-init-project",
+        "salesforce-devops-setup-auth",
+        "salesforce-devops-setup-auth-github",
         "salesforce-devops-setup-existing-org"
       ],
       "panels": [
         "pipeline",
-        "pipelineConfig"
+        "pipelineConfig",
+        "orgManager",
+        "commandExecution",
+        "promptInput"
       ],
       "screenshots": [
-        "annotated/vscode/welcome-custom-menu-3",
-        "annotated/vscode/devops-pipeline-level3--four-stages",
         "annotated/vscode/devops-pipeline--one-column",
+        "annotated/web/github-new-branch",
+        "annotated/web/github-branch-rules",
+        "annotated/web/github-branch-rule",
+        "annotated/vscode/pipeline-settings-menu--add-org",
+        "annotated/vscode/configure-auth-branch--branch-question",
+        "annotated/vscode/configure-auth-variables--secrets",
         "annotated/vscode/pipeline-config--target-branches",
-        "annotated/vscode/pipeline-config-branch",
-        "annotated/vscode/pipeline-config-branch-edit"
+        "annotated/vscode/pipeline-config-deployment--deployment-tab",
+        "annotated/vscode/welcome-custom-menu-3",
+        "annotated/vscode/devops-pipeline-level3--four-stages"
       ]
     },
     {
       "id": "lab-3-2",
       "level": 3,
       "lab": 2,
-      "title": "Set up CI authentication with JWT for four orgs",
-      "file": "labs/en/level-3-release-manager/3-2-ci-authentication-with-jwt.md",
-      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-2-ci-authentication-with-jwt/",
-      "commands": [
-        "hardis:project:configure:auth"
-      ],
-      "flags": [],
-      "config": [
-        "orgAuthenticationMode",
-        "targetUsername",
-        "instanceUrl"
-      ],
-      "docs": [
-        "salesforce-devops-setup-auth",
-        "salesforce-devops-setup-auth-github"
-      ],
-      "panels": [
-        "orgManager",
-        "commandExecution",
-        "promptInput"
-      ],
-      "screenshots": [
-        "annotated/vscode/devops-pipeline--settings-menu",
-        "annotated/vscode/configure-auth-branch--branch-question",
-        "annotated/vscode/configure-auth-variables--secrets",
-        "annotated/vscode/pipeline-config-deployment--deployment-tab"
-      ]
-    },
-    {
-      "id": "lab-3-3",
-      "level": 3,
-      "lab": 3,
       "title": "Review and merge a contributor Pull Request",
-      "file": "labs/en/level-3-release-manager/3-3-review-a-contributor-pull-request.md",
-      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-3-review-a-contributor-pull-request/",
+      "file": "labs/en/level-3-release-manager/3-2-review-a-contributor-pull-request.md",
+      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-2-review-a-contributor-pull-request/",
       "commands": [
         "hardis:project:deploy:smart"
       ],
@@ -584,18 +562,17 @@
         "pipeline"
       ],
       "screenshots": [
-        "annotated/web/github-pr-closed",
         "annotated/web/github-pr-files",
         "annotated/vscode/welcome-custom-menu-3"
       ]
     },
     {
-      "id": "lab-3-4",
+      "id": "lab-3-3",
       "level": 3,
-      "lab": 4,
+      "lab": 3,
       "title": "Read the deployment log, and what .forceignore hides from it",
-      "file": "labs/en/level-3-release-manager/3-4-deploy-to-integration-and-read-the-log.md",
-      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-4-deploy-to-integration-and-read-the-log/",
+      "file": "labs/en/level-3-release-manager/3-3-deploy-to-integration-and-read-the-log.md",
+      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-3-deploy-to-integration-and-read-the-log/",
       "commands": [
         "hardis:project:deploy:smart"
       ],
@@ -619,12 +596,12 @@
       ]
     },
     {
-      "id": "lab-3-5",
+      "id": "lab-3-4",
       "level": 3,
-      "lab": 5,
+      "lab": 4,
       "title": "Three Pull Requests collide: choose the merge order",
-      "file": "labs/en/level-3-release-manager/3-5-merge-colliding-pull-requests.md",
-      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-5-merge-colliding-pull-requests/",
+      "file": "labs/en/level-3-release-manager/3-4-merge-colliding-pull-requests.md",
+      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-4-merge-colliding-pull-requests/",
       "commands": [
         "hardis:project:deploy:smart"
       ],
@@ -650,12 +627,12 @@
       ]
     },
     {
-      "id": "lab-3-6",
+      "id": "lab-3-5",
       "level": 3,
-      "lab": 6,
+      "lab": 5,
       "title": "Promote to UAT and write the release notes",
-      "file": "labs/en/level-3-release-manager/3-6-promote-to-uat-and-write-release-notes.md",
-      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-6-promote-to-uat-and-write-release-notes/",
+      "file": "labs/en/level-3-release-manager/3-5-promote-to-uat-and-write-release-notes.md",
+      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-5-promote-to-uat-and-write-release-notes/",
       "commands": [
         "hardis:doc:release-notes",
         "hardis:project:deploy:smart"
@@ -681,12 +658,12 @@
       ]
     },
     {
-      "id": "lab-3-7",
+      "id": "lab-3-6",
       "level": 3,
-      "lab": 7,
+      "lab": 6,
       "title": "Release to production and read your DORA metrics",
-      "file": "labs/en/level-3-release-manager/3-7-release-to-production-and-read-dora-metrics.md",
-      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-7-release-to-production-and-read-dora-metrics/",
+      "file": "labs/en/level-3-release-manager/3-6-release-to-production-and-read-dora-metrics.md",
+      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-6-release-to-production-and-read-dora-metrics/",
       "commands": [
         "hardis:doc:dora-report",
         "hardis:project:deploy:smart"
@@ -709,12 +686,12 @@
       ]
     },
     {
-      "id": "lab-3-8",
+      "id": "lab-3-7",
       "level": 3,
-      "lab": 8,
+      "lab": 7,
       "title": "Production is broken: hotfix and retrofit",
-      "file": "labs/en/level-3-release-manager/3-8-hotfix-and-retrofit.md",
-      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-8-hotfix-and-retrofit/",
+      "file": "labs/en/level-3-release-manager/3-7-hotfix-and-retrofit.md",
+      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-7-hotfix-and-retrofit/",
       "commands": [
         "hardis:org:retrieve:sources:retrofit",
         "hardis:project:deploy:smart"
@@ -740,12 +717,12 @@
       ]
     },
     {
-      "id": "lab-3-9",
+      "id": "lab-3-8",
       "level": 3,
-      "lab": 9,
+      "lab": 8,
       "title": "Monitor your production org",
-      "file": "labs/en/level-3-release-manager/3-9-monitor-your-production-org.md",
-      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-9-monitor-your-production-org/",
+      "file": "labs/en/level-3-release-manager/3-8-monitor-your-production-org.md",
+      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-8-monitor-your-production-org/",
       "commands": [
         "hardis:org:configure:monitoring"
       ],
@@ -773,12 +750,12 @@
       ]
     },
     {
-      "id": "lab-3-10",
+      "id": "lab-3-9",
       "level": 3,
-      "lab": 10,
+      "lab": 9,
       "title": "Generate the Salesforce project documentation",
-      "file": "labs/en/level-3-release-manager/3-10-generate-the-project-documentation.md",
-      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-10-generate-the-project-documentation/",
+      "file": "labs/en/level-3-release-manager/3-9-generate-the-project-documentation.md",
+      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-9-generate-the-project-documentation/",
       "commands": [
         "hardis:doc:project2markdown"
       ],
@@ -800,12 +777,12 @@
       ]
     },
     {
-      "id": "lab-3-11",
+      "id": "lab-3-10",
       "level": 3,
-      "lab": 11,
+      "lab": 10,
       "title": "Capstone: run a weekly release cycle",
-      "file": "labs/en/level-3-release-manager/3-11-capstone-run-a-weekly-release-cycle.md",
-      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-11-capstone-run-a-weekly-release-cycle/",
+      "file": "labs/en/level-3-release-manager/3-10-capstone-run-a-weekly-release-cycle.md",
+      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-10-capstone-run-a-weekly-release-cycle/",
       "commands": [
         "hardis:project:deploy:smart",
         "hardis:doc:release-notes",
@@ -844,7 +821,7 @@
       ],
       "salesforce-devops-setup-auth-github": [
         "lab-1-2",
-        "lab-3-2"
+        "lab-3-1"
       ],
       "salesforce-devops-create-new-user-story": [
         "lab-1-3"
@@ -861,14 +838,14 @@
       ],
       "salesforce-devops-config-cleaning": [
         "lab-1-5",
-        "lab-3-5"
+        "lab-3-4"
       ],
       "salesforce-devops-pull-request-github": [
         "lab-1-6"
       ],
       "salesforce-devops-handle-merge-request-results": [
         "lab-1-6",
-        "lab-3-3"
+        "lab-3-2"
       ],
       "salesforce-devops-solve-megalinter-errors": [
         "lab-1-6",
@@ -906,7 +883,7 @@
       ],
       "salesforce-devops-config-overwrite": [
         "lab-2-7",
-        "lab-3-5"
+        "lab-3-4"
       ],
       "salesforce-devops-manual-repo-clean": [
         "lab-2-8"
@@ -914,58 +891,55 @@
       "salesforce-devops-setup-home": [
         "lab-3-1"
       ],
-      "salesforce-devops-setup-init-project": [
+      "salesforce-devops-setup-auth": [
         "lab-3-1"
       ],
       "salesforce-devops-setup-existing-org": [
         "lab-3-1"
       ],
-      "salesforce-devops-setup-auth": [
+      "salesforce-devops-validate-merge-request": [
         "lab-3-2"
       ],
-      "salesforce-devops-validate-merge-request": [
-        "lab-3-3"
-      ],
       "salesforce-devops-deploy-major-branches": [
-        "lab-3-4",
-        "lab-3-6",
-        "lab-3-7"
-      ],
-      "salesforce-devops-smart-deployment": [
-        "lab-3-4"
-      ],
-      "salesforce-devops-config-delta-deployment": [
-        "lab-3-5"
-      ],
-      "hardis/doc/salesforce-devops-release-notes": [
+        "lab-3-3",
+        "lab-3-5",
         "lab-3-6"
       ],
+      "salesforce-devops-smart-deployment": [
+        "lab-3-3"
+      ],
+      "salesforce-devops-config-delta-deployment": [
+        "lab-3-4"
+      ],
+      "hardis/doc/salesforce-devops-release-notes": [
+        "lab-3-5"
+      ],
       "hardis/doc/salesforce-devops-dora-report": [
-        "lab-3-7"
+        "lab-3-6"
       ],
       "salesforce-devops-hotfixes": [
-        "lab-3-8"
+        "lab-3-7"
       ],
       "salesforce-devops-retrofit": [
-        "lab-3-8"
+        "lab-3-7"
       ],
       "salesforce-monitoring-home": [
-        "lab-3-9"
+        "lab-3-8"
       ],
       "salesforce-monitoring-config-github": [
-        "lab-3-9"
+        "lab-3-8"
       ],
       "salesforce-monitoring-grafana-v2": [
-        "lab-3-9"
+        "lab-3-8"
       ],
       "salesforce-project-doc-generate": [
-        "lab-3-10"
+        "lab-3-9"
       ],
       "salesforce-devops-release-home": [
-        "lab-3-11"
+        "lab-3-10"
       ],
       "salesforce-devops-setup-checklist": [
-        "lab-3-11"
+        "lab-3-10"
       ]
     },
     "panels": {
@@ -990,41 +964,41 @@
         "lab-2-7",
         "lab-2-9",
         "lab-3-1",
+        "lab-3-2",
         "lab-3-3",
         "lab-3-4",
         "lab-3-5",
         "lab-3-6",
         "lab-3-7",
-        "lab-3-8",
-        "lab-3-11"
+        "lab-3-10"
       ],
       "orgManager": [
         "lab-1-2",
         "lab-1-3",
         "lab-1-4",
         "lab-1-7",
-        "lab-3-2"
+        "lab-3-1"
       ],
       "promptInput": [
         "lab-1-3",
-        "lab-3-2"
+        "lab-3-1"
       ],
       "metadataRetriever": [
         "lab-1-5",
-        "lab-3-8"
+        "lab-3-7"
       ],
       "packageXml": [
         "lab-1-5",
         "lab-2-2",
         "lab-2-6",
         "lab-2-8",
-        "lab-3-5"
+        "lab-3-4"
       ],
       "commandExecution": [
         "lab-1-5",
         "lab-2-7",
         "lab-2-8",
-        "lab-3-2"
+        "lab-3-1"
       ],
       "backpromote": [
         "lab-2-1"
@@ -1033,7 +1007,7 @@
         "lab-2-3",
         "lab-2-4",
         "lab-2-9",
-        "lab-3-6"
+        "lab-3-5"
       ],
       "dataWorkbench": [
         "lab-2-4",
@@ -1045,19 +1019,19 @@
       "pipelineConfig": [
         "lab-2-6",
         "lab-3-1",
-        "lab-3-5"
+        "lab-3-4"
       ],
       "monitoringConfig": [
-        "lab-3-9"
+        "lab-3-8"
       ],
       "orgMonitoring": [
-        "lab-3-9"
+        "lab-3-8"
       ],
       "documentationWorkbench": [
-        "lab-3-10"
+        "lab-3-9"
       ],
       "documentationConfig": [
-        "lab-3-10"
+        "lab-3-9"
       ]
     },
     "commands": {
@@ -1092,13 +1066,13 @@
         "lab-2-2",
         "lab-2-3",
         "lab-2-5",
+        "lab-3-2",
         "lab-3-3",
         "lab-3-4",
         "lab-3-5",
         "lab-3-6",
         "lab-3-7",
-        "lab-3-8",
-        "lab-3-11"
+        "lab-3-10"
       ],
       "hardis:work:backpromote": [
         "lab-2-1"
@@ -1110,28 +1084,25 @@
       "hardis:work:resetselection": [
         "lab-2-8"
       ],
-      "hardis:project:create": [
+      "hardis:project:configure:auth": [
         "lab-3-1"
       ],
-      "hardis:project:configure:auth": [
-        "lab-3-2"
-      ],
       "hardis:doc:release-notes": [
-        "lab-3-6",
-        "lab-3-11"
+        "lab-3-5",
+        "lab-3-10"
       ],
       "hardis:doc:dora-report": [
-        "lab-3-7",
-        "lab-3-11"
+        "lab-3-6",
+        "lab-3-10"
       ],
       "hardis:org:retrieve:sources:retrofit": [
-        "lab-3-8"
+        "lab-3-7"
       ],
       "hardis:org:configure:monitoring": [
-        "lab-3-9"
+        "lab-3-8"
       ],
       "hardis:doc:project2markdown": [
-        "lab-3-10"
+        "lab-3-9"
       ]
     },
     "config": {
@@ -1143,24 +1114,22 @@
         "lab-1-2",
         "lab-1-3",
         "lab-3-1",
-        "lab-3-6"
+        "lab-3-5"
       ],
       "targetUsername": [
         "lab-1-2",
-        "lab-3-1",
-        "lab-3-2"
+        "lab-3-1"
       ],
       "instanceUrl": [
         "lab-1-2",
-        "lab-3-1",
-        "lab-3-2"
+        "lab-3-1"
       ],
       "mergeTargets": [
         "lab-1-2",
         "lab-3-1",
+        "lab-3-5",
         "lab-3-6",
-        "lab-3-7",
-        "lab-3-11"
+        "lab-3-10"
       ],
       "customCommands": [
         "lab-1-2"
@@ -1177,7 +1146,7 @@
         "lab-2-6",
         "lab-2-7",
         "lab-2-9",
-        "lab-3-5"
+        "lab-3-4"
       ],
       "autoRemoveUserPermissions": [
         "lab-1-5",
@@ -1186,7 +1155,7 @@
       "testLevel": [
         "lab-1-6",
         "lab-2-5",
-        "lab-3-4"
+        "lab-3-3"
       ],
       "apexTestsMinCoverageOrgWide": [
         "lab-1-6",
@@ -1229,56 +1198,56 @@
       ],
       "productionBranch": [
         "lab-3-1",
+        "lab-3-6",
         "lab-3-7",
-        "lab-3-8",
-        "lab-3-11"
+        "lab-3-10"
       ],
       "orgAuthenticationMode": [
-        "lab-3-2"
+        "lab-3-1"
       ],
       "useDeltaDeployment": [
+        "lab-3-3",
+        "lab-3-4"
+      ],
+      "enableDeltaDeploymentBetweenMajorBranches": [
+        "lab-3-3"
+      ],
+      "packageNoOverwritePath": [
         "lab-3-4",
         "lab-3-5"
       ],
-      "enableDeltaDeploymentBetweenMajorBranches": [
-        "lab-3-4"
-      ],
-      "packageNoOverwritePath": [
-        "lab-3-5",
-        "lab-3-6"
-      ],
       "retrofitBranch": [
-        "lab-3-8"
+        "lab-3-7"
       ],
       "sourcesToRetrofit": [
-        "lab-3-8"
+        "lab-3-7"
       ],
       "retrofitIgnoredFiles": [
-        "lab-3-8"
+        "lab-3-7"
       ],
       "monitoringRepository": [
-        "lab-3-9"
+        "lab-3-8"
       ],
       "monitoringCommands": [
-        "lab-3-9"
+        "lab-3-8"
       ],
       "monitoringDisable": [
-        "lab-3-9"
+        "lab-3-8"
       ],
       "notificationConfig": [
-        "lab-3-9"
+        "lab-3-8"
       ],
       "msTeamsWebhookUrl": [
-        "lab-3-9"
+        "lab-3-8"
       ],
       "docDeployToOrg": [
-        "lab-3-10"
+        "lab-3-9"
       ],
       "docDeployToCloudflare": [
-        "lab-3-10"
+        "lab-3-9"
       ],
       "mermaidTheme": [
-        "lab-3-10"
+        "lab-3-9"
       ]
     }
   }

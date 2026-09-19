@@ -225,7 +225,7 @@ org queues its test runs, and the first one of the day can take ten.
 
 !!! note "The banner at the top is expected"
     *Org Monitoring Not Present (CI/CD Repo)* means this repository is a delivery pipeline and not a
-    monitoring repository. The cards below it still work against whatever org you pick. Lab 3.9 is
+    monitoring repository. The cards below it still work against whatever org you pick. Lab 3.8 is
     where monitoring gets a repository of its own.
 
 !!! note "The Apex Tests tab is a different thing"

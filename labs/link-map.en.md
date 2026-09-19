@@ -39,16 +39,15 @@ so a renamed documentation page fails CI here rather than surprising a learner.
 |---|---|
 | Level home | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/ |
 | Lab 3.1 - Configure the CI/CD pipeline up to production | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-1-configure-the-pipeline-up-to-production/ |
-| Lab 3.2 - Set up CI authentication with JWT for four orgs | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-2-ci-authentication-with-jwt/ |
-| Lab 3.3 - Review and merge a contributor Pull Request | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-3-review-a-contributor-pull-request/ |
-| Lab 3.4 - Read the deployment log, and what .forceignore hides from it | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-4-deploy-to-integration-and-read-the-log/ |
-| Lab 3.5 - Three Pull Requests collide: choose the merge order | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-5-merge-colliding-pull-requests/ |
-| Lab 3.6 - Promote to UAT and write the release notes | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-6-promote-to-uat-and-write-release-notes/ |
-| Lab 3.7 - Release to production and read your DORA metrics | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-7-release-to-production-and-read-dora-metrics/ |
-| Lab 3.8 - Production is broken: hotfix and retrofit | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-8-hotfix-and-retrofit/ |
-| Lab 3.9 - Monitor your production org | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-9-monitor-your-production-org/ |
-| Lab 3.10 - Generate the Salesforce project documentation | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-10-generate-the-project-documentation/ |
-| Lab 3.11 - Capstone: run a weekly release cycle | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-11-capstone-run-a-weekly-release-cycle/ |
+| Lab 3.2 - Review and merge a contributor Pull Request | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-2-review-a-contributor-pull-request/ |
+| Lab 3.3 - Read the deployment log, and what .forceignore hides from it | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-3-deploy-to-integration-and-read-the-log/ |
+| Lab 3.4 - Three Pull Requests collide: choose the merge order | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-4-merge-colliding-pull-requests/ |
+| Lab 3.5 - Promote to UAT and write the release notes | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-5-promote-to-uat-and-write-release-notes/ |
+| Lab 3.6 - Release to production and read your DORA metrics | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-6-release-to-production-and-read-dora-metrics/ |
+| Lab 3.7 - Production is broken: hotfix and retrofit | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-7-hotfix-and-retrofit/ |
+| Lab 3.8 - Monitor your production org | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-8-monitor-your-production-org/ |
+| Lab 3.9 - Generate the Salesforce project documentation | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-9-generate-the-project-documentation/ |
+| Lab 3.10 - Capstone: run a weekly release cycle | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-10-capstone-run-a-weekly-release-cycle/ |
 
 ## sfdx-hardis documentation pages used by the labs
 
@@ -78,7 +77,6 @@ so a renamed documentation page fails CI here rather than surprising a learner.
 | salesforce-devops-setup-checklist | https://sfdx-hardis.cloudity.com/salesforce-devops-setup-checklist/ |
 | salesforce-devops-setup-existing-org | https://sfdx-hardis.cloudity.com/salesforce-devops-setup-existing-org/ |
 | salesforce-devops-setup-home | https://sfdx-hardis.cloudity.com/salesforce-devops-setup-home/ |
-| salesforce-devops-setup-init-project | https://sfdx-hardis.cloudity.com/salesforce-devops-setup-init-project/ |
 | salesforce-devops-setup-integration-generic-ticketing | https://sfdx-hardis.cloudity.com/salesforce-devops-setup-integration-generic-ticketing/ |
 | salesforce-devops-smart-deployment | https://sfdx-hardis.cloudity.com/salesforce-devops-smart-deployment/ |
 | salesforce-devops-solve-deployment-errors | https://sfdx-hardis.cloudity.com/salesforce-devops-solve-deployment-errors/ |

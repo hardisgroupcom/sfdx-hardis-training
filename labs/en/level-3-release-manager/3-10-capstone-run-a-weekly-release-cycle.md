@@ -1,9 +1,9 @@
 ---
-id: lab-3-11
-title: "Lab 3.11 - Capstone: run a weekly release cycle"
+id: lab-3-10
+title: "Lab 3.10 - Capstone: run a weekly release cycle"
 description: "Run a full week as a Salesforce release manager with no step-by-step: review, integrate, promote to UAT, release to production and measure."
 level: 3
-lab: 11
+lab: 10
 lang: en
 source_rev: ""
 screenshots:
@@ -16,7 +16,7 @@ depends_on:
   docs: [salesforce-devops-release-home, salesforce-devops-setup-checklist]
 ---
 
-# Lab 3.11 - Capstone: run a weekly release cycle
+# Lab 3.10 - Capstone: run a weekly release cycle
 
 **Level**: 3 Release Manager
 
@@ -32,14 +32,14 @@ nobody is going to tell you the order to do things in.
 
 ## Before you start
 
-- [ ] Labs 3.1 to 3.10 finished
+- [ ] Labs 3.1 to 3.9 finished
 - [ ] All four pipeline orgs working, all four branches deploying
 
 ## The week
 
 ### Monday: take in what contributors sent you
 
-Two Pull Requests wait. **US-020**, open since Lab 3.5 and still failing. And a new one from Romain:
+Two Pull Requests wait. **US-020**, open since Lab 3.4 and still failing. And a new one from Romain:
 **Training: Level 3** > **Simulate my teammates**, and pick **US-055 Install Date says which day it
 means**.
 
@@ -48,7 +48,7 @@ means**.
 For each of the two:
 
 - Read the sfdx-hardis comment
-- Read the diff with the four questions from Lab 3.3: does it match the story, does anything
+- Read the diff with the four questions from Lab 3.2: does it match the story, does anything
   disappear, are permissions on a permission set, is it reversible
 - Merge it or send it back with a comment, and say why
 
@@ -73,17 +73,17 @@ Promote `uat` into `preprod` first, and check `helios-preprod` behaves. Then cre
 `preprod` into `main`. Read the counts line in the sfdx-hardis comment and stop if anything is being
 deleted that you were not expecting. Merge, watch, verify, do the manual steps.
 
-This release is also what finally carries the Lab 3.8 retrofit into `main`, so the `Needs Reinspection`
-picklist value reaches production through the pipeline and the check for Lab 3.8 passes.
+This release is also what finally carries the Lab 3.7 retrofit into `main`, so the `Needs Reinspection`
+picklist value reaches production through the pipeline and the check for Lab 3.7 passes.
 
 Then generate the release notes of the release to `main`, add the sentence at the top that says what
 this release is for, and put them in the description of the Pull Request from `preprod` into
-`main`, the way Lab 3.6 did for `uat`.
+`main`, the way Lab 3.5 did for `uat`.
 
 ### Friday: measure
 
 Set `helios-prod` as your default org in **Orgs Manager**, so the report measures production rather
-than your sandbox, then run the DORA report and compare it with the baseline you took in Lab 3.7.
+than your sandbox, then run the DORA report and compare it with the baseline you took in Lab 3.6.
 
 Then read back over the week, and answer three questions for yourself, the ones a successor would
 ask:
@@ -115,7 +115,7 @@ point of having it.
 - `integration`, `uat`, `preprod` and `main` all carrying the release, in that order, each through
   its own deployment
 - Release notes in the description of the release Pull Request, with a human sentence at the top
-- A second DORA report to compare with the baseline of Lab 3.7
+- A second DORA report to compare with the baseline of Lab 3.6
 
 ## If it goes wrong
 
@@ -124,9 +124,9 @@ Read what it says it looked for. The checks assert outcomes on the `integration`
 a story built in your org but never merged does not count, and neither does one merged into a branch
 that is not `integration`.
 
-**The Lab 3.8 check wants `Needs Reinspection` on `main`.**
+**The Lab 3.7 check wants `Needs Reinspection` on `main`.**
 That is check `3.8`, and at the end of the level it looks at `main`, not `integration`. The hotfix is
-there since Lab 3.8; the retrofit only went to `integration`. Thursday is what satisfies it: the
+there since Lab 3.7; the retrofit only went to `integration`. Thursday is what satisfies it: the
 release that takes the week's work to production carries the retrofit with it. If you have not run
 Thursday yet, run it.
 

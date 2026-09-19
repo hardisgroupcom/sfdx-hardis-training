@@ -1,9 +1,9 @@
 ---
-id: lab-3-9
-title: "Lab 3.9 - Monitor your production org"
+id: lab-3-8
+title: "Lab 3.8 - Monitor your production org"
 description: "Set up nightly sfdx-hardis monitoring on your Salesforce production org, read its first report, and decide which alerts are worth receiving."
 level: 3
-lab: 9
+lab: 8
 lang: en
 source_rev: ""
 screenshots:
@@ -18,7 +18,7 @@ depends_on:
   docs: [salesforce-monitoring-home, salesforce-monitoring-config-github, salesforce-monitoring-grafana-v2]
 ---
 
-# Lab 3.9 - Monitor your production org
+# Lab 3.8 - Monitor your production org
 
 **Level**: 3 Release Manager
 
@@ -40,7 +40,7 @@ Monitoring is the part of the release manager job that happens when nothing is b
 
 ## Before you start
 
-- [ ] Lab 3.8 finished
+- [ ] Lab 3.7 finished
 - [ ] `helios-prod` connected in **Orgs Manager**
 - [ ] An empty GitHub repository of your own, with `monitoring` in its name
 - [ ] About 20 of those 35 minutes will be the first monitoring run
@@ -99,20 +99,20 @@ From the monitoring repository, open the **Org Monitoring Workbench** from the W
     its monitoring repository lives gets an **Open Monitoring Repository** button beside it. The
     install button only exists where the thing it installs belongs.
 
-It runs in a command panel and asks its questions one at a time, the way Lab 3.2 did:
+It runs in a command panel and asks its questions one at a time, the way Lab 3.1 did:
 
 1. **Did you configure the sfdx-hardis monitoring pre-requisites on your Git server ?** The second
    answer, *ℹ️ No, bring me to the documentation!*, opens that page and ends the command, so read it
    first if you have not
-2. **Please select or connect to the org that you want to monitor** - `helios-prod`. As in Lab 3.2,
+2. **Please select or connect to the org that you want to monitor** - `helios-prod`. As in Lab 3.1,
    making it the default org restarts the command, so pick it again in the new panel
 3. **Branch monitoring_... does not exist on the remote server. Do you want to push it?** - yes.
    This one comes before the certificate, not after, and it only appears the first time
-4. Then the certificate questions from Lab 3.2, unchanged and in the same order: self-signed,
+4. Then the certificate questions from Lab 3.1, unchanged and in the same order: self-signed,
    let sfdx-hardis configure the External Client App, encrypted certificate as a file, then the same
    stop while you store the two secrets, this time in the **monitoring** repository, then the name,
    the contact email and the profile of the app. The profile list is in the language of the org's
-   user, as in Lab 3.2
+   user, as in Lab 3.1
 5. **Do you want to save the configuration on the remote server (auto-commit)?** - yes
 
 Last, it writes the workflow on `main` and says so: *The monitoring workflow on main now runs
@@ -120,7 +120,7 @@ monitoring_...*. GitHub only schedules the workflows of the default branch, and 
 workflow** for those, so the workflow that runs every monitored org lives on `main` and lists each
 monitoring branch.
 
-It never asks for a repository name or a git provider, because it creates neither. The authentication is the same code as Lab 3.2: External Client App, JWT, two secrets to store,
+It never asks for a repository name or a git provider, because it creates neither. The authentication is the same code as Lab 3.1: External Client App, JWT, two secrets to store,
 this time in the **monitoring** repository. The key lands in `./.ssh/` rather than
 `config/branches/.jwt/`, and the configuration in a `.sfdx-hardis.yml` at the repository root, on a
 branch called `monitoring_` plus the org's domain, cut from `main`. The repository was empty, so it
@@ -188,7 +188,7 @@ What you are reading for is the **shape** of each finding, so that you recognise
 | **Apex on an old API version**  | It will break at a Salesforce release, on a date you do not control        |
 
 The one finding you should genuinely expect here is in the **backup** rather than in a check: the
-`Needs Reinspection` picklist value from Lab 3.8 is in the org, and now it is in the monitoring
+`Needs Reinspection` picklist value from Lab 3.7 is in the org, and now it is in the monitoring
 repository's git history, dated. That is the answer to "when did that change", and it is the part of
 monitoring that pays for itself first.
 
@@ -253,7 +253,7 @@ generated for GitHub has four jobs:
 1. **Backup** runs first, on its own: `sf hardis:org:monitor:backup` retrieves the whole org in
    source format and commits it. The git history of that repository becomes an answer to "what
    changed in production, and when", which nothing else gives you. When the retrieve is done, the
-   same command regenerates the project documentation of Lab 3.10 before it finishes
+   same command regenerates the project documentation of Lab 3.9 before it finishes
 2. Then three jobs in parallel, each waiting only on the backup: `sf hardis:org:test:apex`,
    MegaLinter, and `sf hardis:org:monitor:all`
 
@@ -290,7 +290,7 @@ scope here, and worth knowing exists.
 ## If it goes wrong
 
 **The monitoring workflow fails at authentication.**
-Same as Lab 3.2: the External Client App needs the user pre-authorised, and the secrets have to be in
+Same as Lab 3.1: the External Client App needs the user pre-authorised, and the secrets have to be in
 the **monitoring** repository, not the source one.
 
 **Actions offers no Run workflow for Org Monitoring sfdx-hardis.**
@@ -316,7 +316,7 @@ not. Go back to step 1 and make the monitoring one.
 
 ## Check your work
 
-Welcome page > **Training: Level 3** > **Check my work**, then pick Lab 3.9.
+Welcome page > **Training: Level 3** > **Check my work**, then pick Lab 3.8.
 
 ## Go deeper
 
@@ -324,4 +324,4 @@ Welcome page > **Training: Level 3** > **Check my work**, then pick Lab 3.9.
 - [Monitoring on GitHub](https://sfdx-hardis.cloudity.com/salesforce-monitoring-config-github/)
 - [Grafana dashboards](https://sfdx-hardis.cloudity.com/salesforce-monitoring-grafana-v2/)
 
-[Next: Lab 3.10 - Generate the Salesforce project documentation](3-10-generate-the-project-documentation.md){ .md-button .md-button--primary }
+[Next: Lab 3.9 - Generate the Salesforce project documentation](3-9-generate-the-project-documentation.md){ .md-button .md-button--primary }

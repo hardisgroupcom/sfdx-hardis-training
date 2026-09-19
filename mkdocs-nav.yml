@@ -23,16 +23,15 @@ nav:
   - Level 3 - Release Manager:
       - Start here: en/level-3-release-manager/index.md
       - "Lab 3.1 - Configure the CI/CD pipeline up to production": en/level-3-release-manager/3-1-configure-the-pipeline-up-to-production.md
-      - "Lab 3.2 - Set up CI authentication with JWT for four orgs": en/level-3-release-manager/3-2-ci-authentication-with-jwt.md
-      - "Lab 3.3 - Review and merge a contributor Pull Request": en/level-3-release-manager/3-3-review-a-contributor-pull-request.md
-      - "Lab 3.4 - Read the deployment log, and what .forceignore hides from it": en/level-3-release-manager/3-4-deploy-to-integration-and-read-the-log.md
-      - "Lab 3.5 - Three Pull Requests collide: choose the merge order": en/level-3-release-manager/3-5-merge-colliding-pull-requests.md
-      - "Lab 3.6 - Promote to UAT and write the release notes": en/level-3-release-manager/3-6-promote-to-uat-and-write-release-notes.md
-      - "Lab 3.7 - Release to production and read your DORA metrics": en/level-3-release-manager/3-7-release-to-production-and-read-dora-metrics.md
-      - "Lab 3.8 - Production is broken: hotfix and retrofit": en/level-3-release-manager/3-8-hotfix-and-retrofit.md
-      - "Lab 3.9 - Monitor your production org": en/level-3-release-manager/3-9-monitor-your-production-org.md
-      - "Lab 3.10 - Generate the Salesforce project documentation": en/level-3-release-manager/3-10-generate-the-project-documentation.md
-      - "Lab 3.11 - Capstone: run a weekly release cycle": en/level-3-release-manager/3-11-capstone-run-a-weekly-release-cycle.md
+      - "Lab 3.2 - Review and merge a contributor Pull Request": en/level-3-release-manager/3-2-review-a-contributor-pull-request.md
+      - "Lab 3.3 - Read the deployment log, and what .forceignore hides from it": en/level-3-release-manager/3-3-deploy-to-integration-and-read-the-log.md
+      - "Lab 3.4 - Three Pull Requests collide: choose the merge order": en/level-3-release-manager/3-4-merge-colliding-pull-requests.md
+      - "Lab 3.5 - Promote to UAT and write the release notes": en/level-3-release-manager/3-5-promote-to-uat-and-write-release-notes.md
+      - "Lab 3.6 - Release to production and read your DORA metrics": en/level-3-release-manager/3-6-release-to-production-and-read-dora-metrics.md
+      - "Lab 3.7 - Production is broken: hotfix and retrofit": en/level-3-release-manager/3-7-hotfix-and-retrofit.md
+      - "Lab 3.8 - Monitor your production org": en/level-3-release-manager/3-8-monitor-your-production-org.md
+      - "Lab 3.9 - Generate the Salesforce project documentation": en/level-3-release-manager/3-9-generate-the-project-documentation.md
+      - "Lab 3.10 - Capstone: run a weekly release cycle": en/level-3-release-manager/3-10-capstone-run-a-weekly-release-cycle.md
   - Backlog: BACKLOG.md
   - Badges: badges/index.md
   - Link map: labs/link-map.en.md

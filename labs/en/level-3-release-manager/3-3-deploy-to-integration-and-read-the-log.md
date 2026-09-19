@@ -1,9 +1,9 @@
 ---
-id: lab-3-4
-title: "Lab 3.4 - Read the deployment log, and what .forceignore hides from it"
+id: lab-3-3
+title: "Lab 3.3 - Read the deployment log, and what .forceignore hides from it"
 description: "Read an sfdx-hardis deployment log properly, then review a Pull Request whose .forceignore wildcard keeps its own field out of every deployment."
 level: 3
-lab: 4
+lab: 3
 lang: en
 source_rev: ""
 screenshots:
@@ -18,7 +18,7 @@ depends_on:
   docs: [salesforce-devops-deploy-major-branches, salesforce-devops-smart-deployment]
 ---
 
-# Lab 3.4 - Read the deployment log, and what .forceignore hides from it
+# Lab 3.3 - Read the deployment log, and what .forceignore hides from it
 
 **Level**: 3 Release Manager
 
@@ -37,7 +37,7 @@ incidents come from.
 
 ## Before you start
 
-- [ ] Lab 3.3 finished: Mariia's layout fix merged into `integration`
+- [ ] Lab 3.2 finished: Mariia's layout fix merged into `integration`
 
 ## Part 1: read the log
 
@@ -56,7 +56,7 @@ colour means. Click the marker to open the run.
 
 An sfdx-hardis deployment log has the same shape every time:
 
-**One: authentication.** Which org, which mechanism. After Lab 3.2 this says JWT. If it ever says
+**One: authentication.** Which org, which mechanism. After Lab 3.1 this says JWT. If it ever says
 something else, something changed that you did not change.
 
 **Two: what to deploy.** The package it computed, and where from. This is the interesting part and
@@ -225,7 +225,7 @@ version.
 Two failure modes worth recognising:
 
 - **The org drifted.** Somebody changed something in the org by hand and the deployment overwrites
-  it without a word, because nothing compared. Lab 3.8 is about that
+  it without a word, because nothing compared. Lab 3.7 is about that
 - **Delta lost a dependency.** Your change needs a component that did not change, so the delta does
   not carry it, and the deployment fails on a reference. The fix is not to disable delta: it is to
   include the dependency, which `manifest/package.xml` is for
@@ -262,11 +262,11 @@ Request: GitHub merges `integration` into it, and the check runs again.
 
 ## Check your work
 
-Welcome page > **Training: Level 3** > **Check my work**, then pick Lab 3.4.
+Welcome page > **Training: Level 3** > **Check my work**, then pick Lab 3.3.
 
 ## Go deeper
 
 - [Deploy to major orgs](https://sfdx-hardis.cloudity.com/salesforce-devops-deploy-major-branches/)
 - [Smart Deploy internals](https://sfdx-hardis.cloudity.com/salesforce-devops-smart-deployment/)
 
-[Next: Lab 3.5 - Three Pull Requests collide: choose the merge order](3-5-merge-colliding-pull-requests.md){ .md-button .md-button--primary }
+[Next: Lab 3.4 - Three Pull Requests collide: choose the merge order](3-4-merge-colliding-pull-requests.md){ .md-button .md-button--primary }

@@ -50,9 +50,9 @@ const SCRATCH_DEF = path.join("config", "project-scratch-def.json");
 // The longest a scratch org can live. Setting the maximum is what lets a learner
 // take the course over a few weeks without meeting an expired org.
 const DURATION_DAYS = 30;
-// Branches the fork needs. preprod and main are not in the pipeline before Level 3,
-// and exist from the start so that Level 3 only has to configure them.
-const PIPELINE_BRANCHES = ["integration", "uat", "preprod"];
+// Branches the fork needs for Levels 1 and 2. main exists in every fork, and
+// preprod is created by the release manager in Lab 3.1, from main.
+const PIPELINE_BRANCHES = ["integration", "uat"];
 const STEPS = 8;
 
 /** The orgs this command owns, read from the universe so the labs and the code agree. */
@@ -426,7 +426,7 @@ async function ensureFork(handle) {
 }
 
 /**
- * integration, uat and preprod, created from the state a Level 1 learner starts
+ * integration and uat, created from the state a Level 1 learner starts
  * from when the fork does not carry them yet. main exists in every fork.
  */
 export function ensurePipelineBranches() {
@@ -543,8 +543,8 @@ export function writeBranchConfigs(pipeline, usernames, slug = null) {
   let published = true;
 
   // Written on the development branch only. uat receives them with its first
-  // promotion, in Lab 3.6: a copy committed on uat as well would conflict with
-  // every later change to the same files on integration (Labs 3.1 and 3.2), and
+  // promotion, in Lab 3.5: a copy committed on uat as well would conflict with
+  // every later change to the same files on integration (Lab 3.1), and
   // the pipeline panel and the audit read them from integration anyway.
   for (const stage of pipeline.slice(0, 1)) {
     const branch = stage.branch;
@@ -632,7 +632,7 @@ export function setSecrets(slug, pipeline) {
     ok(`${secret} is set on ${c.bold(slug)}.`);
   }
   info(c.dim("    Each holds a long-lived refresh token for a throwaway scratch org."));
-  info(c.dim("    Lab 3.2 replaces them with JWT certificates and deletes them."));
+  info(c.dim("    Lab 3.1 replaces them with JWT certificates and deletes them."));
 }
 
 // --------------------------------------------------------------------- main

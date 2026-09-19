@@ -1,7 +1,7 @@
 {
   "id": "us-056-crew-workload-fix",
   "title": "US-056 Romain names his test field exactly in .forceignore",
-  "usedBy": "Lab 3.4",
+  "usedBy": "Lab 3.3",
   "levels": [3],
   "description": "Romain answers your review: the wildcard goes, and .forceignore names his one test field exactly, so it cannot match anything else.",
   "branch": "training/mate-us-056-crew-workload",

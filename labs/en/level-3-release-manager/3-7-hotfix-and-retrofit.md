@@ -1,9 +1,9 @@
 ---
-id: lab-3-8
-title: "Lab 3.8 - Production is broken: hotfix and retrofit"
+id: lab-3-7
+title: "Lab 3.7 - Production is broken: hotfix and retrofit"
 description: "Release a contributor Salesforce hotfix from preprod to production without breaking the pipeline, then get a change an admin made in production back into Git."
 level: 3
-lab: 8
+lab: 7
 lang: en
 source_rev: ""
 screenshots:
@@ -17,7 +17,7 @@ depends_on:
   docs: [salesforce-devops-hotfixes, salesforce-devops-retrofit]
 ---
 
-# Lab 3.8 - Production is broken: hotfix and retrofit
+# Lab 3.7 - Production is broken: hotfix and retrofit
 
 **Level**: 3 Release Manager
 
@@ -44,7 +44,7 @@ Both are normal. Handling them badly is what turns a normal week into a bad quar
 
 ## Before you start
 
-- [ ] Lab 3.7 finished: the release is in production
+- [ ] Lab 3.6 finished: the release is in production
 - [ ] `helios-preprod` and `helios-prod` connected in **Orgs Manager**
 
 ## Part 1: the hotfix
@@ -114,7 +114,7 @@ is the rehearsal.
 
 Then the release: a **+ PR** chip sits on each arrow between major branches in the DevOps Pipeline
 diagram, like the one from `integration` to `uat` **(1)**. Click the one on the arrow from `preprod`
-to `main`, the way you released in Lab 3.7.
+to `main`, the way you released in Lab 3.6.
 
 ![The + PR chip on the arrows of the DevOps Pipeline diagram](../../_assets/annotated/vscode/devops-pipeline-level3--create-promotion.png)
 
@@ -145,7 +145,7 @@ to `Installation__c.Status__c`, live, in `helios-prod`, and touches nothing in y
 
 Production now has something the repository does not, and the next deployment that touches that
 field will quietly deactivate it. That is why the course makes the change now rather than when you
-set `helios-prod` up: your Lab 3.7 release deployed that field, and would have deactivated it
+set `helios-prod` up: your Lab 3.6 release deployed that field, and would have deactivated it
 already.
 
 See it for yourself: in `helios-prod`, **Setup > Object Manager > Installation > Fields &
@@ -166,7 +166,7 @@ and to review it.
 Mariia takes it. **Simulate my teammates** > **US-046 Retrofit the Needs Reinspection status from
 production**. It opens her Pull Request into `integration`.
 
-A retrofit Pull Request gets one more question than the four of Lab 3.3: **is every line of the diff
+A retrofit Pull Request gets one more question than the four of Lab 3.2: **is every line of the diff
 something production has, and that the repository should have?** Three kinds of difference turn up
 in a retrieve from production, and only one belongs in the Pull Request:
 
@@ -185,7 +185,7 @@ it with what you saw in Setup, and merge.
 
 ### 8. Let the next release carry it
 
-It flows to `uat`, then to `preprod` and `main` with the next release, the capstone of Lab 3.11, at
+It flows to `uat`, then to `preprod` and `main` with the next release, the capstone of Lab 3.10, at
 which point production and the repository agree again.
 
 That last sentence is the whole point: **not to change production, but to stop production being
@@ -199,7 +199,7 @@ branch, which cuts his branch from `preprod`, and `hardis:work:save` computed th
 treats `preprod` as any other major branch. What makes it a hotfix is the target, not a mode.
 
 The branch prefix is worth a second of thought, for a reason beyond tidiness: the DORA **rework
-rate** in Lab 3.7 counts hotfix Pull Requests, and it recognises one by a `hotfix/`, `fix/` or
+rate** in Lab 3.6 counts hotfix Pull Requests, and it recognises one by a `hotfix/`, `fix/` or
 `bugfix/` branch prefix. This project calls its fix branches `fix/`, so this hotfix counts. A
 project that spells the prefix differently gets a rework rate of zero and no warning, which is the
 sort of thing to check before quoting a number at anybody.
@@ -225,7 +225,7 @@ Its three configuration keys, `retrofitBranch`, `sourcesToRetrofit` and `retrofi
 still in the JSON schema and will still autocomplete in a `.sfdx-hardis.yml`. Nothing reads them any
 more.
 
-What replaces it is not a command, it is a habit, and it belongs to Lab 3.9: **put the org under
+What replaces it is not a command, it is a habit, and it belongs to Lab 3.8: **put the org under
 monitoring.** Monitoring tells you a manual change happened, on the day it happened, and who made
 it. Then you retrieve that one thing, knowingly. Detection is automatic, the judgement is not.
 
@@ -255,7 +255,7 @@ It reached the repository on a branch that never got merged. Check that it is re
 
 ## Check your work
 
-Welcome page > **Training: Level 3** > **Check my work**, then pick Lab 3.8.
+Welcome page > **Training: Level 3** > **Check my work**, then pick Lab 3.7.
 
 It wants the hotfix in the history of `preprod` or `main`, and `Needs Reinspection` on
 `integration`, which is where Mariia's Pull Request put it.
@@ -270,4 +270,4 @@ It wants the hotfix in the history of `preprod` or `main`, and `Needs Reinspecti
 - [Hotfixes](https://sfdx-hardis.cloudity.com/salesforce-devops-hotfixes/)
 - [Retrofit](https://sfdx-hardis.cloudity.com/salesforce-devops-retrofit/)
 
-[Next: Lab 3.9 - Monitor your production org](3-9-monitor-your-production-org.md){ .md-button .md-button--primary }
+[Next: Lab 3.8 - Monitor your production org](3-8-monitor-your-production-org.md){ .md-button .md-button--primary }

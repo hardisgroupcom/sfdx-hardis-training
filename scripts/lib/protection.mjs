@@ -7,12 +7,14 @@
  * enforces it rather than hoping everybody reads the check first.
  *
  * What a protected branch requires here:
+ *   - a Pull Request: nobody pushes to a major branch, the release manager
+ *     included
  *   - every GitHub Actions check that runs on each Pull Request into a major
  *     branch has finished and succeeded
  *   - nobody bypasses it, the owner of the fork included, and nobody force
  *     pushes or deletes the branch
  *
- * No review is required: a learner works alone and cannot approve their own
+ * No approval is required: a learner works alone and cannot approve their own
  * Pull Request, so requiring one would block every merge of the course.
  */
 import { c, info, ok, warn, run, parseJsonOutput } from "./util.mjs";
@@ -41,14 +43,20 @@ export function protectionOf(slug, branch) {
   const protection = parseJsonOutput(res.stdout);
   return {
     checks: protection?.required_status_checks?.contexts || [],
-    enforceAdmins: protection?.enforce_admins?.enabled === true
+    enforceAdmins: protection?.enforce_admins?.enabled === true,
+    pullRequest: Boolean(protection?.required_pull_request_reviews)
   };
 }
 
 /** True when the branch already requires every check, for everybody. */
 export function isProtected(slug, branch) {
   const protection = protectionOf(slug, branch);
-  return protection !== null && protection.enforceAdmins && REQUIRED_CHECKS.every((check) => protection.checks.includes(check));
+  return (
+    protection !== null &&
+    protection.enforceAdmins &&
+    protection.pullRequest &&
+    REQUIRED_CHECKS.every((check) => protection.checks.includes(check))
+  );
 }
 
 export function protectBranch(slug, branch) {
@@ -58,7 +66,7 @@ export function protectBranch(slug, branch) {
     "-F", "required_status_checks[strict]=false",
     ...REQUIRED_CHECKS.flatMap((check) => ["-f", `required_status_checks[contexts][]=${check}`]),
     "-F", "enforce_admins=true",
-    "-F", "required_pull_request_reviews=null",
+    "-F", "required_pull_request_reviews[required_approving_review_count]=0",
     "-F", "restrictions=null",
     "-F", "allow_force_pushes=false",
     "-F", "allow_deletions=false"
@@ -83,13 +91,14 @@ export function protectBranches(slug, branches) {
       continue;
     }
     if (protectBranch(slug, branch) && isProtected(slug, branch)) {
-      ok(`${c.bold(branch)} now accepts a merge only once its checks are green.`);
+      ok(`${c.bold(branch)} now takes changes through a Pull Request only, merged once its checks are green.`);
       continue;
     }
     allProtected = false;
     warn(`${branch} could not be protected from here.`);
     info(`    Open https://github.com/${slug}/settings/branches, click ${c.bold("Add rule")},`);
-    info(`    type ${c.bold(branch)} as the branch name pattern, tick ${c.bold("Require status checks to pass before merging")},`);
+    info(`    type ${c.bold(branch)} as the branch name pattern, tick ${c.bold("Require a pull request before merging")}`);
+    info(`    with no approval, tick ${c.bold("Require status checks to pass before merging")},`);
     info(`    add ${REQUIRED_CHECKS.map((check) => c.bold(check)).join(" and ")},`);
     info(`    tick ${c.bold("Do not allow bypassing the above settings")}, then ${c.bold("Create")}.`);
   }

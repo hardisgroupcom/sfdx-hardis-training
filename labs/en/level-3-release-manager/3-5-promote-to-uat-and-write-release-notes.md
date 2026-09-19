@@ -1,9 +1,9 @@
 ---
-id: lab-3-6
-title: "Lab 3.6 - Promote to UAT and write the release notes"
+id: lab-3-5
+title: "Lab 3.5 - Promote to UAT and write the release notes"
 description: "Protect what UAT keeps for itself with package-no-overwrite, promote integration to UAT, read its deployment actions and write the release notes."
 level: 3
-lab: 6
+lab: 5
 lang: en
 source_rev: ""
 screenshots:
@@ -18,7 +18,7 @@ depends_on:
   docs: [salesforce-devops-deploy-major-branches, hardis/doc/salesforce-devops-release-notes]
 ---
 
-# Lab 3.6 - Promote to UAT and write the release notes
+# Lab 3.5 - Promote to UAT and write the release notes
 
 **Level**: 3 Release Manager
 
@@ -39,9 +39,9 @@ deploys to has real testers in it.
 
 ## Before you start
 
-- [ ] Lab 3.5 finished: US-018 and US-019 merged into `integration`
+- [ ] Lab 3.4 finished: US-018 and US-019 merged into `integration`
 - [ ] `helios-uat` connected: the scratch org Level 1 created, configured as the `uat` org since then
-- [ ] JWT authentication working for `uat` (Lab 3.2)
+- [ ] JWT authentication working for `uat` (Lab 3.1)
 
 ## Steps
 
@@ -246,8 +246,8 @@ from the environment (`GITHUB_TOKEN` or `CI_SFDX_HARDIS_GITHUB_TOKEN` on GitHub)
 does not stop: it warns, collects zero Pull Requests, and writes you a perfectly formatted document
 with nothing in it. An empty release note is more often a missing token than an empty release.
 
-**This is also why Lab 3.3 said not to squash.** A squashed merge loses the link between the commit and
-the Pull Request, and both the release notes and the DORA report in Lab 3.7 lean on exactly that link.
+**This is also why Lab 3.2 said not to squash.** A squashed merge loses the link between the commit and
+the Pull Request, and both the release notes and the DORA report in Lab 3.6 lean on exactly that link.
 A project that squashes everything has no release notes it did not write by hand.
 
 **A promotion is an ordinary Pull Request.** There is no special promotion machinery in the default
@@ -275,7 +275,7 @@ reading about once you have done a few releases the ordinary way.
 ## If it goes wrong
 
 **The check fails with authentication errors for uat.**
-Lab 3.2 for the `uat` branch: the secrets, and the pre-authorisation of the External Client App in
+Lab 3.1 for the `uat` branch: the secrets, and the pre-authorisation of the External Client App in
 `helios-uat`.
 
 **The deployment fails on something that worked in integration.**
@@ -293,11 +293,11 @@ returned nothing and only warned; or the merges were squashed, so there is no li
 
 ## Check your work
 
-Welcome page > **Training: Level 3** > **Check my work**, then pick Lab 3.6.
+Welcome page > **Training: Level 3** > **Check my work**, then pick Lab 3.5.
 
 ## Go deeper
 
 - [Deploy to major orgs](https://sfdx-hardis.cloudity.com/salesforce-devops-deploy-major-branches/)
 - [Release Notes](https://sfdx-hardis.cloudity.com/hardis/doc/salesforce-devops-release-notes/)
 
-[Next: Lab 3.7 - Release to production and read your DORA metrics](3-7-release-to-production-and-read-dora-metrics.md){ .md-button .md-button--primary }
+[Next: Lab 3.6 - Release to production and read your DORA metrics](3-6-release-to-production-and-read-dora-metrics.md){ .md-button .md-button--primary }

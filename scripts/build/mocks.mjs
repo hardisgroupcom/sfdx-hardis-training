@@ -249,7 +249,7 @@ writeJson(path.join(OUT, "sf-mock-overlay.json"), {
         description: usernameFor(o.alias)
       })),
     // What Add/Configure Org (hardis:project:configure:auth) is answered with in
-    // Lab 3.2: the integration branch and its scratch org, among the four major
+    // Lab 3.1: the integration branch and its scratch org, among the four major
     // branches a Level 3 fork has
     authConfig: {
       branchName: "integration",

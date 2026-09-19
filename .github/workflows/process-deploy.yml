@@ -80,7 +80,7 @@ jobs:
         if: ${{ !startsWith(github.ref_name, 'auto-fix/') && steps.pipeline.outputs.ready == 'true' }}
         env:
           # Levels 1 and 2 of this training use SFDX_AUTH_URL_INTEGRATION and SFDX_AUTH_URL_UAT,
-          # a shortcut that is acceptable only for throwaway scratch orgs. Lab 3.2 replaces
+          # a shortcut that is acceptable only for throwaway scratch orgs. Lab 3.1 replaces
           # them with the JWT secrets below and deletes them.
           SFDX_AUTH_URL_INTEGRATION: ${{ secrets.SFDX_AUTH_URL_INTEGRATION }}
           SFDX_AUTH_URL_UAT: ${{ secrets.SFDX_AUTH_URL_UAT }}

@@ -1,9 +1,9 @@
 ---
-id: lab-3-10
-title: "Lab 3.10 - Generate the Salesforce project documentation"
+id: lab-3-9
+title: "Lab 3.9 - Generate the Salesforce project documentation"
 description: "Generate readable documentation of an undocumented Salesforce org with sfdx-hardis: objects, flows, Apex and permissions, from the sources in Git."
 level: 3
-lab: 10
+lab: 9
 lang: en
 source_rev: ""
 screenshots:
@@ -16,7 +16,7 @@ depends_on:
   docs: [salesforce-project-doc-generate]
 ---
 
-# Lab 3.10 - Generate the Salesforce project documentation
+# Lab 3.9 - Generate the Salesforce project documentation
 
 **Level**: 3 Release Manager
 
@@ -37,7 +37,7 @@ exactly the part worth a person's time.
 
 ## Before you start
 
-- [ ] Lab 3.9 finished
+- [ ] Lab 3.8 finished
 - [ ] On `integration`, up to date: the documentation describes what the team merged
 
 ## Steps
@@ -140,7 +140,7 @@ their documentation, through Pull Requests of their own.
 ### 7. Make it a habit, not an event
 
 Documentation generated once is out of date in a month. The generation is a command, so it can run
-on a schedule the way the monitoring does, and the monitoring of Lab 3.9 already does it: its nightly
+on a schedule the way the monitoring does, and the monitoring of Lab 3.8 already does it: its nightly
 backup regenerates the documentation of production before it finishes. Publishing that one, with
 the keys above, is how a project gets documentation nobody has to remember to update.
 
@@ -205,10 +205,10 @@ small diffs.
 
 ## Check your work
 
-Welcome page > **Training: Level 3** > **Check my work**, then pick Lab 3.10.
+Welcome page > **Training: Level 3** > **Check my work**, then pick Lab 3.9.
 
 ## Go deeper
 
 - [Generate documentation](https://sfdx-hardis.cloudity.com/salesforce-project-doc-generate/)
 
-[Next: Lab 3.11 - Capstone: run a weekly release cycle](3-11-capstone-run-a-weekly-release-cycle.md){ .md-button .md-button--primary }
+[Next: Lab 3.10 - Capstone: run a weekly release cycle](3-10-capstone-run-a-weekly-release-cycle.md){ .md-button .md-button--primary }

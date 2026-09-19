@@ -220,7 +220,7 @@ export default async function seed(args) {
 /**
  * Per-org differences the labs rely on, from scripts/drift/<alias>.json.
  * This is how helios-prod ends up one step behind the repository, which is what
- * Lab 3.8 needs in order to have something to retrofit.
+ * Lab 3.7 needs in order to have something to retrofit.
  */
 export function applyDrift(alias) {
   const file = path.join(ROOT, "scripts", "drift", `${alias}.json`);

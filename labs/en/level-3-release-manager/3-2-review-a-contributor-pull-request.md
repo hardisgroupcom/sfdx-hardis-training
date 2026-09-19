@@ -1,9 +1,9 @@
 ---
-id: lab-3-3
-title: "Lab 3.3 - Review and merge a contributor Pull Request"
+id: lab-3-2
+title: "Lab 3.2 - Review and merge a contributor Pull Request"
 description: "Review a teammate's Salesforce Pull Request as a release manager: find what the deployment check missed, request a change, and merge."
 level: 3
-lab: 3
+lab: 2
 lang: en
 source_rev: ""
 screenshots:
@@ -17,7 +17,7 @@ depends_on:
   docs: [salesforce-devops-validate-merge-request, salesforce-devops-handle-merge-request-results]
 ---
 
-# Lab 3.3 - Review and merge a contributor Pull Request
+# Lab 3.2 - Review and merge a contributor Pull Request
 
 **Level**: 3 Release Manager
 
@@ -39,7 +39,7 @@ every org after it.
 
 ## Before you start
 
-- [ ] Lab 3.2 finished: JWT authentication on all four orgs
+- [ ] Lab 3.1 finished: JWT authentication on all four orgs
 - [ ] A clean working tree
 
 ## Steps
@@ -195,7 +195,7 @@ anything deleted, the comment has told you everything it is going to: the rest i
 The scenario already ran: each one is used once. The Pull Request is in your fork, open or merged.
 
 **The checks never run after Mariia's fix.**
-Actions are disabled, or the JWT secrets are missing for `integration`. Lab 3.2.
+Actions are disabled, or the JWT secrets are missing for `integration`. Lab 3.1.
 
 **You merged before the fix.**
 Then `Total_Capacity_kW__c` is off the layout in `integration`. Run the fix scenario anyway: it
@@ -205,11 +205,11 @@ first.
 
 ## Check your work
 
-Welcome page > **Training: Level 3** > **Check my work**, then pick Lab 3.3.
+Welcome page > **Training: Level 3** > **Check my work**, then pick Lab 3.2.
 
 ## Go deeper
 
 - [Review and merge Pull Requests](https://sfdx-hardis.cloudity.com/salesforce-devops-validate-merge-request/)
 - [Check the Pull Request results](https://sfdx-hardis.cloudity.com/salesforce-devops-handle-merge-request-results/)
 
-[Next: Lab 3.4 - Deploy to integration and read the deployment log](3-4-deploy-to-integration-and-read-the-log.md){ .md-button .md-button--primary }
+[Next: Lab 3.3 - Deploy to integration and read the deployment log](3-3-deploy-to-integration-and-read-the-log.md){ .md-button .md-button--primary }

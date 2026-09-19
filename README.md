@@ -109,7 +109,7 @@ config/               the sfdx-hardis project and branch configuration
 training-universe.json  the single source of truth for the Helios fiction
 ```
 
-Lab 3.10 generates the documentation of the Helios project into `docs/`, starting at
+Lab 3.9 generates the documentation of the Helios project into `docs/`, starting at
 `docs/index.md`, with its own `mkdocs.yml`. Both are rebuilt from the sources whenever you ask, and
 neither is committed.
 
