@@ -113,9 +113,10 @@ to it**. So the branches come first, then their protection, then their orgs.
 from `main`, because it holds what production holds.
 
 In your fork (your own copy of the course repository on GitHub, for example
-`github.com/my-username/sfdx-hardis-training`), click the branch count next to the branch selector,
-or open `github.com/my-username/sfdx-hardis-training/branches`. Click **New branch** **(1)**, type
-`preprod` as the name **(2)**, pick `main` as the source **(3)**, and **Create new branch**.
+`github.com/my-username/sfdx-hardis-training`), open the **Branches** page: the branch count next to
+the branch selector, or `github.com/my-username/sfdx-hardis-training/branches`. Click **New branch**
+at the top right. Type `preprod` as the name **(1)**, leave the source on your fork and `main`
+**(2)**, and click **Create new branch** **(3)**.
 
 ![The New branch dialog of GitHub, creating preprod from main](../../_assets/annotated/web/github-new-branch.png)
 

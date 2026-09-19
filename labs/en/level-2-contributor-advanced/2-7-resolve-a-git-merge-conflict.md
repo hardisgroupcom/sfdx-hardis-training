@@ -9,6 +9,13 @@ source_rev: ""
 screenshots:
   - annotated/vscode/sidebar-commands-custom-menu-2--training-menu
   - annotated/vscode/pipeline-cards--new-user-story
+  - annotated/vscode/git-palette-fetch--fetch
+  - annotated/vscode/git-palette-merge--merge
+  - annotated/vscode/git-merge-pick--origin-integration
+  - annotated/vscode/git-merge-conflicts--merge-changes
+  - annotated/vscode/git-merge-editor--parts
+  - annotated/vscode/git-merge-editor--accept-both
+  - annotated/vscode/git-merge-editor-accepted--result
 depends_on:
   commands: [hardis:work:save, hardis:work:refresh]
   flags: []
@@ -117,22 +124,24 @@ own. A merge tool cannot know which of two connectors should win. You can.
 
 Open the **Source Control** panel, the icon of three small circles joined by lines in the left bar.
 
-First make sure your machine knows what Mariia merged: click the **...** menu **(1)** at the top of
-the panel, then **Pull, Push** **(2)** > **Fetch**. Nothing changes in your files: fetching only
-downloads what is new on GitHub.
+First make sure your machine knows what Mariia merged. Open the **Command Palette**: **View >
+Command Palette** in the menu bar, or `Ctrl+Shift+P` (`Cmd+Shift+P` on a Mac). Type `Git: Fetch` and
+pick **Git: Fetch** **(1)**. Nothing changes in your files: fetching only downloads what is new on
+GitHub.
 
-![The ... menu of the Source Control panel, open](../../_assets/annotated/vscode/git-scm-menu--fetch.png)
+![The Command Palette filtered on Git: Fetch](../../_assets/annotated/vscode/git-palette-fetch--fetch.png)
 
-Then the same **...** menu, **Branch** **(1)**, and **Merge...** **(2)**.
+Then the Command Palette again, type `Git: Merge`, and pick **Git: Merge...** **(1)**. The same
+command is in the **...** menu at the top of the Source Control panel, under **Branch**.
 
-![The Branch submenu of the Source Control panel, with Merge...](../../_assets/annotated/vscode/git-scm-menu-branch--merge.png)
+![The Command Palette filtered on Git: Merge](../../_assets/annotated/vscode/git-palette-merge--merge.png)
 
 VS Code asks which branch to bring in. Type `integration` and pick **origin/integration** **(1)**,
-the copy of `integration` that is on GitHub, with Mariia's work in it. Not the plain
-`integration` **(2)**, if it is listed: that is the copy on your machine, which you have not updated
-since you branched.
+listed under **remote branches**: the copy of `integration` that is on GitHub, with Mariia's work in
+it. Not the plain `integration` if it is listed too: that is the copy on your machine, which you
+have not updated since you branched.
 
-![The branch picker of Merge..., with origin/integration](../../_assets/annotated/vscode/git-merge-pick--origin-integration.png)
+![The branch picker of Git: Merge..., with origin/integration](../../_assets/annotated/vscode/git-merge-pick--origin-integration.png)
 
 Two files come back marked as conflicting. They appear in the panel under **Merge Changes** **(1)**,
 each with a **!** **(2)**, and the status bar says a merge is in progress.
@@ -154,21 +163,36 @@ guess which one meant it.
 Click the permission set file under **Merge Changes**, then **Resolve in Merge Editor** at the
 bottom right of the file. VS Code opens its merge editor: **Incoming** **(1)**, Mariia's version
 from `integration`, on the left, **Current** **(2)**, yours, on the right, and the **Result** **(3)**
-you are building at the bottom.
+you are building at the bottom, which starts from the version you both branched from.
 
 ![The merge editor on the Helios Delivery Manager permission set](../../_assets/annotated/vscode/git-merge-editor--parts.png)
 
-This one is mechanical, and you can decide it without reading a single line of XML: **both entries
+This one is mechanical, and you can decide it without understanding the XML: **both entries
 belong**. Mariia granted one field, you granted another, and a permission set holds as many as it
-needs. Take the button that keeps both sides, **Accept Combination (Incoming First)** **(1)**, above
-the conflict in the **Incoming** pane. Then read the **Result** **(2)** before you click **Complete
-Merge** **(3)**: you want two
-complete `<fieldPermissions>` blocks, each naming one field, Mariia's `Crew_Capacity_Cap__c` first
-and your `Crew_Notes__c` second. If you see a single block holding two `<field>` lines, the editor
-joined the two lines rather than the two blocks: copy the lines around it so that each field gets
-its own block, as the under the hood section shows.
+needs. Keep both sides: click **Accept Incoming** **(1)** above the highlighted line of the
+**Incoming** pane, then **Accept Current** **(2)** above the one of the **Current** pane.
 
-![The merge editor, with Accept Combination and Complete Merge](../../_assets/annotated/vscode/git-merge-editor--accept-combination.png)
+![The merge editor, with Accept Incoming and Accept Current](../../_assets/annotated/vscode/git-merge-editor--accept-both.png)
+
+Now read the **Result** **(1)** before anything else:
+
+![The merge editor after both sides were accepted, with Complete Merge](../../_assets/annotated/vscode/git-merge-editor-accepted--result.png)
+
+The editor kept both lines, and put them in the same block: one `<fieldPermissions>` with two
+`<field>` lines, which Salesforce refuses. Git merges lines, not permissions. You want two complete
+blocks, one per field, Mariia's `Crew_Capacity_Cap__c` first and your `Crew_Notes__c` second. Type
+it in the **Result** pane: after the first `<field>` line, add the four lines that close the first
+block and open the second:
+
+```xml
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+```
+
+Copy them from here: nobody is asked to write XML from memory. The under the hood section below
+shows the result you are aiming at. Then click **Complete Merge** **(2)**.
 
 **Take both** is the right answer for almost every permission set conflict. Choosing one side is how
 a teammate's permission quietly disappears, and nobody notices until somebody cannot see a field.
@@ -189,8 +213,8 @@ Git conflicts on lines, not on XML, so the markers landed inside one block rathe
     </fieldPermissions>
 ```
 
-Keeping both sides wrote the two complete blocks, in alphabetical order, which is how Salesforce
-writes them anyway:
+Once you added the four lines, the result holds two complete blocks, in alphabetical order, which is
+how Salesforce writes them anyway:
 
 ```xml
     <fieldPermissions>

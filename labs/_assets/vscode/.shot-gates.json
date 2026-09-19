@@ -68,6 +68,24 @@
   "files-workbench": {
     "gate": "files-workbench"
   },
+  "git-merge-conflicts": {
+    "gate": "git-merge"
+  },
+  "git-merge-editor": {
+    "gate": "git-merge"
+  },
+  "git-merge-editor-accepted": {
+    "gate": "git-merge"
+  },
+  "git-merge-pick": {
+    "gate": "git-merge"
+  },
+  "git-palette-fetch": {
+    "gate": "git-merge"
+  },
+  "git-palette-merge": {
+    "gate": "git-merge"
+  },
   "installed-packages": {
     "gate": "installed-packages"
   },

@@ -95,6 +95,16 @@ async function main() {
         }, needle)
         .catch(() => {});
     }
+    // Clicks that open what the fill then types into, such as a dialog
+    for (const selector of target.clickFirst || []) {
+      await view.locator(selector).first().click({ timeout: 5000 }).catch(() => {});
+      await view.waitForTimeout(800);
+    }
+    // For controls no selector names reliably: a function body run in the page
+    for (const script of target.evaluate || []) {
+      await view.evaluate(script).catch(() => {});
+      await view.waitForTimeout(1000);
+    }
     for (const [selector, value] of target.fill || []) {
       await view.locator(selector).first().fill(value, { timeout: 5000 }).catch(() => {});
     }
@@ -108,7 +118,18 @@ async function main() {
 
     const file = path.join(OUT, `${target.name}.png`);
     const options = { path: file };
-    if (target.selector) {
+    if (target.clipAround) {
+      // A crop around an element that lives outside the layout, such as a menu:
+      // its box, widened by the padding so its context shows
+      const box = await view.locator(target.clipAround.selector).first().boundingBox();
+      const pad = target.clipAround.padding || {};
+      if (box) {
+        const x = Math.max(0, box.x - (pad.left || 0));
+        const y = Math.max(0, box.y - (pad.top || 0));
+        options.clip = { x, y, width: box.width + (pad.left || 0) + (pad.right || 0), height: box.height + (pad.top || 0) + (pad.bottom || 0) };
+      }
+      await view.screenshot(options);
+    } else if (target.selector) {
       await view.locator(target.selector).first().screenshot(options);
     } else {
       if (target.clip) {

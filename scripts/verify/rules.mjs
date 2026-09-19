@@ -796,7 +796,7 @@ export const RULES = [
     // Right after the lab, the DORA report is a file on the learner's machine: never committed,
     // so only Check my work can see it
     now: (ctx) => {
-      const released = ruleCheck("3.7")(ctx);
+      const released = ruleCheck("3.6")(ctx);
       if (!released.ok) {
         return released;
       }
@@ -826,7 +826,7 @@ export const RULES = [
     // Right after the lab the retrofit is on integration, and reaches main with the
     // next release, in the capstone. That is the lab done right, so it passes now.
     now: (ctx) => firstPassing(
-      () => ruleCheck("3.8")(ctx),
+      () => ruleCheck("3.7")(ctx),
       () => {
         const status = ctx.readOn(DEV, FIELD("Installation__c", "Status__c")) || "";
         if (!/Needs_Reinspection|Needs Reinspection/i.test(status)) {

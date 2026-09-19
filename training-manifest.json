@@ -435,7 +435,14 @@
       ],
       "screenshots": [
         "annotated/vscode/sidebar-commands-custom-menu-2--training-menu",
-        "annotated/vscode/pipeline-cards--new-user-story"
+        "annotated/vscode/pipeline-cards--new-user-story",
+        "annotated/vscode/git-palette-fetch--fetch",
+        "annotated/vscode/git-palette-merge--merge",
+        "annotated/vscode/git-merge-pick--origin-integration",
+        "annotated/vscode/git-merge-conflicts--merge-changes",
+        "annotated/vscode/git-merge-editor--parts",
+        "annotated/vscode/git-merge-editor--accept-both",
+        "annotated/vscode/git-merge-editor-accepted--result"
       ]
     },
     {

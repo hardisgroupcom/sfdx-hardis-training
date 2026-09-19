@@ -209,6 +209,49 @@
         "width": 940,
         "height": 1520
       }
+    },
+    {
+      "name": "github-new-branch",
+      "_comment": "Lab 3.1 step 2: the New branch dialog of the Branches page, filled in for preprod from main. Nothing is created: the script never clicks Create new branch.",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/branches",
+      "width": 1440,
+      "height": 900,
+      "settle": 2000,
+      "clickFirst": [
+        "button:has-text('New branch')"
+      ],
+      "fill": [
+        [
+          "div[role='dialog'] input[type='text']",
+          "preprod"
+        ]
+      ],
+      "selector": "div[role='dialog']"
+    },
+    {
+      "name": "github-pr-merge-squash",
+      "_comment": "Lab 1.6 step 4: the merge method menu of an open Pull Request, opened from the arrow next to the merge button. Any open Pull Request of the fork will do: the menu is the same.",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/105",
+      "width": 1440,
+      "height": 1000,
+      "settle": 2500,
+      "evaluate": [
+        "(() => { const main = [...document.querySelectorAll('button')].find((b) => /^(Merge pull request|Squash and merge|Rebase and merge)$/.test(b.innerText.trim())); if (!main) return; main.scrollIntoView({ block: 'center' }); const caret = main.parentElement.parentElement.querySelector(\"button[aria-haspopup='true']\"); if (caret) caret.click(); })()"
+      ],
+      "clipAround": {
+        "selector": "[role='menu']",
+        "padding": {
+          "top": 110,
+          "right": 40,
+          "bottom": 20,
+          "left": 360
+        }
+      },
+      "hide": [
+        "img.avatar",
+        "img[class*='avatar']",
+        "img[src*='avatars.githubusercontent.com']"
+      ]
     }
   ]
 }
