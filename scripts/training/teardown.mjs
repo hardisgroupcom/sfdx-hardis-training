@@ -9,7 +9,7 @@ import fs from "fs";
 import os from "os";
 import path from "path";
 import {
-  c, title, info, ok, warn, abort, run, select, confirm,
+  ROOT, c, title, info, ok, warn, abort, run, select, confirm,
   connectedOrgs, orgChoices, universe
 } from "../lib/util.mjs";
 
@@ -17,22 +17,38 @@ const REMOVE = [
   ["CustomApplication", ["Helios_Delivery"]],
   ["CustomTab", ["Installation__c", "Panel_Batch__c"]],
   ["FlexiPage", ["Installation_Record_Page"]],
-  ["Flow", ["Installation_Assign_Crew"]],
+  ["Flow", ["Installation_Assign_Crew", "Installation_Close_Check", "Installation_Crew_Warning"]],
   ["LightningComponentBundle", ["installationTimeline"]],
   ["ApexClass", ["InstallationSchedulerTest", "InstallationScheduler"]],
   ["PermissionSet", ["Helios_Delivery_Crew", "Helios_Delivery_Manager"]],
+  ["Profile", ["Helios Crew"]],
+  ["RemoteSiteSetting", ["Helios_Warehouse"]],
   ["CustomObject", ["Panel_Batch__c", "Installation__c"]]
 ];
 
-const DELETE_STANDARD = `
-List<Opportunity> opportunities = [SELECT Id FROM Opportunity WHERE Account.Description = 'Seeded by the sfdx-hardis training. Not a real customer.'];
+// The seeded accounts are found by name, read from the seed file itself.
+// Description would be the obvious marker, and SOQL cannot filter on a long
+// text area.
+function deleteStandardApex() {
+  const csv = fs.readFileSync(path.join(ROOT, "scripts", "data", "HeliosBaseline", "Account.csv"), "utf8");
+  const names = csv
+    .trim()
+    .split(/\r?\n/)
+    .slice(1)
+    .map((line) => line.split(",")[0].trim())
+    .filter(Boolean)
+    .map((name) => `'${name.replace(/\\/g, "\\\\").replace(/'/g, "\\'")}'`);
+  return `
+Set<String> names = new Set<String>{ ${names.join(", ")} };
+List<Account> accounts = [SELECT Id FROM Account WHERE Name IN :names];
+List<Opportunity> opportunities = [SELECT Id FROM Opportunity WHERE AccountId IN :accounts];
 delete opportunities;
 List<Contact> contacts = [SELECT Id FROM Contact WHERE Email LIKE '%@helios-training.invalid'];
 delete contacts;
-List<Account> accounts = [SELECT Id FROM Account WHERE Description = 'Seeded by the sfdx-hardis training. Not a real customer.'];
 delete accounts;
 System.debug('Removed ' + opportunities.size() + ' opportunities, ' + contacts.size() + ' contacts, ' + accounts.size() + ' accounts');
 `;
+}
 
 export default async function teardown(args) {
   title("Clean up a training org");
@@ -60,7 +76,7 @@ export default async function teardown(args) {
 
   title("1 of 2  Deleting the accounts, contacts and opportunities");
   const apexFile = path.join(os.tmpdir(), `helios-teardown-${Date.now()}.apex`);
-  fs.writeFileSync(apexFile, DELETE_STANDARD, "utf8");
+  fs.writeFileSync(apexFile, deleteStandardApex(), "utf8");
   const apex = run("sf", ["apex", "run", "--file", apexFile, "--target-org", target]);
   fs.rmSync(apexFile, { force: true });
   if (apex.code !== 0) {
