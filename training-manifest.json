@@ -520,7 +520,7 @@
         "pipelineConfig"
       ],
       "screenshots": [
-        "annotated/vscode/pipeline-cards--new-user-story",
+        "annotated/vscode/welcome-custom-menu-3",
         "annotated/vscode/devops-pipeline-level3--four-stages",
         "annotated/vscode/devops-pipeline--one-column",
         "annotated/vscode/pipeline-config--target-branches",
@@ -584,14 +584,14 @@
       "screenshots": [
         "annotated/web/github-pr-closed",
         "annotated/web/github-pr-files",
-        "annotated/vscode/pipeline-cards--new-user-story"
+        "annotated/vscode/welcome-custom-menu-3"
       ]
     },
     {
       "id": "lab-3-4",
       "level": 3,
       "lab": 4,
-      "title": "Deploy to integration and read the deployment log",
+      "title": "Read the deployment log, and what .forceignore hides from it",
       "file": "labs/en/level-3-release-manager/3-4-deploy-to-integration-and-read-the-log.md",
       "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-4-deploy-to-integration-and-read-the-log/",
       "commands": [
@@ -661,7 +661,8 @@
       "flags": [],
       "config": [
         "mergeTargets",
-        "availableTargetBranches"
+        "availableTargetBranches",
+        "packageNoOverwritePath"
       ],
       "docs": [
         "salesforce-devops-deploy-major-branches",
@@ -732,8 +733,8 @@
         "metadataRetriever"
       ],
       "screenshots": [
-        "annotated/vscode/pipeline-cards--new-user-story",
-        "annotated/vscode/metadata-retriever--retrofit"
+        "annotated/vscode/welcome-custom-menu-3",
+        "annotated/vscode/devops-pipeline-level3--create-promotion"
       ]
     },
     {
@@ -748,6 +749,7 @@
       ],
       "flags": [],
       "config": [
+        "monitoringRepository",
         "monitoringCommands",
         "monitoringDisable",
         "notificationConfig",
@@ -820,7 +822,7 @@
         "pipeline"
       ],
       "screenshots": [
-        "annotated/vscode/pipeline-cards--new-user-story"
+        "annotated/vscode/welcome-custom-menu-3"
       ]
     }
   ],
@@ -1211,7 +1213,8 @@
       ],
       "packageNoOverwritePath": [
         "lab-2-6",
-        "lab-3-5"
+        "lab-3-5",
+        "lab-3-6"
       ],
       "availableTargetBranchesLabels": [
         "lab-3-1"
@@ -1240,6 +1243,9 @@
       ],
       "retrofitIgnoredFiles": [
         "lab-3-8"
+      ],
+      "monitoringRepository": [
+        "lab-3-9"
       ],
       "monitoringCommands": [
         "lab-3-9"

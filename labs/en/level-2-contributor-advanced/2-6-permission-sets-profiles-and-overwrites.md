@@ -110,15 +110,8 @@ same story: **New User Story**, name `US-033-crew-permission-set`, org `helios-d
 In `helios-dev`: **Setup > Permission Sets > Helios Delivery Crew > Object Settings > Panel Batches
 > Edit**, tick **Read Access** on `Cost`, **Save**.
 
-Retrieve the **Permission Set** this time, and while the branch is fresh, add your line to
-`MY-PIPELINE.md`, under Level 2:
-
-```markdown
-- **Lab 2.6, profiles**: permissions go on Permission Sets. minimizeProfiles strips them from
-  Profiles before the commit, so a Profile grant is silently dropped rather than deployed.
-```
-
-Commit both, **Save / Publish**, and open the Pull Request. The **Git Delta package.xml** report
+Retrieve the **Permission Set** this time, commit it, **Save / Publish**, and open the Pull
+Request. The **Git Delta package.xml** report
 names `Helios_Delivery_Crew`.
 
 One tidy-up before you merge. The Profile file you retrieved in step 1 is in the repository now,

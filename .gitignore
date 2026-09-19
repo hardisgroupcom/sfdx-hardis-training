@@ -48,3 +48,8 @@ tmp/
 **/data/**/source/**
 **/data/**/target/**
 force-app/main/default/appMenus/AppSwitcher.appMenu-meta.xml
+
+# The Helios project documentation of Lab 3.10 and the DORA report of Lab 3.7:
+# generated on demand, never committed
+docs/
+mkdocs.yml

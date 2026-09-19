@@ -135,24 +135,16 @@ visible.
 ### 5. Publish again, properly
 
 Everything the retrieve brought down is still in your files, uncommitted. In the **Source
-Control** panel, stage **one file only**, the layout. Add your line to `MY-PIPELINE.md` under
-Level 2 while you are here, and stage it too:
-
-```markdown
-- **Lab 2.8, resetselection**: I had selected the whole org. Reset selected list of items to merge
-  cleared the selection and undid my commit, my change stayed in my files, and the org never
-  noticed.
-```
-
-Commit the two, then discard the rest: right-click **Changes**, **Discard All Changes**.
+Control** panel, stage **one file only**, the layout. Commit it, then discard the rest: right-click
+**Changes**, **Discard All Changes**.
 
 Then **Save / Publish** **(1)** again.
 
 ![The Save / Publish card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--save-publish.png)
 
 The **Git Delta package.xml** report now names one component, the layout, and the publish pushes
-over the old branch without asking: the reset authorised it. The Pull Request now shows two files,
-your layout and your notebook line.
+over the old branch without asking: the reset authorised it. The Pull Request now shows one file,
+your layout.
 
 ### 6. The habit that prevents this
 
@@ -193,7 +185,7 @@ The reason an over-wide selection produces deletions is worth stating plainly. I
 ## What you should see
 
 - The **Git Delta package.xml** report naming a single `Layout`
-- A Pull Request diff of two files: the layout and your notebook line
+- A Pull Request diff of one file: the layout
 - Your layout change still present in `helios-dev`
 
 ## If it goes wrong

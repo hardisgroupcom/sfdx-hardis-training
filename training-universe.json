@@ -222,75 +222,17 @@
       "metadata": ["Helios_Delivery_Manager"]
     },
     {
-      "id": "US-050",
-      "level": 3,
-      "lab": 1,
-      "author": "you",
-      "title": "The pipeline reaches production",
-      "story": "As the release manager, I want preprod and main in the pipeline, with their orgs and their merge path, so that every release reaches production the same way.",
-      "acceptance": [
-        "preprod and main are major branches with their own org",
-        "integration merges into uat, uat into preprod, preprod into main",
-        "Contributors can target preprod for a hotfix"
-      ],
-      "branch": "features/US-050-pipeline-to-production",
-      "metadata": ["config/.sfdx-hardis.yml", "config/branches/"]
-    },
-    {
-      "id": "US-051",
-      "level": 3,
-      "lab": 2,
-      "author": "you",
-      "title": "CI authentication with JWT",
-      "story": "As the release manager, I want every CI job to log in with a certificate through an External Client App, so that no pipeline depends on one person's refresh token.",
-      "acceptance": [
-        "integration, uat, preprod and main each have an encrypted key file and two secrets",
-        "No SFDX_AUTH_URL secret is left in the repository",
-        "The integration check job logs in with JWT"
-      ],
-      "branch": "features/US-051-ci-authentication",
-      "metadata": ["config/.sfdx-hardis.yml", "config/branches/"]
-    },
-    {
       "id": "US-052",
       "level": 3,
       "lab": 3,
-      "author": "you",
+      "author": "marco",
       "title": "Total Capacity back on the Installation layout",
       "story": "As a planner, I want to see the installed capacity on an installation again, so that I stop opening the report to find it.",
       "acceptance": [
         "Total Capacity (kW) is on the Installation layout, beside the crew capacity cap"
       ],
-      "branch": "features/US-052-installation-layout-capacity",
+      "branch": "training/mate-us-052-layout-capacity",
       "metadata": ["Installation__c-Installation Layout"]
-    },
-    {
-      "id": "US-053",
-      "level": 3,
-      "lab": 6,
-      "author": "you",
-      "title": "Release notes of the 2026-09 promotion",
-      "story": "As the release manager, I want the notes of each promotion in the repository, so that the business reads what changed without asking.",
-      "acceptance": [
-        "The notes open with what the release is for",
-        "The manual steps name who does them"
-      ],
-      "branch": "features/US-053-release-notes-2026-09",
-      "metadata": ["release-notes/"]
-    },
-    {
-      "id": "US-054",
-      "level": 3,
-      "lab": 10,
-      "author": "you",
-      "title": "Project documentation",
-      "story": "As the release manager, I want the project documented from its sources, so that an admin can read what an object or a flow does without opening Setup.",
-      "acceptance": [
-        "The generated pages are in docs/ on integration",
-        "The Installation page says what an installation is"
-      ],
-      "branch": "features/US-054-project-documentation",
-      "metadata": ["docs/", "mkdocs.yml"]
     },
     {
       "id": "US-020",
@@ -433,7 +375,7 @@
       "id": "US-045",
       "level": 3,
       "lab": 8,
-      "author": "you",
+      "author": "amina",
       "title": "Cancelled installations can no longer be back-dated",
       "story": "As a planner, I want to back-date an installation I cancel to the day it was called off, so that the week can be closed.",
       "acceptance": [
@@ -448,15 +390,45 @@
       "id": "US-046",
       "level": 3,
       "lab": 8,
-      "author": "you",
+      "author": "marco",
       "title": "Needs Reinspection status, added in production by an admin",
       "story": "As the release manager, I want the status an admin added in production to be in the repository, so that the next release does not take it away from the planners.",
       "acceptance": [
         "Needs Reinspection is a value of Installation__c.Status__c on integration",
         "Nothing else from production came with it"
       ],
-      "branch": "features/US-046-needs-reinspection-status",
+      "branch": "training/mate-us-046-needs-reinspection",
       "metadata": ["Installation__c.Status__c"]
+    },
+    {
+      "id": "US-055",
+      "level": 3,
+      "lab": 11,
+      "author": "amina",
+      "title": "Install Date says which day it means",
+      "story": "As a crew lead, I want Install Date to say whether it is the day we go on site or the day the panels arrive, so that nobody drives to an empty site.",
+      "acceptance": ["Install Date has a help text naming the day it means"],
+      "branch": "training/mate-us-055-install-date-help",
+      "metadata": ["Installation__c.Install_Date__c"]
+    },
+    {
+      "id": "US-056",
+      "level": 3,
+      "lab": 4,
+      "author": "amina",
+      "title": "Show the panels each crew member has to lay",
+      "story": "As a planner, I want to see how many panels each person of the crew has to lay, so that I stop working it out in my head.",
+      "acceptance": [
+        "A Crew Workload formula on Installation",
+        "On the layout, readable by managers"
+      ],
+      "branch": "training/mate-us-056-crew-workload",
+      "metadata": [
+        "Installation__c.Crew_Workload__c",
+        "Installation__c-Installation Layout",
+        "Helios_Delivery_Manager"
+      ],
+      "seededFailure": "A .forceignore wildcard added in the same Pull Request matches the new field, so no deployment sends it, and the layout and the permission set that use it are refused"
     }
   ],
   "pullRequests": [
@@ -576,14 +548,14 @@
           "lab": 2,
           "slug": "2-2-fix-a-missing-dependency-deployment-error",
           "title": "Fix a deployment error caused by a missing dependency",
-          "description": "A Pull Request deployment check fails. Read the Salesforce error properly and find the component a .forceignore entry silently left out.",
+          "description": "Update an existing Salesforce flow, then read a failing Pull Request deployment check properly and add the field the package forgot.",
           "time": "25 min"
         },
         {
           "lab": 3,
           "slug": "2-3-fix-broken-records-with-an-apex-deployment-action",
           "title": "Fix broken records with an Apex deployment action",
-          "description": "Making a field required deploys green and breaks existing records. Fix it with a pre-deployment Apex script declared as an sfdx-hardis deployment action.",
+          "description": "Making a field required deploys green and breaks existing records. Fix them with a batch Apex deployment action that scales to millions of records.",
           "time": "30 min"
         },
         {
@@ -663,8 +635,8 @@
         {
           "lab": 4,
           "slug": "3-4-deploy-to-integration-and-read-the-log",
-          "title": "Deploy to integration and read the deployment log",
-          "description": "Read an sfdx-hardis deployment log properly, and understand why what was deployed to the integration org is smaller than what changed.",
+          "title": "Read the deployment log, and what .forceignore hides from it",
+          "description": "Read an sfdx-hardis deployment log properly, then review a Pull Request whose .forceignore wildcard keeps its own field out of every deployment.",
           "time": "25 min"
         },
         {
@@ -678,7 +650,7 @@
           "lab": 6,
           "slug": "3-6-promote-to-uat-and-write-release-notes",
           "title": "Promote to UAT and write the release notes",
-          "description": "Promote integration to UAT, read the deployment actions the promotion carries, and generate release notes the business can read, with sfdx-hardis.",
+          "description": "Protect what UAT keeps for itself with package-no-overwrite, promote integration to UAT, read its deployment actions and write the release notes.",
           "time": "35 min"
         },
         {
@@ -692,7 +664,7 @@
           "lab": 8,
           "slug": "3-8-hotfix-and-retrofit",
           "title": "Production is broken: hotfix and retrofit",
-          "description": "Ship a Salesforce hotfix from preprod to production without breaking the pipeline, then bring a change an admin made in production back into Git.",
+          "description": "Release a contributor Salesforce hotfix from preprod to production without breaking the pipeline, then get a change an admin made in production back into Git.",
           "time": "35 min"
         },
         {

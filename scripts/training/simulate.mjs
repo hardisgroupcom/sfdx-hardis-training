@@ -6,10 +6,18 @@
  * pre-existing branch would not even share a sensible ancestor.
  *
  * This recreates the teammate branch from the patch set in scripts/simulate/,
- * and opens the Pull Request inside the learner's own fork, from their current
- * integration, at the moment the lab needs it. The patch sets are the same
- * files that produced the teammate Pull Requests on the public training repo,
- * so what a learner reviews is byte for byte what the screenshots show.
+ * and opens the Pull Request inside the learner's own fork, at the moment the
+ * lab needs it. The patch sets are the same files that produced the teammate
+ * Pull Requests on the public training repo, so what a learner reviews is byte
+ * for byte what the screenshots show.
+ *
+ * A scenario says where its work goes:
+ *   base        the branch the Pull Request targets (integration by default)
+ *   from        the branch it is cut from (base by default): preprod for a hotfix
+ *   continues   true when it is the next commit of a teammate branch that
+ *               already exists, after a review: the branch is kept, the commit
+ *               is added, and a Pull Request is opened into base only when there
+ *               is none yet (the hotfix going back into integration)
  */
 import fs from "fs";
 import path from "path";
@@ -58,11 +66,18 @@ export default async function simulate(args) {
     );
   }
 
+  const base = scenario.base || "integration";
+  const from = scenario.from || base;
   info("");
   info(`  ${scenario.description}`);
   info("");
-  info(`  It creates the branch ${c.bold(scenario.branch)} from your current ${c.bold("integration")},`);
-  info(`  and opens a Pull Request into ${c.bold("integration")} in ${c.bold(slug || "your fork")}.`);
+  if (scenario.continues) {
+    info(`  It continues the branch ${c.bold(scenario.branch)} of your teammate,`);
+    info(`  and its Pull Request into ${c.bold(base)} in ${c.bold(slug || "your fork")}.`);
+  } else {
+    info(`  It creates the branch ${c.bold(scenario.branch)} from your current ${c.bold(from)},`);
+    info(`  and opens a Pull Request into ${c.bold(base)} in ${c.bold(slug || "your fork")}.`);
+  }
 
   const sure = args.yes === true || (await confirm("Create it?", true));
   if (!sure) {
@@ -71,9 +86,9 @@ export default async function simulate(args) {
   }
 
   const startingBranch = gitOut(["rev-parse", "--abbrev-ref", "HEAD"]);
-  // Uncommitted work, typically the MY-PIPELINE.md line of a lab that has no story
-  // of its own, is put aside while the teammate branch is built, and put back on
-  // the branch the learner was on, whatever happens in between
+  // Uncommitted work, a configuration change not published yet for instance, is put
+  // aside while the teammate branch is built, and put back on the branch the learner
+  // was on, whatever happens in between
   let stashed = gitOut(["status", "--porcelain"]) !== "";
   const restore = () => {
     run("git", ["checkout", startingBranch && startingBranch !== scenario.branch ? startingBranch : "integration"], { quiet: true });
@@ -94,16 +109,26 @@ export default async function simulate(args) {
 
   title("1 of 4  Creating the teammate branch");
   run("git", ["fetch", "origin", "--prune"]);
-  if (run("git", ["checkout", "integration"]).code !== 0) {
-    abort("There is no integration branch to branch from.", "Run Reset this level first, from the Training menu of your level.");
+  if (scenario.continues) {
+    if (!gitOut(["rev-parse", "--verify", "--quiet", `origin/${scenario.branch}`])) {
+      abort(
+        `Your teammate's branch ${scenario.branch} is not in your fork yet.`,
+        "Run the teammate work that starts it first, from the same Simulate my teammates list."
+      );
+    }
+    run("git", ["checkout", "-B", scenario.branch, `origin/${scenario.branch}`], { quiet: true });
+  } else {
+    if (run("git", ["checkout", from]).code !== 0) {
+      abort(`There is no ${from} branch to branch from.`, "Run Reset this level first, from the Training menu of your level.");
+    }
+    run("git", ["pull", "--ff-only", "origin", from], { quiet: true });
+    const existing = gitOut(["rev-parse", "--verify", scenario.branch]);
+    if (existing) {
+      warn(`${scenario.branch} already exists. It is being recreated from the current ${from}.`);
+      run("git", ["branch", "-D", scenario.branch]);
+    }
+    run("git", ["checkout", "-b", scenario.branch]);
   }
-  run("git", ["pull", "--ff-only", "origin", "integration"], { quiet: true });
-  const existing = gitOut(["rev-parse", "--verify", scenario.branch]);
-  if (existing) {
-    warn(`${scenario.branch} already exists. It is being recreated from the current integration.`);
-    run("git", ["branch", "-D", scenario.branch]);
-  }
-  run("git", ["checkout", "-b", scenario.branch]);
   ok(`On ${scenario.branch}`);
 
   title("2 of 4  Applying the teammate changes");
@@ -114,17 +139,21 @@ export default async function simulate(args) {
 
   title("3 of 4  Committing as your teammate");
   run("git", ["add", "-A"]);
-  const commit = run("git", [
-    "-c", `user.name=${scenario.author.name}`,
-    "-c", `user.email=${scenario.author.email}`,
-    "commit", "-m", scenario.commitMessage
-  ]);
-  if (commit.code !== 0) {
-    warn("Nothing to commit: the teammate changes are already in your integration branch.");
+  const hasChanges = gitOut(["status", "--porcelain"]) !== "";
+  if (hasChanges) {
+    run("git", [
+      "-c", `user.name=${scenario.author.name}`,
+      "-c", `user.email=${scenario.author.email}`,
+      "commit", "-m", scenario.commitMessage
+    ]);
+    ok("Committed");
+  } else if (scenario.continues) {
+    ok("Nothing new to commit: the branch goes as it is");
+  } else {
+    warn(`Nothing to commit: the teammate changes are already in your ${from} branch.`);
     restore();
     return;
   }
-  ok("Committed");
 
   title("4 of 4  Opening the Pull Request in your fork");
   const push = run("git", ["push", "-u", "origin", scenario.branch, "--force-with-lease"]);
@@ -134,7 +163,7 @@ export default async function simulate(args) {
 
   if (!hasGh()) {
     warn("The GitHub CLI is not installed, so the Pull Request was not opened automatically.");
-    info(`  Open it yourself: ${c.cyan(`https://github.com/${slug}/compare/integration...${scenario.branch}?expand=1`)}`);
+    info(`  Open it yourself: ${c.cyan(`https://github.com/${slug}/compare/${base}...${scenario.branch}?expand=1`)}`);
   } else {
     const bodyFile = path.join(ROOT, ".training-pr-body.md");
     fs.writeFileSync(bodyFile, scenario.prBody, "utf8");
@@ -151,7 +180,7 @@ export default async function simulate(args) {
         // Named explicitly: in a fork with no default repository set, gh picks
         // the parent, the shared training repository, as the base
         "--repo", slug,
-        "--base", "integration",
+        "--base", base,
         "--head", scenario.branch,
         "--title", scenario.prTitle,
         "--body-file", bodyFile
@@ -165,7 +194,9 @@ export default async function simulate(args) {
       }
     }
     fs.rmSync(bodyFile, { force: true });
-    if (pr.code !== 0) {
+    if (pr.code !== 0 && scenario.continues) {
+      ok("The new commit is on the Pull Request your teammate already opened");
+    } else if (pr.code !== 0) {
       warn("The Pull Request could not be opened automatically. It may already exist.");
       info(`  Check: ${c.cyan(`https://github.com/${slug}/pulls`)}`);
     } else {
@@ -226,8 +257,9 @@ function loadScenarios() {
  * over it would take their work back out without a word, so a teammate says
  * what it adds and what it removes, and nothing else changes.
  *
- * Each patch is { file, block, insertBefore | insertAfter | remove }, or one of the structural
- * patches of applyStructuralPatch below, which the scenarios use.
+ * Each patch is { file, block, insertBefore | insertAfter | remove }, { file, replace: { from, to } },
+ * or one of the structural patches of applyStructuralPatch below. A replace works whatever the line
+ * endings of the learner's working copy.
  */
 function planPatches(scenario) {
   // Every patch is worked out in memory first, and nothing is written until all
@@ -245,6 +277,23 @@ function planPatches(scenario) {
     let content = planned.has(target) ? planned.get(target) : fs.readFileSync(target, "utf8");
     if (patch.fieldPermission || patch.layoutField || patch.removeLayoutField) {
       planned.set(target, applyStructuralPatch(patch, content));
+      continue;
+    }
+    if (patch.replace) {
+      const eol = content.includes("\r\n") ? "\r\n" : "\n";
+      const fromText = patch.replace.from.replace(/\r?\n/g, eol);
+      const toText = patch.replace.to.replace(/\r?\n/g, eol);
+      if (content.includes(toText)) {
+        warn(`${patch.file} already carries this change.`);
+      } else if (!content.includes(fromText)) {
+        abort(
+          `The teammate change cannot be placed in ${patch.file}.`,
+          "Reset the level from the Training menu, then run this again."
+        );
+      } else {
+        content = content.replace(fromText, toText);
+      }
+      planned.set(target, content);
       continue;
     }
     if (patch.remove) {

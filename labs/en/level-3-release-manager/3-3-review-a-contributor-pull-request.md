@@ -9,7 +9,7 @@ source_rev: ""
 screenshots:
   - annotated/web/github-pr-closed
   - annotated/web/github-pr-files
-  - annotated/vscode/pipeline-cards--new-user-story
+  - annotated/vscode/welcome-custom-menu-3
 depends_on:
   commands: [hardis:project:deploy:smart]
   flags: [--check]
@@ -139,51 +139,34 @@ Find the layout in the diff, hover the line where the field used to be, click th
 appears, and comment:
 
 > `Total_Capacity_kW__c` came off the layout with this change: the cap took its place instead of
-> joining it. The field is still on the object. I am putting it back in a follow-up, in the second
-> column, so both show.
+> joining it. The field is still on the object. Can you put it back in a follow-up, in the second
+> column, so both show?
 
 Two things about that comment worth copying:
 
 - **It says why**, so the reader can judge rather than take your word
 - **It says what happens next**, so nobody has to ask
 
-### 6. Fix it yourself, through the pipeline
+### 6. Review the follow-up, and merge it
 
-The story is merged, so the fix is a story of its own. This is the ordinary path, and you already
-know it from Level 1: **New User Story** **(2)**, under **Project Contribution Workflow** **(1)**.
+The fix is Marco's to make: a release manager reviews and merges the contributors' Pull Requests,
+and does not write their features. Marco answers the next morning.
+**Training: Level 3** > **Simulate my teammates**, and pick **US-052 Total Capacity back on the
+Installation layout**.
 
-![The New User Story card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
+![The Level 3 training menu on the Welcome page](../../_assets/annotated/vscode/welcome-custom-menu-3.png)
 
-The questions have changed a little since Level 1, because of what you did in Labs 3.1 and 3.2:
+It opens his Pull Request into `integration` in your fork. Review it exactly as you reviewed US-018:
 
-- **Target branch**: it asks now, because Lab 3.1 added `preprod` for hotfixes. Take `integration`:
-  this is not urgent, it goes through the pipeline like everything else
-- **Type**: **Feature**, and name it `US-052-installation-layout-capacity`
-- **Which Salesforce org**: take **Scratch org**, then **Reuse scratch org helios-dev**, as in
-  Lab 1.3. **Not Current org**: the last org Lab 3.2 configured became your default org, and that
-  was `helios-prod`. Current org would have you build a story in production
+- **The diff**: one file, the layout, and in it `Total_Capacity_kW__c` added in the second column of
+  the **Information** section. Nothing removed this time
+- **The check**: green, and the sfdx-hardis comment says one component updated
+- **The four questions**: it matches the story, nothing disappears, no permission is involved, and
+  it is reversible by the same kind of change
 
-!!! warning "Check the Status section before you change anything"
-    The sfdx-hardis panel, **Status** section, names the current org. It must read `helios-dev`
-    before you open Setup. Every Add/Configure Org of Lab 3.2 changed it, and nothing changed it
-    back.
-
-Then, in `helios-dev`:
-
-1. Make sure the org has the layout as it is on `integration`, with Marco's cap: in the Explorer,
-   right-click `force-app/main/default/layouts/Installation__c-Installation Layout.layout-meta.xml`,
-   then **SFDX: Deploy This Source to Org**. Your org may still have the layout from before Marco's
-   story, and building on it would lose his cap this time
-2. **Setup > Object Manager > Installation > Page Layouts > Installation Layout**. Drag **Total
-   Capacity (kW)** from the palette into the empty right-hand column of the **Information** section,
-   and **Save**
-3. In the **Metadata Retriever**, tick `Installation__c-Installation Layout` and retrieve it. The
-   diff in **Source Control** is the field coming back into the second column, and nothing else
-
-Commit it from **Source Control**, then **Save / Publish**, then **Create Pull Request** in the
-reports bar. When the checks are green, **Merge pull request**. GitHub does not let you approve your
-own Pull Request, and on this fork every Pull Request is yours: on a real project, this is where a
-second person approves.
+When the checks are green, **Merge pull request**. GitHub does not let you approve a Pull Request
+opened from your own account, and in this fork the teammate Pull Requests are opened from yours: on
+a real project, this is where you click **Approve** first.
 
 Use **Create a merge commit**, not squash. On a pipeline where the release notes and the DORA report
 are built from merged Pull Requests, the merge commit is what carries the link back to the Pull
@@ -222,7 +205,7 @@ anything deleted, the comment has told you everything it is going to: the rest i
 ## What you should see
 
 - A review comment on Marco's merged Pull Request, naming what came off the layout
-- A follow-up Pull Request of yours, `US-052`, merged into `integration`
+- Marco's follow-up Pull Request, `US-052`, reviewed and merged into `integration`
 - `Total_Capacity_kW__c` back on the Installation layout in `integration`
 
 ## If it goes wrong
@@ -234,12 +217,8 @@ scenario is used once.
 **The checks never run on your follow-up Pull Request.**
 Actions are disabled, or the JWT secrets are missing for `integration`. Lab 3.2.
 
-**The retrieved layout has lost `Crew_Capacity_Cap__c`.**
-Your org had the layout from before Marco's story, and step 6.1 was skipped. Deploy the layout file
-from `integration` to `helios-dev`, add the field again in Setup, and retrieve again.
-
 **The field is already back on the layout.**
-Then you or a teammate restored it earlier. Say so in `MY-PIPELINE.md` and move on: the lesson is
+Then a teammate restored it earlier, and the simulation reports nothing to commit. Move on: the lesson is
 the comment, not the commit.
 
 ## Check your work

@@ -47,18 +47,19 @@ over the page:
 
 ![The Level 3 training menu, opened on the Welcome page](../../_assets/annotated/vscode/welcome-custom-menu-3.png)
 
-Eight of them, and the labs call them by these names:
+Nine of them, and the labs call them by these names:
 
-| Command                            | What it does                                                       |
-|------------------------------------|--------------------------------------------------------------------|
-| **Set up my training environment** | Rebuilds a scratch org that expired, and points the pipeline at it |
-| **Where am I?**                    | Says which level and lab you reached, and what to do next          |
-| **Set up one of my training orgs** | Deploys the Helios app and its data into an org you choose         |
-| **Simulate my teammates**          | Creates the teammate branches and Pull Requests a lab needs        |
-| **Check my work**                  | Verifies the lab you just finished and prints your receipt         |
-| **Claim my badge**                 | Checks the whole level, then opens your badge claim filled in      |
-| **Reset this level**               | Puts your repository back to the start of Level 3                  |
-| **Clean up a training org**        | Removes the Helios app and its data from an org                    |
+| Command                               | What it does                                                                  |
+|---------------------------------------|-------------------------------------------------------------------------------|
+| **Set up my training environment**    | Rebuilds a scratch org that expired, and points the pipeline at it            |
+| **Where am I?**                       | Says which level and lab you reached, and what to do next                     |
+| **Set up one of my training orgs**    | Deploys the Helios app and its data into an org you choose                    |
+| **Simulate my teammates**             | Creates the teammate branches and Pull Requests a lab needs                   |
+| **Publish my pipeline configuration** | Commits the pipeline configuration you changed on `integration` and pushes it |
+| **Check my work**                     | Verifies the lab you just finished and prints your receipt                    |
+| **Claim my badge**                    | Checks the whole level, then opens your badge claim filled in                 |
+| **Reset this level**                  | Puts your repository back to the start of Level 3                             |
+| **Clean up a training org**           | Removes the Helios app and its data from an org                               |
 
 There is one menu per level, and each holds only what that level needs, so nothing in front of you is
 for a lab you have not reached.
@@ -68,19 +69,19 @@ Either route runs the same thing.
 
 ## What you will do
 
-| Lab                                                       | Title                                               | Time   |
-|-----------------------------------------------------------|-----------------------------------------------------|--------|
-| [3.1](3-1-configure-the-pipeline-up-to-production.md)     | Configure the CI/CD pipeline up to production       | 35 min |
-| [3.2](3-2-ci-authentication-with-jwt.md)                  | Set up CI authentication with JWT for four orgs     | 40 min |
-| [3.3](3-3-review-a-contributor-pull-request.md)           | Review and merge a contributor Pull Request         | 25 min |
-| [3.4](3-4-deploy-to-integration-and-read-the-log.md)      | Deploy to integration and read the deployment log   | 25 min |
-| [3.5](3-5-merge-colliding-pull-requests.md)               | Three Pull Requests collide: choose the merge order | 35 min |
-| [3.6](3-6-promote-to-uat-and-write-release-notes.md)      | Promote to UAT and write the release notes          | 35 min |
-| [3.7](3-7-release-to-production-and-read-dora-metrics.md) | Release to production and read your DORA metrics    | 35 min |
-| [3.8](3-8-hotfix-and-retrofit.md)                         | Production is broken: hotfix and retrofit           | 35 min |
-| [3.9](3-9-monitor-your-production-org.md)                 | Monitor your production org                         | 35 min |
-| [3.10](3-10-generate-the-project-documentation.md)        | Generate the Salesforce project documentation       | 20 min |
-| [3.11](3-11-capstone-run-a-weekly-release-cycle.md)       | Capstone: run a weekly release cycle                | 45 min |
+| Lab                                                       | Title                                                        | Time   |
+|-----------------------------------------------------------|--------------------------------------------------------------|--------|
+| [3.1](3-1-configure-the-pipeline-up-to-production.md)     | Configure the CI/CD pipeline up to production                | 35 min |
+| [3.2](3-2-ci-authentication-with-jwt.md)                  | Set up CI authentication with JWT for four orgs              | 40 min |
+| [3.3](3-3-review-a-contributor-pull-request.md)           | Review and merge a contributor Pull Request                  | 25 min |
+| [3.4](3-4-deploy-to-integration-and-read-the-log.md)      | Read the deployment log, and what .forceignore hides from it | 25 min |
+| [3.5](3-5-merge-colliding-pull-requests.md)               | Three Pull Requests collide: choose the merge order          | 35 min |
+| [3.6](3-6-promote-to-uat-and-write-release-notes.md)      | Promote to UAT and write the release notes                   | 35 min |
+| [3.7](3-7-release-to-production-and-read-dora-metrics.md) | Release to production and read your DORA metrics             | 35 min |
+| [3.8](3-8-hotfix-and-retrofit.md)                         | Production is broken: hotfix and retrofit                    | 35 min |
+| [3.9](3-9-monitor-your-production-org.md)                 | Monitor your production org                                  | 35 min |
+| [3.10](3-10-generate-the-project-documentation.md)        | Generate the Salesforce project documentation                | 20 min |
+| [3.11](3-11-capstone-run-a-weekly-release-cycle.md)       | Capstone: run a weekly release cycle                         | 45 min |
 
 ## One more org
 
@@ -94,18 +95,18 @@ Manager** with the alias `helios-preprod`. Then seed both Developer Edition orgs
 **Training: Level 3 > Set up one of my training orgs**: `helios-preprod`, and `helios-prod`, which
 until now only created the others and held nothing.
 
-`helios-prod` gets the same sources as the other orgs, plus one thing the seeding adds by hand: a
-`Needs Reinspection` value on the `Installation__c.Status__c` picklist, which exists in no branch.
-That is what Lab 3.8 retrofits. Nothing seeds a deployment history, so the DORA report in Lab 3.7 sees
-only the deployments you make yourself.
+`helios-prod` gets the same sources as the other orgs. Nothing seeds a deployment history, so the
+DORA report in Lab 3.7 sees only the seeding and the deployments you make yourself.
 
 If a scratch org expired since Level 2, **Training: Level 3 > Set up my training environment**
 rebuilds it first.
 
-## Keep MY-PIPELINE.md open
+## Your role changes
 
-More than half the labs here ask you to write a line in it, and the badge audit reads it. It is the
-document that says how this pipeline was put together, which is precisely what Sofia did not leave
-you.
+In Levels 1 and 2 you built User Stories and opened their Pull Requests. A release manager does
+not. Your teammates open the Pull Requests, **Simulate my teammates** plays them, and you review
+them, merge them or send them back. What you create yourself is the pipeline: its configuration,
+which **Publish my pipeline configuration** puts on `integration`, and the promotions from one major
+branch to the next, `integration` to `uat`, `uat` to `preprod`, `preprod` to `main`.
 
 [Start with Lab 3.1](3-1-configure-the-pipeline-up-to-production.md){ .md-button .md-button--primary }

@@ -166,17 +166,9 @@ That is the honest version of this step, and it is also the point. A DORA report
 has run once is an empty baseline. It becomes useful at the fourth or fifth release, when the numbers
 have somewhere to move from. Take the baseline now.
 
-Write the numbers in `MY-PIPELINE.md`:
-
-```markdown
-- **Lab 3.7, DORA**: baseline after the first production release. Deployment frequency X per week,
-  lead time Y days, change failure rate Z%, time to restore W hours, rework rate V%. Measured
-  against helios-prod over 90 days.
-```
-
-Replace the Lab 3.7 line of the template with it, numbers included. Like the Lab 3.4 and 3.5 lines,
-it stays uncommitted and goes with your next story, in Lab 3.8. The report itself landed in
-`docs/dora/`, and goes with it.
+The report is a file, `docs/dora/dora-report-<date>.md`, and the panel opens it for you. Keep it
+where it is: it is rebuilt from the org and the Pull Requests whenever you run the report again, so
+nothing is committed, and Lab 3.11 compares the next one with this one.
 
 <details markdown="1"><summary>Under the hood: where the DORA numbers come from</summary>
 
@@ -225,7 +217,7 @@ and a release manager quoting them should know which part they cover.
 - `preprod` and `main` carrying the release
 - A green **Process Deployment (sfdx-hardis)** run on `preprod`, then one on `main`
 - The stories working in `helios-prod`
-- A DORA report measured against `helios-prod`, and its numbers in `MY-PIPELINE.md`
+- A DORA report measured against `helios-prod`, in `docs/dora/`
 
 ## If it goes wrong
 

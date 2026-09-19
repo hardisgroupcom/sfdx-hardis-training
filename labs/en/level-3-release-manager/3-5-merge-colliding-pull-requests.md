@@ -43,7 +43,7 @@ Deciding what goes in, in what order, and what waits, is the job.
 ## Before you start
 
 - [ ] Lab 3.4 finished
-- [ ] Nothing uncommitted, except the line Lab 3.4 added to `MY-PIPELINE.md`
+- [ ] Nothing uncommitted
 
 ## Steps
 
@@ -175,28 +175,16 @@ project bans permissions on Profiles.
 **The overwrite manager** (`packageNoOverwritePath`) protects components that are deliberately
 different per org. Anything listed in `manifest/package-no-overwrite.xml` is removed from the package
 when the target org already has it, so a deployment cannot flatten a named credential that points at
-a different endpoint in each environment. Two things to know: the file does not exist in this
-project, so nothing is protected, and the setting is **branch-scoped**, so you will not find it on
-the global **Deployment** tab **(2)**. Switch the scope to `Branch: integration` and it is there, as
-**Branch-scoped custom Package-No-Overwrite path**.
+a different endpoint in each environment. The file does not exist in this project yet, so nothing is
+protected: Lab 3.6 creates it, before the first promotion to `uat`. Its location can be changed per
+branch, which is why you will not find it on the global **Deployment** tab **(2)**: switch the scope
+to `Branch: integration` and it is there, as **Branch-scoped custom Package-No-Overwrite path**.
 
 **Delta deployment** is **Use Delta Deployment** **(3)**, on the global **Deployment** tab, and
 Lab 3.4 showed you it is **Disabled** here. With it on, each merge deploys the components that changed
 rather than the declared package. It is a speed and blast-radius decision, not a safety net: it does
 not stop one merge overwriting another, because both deployments send what their own commit
 contains.
-
-### 8. Write the decision down
-
-In `MY-PIPELINE.md`:
-
-```markdown
-- **Lab 3.5, three Pull Requests**: US-019 and US-018 both edited Helios_Delivery_Manager and git
-  merged them silently, seventy lines apart, so both grants survived and nothing asked me. Checked the
-  org rather than trusting that. Sent US-020 back to its author with the compilation error named.
-```
-
-Uncommitted, like the Lab 3.4 line: both go with your Lab 3.6 story.
 
 <details markdown="1"><summary>Under the hood: the three mechanisms and where each one lives</summary>
 

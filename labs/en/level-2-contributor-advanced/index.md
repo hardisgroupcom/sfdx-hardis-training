@@ -87,10 +87,4 @@ others alone.
 A new `helios-dev` starts from the app as it ships, without the stories you already merged. Lab 2.1
 is precisely how you bring them in.
 
-## One thing to keep open
-
-`MY-PIPELINE.md`. Several labs here ask you to write a line in it, and the badge audit reads it. It
-is also the file you would keep on a real project so the next person can see how things were put
-together. Copy `MY-PIPELINE.template.md` over it and start filling it in.
-
 [Start with Lab 2.1](2-1-backpromote-your-teammates-work.md){ .md-button .md-button--primary }

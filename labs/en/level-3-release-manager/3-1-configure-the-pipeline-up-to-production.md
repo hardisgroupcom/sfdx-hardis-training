@@ -7,7 +7,7 @@ lab: 1
 lang: en
 source_rev: ""
 screenshots:
-  - annotated/vscode/pipeline-cards--new-user-story
+  - annotated/vscode/welcome-custom-menu-3
   - annotated/vscode/devops-pipeline-level3--four-stages
   - annotated/vscode/devops-pipeline--one-column
   - annotated/vscode/pipeline-config--target-branches
@@ -63,15 +63,13 @@ pipeline gets postponed until the day somebody needs to release properly.
 
 ## Steps
 
-### 1. Start a story for it, then decide the shape
+### 1. Decide the shape
 
-Configuration is work like any other, and it reaches `integration` the same way. Start its story
-before you change a single file: **New User Story**, name `US-050-pipeline-to-production`, and
-answer **I'm hardcore, I don't need an org**, because everything this lab changes is a file.
-Starting the story afterwards does not work: **New User Story** begins its branch clean, and puts
-everything uncommitted aside in a stash.
+Stay on `integration`: the pipeline configuration is the release manager's, and it is published
+from the development branch, not through a User Story. Contributors bring features through Pull
+Requests; you bring the configuration those Pull Requests run through. Step 7 publishes it.
 
-Then four questions, and their answers are the whole pipeline:
+Four questions, and their answers are the whole pipeline:
 
 | Question                                                                     | Helios answer                                                                            |
 |------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
@@ -80,8 +78,7 @@ Then four questions, and their answers are the whole pipeline:
 | Which branch is production?                                                  | `main`                                                                                   |
 | Where does an urgent fix start?                                              | From `preprod`, so it never carries the work still waiting in `integration` and `uat`    |
 
-Write those four lines in `MY-PIPELINE.md` now, before you configure anything. If you cannot state
-them in one sentence each, configuring them will not help.
+If you cannot state them in one sentence each, configuring them will not help.
 
 `preprod` earns its place in two ways. It is the last rehearsal before production, an org that holds
 what production holds and that nobody works in, so a release that deploys there cleanly has very few
@@ -311,22 +308,26 @@ point of most projects: not an empty repository, but a two-year-old org nobody h
 
 </details>
 
-### 7. Commit the configuration
+### 7. Publish the configuration
 
-This is configuration, so it goes through the same pipeline as everything else, and through the same
-buttons Level 1 used. The picture below was taken in Level 1, which is why its diagram still has two
-columns. The cards under the diagram are the part this step is about, and they do not change.
+Everything you changed is a file on your disk, on `integration`: the branch files under
+`config/branches/`, the target branches in `config/.sfdx-hardis.yml`. A release manager does not
+open a feature Pull Request for it. The configuration goes straight to the development branch, and
+reaches `uat`, `preprod` and `main` with the next promotions, like everything else.
 
-![The contribution cards of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
+Welcome page > **Training: Level 3** > **Publish my pipeline configuration**.
 
-Under **Project Contribution Workflow** **(1)**, the story you started in step 1 is the branch you
-are on, the one **New User Story** **(2)** made. Commit the files from **Source Control**, then
-**Save / Publish**, then **Create Pull Request** in the reports bar at the end of it. Get the check
-green and merge.
+![The Level 3 training menu on the Welcome page](../../_assets/annotated/vscode/welcome-custom-menu-3.png)
 
-There is nothing to retrieve here: you edited configuration files, not an org.
+It lists the configuration files you changed, and leaves out anything that is not configuration:
+a feature never goes this way. Confirm, and it commits them on `integration` and pushes. The push
+starts a deployment of `integration` in the **Actions** tab of your fork, like a merge does.
 
-Yes, even as the release manager. Especially as the release manager.
+!!! note "integration is protected, so how does the push go through?"
+    It lifts the protection of `integration` for this one push and puts it back, the way **Set up
+    my training environment** did in Level 1. On a real project the release manager holds the right
+    to push to the development branch, or asks the administrator of the repository to push the
+    configuration. Either way, it is never a contributor's Pull Request.
 
 ## What you should see
 
@@ -347,7 +348,8 @@ Also true, and worth checking:
 
 - `config/branches/` holding four files
 - Four branch protection rules in your fork's **Settings** > **Branches**, one per major branch
-- A merged Pull Request carrying the configuration change
+- A commit *Pipeline configuration, from the release manager* on `integration`, and the deployment
+  it started, green
 
 ## If it goes wrong
 

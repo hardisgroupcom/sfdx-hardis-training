@@ -12,7 +12,6 @@ rewrite.
 | `labs/_snippets/**`       | No. Command blocks, included by reference                                      |
 | `training-universe.json`  | No. Org aliases, branch names, User Story ids and character names never change |
 | `BACKLOG.md`              | No. Generated                                                                  |
-| `MY-PIPELINE.template.md` | No. Generated                                                                  |
 
 ## How
 

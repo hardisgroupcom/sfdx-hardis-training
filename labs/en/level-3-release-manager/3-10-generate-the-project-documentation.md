@@ -38,12 +38,7 @@ exactly the part worth a person's time.
 ## Before you start
 
 - [ ] Lab 3.9 finished
-- [ ] A story started for it, before anything is generated: **New User Story**, targeting
-      `integration`, type **Feature**, named `US-054-project-documentation`, and **I'm hardcore, I
-      don't need an org**. The generator writes dozens of files, and a story started afterwards
-      would put all of them aside in a stash
-- [ ] The Lab 3.9 line of `MY-PIPELINE.md` back on the new branch: New User Story put it aside, so
-      **Source Control** panel, **Stashes**, **Pop Latest Stash**
+- [ ] On `integration`, up to date: the documentation describes what the team merged
 
 ## Steps
 
@@ -115,8 +110,9 @@ exists at the end of a level rather than at the start.
 
 **Protect every page you edit.** Each generated page starts with two comment lines, and the second
 reads `<!-- DO_NOT_OVERWRITE_DOC=FALSE -->`. Change it to `TRUE` on the pages you write in. The next
-generation, yours or the nightly one of Lab 3.9, leaves a `TRUE` page alone, and rewrites every
-other page from the sources, paragraph included.
+generation leaves a `TRUE` page alone, and rewrites every other page from the sources, paragraph
+included. On a project that commits its documentation, that line is what keeps a person's words
+alive across nightly runs.
 
 ### 6. Publish it
 
@@ -136,19 +132,17 @@ The same three exist as configuration keys, `docDeployToCloudflare`, `docDeployT
 without anybody clicking anything. The Cloudflare and Salesforce ones are mutually exclusive: turn
 both on and only the Salesforce one runs.
 
-For this lab, generate and commit. Publishing is a project decision.
-
-Put it into `integration` through an ordinary Pull Request, on the story you started before
-generating. Add the step 7 line to `MY-PIPELINE.md` first, then commit from **Source Control**:
-`docs/`, the `mkdocs.yml` the generator created, the section it added to `README.md`, and
-`MY-PIPELINE.md`. Then **Save / Publish** and **Create Pull Request**.
+For this lab, generate and read. Publishing is a project decision, and so is committing: this course
+keeps `docs/` and the generated `mkdocs.yml` out of git (`.gitignore` lists them), because they are
+rebuilt from the sources whenever anybody asks, and a release manager does not send features, or
+their documentation, through Pull Requests of their own.
 
 ### 7. Make it a habit, not an event
 
 Documentation generated once is out of date in a month. The generation is a command, so it can run
-on a schedule the way the monitoring does.
-
-Add a line in `MY-PIPELINE.md` saying when it runs and where it is published.
+on a schedule the way the monitoring does, and the monitoring of Lab 3.9 already does it: its nightly
+backup regenerates the documentation of production before it finishes. Publishing that one, with
+the keys above, is how a project gets documentation nobody has to remember to update.
 
 <details markdown="1"><summary>Under the hood: what reads what</summary>
 
@@ -193,8 +187,8 @@ can describe what a field is, not why the business needs it.
 - A `docs/` folder with object, flow and Apex pages
 - `docs/objects/Installation__c.md` listing every field from all three levels
 - A readable diagram of `Installation_Assign_Crew`
-- Three paragraphs you wrote yourself
-- The whole thing committed through a Pull Request
+- Three paragraphs you wrote yourself, on a page marked `DO_NOT_OVERWRITE_DOC=TRUE`
+- Nothing to commit: **Source Control** shows no change from the generation
 
 ## If it goes wrong
 

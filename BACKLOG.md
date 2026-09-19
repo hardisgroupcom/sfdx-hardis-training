@@ -14,11 +14,7 @@ for the `Helios Delivery` app, and every one of them is a lab in this course.
 | US-017 | 2 | Record who signed an installation off | Amina Diallo | `training/mate-us-017-sign-off` |
 | US-018 | 2 | Cap the crew size a planner can assign | Marco Bianchi | `training/mate-us-018-crew-capacity` |
 | US-019 | 2 | Generate a quote PDF from an opportunity | Amina Diallo | `training/mate-us-019-quote-pdf` |
-| US-050 | 3 | The pipeline reaches production | You | `features/US-050-pipeline-to-production` |
-| US-051 | 3 | CI authentication with JWT | You | `features/US-051-ci-authentication` |
-| US-052 | 3 | Total Capacity back on the Installation layout | You | `features/US-052-installation-layout-capacity` |
-| US-053 | 3 | Release notes of the 2026-09 promotion | You | `features/US-053-release-notes-2026-09` |
-| US-054 | 3 | Project documentation | You | `features/US-054-project-documentation` |
+| US-052 | 3 | Total Capacity back on the Installation layout | Marco Bianchi | `training/mate-us-052-layout-capacity` |
 | US-020 | 3 | Refactor InstallationScheduler | Marco Bianchi | `training/mate-us-020-apex-refactor` |
 | US-021 | 2 | Warn the planner when a crew is too small | You | `features/US-021-crew-size-warning` |
 | US-024 | 2 | Crew size becomes mandatory | You | `features/US-024-crew-size-required` |
@@ -28,8 +24,10 @@ for the `Helios Delivery` app, and every one of them is a lab in this course.
 | US-034 | 2 | Flat roofs need a crew of at least three | You | `features/US-034-crew-override` |
 | US-038 | 2 | Tidy the Installation layout | You | `features/US-038-installation-notes-tidy` |
 | US-041 | 2 | Installation handover checklist | You | `features/US-041-handover-checklist` |
-| US-045 | 3 | Cancelled installations can no longer be back-dated | You | `fix/US-045-installation-date-hotfix` |
-| US-046 | 3 | Needs Reinspection status, added in production by an admin | You | `features/US-046-needs-reinspection-status` |
+| US-045 | 3 | Cancelled installations can no longer be back-dated | Amina Diallo | `fix/US-045-installation-date-hotfix` |
+| US-046 | 3 | Needs Reinspection status, added in production by an admin | Marco Bianchi | `training/mate-us-046-needs-reinspection` |
+| US-055 | 3 | Install Date says which day it means | Amina Diallo | `training/mate-us-055-install-date-help` |
+| US-056 | 3 | Show the panels each crew member has to lay | Amina Diallo | `training/mate-us-056-crew-workload` |
 
 ## The stories in full
 
@@ -110,44 +108,12 @@ Acceptance criteria:
 
 - The permission is granted to managers
 
-<a id="US-050"></a>
-
-### US-050 - The pipeline reaches production
-
-**Owner**: You  
-**Branch**: `features/US-050-pipeline-to-production`  
-**Lab**: 3.1
-
-> As the release manager, I want preprod and main in the pipeline, with their orgs and their merge path, so that every release reaches production the same way.
-
-Acceptance criteria:
-
-- preprod and main are major branches with their own org
-- integration merges into uat, uat into preprod, preprod into main
-- Contributors can target preprod for a hotfix
-
-<a id="US-051"></a>
-
-### US-051 - CI authentication with JWT
-
-**Owner**: You  
-**Branch**: `features/US-051-ci-authentication`  
-**Lab**: 3.2
-
-> As the release manager, I want every CI job to log in with a certificate through an External Client App, so that no pipeline depends on one person's refresh token.
-
-Acceptance criteria:
-
-- integration, uat, preprod and main each have an encrypted key file and two secrets
-- No SFDX_AUTH_URL secret is left in the repository
-- The integration check job logs in with JWT
-
 <a id="US-052"></a>
 
 ### US-052 - Total Capacity back on the Installation layout
 
-**Owner**: You  
-**Branch**: `features/US-052-installation-layout-capacity`  
+**Owner**: Marco Bianchi  
+**Branch**: `training/mate-us-052-layout-capacity`  
 **Lab**: 3.3
 
 > As a planner, I want to see the installed capacity on an installation again, so that I stop opening the report to find it.
@@ -155,36 +121,6 @@ Acceptance criteria:
 Acceptance criteria:
 
 - Total Capacity (kW) is on the Installation layout, beside the crew capacity cap
-
-<a id="US-053"></a>
-
-### US-053 - Release notes of the 2026-09 promotion
-
-**Owner**: You  
-**Branch**: `features/US-053-release-notes-2026-09`  
-**Lab**: 3.6
-
-> As the release manager, I want the notes of each promotion in the repository, so that the business reads what changed without asking.
-
-Acceptance criteria:
-
-- The notes open with what the release is for
-- The manual steps name who does them
-
-<a id="US-054"></a>
-
-### US-054 - Project documentation
-
-**Owner**: You  
-**Branch**: `features/US-054-project-documentation`  
-**Lab**: 3.10
-
-> As the release manager, I want the project documented from its sources, so that an admin can read what an object or a flow does without opening Setup.
-
-Acceptance criteria:
-
-- The generated pages are in docs/ on integration
-- The Installation page says what an installation is
 
 <a id="US-020"></a>
 
@@ -325,7 +261,7 @@ Acceptance criteria:
 
 ### US-045 - Cancelled installations can no longer be back-dated
 
-**Owner**: You  
+**Owner**: Amina Diallo  
 **Branch**: `fix/US-045-installation-date-hotfix`  
 **Lab**: 3.8
 
@@ -340,8 +276,8 @@ Acceptance criteria:
 
 ### US-046 - Needs Reinspection status, added in production by an admin
 
-**Owner**: You  
-**Branch**: `features/US-046-needs-reinspection-status`  
+**Owner**: Marco Bianchi  
+**Branch**: `training/mate-us-046-needs-reinspection`  
 **Lab**: 3.8
 
 > As the release manager, I want the status an admin added in production to be in the repository, so that the next release does not take it away from the planners.
@@ -350,6 +286,35 @@ Acceptance criteria:
 
 - Needs Reinspection is a value of Installation__c.Status__c on integration
 - Nothing else from production came with it
+
+<a id="US-055"></a>
+
+### US-055 - Install Date says which day it means
+
+**Owner**: Amina Diallo  
+**Branch**: `training/mate-us-055-install-date-help`  
+**Lab**: 3.11
+
+> As a crew lead, I want Install Date to say whether it is the day we go on site or the day the panels arrive, so that nobody drives to an empty site.
+
+Acceptance criteria:
+
+- Install Date has a help text naming the day it means
+
+<a id="US-056"></a>
+
+### US-056 - Show the panels each crew member has to lay
+
+**Owner**: Amina Diallo  
+**Branch**: `training/mate-us-056-crew-workload`  
+**Lab**: 3.4
+
+> As a planner, I want to see how many panels each person of the crew has to lay, so that I stop working it out in my head.
+
+Acceptance criteria:
+
+- A Crew Workload formula on Installation
+- On the layout, readable by managers
 
 ## The team
 

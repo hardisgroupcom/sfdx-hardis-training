@@ -150,10 +150,6 @@ const PAGE_META = {
     title: "Helios Energy backlog: the User Stories of the course",
     description: "Every User Story of the Salesforce DevOps training with sfdx-hardis, with its acceptance criteria, its Git branch and the lab that delivers it."
   },
-  "MY-PIPELINE.template.md": {
-    title: "My pipeline notebook: template",
-    description: "The notebook a learner fills in during the Salesforce DevOps training: the orgs of the pipeline, and one line per lab on what was decided and why."
-  },
   "TRANSLATION.md": {
     title: "Translating the Salesforce DevOps training",
     description: "How to translate the labs of the free Salesforce DevOps training with sfdx-hardis, and how translations are kept in step with the English source."
@@ -161,7 +157,7 @@ const PAGE_META = {
 };
 const frontMatter = (meta) =>
   meta ? `---\ntitle: ${JSON.stringify(meta.title)}\ndescription: ${JSON.stringify(meta.description)}\n---\n\n` : "";
-for (const file of ["BACKLOG.md", "MY-PIPELINE.template.md", "TRANSLATION.md"]) {
+for (const file of ["BACKLOG.md", "TRANSLATION.md"]) {
   const source = path.join(ROOT, file);
   if (fs.existsSync(source)) {
     fs.writeFileSync(path.join(OUT, file), frontMatter(PAGE_META[file]) + fs.readFileSync(source, "utf8"), "utf8");

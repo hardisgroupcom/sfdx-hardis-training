@@ -7,7 +7,7 @@ lab: 11
 lang: en
 source_rev: ""
 screenshots:
-  - annotated/vscode/pipeline-cards--new-user-story
+  - annotated/vscode/welcome-custom-menu-3
 depends_on:
   commands: [hardis:project:deploy:smart, hardis:doc:release-notes, hardis:doc:dora-report]
   flags: []
@@ -39,17 +39,11 @@ nobody is going to tell you the order to do things in.
 
 ### Monday: take in what contributors sent you
 
-The only teammate Pull Request still in play is **US-020**, open since Lab 3.5 and still failing. The
-other two are merged by now, and each scenario is used once: **Simulate my teammates** will replay a
-scenario onto a branch that already has its files, report "Nothing to commit" and open nothing.
+Two Pull Requests wait. **US-020**, open since Lab 3.5 and still failing. And a new one from Amina:
+**Training: Level 3** > **Simulate my teammates**, and pick **US-055 Install Date says which day it
+means**.
 
-So build the second Pull Request yourself, the way a contributor would.
-
-![The New User Story card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
-
-**New User Story** **(2)**, under **Project Contribution Workflow** **(1)**, targeting
-`integration`, one small change of your own in `helios-dev`, published and opened. Pick something a
-reviewer could reasonably argue with, because in ten minutes you are that reviewer.
+![The Level 3 training menu on the Welcome page](../../_assets/annotated/vscode/welcome-custom-menu-3.png)
 
 For each of the two:
 
@@ -59,7 +53,7 @@ For each of the two:
 - Merge it or send it back with a comment, and say why
 
 US-020 still fails its check. It stays with its author, with the failure named. Do not fix it
-yourself.
+yourself: you review and merge what contributors send, and you do not write it for them.
 
 ### Tuesday: merge and deploy to integration
 
@@ -82,19 +76,23 @@ deleted that you were not expecting. Merge, watch, verify, do the manual steps.
 This release is also what finally carries the Lab 3.8 retrofit into `main`, so the `Needs Reinspection`
 picklist value reaches production through the pipeline and the check for Lab 3.8 passes.
 
-Then generate the release notes, add the sentence at the top that says what this release is for, and
-put them in the repository through a Pull Request like anything else.
+Then generate the release notes of the release to `main`, add the sentence at the top that says what
+this release is for, and put them in the description of the Pull Request from `preprod` into
+`main`, the way Lab 3.6 did for `uat`.
 
-### Friday: measure and write down
+### Friday: measure
 
 Set `helios-prod` as your default org in **Orgs Manager**, so the report measures production rather
 than your sandbox, then run the DORA report and compare it with the baseline you took in Lab 3.7.
 
-Update `MY-PIPELINE.md` with:
+Then read back over the week, and answer three questions for yourself, the ones a successor would
+ask:
 
-- What went out this week, with the link to the release notes you generated on Thursday
-- What did not, and why
-- Anything you had to do by hand, which is a candidate for a deployment action next time
+- What went out this week, and where are its release notes? In the description of the release Pull
+  Request
+- What did not, and why? US-020, sent back with its failure named
+- What did you have to do by hand? Every manual step is a candidate for a deployment action next
+  time
 
 ## What makes this the capstone
 
@@ -116,8 +114,8 @@ point of having it.
 - Two Pull Requests reviewed, one merged, one sent back with a reason
 - `integration`, `uat`, `preprod` and `main` all carrying the release, in that order, each through
   its own deployment
-- Release notes committed, with a human sentence at the top
-- A DORA report, and a `MY-PIPELINE.md` that a successor could actually use
+- Release notes in the description of the release Pull Request, with a human sentence at the top
+- A second DORA report to compare with the baseline of Lab 3.7
 
 ## If it goes wrong
 

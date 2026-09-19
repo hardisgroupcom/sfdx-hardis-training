@@ -174,20 +174,6 @@ token: without one it cannot read its own history, and it stops.
 
 </details>
 
-### 6. Write it down, with your next story
-
-`MY-PIPELINE.md` is the notebook this level keeps, and the badge audit reads it on `integration`.
-Like everything else it gets there through a Pull Request, so the line for this lab travels with
-your next story: as soon as **New User Story** has made its branch in Lab 2.2, open
-`MY-PIPELINE.md` (copy `MY-PIPELINE.template.md` the first time) and add one line under Level 2:
-
-```markdown
-- **Lab 2.1, backpromote**: took the merged stories, left my own work in progress alone.
-```
-
-Writing it now, before starting the story, does not work: **New User Story** starts its branch
-clean, and puts anything uncommitted aside in a stash.
-
 ## What you should see
 
 Open `helios-dev` and check that the metadata from the three merged stories is there. In particular
@@ -197,7 +183,7 @@ Open `helios-dev` and check that the metadata from the three merged stories is t
 
 **The panel says there is nothing to backpromote.**
 Your org is already level with `integration`, which happens if you just finished Level 1 in the same
-org. Nothing to do: write the line in `MY-PIPELINE.md` and move on.
+org. Nothing to do: move on.
 
 **The deployment fails on a component that depends on something else.**
 Take the whole set rather than a subset. Metadata has dependencies, and half a story often does not

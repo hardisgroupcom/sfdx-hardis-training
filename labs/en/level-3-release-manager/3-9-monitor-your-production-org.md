@@ -13,7 +13,7 @@ screenshots:
 depends_on:
   commands: [hardis:org:configure:monitoring]
   flags: []
-  config: [monitoringCommands, monitoringDisable, notificationConfig, msTeamsWebhookUrl]
+  config: [monitoringRepository, monitoringCommands, monitoringDisable, notificationConfig, msTeamsWebhookUrl]
   panels: [monitoringConfig, orgMonitoring]
   docs: [salesforce-monitoring-home, salesforce-monitoring-config-github, salesforce-monitoring-grafana-v2]
 ---
@@ -224,20 +224,17 @@ are sent. A nightly "everything is fine" message is read for a week and filtered
 Those settings are written as `notificationConfig` in the monitoring repository's `.sfdx-hardis.yml`,
 one entry per notification type, merged over the product's defaults.
 
-### 8. Write down where it lives
+### 8. Make it findable
 
-In `MY-PIPELINE.md`:
+The next release manager will need the monitoring repository on their first day, and the one place
+they will look is the project. Back in the source repository: **DevOps Pipeline** > gear menu >
+**Pipeline Settings**, scope **Global Settings**, tab **Salesforce Project**. **Monitoring
+repository**: **Edit**, paste the address of your monitoring repository,
+`https://github.com/<your-handle>/sfdx-hardis-training-monitoring`, and **Save**. Then **Training:
+Level 3** > **Publish my pipeline configuration**: it is pipeline configuration, like the rest.
 
-```markdown
-- **Lab 3.9, monitoring**: https://github.com/<your-handle>/sfdx-hardis-training-monitoring
-  Runs nightly at midnight UTC on helios-prod. Notifications go to <channel>. Silenced: <check>,
-  because <reason>.
-```
-
-Replace the Lab 3.9 line of the template with it. It goes to `integration` with your Lab 3.10 story,
-like the notes of Labs 3.4 and 3.5 went with Lab 3.6.
-
-The badge audit looks for that URL. The next release manager will need it on their first day.
+From then on, the **Org Monitoring Workbench** opened from the source repository offers **Open
+Monitoring Repository** instead of a dead end.
 
 <details markdown="1"><summary>Under the hood: what runs every night</summary>
 
@@ -282,7 +279,8 @@ scope here, and worth knowing exists.
   backup, the Apex tests and MegaLinter green, and the Monitoring job red on `ActiveScratchOrgs`
 - A full source backup of `helios-prod` committed in it
 - A first report you have read and triaged, however short it is
-- One notification channel configured, and the URL in `MY-PIPELINE.md`
+- One notification channel configured
+- `monitoringRepository` in `config/.sfdx-hardis.yml` on `integration`, pointing at it
 
 ## If it goes wrong
 

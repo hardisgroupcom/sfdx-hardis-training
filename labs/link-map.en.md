@@ -41,7 +41,7 @@ so a renamed documentation page fails CI here rather than surprising a learner.
 | Lab 3.1 - Configure the CI/CD pipeline up to production | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-1-configure-the-pipeline-up-to-production/ |
 | Lab 3.2 - Set up CI authentication with JWT for four orgs | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-2-ci-authentication-with-jwt/ |
 | Lab 3.3 - Review and merge a contributor Pull Request | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-3-review-a-contributor-pull-request/ |
-| Lab 3.4 - Deploy to integration and read the deployment log | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-4-deploy-to-integration-and-read-the-log/ |
+| Lab 3.4 - Read the deployment log, and what .forceignore hides from it | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-4-deploy-to-integration-and-read-the-log/ |
 | Lab 3.5 - Three Pull Requests collide: choose the merge order | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-5-merge-colliding-pull-requests/ |
 | Lab 3.6 - Promote to UAT and write the release notes | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-6-promote-to-uat-and-write-release-notes/ |
 | Lab 3.7 - Release to production and read your DORA metrics | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-7-release-to-production-and-read-dora-metrics/ |

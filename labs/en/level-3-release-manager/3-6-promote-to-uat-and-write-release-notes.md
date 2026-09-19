@@ -1,7 +1,7 @@
 ---
 id: lab-3-6
 title: "Lab 3.6 - Promote to UAT and write the release notes"
-description: "Promote integration to UAT, read the deployment actions the promotion carries, and generate release notes the business can read, with sfdx-hardis."
+description: "Protect what UAT keeps for itself with package-no-overwrite, promote integration to UAT, read its deployment actions and write the release notes."
 level: 3
 lab: 6
 lang: en
@@ -13,7 +13,7 @@ screenshots:
 depends_on:
   commands: [hardis:doc:release-notes, hardis:project:deploy:smart]
   flags: []
-  config: [mergeTargets, availableTargetBranches]
+  config: [mergeTargets, availableTargetBranches, packageNoOverwritePath]
   panels: [pipeline, deploymentAction]
   docs: [salesforce-devops-deploy-major-branches, hardis/doc/salesforce-devops-release-notes]
 ---
@@ -24,8 +24,9 @@ depends_on:
 
 **Time**: ~35 min
 
-**You will**: make your first promotion between two major branches, read the deployment actions it
-carries, and produce the document the business actually reads.
+**You will**: protect a setting UAT keeps for itself, make your first promotion between two major
+branches, read the deployment actions it carries, and produce the document the business actually
+reads.
 
 ## The situation
 
@@ -57,11 +58,11 @@ it before you create anything: if a story in it should not go out this week, now
 after the deployment.
 
 **Deployment Actions** **(2)** is the list of actions those Pull Requests carried, gathered in one
-place, and step 3 comes back to it. **Tickets** beside it is the same again for whatever ticketing
+place, and step 4 comes back to it. **Tickets** beside it is the same again for whatever ticketing
 system the project declares. A fourth tab, **Apex Tests**, appears only on a project that sets
 `enableDeploymentApexTestClasses`, and this one does not.
 
-The footer holds the two buttons step 6 uses: **(3)** generates the notes for what has already been
+The footer holds the two buttons step 7 uses: **(3)** generates the notes for what has already been
 promoted, **(4)** previews the notes for what has not.
 
 !!! note "Empty, with a Go Live selector instead?"
@@ -75,7 +76,45 @@ promoted, **(4)** previews the notes for what has not.
     again. It refreshes the org and the login URL of a file that already exists and leaves the rest
     alone, so what you set in Lab 3.1 survives.
 
-### 2. Create the promotion Pull Request
+### 2. Protect what UAT keeps for itself
+
+One component of the Helios app is meant to be different in every org: the remote site setting
+`Helios_Warehouse`, the address of the warehouse stock system the panel batches are booked with.
+Production talks to the real warehouse, UAT to the warehouse's test system. An admin set that address
+in UAT by hand, and the repository holds the production one.
+
+See it for yourself: in `helios-uat`, **Setup > Remote Site Settings**, open `Helios_Warehouse`,
+**Edit**, and set **Remote Site URL** to `https://warehouse-test.helios.invalid`, the way
+the UAT admin did. **Save**.
+
+Now the promotion. It sends the whole package, remote site setting included, and would put the
+production address back in UAT without a word. The **overwrite manager** is for exactly this:
+anything listed in `manifest/package-no-overwrite.xml` is taken out of the deployment when the target
+org already has it, and created when it does not.
+
+In the Explorer, create the file `manifest/package-no-overwrite.xml` and copy this into it:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Helios_Warehouse</members>
+        <name>RemoteSiteSetting</name>
+    </types>
+    <version>64.0</version>
+</Package>
+```
+
+It has the shape of `manifest/package.xml`: one `<types>` block per kind of component, its members
+listed by name. Then **Training: Level 3** > **Publish my pipeline configuration**: the list of what
+must never be overwritten is pipeline configuration, like the rest.
+
+!!! note "Created where missing, never overwritten where present"
+    A new org, a fresh sandbox for instance, has no `Helios_Warehouse` yet, and the deployment creates
+    it from the repository. From then on it belongs to that org. The overwrite manager does not
+    compare versions: present means protected.
+
+### 3. Create the promotion Pull Request
 
 In the **DevOps Pipeline** diagram, the arrow from `integration` to `uat` carries a **+ PR** chip
 **(1)**. Click it: GitHub opens on a new Pull Request from `integration` into `uat`, both branches
@@ -96,7 +135,7 @@ Title it for the humans who will read it, not for git:
 
 > Release 2026-09: crew capacity cap, quote PDF
 
-### 3. Read the deployment actions it carries
+### 4. Read the deployment actions it carries
 
 Once the check runs, the sfdx-hardis comment gains two sections, **Pre-deployment Actions Results**
 and **Post-deployment Actions Results**. What a promotion adds on top is the paragraph naming the
@@ -122,7 +161,7 @@ The checklist is the exception, and it is not decoration. **Tick a box once you 
 in the org**, and the next sfdx-hardis job reads the box back and records the action as done. Leave
 it unticked and the next promotion will still be asking you for it.
 
-### 4. Merge and watch the deployment
+### 5. Merge and watch the deployment
 
 Merge the promotion. The **Process Deployment (sfdx-hardis)** run starts, this time on `uat`.
 
@@ -131,18 +170,24 @@ integration: UAT is behind by everything the team has done. Expect several minut
 
 When it finishes, do the manual steps the comment listed, in `helios-uat`.
 
-### 5. Verify with a tester's eyes
+Then read the log for the overwrite manager, above the deployment: it lists
+`RemoteSiteSetting:Helios_Warehouse` among the components it took out of the package, because
+`helios-uat` already has it.
+
+### 6. Verify with a tester's eyes
 
 Open `helios-uat` and check the two stories are genuinely usable, not just deployed:
 
 - A crew larger than the cap is brought back down to the cap when you save: put `Crew Capacity Cap`
   at 3 and `Crew Size` at 6 on a planned installation, save, and it reads 3
 - The quote PDF permission is on the manager permission set
+- **Setup > Remote Site Settings** still says `https://warehouse-test.helios.invalid` for
+  `Helios_Warehouse`: the promotion left it alone
 
 Deployed and usable are different states, and the gap between them is almost always a permission or
 a piece of reference data.
 
-### 6. Generate the release notes
+### 7. Generate the release notes
 
 Open the **DevOps Pipeline** panel and click the `uat` node, the same way you clicked `integration`
 in step 1. In the footer of that window, the button marked **(3)** in the picture at step 1 now
@@ -175,22 +220,10 @@ reads needs two things the generator cannot know:
    over-staffed, and sales can generate quote PDFs."
 2. **The manual steps, stated as instructions to a named person**, not as a technical list
 
-Put the result in the repository the way everything else gets there, as a story:
-
-1. **New User Story**, targeting `integration`, type **Feature**, name
-   `US-053-release-notes-2026-09`, and **I'm hardcore, I don't need an org**: this story is a
-   document
-2. The panel says your uncommitted changes were put aside: the `MY-PIPELINE.md` lines of Labs 3.4
-   and 3.5. Bring them onto the new branch: **Source Control** panel, **Stashes**, **Pop Latest
-   Stash**
-3. In the Explorer, create a `release-notes` folder at the root of the project, and copy the
-   markdown file from `hardis-report/release-notes/uat-<date>/` into it. `hardis-report` is never
-   committed, so the copy is what the repository keeps
-4. Improve the copy, with the two things above
-5. In `MY-PIPELINE.md`, add a line under Level 3:
-   `- **Lab 3.6, promotion to uat**: release notes in release-notes/<the file name>`
-6. Commit from **Source Control**, then **Save / Publish**, **Create Pull Request** into
-   `integration`, and merge it once the checks are green
+Then give them to the people who read them. Open the promotion Pull Request you merged, **...** at
+the top right of its description, **Edit**, and paste the improved notes in place of the one-line
+description. A merged Pull Request stays editable, and it is where the release is: its link is what
+you send the business, and what the release notes of the next promotion point back to.
 
 <details markdown="1"><summary>Under the hood: what generated the notes, and what a promotion really is</summary>
 
@@ -230,7 +263,8 @@ reading about once you have done a few releases the ordinary way.
 - The `uat` branch carrying everything `integration` had
 - A green **Process Deployment (sfdx-hardis)** run on `uat`
 - Both stories working in `helios-uat`
-- Release notes committed, and linked from `MY-PIPELINE.md`
+- `Helios_Warehouse` in `helios-uat` still pointing at the test warehouse
+- The release notes in the description of the promotion Pull Request
 
 ## If it goes wrong
 

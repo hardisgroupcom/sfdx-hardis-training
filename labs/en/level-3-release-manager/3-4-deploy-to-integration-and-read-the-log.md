@@ -1,7 +1,7 @@
 ---
 id: lab-3-4
-title: "Lab 3.4 - Deploy to integration and read the deployment log"
-description: "Read an sfdx-hardis deployment log properly, and understand why what was deployed to the integration org is smaller than what changed."
+title: "Lab 3.4 - Read the deployment log, and what .forceignore hides from it"
+description: "Read an sfdx-hardis deployment log properly, then review a Pull Request whose .forceignore wildcard keeps its own field out of every deployment."
 level: 3
 lab: 4
 lang: en
@@ -18,18 +18,18 @@ depends_on:
   docs: [salesforce-devops-deploy-major-branches, salesforce-devops-smart-deployment]
 ---
 
-# Lab 3.4 - Deploy to integration and read the deployment log
+# Lab 3.4 - Read the deployment log, and what .forceignore hides from it
 
 **Level**: 3 Release Manager
 
 **Time**: ~25 min
 
-**You will**: read a deployment log properly, and understand why what was deployed is smaller than
-what changed.
+**You will**: read a deployment log properly, then review a Pull Request whose check fails on a field
+that is right there in its diff, and find the file that hides it.
 
 ## The situation
 
-Merging your layout fix started a deployment job. Most people watch the colour and move on.
+Merging Marco's layout fix started a deployment job. Most people watch the colour and move on.
 
 A release manager reads it, because the deployment log is the only place that says what actually
 reached the org, and the difference between that and what you thought you were shipping is where
@@ -37,9 +37,9 @@ incidents come from.
 
 ## Before you start
 
-- [ ] Lab 3.3 finished: your layout fix merged into `integration`
+- [ ] Lab 3.3 finished: Marco's layout fix merged into `integration`
 
-## Steps
+## Part 1: read the log
 
 ### 1. Open the job
 
@@ -140,18 +140,57 @@ back on the layout, in the right-hand column beside Marco's cap field.
 A log is a claim. The org is the fact. On a real project you check the org after every deployment to
 a major environment, and it takes thirty seconds.
 
-### 6. Write down what you read
+## Part 2: what .forceignore hides
 
-In `MY-PIPELINE.md`, under Level 3, replace the Lab 3.4 line with what you read, numbers included:
+### 6. A Pull Request that fails on a field it carries
 
-```markdown
-- **Lab 3.4, Smart Deploy**: the deployment sent N components to change M. Delta is off on this
-  project, there is no package-no-overwrite file and no deploy-on-change file, so the whole declared
-  package goes every time.
+Amina has a story for the planners. **Training: Level 3** > **Simulate my teammates**, and pick
+**US-056 Show the panels each crew member has to lay**. It opens her Pull Request into
+`integration`.
+
+Wait for its checks. The deployment check fails, and the sfdx-hardis comment names a field:
+
+```
+Installation__c-Installation Layout  In field: field - no CustomField named Installation__c.Crew_Workload__c found
 ```
 
-Leave it uncommitted. This lab has no story of its own, so the line goes to `integration` with your
-next one, in Lab 3.6.
+Now open **Files changed**. `Crew_Workload__c.field-meta.xml` is there, in the diff. The field is in
+the Pull Request, and the deployment says it does not exist.
+
+### 7. Find what the deployment never saw
+
+When a component is in the branch and not in the deployment, the first file to open is
+`.forceignore`. It tells the Salesforce CLI what to ignore when retrieving **and** when deploying,
+and a component it matches is invisible in both directions, with no error and no warning.
+
+Amina's diff changes it too:
+
+```
+# My scratch test fields, never versioned (Amina)
+**/objects/Installation__c/fields/Crew_W*.field-meta.xml
+```
+
+That line is a pattern, not a file name. The `*` stands for any text, so it matches every field on
+Installation whose name starts with `Crew_W`: her scratch test field, and `Crew_Workload__c`, the
+field of her own story. The deployment left it out, the layout and the permission set that use it
+reached the org without it, and Salesforce refused them.
+
+`.forceignore` is a project-wide file, and the release manager's to guard: one careless line in it
+changes what every deployment sends, for everybody, from then on.
+
+### 8. Send it back with the fix named
+
+Leave one review comment on the `.forceignore` line of the diff:
+
+> This wildcard also matches `Crew_Workload__c`, the field of this story, so no deployment ever
+> sends it. Name your test field exactly, with no `*`, so nothing else can match by accident.
+
+An exact path ages badly too, but it ages **loudly**: the day the file disappears, nothing else
+starts being ignored.
+
+Amina answers: **Simulate my teammates** > **US-056 Amina names her test field exactly in
+.forceignore**. It adds her commit to the same Pull Request, the check runs again, and it goes
+green. Read the diff of her new commit, then merge.
 
 <details markdown="1"><summary>Under the hood: where the package comes from, and where cleaning really happens</summary>
 
@@ -198,6 +237,8 @@ Two failure modes worth recognising:
 - A green **Process Deployment (sfdx-hardis)** run on `integration`
 - A log where you can name how many components went, and why that number is not one
 - The change present in `helios-integration`
+- Amina's US-056 merged, `Crew_Workload__c` in `helios-integration`, and no wildcard left in
+  `.forceignore`
 
 ## If it goes wrong
 
@@ -213,6 +254,11 @@ something.
 **The job never started.**
 The workflow only triggers on pushes to major branches. Check that the merge really landed on
 `integration`.
+
+**Amina's check still fails after her second commit.**
+The check ran on the merge of her branch with `integration` as it was when she pushed. If you
+changed `.forceignore` on `integration` in the meantime, click **Update branch** on her Pull
+Request: GitHub merges `integration` into it, and the check runs again.
 
 ## Check your work
 

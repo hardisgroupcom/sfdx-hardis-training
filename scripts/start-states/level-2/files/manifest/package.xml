@@ -68,6 +68,10 @@
         <name>PermissionSet</name>
     </types>
     <types>
+        <members>Helios_Warehouse</members>
+        <name>RemoteSiteSetting</name>
+    </types>
+    <types>
         <members>Installation__c.Installation_Date_Not_Past</members>
         <name>ValidationRule</name>
     </types>

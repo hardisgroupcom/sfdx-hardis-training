@@ -135,15 +135,6 @@ function mentions(text, needle) {
   return typeof text === "string" && text.toLowerCase().includes(needle.toLowerCase());
 }
 
-// The badge reads the notebook where the level leaves it, on integration or main.
-// Right after a lab, the line is often only in the working copy, or on the story
-// branch that will carry it, and that is the lab done right.
-function pipelineNotes(ctx) {
-  const committed = [ctx.readOn(DEV, "MY-PIPELINE.md"), ctx.readOn("main", "MY-PIPELINE.md")];
-  const local = ctx.local ? [ctx.readWorking("MY-PIPELINE.md"), ctx.readOn(ctx.currentBranch(), "MY-PIPELINE.md")] : [];
-  return committed.concat(local).filter(Boolean).join("\n");
-}
-
 /** The story branch a lab created, local or published, or null. */
 function storyBranch(ctx, story) {
   const prefix = `features/${story}`;
@@ -174,6 +165,28 @@ const ruleCheck = (id) => (ctx) => RULES.find((r) => r.id === id).check(ctx);
  * it (branchPrefixChoices) and how the DORA report of Lab 3.7 recognises one.
  */
 const isHotfix = (history) => mentions(history, "hotfix") || /(^|[\s/:])(hot|bug)?fix\//im.test(history || "");
+
+/**
+ * The names of the Actions secrets of the learner's fork, or null when they cannot be read: no
+ * GitHub CLI, or not signed in. The fork is origin, named explicitly: in a fork gh would pick the
+ * parent repository by default.
+ */
+function forkSecretNames(ctx) {
+  const url = ctx.git(["remote", "get-url", "origin"]);
+  const slug = (url.match(/github\.com[/:]([^/]+\/[^/.]+?)(?:\.git)?$/) || [])[1];
+  if (!slug) {
+    return null;
+  }
+  const res = spawnSync("gh", ["secret", "list", "-R", slug, "--json", "name"], { cwd: ctx.dir, encoding: "utf8", shell: process.platform === "win32" });
+  if (res.status !== 0) {
+    return null;
+  }
+  try {
+    return JSON.parse(res.stdout).map((secret) => secret.name);
+  } catch {
+    return null;
+  }
+}
 
 /** The dev org alias, as the universe names it. */
 const DEV_ORG = "helios-dev";
@@ -376,9 +389,8 @@ export const RULES = [
   {
     id: "2.1", level: 2, lab: 1, auditable: false,
     title: "Your dev org is level with integration",
-    // Right after the lab the proof is in the org: Amina's field reached helios-dev.
-    // The notebook line is written with the next story, which is how it reaches
-    // integration, where check() reads it at the end of the level.
+    // The proof is in the org: Amina's field reached helios-dev. Only the learner's
+    // machine can read it, so the badge audit leaves this lab out.
     now: (ctx) => firstPassing(
       () => ruleCheck("2.1")(ctx),
       () => {
@@ -403,12 +415,12 @@ export const RULES = [
       }
     ),
     check: (ctx) => {
-      const notes = pipelineNotes(ctx);
-      return mentions(notes, "backpromote")
-        ? pass("The backpromote is recorded in MY-PIPELINE.md")
+      // What there was to backpromote: Amina's US-017, merged into integration
+      return ctx.readOn(DEV, FIELD("Installation__c", "Signed_Off_By__c"))
+        ? pass("Amina's US-017 is in integration, the work your dev org had to catch up with")
         : miss(
-          "no line about the backpromote in MY-PIPELINE.md",
-          "MY-PIPELINE.md. Lab 2.1 asks you to note which items you kept and which you dropped"
+          "Amina's US-017 was never merged, so there was nothing to backpromote",
+          `${FIELD("Installation__c", "Signed_Off_By__c")} on branch ${DEV}. Lab 2.1 step 1 merges it`
         );
     }
   },
@@ -569,13 +581,6 @@ export const RULES = [
     id: "2.8", level: 2, lab: 8, auditable: true,
     title: "The repository carries only what belongs to it",
     check: (ctx) => {
-      const notes = pipelineNotes(ctx);
-      if (!mentions(notes, "resetselection") && !mentions(notes, "reset selection")) {
-        return miss(
-          "MY-PIPELINE.md does not record what you had over-selected and how you recovered",
-          "MY-PIPELINE.md. Lab 2.8 asks for one line naming what you dropped"
-        );
-      }
       // Deployment.settings is the one setting this project ships on purpose: it
       // is what lets a deployment run while the Lab 2.4 batch is scheduled.
       const stray = ctx.listOn(DEV, "force-app/main/default/").filter((f) =>
@@ -583,7 +588,7 @@ export const RULES = [
         !f.endsWith("/settings/Deployment.settings-meta.xml")
       );
       return stray.length === 0
-        ? pass("The recovery is recorded, and no over-committed metadata is left on integration")
+        ? pass("No over-committed metadata is left on integration")
         : miss(
           `${stray.length} file(s) that should never have been committed are on integration: ${stray.slice(0, 3).join(", ")}`,
           `branch ${DEV}. Lab 2.8 is about resetting a selection that went too wide`
@@ -669,21 +674,30 @@ export const RULES = [
           "config/branches/. sf hardis:project:configure:auth writes both"
         );
       }
-      // The encrypted key files are committed with the story that configured them
+      // The encrypted key files are published with the rest of the pipeline configuration
       const keys = ctx.listOn(DEV, "config/branches/.jwt/").concat(ctx.listOn("main", "config/branches/.jwt/"));
       const noKey = branches.filter((b) => !keys.some((f) => f.endsWith(`/${b}.key`)));
       if (noKey.length > 0) {
         return miss(
           `no encrypted key file for: ${noKey.join(", ")}`,
-          "config/branches/.jwt/ on integration. Add/Configure Org writes them, and they reach integration with your Lab 3.2 story"
+          "config/branches/.jwt/ on integration. Add/Configure Org writes them, and Publish my pipeline configuration puts them there"
         );
       }
-      const notes = pipelineNotes(ctx);
-      return mentions(notes, "SFDX_AUTH_URL_INTEGRATION")
-        ? pass("The four orgs are configured, and the Level 1 shortcut is accounted for")
+      const project = ctx.readOn(DEV, "config/.sfdx-hardis.yml") || "";
+      if (!/orgAuthenticationMode:\s*["']?encryptedCert/.test(project)) {
+        return miss(
+          "orgAuthenticationMode still says the pipeline has no certificates",
+          `config/.sfdx-hardis.yml on branch ${DEV}, expected orgAuthenticationMode: encryptedCert (Lab 3.2 step 7)`
+        );
+      }
+      // The secrets of the fork are only visible from the learner's machine, through gh
+      const secrets = ctx.local ? forkSecretNames(ctx) : null;
+      const shortcuts = (secrets || []).filter((name) => /^SFDX_AUTH_URL_/.test(name));
+      return shortcuts.length === 0
+        ? pass("The four orgs authenticate with JWT, and the Level 1 shortcut is gone")
         : miss(
-          "MY-PIPELINE.md does not record that the SFDX_AUTH_URL_INTEGRATION secret was deleted",
-          "MY-PIPELINE.md. Lab 3.2 ends by deleting it and writing down why"
+          `the Level 1 shortcut is still there: ${shortcuts.join(", ")}`,
+          "your fork, Settings > Secrets and variables > Actions. Lab 3.2 step 6 deletes them"
         );
     }
   },
@@ -710,15 +724,22 @@ export const RULES = [
     }
   },
   {
-    id: "3.4", level: 3, lab: 4, auditable: false,
-    title: "The integration deployment was read, not just watched",
+    id: "3.4", level: 3, lab: 4,
+    title: "Amina's US-056 deploys, and .forceignore hides nothing it should not",
     check: (ctx) => {
-      const notes = pipelineNotes(ctx);
-      // The template line has no number in it: the lab's line says how many components went
-      const entries = notes.match(/Lab 3\.4[^]*?(?=\n\s*[-*] |\n#|$)/gi) || [];
-      return entries.some((entry) => /\d/.test(entry.replace(/Lab 3\.4/i, "")))
-        ? pass("The deployment reading is recorded in MY-PIPELINE.md")
-        : miss("the Lab 3.4 line of MY-PIPELINE.md does not say how many components the deployment sent", "MY-PIPELINE.md, the Lab 3.4 line");
+      const forceignore = ctx.readOn(DEV, ".forceignore") || "";
+      if (/Crew_W\*/.test(forceignore)) {
+        return miss(
+          "the Crew_W* wildcard is still in .forceignore, so any field whose name starts with Crew_W stays out of every deployment",
+          `.forceignore on branch ${DEV}. Lab 3.4 step 8 sends it back to Amina`
+        );
+      }
+      return ctx.readOn(DEV, FIELD("Installation__c", "Crew_Workload__c"))
+        ? pass("US-056 is merged, and its field deploys")
+        : miss(
+          "Amina's US-056 is not merged into integration yet",
+          `${FIELD("Installation__c", "Crew_Workload__c")} on branch ${DEV}`
+        );
     }
   },
   {
@@ -747,7 +768,7 @@ export const RULES = [
   },
   {
     id: "3.6", level: 3, lab: 6,
-    title: "Integration was promoted to UAT, and the release notes are in the repository",
+    title: "Integration was promoted to UAT, without overwriting what UAT keeps for itself",
     check: (ctx) => {
       if (!ctx.hasBranch("uat")) {
         return miss("there is no uat branch", "your fork");
@@ -759,20 +780,32 @@ export const RULES = [
           `${FIELD("Installation__c", "Panels_Required__c")} on branch uat`
         );
       }
-      // The notes reach integration with their story; right after the lab they may
-      // still be on the story branch
-      const story = storyBranch(ctx, "US-053");
-      const notes = ctx.listOn(DEV, "release-notes/")
-        .concat(story ? ctx.listOn(story, "release-notes/") : [])
-        .filter((f) => f.endsWith(".md"));
-      return notes.length > 0
-        ? pass("The work reached uat, and its release notes are in the repository")
-        : miss("no release notes in the repository", "a .md file in release-notes/, on integration or on your US-053 story branch");
+      // Published before the promotion, so it reached uat with it
+      const noOverwrite = ctx.readOn("uat", "manifest/package-no-overwrite.xml") || ctx.readOn(DEV, "manifest/package-no-overwrite.xml") || "";
+      return /Helios_Warehouse/.test(noOverwrite)
+        ? pass("The work reached uat, and the warehouse address UAT keeps for itself is protected")
+        : miss(
+          "Helios_Warehouse is not in the overwrite manager's list, so a promotion puts the production address back in UAT",
+          `manifest/package-no-overwrite.xml on branch ${DEV}. Lab 3.6 step 2 creates it`
+        );
     }
   },
   {
     id: "3.7", level: 3, lab: 7,
     title: "UAT was released to production, and the DORA report was read",
+    // Right after the lab, the DORA report is a file on the learner's machine: never committed,
+    // so only Check my work can see it
+    now: (ctx) => {
+      const released = ruleCheck("3.7")(ctx);
+      if (!released.ok) {
+        return released;
+      }
+      const doraDir = path.join(ctx.dir, "docs", "dora");
+      const reports = fs.existsSync(doraDir) ? fs.readdirSync(doraDir).filter((f) => /^dora-report.*\.md$/.test(f)) : [];
+      return reports.length > 0
+        ? pass("Production has the work, and the DORA report is there to read")
+        : miss("no DORA report was generated", "docs/dora/ in your project. Lab 3.7 step 7, Generate DORA Metrics Report");
+    },
     check: (ctx) => {
       if (!ctx.hasBranch("main")) {
         return miss("there is no main branch", "your fork");
@@ -784,11 +817,7 @@ export const RULES = [
           `${FIELD("Installation__c", "Panels_Required__c")} on branch main`
         );
       }
-      // The template line names the metrics without a number: the lab's line has the numbers
-      const entries = pipelineNotes(ctx).match(/Lab 3\.7[^]*?(?=\n\s*[-*] |\n#|$)/gi) || [];
-      return entries.some((entry) => /\d/.test(entry.replace(/Lab 3\.7/i, "")))
-        ? pass("Production has the work, and the DORA reading is recorded")
-        : miss("the Lab 3.7 line of MY-PIPELINE.md has no DORA numbers in it", "MY-PIPELINE.md, the Lab 3.7 line");
+      return pass("Production has the work");
     }
   },
   {
@@ -829,29 +858,32 @@ export const RULES = [
   },
   {
     id: "3.9", level: 3, lab: 9,
-    title: "Production is under monitoring",
+    title: "Production is under monitoring, and the project says where",
     check: (ctx) => {
-      const notes = pipelineNotes(ctx);
-      const url = notes.match(/https:\/\/github\.com\/[^\s)]+monitoring[^\s)]*/i);
+      const project = ctx.readOn(DEV, "config/.sfdx-hardis.yml") || "";
+      const url = project.match(/monitoring_?[Rr]epository:\s*["']?(https?:\/\/\S*monitoring[^\s"']*)/);
       return url
-        ? pass(`Monitoring repository recorded: ${url[0]}`)
+        ? pass(`Monitoring repository recorded: ${url[1]}`)
         : miss(
-          "MY-PIPELINE.md does not record the URL of the monitoring repository",
-          "MY-PIPELINE.md. sf hardis:org:configure:monitoring creates a second repository, and Lab 3.9 asks you to write its URL down"
+          "the project does not say where its monitoring repository is",
+          `monitoringRepository in config/.sfdx-hardis.yml on branch ${DEV}. Lab 3.9 step 8 sets it in Pipeline Settings`
         );
     }
   },
   {
-    id: "3.10", level: 3, lab: 10,
-    title: "The project documentation is generated and committed",
+    id: "3.10", level: 3, lab: 10, auditable: false,
+    title: "The project documentation is generated, and a person wrote in it",
+    // Generated on demand and never committed: only the learner's machine has it
     check: (ctx) => {
-      const docs = ctx.listOn(DEV, "docs/").concat(ctx.listOn("main", "docs/"));
-      const objectPages = docs.filter((f) => /Installation__c|Panel_Batch__c/i.test(f));
-      return objectPages.length > 0
-        ? pass(`${objectPages.length} generated documentation page(s) found`)
+      const page = path.join(ctx.dir, "docs", "objects", "Installation__c.md");
+      if (!fs.existsSync(page)) {
+        return miss("no generated documentation was found", "docs/objects/Installation__c.md in your project. Lab 3.10 step 2, Generate Documentation");
+      }
+      return /DO_NOT_OVERWRITE_DOC=TRUE/.test(fs.readFileSync(page, "utf8"))
+        ? pass("The documentation is generated, and the Installation page keeps what you wrote")
         : miss(
-          "no generated object documentation was found",
-          "docs/ on integration or main. sf hardis:doc:project2markdown writes it there"
+          "the Installation page can still be overwritten, and the paragraph you wrote with it",
+          "docs/objects/Installation__c.md, its second line. Lab 3.10 step 5 sets DO_NOT_OVERWRITE_DOC to TRUE"
         );
     }
   },
@@ -859,19 +891,21 @@ export const RULES = [
     id: "3.11", level: 3, lab: 11,
     title: "Capstone: a full release cycle",
     check: (ctx) => {
-      // The template line says "release notes" already: the capstone line points at the notes
-      const entries = pipelineNotes(ctx).match(/Lab 3\.11[^]*?(?=\n\s*[-*] |\n#|$)/gi) || [];
-      const hasRelease = entries.some((entry) => /release-notes\/\S+|https?:\/\/\S+/i.test(entry));
-      const mainHasWork = Boolean(ctx.readOn("main", FIELD("Installation__c", "Crew_Notes__c")));
-      if (!mainHasWork) {
+      // The week's release carried Amina's US-055 and the Lab 3.8 retrofit to production
+      const installDate = ctx.readOn("main", FIELD("Installation__c", "Install_Date__c")) || "";
+      if (!/<inlineHelpText>/.test(installDate)) {
         return miss(
-          "the capstone release never reached main",
-          `${FIELD("Installation__c", "Crew_Notes__c")} on branch main`
+          "Amina's US-055 never reached production, so the week's release did not happen",
+          `${FIELD("Installation__c", "Install_Date__c")} on branch main`
         );
       }
-      return hasRelease
-        ? pass("The cycle ran end to end and the release notes are recorded")
-        : miss("the Lab 3.11 line of MY-PIPELINE.md does not point to the release notes you published", "MY-PIPELINE.md, the Lab 3.11 line: the path of the notes in release-notes/, or their link");
+      const status = ctx.readOn("main", FIELD("Installation__c", "Status__c")) || "";
+      return /Needs Reinspection/.test(status)
+        ? pass("The week's release reached production, the Lab 3.8 retrofit with it")
+        : miss(
+          "the release reached main without the Needs Reinspection retrofit of Lab 3.8",
+          `${FIELD("Installation__c", "Status__c")} on branch main`
+        );
     }
   }
 ];

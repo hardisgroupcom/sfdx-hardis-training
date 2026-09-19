@@ -8,6 +8,7 @@
  *   node scripts/training.mjs check       Check my work
  *   node scripts/training.mjs claim       Claim my badge
  *   node scripts/training.mjs simulate    Simulate my teammates
+ *   node scripts/training.mjs publish     Publish my pipeline configuration (Level 3)
  *   node scripts/training.mjs reset       Reset this level
  *   node scripts/training.mjs teardown    Clean up a training org
  *
@@ -23,6 +24,7 @@ const VERBS = {
   check: () => import("./training/check.mjs"),
   claim: () => import("./training/claim.mjs"),
   simulate: () => import("./training/simulate.mjs"),
+  publish: () => import("./training/publish.mjs"),
   reset: () => import("./training/reset.mjs"),
   teardown: () => import("./training/teardown.mjs")
 };
@@ -41,6 +43,7 @@ ${c.bold("Salesforce DevOps with sfdx-hardis - training commands")}
   ${c.cyan("check")}      Check my work: verifies a lab and prints your receipt
   ${c.cyan("claim")}      Claim my badge: checks the whole level, then opens the claim form filled in
   ${c.cyan("simulate")}   Simulate my teammates: creates the branches and Pull Requests a lab needs
+  ${c.cyan("publish")}    Publish my pipeline configuration: the release manager's configuration, straight to integration
   ${c.cyan("reset")}      Reset this level: puts your repository back to a known state
   ${c.cyan("teardown")}   Clean up a training org: removes the Helios app and its data
 
