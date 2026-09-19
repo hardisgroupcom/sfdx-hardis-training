@@ -49,9 +49,20 @@ jobs:
       # Set env branch variable (github.ref_name seems to not work)
       - name: Set env.BRANCH
         run: echo "BRANCH=$(echo "$GITHUB_REF" | cut -d'/' -f 3)" >> "$GITHUB_ENV"
+      # A branch takes part in the pipeline once its configuration names an org. Until then,
+      # preprod and main in Levels 1 and 2 for instance, a push has nothing to deploy to
+      - name: Is this branch in the pipeline yet?
+        id: pipeline
+        run: |
+          if grep -Eq '^targetUsername:[[:space:]]*"?[^"[:space:]]+@' "config/branches/.sfdx-hardis.${BRANCH}.yml" 2>/dev/null; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::${BRANCH} has no org in its configuration yet: nothing to deploy"
+          fi
       # Login & check deploy with test classes & code coverage
       - name: Login & Process Deployment
-        if: ${{ !startsWith(github.ref_name, 'auto-fix/') }}
+        if: ${{ !startsWith(github.ref_name, 'auto-fix/') && steps.pipeline.outputs.ready == 'true' }}
         env:
           # Levels 1 and 2 of this training use SFDX_AUTH_URL_INTEGRATION and SFDX_AUTH_URL_UAT,
           # a shortcut that is acceptable only for throwaway scratch orgs. Lab 3.2 replaces
