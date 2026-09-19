@@ -45,7 +45,9 @@
       "url": "https://code.visualstudio.com/download",
       "width": 1440,
       "height": 820,
-      "click": ["button:has-text('Reject')"],
+      "click": [
+        "button:has-text('Reject')"
+      ],
       "settle": 2000,
       "hideText": [
         {
@@ -215,8 +217,15 @@
       "width": 1440,
       "height": 900,
       "settle": 2000,
-      "clickFirst": ["button:has-text('New branch')"],
-      "fill": [["div[role='dialog'] input[type='text']", "preprod"]],
+      "clickFirst": [
+        "button:has-text('New branch')"
+      ],
+      "fill": [
+        [
+          "div[role='dialog'] input[type='text']",
+          "preprod"
+        ]
+      ],
       "selector": "div[role='dialog']"
     },
     {
@@ -243,6 +252,40 @@
         "img[class*='avatar']",
         "img[src*='avatars.githubusercontent.com']"
       ]
+    },
+    {
+      "name": "github-run-workflow",
+      "_comment": "Lab 3.8 step 4: the Run workflow menu of the Org Monitoring workflow, in a monitoring repository made by an earlier run of the course. The menu is opened, never submitted.",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training-monitoring-run2/actions/workflows/org-monitoring.yml",
+      "width": 1440,
+      "height": 900,
+      "settle": 2000,
+      "hideText": [
+        {
+          "text": "Upcoming change to GitHub App",
+          "max": 400
+        },
+        {
+          "text": "Help us improve GitHub Actions",
+          "max": 300
+        }
+      ],
+      "hide": [
+        "img.avatar",
+        "img[src*='avatars.githubusercontent.com']"
+      ],
+      "clickFirst": [
+        "summary:has-text('Run workflow')"
+      ],
+      "clipAround": {
+        "selector": "details[open]",
+        "padding": {
+          "top": 150,
+          "right": 20,
+          "bottom": 170,
+          "left": 1290
+        }
+      }
     }
   ]
 }

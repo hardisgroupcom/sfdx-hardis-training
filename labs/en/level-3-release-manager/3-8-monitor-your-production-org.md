@@ -145,8 +145,13 @@ For a first run, leave it all on. You are about to find out which of them say so
 ### 4. Run it once by hand
 
 Do not wait for tonight. The workflow, **Org Monitoring sfdx-hardis**, is scheduled at `0 0 * * *`
-(midnight UTC) and also accepts a manual run: in the monitoring repository, **Actions**, **Org
-Monitoring sfdx-hardis** in the list on the left, **Run workflow**, branch `main`, **Run workflow**.
+(midnight UTC) and also accepts a manual run. In the monitoring repository, open **Actions**, click
+**Org Monitoring sfdx-hardis** **(1)** in the list on the left, then **Run workflow** **(2)**. Leave
+the branch on `main` **(3)** and click the green **Run workflow** **(4)**.
+
+![The Run workflow menu of the Org Monitoring workflow on GitHub](../../_assets/annotated/web/github-run-workflow.png)
+
+The run appears in the list a few seconds later: click it to follow it.
 
 It takes a while, most of it the org backup. When it finishes, the repository holds a full source
 backup of production and a set of reports.

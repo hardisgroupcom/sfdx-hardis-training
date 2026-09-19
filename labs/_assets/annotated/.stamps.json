@@ -114,5 +114,6 @@
   "web/github-new-branch.png": "449e88e455ca5576",
   "web/github-pr-merge-squash.png": "f5921ad870ae38de",
   "vscode/package-no-overwrite-edit.png#add-type": "6c38e885489c314b",
-  "vscode/package-no-overwrite-add-type.png#type": "979f9c9c72c465f1"
+  "vscode/package-no-overwrite-add-type.png#type": "979f9c9c72c465f1",
+  "web/github-run-workflow.png": "bcdde80195e852a3"
 }
