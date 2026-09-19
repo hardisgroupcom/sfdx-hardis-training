@@ -70,9 +70,7 @@ On the Welcome page, open the **DevOps Pipeline** panel and scroll past the diag
 ![The contribution cards of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
 !!! tip "Cannot see the cards?"
-    They sit under the branch diagram, and a project with several feature branches makes that
-    diagram tall enough to push them off the screen. Turn **Show feature branches** off in the
-    header: the diagram shrinks to the major branches and the cards come into view.
+    They sit under the branch diagram. Scroll down in the panel.
 
 The extension asks four questions, one screen at a time. Each one appears in its own panel, and
 every answer you give stays visible above the next question, so you can always see what you told it.

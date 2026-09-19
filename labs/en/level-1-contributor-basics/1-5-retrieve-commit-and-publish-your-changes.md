@@ -105,7 +105,8 @@ Salesforce and nothing on your branch yet.
 
 ### 4. Commit what came down
 
-Open the **Source Control** panel **(1)**, the third icon in the left bar. The four files the
+Open the **Source Control** panel **(1)**: in the left bar, the icon drawn as three small circles
+joined by lines, like a branch. The four files the
 retrieve wrote are waiting there **(2)**.
 
 ![The Source Control panel with the four retrieved files](../../_assets/annotated/vscode/source-control-retrieved--commit.png)
@@ -166,16 +167,10 @@ Answer **(1)**, *Yes, my commit(s) are ready!*, because they are: you retrieved 
 steps above. **(2)** asks the command to pull the org for you instead, and the third answer explains
 what a commit is, which costs nothing to read.
 
-!!! warning "Why this course never takes answer (2)"
-    That answer asks the org to hand over everything it has noticed changing, which only works on an
-    org with **source tracking**: an org that keeps a running note of what changed in it. Scratch
-    orgs and source-tracked sandboxes do. The free Developer Edition orgs this course uses, and
-    plenty of real sandboxes, do not, and the answer fails with an error about source tracking that
-    reads like something is broken.
-
-    The Metadata Retriever asks the org a question instead, which works everywhere, and that is why
-    the whole course goes through it. Take the same route on a real project and you will never meet
-    that error.
+!!! tip "Commit first, every time"
+    **(2)** exists for the day you forgot to retrieve and commit. This course never needs it,
+    because the habit it teaches is the one above: retrieve with the Metadata Retriever, read the
+    diff, stage file by file, commit. Keep that habit and the answer is always **(1)**.
 
 ### 6. Read the package before you push
 
@@ -199,16 +194,27 @@ either fail or, worse, succeed while doing half of what you meant. Reading it be
 the single habit that separates a contributor who has trouble with deployments from one who does
 not.
 
-Then open `manifest/package.xml` itself, from the Explorer. It is much longer, and that is correct:
-it is the list of **everything this project deploys**, the whole Helios app, and every story adds its
-new components to it. Save / Publish just merged your delta into it, which for US-014 means one new
+Then open the whole manifest, `manifest/package.xml`. In the **DevOps Pipeline** panel, click the
+**Deployment packages** menu **(1)** in the header, the icon of a box with an arrow, then
+**Package XML** **(2)**.
+
+![The Deployment packages menu of the DevOps Pipeline panel, open](../../_assets/annotated/vscode/pipeline-packages-menu--package-xml.png)
+
+The package viewer opens on the file. Each row is one kind of component, with how many the file
+lists. Expand **CustomField** **(1)**: `Installation__c.Panels_Required__c` is in it.
+
+![The package viewer on manifest/package.xml](../../_assets/annotated/vscode/package-xml--custom-field.png)
+
+It is much longer than the report, and that is correct: it is the list of **everything this project
+deploys**, the whole Helios app, and every story adds its new components to it. Save / Publish just merged your delta into it, which for US-014 means one new
 line, `Installation__c.Panels_Required__c`: the layout and the two permission sets were listed
 already, because the app has always had them. Every deployment of `integration` sends that whole
 file, and Salesforce works out what actually changed.
 
 <details markdown="1"><summary>Under the hood: what those blocks look like</summary>
 
-The file is XML, and every block pairs a list of `members` with the `name` of what they are:
+The viewer reads and writes a plain file, `manifest/package.xml`, and **Edit File** in its header
+opens it as text. The file is XML, and every block pairs a list of `members` with the `name` of what they are:
 
 ```xml
 <types>
