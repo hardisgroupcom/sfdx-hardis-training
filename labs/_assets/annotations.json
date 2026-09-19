@@ -1,6 +1,112 @@
 {
   "_comment": "Numbered pills drawn on screenshots by scripts/build/annotate.mjs. Coordinates are percentages of the image, so re-taking a screenshot at another resolution keeps them in place. x/y place the box (or the point when there is no w/h); px/py move the pill off the box corner when the corner is too close to an edge. The lab text refers to the numbers.",
   "images": {
+    "salesforce/flow-builder-crew-warning.png": {
+      "pills": [
+        {
+          "n": 1,
+          "x": 56.2,
+          "y": 28.2,
+          "w": 2.0,
+          "h": 2.0,
+          "px": 60.6,
+          "py": 29.3
+        },
+        {
+          "n": 2,
+          "x": 1.0,
+          "y": 11.2,
+          "w": 2.0,
+          "h": 3.4,
+          "px": 3.5,
+          "py": 18.5
+        },
+        {
+          "n": 3,
+          "x": 29.0,
+          "y": 83.8,
+          "w": 1.5,
+          "h": 2.5,
+          "px": 33.0,
+          "py": 84.5
+        },
+        {
+          "n": 4,
+          "x": 77.5,
+          "y": 11.2,
+          "w": 9.4,
+          "h": 3.4,
+          "px": 76.5,
+          "py": 17.5
+        }
+      ]
+    },
+    "salesforce/flow-builder-start-conditions.png": {
+      "pills": [
+        {
+          "n": 1,
+          "x": 43.0,
+          "y": 81.5,
+          "w": 52.8,
+          "h": 3.4,
+          "px": 41.8,
+          "py": 80.5
+        },
+        {
+          "n": 2,
+          "x": 40.8,
+          "y": 86.3,
+          "w": 8.7,
+          "h": 3.4,
+          "px": 51.0,
+          "py": 88.0
+        }
+      ]
+    },
+    "salesforce/flow-builder-formula.png": {
+      "pills": [
+        {
+          "n": 1,
+          "x": 1.4,
+          "y": 31.2,
+          "w": 97.1,
+          "h": 9.3,
+          "px": 97.0,
+          "py": 36.0
+        },
+        {
+          "n": 2,
+          "x": 1.4,
+          "y": 66.3,
+          "w": 97.1,
+          "h": 12.8,
+          "px": 97.0,
+          "py": 73.3
+        },
+        {
+          "n": 3,
+          "x": 90.4,
+          "y": 91.0,
+          "w": 7.7,
+          "h": 5.3,
+          "px": 94.0,
+          "py": 86.5
+        }
+      ]
+    },
+    "salesforce/flow-builder-add-element.png": {
+      "pills": [
+        {
+          "n": 1,
+          "x": 21.1,
+          "y": 78.9,
+          "w": 10.8,
+          "h": 1.9,
+          "px": 35.0,
+          "py": 79.5
+        }
+      ]
+    },
     "web/github-run-workflow.png": {
       "pills": [
         {

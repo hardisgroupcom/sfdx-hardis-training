@@ -62,7 +62,9 @@ function resolveLookups() {
     if (!record) {
       throw new Error(`Lookup ${key} returned nothing: ${soql}`);
     }
-    values[key] = record.Id;
+    // The Id, or the first field the query selects when it selects no Id, such as
+    // the ActiveVersionId of a FlowDefinitionView
+    values[key] = record.Id || record[Object.keys(record).find((field) => field !== "attributes")];
   }
   return values;
 }
@@ -168,6 +170,12 @@ async function main() {
     }
     for (const selector of target.click || []) {
       await view.locator(selector).first().click({ timeout: 20000 });
+      await page.waitForTimeout(target.between || 2500);
+    }
+    // Canvas elements with no stable selector, such as the + of a Flow Builder
+    // connector: window pixels, for the viewport the capture declares
+    for (const [x, y] of target.mouse || []) {
+      await page.mouse.click(x, y);
       await page.waitForTimeout(target.between || 2500);
     }
     if (target.after) {

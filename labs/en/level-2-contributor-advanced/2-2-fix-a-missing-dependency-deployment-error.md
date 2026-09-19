@@ -7,6 +7,10 @@ lab: 2
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/salesforce/flow-builder-crew-warning
+  - annotated/salesforce/flow-builder-start-conditions
+  - annotated/salesforce/flow-builder-formula
+  - annotated/salesforce/flow-builder-add-element
   - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/metadata-retriever
   - annotated/vscode/pipeline-cards--save-publish
@@ -75,10 +79,22 @@ Then the flow. **Setup > Flows**, open **Installation Crew Warning**. It is acti
 opens the running version: every change you make is saved as a **new version**, and the old one
 keeps running until you activate yours.
 
-1. **Start** element: add a second entry condition, `Panels Required` is not null, next to
-   `Crew Size` is not null
-2. The **Crew Too Small** decision reads a formula resource, `crewTooSmall`. Open it from the
-   **Toolbox** and replace its formula with:
+![The Installation Crew Warning flow in Flow Builder](../../_assets/annotated/salesforce/flow-builder-crew-warning.png)
+
+Three changes, and the picture above shows where each one starts:
+
+1. **Start** element: click **Edit** **(1)** on it. Under **Set Entry Conditions**, the flow already
+   runs when `Crew Size` is not null **(1)**. Click **Add Condition** **(2)** and add the second one,
+   `Panels Required`, **Is Null**, `False`, then **Done** at the bottom of the panel
+
+    ![The entry conditions of the Start element](../../_assets/annotated/salesforce/flow-builder-start-conditions.png)
+
+2. The **Crew Too Small** decision reads a formula resource, `crewTooSmall`. Open the **Toolbox**
+   **(2)** at the top left of the canvas, and click `crewTooSmall` under **Formulas**. Update its
+   **Description** **(1)**, `True when eight panels a person do not cover the job, and no warning
+   was sent yet`, and replace its **Formula** **(2)** with the one below, then **Done** **(3)**:
+
+    ![The Edit Formula window of the crewTooSmall resource](../../_assets/annotated/salesforce/flow-builder-formula.png)
 
     ```
     AND(
@@ -89,11 +105,15 @@ keeps running until you activate yours.
 
     One person lays about eight panels a day: the crew is too small when eight panels each do not
     cover the job, and the warning goes only if it was not sent yet. Copy it rather than typing it
-3. After **Create Warning Task**, add an **Update Records** element, `Mark Warning Sent`, that
-   updates the triggering record and sets `Crew Warning Sent` to true. Give it a description, and
-   connect its **fault** path to the existing `Log Fault` element, like the task element
+3. After **Create Warning Task**, click the **+** **(3)** on the line below it, and pick **Update
+   Triggering Record** **(1)** under **Shortcuts**. Call the element `Mark Warning Sent`, give it a
+   description, and set `Crew Warning Sent` to `True`. Then connect its **fault** path to the
+   existing `Log Fault` element, like the task element
 
-**Save As New Version**, then **Activate**.
+    ![The Add Element menu, with Update Triggering Record](../../_assets/annotated/salesforce/flow-builder-add-element.png)
+
+**Save As New Version** **(4)**, then **Activate**, the button that replaces **Deactivate** on the
+new version.
 
 !!! info "Why the flow has a fault path at all"
     A record element without one fails silently: the flow stops, the user sees nothing, and the Task
