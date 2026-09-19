@@ -92,22 +92,26 @@ production address back in UAT without a word. The **overwrite manager** is for 
 anything listed in `manifest/package-no-overwrite.xml` is taken out of the deployment when the target
 org already has it, and created when it does not.
 
-In the Explorer, create the file `manifest/package-no-overwrite.xml` and copy this into it:
+The file does not exist yet, and you do not have to write it. In the **DevOps Pipeline** panel, open
+the **Deployment packages** menu, the one that opened **Package XML** in Lab 1.5, and pick **No
+Overwrite**. The package viewer opens on an empty list. Turn **Edit mode** on **(1)**, then click
+**Add Type** **(2)**.
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<Package xmlns="http://soap.sforce.com/2006/04/metadata">
-    <types>
-        <members>Helios_Warehouse</members>
-        <name>RemoteSiteSetting</name>
-    </types>
-    <version>64.0</version>
-</Package>
-```
+![The package viewer on the empty no-overwrite list, in edit mode](../../_assets/annotated/vscode/package-no-overwrite-edit--add-type.png)
 
-It has the shape of `manifest/package.xml`: one `<types>` block per kind of component, its members
-listed by name. Then **Training: Level 3** > **Publish my pipeline configuration**: the list of what
-must never be overwritten is pipeline configuration, like the rest.
+Type `RemoteSiteSetting`, the name Salesforce gives this kind of component, in **Metadata Type API
+Name** **(1)**, and click **Add** **(2)**.
+
+![The Add Metadata Type window of the package viewer](../../_assets/annotated/vscode/package-no-overwrite-add-type--type.png)
+
+The new **RemoteSiteSetting** row has an **Add member** button: click it, type `Helios_Warehouse`,
+and **Add**. The viewer wrote `manifest/package-no-overwrite.xml` for you, with the shape of
+`manifest/package.xml`: one block per kind of component, its members listed by name. **Edit File**
+opens it as text, if you want to see it.
+
+Then **Training: Level 3** > **Publish my pipeline configuration**, and merge its Pull Request once
+green, as in Lab 3.1: the list of what must never be overwritten is pipeline configuration, like the
+rest.
 
 !!! note "Created where missing, never overwritten where present"
     A new org, a fresh sandbox for instance, has no `Helios_Warehouse` yet, and the deployment creates

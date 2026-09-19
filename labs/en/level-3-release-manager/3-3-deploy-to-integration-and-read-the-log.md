@@ -75,8 +75,8 @@ validation rather than deploy again. That is why it takes seconds, and why it ru
 
 You changed one component. Now read what the job actually sent.
 
-Open `manifest/package.xml`. It lists the whole Helios app, about fifty components, and **that is
-the package**: on this project every deployment to `integration` sends all of it, whatever the diff
+Open the package: **DevOps Pipeline** panel, **Deployment packages** menu, **Package XML**. It lists
+the whole Helios app, a few dozen components, and **that is the package**: on this project every deployment to `integration` sends all of it, whatever the diff
 said. The log's count of components sent will say so.
 
 That is the default, and it is worth feeling once before you learn the thing that fixes it.

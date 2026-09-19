@@ -112,5 +112,7 @@
   "vscode/git-merge-editor-accepted.png#result": "0a1cb6dc3333e920",
   "vscode/pipeline-settings-menu.png#add-org": "9f911137bd05b69a",
   "web/github-new-branch.png": "449e88e455ca5576",
-  "web/github-pr-merge-squash.png": "f5921ad870ae38de"
+  "web/github-pr-merge-squash.png": "f5921ad870ae38de",
+  "vscode/package-no-overwrite-edit.png#add-type": "6c38e885489c314b",
+  "vscode/package-no-overwrite-add-type.png#type": "979f9c9c72c465f1"
 }

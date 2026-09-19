@@ -141,8 +141,9 @@ ago and the flow you just tested reads it.
 When a deployment says something does not exist, the first question is never "is it in the org".
 It is **"is it in the package"**.
 
-Open `manifest/package.xml`. It lists your flow. It does not list
-`Installation__c.Crew_Warning_Sent__c`.
+Open the package: **DevOps Pipeline** panel, **Deployment packages** menu, **Package XML**, as in
+Lab 1.5. Type `Crew_Warning` in its filter box. The **Flow** row lists your flow. **CustomField**
+does not list `Installation__c.Crew_Warning_Sent__c`.
 
 The integration org is being sent a flow that reads a field the package does not carry, and the
 integration org does not have that field either. From Salesforce's point of view the error is

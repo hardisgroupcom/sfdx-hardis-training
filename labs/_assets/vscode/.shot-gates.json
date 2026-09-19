@@ -116,6 +116,12 @@
   "package-no-overwrite": {
     "gate": "pipeline-menus"
   },
+  "package-no-overwrite-add-type": {
+    "gate": "pipeline-menus"
+  },
+  "package-no-overwrite-edit": {
+    "gate": "pipeline-menus"
+  },
   "package-xml": {
     "gate": "pipeline-menus"
   },
