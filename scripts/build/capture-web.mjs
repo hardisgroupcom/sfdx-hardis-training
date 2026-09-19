@@ -31,8 +31,16 @@ const wanted = process.argv.slice(2).filter((a) => !a.startsWith("--"));
 
 async function main() {
   const { chromium } = await import("playwright-core");
-  const browser = await chromium.connectOverCDP(process.env.CDP_URL || "http://127.0.0.1:9222");
-  const page = await browser.contexts()[0].newPage();
+  // The signed-in browser is only reached when a capture needs it: a batch of
+  // "fresh" captures runs without one
+  let page = null;
+  const signedInPage = async () => {
+    if (!page) {
+      const browser = await chromium.connectOverCDP(process.env.CDP_URL || "http://127.0.0.1:9222");
+      page = await browser.contexts()[0].newPage();
+    }
+    return page;
+  };
   fs.mkdirSync(OUT, { recursive: true });
 
   // A capture marked "fresh" needs a signed-out visitor, which the signed-in
@@ -56,7 +64,7 @@ async function main() {
     }
     const width = target.width || 1440;
     const height = target.height || 900;
-    const view = target.fresh ? await freshPage() : page;
+    const view = target.fresh ? await freshPage() : await signedInPage();
     await view.setViewportSize({ width, height });
     await view.goto(target.url, { waitUntil: "domcontentloaded", timeout: 60000 });
     await view.waitForLoadState("networkidle", { timeout: 20000 }).catch(() => {});
@@ -150,7 +158,9 @@ async function main() {
 
   // Only the tab this script opened. Never browser.close() on a CDP connection:
   // it closes the whole browser it is attached to, which is the user's own.
-  await page.close();
+  if (page) {
+    await page.close();
+  }
   if (freshContext) {
     await freshContext.close();
   }

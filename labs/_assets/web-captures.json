@@ -307,6 +307,30 @@
       "evaluate": [
         "(() => { for (const el of document.querySelectorAll('body *')) { const p = getComputedStyle(el).position; if (p === 'sticky' || p === 'fixed') { el.style.visibility = 'hidden'; } } })()"
       ]
+    },
+    {
+      "name": "github-pr-promotion-actions",
+      "fresh": true,
+      "_comment": "Lab 3.5 step 4: the deployment actions a promotion Pull Request collects from every story it carries, with the manual checklist above the tables.",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/125",
+      "width": 1440,
+      "height": 2400,
+      "settle": 5000,
+      "selector": ".timeline-comment:has-text(\"Manual Actions to perform before proceeding\") .comment-body",
+      "maxHeight": 1500,
+      "evaluate": ["(() => { for (const el of document.querySelectorAll('body *')) { const p = getComputedStyle(el).position; if (p === 'sticky' || p === 'fixed') { el.style.visibility = 'hidden'; } } })()"]
+    },
+    {
+      "name": "github-pr-release-notes",
+      "fresh": true,
+      "_comment": "Lab 3.5 step 7: the release notes, improved by hand, pasted in the description of the promotion Pull Request.",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/125",
+      "width": 1440,
+      "height": 2400,
+      "settle": 5000,
+      "selector": ".timeline-comment:has-text(\"Promotion 2026-09 to UAT\") .comment-body",
+      "maxHeight": 1500,
+      "evaluate": ["(() => { for (const el of document.querySelectorAll('body *')) { const p = getComputedStyle(el).position; if (p === 'sticky' || p === 'fixed') { el.style.visibility = 'hidden'; } } })()"]
     }
   ]
 }

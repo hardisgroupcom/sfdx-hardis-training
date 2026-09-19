@@ -668,7 +668,11 @@
       "screenshots": [
         "annotated/vscode/devops-pipeline-level3--create-promotion",
         "annotated/vscode/pipeline-branch-modal-level3--what-it-carries",
-        "annotated/vscode/pipeline-branch-modal-uat--no-merge-target"
+        "annotated/vscode/pipeline-branch-modal-uat--no-merge-target",
+        "annotated/vscode/package-no-overwrite-edit--add-type",
+        "annotated/vscode/package-no-overwrite-add-type--type",
+        "annotated/web/github-pr-promotion-actions",
+        "annotated/web/github-pr-release-notes"
       ]
     },
     {

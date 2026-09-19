@@ -10,6 +10,10 @@ screenshots:
   - annotated/vscode/devops-pipeline-level3--create-promotion
   - annotated/vscode/pipeline-branch-modal-level3--what-it-carries
   - annotated/vscode/pipeline-branch-modal-uat--no-merge-target
+  - annotated/vscode/package-no-overwrite-edit--add-type
+  - annotated/vscode/package-no-overwrite-add-type--type
+  - annotated/web/github-pr-promotion-actions
+  - annotated/web/github-pr-release-notes
 depends_on:
   commands: [hardis:doc:release-notes, hardis:project:deploy:smart]
   flags: []
@@ -151,13 +155,17 @@ them one by one (Lab 1.6).
 
 Once the check runs, the sfdx-hardis comment gains two sections, **Pre-deployment Actions Results**
 and **Post-deployment Actions Results**. What a promotion adds on top is the paragraph naming the
-scope: which branch into which, and everything it carries.
+scope **(1)**: every Pull Request it carries, each one a link.
+
+![The deployment actions collected on the promotion Pull Request](../../_assets/annotated/web/github-pr-promotion-actions.png)
 
 Every action any contributor declared on any of the merged stories is collected into one table, with
 its label, its type, its status and a link back to the Pull Request it came from. Anything needing a
 human gets a **checklist above the table**, headed *Manual Actions to perform before proceeding with
 deployment* or *after deployment*. The two checklists land on different jobs: the check job carries
-the before one, so you can act on it while deciding, and the merge job carries the after one.
+the before one **(2)**, so you can act on it while deciding, and the merge job carries the after
+one. The post-deployment actions **(3)** read **skipped** on the check: a check changes nothing in
+the org, so they wait for the merge.
 
 **Read it before merging.** Two things to look for:
 
@@ -182,8 +190,8 @@ integration: UAT is behind by everything the team has done. Expect several minut
 
 When it finishes, do the manual steps the comment listed, in `helios-uat`.
 
-Then read the log for the overwrite manager, above the deployment, in the lines that start with
-`[NoOverwrite]`:
+Then read the log for the overwrite manager, above the deployment, among the lines that start
+with `[NoOverwrite]`:
 
 ```
 Type RemoteSiteSetting: 1 item(s) skipped because they already exist in the target org (protected), 0 item(s) to deploy
@@ -231,6 +239,23 @@ steps, generated from the merge history rather than from anybody's memory. It la
 target branch and the date when there is no tag, so here `uat-<date>`. Markdown and PDF every time,
 plus a spreadsheet when there is anything to put in it.
 
+On this promotion, the generated notes open like this:
+
+```
+# Promotion Notes - uat
+
+| Metric           | Value |
+|------------------|-------|
+| Pull Requests    | 19    |
+| Tickets          | 15    |
+| Contributors     | 1     |
+| Added / Modified | 33    |
+```
+
+Then come a table of the tickets, one of the Pull Requests with their authors and merge dates, the
+metadata changed by type, and the deployment actions with their status in `uat`: the manual
+deliverability step still **manual**, the imports and the schedule **success**.
+
 Read it and then improve it. Generated notes are a complete list, and a release note the business
 reads needs two things the generator cannot know:
 
@@ -242,6 +267,12 @@ Then give them to the people who read them. Open the promotion Pull Request you 
 the top right of its description, **Edit**, and paste the improved notes in place of the one-line
 description. A merged Pull Request stays editable, and it is where the release is: its link is what
 you send the business, and what the release notes of the next promotion point back to.
+
+![The improved release notes, in the description of the promotion Pull Request](../../_assets/annotated/web/github-pr-release-notes.png)
+
+The sentence **(1)** says what the promotion is for, in the business's words. The manual step **(2)**
+names who does it, where, and what breaks if nobody does. The rest is a short table of what to test,
+and a pointer to the full generated list for whoever wants it.
 
 <details markdown="1"><summary>Under the hood: what generated the notes, and what a promotion really is</summary>
 
