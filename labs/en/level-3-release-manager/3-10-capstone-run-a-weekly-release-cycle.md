@@ -69,8 +69,8 @@ Verify in `helios-uat` that the stories are usable, not only deployed.
 
 ### Thursday: release to production
 
-Promote `uat` into `preprod` first, and check `helios-preprod` behaves. Then create the promotion from
-`preprod` into `main`. Read the counts line in the sfdx-hardis comment and stop if anything is being
+Promote `uat` into `preprod` first, and check `helios-preprod` behaves. Then create the release, the Pull
+Request from `preprod` into `main`, titled `Release ...`. Read the counts line in the sfdx-hardis comment and stop if anything is being
 deleted that you were not expecting. Merge, watch, verify, do the manual steps.
 
 This release is also what finally carries the Lab 3.7 retrofit into `main`, so the `Needs Reinspection`
