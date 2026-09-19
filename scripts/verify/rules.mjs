@@ -596,13 +596,16 @@ export const RULES = [
     check: (ctx) => {
       // Deployment.settings is the one setting this project ships on purpose: it
       // is what lets a deployment run while the Lab 2.4 batch is scheduled.
-      // The course ships two short Profiles on purpose (Lab 2.6): Helios Crew changes
-      // with Lab 2.6, and Admin must still be the one main ships, not a whole-org
-      // retrieve of it.
-      const admin = "force-app/main/default/profiles/Admin.profile-meta.xml";
-      const shipped = (f) =>
-        f.endsWith("/profiles/Helios Crew.profile-meta.xml") ||
-        (f === admin && (ctx.readOn(DEV, admin) || "").trim() === (ctx.readOn("main", admin) || "").trim());
+      // The course ships two short Profiles on purpose (Lab 2.6). A whole-org retrieve
+      // brings Admin back with every field and user permission of the org, and the
+      // cleaning keeps the user permissions of Admin: the short one has neither.
+      const shipped = (f) => {
+        if (!/\/profiles\/(Admin|Helios Crew)\.profile-meta\.xml$/.test(f)) {
+          return false;
+        }
+        const profile = ctx.readOn(DEV, f) || "";
+        return !/<(fieldPermissions|userPermissions|objectPermissions)>/.test(profile);
+      };
       const stray = ctx.listOn(DEV, "force-app/main/default/").filter((f) =>
         /\/(profiles|settings|standardValueSets|objectTranslations|networks)\//.test(f) &&
         !f.endsWith("/settings/Deployment.settings-meta.xml") &&
