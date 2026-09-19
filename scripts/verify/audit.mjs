@@ -61,10 +61,12 @@ export function auditRepository(dir, level) {
 
 export function renderReport(audit, { level, handle, repoUrl }) {
   const lines = [];
+  // A run by hand on a local clone has no address to link to
+  const against = repoUrl ? ` against [${repoUrl}](${repoUrl})` : "";
   if (audit.ok) {
     lines.push(`## Level ${level} verified`);
     lines.push("");
-    lines.push(`All ${audit.total} checks passed against [${repoUrl}](${repoUrl}).`);
+    lines.push(`All ${audit.total} checks passed${against}.`);
     lines.push("");
     lines.push(`**${LEVEL_NAMES[level]}** is awarded to \`${handle}\`.`);
     lines.push("");
@@ -78,7 +80,7 @@ export function renderReport(audit, { level, handle, repoUrl }) {
     const failed = audit.results.filter((r) => !r.ok);
     lines.push(`## Level ${level} did not verify yet`);
     lines.push("");
-    lines.push(`${audit.passed} of ${audit.total} checks passed against [${repoUrl}](${repoUrl}).`);
+    lines.push(`${audit.passed} of ${audit.total} checks passed${against}.`);
     lines.push("");
     lines.push(`### What is missing (${failed.length})`);
     lines.push("");
