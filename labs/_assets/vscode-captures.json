@@ -2,9 +2,21 @@
   "_comment": "VS Code images scripts/build/shots.mjs cannot find in vscode/.shot-gates.json: the ones taken by hand, and the ones taken under another pipeline state (SF_MOCK_PIPELINE_STATE) then copied in under another name. 'file' is the name the harness writes, the key the name the labs use.",
   "manual": ["extensions-install", "clone-repository"],
   "variants": {
-    "devops-pipeline-fresh": { "gate": "devops-pipeline", "file": "devops-pipeline", "state": "fresh" },
-    "devops-pipeline-disconnected": { "gate": "devops-pipeline", "file": "devops-pipeline", "state": "fresh-disconnected" },
-    "devops-pipeline-level3": { "gate": "devops-pipeline", "file": "devops-pipeline", "state": "level3" },
+    "devops-pipeline-fresh": {
+      "gate": "devops-pipeline",
+      "file": "devops-pipeline",
+      "state": "fresh"
+    },
+    "devops-pipeline-disconnected": {
+      "gate": "devops-pipeline",
+      "file": "devops-pipeline",
+      "state": "fresh-disconnected"
+    },
+    "devops-pipeline-level3": {
+      "gate": "devops-pipeline",
+      "file": "devops-pipeline",
+      "state": "level3"
+    },
     "pipeline-branch-modal-level3": {
       "gate": "pipeline-modals",
       "file": "pipeline-branch-modal",
