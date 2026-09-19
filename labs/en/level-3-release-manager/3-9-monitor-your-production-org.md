@@ -174,6 +174,11 @@ is also your Dev Hub, and your three training scratch orgs use every slot it has
 finding, the kind a limit check exists for: on a real Dev Hub it means nobody on the team can create
 a scratch org until one expires.
 
+And **Detect unsecured Connected Apps** has one too: **Salesforce CLI**, marked *Unsecured*. It is the
+app every `sf org login` goes through, yours included, and on a Developer Edition org it is open to
+any user who can log in. On a production org that is the first finding to take to the security team:
+an admin can restrict it to approved users, and the CLI keeps working for them.
+
 What you are reading for is the **shape** of each finding, so that you recognise it on a real org:
 
 | Finding on a real org           | What it actually means                                                     |
