@@ -3,11 +3,11 @@
   "title": "US-055 Install Date says which day it means",
   "usedBy": "Lab 3.11",
   "levels": [3],
-  "description": "Amina adds a help text to Install Date: planners enter the day the panels arrive, crews read it as the day they go on site.",
+  "description": "Julie adds a help text to Install Date: planners enter the day the panels arrive, crews read it as the day they go on site.",
   "branch": "training/mate-us-055-install-date-help",
   "author": {
-    "name": "Amina Diallo",
-    "email": "amina.diallo@helios-training.invalid"
+    "name": "Julie Verbeke",
+    "email": "julie.verbeke@helios-training.invalid"
   },
   "commitMessage": "US-055 Install Date says which day it means\n\nPlanners were entering the day the panels arrive. The help text says it is the\nday the crew goes on site.",
   "prTitle": "US-055 Install Date says which day it means",

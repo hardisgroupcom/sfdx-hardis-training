@@ -27,7 +27,7 @@ sources you already have.
 
 ## The situation
 
-Sofia knew this org. Sofia has left.
+Olga knew this org. Olga has left.
 
 What exists: two years of metadata in a git repository. What does not exist: any description of what
 the objects are for, how the flows relate, or why the scheduler behaves the way it does.

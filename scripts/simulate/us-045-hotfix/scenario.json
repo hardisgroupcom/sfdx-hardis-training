@@ -3,13 +3,13 @@
   "title": "US-045 Hotfix: cancelled installations can be back-dated again",
   "usedBy": "Lab 3.8",
   "levels": [3],
-  "description": "Friday, 17:30. Planners cannot close the week: every back-dated cancellation is refused. Amina fixes the validation rule on a branch cut from preprod, which holds what production runs, and opens the hotfix Pull Request into preprod.",
+  "description": "Friday, 17:30. Planners cannot close the week: every back-dated cancellation is refused. Julie fixes the validation rule on a branch cut from preprod, which holds what production runs, and opens the hotfix Pull Request into preprod.",
   "branch": "fix/US-045-installation-date-hotfix",
   "from": "preprod",
   "base": "preprod",
   "author": {
-    "name": "Amina Diallo",
-    "email": "amina.diallo@helios-training.invalid"
+    "name": "Julie Verbeke",
+    "email": "julie.verbeke@helios-training.invalid"
   },
   "commitMessage": "US-045 Cancelled installations can no longer be back-dated\n\nInstallation_Date_Not_Past exempted Completed installations and not Cancelled\nones. A cancelled installation is finished work too.",
   "prTitle": "US-045 Hotfix: cancelled installations can be back-dated again",

@@ -3,11 +3,11 @@
   "title": "US-046 Retrofit the Needs Reinspection status from production",
   "usedBy": "Lab 3.8",
   "levels": [3],
-  "description": "Marco brings into the repository the Needs Reinspection status an admin added by hand in production, so that the next release does not remove it.",
+  "description": "Florian brings into the repository the Needs Reinspection status an admin added by hand in production, so that the next release does not remove it.",
   "branch": "training/mate-us-046-needs-reinspection",
   "author": {
-    "name": "Marco Bianchi",
-    "email": "marco.bianchi@helios-training.invalid"
+    "name": "Florian Rames",
+    "email": "florian.rames@helios-training.invalid"
   },
   "commitMessage": "US-046 Needs Reinspection status, added in production by an admin\n\nRetrieved from helios-prod: the value only, nothing else from production.",
   "prTitle": "US-046 Retrofit the Needs Reinspection status from production",

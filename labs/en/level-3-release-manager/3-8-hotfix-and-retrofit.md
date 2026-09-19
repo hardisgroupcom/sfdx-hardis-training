@@ -69,7 +69,7 @@ This is the part people get wrong, and it produces an incident on top of an inci
 tonight. `preprod` carries exactly what production runs, which is why Lab 3.1 made it the branch a
 hotfix starts from, and why **New User Story** offers `preprod` as a target to contributors.
 
-Amina takes the fix. **Training: Level 3** > **Simulate my teammates**, and pick **US-045 Hotfix:
+Julie takes the fix. **Training: Level 3** > **Simulate my teammates**, and pick **US-045 Hotfix:
 cancelled installations can be back-dated again**.
 
 ![The Level 3 training menu on the Welcome page](../../_assets/annotated/vscode/welcome-custom-menu-3.png)
@@ -93,7 +93,7 @@ Three conditions, and two of them already did their job. `ISCHANGED` is why an o
 be saved as long as nobody touches the date, and the `Completed` exemption is why a finished job can
 be dated when it actually happened. Whoever wrote this thought about it.
 
-Amina adds the fourth condition that was missing:
+Julie adds the fourth condition that was missing:
 
 ```
   NOT(ISPICKVAL(Status__c, "Cancelled"))
@@ -127,7 +127,7 @@ a planner, or by cancelling and back-dating an installation in `helios-prod` you
 Production and `preprod` now have a fix that `uat` and `integration` do not. Leave it there and the
 next release overwrites it.
 
-Amina opens the second Pull Request of her hotfix: **Simulate my teammates** > **US-045 The hotfix
+Julie opens the second Pull Request of her hotfix: **Simulate my teammates** > **US-045 The hotfix
 goes back into integration**. Same branch, same commit, into `integration` this time. Review it: the
 diff is the one you already approved. Merge it, and the fix flows up to `uat` on the next
 promotion.
@@ -163,7 +163,7 @@ and to review it.
 
 ### 7. Review the retrofit against production
 
-Marco takes it. **Simulate my teammates** > **US-046 Retrofit the Needs Reinspection status from
+Florian takes it. **Simulate my teammates** > **US-046 Retrofit the Needs Reinspection status from
 production**. It opens his Pull Request into `integration`.
 
 A retrofit Pull Request gets one more question than the four of Lab 3.3: **is every line of the diff
@@ -180,7 +180,7 @@ The third one is the trap, and it is why a retrofit is reviewed by somebody who 
 into production and when. Production being behind looks exactly like production being ahead in a
 file diff.
 
-Marco's diff is the value, five lines, and nothing else: he retrieved one field, not the org. Compare
+Florian's diff is the value, five lines, and nothing else: he retrieved one field, not the org. Compare
 it with what you saw in Setup, and merge.
 
 ### 8. Let the next release carry it
@@ -193,7 +193,7 @@ changed back.**
 
 <details markdown="1"><summary>Under the hood: the two commands and the two configuration keys</summary>
 
-**The hotfix** used nothing special. Amina ran `hardis:work:new` with `preprod` as the target
+**The hotfix** used nothing special. Julie ran `hardis:work:new` with `preprod` as the target
 branch, which cuts her branch from `preprod`, and `hardis:work:save` computed the package against
 `preprod`. The pipeline
 treats `preprod` as any other major branch. What makes it a hotfix is the target, not a mode.
@@ -204,7 +204,7 @@ rate** in Lab 3.7 counts hotfix Pull Requests, and it recognises one by a `hotfi
 project that spells the prefix differently gets a rework rate of zero and no warning, which is the
 sort of thing to check before quoting a number at anybody.
 
-**The retrofit** was Marco's Metadata Retriever, pointed at `helios-prod`, which runs a plain
+**The retrofit** was Florian's Metadata Retriever, pointed at `helios-prod`, which runs a plain
 targeted retrieve:
 
     sf project retrieve start --metadata "CustomField:Installation__c.Status__c" --target-org <the org username> --json
@@ -235,9 +235,9 @@ it. Then you retrieve that one thing, knowingly. Detection is automatic, the jud
 
 - The validation rule fixed in `helios-prod`, through a Pull Request into `preprod` and then one into
   `main`
-- The same fix merged into `integration`, by Amina's second Pull Request
+- The same fix merged into `integration`, by Julie's second Pull Request
 - `Needs Reinspection` present on `integration`, in
-  `force-app/main/default/objects/Installation__c/fields/Status__c.field-meta.xml`, by Marco's
+  `force-app/main/default/objects/Installation__c/fields/Status__c.field-meta.xml`, by Florian's
 
 ## If it goes wrong
 
@@ -258,7 +258,7 @@ It reached the repository on a branch that never got merged. Check that it is re
 Welcome page > **Training: Level 3** > **Check my work**, then pick Lab 3.8.
 
 It wants the hotfix in the history of `preprod` or `main`, and `Needs Reinspection` on
-`integration`, which is where Marco's Pull Request put it.
+`integration`, which is where Florian's Pull Request put it.
 
 !!! note "The badge asks for a little more"
     **Everything in level 3**, and the badge audit, want `Needs Reinspection` on `main`. The retrofit

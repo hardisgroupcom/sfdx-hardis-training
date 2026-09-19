@@ -80,7 +80,7 @@ the object and the flow into `helios-integration` and the checklist will be empt
 feature will do nothing at all. Build a data workspace and declare an action.
 
 **Three: the teammate on the same file.** Before you open your Pull Request, run **Training:
-Level 2 > Simulate my teammates** and pick **US-019**, then merge it. Amina adds a quote PDF field
+Level 2 > Simulate my teammates** and pick **US-019**, then merge it. Julie adds a quote PDF field
 and grants it on `Helios Delivery Manager`, the same permission set your checklist needs. Bring
 `integration` into your branch from the **Source Control** panel.
 
@@ -116,7 +116,7 @@ In `helios-integration`, after the merge:
 
 - `Handover_Item__c` with 10 template records
 - Saving an installation to `Completed` with an incomplete checklist is refused, with your message
-- `Helios_Delivery_Manager` granting the new fields, and Amina's quote PDF field still present
+- `Helios_Delivery_Manager` granting the new fields, and Julie's quote PDF field still present
 
 ## If it goes wrong
 

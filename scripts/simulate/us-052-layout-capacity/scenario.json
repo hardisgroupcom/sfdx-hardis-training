@@ -3,11 +3,11 @@
   "title": "US-052 Total Capacity back on the Installation layout",
   "usedBy": "Lab 3.3",
   "levels": [3],
-  "description": "Marco answers your review: Total Capacity (kW) goes back on the Installation layout, in the second column, beside his crew capacity cap.",
+  "description": "Florian answers your review: Total Capacity (kW) goes back on the Installation layout, in the second column, beside his crew capacity cap.",
   "branch": "training/mate-us-052-layout-capacity",
   "author": {
-    "name": "Marco Bianchi",
-    "email": "marco.bianchi@helios-training.invalid"
+    "name": "Florian Rames",
+    "email": "florian.rames@helios-training.invalid"
   },
   "commitMessage": "US-052 Total Capacity back on the Installation layout\n\nUS-018 swapped it for the crew capacity cap. Both show now: the capacity in\nthe second column of the Information section.",
   "prTitle": "US-052 Total Capacity back on the Installation layout",

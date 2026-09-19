@@ -32,9 +32,9 @@ Friday afternoon. Three stories carry this week:
 
 | Pull Request                              | Author        | Checks      | What it touches                            |
 |-------------------------------------------|---------------|-------------|--------------------------------------------|
-| **US-018** Cap the crew size              | Marco Bianchi | green       | the assign flow, `Helios_Delivery_Manager` |
-| **US-019** Quote PDF                      | Amina Diallo  | green       | `Helios_Delivery_Manager`                  |
-| **US-020** Refactor InstallationScheduler | Marco Bianchi | **failing** | `InstallationScheduler`                    |
+| **US-018** Cap the crew size              | Florian Rames | green       | the assign flow, `Helios_Delivery_Manager` |
+| **US-019** Quote PDF                      | Julie Verbeke  | green       | `Helios_Delivery_Manager`                  |
+| **US-020** Refactor InstallationScheduler | Florian Rames | **failing** | `InstallationScheduler`                    |
 
 Two of them edit the same permission set. One does not deploy. Everyone wants to go home.
 
@@ -76,7 +76,7 @@ Wait for the checks. US-020's will fail.
 Sort the three, in this order of questions:
 
 **Which ones are green?** A failing Pull Request is not a decision, it is a task for its author. Do
-not spend your Friday fixing Marco's refactor.
+not spend your Friday fixing Florian's refactor.
 
 **Which ones touch the same file?** US-018 and US-019 both edit `Helios_Delivery_Manager`. Whichever
 merges second inherits whatever the first one did to that file, and step 5 is about what "inherits"
@@ -86,7 +86,7 @@ turns out to mean.
 if the other one lands badly.
 
 The order you want: **US-019 first** (small, green, no dependants), then **US-018** (green, bigger),
-and **US-020 goes back to Marco**. Where they are already merged, the **Pull Requests** tab of the
+and **US-020 goes back to Florian**. Where they are already merged, the **Pull Requests** tab of the
 `integration` window in the DevOps Pipeline panel lists them in the order they went in, which is the
 same question asked backwards.
 
@@ -137,7 +137,7 @@ US-018 granted `Installation__c.Crew_Capacity_Cap__c`, near the top of the same 
 That is not luck and it is not git being clever. A conflict needs the two edits to land in the same
 place, within the few lines of context git compares. These two are about seventy lines apart in an
 alphabetically sorted file, so git took both and moved on. Lab 2.7 gave you the other case:
-your `Crew_Notes__c` grant sat one line from Marco's `Crew_Capacity_Cap__c`, git could not choose,
+your `Crew_Notes__c` grant sat one line from Florian's `Crew_Capacity_Cap__c`, git could not choose,
 and it stopped and asked.
 
 The release manager's takeaway is not "permission sets rarely conflict". It is this:

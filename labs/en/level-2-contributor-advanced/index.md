@@ -20,7 +20,7 @@ that do not go through start arriving.
 
 A deployment that fails on a dependency nobody told you about. A field that cannot be made required
 because the org already holds thirty records without it. Reference records and a nightly batch that
-have to follow your change into every org, and no deployment will carry them for you. Marco, who
+have to follow your change into every org, and no deployment will carry them for you. Florian, who
 edited the same flow and the same permission set as you and merged first.
 
 This is the half of the contributor path that decides whether you enjoy working on a CI/CD project.

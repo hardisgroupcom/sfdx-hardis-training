@@ -25,7 +25,7 @@ Requests and understanding them.
 
 ## The story
 
-Sofia Marchetti left. She was the release manager, she set the pipeline up two years ago, and she
+Olga Lagoutte left. She was the release manager, she set the pipeline up two years ago, and she
 never finished it.
 
 What you inherit works, in the sense that contributors deliver into `integration` every day and the
@@ -35,7 +35,7 @@ business tests in `uat`. What it does not have:
 - **No proper CI authentication.** There are two refresh-token secrets somebody added in a hurry
 - **No monitoring.** Nobody finds out about a problem in production until a user calls
 - **No release notes and no metrics.** Nobody can say what shipped last month or how long it took
-- **No generated documentation.** The org is two years old and the only description of it is Sofia
+- **No generated documentation.** The org is two years old and the only description of it is Olga
 
 Your first week is finishing the pipeline. Then you run it.
 

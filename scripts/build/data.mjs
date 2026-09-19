@@ -32,10 +32,13 @@ const CITIES = [
   ["Palermo", "Italy"], ["Bari", "Italy"], ["Cagliari", "Italy"],
   ["Athina", "Greece"], ["Thessaloniki", "Greece"]
 ];
-const FIRST = ["Ana", "Luis", "Marta", "Pedro", "Sofia", "Diogo", "Chloe", "Hugo", "Elena", "Matteo",
-  "Giulia", "Nikos", "Eleni", "Paulo", "Ines", "Thomas", "Camille", "Rafael", "Bianca", "Andreas"];
-const LAST = ["Ferreira", "Costa", "Moreau", "Rossi", "Papadopoulos", "Lopez", "Garcia", "Bernard",
-  "Conti", "Silva", "Dubois", "Marino", "Nikolaou", "Almeida", "Sanchez", "Leroy"];
+const FIRST = ["Nicolas", "Mariia", "Romain", "Sébastien", "Manon", "Eugénie", "Violaine", "Victor", "Gregory",
+  "Emile", "Virginie", "Julie", "Olivier", "Andrzej", "Dimitri", "Baptiste", "Florian", "Bertrand", "Yamilet",
+  "Pablo", "Olga"];
+const LAST = ["Pyvovarchuk", "Turpin", "Lacour", "Vignaud", "Poirot", "Rames", "Reviriot", "Lagoutte", "Pellichero",
+  "Bazoin", "Louis", "Chevalier", "Verbeke", "Lenotre", "Chodor", "Monge", "Masson", "Regnier", "Vuillamy"];
+// An email address takes no accent
+const ascii = (s) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 const SUFFIX = ["Rooftops", "Energy Coop", "Residences", "Homes", "Estates", "Properties",
   "Solar Club", "Housing", "Villas", "Terraces"];
 const ROOFS = ["Tile", "Slate", "Flat", "Metal"];
@@ -76,11 +79,15 @@ const contacts = [];
 for (let i = 1; i <= 60; i++) {
   const account = accounts[i % accounts.length];
   const first = pick(FIRST);
-  const last = pick(LAST);
+  let last = pick(LAST);
+  // Names are drawn at random: never pair them back into a real person's name
+  if (`${first} ${last}` === "Nicolas Vuillamy") {
+    last = LAST[(LAST.indexOf(last) + 1) % LAST.length];
+  }
   contacts.push({
     FirstName: first,
     LastName: last,
-    Email: `${first.toLowerCase()}.${last.toLowerCase()}.${String(i).padStart(2, "0")}@helios-training.invalid`,
+    Email: `${ascii(first)}.${ascii(last)}.${String(i).padStart(2, "0")}@helios-training.invalid`,
     Title: pick(["Owner", "Building manager", "Technical contact", "Co-owner"]),
     Phone: `+34 6${between(10, 99)} ${between(100, 999)} ${between(100, 999)}`,
     "Account.Name": account.Name
