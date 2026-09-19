@@ -343,10 +343,7 @@
       "width": 1440,
       "height": 1100,
       "settle": 3000,
-      "hide": [
-        "img.avatar",
-        "img[src*='avatars.githubusercontent.com']"
-      ],
+      "hide": ["img.avatar", "img[src*='avatars.githubusercontent.com']"],
       "clip": {
         "x": 0,
         "y": 58,
@@ -361,10 +358,7 @@
       "width": 1440,
       "height": 1000,
       "settle": 3000,
-      "hide": [
-        "img.avatar",
-        "img[src*='avatars.githubusercontent.com']"
-      ],
+      "hide": ["img.avatar", "img[src*='avatars.githubusercontent.com']"],
       "evaluate": [
         "(() => { const set = (el, v) => { const proto = el.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype; Object.getOwnPropertyDescriptor(proto, 'value').set.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true })); }; const name = document.querySelector('#secret_name, input[name=secret_name]'); const value = document.querySelector('#secret_value, textarea[name=secret_value]'); if (name) set(name, 'SFDX_CLIENT_ID_INTEGRATION'); if (value) set(value, '3MVG9EXAMPLE.the.consumer.key.the.panel.printed'); })()"
       ],

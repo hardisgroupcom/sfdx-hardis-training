@@ -140,12 +140,12 @@ conflicts between a hotfix and work in progress are a release manager's call.
 
 **Start the branch.** In the **DevOps Pipeline** panel, **New User Story**:
 
-| Question       | Your answer                                                                  |
-|----------------|------------------------------------------------------------------------------|
-| Target branch  | `integration`, the branch the retrofit goes back into                         |
-| Type of branch | **Retrofit**, the type this project keeps for production coming back down     |
-| Name           | `US-045-retrofit`, the story whose hotfix you are bringing back               |
-| Org to work in | `helios-dev`: nothing is built here, so the org hardly matters                |
+| Question       | Your answer                                                               |
+|----------------|---------------------------------------------------------------------------|
+| Target branch  | `integration`, the branch the retrofit goes back into                     |
+| Type of branch | **Retrofit**, the type this project keeps for production coming back down |
+| Name           | `US-045-retrofit`, the story whose hotfix you are bringing back           |
+| Org to work in | `helios-dev`: nothing is built here, so the org hardly matters            |
 
 It creates `retrofit/US-045-retrofit` from the latest `integration`. The **Retrofit** type is a line
 in `branchPrefixChoices` of `config/.sfdx-hardis.yml`: its prefix tells everybody reading the branch
@@ -224,7 +224,7 @@ you are the one who knows what went live and when.
 with four answers of your own:
 
 | Question       | Your answer                                                         |
-|----------------|----------------------------------------------------------------------|
+|----------------|---------------------------------------------------------------------|
 | Target branch  | `integration`, so it travels up with the next release               |
 | Type of branch | **Fix**: the repository is wrong about production, and you fix that |
 | Name           | `US-046-needs-reinspection`                                         |
