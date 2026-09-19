@@ -21,8 +21,8 @@
       "gate": "pipeline-modals",
       "file": "pipeline-branch-modal",
       "state": "level3",
-      "_env_comment": "The level3 diagram is laid out differently: the point is the preprod box in devops-pipeline-level3.png, in window pixels.",
-      "env": { "SFDX_HARDIS_DOC_SCREENSHOTS_BRANCH_NODE": "1063,539" }
+      "_env_comment": "The level3 diagram is laid out differently: the point is the integration box in devops-pipeline-level3.png, in window pixels.",
+      "env": { "SFDX_HARDIS_DOC_SCREENSHOTS_BRANCH_NODE": "880,432" }
     }
   }
 }

@@ -7,6 +7,7 @@
  *   node scripts/build/shots.mjs --lab 2.7            # every image Lab 2.7 shows
  *   node scripts/build/shots.mjs --lab 2.7 --dry-run  # say what would be taken
  *   node scripts/build/shots.mjs --lab 2.7 --pills    # no capture: pills and sheet only
+ *   node scripts/build/shots.mjs --all --kind vscode   # every VS Code image a lab shows
  *
  * The full VS Code batch takes about twenty-five minutes. This one resolves each
  * image to the capture that produces it and runs only those:
@@ -38,13 +39,29 @@ const EXTENSION = path.resolve(ROOT, "..", "vscode-sfdx-hardis");
 const argv = process.argv.slice(2);
 const DRY = argv.includes("--dry-run");
 const PILLS_ONLY = argv.includes("--pills");
+const ALL = argv.includes("--all");
+const kindIndex = argv.indexOf("--kind");
+const KIND = kindIndex >= 0 ? argv[kindIndex + 1] : "";
 const labs = [];
 const wanted = new Set();
 for (let i = 0; i < argv.length; i++) {
   if (argv[i] === "--lab") {
     labs.push(argv[++i]);
+  } else if (argv[i] === "--kind") {
+    i++;
   } else if (!argv[i].startsWith("--")) {
     wanted.add(argv[i].replace(/\.png$/, ""));
+  }
+}
+if (ALL) {
+  for (const dir of fs.readdirSync(path.join(ROOT, "labs", "en"))) {
+    const full = path.join(ROOT, "labs", "en", dir);
+    if (!fs.statSync(full).isDirectory()) {
+      continue;
+    }
+    for (const file of fs.readdirSync(full).filter((f) => /^\d+-\d+-.*\.md$/.test(f))) {
+      labs.push(file.split("-").slice(0, 2).join("."));
+    }
   }
 }
 if (labs.length === 0 && wanted.size === 0) {
@@ -84,6 +101,9 @@ for (const id of labs) {
 const plan = { vscode: new Map(), web: [], salesforce: [], manual: [], unknown: [] };
 for (const key of [...wanted].sort()) {
   const [kind, name] = key.split("/");
+  if (KIND && kind !== KIND) {
+    continue;
+  }
   if (kind === "vscode") {
     if ((vscodeSpec.manual || []).includes(name)) {
       plan.manual.push(key);
