@@ -299,11 +299,11 @@ consumer`, an accurate message that reads like a bug.
 
 Same gear, **Add/Configure Org**, three more times, one per branch and its org:
 
-| Branch    | Org                  | Base URL answer                                                           | Merges into  | Secrets                                           |
-|-----------|----------------------|---------------------------------------------------------------------------|--------------|---------------------------------------------------|
-| `uat`     | `helios-uat`         | **🧪 Sandbox or Scratch org (test.salesforce.com)**                       | `preprod`    | `SFDX_CLIENT_ID_UAT`, `SFDX_CLIENT_KEY_UAT`         |
-| `preprod` | `helios-preprod`     | **☢️ Other: Dev org, Production org or DevHub org (login.salesforce.com)** | `main`       | `SFDX_CLIENT_ID_PREPROD`, `SFDX_CLIENT_KEY_PREPROD` |
-| `main`    | `helios-prod`        | **☢️ Other: Dev org, Production org or DevHub org (login.salesforce.com)** | tick nothing | `SFDX_CLIENT_ID_MAIN`, `SFDX_CLIENT_KEY_MAIN`       |
+| Branch    | Org              | Base URL answer                                                            | Merges into  | Secrets                                             |
+|-----------|------------------|----------------------------------------------------------------------------|--------------|-----------------------------------------------------|
+| `uat`     | `helios-uat`     | **🧪 Sandbox or Scratch org (test.salesforce.com)**                        | `preprod`    | `SFDX_CLIENT_ID_UAT`, `SFDX_CLIENT_KEY_UAT`         |
+| `preprod` | `helios-preprod` | **☢️ Other: Dev org, Production org or DevHub org (login.salesforce.com)** | `main`       | `SFDX_CLIENT_ID_PREPROD`, `SFDX_CLIENT_KEY_PREPROD` |
+| `main`    | `helios-prod`    | **☢️ Other: Dev org, Production org or DevHub org (login.salesforce.com)** | tick nothing | `SFDX_CLIENT_ID_MAIN`, `SFDX_CLIENT_KEY_MAIN`       |
 
 Check the org twice for `main`: pointing production at the wrong org is the single most expensive
 mistake available in this lab. `preprod` and `main` are Developer Edition orgs, which log in the way

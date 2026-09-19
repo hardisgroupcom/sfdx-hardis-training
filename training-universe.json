@@ -619,7 +619,7 @@
           "description": "Extend a two-stage Salesforce pipeline to production: branches, protections, and each org configured and authenticated with JWT by Add/Configure Org.",
           "time": "75 min"
         },
-          {
+        {
           "lab": 2,
           "slug": "3-2-review-a-contributor-pull-request",
           "title": "Review and merge a contributor Pull Request",
