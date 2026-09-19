@@ -29,7 +29,7 @@ merge.
 
 ## The situation
 
-Florian's **US-018 - Cap the crew size a planner can assign** is already in `integration`. You merged
+Mariia's **US-018 - Cap the crew size a planner can assign** is already in `integration`. You merged
 it yourself, in Lab 2.7, after the review that lab called "brief". The checks were green, the
 sfdx-hardis comment said the deployment validated and the tests passed, and you moved on because you
 had a conflict of your own to resolve.
@@ -52,19 +52,19 @@ been, because the thing you missed is in your integration org right now.
 
 ## Steps
 
-### 1. Find Florian's Pull Request in your fork
+### 1. Find Mariia's Pull Request in your fork
 
 In your fork: **Pull requests**, then the **Closed** filter **(1)**, and open **US-018 Cap the crew
 size a planner can assign** **(2)**.
 
-![The closed Pull Requests of a fork, with Florian's story](../../_assets/annotated/web/github-pr-closed.png)
+![The closed Pull Requests of a fork, with Mariia's story](../../_assets/annotated/web/github-pr-closed.png)
 
 A merged Pull Request keeps everything a review needs: the diff, the checks, the sfdx-hardis
 comment. The only thing it no longer offers is the Merge button.
 
 !!! note "The green tick on that row"
     The tick next to each row sums up every check the Pull Request ran: the deployment simulation
-    and **Mega-Linter**. Both passed on Florian's story, or it could not have been merged: `integration`
+    and **Mega-Linter**. Both passed on Mariia's story, or it could not have been merged: `integration`
     only accepts a merge once they are green. That is the point of this lab. The pipeline was happy,
     and what it missed is something no check looks for.
 
@@ -93,7 +93,7 @@ which is step 3.
 
 The robot checks that the deployment works. It cannot check that the deployment is a good idea.
 
-Go through Florian's diff file by file with four questions:
+Go through Mariia's diff file by file with four questions:
 
 | Question                                 | Why it matters                                                                                                        |
 |------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
@@ -104,11 +104,11 @@ Go through Florian's diff file by file with four questions:
 
 ### 4. Find the one the robot missed
 
-In Florian's diff, the flow now reads `Installation__c.Crew_Capacity_Cap__c`, and the permission set
+In Mariia's diff, the flow now reads `Installation__c.Crew_Capacity_Cap__c`, and the permission set
 grants it. Both fine.
 
 Now open `Installation__c-Installation Layout.layout-meta.xml`. The change is two lines: one
-removed, one added, at the same place. Read fast, it looks like Florian slotted his cap into the
+removed, one added, at the same place. Read fast, it looks like Mariia slotted her cap into the
 layout. Read again: the line that went is `Total_Capacity_kW__c`. The cap did not join the layout,
 it **took the place** of the installed capacity.
 
@@ -116,7 +116,7 @@ Nothing fails. The field still exists, the deployment was green, the tests passe
 see a capacity on an installation record any more, and the first person to notice will be whoever
 reads that number on a Monday morning.
 
-Then compare with what Florian wrote. The description says *Installation layout: the cap added*. It
+Then compare with what Mariia wrote. The description says *Installation layout: the cap added*. It
 says nothing about a field going. That is the gap a review is for: the diff says one thing, the
 description another, and only one of them is what gets deployed.
 
@@ -130,10 +130,10 @@ Request you already merged. What you can still do is leave the comment, and that
 consolation prize. A review comment on a merged Pull Request is where the next person looks when
 they ask why the layout changed.
 
-Click **Files changed** **(1)**. The file tree on the left lists the four files Florian's story
+Click **Files changed** **(1)**. The file tree on the left lists the four files Mariia's story
 touched, and the layout **(2)** is the one to open.
 
-![The Files changed tab of Florian's Pull Request](../../_assets/annotated/web/github-pr-files.png)
+![The Files changed tab of Mariia's Pull Request](../../_assets/annotated/web/github-pr-files.png)
 
 Find the layout in the diff, hover the line where the field used to be, click the blue **+** that
 appears, and comment:
@@ -149,14 +149,14 @@ Two things about that comment worth copying:
 
 ### 6. Review the follow-up, and merge it
 
-The fix is Florian's to make: a release manager reviews and merges the contributors' Pull Requests,
-and does not write their features. Florian answers the next morning.
+The fix is Mariia's to make: a release manager reviews and merges the contributors' Pull Requests,
+and does not write their features. Mariia answers the next morning.
 **Training: Level 3** > **Simulate my teammates**, and pick **US-052 Total Capacity back on the
 Installation layout**.
 
 ![The Level 3 training menu on the Welcome page](../../_assets/annotated/vscode/welcome-custom-menu-3.png)
 
-It opens his Pull Request into `integration` in your fork. Review it exactly as you reviewed US-018:
+It opens her Pull Request into `integration` in your fork. Review it exactly as you reviewed US-018:
 
 - **The diff**: one file, the layout, and in it `Total_Capacity_kW__c` added in the second column of
   the **Information** section. Nothing removed this time
@@ -204,8 +204,8 @@ anything deleted, the comment has told you everything it is going to: the rest i
 
 ## What you should see
 
-- A review comment on Florian's merged Pull Request, naming what came off the layout
-- Florian's follow-up Pull Request, `US-052`, reviewed and merged into `integration`
+- A review comment on Mariia's merged Pull Request, naming what came off the layout
+- Mariia's follow-up Pull Request, `US-052`, reviewed and merged into `integration`
 - `Total_Capacity_kW__c` back on the Installation layout in `integration`
 
 ## If it goes wrong

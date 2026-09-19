@@ -11,11 +11,11 @@ for the `Helios Delivery` app, and every one of them is a lab in this course.
 |---|---|---|---|---|
 | [US-014](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-014/) | 1 | Show the crew how many panels a job needs | You | `features/US-014-panels-required` |
 | [US-016](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-016/) | 1 | Let the crew leave notes on an installation | You | `features/US-016-crew-notes` |
-| [US-017](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-017/) | 2 | Record who signed an installation off | Julie Verbeke | `training/mate-us-017-sign-off` |
-| [US-018](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-018/) | 2 | Cap the crew size a planner can assign | Florian Rames | `training/mate-us-018-crew-capacity` |
-| [US-019](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-019/) | 2 | Generate a quote PDF from an opportunity | Julie Verbeke | `training/mate-us-019-quote-pdf` |
-| [US-052](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-052/) | 3 | Total Capacity back on the Installation layout | Florian Rames | `training/mate-us-052-layout-capacity` |
-| [US-020](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-020/) | 3 | Refactor InstallationScheduler | Florian Rames | `training/mate-us-020-apex-refactor` |
+| [US-017](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-017/) | 2 | Record who signed an installation off | Romain Panda | `training/mate-us-017-sign-off` |
+| [US-018](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-018/) | 2 | Cap the crew size a planner can assign | Mariia Pyvovarchuk | `training/mate-us-018-crew-capacity` |
+| [US-019](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-019/) | 2 | Generate a quote PDF from an opportunity | Romain Panda | `training/mate-us-019-quote-pdf` |
+| [US-052](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-052/) | 3 | Total Capacity back on the Installation layout | Mariia Pyvovarchuk | `training/mate-us-052-layout-capacity` |
+| [US-020](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-020/) | 3 | Refactor InstallationScheduler | Mariia Pyvovarchuk | `training/mate-us-020-apex-refactor` |
 | [US-021](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-021/) | 2 | Warn the planner when a crew is too small | You | `features/US-021-crew-size-warning` |
 | [US-024](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-024/) | 2 | Crew size becomes mandatory | You | `features/US-024-crew-size-required` |
 | [US-026](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-026/) | 2 | Crew capacity reference data and nightly recalculation | You | `features/US-026-crew-capacity-data` |
@@ -24,10 +24,10 @@ for the `Helios Delivery` app, and every one of them is a lab in this course.
 | [US-034](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-034/) | 2 | Flat roofs need a crew of at least three | You | `features/US-034-crew-override` |
 | [US-038](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-038/) | 2 | Tidy the Installation layout | You | `features/US-038-installation-notes-tidy` |
 | [US-041](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-041/) | 2 | Installation handover checklist | You | `features/US-041-handover-checklist` |
-| [US-045](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-045/) | 3 | Cancelled installations can no longer be back-dated | Julie Verbeke | `fix/US-045-installation-date-hotfix` |
-| [US-046](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-046/) | 3 | Needs Reinspection status, added in production by an admin | Florian Rames | `training/mate-us-046-needs-reinspection` |
-| [US-055](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-055/) | 3 | Install Date says which day it means | Julie Verbeke | `training/mate-us-055-install-date-help` |
-| [US-056](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-056/) | 3 | Show the panels each crew member has to lay | Julie Verbeke | `training/mate-us-056-crew-workload` |
+| [US-045](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-045/) | 3 | Cancelled installations can no longer be back-dated | Romain Panda | `fix/US-045-installation-date-hotfix` |
+| [US-046](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-046/) | 3 | Needs Reinspection status, added in production by an admin | Mariia Pyvovarchuk | `training/mate-us-046-needs-reinspection` |
+| [US-055](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-055/) | 3 | Install Date says which day it means | Romain Panda | `training/mate-us-055-install-date-help` |
+| [US-056](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-056/) | 3 | Show the panels each crew member has to lay | Romain Panda | `training/mate-us-056-crew-workload` |
 
 ## The stories in full
 
@@ -68,7 +68,7 @@ Acceptance criteria:
 
 ### US-017 - Record who signed an installation off
 
-**Owner**: Julie Verbeke  
+**Owner**: Romain Panda  
 **Branch**: `training/mate-us-017-sign-off`  
 **Lab**: 2.1
 
@@ -83,7 +83,7 @@ Acceptance criteria:
 
 ### US-018 - Cap the crew size a planner can assign
 
-**Owner**: Florian Rames  
+**Owner**: Mariia Pyvovarchuk  
 **Branch**: `training/mate-us-018-crew-capacity`  
 **Lab**: 2.7
 
@@ -98,7 +98,7 @@ Acceptance criteria:
 
 ### US-019 - Generate a quote PDF from an opportunity
 
-**Owner**: Julie Verbeke  
+**Owner**: Romain Panda  
 **Branch**: `training/mate-us-019-quote-pdf`  
 **Lab**: 2.9
 
@@ -112,7 +112,7 @@ Acceptance criteria:
 
 ### US-052 - Total Capacity back on the Installation layout
 
-**Owner**: Florian Rames  
+**Owner**: Mariia Pyvovarchuk  
 **Branch**: `training/mate-us-052-layout-capacity`  
 **Lab**: 3.3
 
@@ -126,7 +126,7 @@ Acceptance criteria:
 
 ### US-020 - Refactor InstallationScheduler
 
-**Owner**: Florian Rames  
+**Owner**: Mariia Pyvovarchuk  
 **Branch**: `training/mate-us-020-apex-refactor`  
 **Lab**: 3.5
 
@@ -225,7 +225,7 @@ Acceptance criteria:
 Acceptance criteria:
 
 - Installation_Assign_Crew raises the crew on flat roofs
-- Florian crew cap from US-018 still wins when the two disagree
+- Mariia's crew cap from US-018 still wins when the two disagree
 
 <a id="US-038"></a>
 
@@ -261,7 +261,7 @@ Acceptance criteria:
 
 ### US-045 - Cancelled installations can no longer be back-dated
 
-**Owner**: Julie Verbeke  
+**Owner**: Romain Panda  
 **Branch**: `fix/US-045-installation-date-hotfix`  
 **Lab**: 3.8
 
@@ -276,7 +276,7 @@ Acceptance criteria:
 
 ### US-046 - Needs Reinspection status, added in production by an admin
 
-**Owner**: Florian Rames  
+**Owner**: Mariia Pyvovarchuk  
 **Branch**: `training/mate-us-046-needs-reinspection`  
 **Lab**: 3.8
 
@@ -291,7 +291,7 @@ Acceptance criteria:
 
 ### US-055 - Install Date says which day it means
 
-**Owner**: Julie Verbeke  
+**Owner**: Romain Panda  
 **Branch**: `training/mate-us-055-install-date-help`  
 **Lab**: 3.11
 
@@ -305,7 +305,7 @@ Acceptance criteria:
 
 ### US-056 - Show the panels each crew member has to lay
 
-**Owner**: Julie Verbeke  
+**Owner**: Romain Panda  
 **Branch**: `training/mate-us-056-crew-workload`  
 **Lab**: 3.4
 
@@ -320,7 +320,7 @@ Acceptance criteria:
 
 | Who | Role |
 |---|---|
-| Olga Lagoutte | Release manager. Left the company between Level 2 and Level 3, which is why the pipeline is yours now. |
-| Florian Rames | Senior contributor. Merges before you do, on the files you touched. |
-| Julie Verbeke | Contributor, works on the quoting side of the app. |
+| Victor Squeeker | Release manager. Left the company between Level 2 and Level 3, which is why the pipeline is yours now. |
+| Mariia Pyvovarchuk | Senior contributor. Merges before you do, on the files you touched. |
+| Romain Panda | Contributor, works on the quoting side of the app. |
 | You | New joiner in Level 1, trusted contributor in Level 2, release manager in Level 3. |

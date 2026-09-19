@@ -28,8 +28,8 @@ both without losing anybody's work.
 
 ## The situation
 
-Florian Rames has been working on **US-018 - Cap the crew size a planner can assign**, in the same
-flow and the same permission set as you. He merged this morning. You did not.
+Mariia Pyvovarchuk has been working on **US-018 - Cap the crew size a planner can assign**, in the same
+flow and the same permission set as you. She merged this morning. You did not.
 
 > Git conflicts on a Salesforce project are almost always one of two shapes: a Permission Set where
 > two people added different entries, and a Flow where two people changed the logic. The first is
@@ -59,11 +59,11 @@ In `helios-dev`:
 
 Retrieve the flow and the permission set, commit them, and **stop there**: do not publish yet.
 
-### 2. While you were building it, Florian merged
+### 2. While you were building it, Mariia merged
 
-Florian does not exist. His work does, and the training reproduces it inside **your own** fork so you
+Mariia does not exist. Her work does, and the training reproduces it inside **your own** fork so you
 can genuinely review and merge it. Do this **after** your own change exists, because that is the
-situation the lab is about: you branched, he merged, and neither of you knew about the other.
+situation the lab is about: you branched, she merged, and neither of you knew about the other.
 
 **Training: Level 2** **(1)** > **Simulate my teammates** **(2)**, from the Welcome page or from the
 sfdx-hardis command list, and choose
@@ -72,9 +72,9 @@ sfdx-hardis command list, and choose
 ![The Level 2 Training menu of the sfdx-hardis command list](../../_assets/annotated/vscode/sidebar-commands-custom-menu-2--training-menu.png)
 
 It creates the branch `training/mate-us-018-crew-capacity` from your current `integration`, commits
-Florian's changes under his name, pushes it to your fork, and opens the Pull Request.
+Mariia's changes under her name, pushes it to your fork, and opens the Pull Request.
 
-Review it briefly, then **merge it**. Florian is now in `integration`, and you are behind.
+Review it briefly, then **merge it**. Mariia is now in `integration`, and you are behind.
 
 <details markdown="1"><summary>Under the hood: why the teammate is replayed rather than pre-existing</summary>
 
@@ -83,7 +83,7 @@ The command ran:
     node scripts/training.mjs simulate
 
 which copied the files from `scripts/simulate/us-018-crew-capacity/files/` over your working tree,
-committed them with Florian's name and email, pushed the branch to **your** fork and opened the Pull
+committed them with Mariia's name and email, pushed the branch to **your** fork and opened the Pull
 Request there with `gh pr create`.
 
 It has to work this way. A Pull Request lives in one repository: you cannot review one that exists
@@ -109,8 +109,8 @@ GitHub shows:
 Two files, two completely different kinds of problem.
 
 Neither of them is git being awkward. Both changes are real, both are wanted, and in both files the
-two of you wrote in the same place: Florian granted a field on the permission set one line from where
-you granted yours, and he connected the same assignment element in the flow to a decision of his
+two of you wrote in the same place: Mariia granted a field on the permission set one line from where
+you granted yours, and she connected the same assignment element in the flow to a decision of her
 own. A merge tool cannot know which of two connectors should win. You can.
 
 ### 4. Bring integration into your branch
@@ -133,14 +133,14 @@ guess which one meant it.
 ### 5. Resolve the permission set: take both
 
 Click the permission set file in the **Source Control** panel. VS Code opens its merge editor:
-**Incoming**, Florian's version from `integration`, on the left, **Current**, yours, on the right, and
+**Incoming**, Mariia's version from `integration`, on the left, **Current**, yours, on the right, and
 the result you are building at the bottom.
 
 This one is mechanical, and you can decide it without reading a single line of XML: **both entries
-belong**. Florian granted one field, you granted another, and a permission set holds as many as it
+belong**. Mariia granted one field, you granted another, and a permission set holds as many as it
 needs. Take the button that keeps both sides, **Accept Combination (Incoming First)** in the merge
 editor, then read the result at the bottom before you click **Complete Merge**: you want two
-complete `<fieldPermissions>` blocks, each naming one field, Florian's `Crew_Capacity_Cap__c` first
+complete `<fieldPermissions>` blocks, each naming one field, Mariia's `Crew_Capacity_Cap__c` first
 and your `Crew_Notes__c` second. If you see a single block holding two `<field>` lines, the editor
 joined the two lines rather than the two blocks: copy the lines around it so that each field gets
 its own block, as the under the hood section shows.
@@ -186,25 +186,25 @@ writes them anyway:
 
 This one you cannot resolve by taking both, because the two changes are in the same decision path.
 
-- **Florian's change** caps the crew at what the installation allows: never more than N
+- **Mariia's change** caps the crew at what the installation allows: never more than N
 - **Your change** raises the crew to at least 3 on flat roofs: never fewer than 3
 
 Read on their own, both are correct. Together, they can contradict each other on a flat roof whose
 cap is 2.
 
-This is the moment that matters, and the answer is not technical: **go and ask Florian**. On a real
+This is the moment that matters, and the answer is not technical: **go and ask Mariia**. On a real
 project, a conflict in business logic is a conversation, not a merge strategy.
 
 For this lab, the decision has been made for you: **the cap wins**. A crew larger than the
 installation allows is a safety problem; a crew of 2 on a flat roof is a slow day. Resolve so that
-your minimum applies **only when it does not exceed Florian's cap**.
+your minimum applies **only when it does not exceed Mariia's cap**.
 
 Do it in Flow Builder, not in the file. A flow is stored as XML that nobody can read reliably,
 developers included, and a flow that deploys but behaves wrongly is worse than one that fails.
 
-1. In the merge editor, **Accept Incoming** on the flow: Florian's whole version wins for now
+1. In the merge editor, **Accept Incoming** on the flow: Mariia's whole version wins for now
 2. **Save / Publish User Story** is not what you want yet. First send what the merge brought in to
-   your dev org, so `helios-dev` has Florian's field, his grant and his cap: in the **Explorer**,
+   your dev org, so `helios-dev` has Mariia's field, her grant and her cap: in the **Explorer**,
    right-click the `force-app` folder, then **SFDX: Deploy This Source to Org**, the same command
    Lab 2.5 used on one class
 
@@ -214,7 +214,7 @@ developers included, and a flow that deploys but behaves wrongly is worse than o
    in Lab 2.6 would come back as a request to delete it, which Salesforce refuses
 
 3. Open **Flow Builder** in the org, on `Installation_Assign_Crew`, and add your flat-roof rule
-   again, **before** his cap: the flow raises a flat roof crew to three first, and his cap, which
+   again, **before** her cap: the flow raises a flat roof crew to three first, and her cap, which
    now runs last, has the final word
 4. Come back to VS Code, bring the rebuilt flow down with **Commit changes**, commit it, and publish
 
@@ -222,8 +222,8 @@ Slower to describe, much faster to do, and you can see what you are building.
 
 <details markdown="1"><summary>Under the hood: resolving it in the file instead</summary>
 
-If you can read flow XML and want to: take Florian's version of the element and its connectors as the
-base, re-add your flat-roof decision after his cap, and delete every conflict marker. Then publish,
+If you can read flow XML and want to: take Mariia's version of the element and its connectors as the
+base, re-add your flat-roof decision after her cap, and delete every conflict marker. Then publish,
 which re-runs the cleaning rules over what you wrote by hand.
 
 The risk is not that it fails. The risk is that it deploys and the decisions run in an order you did
@@ -245,7 +245,7 @@ Watch the check go green, then merge.
 
 In `helios-integration`:
 
-- The flow caps the crew, Florian's rule
+- The flow caps the crew, Mariia's rule
 - The flow raises flat-roof crews, your rule, without breaking the cap
 - The permission set grants both fields
 
@@ -274,7 +274,7 @@ You kept both sides of an element that can only exist once. Flow element names a
 remove one.
 
 **You lost your change entirely.**
-You accepted Florian's side on the whole file. In the **Source Control** panel, the **...** menu >
+You accepted Mariia's side on the whole file. In the **Source Control** panel, the **...** menu >
 **Branch** > **Abort Merge**, then start step 4 again.
 
 **The check fails on a conflict marker.**

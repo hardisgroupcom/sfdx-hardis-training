@@ -39,18 +39,18 @@
   },
   "cast": [
     {
-      "handle": "olga",
-      "name": "Olga Lagoutte",
+      "handle": "victor",
+      "name": "Victor Squeeker",
       "role": "Release manager. Left the company between Level 2 and Level 3, which is why the pipeline is yours now."
     },
     {
-      "handle": "florian",
-      "name": "Florian Rames",
+      "handle": "mariia",
+      "name": "Mariia Pyvovarchuk",
       "role": "Senior contributor. Merges before you do, on the files you touched."
     },
     {
-      "handle": "julie",
-      "name": "Julie Verbeke",
+      "handle": "romain",
+      "name": "Romain Panda",
       "role": "Contributor, works on the quoting side of the app."
     },
     {
@@ -127,15 +127,15 @@
       },
       {
         "name": "training/mate-us-018-crew-capacity",
-        "purpose": "Florian work, conflicts with your Level 2 branch"
+        "purpose": "Mariia work, conflicts with your Level 2 branch"
       },
       {
         "name": "training/mate-us-019-quote-pdf",
-        "purpose": "Julie work, collides with US-018 on a Permission Set"
+        "purpose": "Romain work, collides with US-018 on a Permission Set"
       },
       {
         "name": "training/mate-us-020-apex-refactor",
-        "purpose": "Florian refactor, fails the deployment check"
+        "purpose": "Mariia refactor, fails the deployment check"
       }
     ]
   },
@@ -183,7 +183,7 @@
       "id": "US-017",
       "level": 2,
       "lab": 1,
-      "author": "julie",
+      "author": "romain",
       "title": "Record who signed an installation off",
       "story": "As a delivery manager, I want the name of whoever signed the installation off, so that I can call them when the customer rings back.",
       "acceptance": [
@@ -200,7 +200,7 @@
       "id": "US-018",
       "level": 2,
       "lab": 7,
-      "author": "florian",
+      "author": "mariia",
       "title": "Cap the crew size a planner can assign",
       "story": "As a planner, I want the assignment flow to refuse a crew larger than the installation allows, so that we stop over-staffing small jobs.",
       "acceptance": [
@@ -214,7 +214,7 @@
       "id": "US-019",
       "level": 2,
       "lab": 9,
-      "author": "julie",
+      "author": "romain",
       "title": "Generate a quote PDF from an opportunity",
       "story": "As a sales rep, I want a button that generates the quote PDF, so that I stop rebuilding it in a spreadsheet.",
       "acceptance": ["The permission is granted to managers"],
@@ -225,7 +225,7 @@
       "id": "US-052",
       "level": 3,
       "lab": 3,
-      "author": "florian",
+      "author": "mariia",
       "title": "Total Capacity back on the Installation layout",
       "story": "As a planner, I want to see the installed capacity on an installation again, so that I stop opening the report to find it.",
       "acceptance": [
@@ -238,7 +238,7 @@
       "id": "US-020",
       "level": 3,
       "lab": 5,
-      "author": "florian",
+      "author": "mariia",
       "title": "Refactor InstallationScheduler",
       "story": "As a developer, I want the scheduler split into testable methods, so that we stop being afraid of it.",
       "acceptance": ["Behaviour unchanged", "Coverage above the threshold"],
@@ -331,11 +331,11 @@
       "story": "As a planner, I want the assignment flow to put at least three people on a flat roof, so that the ballast is carried safely.",
       "acceptance": [
         "Installation_Assign_Crew raises the crew on flat roofs",
-        "Florian crew cap from US-018 still wins when the two disagree"
+        "Mariia's crew cap from US-018 still wins when the two disagree"
       ],
       "branch": "features/US-034-crew-override",
       "metadata": ["Installation_Assign_Crew flow", "Helios_Delivery_Manager"],
-      "seededFailure": "Florian US-018 merged first and touched the same flow and the same permission set"
+      "seededFailure": "Mariia US-018 merged first and touched the same flow and the same permission set"
     },
     {
       "id": "US-038",
@@ -375,7 +375,7 @@
       "id": "US-045",
       "level": 3,
       "lab": 8,
-      "author": "julie",
+      "author": "romain",
       "title": "Cancelled installations can no longer be back-dated",
       "story": "As a planner, I want to back-date an installation I cancel to the day it was called off, so that the week can be closed.",
       "acceptance": [
@@ -390,7 +390,7 @@
       "id": "US-046",
       "level": 3,
       "lab": 8,
-      "author": "florian",
+      "author": "mariia",
       "title": "Needs Reinspection status, added in production by an admin",
       "story": "As the release manager, I want the status an admin added in production to be in the repository, so that the next release does not take it away from the planners.",
       "acceptance": [
@@ -404,7 +404,7 @@
       "id": "US-055",
       "level": 3,
       "lab": 11,
-      "author": "julie",
+      "author": "romain",
       "title": "Install Date says which day it means",
       "story": "As a crew lead, I want Install Date to say whether it is the day we go on site or the day the panels arrive, so that nobody drives to an empty site.",
       "acceptance": ["Install Date has a help text naming the day it means"],
@@ -415,7 +415,7 @@
       "id": "US-056",
       "level": 3,
       "lab": 4,
-      "author": "julie",
+      "author": "romain",
       "title": "Show the panels each crew member has to lay",
       "story": "As a planner, I want to see how many panels each person of the crew has to lay, so that I stop working it out in my head.",
       "acceptance": [
@@ -435,7 +435,7 @@
     {
       "number": 1,
       "title": "US-018 Cap the crew size a planner can assign",
-      "author": "florian",
+      "author": "mariia",
       "source": "training/mate-us-018-crew-capacity",
       "target": "integration",
       "checkState": "success",
@@ -444,7 +444,7 @@
     {
       "number": 2,
       "title": "US-019 Generate a quote PDF from an opportunity",
-      "author": "julie",
+      "author": "romain",
       "source": "training/mate-us-019-quote-pdf",
       "target": "integration",
       "checkState": "success",
@@ -453,7 +453,7 @@
     {
       "number": 3,
       "title": "US-020 Refactor InstallationScheduler",
-      "author": "florian",
+      "author": "mariia",
       "source": "training/mate-us-020-apex-refactor",
       "target": "integration",
       "checkState": "failure",

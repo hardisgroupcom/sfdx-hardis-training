@@ -80,12 +80,12 @@ the object and the flow into `helios-integration` and the checklist will be empt
 feature will do nothing at all. Build a data workspace and declare an action.
 
 **Three: the teammate on the same file.** Before you open your Pull Request, run **Training:
-Level 2 > Simulate my teammates** and pick **US-019**, then merge it. Julie adds a quote PDF field
+Level 2 > Simulate my teammates** and pick **US-019**, then merge it. Romain adds a quote PDF field
 and grants it on `Helios Delivery Manager`, the same permission set your checklist needs. Bring
 `integration` into your branch from the **Source Control** panel.
 
 This time git merges it on its own, with no conflict: Salesforce keeps the permissions of a
-permission set in alphabetical order, so her `Panel_Batch__c` grant and your `Handover_Item__c`
+permission set in alphabetical order, so his `Panel_Batch__c` grant and your `Handover_Item__c`
 ones land far apart in the file. **A clean merge is not proof.** Open the permission set and find
 both, `Panel_Batch__c.Quote_Pdf_Url__c` and your `Handover_Item__c` fields, before you publish. A
 merge that git did alone and nobody read is how a grant goes missing without a conflict to warn
@@ -116,7 +116,7 @@ In `helios-integration`, after the merge:
 
 - `Handover_Item__c` with 10 template records
 - Saving an installation to `Completed` with an incomplete checklist is refused, with your message
-- `Helios_Delivery_Manager` granting the new fields, and Julie's quote PDF field still present
+- `Helios_Delivery_Manager` granting the new fields, and Romain's quote PDF field still present
 
 ## If it goes wrong
 

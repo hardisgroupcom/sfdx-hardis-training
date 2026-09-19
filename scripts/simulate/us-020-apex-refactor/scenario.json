@@ -3,11 +3,11 @@
   "title": "US-020 Refactor InstallationScheduler (fails its check)",
   "usedBy": "Lab 3.5",
   "levels": [3],
-  "description": "Florian changes earliestInstallDate to return a Datetime and does not update the test class. The deployment check fails to compile it. This one is meant to be sent back, not fixed by you.",
+  "description": "Mariia changes earliestInstallDate to return a Datetime and does not update the test class. The deployment check fails to compile it. This one is meant to be sent back, not fixed by you.",
   "branch": "training/mate-us-020-apex-refactor",
   "author": {
-    "name": "Florian Rames",
-    "email": "florian.rames@helios-training.invalid"
+    "name": "Mariia Pyvovarchuk",
+    "email": "mariia.pyvovarchuk@helios-training.invalid"
   },
   "commitMessage": "US-020 Refactor InstallationScheduler\n\nearliestInstallDate now returns a Datetime, so callers know the crew is expected\nat 08:00 rather than at midnight.",
   "prTitle": "US-020 Refactor InstallationScheduler",

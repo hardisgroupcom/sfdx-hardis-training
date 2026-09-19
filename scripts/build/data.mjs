@@ -34,9 +34,17 @@ const CITIES = [
 ];
 const FIRST = ["Nicolas", "Mariia", "Romain", "Sébastien", "Manon", "Eugénie", "Violaine", "Victor", "Gregory",
   "Emile", "Virginie", "Julie", "Olivier", "Andrzej", "Dimitri", "Baptiste", "Florian", "Bertrand", "Yamilet",
-  "Pablo", "Olga"];
+  "Pablo", "Olga", "Ziyi", "Quentin", "Nabil", "Come", "Teoman", "Ekaterina", "Louise", "Fabien", "Volodimir",
+  "Matt", "Alexandra", "Aurore", "Sophie", "Natalia", "Krzysztof", "Frederic", "Jasmin", "Przemek", "Marine",
+  "Ernest", "Suzanne", "Eglantine", "Daphné", "Louison", "Anne-Laure", "Chris", "Léon", "Diego", "Pamela",
+  "Maurice", "Erna", "Madelyne", "Antoine", "Antonin", "Tien", "Michele"];
 const LAST = ["Pyvovarchuk", "Turpin", "Lacour", "Vignaud", "Poirot", "Rames", "Reviriot", "Lagoutte", "Pellichero",
-  "Bazoin", "Louis", "Chevalier", "Verbeke", "Lenotre", "Chodor", "Monge", "Masson", "Regnier", "Vuillamy"];
+  "Bazoin", "Louis", "Chevalier", "Verbeke", "Lenotre", "Chodor", "Monge", "Masson", "Regnier", "Vuillamy",
+  "Zhou", "Chanroux", "Tiercelin", "Boudjellal", "Lockie", "Ratko", "Pieper", "Levet", "Todorova", "Lesiz",
+  "Obermeier", "Lasek", "Leroy", "Nomblot", "Catelin", "Nguyen", "Metery", "Zaversnik", "Geoffroy", "Krol"];
+// Names are drawn at random: never pair them back into a real person's name, nor into a
+// member of the team the labs talk about
+const TAKEN = new Set(["Nicolas Vuillamy", "Mariia Pyvovarchuk"]);
 // An email address takes no accent
 const ascii = (s) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 const SUFFIX = ["Rooftops", "Energy Coop", "Residences", "Homes", "Estates", "Properties",
@@ -80,8 +88,7 @@ for (let i = 1; i <= 60; i++) {
   const account = accounts[i % accounts.length];
   const first = pick(FIRST);
   let last = pick(LAST);
-  // Names are drawn at random: never pair them back into a real person's name
-  if (`${first} ${last}` === "Nicolas Vuillamy") {
+  while (TAKEN.has(`${first} ${last}`)) {
     last = LAST[(LAST.indexOf(last) + 1) % LAST.length];
   }
   contacts.push({

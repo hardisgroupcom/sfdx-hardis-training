@@ -39,7 +39,7 @@ nobody is going to tell you the order to do things in.
 
 ### Monday: take in what contributors sent you
 
-Two Pull Requests wait. **US-020**, open since Lab 3.5 and still failing. And a new one from Julie:
+Two Pull Requests wait. **US-020**, open since Lab 3.5 and still failing. And a new one from Romain:
 **Training: Level 3** > **Simulate my teammates**, and pick **US-055 Install Date says which day it
 means**.
 

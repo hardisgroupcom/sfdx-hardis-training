@@ -508,8 +508,8 @@ if (fs.existsSync(basePlanFile)) {
   // The three teammate stories that merged while the learner was away, which is
   // exactly the situation Lab 2.1 puts them in.
   const BACKPROMOTED = [
-    { id: "US-018", title: "Cap the crew size a planner can assign", author: "Florian Rames", branch: "training/mate-us-018-crew-capacity", items: 3, actions: 0 },
-    { id: "US-019", title: "Generate a quote PDF from an opportunity", author: "Julie Verbeke", branch: "training/mate-us-019-quote-pdf", items: 2, actions: 0 },
+    { id: "US-018", title: "Cap the crew size a planner can assign", author: "Mariia Pyvovarchuk", branch: "training/mate-us-018-crew-capacity", items: 3, actions: 0 },
+    { id: "US-019", title: "Generate a quote PDF from an opportunity", author: "Romain Panda", branch: "training/mate-us-019-quote-pdf", items: 2, actions: 0 },
     { id: "US-026", title: "Crew capacity reference data and nightly recalculation", author: "You", branch: "features/US-026-crew-capacity-data", items: 2, actions: 2 }
   ];
   plan.pullRequests = BACKPROMOTED.map((story, i) => ({

@@ -51,11 +51,11 @@ The two weeks you were away have to exist before you can catch up on them. One c
 **Training: Level 2** > **Simulate my teammates**, and take **US-017 Record who signed an
 installation off**.
 
-It creates Julie's branch in your own fork from your current `integration`, commits her change under
-her name and opens the Pull Request. Review it the way you would a colleague's, then **merge it**.
+It creates Romain's branch in your own fork from your current `integration`, commits his change under
+his name and opens the Pull Request. Review it the way you would a colleague's, then **merge it**.
 
 `integration` now carries three merged Pull Requests your org has never seen as a deployment: your
-two Level 1 stories, which are in `helios-dev` only because you built them there, and Julie's, which
+two Level 1 stories, which are in `helios-dev` only because you built them there, and Romain's, which
 is nowhere near it.
 
 ### 2. Open Backpromote

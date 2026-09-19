@@ -29,7 +29,7 @@ that is right there in its diff, and find the file that hides it.
 
 ## The situation
 
-Merging Florian's layout fix started a deployment job. Most people watch the colour and move on.
+Merging Mariia's layout fix started a deployment job. Most people watch the colour and move on.
 
 A release manager reads it, because the deployment log is the only place that says what actually
 reached the org, and the difference between that and what you thought you were shipping is where
@@ -37,7 +37,7 @@ incidents come from.
 
 ## Before you start
 
-- [ ] Lab 3.3 finished: Florian's layout fix merged into `integration`
+- [ ] Lab 3.3 finished: Mariia's layout fix merged into `integration`
 
 ## Part 1: read the log
 
@@ -135,7 +135,7 @@ connect an org the table does not have at all.
 ![The Orgs Manager table, with the alias and connection state of each org](../../_assets/annotated/vscode/orgs-manager.png)
 
 Check your change is actually there: open an Installation record, and **Total Capacity (kW)** is
-back on the layout, in the right-hand column beside Florian's cap field.
+back on the layout, in the right-hand column beside Mariia's cap field.
 
 A log is a claim. The org is the fact. On a real project you check the org after every deployment to
 a major environment, and it takes thirty seconds.
@@ -144,8 +144,8 @@ a major environment, and it takes thirty seconds.
 
 ### 6. A Pull Request that fails on a field it carries
 
-Julie has a story for the planners. **Training: Level 3** > **Simulate my teammates**, and pick
-**US-056 Show the panels each crew member has to lay**. It opens her Pull Request into
+Romain has a story for the planners. **Training: Level 3** > **Simulate my teammates**, and pick
+**US-056 Show the panels each crew member has to lay**. It opens his Pull Request into
 `integration`.
 
 Wait for its checks. The deployment check fails, and the sfdx-hardis comment names a field:
@@ -163,16 +163,16 @@ When a component is in the branch and not in the deployment, the first file to o
 `.forceignore`. It tells the Salesforce CLI what to ignore when retrieving **and** when deploying,
 and a component it matches is invisible in both directions, with no error and no warning.
 
-Julie's diff changes it too:
+Romain's diff changes it too:
 
 ```
-# My scratch test fields, never versioned (Julie)
+# My scratch test fields, never versioned (Romain)
 **/objects/Installation__c/fields/Crew_W*.field-meta.xml
 ```
 
 That line is a pattern, not a file name. The `*` stands for any text, so it matches every field on
-Installation whose name starts with `Crew_W`: her scratch test field, and `Crew_Workload__c`, the
-field of her own story. The deployment left it out, the layout and the permission set that use it
+Installation whose name starts with `Crew_W`: his scratch test field, and `Crew_Workload__c`, the
+field of his own story. The deployment left it out, the layout and the permission set that use it
 reached the org without it, and Salesforce refused them.
 
 `.forceignore` is a project-wide file, and the release manager's to guard: one careless line in it
@@ -188,9 +188,9 @@ Leave one review comment on the `.forceignore` line of the diff:
 An exact path ages badly too, but it ages **loudly**: the day the file disappears, nothing else
 starts being ignored.
 
-Julie answers: **Simulate my teammates** > **US-056 Julie names her test field exactly in
-.forceignore**. It adds her commit to the same Pull Request, the check runs again, and it goes
-green. Read the diff of her new commit, then merge.
+Romain answers: **Simulate my teammates** > **US-056 Romain names his test field exactly in
+.forceignore**. It adds his commit to the same Pull Request, the check runs again, and it goes
+green. Read the diff of his new commit, then merge.
 
 <details markdown="1"><summary>Under the hood: where the package comes from, and where cleaning really happens</summary>
 
@@ -237,7 +237,7 @@ Two failure modes worth recognising:
 - A green **Process Deployment (sfdx-hardis)** run on `integration`
 - A log where you can name how many components went, and why that number is not one
 - The change present in `helios-integration`
-- Julie's US-056 merged, `Crew_Workload__c` in `helios-integration`, and no wildcard left in
+- Romain's US-056 merged, `Crew_Workload__c` in `helios-integration`, and no wildcard left in
   `.forceignore`
 
 ## If it goes wrong
@@ -255,9 +255,9 @@ something.
 The workflow only triggers on pushes to major branches. Check that the merge really landed on
 `integration`.
 
-**Julie's check still fails after her second commit.**
-The check ran on the merge of her branch with `integration` as it was when she pushed. If you
-changed `.forceignore` on `integration` in the meantime, click **Update branch** on her Pull
+**Romain's check still fails after his second commit.**
+The check ran on the merge of his branch with `integration` as it was when he pushed. If you
+changed `.forceignore` on `integration` in the meantime, click **Update branch** on his Pull
 Request: GitHub merges `integration` into it, and the check runs again.
 
 ## Check your work

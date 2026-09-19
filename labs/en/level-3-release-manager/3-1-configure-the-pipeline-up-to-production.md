@@ -32,7 +32,7 @@ understand every line of configuration you add.
 
 ## The situation
 
-Open the **DevOps Pipeline** panel and look at what Olga left.
+Open the **DevOps Pipeline** panel and look at what Victor left.
 
 ![The DevOps Pipeline panel with integration and uat only](../../_assets/annotated/vscode/devops-pipeline--one-column.png)
 

@@ -31,7 +31,7 @@ worth being told about.
 
 You now know what shipped and when. You do not know what state production is in between releases.
 
-On an org Olga ran for two years, that would mean: inactive users still holding licences, a
+On an org Victor ran for two years, that would mean: inactive users still holding licences, a
 Connected App nobody remembers authorising, Apex on an API version four years old, a scheduled job
 that has been failing every night since March. Nobody is looking, because looking means remembering
 to look.

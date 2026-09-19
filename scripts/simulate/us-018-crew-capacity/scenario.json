@@ -3,11 +3,11 @@
   "title": "US-018 Cap the crew size a planner can assign",
   "usedBy": "Lab 2.7, Labs 3.3 and 3.5",
   "levels": [2, 3],
-  "description": "Florian adds a crew capacity cap to the assignment flow, with the field and the permission it needs. He also takes Total Capacity kW off the Installation layout to make room, which nothing checks and somebody should notice.",
+  "description": "Mariia adds a crew capacity cap to the assignment flow, with the field and the permission it needs. She also takes Total Capacity kW off the Installation layout to make room, which nothing checks and somebody should notice.",
   "branch": "training/mate-us-018-crew-capacity",
   "author": {
-    "name": "Florian Rames",
-    "email": "florian.rames@helios-training.invalid"
+    "name": "Mariia Pyvovarchuk",
+    "email": "mariia.pyvovarchuk@helios-training.invalid"
   },
   "commitMessage": "US-018 Cap the crew size a planner can assign\n\nAdds Crew_Capacity_Cap__c on Installation and a decision in Installation_Assign_Crew\nthat brings an over-sized crew back down to the cap. Granted on Helios_Delivery_Manager.\nMoved the cap onto the Installation layout.",
   "prTitle": "US-018 Cap the crew size a planner can assign",

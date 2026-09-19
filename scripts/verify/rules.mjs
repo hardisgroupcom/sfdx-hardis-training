@@ -389,7 +389,7 @@ export const RULES = [
   {
     id: "2.1", level: 2, lab: 1, auditable: false,
     title: "Your dev org is level with integration",
-    // The proof is in the org: Julie's field reached helios-dev. Only the learner's
+    // The proof is in the org: Romain's field reached helios-dev. Only the learner's
     // machine can read it, so the badge audit leaves this lab out.
     now: (ctx) => firstPassing(
       () => ruleCheck("2.1")(ctx),
@@ -407,19 +407,19 @@ export const RULES = [
           { tooling: true }
         );
         return fields && fields.length > 0
-          ? pass(`Julie's Signed Off By field reached ${DEV_ORG}: your org is level with integration`)
+          ? pass(`Romain's Signed Off By field reached ${DEV_ORG}: your org is level with integration`)
           : miss(
-            "Julie's Signed_Off_By__c field is not in your dev org, so the backpromote did not bring it",
-            `the org ${DEV_ORG}. Merge her US-017 Pull Request first (step 1), then run the backpromote again`
+            "Romain's Signed_Off_By__c field is not in your dev org, so the backpromote did not bring it",
+            `the org ${DEV_ORG}. Merge his US-017 Pull Request first (step 1), then run the backpromote again`
           );
       }
     ),
     check: (ctx) => {
-      // What there was to backpromote: Julie's US-017, merged into integration
+      // What there was to backpromote: Romain's US-017, merged into integration
       return ctx.readOn(DEV, FIELD("Installation__c", "Signed_Off_By__c"))
-        ? pass("Julie's US-017 is in integration, the work your dev org had to catch up with")
+        ? pass("Romain's US-017 is in integration, the work your dev org had to catch up with")
         : miss(
-          "Julie's US-017 was never merged, so there was nothing to backpromote",
+          "Romain's US-017 was never merged, so there was nothing to backpromote",
           `${FIELD("Installation__c", "Signed_Off_By__c")} on branch ${DEV}. Lab 2.1 step 1 merges it`
         );
     }
@@ -552,7 +552,7 @@ export const RULES = [
   },
   {
     id: "2.7", level: 2, lab: 7,
-    title: "The conflict with Florian is resolved, and both sides survived",
+    title: "The conflict with Mariia is resolved, and both sides survived",
     check: (ctx) => {
       const flows = ctx.listOn(DEV, "force-app/main/default/flows/");
       const assign = flows.find((f) => /Assign_Crew/i.test(f));
@@ -570,7 +570,7 @@ export const RULES = [
       const manager = ctx.readOn(DEV, PERMSET("Helios_Delivery_Manager")) || "";
       const hasBoth = hasCap && !/<{7}|>{7}/.test(manager);
       return hasBoth
-        ? pass("Florian's cap and your change are both in integration, with no conflict markers left")
+        ? pass("Mariia's cap and your change are both in integration, with no conflict markers left")
         : miss(
           "the crew capacity cap from US-018 is not in the flow, so one side of the conflict was lost",
           `${assign} on branch ${DEV}`
@@ -703,7 +703,7 @@ export const RULES = [
   },
   {
     id: "3.3", level: 3, lab: 3,
-    title: "Florian's US-018 was reviewed, and the field it took off the layout is back",
+    title: "Mariia's US-018 was reviewed, and the field it took off the layout is back",
     check: (ctx) => {
       const history = ctx.log(DEV);
       if (!mentions(history, "US-018")) {
@@ -725,19 +725,19 @@ export const RULES = [
   },
   {
     id: "3.4", level: 3, lab: 4,
-    title: "Julie's US-056 deploys, and .forceignore hides nothing it should not",
+    title: "Romain's US-056 deploys, and .forceignore hides nothing it should not",
     check: (ctx) => {
       const forceignore = ctx.readOn(DEV, ".forceignore") || "";
       if (/Crew_W\*/.test(forceignore)) {
         return miss(
           "the Crew_W* wildcard is still in .forceignore, so any field whose name starts with Crew_W stays out of every deployment",
-          `.forceignore on branch ${DEV}. Lab 3.4 step 8 sends it back to Julie`
+          `.forceignore on branch ${DEV}. Lab 3.4 step 8 sends it back to Romain`
         );
       }
       return ctx.readOn(DEV, FIELD("Installation__c", "Crew_Workload__c"))
         ? pass("US-056 is merged, and its field deploys")
         : miss(
-          "Julie's US-056 is not merged into integration yet",
+          "Romain's US-056 is not merged into integration yet",
           `${FIELD("Installation__c", "Crew_Workload__c")} on branch ${DEV}`
         );
     }
@@ -891,11 +891,11 @@ export const RULES = [
     id: "3.11", level: 3, lab: 11,
     title: "Capstone: a full release cycle",
     check: (ctx) => {
-      // The week's release carried Julie's US-055 and the Lab 3.8 retrofit to production
+      // The week's release carried Romain's US-055 and the Lab 3.8 retrofit to production
       const installDate = ctx.readOn("main", FIELD("Installation__c", "Install_Date__c")) || "";
       if (!/<inlineHelpText>/.test(installDate)) {
         return miss(
-          "Julie's US-055 never reached production, so the week's release did not happen",
+          "Romain's US-055 never reached production, so the week's release did not happen",
           `${FIELD("Installation__c", "Install_Date__c")} on branch main`
         );
       }

@@ -156,7 +156,7 @@ for (const lab of labs) {
 
 const castFirstNames = [...knownNames];
 for (const lab of labs) {
-  const capitalised = lab.body.match(/\b(Florian|Julie|Olga|Marco|Amina|Sofia|Elena|Diego|Nina)\b/g) || [];
+  const capitalised = lab.body.match(/\b(Victor|Mariia|Romain|Olga|Florian|Julie|Marco|Amina|Sofia|Elena|Diego|Nina)\b/g) || [];
   for (const name of capitalised) {
     if (!castFirstNames.includes(name)) {
       problems.push(`${lab.rel} uses the character "${name}", who is not in the cast`);
