@@ -273,12 +273,10 @@ which performed, in order:
           - productrequest
           - flowPositions
           - minimizeProfiles
-          - listViewsMine
 
    `flowPositions` strips the pixel coordinates of flow elements, which change every time anybody
    opens a flow and produce conflicts that mean nothing. `minimizeProfiles` removes from Profiles
-   everything that a Permission Set should carry. `listViewsMine` rewrites list view scopes that
-   only make sense for the user who retrieved them
+   everything that a Permission Set should carry
 
 3. **Removed from Profiles the user permissions** listed under `autoRemoveUserPermissions`, which
    are permissions this project has decided must never travel between orgs through a deployment.

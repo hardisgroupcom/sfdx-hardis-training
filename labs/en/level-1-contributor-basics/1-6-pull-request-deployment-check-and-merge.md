@@ -154,7 +154,26 @@ than trusting everybody to read the checks first.
 
 ![The merge box of a Pull Request, with all checks passed](../../_assets/annotated/web/github-pr-merge.png)
 
-Click **Merge pull request** **(1)**, then **Confirm merge**.
+The green button has a small arrow on its right **(1)**. Click the arrow, choose **Squash and
+merge** **(2)**, then click **Squash and merge** and **Confirm squash and merge**.
+
+![The merge method menu of a Pull Request, with Squash and merge](../../_assets/annotated/web/github-pr-merge-squash.png)
+
+Squash turns the commits of your branch into a single commit on `integration`, titled like your
+Pull Request. The story shows as one line in the history of `integration` instead of every
+intermediate commit you made while building it, and one line is what the release manager reads
+when they promote.
+
+!!! warning "Squash is for feature Pull Requests, and for nothing else"
+    **Squash and merge** is right in exactly one case: a Pull Request from a **feature branch**, a
+    User Story or a fix, into its major branch. Everywhere else, use the plain **Merge pull
+    request**: a retrofit, a promotion branch, and every Pull Request from one major branch to the
+    next (`integration` to `uat`, `uat` to `preprod`, `preprod` to `main`). Those merges must keep
+    the commits as they are, because the next promotion and the next retrofit compare branches
+    commit by commit, and a squash there makes git believe the work was never merged. Level 3 comes
+    back to this.
+
+GitHub remembers the method you picked last, so check the button label before every merge.
 
 Then delete the branch. GitHub offers a button for it. A merged branch that stays around is one
 more thing in everyone's list for no benefit.

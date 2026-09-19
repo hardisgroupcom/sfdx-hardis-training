@@ -86,15 +86,6 @@ In `helios-integration`, after the merge deployment:
   not grant it to them
 - **Open Installations** in the list view picker on the Installations tab
 
-!!! note "Why All installations, and not My installations"
-    A list view scoped to **My installations** is a different list for every person who opens it,
-    and Salesforce refuses to deploy that scope in many orgs. sfdx-hardis has an answer for it: the
-    `listViewsMine` cleaning rule of Lab 1.5 turns the scope into **Everything** before the commit,
-    records the list view under `listViewsToSetToMine` in `config/.sfdx-hardis.yml`, and after each
-    deployment the job sets it back to **Mine** by driving a browser through the org's Setup pages.
-    It works, and it is one more moving part in every deployment job. This story does not need it,
-    so it does without.
-
 ## If it goes wrong
 
 Everything you need is in Labs 1.3 to 1.6. The failures are the same ones, and the **If it goes wrong**
