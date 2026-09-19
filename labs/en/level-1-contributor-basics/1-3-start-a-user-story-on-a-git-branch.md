@@ -57,7 +57,7 @@ and repeat for the rest of your career on this project.
 
 ## Before you start
 
-- [ ] Lab 1.2 finished: your fork is cloned, and `integration` and `uat` name their orgs
+- [ ] Lab 1.2 finished: your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`) is cloned, and `integration` and `uat` name their orgs
 - [ ] `helios-dev` listed as **Connected** in **Orgs Manager**
 
 ## Steps

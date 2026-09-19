@@ -95,6 +95,12 @@
   "orgs-manager-actions": {
     "gate": "orgs-manager-actions"
   },
+  "package-no-overwrite": {
+    "gate": "pipeline-menus"
+  },
+  "package-xml": {
+    "gate": "pipeline-menus"
+  },
   "pipeline-action-editors-base": {
     "gate": "pipeline-action-editors"
   },
@@ -155,6 +161,9 @@
   "pipeline-edit-action-target-orgs-include": {
     "gate": "pipeline-action-editors"
   },
+  "pipeline-packages-menu": {
+    "gate": "pipeline-menus"
+  },
   "pipeline-pr-actions-empty": {
     "gate": "pipeline-modals"
   },
@@ -163,6 +172,9 @@
   },
   "pipeline-pr-modal": {
     "gate": "pipeline-modals"
+  },
+  "pipeline-settings-menu": {
+    "gate": "pipeline-menus"
   },
   "pipeline-workflow-cards": {
     "gate": "pipeline-modals"

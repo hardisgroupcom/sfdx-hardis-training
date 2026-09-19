@@ -25,8 +25,16 @@ runs the Git commands for you.
 | [**2 - Contributor advanced**](level-2-contributor-advanced/index.md) | The same people, once the easy stories are behind them           | 4 h  | Level 1            | Solve deployment errors, declare deployment actions, handle overwrites, resolve conflicts           |
 | [**3 - Release Manager**](level-3-release-manager/index.md)           | The person who owns the pipeline, the orgs and the releases      | 6 h  | Levels 1 **and** 2 | Take over an org with no pipeline, review and merge, release to UAT and production, hotfix, monitor |
 
-Levels 1 and 2 are both the contributor path. You may stop after Level 1 and you will be able to
-deliver. Level 2 is where you learn what to do when delivery goes wrong, which is most of the job.
+Levels 1 and 2 are both the contributor path, and they are for **admins and developers alike**. You
+do not need to know Git, the Salesforce CLI or DevOps: every step is a click in VS Code or on
+GitHub, shown on a screenshot. You may stop after Level 1 and you will be able to deliver. Level 2
+is where you learn what to do when delivery goes wrong, which is most of the job.
+
+!!! tip "Developers: open the Under the hood blocks"
+    Each significant step ends with a collapsed **Under the hood** block: the command the button
+    ran, the files it wrote, and the decision it made for you. An admin can skip them. A developer
+    should read every one: they are how you learn what sfdx-hardis does, which is what you need the
+    day you script it, debug a pipeline, or take over Level 3.
 
 **Level 2 is required before Level 3.** A release manager reviews other people's deployment errors,
 conflicts and deployment actions. Someone who has never solved one cannot review one.
@@ -43,7 +51,17 @@ conflicts and deployment actions. Someone who has never solved one cannot review
 
 ## What you get
 
-A **Cloudity badge** per level, on a page you can share.
+A **Cloudity badge** per level, on a page you can share. It carries your name as your GitHub
+profile shows it, your GitHub and Trailblazer usernames, and the date. Here are the three that
+Marc B earned:
+
+![Level 1 badge of Marc B](../_assets/badges/example-level-1.svg){ width="200" }
+![Level 2 badge of Marc B](../_assets/badges/example-level-2.svg){ width="200" }
+![Level 3 badge of Marc B](../_assets/badges/example-level-3.svg){ width="200" }
+
+**Claim my badge**, in the Training menu of each level, checks your work one last time and opens
+the claim for you. A job then re-runs every check of the level against your repository and
+publishes the badge page.
 
 It is a badge, not a certification. There is no exam and no accreditation. Share it under
 *Featured* on LinkedIn, not under *Licenses & certifications*.

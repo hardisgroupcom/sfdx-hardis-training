@@ -292,7 +292,7 @@ whole value: **the knowledge is in the repository, not in someone's head.**
 ## If it goes wrong
 
 **The action does not appear in the Deployment Actions tab.**
-The panel reads the Pull Request from your fork. If the Pull Request was opened against the original
+The panel reads the Pull Request from your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`). If the Pull Request was opened against the original
 repository, it cannot see it. Close it and reopen it with the right base.
 
 **The Apex script fails with `Invalid type: CrewSizeBackfillBatch`.**

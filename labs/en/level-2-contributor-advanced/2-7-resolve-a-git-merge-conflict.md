@@ -72,7 +72,7 @@ sfdx-hardis command list, and choose
 ![The Level 2 Training menu of the sfdx-hardis command list](../../_assets/annotated/vscode/sidebar-commands-custom-menu-2--training-menu.png)
 
 It creates the branch `training/mate-us-018-crew-capacity` from your current `integration`, commits
-Mariia's changes under her name, pushes it to your fork, and opens the Pull Request.
+Mariia's changes under her name, pushes it to your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`), and opens the Pull Request.
 
 Review it briefly, then **merge it**. Mariia is now in `integration`, and you are behind.
 

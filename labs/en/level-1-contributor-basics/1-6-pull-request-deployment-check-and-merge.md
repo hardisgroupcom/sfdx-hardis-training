@@ -49,7 +49,7 @@ still yours to fix, not on release night.
 
 ## Before you start
 
-- [ ] Lab 1.5 finished: the branch is pushed to your fork
+- [ ] Lab 1.5 finished: the branch is pushed to your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`)
 - [ ] Lab 1.2 finished: **Set up my training environment** turned Actions on and set the CI
       credential
 
@@ -68,7 +68,7 @@ Two other things in that bar are worth knowing now, because later labs use them.
 Actions of this Pull Request, which is what the whole of Lab 2.3 is about.
 
 !!! note "If you closed that panel"
-    Nothing is lost. Open your fork on GitHub: it shows a banner offering to open a Pull Request
+    Nothing is lost. Open your fork (`github.com/my-username/sfdx-hardis-training`) on GitHub: it shows a banner offering to open a Pull Request
     for the branch you just pushed. The **+ PR** pill you may have noticed in the DevOps Pipeline
     diagram is for major branches, not for your feature branch.
 
@@ -171,7 +171,7 @@ more thing in everyone's list for no benefit.
 
 Merging into `integration` starts a second job, and this one is not a check: it deploys for real.
 
-Go to the **Actions** tab **(1)** of your fork. The merge started two runs on `integration`: the
+Go to the **Actions** tab **(1)** of your fork (`github.com/my-username/sfdx-hardis-training`). The merge started two runs on `integration`: the
 one to watch is **Process Deployment (sfdx-hardis)** **(2)**, and it takes about three minutes.
 The other, **Mega-Linter**, checks the code again after the merge.
 
@@ -236,7 +236,7 @@ That is one full delivery loop. Every story for the rest of your life on this pr
 ## If it goes wrong
 
 **The checks never start.**
-Actions are still disabled on your fork. Run **Training: Level 1 > Set up my training environment**
+Actions are still disabled on your fork (`github.com/my-username/sfdx-hardis-training`). Run **Training: Level 1 > Set up my training environment**
 again: it turns them on, and tells you what to click if GitHub will not let it.
 
 **The check fails at authentication:** *No authentication found for org integration*.
@@ -251,7 +251,7 @@ without the field. Redo Lab 1.5 step 3 and take both.
 
 **The check is stuck as "Expected".**
 The workflow is waiting for a job that will never run, usually because the base of the Pull Request
-is the original repository and not your fork. Close it and open it again with the right base.
+is the original repository and not your fork (`github.com/my-username/sfdx-hardis-training`). Close it and open it again with the right base.
 
 **The merge box says Merging is blocked, and the button is grey.**
 A required check is still running, or it failed. Wait for it, or open it from the **Checks** tab,

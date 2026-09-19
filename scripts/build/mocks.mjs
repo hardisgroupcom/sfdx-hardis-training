@@ -593,30 +593,9 @@ STAGES.forEach((stage, index) => {
   );
 });
 write(path.join(PROJECT, "force-app", "main", "default", "classes", ".gitkeep"), "");
-write(
-  path.join(PROJECT, "manifest", "package.xml"),
-  [
-    '<?xml version="1.0" encoding="UTF-8"?>',
-    '<Package xmlns="http://soap.sforce.com/2006/04/metadata">',
-    "    <types>",
-    "        <members>Installation__c</members>",
-    "        <members>Panel_Batch__c</members>",
-    "        <name>CustomObject</name>",
-    "    </types>",
-    "    <types>",
-    "        <members>Installation_Assign_Crew</members>",
-    "        <name>Flow</name>",
-    "    </types>",
-    "    <types>",
-    "        <members>Helios_Delivery_Crew</members>",
-    "        <members>Helios_Delivery_Manager</members>",
-    "        <name>PermissionSet</name>",
-    "    </types>",
-    "    <version>64.0</version>",
-    "</Package>",
-    ""
-  ].join("\n")
-);
+// The real manifest: the labs open it in the package viewer, and the reader
+// compares the picture with what their own clone shows.
+write(path.join(PROJECT, "manifest", "package.xml"), fs.readFileSync(path.join(ROOT, "manifest", "package.xml"), "utf8"));
 
 // SFDMU workspaces, so the Data Workbench panel has content and the data
 // deployment action resolves its project path instead of reporting it missing.

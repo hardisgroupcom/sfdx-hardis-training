@@ -43,7 +43,7 @@ incidents come from.
 
 ### 1. Open the job
 
-**Actions** tab of your fork, the **Process Deployment (sfdx-hardis)** run that started when you
+**Actions** tab of your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`), the **Process Deployment (sfdx-hardis)** run that started when you
 merged.
 
 Or from VS Code: the **DevOps Pipeline** panel puts the job on the arrow between `integration` and

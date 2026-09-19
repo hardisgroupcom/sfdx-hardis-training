@@ -197,7 +197,7 @@ and `uat` refuse it: setting up the environment protected them. `preprod` and `m
 protect, and a release manager does it the day the branches join the pipeline, not after the first
 bad merge.
 
-This is a GitHub setting, not an sfdx-hardis one, so it happens on GitHub. Open your fork, click
+This is a GitHub setting, not an sfdx-hardis one, so it happens on GitHub. Open your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`), click
 **Settings** **(1)**, then **Branches** **(2)** in the left menu. The two rules **(4)** are the ones
 setting up your environment created in Lab 1.2. Click **Add rule** **(3)**.
 
@@ -231,7 +231,7 @@ Pull Request into `integration` first, and its checks put them back in the list.
 A required check is matched by **its job name**, not by the workflow file. `Simulate Deployment to
 Major Org` is the job of `.github/workflows/check-deploy.yml`, which runs on every Pull Request into
 the four major branches. `Mega-Linter` is the job of `.github/workflows/megalinter.yml`, which runs
-on every push, so on the last commit of every Pull Request opened from a branch of your fork.
+on every push, so on the last commit of every Pull Request opened from a branch of your fork (`github.com/my-username/sfdx-hardis-training`).
 
 A workflow that only runs when some files change, like `link-check.yml` here, must never be
 required: a Pull Request that does not touch those files waits for it forever, and GitHub shows it
@@ -321,7 +321,7 @@ Welcome page > **Training: Level 3** > **Publish my pipeline configuration**.
 
 It lists the configuration files you changed, and leaves out anything that is not configuration:
 a feature never goes this way. Confirm, and it commits them on `integration` and pushes. The push
-starts a deployment of `integration` in the **Actions** tab of your fork, like a merge does.
+starts a deployment of `integration` in the **Actions** tab of your fork (`github.com/my-username/sfdx-hardis-training`), like a merge does.
 
 !!! note "integration is protected, so how does the push go through?"
     It lifts the protection of `integration` for this one push and puts it back, the way **Set up
@@ -347,7 +347,7 @@ click one.
 Also true, and worth checking:
 
 - `config/branches/` holding four files
-- Four branch protection rules in your fork's **Settings** > **Branches**, one per major branch
+- Four branch protection rules in **Settings** > **Branches** of your fork (`github.com/my-username/sfdx-hardis-training`), one per major branch
 - A commit *Pipeline configuration, from the release manager* on `integration`, and the deployment
   it started, green
 

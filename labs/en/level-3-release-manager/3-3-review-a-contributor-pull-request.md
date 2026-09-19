@@ -48,13 +48,13 @@ been, because the thing you missed is in your integration org right now.
 !!! note "Do not re-run Simulate my teammates for US-018"
     Each teammate scenario is used once. Lab 2.7 consumed this one, and running it again
     replays the same files onto a branch that already has them, so it reports "Nothing to commit"
-    and opens nothing. The Pull Request you need is already in your fork, merged.
+    and opens nothing. The Pull Request you need is already in your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`), merged.
 
 ## Steps
 
-### 1. Find Mariia's Pull Request in your fork
+### 1. Find Mariia's Pull Request in your fork (`github.com/my-username/sfdx-hardis-training`)
 
-In your fork: **Pull requests**, then the **Closed** filter **(1)**, and open **US-018 Cap the crew
+In your fork (`github.com/my-username/sfdx-hardis-training`): **Pull requests**, then the **Closed** filter **(1)**, and open **US-018 Cap the crew
 size a planner can assign** **(2)**.
 
 ![The closed Pull Requests of a fork, with Mariia's story](../../_assets/annotated/web/github-pr-closed.png)
@@ -156,7 +156,7 @@ Installation layout**.
 
 ![The Level 3 training menu on the Welcome page](../../_assets/annotated/vscode/welcome-custom-menu-3.png)
 
-It opens her Pull Request into `integration` in your fork. Review it exactly as you reviewed US-018:
+It opens her Pull Request into `integration` in your fork (`github.com/my-username/sfdx-hardis-training`). Review it exactly as you reviewed US-018:
 
 - **The diff**: one file, the layout, and in it `Total_Capacity_kW__c` added in the second column of
   the **Information** section. Nothing removed this time

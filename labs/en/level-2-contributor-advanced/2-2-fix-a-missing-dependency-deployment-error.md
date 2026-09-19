@@ -121,7 +121,7 @@ Then **Save / Publish** **(1)**.
 
 ![The Save / Publish card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--save-publish.png)
 
-Push, open the Pull Request into `integration` in your fork, and wait.
+Push, open the Pull Request into `integration` in your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`), and wait.
 
 The check fails, and the sfdx-hardis comment on the Pull Request names the component:
 

@@ -11,6 +11,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { parseArgs } from "../lib/util.mjs";
+import { LEVELS, renderSvg } from "./badge-svg.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..", "..");
@@ -20,11 +21,6 @@ const universe = JSON.parse(fs.readFileSync(path.join(ROOT, "training-universe.j
 const SITE = universe.course.site;
 const UPSTREAM = universe.course.upstreamRepo;
 
-const LEVELS = {
-  1: { name: "sfdx-hardis Contributor Basics", hue: "#F2994A", blurb: "Delivers a User Story through a Pull Request, end to end." },
-  2: { name: "sfdx-hardis Contributor", hue: "#2D9CDB", blurb: "Solves deployment errors, declares deployment actions, resolves conflicts." },
-  3: { name: "sfdx-hardis Release Manager", hue: "#6C5CE7", blurb: "Owns the pipeline, the releases, the hotfixes and the monitoring." }
-};
 
 const args = parseArgs(process.argv.slice(2));
 if (!args.audit) {
@@ -44,18 +40,12 @@ const today = new Date().toISOString().slice(0, 10);
 const definition = LEVELS[level];
 
 // ------------------------------------------------------------------- SVG
+// The GitHub display name, set by the claim workflow from the GitHub API. A
+// handle without a display name shows the handle twice, which is fine.
+const fullName = (typeof args.name === "string" && args.name.trim()) || handle;
+
 function svg() {
-  const template = path.join(BADGES, "_template.svg");
-  const raw = fs.readFileSync(template, "utf8");
-  return raw
-    .replace(/\{\{HUE\}\}/g, definition.hue)
-    .replace(/\{\{LEVEL\}\}/g, String(level))
-    .replace(/\{\{NAME\}\}/g, escapeXml(definition.name))
-    .replace(/\{\{HANDLE\}\}/g, escapeXml(handle))
-    .replace(/\{\{DATE\}\}/g, today);
-}
-function escapeXml(value) {
-  return String(value).replace(/[<>&"']/g, (ch) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&apos;" })[ch]);
+  return renderSvg({ level, handle, fullName, trailblazer: args.trailblazer || null, date: today });
 }
 
 fs.mkdirSync(path.join(BADGES, "img"), { recursive: true });

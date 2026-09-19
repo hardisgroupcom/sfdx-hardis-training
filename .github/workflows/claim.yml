@@ -156,8 +156,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           ISSUE: ${{ github.event.issue.number }}
           TRAILBLAZER: ${{ steps.claim.outputs.trailblazer }}
+          HANDLE: ${{ steps.claim.outputs.handle }}
         run: |
-          node scripts/badges/render.mjs --audit /tmp/audit.json --issue "$ISSUE" --trailblazer "$TRAILBLAZER"
+          # The badge shows the GitHub display name; an account without one shows its login
+          FULL_NAME=$(gh api "users/$HANDLE" --jq '.name // ""' 2>/dev/null || true)
+          node scripts/badges/render.mjs --audit /tmp/audit.json --issue "$ISSUE" --trailblazer "$TRAILBLAZER" --name "$FULL_NAME"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add badges

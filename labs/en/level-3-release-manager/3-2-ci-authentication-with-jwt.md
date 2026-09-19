@@ -136,11 +136,11 @@ The private key committed to the repository is **encrypted**, with a passphrase 
 generates at random and holds as `SFDX_CLIENT_KEY_INTEGRATION`. The repository alone is not enough
 to authenticate, which is what makes committing it acceptable.
 
-### 3. Store the secrets in your fork
+### 3. Store the secrets in your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`)
 
 Do this now, while question 9 is still waiting.
 
-In your fork: **Settings > Secrets and variables > Actions > New repository secret**, twice:
+In your fork (`github.com/my-username/sfdx-hardis-training`): **Settings > Secrets and variables > Actions > New repository secret**, twice:
 
 | Name                          | Value                                |
 |-------------------------------|--------------------------------------|
@@ -200,7 +200,7 @@ Eight secrets, four External Client Apps, four certificates. Tedious once, then 
 
 ### 6. Delete the shortcut, before anything proves anything
 
-In your fork: **Settings > Secrets and variables > Actions**, find `SFDX_AUTH_URL_INTEGRATION` and
+In your fork (`github.com/my-username/sfdx-hardis-training`): **Settings > Secrets and variables > Actions**, find `SFDX_AUTH_URL_INTEGRATION` and
 `SFDX_AUTH_URL_UAT`, and delete both.
 
 Do it now, before you publish in step 8, and not after. The authentication step of every job
@@ -237,7 +237,7 @@ lists what this lab wrote: the four `config/branches/.jwt/*.key` files, the bran
 command touched and `config/.sfdx-hardis.yml`. Confirm.
 
 The push starts a deployment of `integration`, and that job logs into `helios-integration` with no
-auth URL secret left to use. Open it from the **Actions** tab of your fork, expand
+auth URL secret left to use. Open it from the **Actions** tab of your fork (`github.com/my-username/sfdx-hardis-training`), expand
 **Login & Process Deployment** and look for `sf org login jwt`: that line, and a green job, are your
 certificate working.
 
@@ -283,7 +283,7 @@ default and what step 7 sets, means every major branch should have one committed
 
 ## What you should see
 
-- Eight secrets in your fork, none of them an auth URL
+- Eight secrets in your fork (`github.com/my-username/sfdx-hardis-training`), none of them an auth URL
 - Four `config/branches/.jwt/*.key` files, encrypted
 - `SFDX_AUTH_URL_INTEGRATION` and `SFDX_AUTH_URL_UAT` gone
 - The deployment of `integration` your publish started, green, with `sf org login jwt` in its log

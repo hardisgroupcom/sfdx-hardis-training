@@ -178,7 +178,7 @@ whatever project you actually work on and count what is missing.
 after 30 days. The two Developer Edition orgs holding a fictional solar company are fine to keep as a
 place to try things, and `helios-prod` stays a Dev Hub you can create scratch orgs from. If you keep
 them, delete the `SFDX_AUTH_URL_INTEGRATION` and `SFDX_AUTH_URL_UAT` secrets if they are somehow
-still there, and remember the JWT certificates in your fork are real credentials to real orgs.
+still there, and remember the JWT certificates in your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`) are real credentials to real orgs.
 
 **Three: the promotion branches feature.** Everything you did promotes **everything waiting** from
 one branch to the next. Some teams need to promote a subset. That is what
