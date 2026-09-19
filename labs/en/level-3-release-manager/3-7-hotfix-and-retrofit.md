@@ -285,7 +285,7 @@ It reached the repository on a branch that never got merged. Check that it is re
 Welcome page > **Training: Level 3** > **Check my work**, then pick Lab 3.7.
 
 It wants the hotfix in the history of `preprod` or `main`, and `Needs Reinspection` on
-`integration`, which is where Mariia's Pull Request put it.
+`integration`, which is where your retrofit Pull Request put it.
 
 !!! note "The badge asks for a little more"
     **Everything in level 3**, and the badge audit, want `Needs Reinspection` on `main`. The retrofit
