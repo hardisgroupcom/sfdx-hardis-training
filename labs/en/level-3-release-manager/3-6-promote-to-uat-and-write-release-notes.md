@@ -170,9 +170,15 @@ integration: UAT is behind by everything the team has done. Expect several minut
 
 When it finishes, do the manual steps the comment listed, in `helios-uat`.
 
-Then read the log for the overwrite manager, above the deployment: it lists
-`RemoteSiteSetting:Helios_Warehouse` among the components it took out of the package, because
-`helios-uat` already has it.
+Then read the log for the overwrite manager, above the deployment, in the lines that start with
+`[NoOverwrite]`:
+
+```
+Type RemoteSiteSetting: 1 item(s) skipped because they already exist in the target org (protected), 0 item(s) to deploy
+```
+
+`helios-uat` already has `Helios_Warehouse`, so the promotion left it out of the package, and the
+**Final package.xml to deploy** printed right after it has one item fewer.
 
 ### 6. Verify with a tester's eyes
 
