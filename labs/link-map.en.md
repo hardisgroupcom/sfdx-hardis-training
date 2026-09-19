@@ -28,7 +28,7 @@ so a renamed documentation page fails CI here rather than surprising a learner.
 | Lab 2.3 - Fix broken records with an Apex deployment action | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2-contributor-advanced/2-3-fix-broken-records-with-an-apex-deployment-action/ |
 | Lab 2.4 - Ship reference data and a batch with deployment actions | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2-contributor-advanced/2-4-ship-reference-data-and-a-batch-with-deployment-actions/ |
 | Lab 2.5 - Pass the code quality gate and Apex test coverage | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2-contributor-advanced/2-5-pass-code-quality-and-apex-test-coverage/ |
-| Lab 2.6 - Permission sets, profiles and why a grant disappears | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2-contributor-advanced/2-6-permission-sets-profiles-and-overwrites/ |
+| Lab 2.6 - Permission sets, profiles and why a grant disappears | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2-contributor-advanced/2-6-permission-sets-and-profiles/ |
 | Lab 2.7 - Resolve a Git merge conflict with a teammate | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2-contributor-advanced/2-7-resolve-a-git-merge-conflict/ |
 | Lab 2.8 - Recover from committing the wrong metadata | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2-contributor-advanced/2-8-recover-from-committing-the-wrong-metadata/ |
 | Lab 2.9 - Capstone: deliver a User Story that has it all | https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2-contributor-advanced/2-9-capstone-deliver-a-user-story-that-has-it-all/ |

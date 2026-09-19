@@ -383,8 +383,8 @@
       "level": 2,
       "lab": 6,
       "title": "Permission sets, profiles and why a grant disappears",
-      "file": "labs/en/level-2-contributor-advanced/2-6-permission-sets-profiles-and-overwrites.md",
-      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2-contributor-advanced/2-6-permission-sets-profiles-and-overwrites/",
+      "file": "labs/en/level-2-contributor-advanced/2-6-permission-sets-and-profiles.md",
+      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2-contributor-advanced/2-6-permission-sets-and-profiles/",
       "commands": [
         "hardis:work:save"
       ],
@@ -392,12 +392,10 @@
       "config": [
         "autoCleanTypes",
         "minimizeProfiles",
-        "autoRemoveUserPermissions",
-        "packageNoOverwritePath"
+        "autoRemoveUserPermissions"
       ],
       "docs": [
-        "salesforce-devops-work-on-user-story-profiles",
-        "salesforce-devops-config-overwrite"
+        "salesforce-devops-work-on-user-story-profiles"
       ],
       "panels": [
         "pipelineConfig",
@@ -900,7 +898,6 @@
         "lab-2-7"
       ],
       "salesforce-devops-config-overwrite": [
-        "lab-2-6",
         "lab-2-7",
         "lab-3-5"
       ],
@@ -1211,11 +1208,6 @@
       "minimizeProfiles": [
         "lab-2-6"
       ],
-      "packageNoOverwritePath": [
-        "lab-2-6",
-        "lab-3-5",
-        "lab-3-6"
-      ],
       "availableTargetBranchesLabels": [
         "lab-3-1"
       ],
@@ -1234,6 +1226,10 @@
       ],
       "enableDeltaDeploymentBetweenMajorBranches": [
         "lab-3-4"
+      ],
+      "packageNoOverwritePath": [
+        "lab-3-5",
+        "lab-3-6"
       ],
       "retrofitBranch": [
         "lab-3-8"

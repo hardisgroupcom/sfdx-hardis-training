@@ -16,7 +16,7 @@ nav:
       - "Lab 2.3 - Fix broken records with an Apex deployment action": en/level-2-contributor-advanced/2-3-fix-broken-records-with-an-apex-deployment-action.md
       - "Lab 2.4 - Ship reference data and a batch with deployment actions": en/level-2-contributor-advanced/2-4-ship-reference-data-and-a-batch-with-deployment-actions.md
       - "Lab 2.5 - Pass the code quality gate and Apex test coverage": en/level-2-contributor-advanced/2-5-pass-code-quality-and-apex-test-coverage.md
-      - "Lab 2.6 - Permission sets, profiles and why a grant disappears": en/level-2-contributor-advanced/2-6-permission-sets-profiles-and-overwrites.md
+      - "Lab 2.6 - Permission sets, profiles and why a grant disappears": en/level-2-contributor-advanced/2-6-permission-sets-and-profiles.md
       - "Lab 2.7 - Resolve a Git merge conflict with a teammate": en/level-2-contributor-advanced/2-7-resolve-a-git-merge-conflict.md
       - "Lab 2.8 - Recover from committing the wrong metadata": en/level-2-contributor-advanced/2-8-recover-from-committing-the-wrong-metadata.md
       - "Lab 2.9 - Capstone: deliver a User Story that has it all": en/level-2-contributor-advanced/2-9-capstone-deliver-a-user-story-that-has-it-all.md

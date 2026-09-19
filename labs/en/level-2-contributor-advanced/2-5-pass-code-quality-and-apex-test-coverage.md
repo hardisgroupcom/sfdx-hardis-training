@@ -308,4 +308,4 @@ Welcome page > **Training: Level 2** > **Check my work**, then pick Lab 2.5.
 - [Solve MegaLinter errors](https://sfdx-hardis.cloudity.com/salesforce-devops-solve-megalinter-errors/)
 - [Development guidelines](https://sfdx-hardis.cloudity.com/salesforce-devops-work-on-user-story-development/)
 
-[Next: Lab 2.6 - Permission sets, profiles and why a grant disappears](2-6-permission-sets-profiles-and-overwrites.md){ .md-button .md-button--primary }
+[Next: Lab 2.6 - Permission sets, profiles and why a grant disappears](2-6-permission-sets-and-profiles.md){ .md-button .md-button--primary }

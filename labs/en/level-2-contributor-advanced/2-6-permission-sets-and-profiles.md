@@ -12,9 +12,9 @@ screenshots:
 depends_on:
   commands: [hardis:work:save]
   flags: []
-  config: [autoCleanTypes, minimizeProfiles, autoRemoveUserPermissions, packageNoOverwritePath]
+  config: [autoCleanTypes, minimizeProfiles, autoRemoveUserPermissions]
   panels: [pipelineConfig, packageXml]
-  docs: [salesforce-devops-work-on-user-story-profiles, salesforce-devops-config-overwrite]
+  docs: [salesforce-devops-work-on-user-story-profiles]
 ---
 
 # Lab 2.6 - Permission sets, profiles and why a grant disappears
@@ -151,20 +151,17 @@ selector **(1)** on **Global Settings**: these are project rules, identical for 
 
 ![The Global Pipeline Settings panel, on its Deployment tab](../../_assets/annotated/vscode/pipeline-config.png)
 
-The settings are grouped in tabs. Three of them do related jobs, and it is worth knowing which is
-which:
+The settings are grouped in tabs. Two of them do the job you just met, and it is worth knowing
+which is which:
 
-| Setting                            | Tab                            | What it protects against                                                                                                             |
-|------------------------------------|--------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
-| `autoCleanTypes: minimizeProfiles` | **Salesforce Project** **(2)** | A Profile carrying permissions that belong on a Permission Set                                                                       |
-| `autoRemoveUserPermissions`        | **Salesforce Project** **(2)** | Specific user permissions that must never travel between orgs at all, whatever carries them                                          |
-| `packageNoOverwritePath`           | **Deployment** **(3)**         | Components that exist in the target org and must never be overwritten by a deployment, listed in `manifest/package-no-overwrite.xml` |
+| Setting                            | Tab                            | What it protects against                                                                    |
+|------------------------------------|--------------------------------|---------------------------------------------------------------------------------------------|
+| `autoCleanTypes: minimizeProfiles` | **Salesforce Project** **(2)** | A Profile carrying permissions that belong on a Permission Set                              |
+| `autoRemoveUserPermissions`        | **Salesforce Project** **(2)** | Specific user permissions that must never travel between orgs at all, whatever carries them |
 
-The third one is the overwrite manager, and it is the one to reach for when a component is
-deliberately different in each org: a named credential pointing at a different endpoint, a custom
-setting holding an environment-specific value, a remote site setting. It is also the only one of the
-three that is set per branch rather than globally, so the scope selector **(1)** has to name a
-branch before the **Deployment** tab shows it.
+Both run on your machine, when you publish: they decide what your commit carries. The tab beside
+them, **Deployment** **(3)**, decides how the pipeline sends it to each org. That one belongs to the
+release manager, and Level 3 is where you meet it.
 
 <details markdown="1"><summary>Under the hood: what cleaning actually did to the file</summary>
 
@@ -231,6 +228,5 @@ Welcome page > **Training: Level 2** > **Check my work**, then pick Lab 2.6.
 ## Go deeper
 
 - [Profiles and Permission Sets](https://sfdx-hardis.cloudity.com/salesforce-devops-work-on-user-story-profiles/)
-- [Overwrite management](https://sfdx-hardis.cloudity.com/salesforce-devops-config-overwrite/)
 
 [Next: Lab 2.7 - Resolve a Git merge conflict with a teammate](2-7-resolve-a-git-merge-conflict.md){ .md-button .md-button--primary }

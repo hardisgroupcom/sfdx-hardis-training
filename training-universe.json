@@ -574,7 +574,7 @@
         },
         {
           "lab": 6,
-          "slug": "2-6-permission-sets-profiles-and-overwrites",
+          "slug": "2-6-permission-sets-and-profiles",
           "title": "Permission sets, profiles and why a grant disappears",
           "description": "A permission granted on a Profile vanishes after a green deployment. Learn how sfdx-hardis cleans profiles, and grant access with a permission set.",
           "time": "25 min"
