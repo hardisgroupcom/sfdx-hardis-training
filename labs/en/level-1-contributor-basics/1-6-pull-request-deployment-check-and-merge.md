@@ -112,8 +112,8 @@ the most useful thing on the page.
 
 1. **The banner** **(1)** says whether the simulated deployment succeeded
 2. **What would change** **(2)**. Not a list of your files: sfdx-hardis sends the whole package,
-   `manifest/package.xml`, and Salesforce answers how much of it differs: `31 sent to the org, 5
-   would change (1 created, 4 updated, 0 deleted, 26 unchanged)`. The one created is your field, and the
+   `manifest/package.xml`, and Salesforce answers how much of it differs: `34 sent to the org, 5
+   would change (1 created, 4 updated, 0 deleted, 29 unchanged)`. The one created is your field, and the
    updated ones include the layout and the two permission sets you changed
 3. **Apex coverage** **(3)**, against the target this project sets
 4. **Tickets** **(4)**, the stories it recognised in your branch name and commit messages, each
@@ -171,8 +171,9 @@ more thing in everyone's list for no benefit.
 
 Merging into `integration` starts a second job, and this one is not a check: it deploys for real.
 
-Go to the **Actions** tab **(1)** of your fork. The run at the top is **Process Deployment
-(sfdx-hardis)** **(2)**, on `integration`, and it takes about two minutes.
+Go to the **Actions** tab **(1)** of your fork. The merge started two runs on `integration`: the
+one to watch is **Process Deployment (sfdx-hardis)** **(2)**, and it takes about three minutes.
+The other, **Mega-Linter**, checks the code again after the merge.
 
 ![The Actions tab of a fork, with the deployment run at the top](../../_assets/annotated/web/github-actions-deploy.png)
 
