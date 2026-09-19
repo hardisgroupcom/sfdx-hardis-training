@@ -45,7 +45,9 @@
       "url": "https://code.visualstudio.com/download",
       "width": 1440,
       "height": 820,
-      "click": ["button:has-text('Reject')"],
+      "click": [
+        "button:has-text('Reject')"
+      ],
       "settle": 2000,
       "hideText": [
         {
@@ -197,15 +199,15 @@
     {
       "name": "github-branch-rule",
       "_comment": "The integration rule that Set up my training environment creates. Its id changes whenever the rule is created again: read it with gh api graphql, branchProtectionRules { databaseId pattern }.",
-      "url": "https://github.com/nvuillam/sfdx-hardis-training/settings/branch_protection_rules/83357555",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/settings/branch_protection_rules/83423610",
       "width": 1440,
-      "height": 1950,
+      "height": 2400,
       "settle": 3000,
       "clip": {
         "x": 400,
         "y": 300,
         "width": 940,
-        "height": 1520
+        "height": 1760
       }
     },
     {
@@ -215,8 +217,15 @@
       "width": 1440,
       "height": 900,
       "settle": 2000,
-      "clickFirst": ["button:has-text('New branch')"],
-      "fill": [["div[role='dialog'] input[type='text']", "preprod"]],
+      "clickFirst": [
+        "button:has-text('New branch')"
+      ],
+      "fill": [
+        [
+          "div[role='dialog'] input[type='text']",
+          "preprod"
+        ]
+      ],
       "selector": "div[role='dialog']"
     },
     {
@@ -261,8 +270,13 @@
           "max": 300
         }
       ],
-      "hide": ["img.avatar", "img[src*='avatars.githubusercontent.com']"],
-      "clickFirst": ["summary:has-text('Run workflow')"],
+      "hide": [
+        "img.avatar",
+        "img[src*='avatars.githubusercontent.com']"
+      ],
+      "clickFirst": [
+        "summary:has-text('Run workflow')"
+      ],
       "clipAround": {
         "selector": "details[open]",
         "padding": {
