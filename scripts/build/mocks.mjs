@@ -129,9 +129,10 @@ writeJson(path.join(OUT, "universe.json"), {
     "force-app/main/default/permissionsets/Helios_Delivery_Manager.permissionset-meta.xml"
   ].join(","),
   // The order the Deployment Actions tab lists them in, for the editor shots:
-  // this project loads its reference data after the metadata deployment
+  // this project sets the email deliverability before the metadata deployment,
+  // and loads its reference data after it
   actionEditorOrder:
-    "command,remove-packagexml-items,data,apex,schedule-batch,publish-community,manual,target-orgs-include,target-orgs-exclude",
+    "command,remove-packagexml-items,manual,data,apex,schedule-batch,publish-community,target-orgs-include,target-orgs-exclude",
   branches: [
     ...u.branches.majors.filter((b) => b !== "integration"),
     ...u.userStories.filter((s) => s.level <= 2 && s.author === "you").map((s) => s.branch),
@@ -647,6 +648,18 @@ const ACTIONS_YAML = `commandsPreDeploy:
         - "Profile:*"
     command: ""
     context: check-deployment-only
+  - id: 7a1c3d2e-2d0b-4f1e-8e3b-024b00000007
+    label: Set Email Deliverability to All Email
+    type: manual
+    when: pre-deploy
+    parameters:
+      instructions: |
+        1. Open **Setup**, type \`Deliverability\` in the Quick Find box, and open it.
+        2. Under **Access to Send Email**, set **Access level** to **All email**.
+        3. Click **Save**.
+        4. Check: the page reads **All email**. If it already did, there is nothing to do.
+    command: ""
+    context: all
 commandsPostDeploy:
   - id: 7a1c3d2e-2d0b-4f1e-8e3b-024b00000002
     label: Load the crew capacity reference data
@@ -683,18 +696,6 @@ commandsPostDeploy:
       communityName: Helios Installer Portal
     command: ""
     context: process-deployment-only
-  - id: 7a1c3d2e-2d0b-4f1e-8e3b-024b00000007
-    label: Set Email Deliverability to All Email
-    type: manual
-    when: pre-deploy
-    parameters:
-      instructions: |
-        1. Open **Setup**, type \`Deliverability\` in the Quick Find box, and open it.
-        2. Under **Access to Send Email**, set **Access level** to **All email**.
-        3. Click **Save**.
-        4. Check: the page reads **All email**. If it already did, there is nothing to do.
-    command: ""
-    context: all
   # Target orgs examples: the warehouse system is only connected to the uat and
   # production orgs, and the demo installations must never reach production
   - id: 7a1c3d2e-2d0b-4f1e-8e3b-024b00000008

@@ -9,7 +9,7 @@ source_rev: ""
 screenshots:
   - annotated/vscode/devops-pipeline-level3--create-promotion
   - annotated/vscode/pipeline-branch-modal-level3--what-it-carries
-  - annotated/vscode/pipeline-branch-modal--no-merge-target
+  - annotated/vscode/pipeline-branch-modal-uat--no-merge-target
 depends_on:
   commands: [hardis:doc:release-notes, hardis:project:deploy:smart]
   flags: []
@@ -69,7 +69,7 @@ promoted, **(4)** previews the notes for what has not.
     Then this branch has no merge target yet, and the panel is showing you its go-lives **(1)**
     rather than what is waiting to be promoted:
 
-    ![The same window on a branch with no merge target](../../_assets/annotated/vscode/pipeline-branch-modal--no-merge-target.png)
+    ![The same window on a branch with no merge target](../../_assets/annotated/vscode/pipeline-branch-modal-uat--no-merge-target.png)
 
     `integration` has had `uat` as its merge target since Lab 1.2. If it is missing, the branch
     file lost it: click **Training: Level 3 > Set up my training environment**, which writes it
