@@ -166,6 +166,13 @@ export function gitOut(args) {
 }
 
 // ------------------------------------------------------------------ prompts
+/** The learner dismissed the question in the panel: stop where the CLI stops. */
+function cancelled(message) {
+  info(`${message} (cancelled)`);
+  panel.close("cancelled");
+  process.exit(1);
+}
+
 function isInteractive() {
   if (process.env.TRAINING_NO_PROMPT === "true") {
     return false;
@@ -220,6 +227,9 @@ export async function select(message, choices, preselected) {
         description: ch.hint || undefined
       }))
     });
+    if (picked === panel.CANCELLED) {
+      cancelled(message);
+    }
     if (picked !== undefined) {
       const chosen = choices.find((ch) => ch.value === picked);
       info(`${message} ${chosen ? chosen.label : picked}`);
@@ -252,6 +262,9 @@ export async function input(message, initial = "") {
   }
   if (panel.isActive()) {
     const typed = await panel.ask({ type: "text", name: "value", message, initial: initial || undefined });
+    if (typed === panel.CANCELLED) {
+      cancelled(message);
+    }
     if (typed !== undefined && String(typed).trim() !== "") {
       info(`${message} ${String(typed).trim()}`);
       return String(typed).trim();
@@ -278,6 +291,9 @@ export async function confirm(message, defaultYes = false) {
   }
   if (panel.isActive()) {
     const answered = await panel.ask({ type: "confirm", name: "value", message, initial: defaultYes });
+    if (answered === panel.CANCELLED) {
+      cancelled(message);
+    }
     if (answered !== undefined) {
       info(`${message} ${answered ? "yes" : "no"}`);
       return answered === true || answered === "true";

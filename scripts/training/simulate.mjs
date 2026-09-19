@@ -28,6 +28,27 @@ import {
 
 const SIMULATE_DIR = path.join(ROOT, "scripts", "simulate");
 
+/**
+ * Whether the fork already has an open Pull Request for that branch. `gh pr
+ * create` fails the same way whether one exists, the network is down or gh is
+ * signed out, and only the first of those is good news.
+ */
+function openPullRequestExists(slug, branch) {
+  const listed = run(
+    "gh",
+    ["pr", "list", "-R", slug, "--head", branch, "--state", "open", "--json", "number"],
+    { capture: true, quiet: true }
+  );
+  if (listed.code !== 0) {
+    return false;
+  }
+  try {
+    return JSON.parse(listed.stdout || "[]").length > 0;
+  } catch {
+    return false;
+  }
+}
+
 export default async function simulate(args) {
   title("Simulate my teammates");
 
@@ -139,9 +160,17 @@ export default async function simulate(args) {
     const existing = gitOut(["rev-parse", "--verify", scenario.branch]);
     if (existing) {
       warn(`${scenario.branch} already exists. It is being recreated from the current ${from}.`);
-      run("git", ["branch", "-D", scenario.branch]);
+      if (run("git", ["branch", "-D", scenario.branch]).code !== 0) {
+        restore();
+        abort(`The old ${scenario.branch} could not be deleted, so nothing was simulated.`);
+      }
     }
-    run("git", ["checkout", "-b", scenario.branch]);
+    // Checked: on a failure HEAD stays where it is, and the teammate files
+    // would be committed to that branch instead
+    if (run("git", ["checkout", "-b", scenario.branch]).code !== 0) {
+      restore();
+      abort(`The branch ${scenario.branch} could not be created, so nothing was simulated.`);
+    }
   }
   ok(`On ${scenario.branch}`);
 
@@ -225,7 +254,10 @@ export default async function simulate(args) {
       }
     }
     fs.rmSync(bodyFile, { force: true });
-    if (pr.code !== 0 && scenario.continues) {
+    // "It already exists" is the only failure that means success here, and the
+    // way to know is to ask the fork rather than to assume
+    const alreadyOpen = pr.code !== 0 && openPullRequestExists(slug, scenario.branch);
+    if (alreadyOpen) {
       ok("The new commit is on the Pull Request your teammate already opened");
     } else if (pr.code !== 0) {
       warn("The Pull Request could not be opened automatically. It may already exist.");

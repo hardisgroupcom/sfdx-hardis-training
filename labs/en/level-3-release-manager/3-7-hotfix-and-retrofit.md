@@ -314,12 +314,18 @@ it. Then you retrieve that one thing, knowingly. Detection is automatic, the jud
 
 - The validation rule fixed in `helios-prod`, through a Pull Request into `preprod` and then one into
   `main`
-- The same fix merged into `integration`, by Romain's second Pull Request
+- The same fix merged into `integration`, carried by your retrofit Pull Request from
+  `retrofit/US-045-retrofit`
 - `Needs Reinspection` present on `integration`, in
   `force-app/main/default/objects/Installation__c/fields/Status__c.field-meta.xml`, by your Pull
   Request from `fix/US-046-needs-reinspection`
 
 ## If it goes wrong
+
+**The retrofit merge has conflicts you did not expect.**
+`main` carries everything production has, including what earlier releases put there. Solve them the
+way Lab 2.7 did, keeping both sides, and remember the retrofit is the one place where a release
+manager, not a contributor, decides what production and the pipeline each keep.
 
 **A hotfix Pull Request wants to bring next week's work with it.**
 Its branch was cut from `integration`. Send it back: the branch has to start from `preprod`, which

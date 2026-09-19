@@ -57,13 +57,22 @@ export default async function teardown(args) {
   if (orgs.length === 0) {
     abort("No connected org was found.", "Connect the org in the Orgs Manager panel first.");
   }
+  // An org answers to several names, and this command deletes an app and every
+  // record it created: only the orgs of the course are ever offered, matched on
+  // any of their aliases. Falling back to "every connected org" would put the
+  // learner's employer sandbox one click away, and a list of one is not even
+  // asked about.
   const known = universe().orgs.map((o) => o.alias);
-  const suggested = orgs.filter((o) => known.includes(o.alias));
-  const target = await select(
-    "Which org do you want to clean up?",
-    orgChoices(suggested.length > 0 ? suggested : orgs),
-    args.org
+  const suggested = orgs.filter(
+    (o) => known.includes(o.alias) || (o.aliases || []).some((a) => known.includes(a))
   );
+  if (suggested.length === 0) {
+    abort(
+      "None of the training orgs is connected.",
+      `Connect one of them in the Orgs Manager panel first: ${known.join(", ")}`
+    );
+  }
+  const target = await select("Which org do you want to clean up?", orgChoices(suggested), args.org);
 
   info("");
   warn(`This deletes the Helios Delivery app and every record it created in ${c.bold(target)}.`);

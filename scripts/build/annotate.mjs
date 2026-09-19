@@ -22,7 +22,7 @@
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
-import { fileURLToPath } from "url";
+import { fileURLToPath, pathToFileURL } from "url";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..", "..");
@@ -216,7 +216,11 @@ async function main() {
   console.log(`\n${work.length} screenshot(s) annotated into labs/_assets/annotated/.`);
 }
 
-main().catch((error) => {
-  console.error(error.message || error);
-  process.exit(1);
-});
+// Only when this file is the command being run: site.mjs imports the palette
+// from here, and importing a module must not draw every pill of the course.
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    console.error(error.message || error);
+    process.exit(1);
+  });
+}

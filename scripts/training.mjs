@@ -65,7 +65,10 @@ Usually you click these on the VS Code Welcome page, under ${c.bold("Training: L
   const module = await loader();
   await module.default(args);
   panel.refresh();
-  panel.close("success");
+  // Several verbs report a failure by setting the exit code rather than
+  // throwing: Check my work with a lab that does not pass, Claim my badge on an
+  // audit that fails. The panel has to say the same thing the console says.
+  panel.close(process.exitCode ? "error" : "success");
 }
 
 main().catch((error) => {

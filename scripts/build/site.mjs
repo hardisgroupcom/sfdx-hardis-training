@@ -19,7 +19,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { PILL_PALETTE, pillColor } from "./annotate.mjs";
+import { PILL_PALETTE } from "./annotate.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..", "..");

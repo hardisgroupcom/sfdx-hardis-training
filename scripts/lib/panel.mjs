@@ -19,6 +19,9 @@ const CONNECT_TIMEOUT_MS = 5000;
 // A learner reading a question is not in a hurry, and a lesson can wait
 const ANSWER_TIMEOUT_MS = 2 * 60 * 60 * 1000;
 
+/** What the panel answers when the learner dismisses a question. */
+export const CANCELLED = "exitNow";
+
 let socket = null;
 let context = null;
 let pendingAnswer = null;
@@ -56,14 +59,24 @@ export async function connect(command) {
       send({ event: "pong" });
     } else if (data.event === "promptsResponse" && pendingAnswer) {
       pendingAnswer(Array.isArray(data.promptsResponse) ? data.promptsResponse[0] : data.promptsResponse);
+    } else if (data.event === "cancelCommand") {
+      // The learner closed the panel. The extension does not kill the process:
+      // it expects the command to stop by itself, as sfdx-hardis commands do.
+      console.log("Cancelled from the panel.");
+      close("cancelled");
+      process.exit(1);
     }
   });
-  socket.addEventListener("close", () => {
+  const dropped = () => {
     socket = null;
-  });
-  socket.addEventListener("error", () => {
-    socket = null;
-  });
+    // A question waiting on a panel that is gone would otherwise wait out the
+    // whole answer timeout
+    if (pendingAnswer) {
+      pendingAnswer(undefined);
+    }
+  };
+  socket.addEventListener("close", dropped);
+  socket.addEventListener("error", dropped);
 
   const opened = await new Promise((resolve) => {
     const timer = setTimeout(() => resolve(false), CONNECT_TIMEOUT_MS);
@@ -147,10 +160,14 @@ export async function ask(prompt) {
     };
     send({ event: "prompts", prompts: [prompt] });
   });
-  if (answer && typeof answer === "object" && prompt.name in answer) {
-    return answer[prompt.name];
+  const value =
+    answer && typeof answer === "object" && prompt.name in answer ? answer[prompt.name] : answer;
+  // What the panel sends when the learner dismisses the question. Every caller
+  // treats it the way the CLI does: the command stops there.
+  if (value === CANCELLED || (Array.isArray(value) && value[0] === CANCELLED)) {
+    return CANCELLED;
   }
-  return answer;
+  return value;
 }
 
 /** A button at the bottom of the panel: a file the lesson wrote, or a link. */
