@@ -100,7 +100,8 @@ Go through the diff with four questions:
 The layout diff has three changes. Two go together: `Crew_Capacity_Cap__c` leaves the first column,
 and comes back in the second. That is the story.
 
-The third is a removed block, and nothing adds it back: `Total_Capacity_kW__c`. Read fast, it looks
+The third is a removed block **(3)** in the picture of step 3, and nothing adds it back:
+`Total_Capacity_kW__c`. Read fast, it looks
 like part of the move. Read again: the installed capacity did not move to the second column, it
 **left the layout**.
 
