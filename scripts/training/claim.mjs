@@ -57,6 +57,9 @@ export default async function claim(args) {
   // ---------------------------------------------------------------- the work
   // A level 2 claim re-runs the level 1 audit, and a level 3 claim re-runs both,
   // so the same ground is covered here rather than on a rejected issue.
+  // Read the fork as it is now: a Pull Request merged on GitHub is not in the
+  // local branches until a fetch, and the badge audit reads the fork
+  run("git", ["fetch", "origin", "--prune"], { quiet: true, capture: true });
   const ctx = makeContext(ROOT);
   const missing = [];
   for (const levelDef of levels) {

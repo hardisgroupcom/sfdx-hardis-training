@@ -689,12 +689,19 @@ export default async function init(args) {
 
   // After the branch configuration, which is pushed straight to integration,
   // and before the secrets, the one step that can stop the command.
-  step(7, "No merge while a check is red");
+  step(7, "Changes through a Pull Request, merged once green");
   info(c.dim(`    A Pull Request into ${pipeline.map((s) => s.branch).join(" or ")} merges only once ${REQUIRED_CHECKS.join(" and ")} are green.`));
   const protectedBranches = protectBranches(slug, pipeline.map((s) => s.branch));
 
   step(8, "The credentials the CI jobs use");
-  setSecrets(slug, pipeline);
+  // Once Lab 3.1 moved the pipeline to JWT and deleted the auth URL secrets, running
+  // this again, to rebuild an expired scratch org, must not bring the shortcut back
+  const projectConfig = gitOut(["show", `origin/${pipeline[0].branch}:config/.sfdx-hardis.yml`]);
+  if (/^orgAuthenticationMode:[ \t]*["']?encryptedCert/m.test(projectConfig)) {
+    ok("The pipeline logs in with JWT keys since Lab 3.1: no auth URL secret is written.");
+  } else {
+    setSecrets(slug, pipeline);
+  }
 
   title("Done");
   info(`Your fork:               https://github.com/${slug}`);

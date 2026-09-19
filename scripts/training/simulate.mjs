@@ -141,11 +141,26 @@ export default async function simulate(args) {
   run("git", ["add", "-A"]);
   const hasChanges = gitOut(["status", "--porcelain"]) !== "";
   if (hasChanges) {
-    run("git", [
+    // The message goes through a file: on Windows the shell stops an argument at
+    // its first line break, and the body would be lost
+    const messageFile = path.join(ROOT, ".training-commit-message.txt");
+    fs.writeFileSync(messageFile, scenario.commitMessage, "utf8");
+    const commit = run("git", [
       "-c", `user.name=${scenario.author.name}`,
       "-c", `user.email=${scenario.author.email}`,
-      "commit", "-m", scenario.commitMessage
+      "commit", "-F", messageFile
     ]);
+    fs.rmSync(messageFile, { force: true });
+    if (commit.code !== 0) {
+      // The teammate files go: the learner's own work was put aside before any of this
+      run("git", ["reset", "--hard", "--quiet"]);
+      run("git", ["clean", "-fdq"]);
+      restore();
+      abort(
+        "Your teammate's commit could not be made.",
+        "Git refused it: the message above says why. Nothing was pushed."
+      );
+    }
     ok("Committed");
   } else if (scenario.continues) {
     ok("Nothing new to commit: the branch goes as it is");

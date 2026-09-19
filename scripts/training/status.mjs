@@ -6,8 +6,7 @@
  */
 import {
   ROOT, c, title, info, ok, warn, universe, readProgress,
-  gitOut, githubHandle, repoSlug, connectedOrgs
-} from "../lib/util.mjs";
+  gitOut, githubHandle, repoSlug, connectedOrgs, run } from "../lib/util.mjs";
 import { makeContext, rulesForLevel } from "../verify/rules.mjs";
 import { runRules } from "../verify/check.mjs";
 
@@ -37,6 +36,9 @@ export default async function status() {
   }
 
   // ------------------------------------------------------------ the labs
+  // Read the fork as it is now: a Pull Request merged on GitHub is not in the
+  // local branches until a fetch, and the badge audit reads the fork
+  run("git", ["fetch", "origin", "--prune"], { quiet: true, capture: true });
   const ctx = makeContext(ROOT);
   let nextLevel = null;
   let nextLab = null;

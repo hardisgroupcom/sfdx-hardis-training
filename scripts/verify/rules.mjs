@@ -113,7 +113,6 @@ const DEV = "integration";
 // these rules look there too. Three red ticks in a row would teach them to
 // stop clicking the button.
 const readAnywhere = (ctx, file) => ctx.readOn(DEV, file) || ctx.readOn(ctx.currentBranch(), file);
-const logAnywhere = (ctx) => `${ctx.log(DEV)}\n${ctx.log(ctx.currentBranch())}`;
 const FIELD = (obj, field) => `force-app/main/default/objects/${obj}/fields/${field}.field-meta.xml`;
 const PERMSET = (name) => `force-app/main/default/permissionsets/${name}.permissionset-meta.xml`;
 
@@ -164,7 +163,9 @@ const ruleCheck = (id) => (ctx) => RULES.find((r) => r.id === id).check(ctx);
  * A hotfix in a history: the word itself, or a merge of a fix/ branch, which is how Lab 3.7 names
  * it (branchPrefixChoices) and how the DORA report of Lab 3.6 recognises one.
  */
-const isHotfix = (history) => mentions(history, "hotfix") || /(^|[\s/:])(hot|bug)?fix\//im.test(history || "");
+const HOTFIX_RULE = "force-app/main/default/objects/Installation__c/validationRules/Installation_Date_Not_Past.validationRule-meta.xml";
+/** The US-045 hotfix on a branch: the validation rule lets a cancelled installation be back-dated. */
+const hasHotfix = (ctx, branch) => /ISPICKVAL\(Status__c,\s*(&quot;|")Cancelled(&quot;|")\)/.test(ctx.readOn(branch, HOTFIX_RULE) || "");
 
 /**
  * The names of the Actions secrets of the learner's fork, or null when they cannot be read: no
@@ -208,7 +209,7 @@ export const RULES = [
         if (!config) {
           return miss(`${file} is missing`, `branch ${DEV}. ${rerun}`);
         }
-        const hasOrg = /targetUsername:\s*["']?[^"'\s][^\n]*/.test(config) &&
+        const hasOrg = /targetUsername:[ \t]*["']?[^"'\s][^\n]*/.test(config) &&
           !/targetUsername:\s*["']{2}\s*$/m.test(config);
         if (!hasOrg) {
           return miss(`targetUsername is still empty in ${file}`, `branch ${DEV}. ${rerun}`);
@@ -227,18 +228,22 @@ export const RULES = [
       if (branch) {
         return pass(`Your story branch ${branch} exists`);
       }
-      return mentions(ctx.log(DEV), "US-014")
+      return ctx.readOn(DEV, FIELD("Installation__c", "Panels_Required__c"))
         ? pass("US-014 is already merged into integration")
         : miss(
           "no branch starting with features/US-014",
-          "your local branches and your fork. New User Story creates it: pick US-014 and answer the questions as step 3 shows"
+          "your local branches and your fork. New User Story creates it: pick US-014 and answer the questions of steps 2 to 5"
         );
     },
     check: (ctx) => {
-      const history = logAnywhere(ctx);
-      return mentions(history, "US-014")
-        ? pass("US-014 appears in the history")
-        : miss("no commit mentioning US-014", `the history of ${DEV} and of your current branch`);
+      // The story's own branch, or what it delivered once merged and the branch deleted
+      const branch = storyBranch(ctx, "US-014");
+      if (branch) {
+        return pass(`Your story branch ${branch} exists`);
+      }
+      return readAnywhere(ctx, FIELD("Installation__c", "Panels_Required__c"))
+        ? pass("US-014 was delivered: Panels_Required__c is on integration")
+        : miss("no branch starting with features/US-014, and US-014 is not on integration", `your branches and ${DEV}`);
     }
   },
   {
@@ -591,9 +596,17 @@ export const RULES = [
     check: (ctx) => {
       // Deployment.settings is the one setting this project ships on purpose: it
       // is what lets a deployment run while the Lab 2.4 batch is scheduled.
+      // The course ships two short Profiles on purpose (Lab 2.6): Helios Crew changes
+      // with Lab 2.6, and Admin must still be the one main ships, not a whole-org
+      // retrieve of it.
+      const admin = "force-app/main/default/profiles/Admin.profile-meta.xml";
+      const shipped = (f) =>
+        f.endsWith("/profiles/Helios Crew.profile-meta.xml") ||
+        (f === admin && (ctx.readOn(DEV, admin) || "").trim() === (ctx.readOn("main", admin) || "").trim());
       const stray = ctx.listOn(DEV, "force-app/main/default/").filter((f) =>
         /\/(profiles|settings|standardValueSets|objectTranslations|networks)\//.test(f) &&
-        !f.endsWith("/settings/Deployment.settings-meta.xml")
+        !f.endsWith("/settings/Deployment.settings-meta.xml") &&
+        !shipped(f)
       );
       return stray.length === 0
         ? pass("No over-committed metadata is left on integration")
@@ -663,9 +676,9 @@ export const RULES = [
         // first promotion, several labs later.
         const cfg = [ctx.readOn(DEV, `config/branches/.sfdx-hardis.${b}.yml`), ctx.readOn("main", `config/branches/.sfdx-hardis.${b}.yml`)]
           .filter(Boolean)
-          .find((text) => /targetUsername:\s*["']?[^"'\s]/.test(text) && /instanceUrl:\s*["']?https/.test(text)) || "";
-        const hasUser = /targetUsername:\s*["']?[^"'\s]/.test(cfg);
-        const hasUrl = /instanceUrl:\s*["']?https/.test(cfg);
+          .find((text) => /targetUsername:[ \t]*["']?[^"'\s]/.test(text) && /instanceUrl:[ \t]*["']?https/.test(text)) || "";
+        const hasUser = /targetUsername:[ \t]*["']?[^"'\s]/.test(cfg);
+        const hasUrl = /instanceUrl:[ \t]*["']?https/.test(cfg);
         if (!hasUser || !hasUrl) {
           notConfigured.push(b);
         }
@@ -707,18 +720,23 @@ export const RULES = [
     id: "3.2", level: 3, lab: 2,
     title: "Mariia's US-052 was reviewed before the merge, and no field left the layout",
     check: (ctx) => {
-      const history = ctx.log(DEV);
-      if (!mentions(history, "US-052")) {
-        return miss("no trace of US-052 in the integration history", `branch ${DEV}`);
-      }
-      // The outcome of the review: the story moved the cap, and removed nothing
+      // The outcome of the story and of the review: the cap moved to the second column
+      // of the Information section, and Total Capacity is on the layout too
       const layoutFile = "force-app/main/default/layouts/Installation__c-Installation Layout.layout-meta.xml";
       const layout = ctx.readOn(DEV, layoutFile) || "";
-      const lost = ["Total_Capacity_kW__c", "Crew_Capacity_Cap__c"].filter((f) => !layout.includes(`<field>${f}</field>`));
-      return lost.length === 0
+      const information = (layout.split("<layoutSections>").find((s) => s.includes("<label>Information</label>")) || "");
+      const columns = information.split("<layoutColumns").slice(1);
+      const second = columns[1] || "";
+      if (!second.includes("<field>Crew_Capacity_Cap__c</field>")) {
+        return miss(
+          "the crew capacity cap is not in the second column of the Information section: US-052 is not merged",
+          `${layoutFile} on branch ${DEV}`
+        );
+      }
+      return layout.includes("<field>Total_Capacity_kW__c</field>")
         ? pass("US-052 is merged, and Total_Capacity_kW__c is still on the Installation layout")
         : miss(
-          `${lost.join(" and ")} missing from the Installation layout. Steps 4 to 6 ask Mariia to put it back before the merge`,
+          "Total_Capacity_kW__c is missing from the Installation layout. Steps 4 to 6 ask Mariia to put it back before the merge",
           `${layoutFile} on branch ${DEV}`
         );
     }
@@ -748,10 +766,12 @@ export const RULES = [
     check: (ctx) => {
       // US-020 is deliberately NOT checked here: Lab 3.4 sends it back to its author
       // and no lab ever merges it. Requiring it would make this check unpassable.
-      const history = ctx.log(DEV);
-      const missing = ["US-018", "US-019"].filter((id) => !mentions(history, id));
+      const missing = [
+        ["US-018", FIELD("Installation__c", "Crew_Capacity_Cap__c")],
+        ["US-019", FIELD("Panel_Batch__c", "Quote_Pdf_Url__c")]
+      ].filter(([, file]) => !ctx.readOn(DEV, file)).map(([id]) => id);
       if (missing.length > 0) {
-        return miss(`these stories never reached integration: ${missing.join(", ")}`, `the history of ${DEV}`);
+        return miss(`these stories never reached integration: ${missing.join(", ")}`, `their fields on branch ${DEV}`);
       }
       const manager = ctx.readOn(DEV, PERMSET("Helios_Delivery_Manager")) || "";
       if (/<{7}|>{7}|={7}/.test(manager)) {
@@ -835,10 +855,10 @@ export const RULES = [
             `${FIELD("Installation__c", "Status__c")} on branch ${DEV}, expected a "Needs Reinspection" value`
           );
         }
-        const hotfix = ["main", "preprod"].some((b) => isHotfix(ctx.log(b)));
+        const hotfix = ["main", "preprod"].some((b) => hasHotfix(ctx, b));
         return hotfix
           ? pass("The hotfix reached production, and the retrofit is on integration, waiting for the next release")
-          : miss("no hotfix in the history of preprod or main", "the history of branches preprod and main");
+          : miss("the US-045 fix is not on preprod or main: the validation rule still refuses a back-dated cancellation", `${HOTFIX_RULE} on branches preprod and main`);
       }
     ),
     check: (ctx) => {
@@ -850,10 +870,9 @@ export const RULES = [
           `${FIELD("Installation__c", "Status__c")} on branch main, expected a "Needs Reinspection" value`
         );
       }
-      const history = ctx.log("main");
-      return isHotfix(history)
+      return hasHotfix(ctx, "main")
         ? pass("The hotfix and the retrofit are both on main")
-        : miss("no hotfix in the history of main", "the history of branch main");
+        : miss("the US-045 fix is not on main: the validation rule still refuses a back-dated cancellation", `${HOTFIX_RULE} on branch main`);
     }
   },
   {

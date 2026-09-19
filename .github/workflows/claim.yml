@@ -169,10 +169,19 @@ jobs:
           else
             git commit -m "badge: level $(node -p "require('/tmp/audit.json').level") for $(node -p "require('/tmp/audit.json').handle")"
             # Rule 5: another claim may have committed while this one ran
+            pushed=false
             for attempt in 1 2 3 4 5; do
-              git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && break
+              if git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}"; then
+                pushed=true
+                break
+              fi
+              git rebase --abort 2>/dev/null || true
               sleep $((attempt * 5))
             done
+            if [ "$pushed" != "true" ]; then
+              echo "The badge could not be pushed after 5 attempts: the issue stays open."
+              exit 1
+            fi
           fi
           {
             cat /tmp/report.md

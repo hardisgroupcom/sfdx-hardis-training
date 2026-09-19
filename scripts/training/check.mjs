@@ -5,6 +5,7 @@
  */
 import { select, universe, title, info, c } from "../lib/util.mjs";
 import runCheck from "../verify/check.mjs";
+import { RULES } from "../verify/rules.mjs";
 
 export default async function check(args) {
   title("Check my work");
@@ -21,7 +22,10 @@ export default async function check(args) {
   const levelDef = levels.find((l) => l.level === level);
   const labChoices = [
     { value: "all", label: `Everything in level ${level}  ${c.dim("(what the badge claim checks)")}` },
-    ...levelDef.labs.map((l) => ({ value: String(l.lab), label: `Lab ${level}.${l.lab} - ${l.title}` }))
+    // Only the labs that have something to check: Lab 1.1 installs tools, and has no rule
+    ...levelDef.labs
+      .filter((l) => RULES.some((rule) => rule.level === level && rule.lab === l.lab))
+      .map((l) => ({ value: String(l.lab), label: `Lab ${level}.${l.lab} - ${l.title}` }))
   ];
   // "--lab 1.4" and "--lab 4" both name Lab 1.4
   const preselected = args.lab === undefined ? undefined : String(args.lab).split(".").pop();

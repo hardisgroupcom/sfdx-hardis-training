@@ -39,9 +39,11 @@ export function renderSvg({ level, handle, fullName, trailblazer, date }) {
     .replace(/\{\{NAME\}\}/g, escapeXml(def.name))
     .replace(/\{\{SHORT_NAME\}\}/g, escapeXml(shortName))
     .replace(/\{\{NAME_SIZE\}\}/g, String(fitSize(shortName, 17, 210)))
-    .replace(/\{\{FULLNAME\}\}/g, escapeXml(name))
+    // Functions, not strings, for what a learner typed: a string replacement expands
+    // $& and $' patterns, and a name holding one would rewrite the badge
+    .replace(/\{\{FULLNAME\}\}/g, () => escapeXml(name))
     .replace(/\{\{FULLNAME_SIZE\}\}/g, String(fitSize(name, 19, 200)))
-    .replace(/\{\{HANDLE\}\}/g, escapeXml(handle))
-    .replace(/\{\{TRAILBLAZER_LINE\}\}/g, trailblazer ? `Trailblazer ${escapeXml(trailblazer)}` : "")
+    .replace(/\{\{HANDLE\}\}/g, () => escapeXml(handle))
+    .replace(/\{\{TRAILBLAZER_LINE\}\}/g, () => (trailblazer ? `Trailblazer ${escapeXml(trailblazer)}` : ""))
     .replace(/\{\{DATE\}\}/g, date);
 }

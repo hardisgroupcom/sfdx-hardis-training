@@ -15,12 +15,18 @@ const author = (process.env.ISSUE_AUTHOR || "").trim();
 
 /** The value of one issue-form field, addressed by its heading. */
 function field(label) {
-  const pattern = new RegExp(`^###\\s+${label}\\s*$([\\s\\S]*?)(?=^###\\s|\\Z)`, "mi");
-  const match = body.match(pattern);
-  if (!match) {
+  // The body is cut on its "### " headings: JavaScript has no end-of-input anchor
+  // like \Z, and a regular expression that believes it has one stops at the first z
+  const section = body
+    .split(/^###\s+/m)
+    .find((part) => part.split(/\r?\n/)[0].trim().toLowerCase() === label.toLowerCase());
+  if (section === undefined) {
     return "";
   }
-  return match[1]
+  return section
+    .split(/\r?\n/)
+    .slice(1)
+    .join("\n")
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter((line) => line !== "" && line !== "_No response_")

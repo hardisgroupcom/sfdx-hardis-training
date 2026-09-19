@@ -14,5 +14,5 @@
   "commitMessage": "",
   "prTitle": "US-045 Hotfix back into integration",
   "prBody": "The fix shipped to production through preprod. This brings it into integration, so the next release carries it instead of undoing it.\n\nStory: US-045 in BACKLOG.md",
-  "nextStep": "Review it and merge it into integration. Lab 3.7 step 4."
+  "nextStep": "Review it and merge it into integration. Lab 3.7 step 5."
 }
