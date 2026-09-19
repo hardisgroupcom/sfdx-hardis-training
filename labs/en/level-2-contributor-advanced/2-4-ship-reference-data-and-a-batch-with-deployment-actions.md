@@ -7,6 +7,7 @@ lab: 4
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/web/github-pr-deployment-actions
   - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/data-workbench
   - annotated/vscode/pipeline-edit-action-data
@@ -229,11 +230,15 @@ Confluence page nobody opens.
 The editor wrote the three actions into `scripts/actions/`, in a file named after your Pull Request.
 Commit it, **Save / Publish**.
 
-When the check finishes, the sfdx-hardis comment carries a **Deployment Actions** section:
+When the check finishes, sfdx-hardis posts a **Deployment Actions** comment on the Pull Request:
 
-- **Pending manual actions**: your deliverability step, with a checkbox, for `integration`
-- **Status by org branch**: one row per action, the import and the schedule marked **skipped**,
-  because a check changes nothing, and the manual step waiting for somebody
+![The Deployment Actions comment of the US-026 Pull Request](../../_assets/annotated/web/github-pr-deployment-actions.png)
+
+- **Pending manual actions** **(1)**: your deliverability step, with a checkbox, for `integration`.
+  Do the click in the org, then tick the box: the next job records it as done
+- **Status by org branch** **(2)**: one row per action, with its moment. The deliverability step,
+  **pre-deploy**, waits for somebody; the import and the schedule, **post-deploy**, are marked
+  **skipped**, because a check changes nothing
 
 Merge, and watch the deployment job: the data import runs, the batch gets scheduled, and the manual
 step stays pending until a person says it is done.

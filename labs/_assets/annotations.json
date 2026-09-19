@@ -1,6 +1,28 @@
 {
   "_comment": "Numbered pills drawn on screenshots by scripts/build/annotate.mjs. Coordinates are percentages of the image, so re-taking a screenshot at another resolution keeps them in place. x/y place the box (or the point when there is no w/h); px/py move the pill off the box corner when the corner is too close to an edge. The lab text refers to the numbers.",
   "images": {
+    "web/github-pr-deployment-actions.png": {
+      "pills": [
+        {
+          "n": 1,
+          "x": 2.5,
+          "y": 33.2,
+          "w": 48.0,
+          "h": 2.8,
+          "px": 55.5,
+          "py": 33.8
+        },
+        {
+          "n": 2,
+          "x": 2.0,
+          "y": 44.0,
+          "w": 67.0,
+          "h": 25.2,
+          "px": 70.5,
+          "py": 44.5
+        }
+      ]
+    },
     "web/github-pr-check-failed.png": {
       "pills": [
         {

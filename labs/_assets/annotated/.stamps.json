@@ -122,5 +122,6 @@
   "salesforce/flow-builder-add-element.png": "936a208dce04c7b5",
   "vscode/pipeline-branch-modal-uat.png#no-merge-target": "bae4e3f81afbac9a",
   "web/github-pr-check-failed.png": "da94c10a0bc8b937",
-  "web/github-pr-flow-diff.png": "37fc86d82e9f8327"
+  "web/github-pr-flow-diff.png": "37fc86d82e9f8327",
+  "web/github-pr-deployment-actions.png": "abfad0205764d822"
 }

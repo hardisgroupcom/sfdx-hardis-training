@@ -351,6 +351,7 @@
         "pipeline"
       ],
       "screenshots": [
+        "annotated/web/github-pr-deployment-actions",
         "annotated/vscode/pipeline-cards--new-user-story",
         "annotated/vscode/data-workbench",
         "annotated/vscode/pipeline-edit-action-data",

@@ -294,6 +294,19 @@
       "evaluate": [
         "(() => { for (const el of document.querySelectorAll('body *')) { const p = getComputedStyle(el).position; if (p === 'sticky' || p === 'fixed') { el.style.visibility = 'hidden'; } } })()"
       ]
+    },
+    {
+      "name": "github-pr-deployment-actions",
+      "_comment": "Lab 2.4 step 5: the Deployment Actions comment sfdx-hardis keeps on a Pull Request, after the check of US-026 and before the merge.",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/111",
+      "width": 1440,
+      "height": 2400,
+      "settle": 5000,
+      "selector": ".timeline-comment:has-text(\"Pending manual actions\") .comment-body",
+      "maxHeight": 1500,
+      "evaluate": [
+        "(() => { for (const el of document.querySelectorAll('body *')) { const p = getComputedStyle(el).position; if (p === 'sticky' || p === 'fixed') { el.style.visibility = 'hidden'; } } })()"
+      ]
     }
   ]
 }
