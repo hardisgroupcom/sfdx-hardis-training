@@ -191,12 +191,13 @@ email at all is a setting in Setup that no deployment can change. The batch emai
 summary when it finishes, and in an org where deliverability is not **All email**, that email is
 dropped without a word.
 
-| Field        | Value                                      |
-|--------------|--------------------------------------------|
-| Type         | **Manual**                                 |
-| Label        | `Let the org send the batch summary email` |
-| Instructions | the four numbered lines below              |
-| Target orgs  | All target orgs                            |
+| Field        | Value                                   |
+|--------------|-----------------------------------------|
+| Type         | **Manual**                              |
+| Label        | `Set Email Deliverability to All Email` |
+| When         | **Before Metadata Deployment**          |
+| Instructions | the four numbered lines below           |
+| Target orgs  | All target orgs                         |
 
 ```
 1. Open **Setup**, type `Deliverability` in the Quick Find box, and open it.
@@ -212,6 +213,11 @@ only**, and the first sign of it is a planner asking why the summary stopped arr
 **Manual** **(1)** leaves one field that matters, **Instructions** **(2)**, a multi-line box that
 takes Markdown: number the clicks, and finish with what the person should see afterwards.
 **Target orgs** **(3)** stays on **All target orgs**, because this click is needed in every org.
+
+**When** is **Before Metadata Deployment**, unlike the two others. The org must be allowed to send
+email before anything that sends one arrives in it, so the person merging does this click first,
+then merges. A manual step declared before the deployment is listed first in the Pull Request
+comment, which is where they read it.
 
 A manual step does not do anything. It **appears in the Pull Request comment and in the deployment
 report**, so the person releasing to production is told, in the release itself, that there is a
@@ -283,6 +289,14 @@ evidence of nothing else.** The org is the only thing that tells you an action r
 
 All three are entries in the same YAML file under `scripts/actions/`:
 
+    commandsPreDeploy:
+      - id: email-deliverability
+        label: Set Email Deliverability to All Email
+        type: manual
+        parameters:
+          instructions: |
+            1. Open **Setup**, type `Deliverability` in the Quick Find box, and open it.
+            ...
     commandsPostDeploy:
       - id: load-crew-capacity
         label: Load crew capacity reference data
@@ -299,13 +313,6 @@ All three are entries in the same YAML file under `scripts/actions/`:
           jobName: Helios crew capacity nightly
         context: process-deployment-only
         runOnlyOnceByOrg: true
-      - id: email-deliverability
-        label: Let the org send the batch summary email
-        type: manual
-        parameters:
-          instructions: |
-            1. Open **Setup**, type `Deliverability` in the Quick Find box, and open it.
-            ...
 
 The data import runs SFDMU through `sf hardis:org:data:import`, the same command the Training menu
 uses to seed your org. The schedule action runs anonymous Apex that calls `System.schedule`. The

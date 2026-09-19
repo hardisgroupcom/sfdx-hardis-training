@@ -166,7 +166,11 @@ if (!PILLS_ONLY) {
     if (!vs.state) {
       const merged = { ...gates };
       for (const [file, entry] of Object.entries(taken)) {
-        merged[file] = entry;
+        // A forced capture (a panel reopened as the backdrop of a menu) reports the
+        // gate that forced it: the first gate recorded for a file stays its own
+        if (!merged[file]) {
+          merged[file] = entry;
+        }
       }
       const sorted = Object.fromEntries(Object.keys(merged).sort().map((k) => [k, merged[k]]));
       fs.writeFileSync(path.join(ASSETS, "vscode", ".shot-gates.json"), `${JSON.stringify(sorted, null, 2)}\n`);

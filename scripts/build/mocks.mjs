@@ -552,7 +552,7 @@ if (fs.existsSync(basePlanFile)) {
 
   const ACTIONS = [
     ["load-crew-capacity", "Load the crew capacity reference data", "data", "post", false],
-    ["email-deliverability", "Let the org send the batch summary email", "manual", "post", true]
+    ["email-deliverability", "Set Email Deliverability to All Email", "manual", "pre", true]
   ];
   plan.actions = ACTIONS.map(([id, label, type, phase, manual], i) => ({
     ...(plan.actions[i] || plan.actions[0]),
@@ -684,9 +684,9 @@ commandsPostDeploy:
     command: ""
     context: process-deployment-only
   - id: 7a1c3d2e-2d0b-4f1e-8e3b-024b00000007
-    label: Let the org send the batch summary email
+    label: Set Email Deliverability to All Email
     type: manual
-    when: post-deploy
+    when: pre-deploy
     parameters:
       instructions: |
         1. Open **Setup**, type \`Deliverability\` in the Quick Find box, and open it.
