@@ -170,11 +170,11 @@ A retrofit Pull Request gets one more question than the four of Lab 3.3: **is ev
 something production has, and that the repository should have?** Three kinds of difference turn up
 in a retrieve from production, and only one belongs in the Pull Request:
 
-| What the diff carries                                   | What the review says                                              |
-|---------------------------------------------------------|-------------------------------------------------------------------|
-| The picklist value an admin added to fix an incident    | **Keep it.** It is real, it is needed, and it belongs in the repo |
-| Noise: API version, attribute order, whitespace         | **Send it back.** It hides the real change from every reviewer    |
-| Something that differs because production is behind    | **Send it back.** Merged, it rolls the repository back            |
+| What the diff carries                                | What the review says                                              |
+|------------------------------------------------------|-------------------------------------------------------------------|
+| The picklist value an admin added to fix an incident | **Keep it.** It is real, it is needed, and it belongs in the repo |
+| Noise: API version, attribute order, whitespace      | **Send it back.** It hides the real change from every reviewer    |
+| Something that differs because production is behind  | **Send it back.** Merged, it rolls the repository back            |
 
 The third one is the trap, and it is why a retrofit is reviewed by somebody who knows what went
 into production and when. Production being behind looks exactly like production being ahead in a

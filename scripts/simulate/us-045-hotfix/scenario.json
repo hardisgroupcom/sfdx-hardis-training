@@ -2,9 +2,7 @@
   "id": "us-045-hotfix",
   "title": "US-045 Hotfix: cancelled installations can be back-dated again",
   "usedBy": "Lab 3.8",
-  "levels": [
-    3
-  ],
+  "levels": [3],
   "description": "Friday, 17:30. Planners cannot close the week: every back-dated cancellation is refused. Amina fixes the validation rule on a branch cut from preprod, which holds what production runs, and opens the hotfix Pull Request into preprod.",
   "branch": "fix/US-045-installation-date-hotfix",
   "from": "preprod",

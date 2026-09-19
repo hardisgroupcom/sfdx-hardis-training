@@ -2,9 +2,7 @@
   "id": "us-052-layout-capacity",
   "title": "US-052 Total Capacity back on the Installation layout",
   "usedBy": "Lab 3.3",
-  "levels": [
-    3
-  ],
+  "levels": [3],
   "description": "Marco answers your review: Total Capacity (kW) goes back on the Installation layout, in the second column, beside his crew capacity cap.",
   "branch": "training/mate-us-052-layout-capacity",
   "author": {

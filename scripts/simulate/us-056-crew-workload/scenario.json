@@ -2,9 +2,7 @@
   "id": "us-056-crew-workload",
   "title": "US-056 Show the panels each crew member has to lay",
   "usedBy": "Lab 3.4",
-  "levels": [
-    3
-  ],
+  "levels": [3],
   "description": "Amina adds a Crew Workload formula on Installation, on the layout and granted to managers. She also added a line to .forceignore to keep her scratch test fields out of the repository, and its wildcard matches the field of her own story.",
   "branch": "training/mate-us-056-crew-workload",
   "author": {

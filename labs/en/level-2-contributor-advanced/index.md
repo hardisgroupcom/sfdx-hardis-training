@@ -34,7 +34,7 @@ This is the half of the contributor path that decides whether you enjoy working 
 | [2.3](2-3-fix-broken-records-with-an-apex-deployment-action.md)       | Fix broken records with an Apex deployment action       | 30 min |
 | [2.4](2-4-ship-reference-data-and-a-batch-with-deployment-actions.md) | Ship reference data and a batch with deployment actions | 30 min |
 | [2.5](2-5-pass-code-quality-and-apex-test-coverage.md)                | Pass the code quality gate and Apex test coverage       | 30 min |
-| [2.6](2-6-permission-sets-and-profiles.md)                 | Permission sets, profiles and why a grant disappears    | 25 min |
+| [2.6](2-6-permission-sets-and-profiles.md)                            | Permission sets, profiles and why a grant disappears    | 25 min |
 | [2.7](2-7-resolve-a-git-merge-conflict.md)                            | Resolve a Git merge conflict with a teammate            | 35 min |
 | [2.8](2-8-recover-from-committing-the-wrong-metadata.md)              | Recover from committing the wrong metadata              | 20 min |
 | [2.9](2-9-capstone-deliver-a-user-story-that-has-it-all.md)           | Capstone: deliver a User Story that has it all          | 30 min |

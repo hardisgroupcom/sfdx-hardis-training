@@ -2,9 +2,7 @@
   "id": "us-056-crew-workload-fix",
   "title": "US-056 Amina names her test field exactly in .forceignore",
   "usedBy": "Lab 3.4",
-  "levels": [
-    3
-  ],
+  "levels": [3],
   "description": "Amina answers your review: the wildcard goes, and .forceignore names her one test field exactly, so it cannot match anything else.",
   "branch": "training/mate-us-056-crew-workload",
   "continues": true,

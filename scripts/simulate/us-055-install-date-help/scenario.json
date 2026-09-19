@@ -2,9 +2,7 @@
   "id": "us-055-install-date-help",
   "title": "US-055 Install Date says which day it means",
   "usedBy": "Lab 3.11",
-  "levels": [
-    3
-  ],
+  "levels": [3],
   "description": "Amina adds a help text to Install Date: planners enter the day the panels arrive, crews read it as the day they go on site.",
   "branch": "training/mate-us-055-install-date-help",
   "author": {

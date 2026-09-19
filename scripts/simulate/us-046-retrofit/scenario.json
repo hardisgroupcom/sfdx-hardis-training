@@ -2,9 +2,7 @@
   "id": "us-046-retrofit",
   "title": "US-046 Retrofit the Needs Reinspection status from production",
   "usedBy": "Lab 3.8",
-  "levels": [
-    3
-  ],
+  "levels": [3],
   "description": "Marco brings into the repository the Needs Reinspection status an admin added by hand in production, so that the next release does not remove it.",
   "branch": "training/mate-us-046-needs-reinspection",
   "author": {

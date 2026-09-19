@@ -2,9 +2,7 @@
   "id": "us-045-hotfix-back",
   "title": "US-045 The hotfix goes back into integration",
   "usedBy": "Lab 3.8",
-  "levels": [
-    3
-  ],
+  "levels": [3],
   "description": "Amina opens the second Pull Request of her hotfix: the same branch, into integration, so that the next release does not undo the fix.",
   "branch": "fix/US-045-installation-date-hotfix",
   "continues": true,

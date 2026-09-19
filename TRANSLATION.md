@@ -5,13 +5,13 @@ rewrite.
 
 ## What to translate
 
-| Path                      | Translate                                                                      |
-|---------------------------|--------------------------------------------------------------------------------|
-| `labs/en/**/*.md`         | **Yes.** Copy to `labs/<locale>/`, same file names, and translate              |
-| `labs/_assets/**`         | No. Screenshots are shared across locales, in English                          |
-| `labs/_snippets/**`       | No. Command blocks, included by reference                                      |
-| `training-universe.json`  | No. Org aliases, branch names, User Story ids and character names never change |
-| `BACKLOG.md`              | No. Generated                                                                  |
+| Path                     | Translate                                                                      |
+|--------------------------|--------------------------------------------------------------------------------|
+| `labs/en/**/*.md`        | **Yes.** Copy to `labs/<locale>/`, same file names, and translate              |
+| `labs/_assets/**`        | No. Screenshots are shared across locales, in English                          |
+| `labs/_snippets/**`      | No. Command blocks, included by reference                                      |
+| `training-universe.json` | No. Org aliases, branch names, User Story ids and character names never change |
+| `BACKLOG.md`             | No. Generated                                                                  |
 
 ## How
 
