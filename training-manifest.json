@@ -282,6 +282,10 @@
         "packageXml"
       ],
       "screenshots": [
+        "annotated/salesforce/flow-builder-crew-warning",
+        "annotated/salesforce/flow-builder-start-conditions",
+        "annotated/salesforce/flow-builder-formula",
+        "annotated/salesforce/flow-builder-add-element",
         "annotated/vscode/pipeline-cards--new-user-story",
         "annotated/vscode/metadata-retriever",
         "annotated/vscode/pipeline-cards--save-publish"
