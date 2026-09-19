@@ -167,12 +167,12 @@ repository agree with production again, because you are the one who knows what w
 **Start the branch.** In the **DevOps Pipeline** panel, **New User Story**, as a contributor would,
 with four answers of your own:
 
-| Question            | Your answer                                                                  |
-|---------------------|------------------------------------------------------------------------------|
-| Target branch       | `integration`, so the retrofit travels up with the next release              |
-| Type of branch      | **Retrofit**, the type this project keeps for changes coming from production |
-| Name                | `US-046-needs-reinspection`                                                  |
-| Org to work in      | `helios-dev`, as usual: nothing is built, only retrieved                     |
+| Question       | Your answer                                                                  |
+|----------------|------------------------------------------------------------------------------|
+| Target branch  | `integration`, so the retrofit travels up with the next release              |
+| Type of branch | **Retrofit**, the type this project keeps for changes coming from production |
+| Name           | `US-046-needs-reinspection`                                                  |
+| Org to work in | `helios-dev`, as usual: nothing is built, only retrieved                     |
 
 It creates `retrofit/US-046-needs-reinspection` from the latest `integration`. The **Retrofit** type
 is a line in `branchPrefixChoices` of `config/.sfdx-hardis.yml`: its prefix tells everybody reading
@@ -191,11 +191,11 @@ file. A retrofit diff gets one more question than the four of Lab 3.2: **is ever
 production has, and that the repository should have?** Three kinds of difference turn up in a
 retrieve from production, and only one belongs in the commit:
 
-| What the diff carries                                 | What you do with it                                                  |
-|-------------------------------------------------------|----------------------------------------------------------------------|
-| The picklist value an admin added to fix an incident  | **Keep it.** It is real, it is needed, and it belongs in the repo    |
-| Noise: API version, attribute order, whitespace       | **Undo those lines.** They hide the real change from every reviewer  |
-| Something that differs because production is behind  | **Undo those lines.** Committed, they roll the repository back       |
+| What the diff carries                                | What you do with it                                                 |
+|------------------------------------------------------|---------------------------------------------------------------------|
+| The picklist value an admin added to fix an incident | **Keep it.** It is real, it is needed, and it belongs in the repo   |
+| Noise: API version, attribute order, whitespace      | **Undo those lines.** They hide the real change from every reviewer |
+| Something that differs because production is behind  | **Undo those lines.** Committed, they roll the repository back      |
 
 The third one is the trap: production being behind looks exactly like production being ahead in a
 file diff. Here the diff is the new value, a few lines, and nothing else. Stage the file, commit it
