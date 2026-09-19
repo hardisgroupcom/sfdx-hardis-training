@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Profile xmlns="http://soap.sforce.com/2006/04/metadata">
-    <applicationVisibilities>
-        <application>Helios_Delivery</application>
-        <default>false</default>
-        <visible>true</visible>
-    </applicationVisibilities>
     <custom>false</custom>
     <layoutAssignments>
         <layout>Installation__c-Installation Layout</layout>
