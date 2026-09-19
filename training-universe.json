@@ -226,12 +226,13 @@
       "level": 3,
       "lab": 3,
       "author": "mariia",
-      "title": "Total Capacity back on the Installation layout",
-      "story": "As a planner, I want to see the installed capacity on an installation again, so that I stop opening the report to find it.",
+      "title": "The Installation layout in two columns",
+      "story": "As a planner, I want the Information section of an installation to use both of its columns, so that I see the whole installation without scrolling.",
       "acceptance": [
-        "Total Capacity (kW) is on the Installation layout, beside the crew capacity cap"
+        "The crew capacity cap is in the second column of the Information section",
+        "Every field that was on the layout is still on it"
       ],
-      "branch": "training/mate-us-052-layout-capacity",
+      "branch": "training/mate-us-052-layout-columns",
       "metadata": ["Installation__c-Installation Layout"]
     },
     {

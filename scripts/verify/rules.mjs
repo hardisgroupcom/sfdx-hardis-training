@@ -711,24 +711,22 @@ export const RULES = [
   },
   {
     id: "3.3", level: 3, lab: 3,
-    title: "Mariia's US-018 was reviewed, and the field it took off the layout is back",
+    title: "Mariia's US-052 was reviewed before the merge, and no field left the layout",
     check: (ctx) => {
       const history = ctx.log(DEV);
-      if (!mentions(history, "US-018")) {
-        return miss("no trace of US-018 in the integration history", `branch ${DEV}`);
+      if (!mentions(history, "US-052")) {
+        return miss("no trace of US-052 in the integration history", `branch ${DEV}`);
       }
-      const flows = ctx.listOn(DEV, "force-app/main/default/flows/");
-      const assign = flows.find((f) => /Assign_Crew/i.test(f));
-      const flow = assign ? ctx.readOn(DEV, assign) || "" : "";
-      if (!/cap|maximum|too large/i.test(flow)) {
-        return miss("the US-018 crew cap is not in Installation_Assign_Crew", `${assign || "the flow folder"} on branch ${DEV}`);
-      }
-      // The outcome of the review: the field US-018 took off the layout is back on it
+      // The outcome of the review: the story moved the cap, and removed nothing
       const layoutFile = "force-app/main/default/layouts/Installation__c-Installation Layout.layout-meta.xml";
       const layout = ctx.readOn(DEV, layoutFile) || "";
-      return /<field>Total_Capacity_kW__c<\/field>/.test(layout)
-        ? pass("US-018 is merged, and Total_Capacity_kW__c is back on the Installation layout")
-        : miss("Total_Capacity_kW__c is not on the Installation layout. Step 6 puts it back", `${layoutFile} on branch ${DEV}`);
+      const lost = ["Total_Capacity_kW__c", "Crew_Capacity_Cap__c"].filter((f) => !layout.includes(`<field>${f}</field>`));
+      return lost.length === 0
+        ? pass("US-052 is merged, and Total_Capacity_kW__c is still on the Installation layout")
+        : miss(
+          `${lost.join(" and ")} missing from the Installation layout. Steps 4 to 6 ask Mariia to put it back before the merge`,
+          `${layoutFile} on branch ${DEV}`
+        );
     }
   },
   {

@@ -115,10 +115,29 @@ own. A merge tool cannot know which of two connectors should win. You can.
 
 ### 4. Bring integration into your branch
 
-In the **Source Control** panel: the **...** menu > **Branch** > **Merge Branch**, and pick
-`integration`.
+Open the **Source Control** panel, the icon of three small circles joined by lines in the left bar.
 
-Two files come back marked as conflicting, and they appear in the panel under **Merge Changes**.
+First make sure your machine knows what Mariia merged: click the **...** menu **(1)** at the top of
+the panel, then **Pull, Push** **(2)** > **Fetch**. Nothing changes in your files: fetching only
+downloads what is new on GitHub.
+
+![The ... menu of the Source Control panel, open](../../_assets/annotated/vscode/git-scm-menu--fetch.png)
+
+Then the same **...** menu, **Branch** **(1)**, and **Merge...** **(2)**.
+
+![The Branch submenu of the Source Control panel, with Merge...](../../_assets/annotated/vscode/git-scm-menu-branch--merge.png)
+
+VS Code asks which branch to bring in. Type `integration` and pick **origin/integration** **(1)**,
+the copy of `integration` that is on GitHub, with Mariia's work in it. Not the plain
+`integration` **(2)**, if it is listed: that is the copy on your machine, which you have not updated
+since you branched.
+
+![The branch picker of Merge..., with origin/integration](../../_assets/annotated/vscode/git-merge-pick--origin-integration.png)
+
+Two files come back marked as conflicting. They appear in the panel under **Merge Changes** **(1)**,
+each with a **!** **(2)**, and the status bar says a merge is in progress.
+
+![The Source Control panel with the conflicting files under Merge Changes](../../_assets/annotated/vscode/git-merge-conflicts--merge-changes.png)
 
 <details markdown="1"><summary>Under the hood: what Merge Branch ran</summary>
 
@@ -132,18 +151,24 @@ guess which one meant it.
 
 ### 5. Resolve the permission set: take both
 
-Click the permission set file in the **Source Control** panel. VS Code opens its merge editor:
-**Incoming**, Mariia's version from `integration`, on the left, **Current**, yours, on the right, and
-the result you are building at the bottom.
+Click the permission set file under **Merge Changes**, then **Resolve in Merge Editor** at the
+bottom right of the file. VS Code opens its merge editor: **Incoming** **(1)**, Mariia's version
+from `integration`, on the left, **Current** **(2)**, yours, on the right, and the **Result** **(3)**
+you are building at the bottom.
+
+![The merge editor on the Helios Delivery Manager permission set](../../_assets/annotated/vscode/git-merge-editor--parts.png)
 
 This one is mechanical, and you can decide it without reading a single line of XML: **both entries
 belong**. Mariia granted one field, you granted another, and a permission set holds as many as it
-needs. Take the button that keeps both sides, **Accept Combination (Incoming First)** in the merge
-editor, then read the result at the bottom before you click **Complete Merge**: you want two
+needs. Take the button that keeps both sides, **Accept Combination (Incoming First)** **(1)**, above
+the conflict in the **Incoming** pane. Then read the **Result** **(2)** before you click **Complete
+Merge** **(3)**: you want two
 complete `<fieldPermissions>` blocks, each naming one field, Mariia's `Crew_Capacity_Cap__c` first
 and your `Crew_Notes__c` second. If you see a single block holding two `<field>` lines, the editor
 joined the two lines rather than the two blocks: copy the lines around it so that each field gets
 its own block, as the under the hood section shows.
+
+![The merge editor, with Accept Combination and Complete Merge](../../_assets/annotated/vscode/git-merge-editor--accept-combination.png)
 
 **Take both** is the right answer for almost every permission set conflict. Choosing one side is how
 a teammate's permission quietly disappears, and nobody notices until somebody cannot see a field.
@@ -202,7 +227,9 @@ your minimum applies **only when it does not exceed Mariia's cap**.
 Do it in Flow Builder, not in the file. A flow is stored as XML that nobody can read reliably,
 developers included, and a flow that deploys but behaves wrongly is worse than one that fails.
 
-1. In the merge editor, **Accept Incoming** on the flow: Mariia's whole version wins for now
+1. Open the flow file under **Merge Changes** in the merge editor, the same way. Click **Accept
+   Incoming** above each conflict of the **Incoming** pane, then **Complete Merge**: Mariia's whole
+   version wins for now
 2. **Save / Publish User Story** is not what you want yet. First send what the merge brought in to
    your dev org, so `helios-dev` has Mariia's field, her grant and her cap: in the **Explorer**,
    right-click the `force-app` folder, then **SFDX: Deploy This Source to Org**, the same command
@@ -210,8 +237,7 @@ developers included, and a flow that deploys but behaves wrongly is worse than o
 
    It deploys every file of the folder as it is on your machine, and nothing else. The sfdx-hardis
    **Push from local files to Salesforce org** command would send your org every change git has
-   seen since the last sync, deletions included: the Admin profile you removed from the repository
-   in Lab 2.6 would come back as a request to delete it, which Salesforce refuses
+   seen since the last sync, deletions included, which is more than this step needs
 
 3. Open **Flow Builder** in the org, on `Installation_Assign_Crew`, and add your flat-roof rule
    again, **before** her cap: the flow raises a flat roof crew to three first, and her cap, which
@@ -233,7 +259,9 @@ not intend, which no check catches and no test in this project covers.
 
 ### 7. Finish the merge and re-validate
 
-Mark both files resolved in the Source Control panel, commit the merge, push.
+**Complete Merge** moved each file from **Merge Changes** to **Staged Changes**. When both are
+there, the message box already reads `Merge remote-tracking branch 'origin/integration'`: click
+**Commit**, then **Sync Changes** to push.
 
 Then **re-publish**: **Save / Publish User Story**. This matters. The merge produced XML by hand,
 and publishing re-runs the cleaning rules over it and rebuilds `manifest/package.xml` from what your

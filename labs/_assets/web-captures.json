@@ -45,7 +45,9 @@
       "url": "https://code.visualstudio.com/download",
       "width": 1440,
       "height": 820,
-      "click": ["button:has-text('Reject')"],
+      "click": [
+        "button:has-text('Reject')"
+      ],
       "settle": 2000,
       "hideText": [
         {
@@ -167,19 +169,6 @@
       "height": 1800,
       "settle": 5000,
       "selector": ".timeline-comment:has-text(\"This deployment used Quick Deploy\") .comment-body"
-    },
-    {
-      "name": "github-pr-closed",
-      "url": "https://github.com/nvuillam/sfdx-hardis-training/pulls?q=is%3Apr+is%3Aclosed",
-      "width": 1440,
-      "height": 900,
-      "settle": 5000,
-      "clip": {
-        "x": 0,
-        "y": 95,
-        "width": 1440,
-        "height": 490
-      }
     },
     {
       "name": "github-pr-files",

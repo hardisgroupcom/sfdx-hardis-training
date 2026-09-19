@@ -1,9 +1,12 @@
 {
   "id": "us-018-crew-capacity",
   "title": "US-018 Cap the crew size a planner can assign",
-  "usedBy": "Lab 2.7, Labs 3.3 and 3.5",
-  "levels": [2, 3],
-  "description": "Mariia adds a crew capacity cap to the assignment flow, with the field and the permission it needs. She also takes Total Capacity kW off the Installation layout to make room, which nothing checks and somebody should notice.",
+  "usedBy": "Lab 2.7 and Lab 3.5",
+  "levels": [
+    2,
+    3
+  ],
+  "description": "Mariia adds a crew capacity cap to the assignment flow, with the field, the permission it needs, and the field on the Installation layout.",
   "branch": "training/mate-us-018-crew-capacity",
   "author": {
     "name": "Mariia Pyvovarchuk",
@@ -26,10 +29,6 @@
       "file": "force-app/main/default/layouts/Installation__c-Installation Layout.layout-meta.xml",
       "layoutField": "Crew_Capacity_Cap__c",
       "after": "Crew_Size__c"
-    },
-    {
-      "file": "force-app/main/default/layouts/Installation__c-Installation Layout.layout-meta.xml",
-      "removeLayoutField": "Total_Capacity_kW__c"
     }
   ]
 }

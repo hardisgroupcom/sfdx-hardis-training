@@ -7,7 +7,6 @@ lab: 3
 lang: en
 source_rev: ""
 screenshots:
-  - annotated/web/github-pr-closed
   - annotated/web/github-pr-files
   - annotated/vscode/welcome-custom-menu-3
 depends_on:
@@ -29,44 +28,32 @@ merge.
 
 ## The situation
 
-Mariia's **US-018 - Cap the crew size a planner can assign** is already in `integration`. You merged
-it yourself, in Lab 2.7, after the review that lab called "brief". The checks were green, the
-sfdx-hardis comment said the deployment validated and the tests passed, and you moved on because you
-had a conflict of your own to resolve.
+Mariia has a new story, **US-052 - The Installation layout in two columns**: planners scroll the
+Information section of every installation while its second column sits empty. Her Pull Request is
+open, its checks are green, and it waits for you.
 
 Green checks mean "this will deploy". They do not mean "this is right". Deciding the second is your
-job now, and it is the part of release management that cannot be automated.
-
-This lab is the review you did not do. It is a better lesson than a fresh Pull Request would have
-been, because the thing you missed is in your integration org right now.
+job now, **before** the merge, and it is the part of release management that cannot be automated.
+A review after the merge is an audit: the change is already in `integration`, and on its way to
+every org after it.
 
 ## Before you start
 
 - [ ] Lab 3.2 finished: JWT authentication on all four orgs
 - [ ] A clean working tree
 
-!!! note "Do not re-run Simulate my teammates for US-018"
-    Each teammate scenario is used once. Lab 2.7 consumed this one, and running it again
-    replays the same files onto a branch that already has them, so it reports "Nothing to commit"
-    and opens nothing. The Pull Request you need is already in your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`), merged.
-
 ## Steps
 
-### 1. Find Mariia's Pull Request in your fork (`github.com/my-username/sfdx-hardis-training`)
+### 1. Receive Mariia's Pull Request
 
-In your fork (`github.com/my-username/sfdx-hardis-training`): **Pull requests**, then the **Closed** filter **(1)**, and open **US-018 Cap the crew
-size a planner can assign** **(2)**.
+**Training: Level 3** **(1)** > **Simulate my teammates**, from the Welcome page, and pick **US-052
+The Installation layout in two columns**.
 
-![The closed Pull Requests of a fork, with Mariia's story](../../_assets/annotated/web/github-pr-closed.png)
+![The Level 3 training menu on the Welcome page](../../_assets/annotated/vscode/welcome-custom-menu-3.png)
 
-A merged Pull Request keeps everything a review needs: the diff, the checks, the sfdx-hardis
-comment. The only thing it no longer offers is the Merge button.
-
-!!! note "The green tick on that row"
-    The tick next to each row sums up every check the Pull Request ran: the deployment simulation
-    and **Mega-Linter**. Both passed on Mariia's story, or it could not have been merged: `integration`
-    only accepts a merge once they are green. That is the point of this lab. The pipeline was happy,
-    and what it missed is something no check looks for.
+It opens her Pull Request into `integration` in your fork (your own copy of the course repository on
+GitHub, for example `github.com/my-username/sfdx-hardis-training`). Open it from **Pull requests**,
+and wait for its two checks.
 
 ### 2. Read the robot first
 
@@ -86,91 +73,84 @@ Read the sfdx-hardis comment, top to bottom. Four things, in this order:
 4. **Tests and coverage.** Coverage every time, and a collapsed *Apex test classes* block when the
    job ran named test classes. Failures only when there are failures
 
-Reading it in that order takes two minutes. It also tells you what the comment cannot do for you,
+Reading it in that order takes two minutes. On US-052 it reads green, one component updated, nothing
+deleted, and it is right about all of it. It also tells you what the comment cannot do for you,
 which is step 3.
 
 ### 3. Read the diff, looking for what the robot cannot see
 
 The robot checks that the deployment works. It cannot check that the deployment is a good idea.
 
-Go through Mariia's diff file by file with four questions:
+Click **Files changed** **(1)**. The file tree on the left lists what the story touched: one file,
+the layout **(2)**.
+
+![The Files changed tab of Mariia's Pull Request](../../_assets/annotated/web/github-pr-files.png)
+
+Go through the diff with four questions:
 
 | Question                                 | Why it matters                                                                                                        |
 |------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
-| **Does this match the story?**           | Compare with US-018 in the backlog. Extra changes are either scope creep or an accident, and both are worth a comment |
+| **Does this match the story?**           | Compare with US-052 in the backlog. Extra changes are either scope creep or an accident, and both are worth a comment |
 | **Does anything disappear?**             | A removed field, a removed picklist value, a removed permission. Salesforce will happily deploy a deletion            |
 | **Are permissions on a Permission Set?** | A Profile carrying field permissions means somebody bypassed the convention                                           |
 | **Would this be reversible?**            | If this turns out wrong in production on Friday, what is the path back?                                               |
 
 ### 4. Find the one the robot missed
 
-In Mariia's diff, the flow now reads `Installation__c.Crew_Capacity_Cap__c`, and the permission set
-grants it. Both fine.
+The layout diff has three changes. Two go together: `Crew_Capacity_Cap__c` leaves the first column,
+and comes back in the second. That is the story.
 
-Now open `Installation__c-Installation Layout.layout-meta.xml`. The change is two lines: one
-removed, one added, at the same place. Read fast, it looks like Mariia slotted her cap into the
-layout. Read again: the line that went is `Total_Capacity_kW__c`. The cap did not join the layout,
-it **took the place** of the installed capacity.
+The third is a removed block, and nothing adds it back: `Total_Capacity_kW__c`. Read fast, it looks
+like part of the move. Read again: the installed capacity did not move to the second column, it
+**left the layout**.
 
-Nothing fails. The field still exists, the deployment was green, the tests passed. But nobody can
-see a capacity on an installation record any more, and the first person to notice will be whoever
-reads that number on a Monday morning.
+Nothing fails. The field still exists, the deployment check is green. But once this is merged,
+nobody sees a capacity on an installation record any more, and the first person to notice will be
+whoever reads that number on a Monday morning.
 
-Then compare with what Mariia wrote. The description says *Installation layout: the cap added*. It
-says nothing about a field going. That is the gap a review is for: the diff says one thing, the
-description another, and only one of them is what gets deployed.
+Then compare with what Mariia wrote. The description says *the crew capacity cap moves to the second
+column*. It says nothing about a field going. That is the gap a review is for: the diff says one
+thing, the description another, and only one of them is what gets deployed.
 
 **Nothing in the pipeline can catch that.** A layout with one field fewer is a valid deployment, the
 counts line says `updated: 1`, and only somebody who knows the org can see what is missing.
 
-### 5. Say what you found, where it will be found again
+### 5. Ask for the change, on the line
 
-The Merge button is gone, and so is **Request changes**: you cannot ask for changes on a Pull
-Request you already merged. What you can still do is leave the comment, and that is not a
-consolation prize. A review comment on a merged Pull Request is where the next person looks when
-they ask why the layout changed.
+Hover the line where `Total_Capacity_kW__c` is removed, click the blue **+** that appears, and
+comment:
 
-Click **Files changed** **(1)**. The file tree on the left lists the four files Mariia's story
-touched, and the layout **(2)** is the one to open.
+> `Total_Capacity_kW__c` comes off the layout with this change, and the description does not say so.
+> I think it went missing with the move: can you put it back in the second column, under the cap,
+> read only?
 
-![The Files changed tab of Mariia's Pull Request](../../_assets/annotated/web/github-pr-files.png)
-
-Find the layout in the diff, hover the line where the field used to be, click the blue **+** that
-appears, and comment:
-
-> `Total_Capacity_kW__c` came off the layout with this change: the cap took its place instead of
-> joining it. The field is still on the object. Can you put it back in a follow-up, in the second
-> column, so both show?
+Then **Review changes** at the top right of the tab, **Comment**, **Submit review**. On a real
+project you would choose **Request changes**, which keeps the Merge button honest until the author
+answers. GitHub hides it here because the teammate Pull Requests of this course are opened from your
+own account, and nobody requests changes from themselves.
 
 Two things about that comment worth copying:
 
 - **It says why**, so the reader can judge rather than take your word
 - **It says what happens next**, so nobody has to ask
 
-### 6. Review the follow-up, and merge it
+**Do not merge.** The Merge button is green, and it is wrong.
+
+### 6. Review the fix, then merge
 
 The fix is Mariia's to make: a release manager reviews and merges the contributors' Pull Requests,
-and does not write their features. Mariia answers the next morning.
-**Training: Level 3** > **Simulate my teammates**, and pick **US-052 Total Capacity back on the
-Installation layout**.
+and does not write their features. She answers the next morning, on the same branch.
+**Training: Level 3** > **Simulate my teammates**, and pick **US-052 Mariia puts Total Capacity
+back, beside the cap**.
 
-![The Level 3 training menu on the Welcome page](../../_assets/annotated/vscode/welcome-custom-menu-3.png)
+It adds one commit to her branch, so the same Pull Request updates, and its checks run again. Open
+**Files changed** again: GitHub offers to show only the changes since your review, and there is one,
+`Total_Capacity_kW__c` added in the second column, read only, under the cap. The whole diff of the
+Pull Request now moves one field and removes nothing.
 
-It opens her Pull Request into `integration` in your fork (`github.com/my-username/sfdx-hardis-training`). Review it exactly as you reviewed US-018:
-
-- **The diff**: one file, the layout, and in it `Total_Capacity_kW__c` added in the second column of
-  the **Information** section. Nothing removed this time
-- **The check**: green, and the sfdx-hardis comment says one component updated
-- **The four questions**: it matches the story, nothing disappears, no permission is involved, and
-  it is reversible by the same kind of change
-
-When the checks are green, **Merge pull request**. GitHub does not let you approve a Pull Request
-opened from your own account, and in this fork the teammate Pull Requests are opened from yours: on
-a real project, this is where you click **Approve** first.
-
-Use **Create a merge commit**, not squash. On a pipeline where the release notes and the DORA report
-are built from merged Pull Requests, the merge commit is what carries the link back to the Pull
-Request, and squashing loses it.
+When the checks are green, merge with **Squash and merge**, as for every feature Pull Request (Lab
+1.6): the two commits become one line in the history of `integration`, titled like the Pull Request.
+On a real project, this is where you click **Approve** first.
 
 ### 7. Delete the branch
 
@@ -204,22 +184,24 @@ anything deleted, the comment has told you everything it is going to: the rest i
 
 ## What you should see
 
-- A review comment on Mariia's merged Pull Request, naming what came off the layout
-- Mariia's follow-up Pull Request, `US-052`, reviewed and merged into `integration`
-- `Total_Capacity_kW__c` back on the Installation layout in `integration`
+- Your review comment on Mariia's Pull Request, on the line that removed `Total_Capacity_kW__c`
+- Her fix in the same Pull Request, and the Pull Request squash merged into `integration`
+- The Installation layout in `integration` with the cap and `Total_Capacity_kW__c` in the second
+  column
 
 ## If it goes wrong
 
 **Simulate my teammates says "Nothing to commit".**
-Expected, and it is why step 1 does not use it. Lab 2.7 already merged US-018, and each
-scenario is used once.
+The scenario already ran: each one is used once. The Pull Request is in your fork, open or merged.
 
-**The checks never run on your follow-up Pull Request.**
+**The checks never run after Mariia's fix.**
 Actions are disabled, or the JWT secrets are missing for `integration`. Lab 3.2.
 
-**The field is already back on the layout.**
-Then a teammate restored it earlier, and the simulation reports nothing to commit. Move on: the lesson is
-the comment, not the commit.
+**You merged before the fix.**
+Then `Total_Capacity_kW__c` is off the layout in `integration`. Run the fix scenario anyway: it
+opens the fix as a new Pull Request from the same branch, and you review and merge that one. If you
+already deleted her branch, click **Restore branch** at the bottom of the merged Pull Request
+first.
 
 ## Check your work
 

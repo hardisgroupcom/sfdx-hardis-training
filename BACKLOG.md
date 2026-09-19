@@ -14,7 +14,7 @@ for the `Helios Delivery` app, and every one of them is a lab in this course.
 | [US-017](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-017/) | 2 | Record who signed an installation off | Romain Panda | `training/mate-us-017-sign-off` |
 | [US-018](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-018/) | 2 | Cap the crew size a planner can assign | Mariia Pyvovarchuk | `training/mate-us-018-crew-capacity` |
 | [US-019](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-019/) | 2 | Generate a quote PDF from an opportunity | Romain Panda | `training/mate-us-019-quote-pdf` |
-| [US-052](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-052/) | 3 | Total Capacity back on the Installation layout | Mariia Pyvovarchuk | `training/mate-us-052-layout-capacity` |
+| [US-052](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-052/) | 3 | The Installation layout in two columns | Mariia Pyvovarchuk | `training/mate-us-052-layout-columns` |
 | [US-020](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-020/) | 3 | Refactor InstallationScheduler | Mariia Pyvovarchuk | `training/mate-us-020-apex-refactor` |
 | [US-021](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-021/) | 2 | Warn the planner when a crew is too small | You | `features/US-021-crew-size-warning` |
 | [US-024](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-024/) | 2 | Crew size becomes mandatory | You | `features/US-024-crew-size-required` |
@@ -110,17 +110,18 @@ Acceptance criteria:
 
 <a id="US-052"></a>
 
-### US-052 - Total Capacity back on the Installation layout
+### US-052 - The Installation layout in two columns
 
 **Owner**: Mariia Pyvovarchuk  
-**Branch**: `training/mate-us-052-layout-capacity`  
+**Branch**: `training/mate-us-052-layout-columns`  
 **Lab**: 3.3
 
-> As a planner, I want to see the installed capacity on an installation again, so that I stop opening the report to find it.
+> As a planner, I want the Information section of an installation to use both of its columns, so that I see the whole installation without scrolling.
 
 Acceptance criteria:
 
-- Total Capacity (kW) is on the Installation layout, beside the crew capacity cap
+- The crew capacity cap is in the second column of the Information section
+- Every field that was on the layout is still on it
 
 <a id="US-020"></a>
 
