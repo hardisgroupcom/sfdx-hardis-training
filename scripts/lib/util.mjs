@@ -9,6 +9,7 @@ import fs from "fs";
 import path from "path";
 import readline from "readline";
 import { fileURLToPath } from "url";
+import * as panel from "./panel.mjs";
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -30,19 +31,24 @@ export function title(text) {
   console.log("");
   console.log(c.cyan(c.bold(text)));
   console.log(c.cyan("-".repeat(text.length)));
+  panel.log(text, "action");
 }
 
 export function info(text) {
   console.log(text);
+  panel.log(text, "log");
 }
 export function ok(text) {
   console.log(`${c.green("OK")}  ${text}`);
+  panel.log(text, "success");
 }
 export function warn(text) {
   console.log(`${c.yellow("!")}   ${text}`);
+  panel.log(text, "warning");
 }
 export function fail(text) {
   console.log(`${c.red("X")}   ${text}`);
+  panel.log(text, "error");
 }
 
 /** Stops with a readable message rather than a stack trace. */
@@ -51,7 +57,9 @@ export function abort(message, hint) {
   fail(message);
   if (hint) {
     console.log(`    ${c.dim(hint)}`);
+    panel.log(hint, "log");
   }
+  panel.close("error");
   process.exit(1);
 }
 
@@ -159,7 +167,11 @@ export function gitOut(args) {
 
 // ------------------------------------------------------------------ prompts
 function isInteractive() {
-  return process.stdin.isTTY && !process.env.CI && process.env.TRAINING_NO_PROMPT !== "true";
+  if (process.env.TRAINING_NO_PROMPT === "true") {
+    return false;
+  }
+  // The panel asks the question in VS Code, so no terminal is needed
+  return panel.isActive() || (process.stdin.isTTY && !process.env.CI);
 }
 
 async function ask(question) {
@@ -197,6 +209,23 @@ export async function select(message, choices, preselected) {
       "Pass the value on the command line instead, for example: node scripts/training.mjs seed --org helios-dev"
     );
   }
+  if (panel.isActive()) {
+    const picked = await panel.ask({
+      type: "select",
+      name: "value",
+      message,
+      choices: choices.map((ch) => ({
+        title: ch.label,
+        value: ch.value,
+        description: ch.hint || undefined
+      }))
+    });
+    if (picked !== undefined) {
+      const chosen = choices.find((ch) => ch.value === picked);
+      info(`${message} ${chosen ? chosen.label : picked}`);
+      return picked;
+    }
+  }
   console.log("");
   console.log(c.bold(message));
   choices.forEach((ch, i) => {
@@ -221,6 +250,16 @@ export async function input(message, initial = "") {
     }
     abort(`${message} needs an answer, and this terminal cannot ask for one.`);
   }
+  if (panel.isActive()) {
+    const typed = await panel.ask({ type: "text", name: "value", message, initial: initial || undefined });
+    if (typed !== undefined && String(typed).trim() !== "") {
+      info(`${message} ${String(typed).trim()}`);
+      return String(typed).trim();
+    }
+    if (typed !== undefined && initial) {
+      return initial;
+    }
+  }
   for (;;) {
     const answer = await ask(c.bold(message) + (initial ? c.dim(` [${initial}] `) : " "));
     if (answer) {
@@ -236,6 +275,13 @@ export async function input(message, initial = "") {
 export async function confirm(message, defaultYes = false) {
   if (!isInteractive()) {
     return defaultYes;
+  }
+  if (panel.isActive()) {
+    const answered = await panel.ask({ type: "confirm", name: "value", message, initial: defaultYes });
+    if (answered !== undefined) {
+      info(`${message} ${answered ? "yes" : "no"}`);
+      return answered === true || answered === "true";
+    }
   }
   const suffix = defaultYes ? " [Y/n] " : " [y/N] ";
   const answer = (await ask(c.bold(message + suffix))).toLowerCase();

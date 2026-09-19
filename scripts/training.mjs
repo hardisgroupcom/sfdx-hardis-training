@@ -16,6 +16,7 @@
  * for automation and for the labs that show what happened under the hood.
  */
 import { parseArgs, abort, c } from "./lib/util.mjs";
+import * as panel from "./lib/panel.mjs";
 
 const VERBS = {
   init: () => import("./training/init.mjs"),
@@ -57,11 +58,19 @@ Usually you click these on the VS Code Welcome page, under ${c.bold("Training: L
     abort(`"${verb}" is not a training command.`, `Try one of: ${Object.keys(VERBS).join(", ")}`);
   }
 
+  // When the extension runs this in its Command Runner panel, the lesson talks
+  // to it the way an sfdx-hardis command does. In a plain terminal this does
+  // nothing at all.
+  await panel.connect(verb);
   const module = await loader();
   await module.default(args);
+  panel.refresh();
+  panel.close("success");
 }
 
 main().catch((error) => {
+  panel.log(`Something went wrong: ${error.message}`, "error");
+  panel.close("error");
   console.error("");
   console.error(c.red(`Something went wrong: ${error.message}`));
   if (process.env.TRAINING_DEBUG) {
