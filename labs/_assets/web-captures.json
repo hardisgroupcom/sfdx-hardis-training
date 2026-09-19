@@ -318,7 +318,9 @@
       "settle": 5000,
       "selector": ".timeline-comment:has-text(\"Manual Actions to perform before proceeding\") .comment-body",
       "maxHeight": 1500,
-      "evaluate": ["(() => { for (const el of document.querySelectorAll('body *')) { const p = getComputedStyle(el).position; if (p === 'sticky' || p === 'fixed') { el.style.visibility = 'hidden'; } } })()"]
+      "evaluate": [
+        "(() => { for (const el of document.querySelectorAll('body *')) { const p = getComputedStyle(el).position; if (p === 'sticky' || p === 'fixed') { el.style.visibility = 'hidden'; } } })()"
+      ]
     },
     {
       "name": "github-pr-release-notes",
@@ -330,7 +332,9 @@
       "settle": 5000,
       "selector": ".timeline-comment:has-text(\"Promotion 2026-09 to UAT\") .comment-body",
       "maxHeight": 1500,
-      "evaluate": ["(() => { for (const el of document.querySelectorAll('body *')) { const p = getComputedStyle(el).position; if (p === 'sticky' || p === 'fixed') { el.style.visibility = 'hidden'; } } })()"]
+      "evaluate": [
+        "(() => { for (const el of document.querySelectorAll('body *')) { const p = getComputedStyle(el).position; if (p === 'sticky' || p === 'fixed') { el.style.visibility = 'hidden'; } } })()"
+      ]
     }
   ]
 }
