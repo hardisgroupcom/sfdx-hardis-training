@@ -41,8 +41,8 @@ metadata being wrong:
 2. **Code coverage**, because the new branch of logic has no test. It **blocks**
 
 The first is this project's choice: it could make the analyzer refuse, and it does not. The second
-is Salesforce's own floor, 75% of the Apex in the org run by tests, which this project keeps as its
-threshold. Knowing which of your gates warn and which refuse is half of working on a pipeline, so
+is this project's threshold too: 80% of the Apex in the org run by tests, above the 75% Salesforce
+itself requires. Knowing which of your gates warn and which refuse is half of working on a pipeline, so
 this lab makes you meet one of each.
 
 ## Before you start
@@ -108,7 +108,7 @@ Avoid operations in loops that may hit governor limits
 
 It is in the MegaLinter comment on your Pull Request, under **code-analyzer-apex**, among a few
 findings on code that was there before you. The deployment check next to it is green: the tests
-still run more than 75% of the org's Apex, at about 78%.
+still run more than 80% of the org's Apex, at about 81%.
 
 A SOQL query inside a `for` loop. Salesforce allows 100 queries per transaction, so this method
 works perfectly for a planner checking five installations and throws
@@ -154,11 +154,14 @@ Push the fix. MegaLinter no longer reports the loop. Now the deployment check **
 one is not advice:
 
 ```
-Average test coverage across all Apex Classes and Triggers is 73%, at least 75% test coverage is
-required.
+[sfdx-hardis][apextest] Test run code coverage (org wide) 76.92% should be greater than 80%
 ```
 
-The loop version was short, and the org carried it at 78%. The fix is longer, and every one of its
+The sfdx-hardis comment says it too, in red: **code coverage is insufficient**. Salesforce alone
+would have let it through, at 77% for its 75% floor: the project asks for more, and the check job
+holds it to that.
+
+The loop version was short, and the org carried it at 81%. The fix is longer, and every one of its
 new lines is a line no test runs. You added a method with three branches and no test. Add them to
 `force-app/main/default/classes/InstallationSchedulerTest.cls`:
 
@@ -250,13 +253,14 @@ Both green. Merge, and check `helios-integration`.
 **The coverage gate** is `config/.sfdx-hardis.yml`:
 
     testLevel: RunLocalTests
-    apexTestsMinCoverageOrgWide: 75
+    apexTestsMinCoverageOrgWide: 80
     testCoverageNotBlocking: false
 
 `RunLocalTests` runs every test in the org except managed package ones. The threshold is checked
 **org-wide**, not per class, which is why one badly covered class can be carried by the rest of the
 org for a while and then suddenly block somebody else's Pull Request. 75% is the Salesforce
-minimum; most real projects set 80 or 85.
+minimum, below which no deployment goes through; this project asks for 80, and most real projects
+set 80 or 85.
 
 `testCoverageNotBlocking: true` turns the gate into a warning. It exists for projects taking over a
 legacy org, and it is a temporary measure, not a setting.
@@ -276,7 +280,7 @@ coverage.
 ## What you should see
 
 - The MegaLinter check reporting no findings
-- The deployment check green, with coverage above 75% in the comment
+- The deployment check green, with coverage above 80% in the comment
 - `schedulableOn` in `helios-integration`, with one query outside the loop
 
 ## If it goes wrong

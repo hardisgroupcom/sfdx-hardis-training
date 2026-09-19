@@ -201,10 +201,10 @@ Both jobs authenticate first, through the sfdx-hardis hook that reads
 The test level comes from `config/.sfdx-hardis.yml`:
 
     testLevel: RunLocalTests
-    apexTestsMinCoverageOrgWide: 75
+    apexTestsMinCoverageOrgWide: 80
 
 `RunLocalTests` runs every test in the org except those from managed packages. 75% is the Salesforce
-minimum, and most real projects set it higher.
+minimum, and this project asks for 80, like most real ones.
 
 </details>
 

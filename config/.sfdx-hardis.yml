@@ -39,7 +39,9 @@ genericTicketingProviderUrlBuilder: "https://hardisgroupcom.github.io/sfdx-hardi
 
 # --- Quality --------------------------------------------------------------
 testLevel: RunLocalTests
-apexTestsMinCoverageOrgWide: 75
+# Salesforce refuses a deployment under 75%. This project asks for 80, like most real ones:
+# Lab 2.5 is where a Pull Request meets it.
+apexTestsMinCoverageOrgWide: 80
 testCoverageNotBlocking: false
 
 # --- Automated cleaning ---------------------------------------------------
