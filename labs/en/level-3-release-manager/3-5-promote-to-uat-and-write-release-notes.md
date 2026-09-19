@@ -131,9 +131,17 @@ replaced by the Pull Request number and its status.
     feature is for promoting a **subset** of what is waiting. What you are doing is promoting
     everything, and everything is what a plain Pull Request from one branch to the next carries.
 
-Title it for the humans who will read it, not for git:
+Title it for the humans who will read it, not for git, and call it a **promotion**:
 
-> Release 2026-09: crew capacity cap, quote PDF
+> Promotion 2026-09: crew capacity cap, quote PDF
+
+**Release** is the word for the Pull Request into `main`, production, and for nothing else. The
+business reads "release" as "it is live", and a Pull Request into `uat` puts nothing live. Keep the
+two words apart and a list of Pull Requests reads like the history of what reached production.
+
+Merge it with **Merge pull request**, never with a squash: a promotion carries every commit of the
+stories it promotes, and the next promotion, the retrofit and the release notes all need to find
+them one by one (Lab 1.6).
 
 ### 4. Read the deployment actions it carries
 
@@ -246,9 +254,11 @@ from the environment (`GITHUB_TOKEN` or `CI_SFDX_HARDIS_GITHUB_TOKEN` on GitHub)
 does not stop: it warns, collects zero Pull Requests, and writes you a perfectly formatted document
 with nothing in it. An empty release note is more often a missing token than an empty release.
 
-**This is also why Lab 3.2 said not to squash.** A squashed merge loses the link between the commit and
-the Pull Request, and both the release notes and the DORA report in Lab 3.6 lean on exactly that link.
-A project that squashes everything has no release notes it did not write by hand.
+**This is also why a promotion is never squashed.** The notes find each story from the commit its
+Pull Request left on `integration`, a merge commit or the single commit of a squash alike: that is
+why a feature Pull Request can be squashed. A promotion squashed into `uat` would replace all of
+those commits by one that no story produced, and the notes of `uat` would name the promotion and
+nothing it carried. The DORA report in Lab 3.6 leans on the same link.
 
 **A promotion is an ordinary Pull Request.** There is no special promotion machinery in the default
 setup: `integration` into `uat` is a branch merged into another branch, and the deployment job on

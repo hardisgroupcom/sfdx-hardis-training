@@ -68,7 +68,7 @@ secrets of Lab 3.1: a green check here is your `preprod` JWT set-up working.
 
 Title it plainly:
 
-> Release 2026-09 to preprod
+> Promotion 2026-09 to preprod
 
 Read the check, merge, and watch the **Process Deployment (sfdx-hardis)** run on `preprod`. Then
 open `helios-preprod` and do the checks of step 5 there first.
@@ -200,9 +200,9 @@ Two degradations worth recognising rather than debugging:
 
 - **No target org**: the three Salesforce metrics read "No data available" and the report still
   prints
-- **No git provider token**: it falls back to parsing `git log --merges`, recognising GitHub and
-  GitLab merge commit messages. Squashed merges give it nothing to parse, which is the second reason
-  this course does not squash
+- **No git provider token**: it falls back to reading `git log`, recognising the merge commits of
+  GitHub and GitLab and the squash commits of GitHub and Azure DevOps. Lead time then reads zero:
+  a commit carries the day it was merged, and not the day its Pull Request was opened
 
 The report lands in `hardis-report/` and is copied to `docs/dora/`.
 
@@ -239,8 +239,8 @@ It had no target org. In **Orgs Manager**, set `helios-prod` as your default org
 Same cause, other direction: it measured your default org, which was not `helios-prod`.
 
 **Lead time is zero or missing.**
-No Pull Request data. Either there is no git provider token in the environment, or the merges were
-squashed and the `git log` fallback has nothing to recognise.
+No Pull Request data: there is no git provider token in the environment, and the `git log`
+fallback cannot tell when a Pull Request was opened.
 
 ## Check your work
 
