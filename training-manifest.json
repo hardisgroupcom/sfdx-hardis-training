@@ -282,6 +282,8 @@
         "packageXml"
       ],
       "screenshots": [
+        "annotated/web/github-pr-check-failed",
+        "annotated/web/github-pr-flow-diff",
         "annotated/salesforce/flow-builder-crew-warning",
         "annotated/salesforce/flow-builder-start-conditions",
         "annotated/salesforce/flow-builder-formula",

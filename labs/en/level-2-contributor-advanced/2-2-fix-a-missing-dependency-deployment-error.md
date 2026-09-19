@@ -7,6 +7,8 @@ lab: 2
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/web/github-pr-check-failed
+  - annotated/web/github-pr-flow-diff
   - annotated/salesforce/flow-builder-crew-warning
   - annotated/salesforce/flow-builder-start-conditions
   - annotated/salesforce/flow-builder-formula
@@ -143,12 +145,23 @@ Then **Save / Publish** **(1)**.
 
 Push, open the Pull Request into `integration` in your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`), and wait.
 
-The check fails, and the sfdx-hardis comment on the Pull Request names the component:
+The check fails, and the sfdx-hardis comment on the Pull Request names the component under
+**Deployment errors** **(1)**:
+
+![The sfdx-hardis comment of a failed deployment check](../../_assets/annotated/web/github-pr-check-failed.png)
 
 ```
 Installation_Crew_Warning field integrity exception: unknown (The field "Crew_Warning_Sent__c"
 for the object "Installation__c" doesn't exist.)
 ```
+
+Under **Flow changes** **(2)**, the comment links to a second comment of its own: the visual diff of
+the flow. It draws the flow, and colours what your story changed. The new **Mark Warning Sent**
+element is green **(1)**, and the tables under the diagram mark every changed property with a red
+square for the old value and a green one for the new: the description **(2)**, the formula **(3)**.
+A reviewer reads your flow change there, without opening Flow Builder or its XML.
+
+![The visual diff of the Installation Crew Warning flow, posted on the Pull Request](../../_assets/annotated/web/github-pr-flow-diff.png)
 
 Your Pull Request cannot be merged while that check is red: `integration` refuses it, for you as
 for anybody.

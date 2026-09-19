@@ -120,5 +120,7 @@
   "salesforce/flow-builder-start-conditions.png": "6ccba9f3f29f7a92",
   "salesforce/flow-builder-formula.png": "bd69fe09695d7010",
   "salesforce/flow-builder-add-element.png": "936a208dce04c7b5",
-  "vscode/pipeline-branch-modal-uat.png#no-merge-target": "bae4e3f81afbac9a"
+  "vscode/pipeline-branch-modal-uat.png#no-merge-target": "bae4e3f81afbac9a",
+  "web/github-pr-check-failed.png": "da94c10a0bc8b937",
+  "web/github-pr-flow-diff.png": "37fc86d82e9f8327"
 }

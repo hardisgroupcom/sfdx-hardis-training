@@ -129,6 +129,14 @@ async function main() {
         options.clip = { x, y, width: box.width + (pad.left || 0) + (pad.right || 0), height: box.height + (pad.top || 0) + (pad.bottom || 0) };
       }
       await view.screenshot(options);
+    } else if (target.selector && target.maxHeight) {
+      // The top of a tall element only: scrolled to the top of the window, then clipped
+      const element = view.locator(target.selector).first();
+      await element.evaluate((node) => node.scrollIntoView({ block: "start" }));
+      await view.waitForTimeout(800);
+      const box = await element.boundingBox();
+      options.clip = { x: box.x, y: box.y, width: box.width, height: Math.min(box.height, target.maxHeight) };
+      await view.screenshot(options);
     } else if (target.selector) {
       await view.locator(target.selector).first().screenshot(options);
     } else {

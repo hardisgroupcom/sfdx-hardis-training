@@ -1,6 +1,59 @@
 {
   "_comment": "Numbered pills drawn on screenshots by scripts/build/annotate.mjs. Coordinates are percentages of the image, so re-taking a screenshot at another resolution keeps them in place. x/y place the box (or the point when there is no w/h); px/py move the pill off the box corner when the corner is too close to an edge. The lab text refers to the numbers.",
   "images": {
+    "web/github-pr-check-failed.png": {
+      "pills": [
+        {
+          "n": 1,
+          "x": 2.0,
+          "y": 30.2,
+          "w": 96.0,
+          "h": 6.0,
+          "px": 97.0,
+          "py": 28.5
+        },
+        {
+          "n": 2,
+          "x": 4.7,
+          "y": 73.0,
+          "w": 20.5,
+          "h": 3.2,
+          "px": 31.0,
+          "py": 74.0
+        }
+      ]
+    },
+    "web/github-pr-flow-diff.png": {
+      "pills": [
+        {
+          "n": 1,
+          "x": 54.5,
+          "y": 35.2,
+          "w": 19.2,
+          "h": 5.0,
+          "px": 76.5,
+          "py": 35.5
+        },
+        {
+          "n": 2,
+          "x": 3.0,
+          "y": 67.2,
+          "w": 95.3,
+          "h": 3.6,
+          "px": 70.0,
+          "py": 66.2
+        },
+        {
+          "n": 3,
+          "x": 3.0,
+          "y": 96.3,
+          "w": 95.3,
+          "h": 3.6,
+          "px": 62.0,
+          "py": 95.3
+        }
+      ]
+    },
     "salesforce/flow-builder-crew-warning.png": {
       "pills": [
         {
