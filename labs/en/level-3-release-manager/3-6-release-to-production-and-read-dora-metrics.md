@@ -47,7 +47,7 @@ Everything in this lab that looks like ceremony is there because somebody skippe
 Before creating anything:
 
 **One: is UAT genuinely signed off?** Not "the deployment was green". Somebody tested it and said
-yes. On this project that person is you, and you did it in Lab 3.5 step 5.
+yes. On this project that person is you, and you did it in Lab 3.5 step 6.
 
 **Two: what manual steps will this carry?** Look at the deployment actions of the stories going out.
 A manual step in production is something you will do, live, in front of nobody, at whatever time the
@@ -71,7 +71,7 @@ Title it plainly:
 > Promotion 2026-09 to preprod
 
 Read the check, merge, and watch the **Process Deployment (sfdx-hardis)** run on `preprod`. Then
-open `helios-preprod` and do the checks of step 5 there first.
+open `helios-preprod` and do the checks of step 6 there first.
 
 This is what `preprod` is for. It holds what production holds, nobody works in it, and a release
 that deploys there cleanly and behaves has very little left to surprise you with in production. A
