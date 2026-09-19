@@ -535,7 +535,7 @@
       "name": "Contributor advanced",
       "duration": "about 4 h",
       "prerequisite": 1,
-      "badge": "sfdx-hardis Contributor",
+      "badge": "sfdx-hardis Contributor Advanced",
       "star": "oxsecurity/megalinter",
       "labs": [
         {

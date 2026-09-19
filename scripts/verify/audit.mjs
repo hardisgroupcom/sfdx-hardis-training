@@ -25,7 +25,7 @@ import { parseArgs } from "../lib/util.mjs";
 
 const LEVEL_NAMES = {
   1: "sfdx-hardis Contributor Basics",
-  2: "sfdx-hardis Contributor",
+  2: "sfdx-hardis Contributor Advanced",
   3: "sfdx-hardis Release Manager"
 };
 

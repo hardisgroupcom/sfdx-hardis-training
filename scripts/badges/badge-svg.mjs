@@ -11,7 +11,7 @@ const TEMPLATE = path.resolve(HERE, "..", "..", "badges", "_template.svg");
 
 export const LEVELS = {
   1: { name: "sfdx-hardis Contributor Basics", hue: "#F2994A", blurb: "Delivers a User Story through a Pull Request, end to end." },
-  2: { name: "sfdx-hardis Contributor", hue: "#2D9CDB", blurb: "Solves deployment errors, declares deployment actions, resolves conflicts." },
+  2: { name: "sfdx-hardis Contributor Advanced", hue: "#2D9CDB", blurb: "Solves deployment errors, declares deployment actions, resolves conflicts." },
   3: { name: "sfdx-hardis Release Manager", hue: "#6C5CE7", blurb: "Owns the pipeline, the releases, the hotfixes and the monitoring." }
 };
 

@@ -147,8 +147,8 @@ you skipped Level 1, that is where it will say so, and the command says it befor
     the quality gate your Pull Requests went through. A star is how an open source project stays
     visible. It is up to you: the badge does not depend on it.
 
-The badge for this level is called **sfdx-hardis Contributor**, without a qualifier. That is
-deliberate: Level 1 makes you able to deliver, Level 2 makes you a contributor.
+The badge for this level is called **sfdx-hardis Contributor Advanced**. Level 1 makes you able to
+deliver a User Story; Level 2 makes you able to deal with everything that goes wrong on the way.
 
 ## What comes next
 
