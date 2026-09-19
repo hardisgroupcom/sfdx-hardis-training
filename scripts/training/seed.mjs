@@ -32,7 +32,11 @@ function deployArgs(target) {
     "--source-dir", "force-app",
     "--target-org", target,
     "--test-level", "NoTestRun",
-    "--wait", "60"
+    "--wait", "60",
+    // The course is the reference here. A scratch org that already holds the app, from an
+    // earlier setup or another clone of the fork, would otherwise refuse every component
+    // as a source tracking conflict: this clone has never seen the org
+    "--ignore-conflicts"
   ];
 }
 
@@ -309,7 +313,7 @@ export function addPicklistValue(alias, step) {
       }
       fs.writeFileSync(file, xml.slice(0, at) + value + xml.slice(at), "utf8");
     }
-    return run("sf", ["project", "deploy", "start", "--source-dir", "force-app", "--target-org", alias], { cwd: dir, quiet: true, capture: true }).code === 0;
+    return run("sf", ["project", "deploy", "start", "--source-dir", "force-app", "--target-org", alias, "--ignore-conflicts"], { cwd: dir, quiet: true, capture: true }).code === 0;
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
