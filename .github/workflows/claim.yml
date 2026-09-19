@@ -69,29 +69,9 @@ jobs:
           gh issue edit "$ISSUE" --add-label needs-work
           exit 0
 
-      # One open source project per level, starred by the claimant. Checked from
-      # the public star list of the handle, so it needs nothing from them.
-      - name: Check the stars the claimed levels ask for
-        if: steps.claim.outputs.valid == 'true'
-        id: stars
-        env:
-          GH_TOKEN: ${{ github.token }}
-          LEVEL: ${{ steps.claim.outputs.level }}
-          HANDLE: ${{ steps.claim.outputs.handle }}
-        run: node scripts/badges/check-stars.mjs >> "$GITHUB_OUTPUT"
-
-      - name: Report a missing star
-        if: steps.claim.outputs.valid == 'true' && steps.stars.outputs.starred != 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          ISSUE: ${{ github.event.issue.number }}
-        run: |
-          gh issue comment "$ISSUE" --body-file /tmp/stars.md
-          gh issue edit "$ISSUE" --add-label needs-work
-
       # Rule 4: shallow, blob-filtered, size-capped, time-capped.
       - name: Clone the learner repository, read only
-        if: steps.claim.outputs.valid == 'true' && steps.stars.outputs.starred == 'true'
+        if: steps.claim.outputs.valid == 'true'
         id: clone
         env:
           REPO_URL: ${{ steps.claim.outputs.repo }}
@@ -112,7 +92,7 @@ jobs:
           echo "cloned=true" >> "$GITHUB_OUTPUT"
 
       - name: Report a repository that could not be read
-        if: steps.stars.outputs.starred == 'true' && steps.clone.outputs.cloned != 'true'
+        if: steps.claim.outputs.valid == 'true' && steps.clone.outputs.cloned != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           ISSUE: ${{ github.event.issue.number }}

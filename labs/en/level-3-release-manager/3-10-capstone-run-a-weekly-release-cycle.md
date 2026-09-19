@@ -157,11 +157,10 @@ A Level 3 claim re-runs the **Level 1 and Level 2 audits first**. That is how th
 enforced, because a Trailmix cannot gate anything. The command runs those same audits on your
 machine before it opens anything, so you find out here rather than on the issue.
 
-!!! info "It also asks you to star the VS Code extension"
-    Level 3 asks you to star
-    [hardisgroupcom/vscode-sfdx-hardis](https://github.com/hardisgroupcom/vscode-sfdx-hardis), the
-    extension every click of this course went through, on top of the Level 1 and Level 2 stars. The
-    command offers to do all three for you, and the audit checks them.
+!!! tip "If the course helped you"
+    [hardisgroupcom/vscode-sfdx-hardis](https://github.com/hardisgroupcom/vscode-sfdx-hardis) is the
+    extension every click of this course went through. A star is how an open source project stays
+    visible. It is up to you: the badge does not depend on it.
 
 The badge is **sfdx-hardis Release Manager**.
 

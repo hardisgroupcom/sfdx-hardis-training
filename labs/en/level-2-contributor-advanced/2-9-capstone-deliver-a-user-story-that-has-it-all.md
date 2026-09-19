@@ -142,10 +142,10 @@ three boxes and submit.
 A Level 2 claim re-runs the **Level 1 audit as well**, because the badge says you can do both. If
 you skipped Level 1, that is where it will say so, and the command says it before the form opens.
 
-!!! info "It also asks you to star MegaLinter"
-    Level 2 asks you to star [oxsecurity/megalinter](https://github.com/oxsecurity/megalinter), the
-    linting engine behind the quality gate your Pull Requests go through, on top of the Level 1 star.
-    The command offers to do both for you, and the audit checks them.
+!!! tip "If the course helped you"
+    [oxsecurity/megalinter](https://github.com/oxsecurity/megalinter) is the linting engine behind
+    the quality gate your Pull Requests went through. A star is how an open source project stays
+    visible. It is up to you: the badge does not depend on it.
 
 The badge for this level is called **sfdx-hardis Contributor**, without a qualifier. That is
 deliberate: Level 1 makes you able to deliver, Level 2 makes you a contributor.

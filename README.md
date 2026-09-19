@@ -88,9 +88,9 @@ A job clones your repository, re-runs every check of the level against its actua
 history, and answers on the issue. Nobody reviews claims by hand. A level 2 claim re-runs the level
 1 audit too, and a level 3 claim re-runs all three.
 
-Each level also asks you to star the project it teaches: sfdx-hardis for level 1, MegaLinter for
-level 2, the VS Code extension for level 3. The claim command offers to do it, and the audit checks
-it.
+The claim command also shows the open source project each level teaches, sfdx-hardis, MegaLinter
+and the VS Code extension, in case you want to star it. It never stars anything for you, and the
+badge does not depend on it.
 
 Your repository has to be public, and your GitHub handle becomes public in this repository.
 

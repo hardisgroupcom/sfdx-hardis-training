@@ -118,10 +118,10 @@ Those three boxes are yours to tick, and nothing ticks them for you. They say yo
 and your GitHub handle becomes public in the training repository, which is a decision about your
 name rather than a formality.
 
-!!! info "It also asks you to star sfdx-hardis"
-    Level 1 asks you to star [hardisgroupcom/sfdx-hardis](https://github.com/hardisgroupcom/sfdx-hardis),
-    the open source project this whole course is about. The command offers to do it for you, and the
-    audit checks it. One click, free, and it is what keeps a project like this one visible.
+!!! tip "If the course helped you"
+    [hardisgroupcom/sfdx-hardis](https://github.com/hardisgroupcom/sfdx-hardis) is the open source
+    project this whole course is about. A star is how a project like it stays visible. It is up to
+    you: the badge does not depend on it.
 
 A job then clones your fork (`github.com/my-username/sfdx-hardis-training`), re-runs every check above against it, and answers on the issue. Nobody
 reviews it by hand, so it usually takes a couple of minutes. If something does not verify, the

@@ -13,11 +13,6 @@ body:
         Two things to know before you submit:
 
         - **Your repository has to be public**, or the job cannot read it.
-        - **Star the project the level teaches.** Level 1 asks for
-          [hardisgroupcom/sfdx-hardis](https://github.com/hardisgroupcom/sfdx-hardis), Level 2 for
-          [oxsecurity/megalinter](https://github.com/oxsecurity/megalinter), Level 3 for
-          [hardisgroupcom/vscode-sfdx-hardis](https://github.com/hardisgroupcom/vscode-sfdx-hardis).
-          A Level 3 claim asks for all three, the same way it re-runs all three audits.
         - **Your GitHub handle and the badge page become public** in this repository, permanently.
           If that is not acceptable to you, do not claim.
 
