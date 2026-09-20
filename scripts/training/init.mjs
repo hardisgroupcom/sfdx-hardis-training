@@ -182,6 +182,11 @@ export async function ensureDevHub(alias) {
       "Open the org, go to Setup > Dev Hub, switch Enable Dev Hub on, then click Set up my training environment again."
     );
   }
+  // The org answers the query, but the CLI still has "not a Dev Hub" in the
+  // auth file it wrote when the org was connected, and `sf org create scratch`
+  // reads that file: without this refresh the very next step fails with
+  // NotADevHubError on an org that is one.
+  run("sf", ["org", "list", "--json"], { quiet: true, capture: true });
   ok(`${c.bold(alias)} is a Dev Hub now.`);
 }
 

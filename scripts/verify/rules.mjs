@@ -113,6 +113,14 @@ const DEV = "integration";
 // these rules look there too. Three red ticks in a row would teach them to
 // stop clicking the button.
 const readAnywhere = (ctx, file) => ctx.readOn(DEV, file) || ctx.readOn(ctx.currentBranch(), file);
+
+// readAnywhere is for a file that only exists once the work is done, where the
+// first version found is the only version there is. It is the wrong tool for a
+// file the project already had, a permission set or a layout: integration
+// carries one, so it wins the `||` and the learner's own branch is never read.
+// Their work is then reported missing while it sits in their next commit.
+const inAnyVersion = (ctx, file, holds) =>
+  [ctx.readOn(DEV, file), ctx.readOn(ctx.currentBranch(), file)].some((content) => content && holds(content));
 const FIELD = (obj, field) => `force-app/main/default/objects/${obj}/fields/${field}.field-meta.xml`;
 const PERMSET = (name) => `force-app/main/default/permissionsets/${name}.permissionset-meta.xml`;
 
@@ -297,8 +305,8 @@ export const RULES = [
           `${FIELD("Installation__c", "Panels_Required__c")} on ${DEV} or on your current branch`
         );
       }
-      const crew = readAnywhere(ctx, PERMSET("Helios_Delivery_Crew"));
-      return fieldGrantedIn(crew, "Installation__c.Panels_Required__c")
+      return inAnyVersion(ctx, PERMSET("Helios_Delivery_Crew"), (crew) =>
+        fieldGrantedIn(crew, "Installation__c.Panels_Required__c"))
         ? pass("The field exists and the crew permission set grants it")
         : miss(
           "the field exists, but Helios_Delivery_Crew does not grant read access to it",
@@ -342,8 +350,8 @@ export const RULES = [
       }
     ),
     check: (ctx) => {
-      const layout = readAnywhere(ctx, "force-app/main/default/layouts/Installation__c-Installation Layout.layout-meta.xml");
-      return mentions(layout, "Panels_Required__c")
+      return inAnyVersion(ctx, "force-app/main/default/layouts/Installation__c-Installation Layout.layout-meta.xml", (layout) =>
+        mentions(layout, "Panels_Required__c"))
         ? pass("The layout carries the new field")
         : miss(
           "Panels_Required__c is not on the Installation layout",
