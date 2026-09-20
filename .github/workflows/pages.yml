@@ -68,7 +68,8 @@ jobs:
       # the scroll position with it the moment it takes focus.
       - name: Every page opens at the top
         run: |
-          npx --yes playwright-core install chrome
+          npm install --no-save playwright-core
+          npx playwright-core install --with-deps chrome
           node scripts/verify/check-scroll.mjs
 
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1

@@ -72,7 +72,23 @@ const port = await new Promise((resolve) => {
 });
 const base = `http://127.0.0.1:${port}`;
 
-const { chromium } = await import("playwright-core");
+// The repository carries no dependency of its own on purpose, so this one is
+// asked for by name and explained when it is missing: it is an authoring and CI
+// tool, never something a learner runs.
+let chromium;
+try {
+  ({ chromium } = await import("playwright-core"));
+} catch {
+  console.error(
+    [
+      "playwright-core is needed to open the pages. Install it first:",
+      "  npm install --no-save playwright-core",
+      "  npx playwright-core install chrome",
+    ].join("\n"),
+  );
+  server.close();
+  process.exit(1);
+}
 // A browser of this script's own, never the user's: see the training-update
 // skill, connectOverCDP attaches to a real session and closing it closes theirs.
 const browser = await chromium.launch({
