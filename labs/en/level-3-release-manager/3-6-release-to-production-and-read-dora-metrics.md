@@ -142,13 +142,13 @@ Then open the **DevOps Pipeline** panel, click the gear **(1)** at the top right
 
 It covers the last 90 days by default, and it reports five numbers, not four:
 
-| Metric                     | What it actually counts                                                      | What good looks like                                              |
-|----------------------------|------------------------------------------------------------------------------|-------------------------------------------------------------------|
-| **Deployment Frequency**   | Successful deployments recorded **in the org**, divided by the period        | Weekly is fine. Quarterly means every release is enormous         |
-| **Lead Time for Changes**  | Per Pull Request: its creation, to the deployment that landed within 14 days | Days, not weeks. A long lead time means work is sitting somewhere |
-| **Change Failure Rate**    | Failed deployments divided by all deployments                                | Below 15%. Above that, the check is not catching what it should   |
-| **Mean Time to Recovery**  | Median hours, despite the name, from a failed deployment to the next success | Hours                                                             |
-| **Deployment Rework Rate** | Hotfix Pull Requests, and deployments that follow a failure within a day     | Low. Read the note below before you expect [Lab 3.7](3-7-hotfix-and-retrofit.md) to move it     |
+| Metric                     | What it actually counts                                                      | What good looks like                                                                        |
+|----------------------------|------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|
+| **Deployment Frequency**   | Successful deployments recorded **in the org**, divided by the period        | Weekly is fine. Quarterly means every release is enormous                                   |
+| **Lead Time for Changes**  | Per Pull Request: its creation, to the deployment that landed within 14 days | Days, not weeks. A long lead time means work is sitting somewhere                           |
+| **Change Failure Rate**    | Failed deployments divided by all deployments                                | Below 15%. Above that, the check is not catching what it should                             |
+| **Mean Time to Recovery**  | Median hours, despite the name, from a failed deployment to the next success | Hours                                                                                       |
+| **Deployment Rework Rate** | Hotfix Pull Requests, and deployments that follow a failure within a day     | Low. Read the note below before you expect [Lab 3.7](3-7-hotfix-and-retrofit.md) to move it |
 
 Two of those are not what the names suggest, and it is worth knowing which. **Change failure rate
 here is a deployment failure rate**: a release that deployed green and broke production on Tuesday
