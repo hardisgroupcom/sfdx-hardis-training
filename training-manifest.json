@@ -69,6 +69,7 @@
         "annotated/vscode/clone-repository",
         "annotated/vscode/org-select-alias",
         "annotated/vscode/welcome--training-menu",
+        "annotated/vscode/training-menu-authorization",
         "annotated/vscode/devops-pipeline-disconnected--github-auth",
         "annotated/vscode/devops-pipeline-fresh--read-it"
       ]
