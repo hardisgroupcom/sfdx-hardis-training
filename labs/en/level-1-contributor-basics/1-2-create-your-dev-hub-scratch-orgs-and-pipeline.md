@@ -13,6 +13,7 @@ screenshots:
   - annotated/vscode/clone-repository
   - annotated/vscode/org-select-alias
   - annotated/vscode/welcome--training-menu
+  - annotated/vscode/training-menu-authorization
   - annotated/vscode/devops-pipeline-disconnected--github-auth
   - annotated/vscode/devops-pipeline-fresh--read-it
 depends_on:
@@ -237,7 +238,24 @@ holding three cards **(2)**, one per level.
     always tell a project's commands from the ones sfdx-hardis ships. This project declares one
     menu per level, and each holds only the commands that level uses.
 
-Click **Training: Level 1**, then click **Set up my training environment**.
+Click **Training: Level 1**, then click **Set up my training environment** **(1)**.
+
+The first time you click a Training card, VS Code does not run it. It asks how you want to allow it
+**(2)**, and shows the command it is about to run. A custom menu runs something the project wrote,
+not something the extension ships, so the extension refuses to run it behind your back. Read the
+line, check it says `node scripts/training.mjs`, then click **Always allow** **(3)**.
+
+![VS Code asking how to allow the Training command, with Always allow](../../_assets/annotated/vscode/training-menu-authorization.png)
+
+Each card asks once, the first time you click it, because the extension remembers the exact command
+and not the menu. So you will see this again on **Where am I?**, on **Check my work**, and on the
+first card of Levels 2 and 3. Same answer each time.
+
+!!! warning "Read the line before you allow it"
+    **Allow once** runs it this time only, **Always allow** remembers it. Either is fine here: you
+    can see what it runs, and the repository is the one you cloned. On a project somebody else set
+    up, read that line first. It is the only moment anything shows you what a custom menu really
+    does.
 
 It does not ask which org to use: you connected one, named `helios-prod`, so it takes that one, says
 so, and asks only for a yes before it changes anything. Then it works through eight steps and tells
