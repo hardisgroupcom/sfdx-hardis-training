@@ -35,6 +35,10 @@ const STATES = path.join(ROOT, "scripts", "start-states");
 const args = process.argv.slice(2);
 const DRY = args.includes("--dry-run");
 const PUSH = args.includes("--push");
+// --check builds the branches locally, compares each tree with the published
+// one, and writes nothing. It is what stops the release being declared done
+// while "Reset this level" still points at branches nobody pushed.
+const CHECK = args.includes("--check");
 const levelIndex = args.indexOf("--level");
 const ONLY = levelIndex > -1 ? Number(args[levelIndex + 1]) : null;
 
@@ -162,6 +166,36 @@ for (const level of [1, 2, 3]) {
 
 if (!DRY) {
   git(["checkout", startingBranch]);
+}
+
+// --check: every branch has to be published, and to hold what the generator
+// just built. A stale one is worse than a missing one, because "Reset this
+// level" then drops a learner into a state the current labs no longer describe.
+if (CHECK) {
+  const problems = [];
+  for (const level of [1, 2, 3]) {
+    const branch = branchName(level);
+    const built = git(["rev-parse", `${branch}^{tree}`]);
+    const published = spawnSync("git", ["rev-parse", `origin/${branch}^{tree}`], {
+      cwd: ROOT,
+      encoding: "utf8",
+    });
+    if (published.status !== 0) {
+      problems.push(`${branch} is not published. Run: node scripts/build/start-branches.mjs --push`);
+      continue;
+    }
+    if (published.stdout.trim() !== built) {
+      problems.push(`${branch} is published but stale. Run: node scripts/build/start-branches.mjs --push`);
+    }
+  }
+  if (problems.length > 0) {
+    console.error("");
+    console.error(`${problems.length} problem(s) with the reset branches:`);
+    problems.forEach((p) => console.error(`  ${p}`));
+    process.exit(1);
+  }
+  console.log("");
+  console.log("Every reset branch is published and current.");
 }
 
 console.log(DRY ? "Dry run: nothing was created." : PUSH ? "Created and pushed." : "Created locally. Add --push to publish them.");

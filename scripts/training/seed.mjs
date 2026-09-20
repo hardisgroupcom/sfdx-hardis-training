@@ -156,11 +156,22 @@ export default async function seed(args) {
     );
   }
 
+  // Only an org of this course, matched on any of its aliases. Falling back to
+  // "every connected org" put a learner's employer sandbox one click from a
+  // deployment of the whole Helios app, and a list of one is not even asked
+  // about: it would have been selected silently. Same rule as teardown.
   const known = universe().orgs.map((o) => o.alias);
-  const suggested = orgs.filter((o) => known.includes(o.alias));
-  const list = suggested.length > 0 ? suggested : orgs;
+  const suggested = orgs.filter(
+    (o) => known.includes(o.alias) || (o.aliases || []).some((a) => known.includes(a))
+  );
+  if (suggested.length === 0) {
+    abort(
+      "None of the training orgs is connected.",
+      `Connect one of them in the Orgs Manager panel first: ${known.join(", ")}`
+    );
+  }
 
-  const target = await select("Which org do you want to set up?", orgChoices(list), args.org);
+  const target = await select("Which org do you want to set up?", orgChoices(suggested), args.org);
   const username = (orgs.find((o) => o.alias === target || o.username === target) || {}).username;
 
   info("");

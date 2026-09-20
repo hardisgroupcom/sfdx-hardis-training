@@ -34,8 +34,75 @@ export function levelsToAudit(level) {
   return Array.from({ length: level }, (_, i) => i + 1);
 }
 
+/**
+ * Whether every auditable rule of a level already passes, which is how the
+ * audit knows a learner has gone past the level they are claiming.
+ */
+function levelIsComplete(ctx, level) {
+  const rules = rulesForLevel(level).filter((rule) => rule.auditable !== false);
+  if (rules.length === 0) {
+    return false;
+  }
+  return rules.every((rule) => {
+    try {
+      return rule.check(ctx).ok === true;
+    } catch {
+      return false;
+    }
+  });
+}
+
+/**
+ * Whether the learner's integration branch descends from a published start
+ * state, which is what "Reset this level" leaves behind.
+ *
+ * The start state of a level carries everything the levels below it produced,
+ * so resetting to the Level 3 one hands a learner the finished work of Levels 1
+ * and 2 without their having opened a lab. A learner who did the work has their
+ * own history instead, and that branch is not in it.
+ */
+function satOnStartState(ctx, level) {
+  const start = `training/start-level-${level}`;
+  if (!ctx.hasBranch(start)) {
+    return false;
+  }
+  const tip = ctx.git(["rev-parse", `origin/${start}`]) || ctx.git(["rev-parse", start]);
+  const base = ctx.git(["merge-base", tip, "origin/integration"]);
+  return tip !== "" && base === tip;
+}
+
+/**
+ * The reasons a claim is refused before its rules are even read.
+ *
+ * Both are about the same thing: a badge says the learner did that level, and
+ * the rules alone cannot tell work from a reset, because a reset produces the
+ * same files. Neither is a dead end. A learner who has gone further claims the
+ * level they reached, and that claim re-runs this one's audit anyway.
+ */
+export function claimObjections(ctx, level) {
+  const objections = [];
+  const above = level + 1;
+  if (above <= 3) {
+    if (levelIsComplete(ctx, above)) {
+      objections.push(
+        `Level ${above} is already finished in this repository, so this claim cannot tell whether Level ${level} was worked through or arrived with it. Claim Level ${above} instead: that claim re-runs the Level ${level} audit and awards both.`
+      );
+    }
+    if (satOnStartState(ctx, above)) {
+      objections.push(
+        `The integration branch descends from ${"`"}training/start-level-${above}${"`"}, the state "Reset this level" writes for Level ${above}. That branch already carries the finished work of every level below it, so it cannot stand as evidence of Level ${level}.`
+      );
+    }
+  }
+  return objections;
+}
+
 export function auditRepository(dir, level) {
   const ctx = makeContext(dir);
+  const objections = claimObjections(ctx, level);
+  if (objections.length > 0) {
+    return { results: [], passed: 0, total: 0, ok: false, objections };
+  }
   const results = [];
   for (const each of levelsToAudit(level)) {
     for (const rule of rulesForLevel(each)) {
@@ -56,7 +123,7 @@ export function auditRepository(dir, level) {
     }
   }
   const passed = results.filter((r) => r.ok).length;
-  return { results, passed, total: results.length, ok: passed === results.length };
+  return { results, passed, total: results.length, ok: passed === results.length, objections: [] };
 }
 
 export function renderReport(audit, { level, handle, repoUrl }) {
@@ -76,6 +143,21 @@ export function renderReport(audit, { level, handle, repoUrl }) {
       );
       lines.push("");
     }
+  } else if ((audit.objections || []).length > 0) {
+    lines.push(`## Level ${level} cannot be claimed from this repository`);
+    lines.push("");
+    lines.push(
+      "The checks were not run. A badge says you worked a level through, and what is in this repository cannot be told apart from a reset:"
+    );
+    lines.push("");
+    for (const objection of audit.objections) {
+      lines.push(`- ${objection}`);
+    }
+    lines.push("");
+    lines.push(
+      "If you believe this is wrong, open an issue saying what you did and it will be looked at."
+    );
+    lines.push("");
   } else {
     const failed = audit.results.filter((r) => !r.ok);
     lines.push(`## Level ${level} did not verify yet`);
