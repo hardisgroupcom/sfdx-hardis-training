@@ -25,6 +25,47 @@ function rand() {
 const pick = (list) => list[Math.floor(rand() * list.length)];
 const between = (min, max) => min + Math.floor(rand() * (max - min + 1));
 
+/**
+ * Hands out the values of a list without repeating one until every value has
+ * been used, then starts again on a fresh shuffle.
+ *
+ * pick() draws with replacement, which on a pool of ninety names gives the same
+ * dozen people over and over while most of the list is never seen. The contacts
+ * are the one place where that shows: they are the cast of the sample data, and
+ * a learner scrolling a list of sixty wants sixty different people in it.
+ */
+// A stream of its own for the name shuffles. A shuffle draws as many values as
+// the list is long, so sharing the stream would move every account, opportunity
+// and installation the day somebody adds a name, and with them the screenshots
+// that were taken against them.
+// The seed is chosen so that the sixty contacts drawn from the pool include
+// the names the course was asked to carry: with ninety first names and
+// seventy-five surnames for sixty people, some of the pool is always unused.
+let nameSeed = 20260922;
+function nameRand() {
+  nameSeed = (nameSeed * 1103515245 + 12345) % 2147483648;
+  return nameSeed / 2147483648;
+}
+
+function shuffled(list) {
+  const copy = [...list];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(nameRand() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function drawer(list) {
+  let bag = [];
+  return () => {
+    if (bag.length === 0) {
+      bag = shuffled(list);
+    }
+    return bag.pop();
+  };
+}
+
 const CITIES = [
   ["Sevilla", "Spain"], ["Malaga", "Spain"], ["Valencia", "Spain"],
   ["Lisboa", "Portugal"], ["Faro", "Portugal"],
@@ -32,21 +73,37 @@ const CITIES = [
   ["Palermo", "Italy"], ["Bari", "Italy"], ["Cagliari", "Italy"],
   ["Athina", "Greece"], ["Thessaloniki", "Greece"]
 ];
-const FIRST = ["Nicolas", "Mariia", "Romain", "Sébastien", "Manon", "Eugénie", "Violaine", "Victor", "Gregory",
-  "Emile", "Virginie", "Julie", "Olivier", "Andrzej", "Dimitri", "Baptiste", "Florian", "Bertrand", "Yamilet",
-  "Pablo", "Olga", "Ziyi", "Quentin", "Nabil", "Come", "Teoman", "Ekaterina", "Louise", "Fabien", "Volodimir",
-  "Matt", "Alexandra", "Aurore", "Sophie", "Natalia", "Krzysztof", "Frederic", "Jasmin", "Przemek", "Marine",
-  "Ernest", "Suzanne", "Eglantine", "Daphné", "Louison", "Anne-Laure", "Chris", "Léon", "Diego", "Pamela",
-  "Maurice", "Erna", "Madelyne", "Antoine", "Antonin", "Tien", "Michele"];
-const LAST = ["Pyvovarchuk", "Turpin", "Lacour", "Vignaud", "Poirot", "Rames", "Reviriot", "Lagoutte", "Pellichero",
-  "Bazoin", "Louis", "Chevalier", "Verbeke", "Lenotre", "Chodor", "Monge", "Masson", "Regnier", "Vuillamy",
-  "Zhou", "Chanroux", "Tiercelin", "Boudjellal", "Lockie", "Ratko", "Pieper", "Levet", "Todorova", "Lesiz",
-  "Obermeier", "Lasek", "Leroy", "Nomblot", "Catelin", "Nguyen", "Metery", "Zaversnik", "Geoffroy", "Krol"];
+const FIRST = ["Nicolas", "Mariia", "Romain", "Sébastien", "Manon", "Eugénie", "Violaine", "Victor",
+  "Gregory", "Emile", "Virginie", "Julie", "Olivier", "Andrzej", "Dimitri", "Baptiste", "Florian",
+  "Bertrand", "Yamilet", "Pablo", "Olga", "Ziyi", "Quentin", "Nabil", "Come", "Teoman", "Ekaterina",
+  "Louise", "Fabien", "Volodimir", "Matt", "Alexandra", "Aurore", "Sophie", "Natalia", "Krzysztof",
+  "Frederic", "Jasmin", "Przemek", "Marine", "Ernest", "Suzanne", "Eglantine", "Daphné", "Louison",
+  "Anne-Laure", "Chris", "Léon", "Diego", "Pamela", "Maurice", "Erna", "Madelyne", "Antoine", "Antonin",
+  "Tien", "Michele", "Roman", "Leo", "Matheus", "Taha", "Anush", "Sebastien", "Stepan", "Shamina",
+  "Michael", "Fernando", "Shinnosuke", "Dagmara", "Salik", "Ryad", "Nicholas", "Timo", "Pranay", "Maciej",
+  "Eric", "Maxime", "Meric", "Brahim", "Yan", "Maksym", "Manoel", "Thomas", "Juliano", "Alain", "Theodoor",
+  "Kris", "Clément", "Mathieu", "Fabian"];
+const LAST = ["Pyvovarchuk", "Turpin", "Lacour", "Vignaud", "Poirot", "Rames", "Reviriot", "Lagoutte",
+  "Pellichero", "Bazoin", "Louis", "Chevalier", "Verbeke", "Lenotre", "Chodor", "Monge", "Masson",
+  "Regnier", "Vuillamy", "Zhou", "Chanroux", "Tiercelin", "Boudjellal", "Lockie", "Ratko", "Pieper",
+  "Levet", "Todorova", "Lesiz", "Obermeier", "Lasek", "Leroy", "Nomblot", "Catelin", "Nguyen", "Metery",
+  "Zaversnik", "Geoffroy", "Krol", "Hentschke", "Jokinen", "Delazeri", "Basri", "Poudel", "Colladon",
+  "Stepanov", "Mossodeean", "Havrilla", "Sertcelik", "Fernandez", "Oliva", "Takakura", "Ryborz", "Carvin",
+  "Pedersen", "Meguimi", "Fiorendi", "Pouw", "Jaiswal", "Ptak", "Mulder", "Guenego", "Asaner", "Laissaoui",
+  "Imensar", "Petrov", "Calixto", "Prouvot", "Machado", "Bates", "van Donge", "Goncalves", "Rodrigues",
+  "Kramer", "Heinschke"];
 // Names are drawn at random: never pair them back into a real person's name, nor into a
 // member of the team the labs talk about
 const TAKEN = new Set(["Nicolas Vuillamy", "Mariia Pyvovarchuk"]);
-// An email address takes no accent
-const ascii = (s) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+// An email address takes no accent, and no space: a surname in two words,
+// "van Donge", would otherwise make a local part Salesforce refuses
+const ascii = (s) =>
+  s
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 const SUFFIX = ["Rooftops", "Energy Coop", "Residences", "Homes", "Estates", "Properties",
   "Solar Club", "Housing", "Villas", "Terraces"];
 const ROOFS = ["Tile", "Slate", "Flat", "Metal"];
@@ -83,14 +140,23 @@ for (let i = 1; i <= 40; i++) {
 }
 
 // ---------------------------------------------------------------- Contacts
+const nextFirst = drawer(FIRST);
+const nextLast = drawer(LAST);
 const contacts = [];
 for (let i = 1; i <= 60; i++) {
   const account = accounts[i % accounts.length];
-  const first = pick(FIRST);
-  let last = pick(LAST);
-  while (TAKEN.has(`${first} ${last}`)) {
-    last = LAST[(LAST.indexOf(last) + 1) % LAST.length];
+  const first = nextFirst();
+  let last = nextLast();
+  // A seeded contact is never one of the people the labs talk about
+  let guard = 0;
+  while (TAKEN.has(`${first} ${last}`) && guard++ < LAST.length) {
+    last = nextLast();
   }
+  // The two draws pick(FIRST) and pick(LAST) used to make on the shared stream.
+  // The names come from their own stream now, and keeping the place they held
+  // keeps every record generated after this loop exactly as it was.
+  rand();
+  rand();
   contacts.push({
     FirstName: first,
     LastName: last,
