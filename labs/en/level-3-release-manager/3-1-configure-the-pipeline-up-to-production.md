@@ -531,6 +531,13 @@ the first time you click one.
 VS Code has not fetched it. **Source Control** panel, **...** menu, **Pull, Push** > **Fetch**, then
 run the command again.
 
+**The org list offers a `helios-` org that no longer exists.**
+It happens when a scratch org expired and **Set up my training environment** built a new one under
+the same alias: the command lists the orgs from a cache, and the cache still holds the old one.
+Picking it makes the command stop straight after "Selected Org", with none of the questions asked.
+The last answer of the list is the way out: **😱 I already authenticated my org but I don't see it !**
+clears that cache. Then run **Add/Configure Org** again and the list is right.
+
 **The preprod column appears with no org.**
 The branch file was written for another branch name. Check `config/branches/` for a typo: the file
 name has to match the branch exactly.
