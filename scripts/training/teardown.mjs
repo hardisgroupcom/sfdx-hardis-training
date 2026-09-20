@@ -43,7 +43,7 @@ Set<String> names = new Set<String>{ ${names.join(", ")} };
 List<Account> accounts = [SELECT Id FROM Account WHERE Name IN :names];
 List<Opportunity> opportunities = [SELECT Id FROM Opportunity WHERE AccountId IN :accounts];
 delete opportunities;
-List<Contact> contacts = [SELECT Id FROM Contact WHERE Email LIKE '%@helios-training.invalid'];
+List<Contact> contacts = [SELECT Id FROM Contact WHERE Email LIKE '%@helios-training.demo'];
 delete contacts;
 delete accounts;
 System.debug('Removed ' + opportunities.size() + ' opportunities, ' + contacts.size() + ' contacts, ' + accounts.size() + ' accounts');

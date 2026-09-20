@@ -7,7 +7,7 @@
   "branch": "training/mate-us-055-install-date-help",
   "author": {
     "name": "Romain Panda",
-    "email": "romain.panda@helios-training.invalid"
+    "email": "romain.panda@helios-training.demo"
   },
   "commitMessage": "US-055 Install Date says which day it means\n\nPlanners were entering the day the panels arrive. The help text says it is the\nday the crew goes on site.",
   "prTitle": "US-055 Install Date says which day it means",

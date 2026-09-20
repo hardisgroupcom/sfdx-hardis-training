@@ -7,7 +7,7 @@
   "branch": "training/mate-us-056-crew-workload",
   "author": {
     "name": "Romain Panda",
-    "email": "romain.panda@helios-training.invalid"
+    "email": "romain.panda@helios-training.demo"
   },
   "commitMessage": "US-056 Show the panels each crew member has to lay\n\nCrew_Workload__c formula on Installation, on the layout, granted on\nHelios_Delivery_Manager. .forceignore keeps my scratch test fields out.",
   "prTitle": "US-056 Show the panels each crew member has to lay",

@@ -7,7 +7,7 @@
   "branch": "training/mate-us-020-apex-refactor",
   "author": {
     "name": "Mariia Pyvovarchuk",
-    "email": "mariia.pyvovarchuk@helios-training.invalid"
+    "email": "mariia.pyvovarchuk@helios-training.demo"
   },
   "commitMessage": "US-020 Refactor InstallationScheduler\n\nearliestInstallDate now returns a Datetime, so callers know the crew is expected\nat 08:00 rather than at midnight.",
   "prTitle": "US-020 Refactor InstallationScheduler",

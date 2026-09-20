@@ -9,7 +9,7 @@
   "base": "preprod",
   "author": {
     "name": "Romain Panda",
-    "email": "romain.panda@helios-training.invalid"
+    "email": "romain.panda@helios-training.demo"
   },
   "commitMessage": "US-045 Cancelled installations can no longer be back-dated\n\nInstallation_Date_Not_Past exempted Completed installations and not Cancelled\nones. A cancelled installation is finished work too.",
   "prTitle": "US-045 Hotfix: cancelled installations can be back-dated again",

@@ -8,7 +8,7 @@
   "continues": true,
   "author": {
     "name": "Mariia Pyvovarchuk",
-    "email": "mariia.pyvovarchuk@helios-training.invalid"
+    "email": "mariia.pyvovarchuk@helios-training.demo"
   },
   "commitMessage": "US-052 Total Capacity back on the Installation layout\n\nIt went missing when the cap moved to the second column. Both show now.",
   "prTitle": "US-052 The Installation layout in two columns",

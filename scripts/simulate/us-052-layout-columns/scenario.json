@@ -7,7 +7,7 @@
   "branch": "training/mate-us-052-layout-columns",
   "author": {
     "name": "Mariia Pyvovarchuk",
-    "email": "mariia.pyvovarchuk@helios-training.invalid"
+    "email": "mariia.pyvovarchuk@helios-training.demo"
   },
   "commitMessage": "US-052 The Installation layout in two columns\n\nThe crew capacity cap moves to the second column of the Information section,\nwhich was empty, so planners see the whole installation without scrolling.",
   "prTitle": "US-052 The Installation layout in two columns",

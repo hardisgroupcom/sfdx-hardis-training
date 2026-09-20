@@ -7,7 +7,7 @@
   "branch": "training/mate-us-018-crew-capacity",
   "author": {
     "name": "Mariia Pyvovarchuk",
-    "email": "mariia.pyvovarchuk@helios-training.invalid"
+    "email": "mariia.pyvovarchuk@helios-training.demo"
   },
   "commitMessage": "US-018 Cap the crew size a planner can assign\n\nAdds Crew_Capacity_Cap__c on Installation and a decision in Installation_Assign_Crew\nthat brings an over-sized crew back down to the cap. Granted on Helios_Delivery_Manager.\nMoved the cap onto the Installation layout.",
   "prTitle": "US-018 Cap the crew size a planner can assign",

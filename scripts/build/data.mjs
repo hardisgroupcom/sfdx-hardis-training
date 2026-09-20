@@ -38,14 +38,13 @@ const between = (min, max) => min + Math.floor(rand() * (max - min + 1));
 // the list is long, so sharing the stream would move every account, opportunity
 // and installation the day somebody adds a name, and with them the screenshots
 // that were taken against them.
-// The seed is chosen so that the sixty contacts drawn from the pool include
-// the names the course was asked to carry: with ninety first names and
-// seventy-five surnames for sixty people, some of the pool is always unused.
-let nameSeed = 20260922;
+let nameSeed = 20260917;
 function nameRand() {
   nameSeed = (nameSeed * 1103515245 + 12345) % 2147483648;
   return nameSeed / 2147483648;
 }
+
+const nameBetween = (min, max) => min + Math.floor(nameRand() * (max - min + 1));
 
 function shuffled(list) {
   const copy = [...list];
@@ -96,7 +95,11 @@ const LAST = ["Pyvovarchuk", "Turpin", "Lacour", "Vignaud", "Poirot", "Rames", "
 // member of the team the labs talk about
 const TAKEN = new Set(["Nicolas Vuillamy", "Mariia Pyvovarchuk"]);
 // An email address takes no accent, and no space: a surname in two words,
-// "van Donge", would otherwise make a local part Salesforce refuses
+// "van Donge", would otherwise make a local part Salesforce refuses.
+//
+// The domain is one that does not exist, so a flow or a batch that mails a
+// contact of the sample data cannot reach anybody. Lab 2.4 turns Email
+// Deliverability to All Email in every org, so that matters here.
 const ascii = (s) =>
   s
     .normalize("NFD")
@@ -140,10 +143,25 @@ for (let i = 1; i <= 40; i++) {
 }
 
 // ---------------------------------------------------------------- Contacts
+// As many contacts as the longest name list, so every name in the pool is used
+// and a learner scrolling the list meets ninety different people.
+const CONTACT_COUNT = FIRST.length;
+
+/**
+ * Everything generated after this loop was fixed when the contacts drew six
+ * values each from the shared stream, for sixty of them. The contacts draw from
+ * their own stream now, so the reservation below stands in for what they used
+ * to take: the accounts, opportunities, installations and batches keep the
+ * values the screenshots and the labs were written against, however many
+ * contacts the course decides to seed.
+ */
+const SHARED_STREAM_RESERVATION = 60 * 6;
+
 const nextFirst = drawer(FIRST);
 const nextLast = drawer(LAST);
+const nextTitle = drawer(["Owner", "Building manager", "Technical contact", "Co-owner"]);
 const contacts = [];
-for (let i = 1; i <= 60; i++) {
+for (let i = 1; i <= CONTACT_COUNT; i++) {
   const account = accounts[i % accounts.length];
   const first = nextFirst();
   let last = nextLast();
@@ -152,19 +170,17 @@ for (let i = 1; i <= 60; i++) {
   while (TAKEN.has(`${first} ${last}`) && guard++ < LAST.length) {
     last = nextLast();
   }
-  // The two draws pick(FIRST) and pick(LAST) used to make on the shared stream.
-  // The names come from their own stream now, and keeping the place they held
-  // keeps every record generated after this loop exactly as it was.
-  rand();
-  rand();
   contacts.push({
     FirstName: first,
     LastName: last,
-    Email: `${ascii(first)}.${ascii(last)}.${String(i).padStart(2, "0")}@helios-training.invalid`,
-    Title: pick(["Owner", "Building manager", "Technical contact", "Co-owner"]),
-    Phone: `+34 6${between(10, 99)} ${between(100, 999)} ${between(100, 999)}`,
+    Email: `${ascii(first)}.${ascii(last)}.${String(i).padStart(2, "0")}@helios-training.demo`,
+    Title: nextTitle(),
+    Phone: `+34 6${nameBetween(10, 99)} ${nameBetween(100, 999)} ${nameBetween(100, 999)}`,
     "Account.Name": account.Name
   });
+}
+for (let i = 0; i < SHARED_STREAM_RESERVATION; i++) {
+  rand();
 }
 
 // ----------------------------------------------------------- Opportunities

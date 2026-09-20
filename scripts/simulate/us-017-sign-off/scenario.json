@@ -7,7 +7,7 @@
   "branch": "training/mate-us-017-sign-off",
   "author": {
     "name": "Romain Panda",
-    "email": "romain.panda@helios-training.invalid"
+    "email": "romain.panda@helios-training.demo"
   },
   "commitMessage": "US-017 Record who signed an installation off\n\nAdds Signed_Off_By__c on Installation, on the Installation layout, granted on\nHelios_Delivery_Manager. Crews were writing the name into the notes field.",
   "prTitle": "US-017 Record who signed an installation off",
