@@ -3,7 +3,7 @@ title: "Formation Salesforce DevOps gratuite et pratique"
 description: "Formation Salesforce DevOps gratuite et pratique en trois niveaux : Git, Pull Requests, pipelines CI/CD et gestion des releases avec sfdx-hardis et VS Code."
 id: home
 lang: fr
-source_rev: "5e9b906b10074b3125e41b49cb31fdc9e5cc8670"
+source_rev: "fbf66f1518846bab2a307e8869a4aed50b7e7b2d"
 ---
 
 # Formation Salesforce DevOps avec sfdx-hardis
