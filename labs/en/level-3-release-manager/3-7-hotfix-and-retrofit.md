@@ -1,14 +1,14 @@
 ---
 id: lab-3-7
 title: "Lab 3.7 - Production is broken: hotfix and retrofit"
-description: "Release a contributor Salesforce hotfix from preprod to production without breaking the pipeline, then get a change an admin made in production back into Git."
+description: "Ship a Salesforce hotfix through preprod and main, retrofit it back into integration, and repair a picklist value an admin added straight in production."
 level: 3
 lab: 7
 lang: en
 source_rev: ""
 screenshots:
   - annotated/vscode/welcome-custom-menu-3
-  - annotated/vscode/devops-pipeline-level3--create-promotion
+  - annotated/vscode/devops-pipeline-level3--release-to-prod
 depends_on:
   commands: [hardis:org:retrieve:sources:retrofit, hardis:project:deploy:smart]
   flags: []
@@ -23,8 +23,8 @@ depends_on:
 
 **Time**: ~35 min
 
-**You will**: release a contributor's fix straight to production without breaking the pipeline, then
-get a change an admin made by hand back into the repository.
+**You will**: ship a contributor's fix through `preprod` and `main`, retrofit it back down into
+`integration`, then repair a change an admin made by hand in production.
 
 ## The situation
 
@@ -36,11 +36,15 @@ reach and back-dating them to the day it was called off. Every one of those save
 nothing about the ones that are `Cancelled`, so a job that will never happen is held to a rule about
 scheduling it. Waiting for the normal path means the week does not close until Monday.
 
-**Monday morning.** While fixing the incident, an admin added a picklist value directly in
-production, because that was the fastest way to unblock people. It works. It is in production and in
-no branch, and the next deployment will silently remove it.
+**Monday morning.** While the incident was on, an admin added a picklist value straight into
+production, because it looked like the fastest way to unblock people. It works. It is in production
+and in no branch, and the next deployment will silently take it away again.
 
-Both are normal. Handling them badly is what turns a normal week into a bad quarter.
+The first of the two is normal, and the pipeline is built for it. **The second is not.** Nobody
+changes production by hand on a project with a pipeline: the fix was a hotfix, exactly like the one
+you are about to ship, and doing it in Setup instead bought a few minutes on Monday and cost the
+repair you will spend Part 3 doing. Part 3 is that repair, and the lesson in it is the sentence the
+admin needed on Monday morning, not a technique to keep handy.
 
 ## Before you start
 
@@ -51,12 +55,21 @@ Both are normal. Handling them badly is what turns a normal week into a bad quar
 
 ### 1. Decide that it is a hotfix
 
-A hotfix skips the pipeline. That is its point, and its cost. It is the release manager's call, and
-it is right when **all three** are true:
+**A hotfix does not skip the pipeline.** It enters it further along. An ordinary story starts on
+`integration` and travels `integration` to `uat` to `preprod` to `main`. A hotfix starts on
+`preprod` and travels `preprod` to `main`. Same branches, same protection, same checks, same
+deployment jobs: the only difference is where it joins.
+
+That is what makes it safe, and it is why Lab 3.1 put `preprod` in `availableTargetBranches`.
+Nothing is bypassed, so nothing has to be remembered afterwards, except the one thing Part 2 is
+about: `main` now carries a commit that `integration` has never seen.
+
+It is the release manager's call, and it is right when **all three** are true:
 
 1. Production is broken for real users right now
 2. The fix is small and you can describe its blast radius in one sentence
-3. Waiting for `integration` to `uat` to `preprod` to `main` is genuinely not acceptable
+3. Waiting for the work already queued in `integration` and `uat` to go out first is genuinely not
+   acceptable
 
 If any one is false, it is an ordinary story that happens to be urgent. Most things called hotfixes
 are ordinary stories.
@@ -113,10 +126,10 @@ When the check is green, merge it into `preprod`. The deployment to `helios-prep
 is the rehearsal.
 
 Then the release: a **+ PR** chip sits on each arrow between major branches in the DevOps Pipeline
-diagram, like the one from `integration` to `uat` **(1)**. Click the one on the arrow from `preprod`
-to `main`, the way you released in Lab 3.6.
+diagram. Click the one on the arrow from `preprod` to `main` **(1)**, the way you released in
+Lab 3.6.
 
-![The + PR chip on the arrows of the DevOps Pipeline diagram](../../_assets/annotated/vscode/devops-pipeline-level3--create-promotion.png)
+![The + PR chip on the arrow from preprod to main](../../_assets/annotated/vscode/devops-pipeline-level3--release-to-prod.png)
 
 Its check deploys against production in validation mode, which is exactly what you want at 17:40:
 the same gate, on the real org, taking two minutes. Green. Merge. Watch the deployment. Confirm with
@@ -130,10 +143,10 @@ Production and `preprod` now have a fix that `uat` and `integration` do not. Lea
 next release overwrites it: the story that deployed the rule last will deploy it again, without
 Romain's exception, and the incident comes back.
 
-**That is what a retrofit is.** A hotfix goes up a shortcut, `preprod` then `main`, skipping the
-branches below. The retrofit takes `main` and merges it back down into `integration`, so the
-pipeline holds everything production holds. It is a Git operation from end to end, and nothing is
-retrieved from any org.
+**That is what a retrofit is.** A hotfix joined the pipeline at `preprod`, so the branches below it,
+`uat` and `integration`, never saw the commit. The retrofit takes `main` and merges it back down
+into `integration`, so the pipeline holds everything production holds. It is a Git operation from
+end to end, and nothing is retrieved from any org.
 
 It is yours to do, not a contributor's: you are the one who knows what went live tonight, and
 conflicts between a hotfix and work in progress are a release manager's call.
@@ -187,25 +200,30 @@ like every merge that is not a plain feature.
 **A hotfix goes two ways.** Up to production, through `preprod`, and back down through a retrofit.
 Doing only the first is how a fix gets shipped twice and regressed once.
 
-## Part 3: production changed outside the pipeline
+## Part 3: repairing a change made straight in production
 
-### 6. Find what production has that the repository does not
+### 6. Find what production has that no branch does
 
 Monday morning first. **Training: Level 3 > Simulate my teammates**, and pick **Monday morning: an
 admin adds a picklist value in production**. It plays the admin: it adds a `Needs Reinspection` value
 to `Installation__c.Status__c`, live, in `helios-prod`, and touches nothing in your repository.
 
-Production now has something the repository does not, and the next deployment that touches that
-field will quietly deactivate it. That is why the course makes the change now rather than when you
-set `helios-prod` up: your Lab 3.6 release deployed that field, and would have deactivated it
-already.
-
 See it for yourself: in `helios-prod`, **Setup > Object Manager > Installation > Fields &
 Relationships > Status**, and **Needs Reinspection** is at the end of the values.
 
-**This is not a retrofit.** A retrofit is Git: `main` merged back down, which is what you just did.
-Nothing in `main` holds this picklist value, because it was never in a branch at all. It exists only
-in the org, so the only place to get it is the org.
+**This should not have happened, and saying so is part of the job.** The admin had a real need and a
+real urgency, and the pipeline already had an answer for both: Part 1. A hotfix on `preprod` would
+have put this value in production the same morning, inside the pipeline, with a check, a deployment
+job and a trace. Changing the org by hand instead skipped none of the waiting and lost all of that.
+What it bought was a few minutes. What it cost is the rest of this lab.
+
+Left alone it gets worse on its own: the value is in production and in no branch, so the next
+deployment that touches `Status__c` deactivates it, live, with nobody asking for that and no check
+going red.
+
+**This is not a retrofit.** A retrofit is Git: `main` merged back down, which is what you did in
+Part 2. Nothing in `main` holds this picklist value, because it was never in a branch at all. It
+exists only in the org, so the only place to get it is the org.
 
 There used to be a command that swept an org for every such difference and put them all on a branch,
 confusingly named after the retrofit. It is deprecated, deliberately: the command name still exists,
@@ -214,23 +232,23 @@ understanding before you reach for anything automatic: **a sweep cannot tell you
 difference means production is ahead or behind.** It reports both the same way, and the second kind,
 accepted, rolls the repository back.
 
-So the change comes back the way any change reaches the repository: on a branch, retrieving exactly
-what changed, from the org that has it, through a Pull Request. And this one is yours to do, because
-you are the one who knows what went live and when.
+### 7. Put it back where it should have started: a hotfix on preprod
 
-### 7. Bring it into the sources, on a branch of its own
+The repair is the route the change should have taken on Monday morning, and you have just walked it
+once. Not a story on `integration`: production already has this value, and a branch that reaches
+production in three promotions leaves it unprotected until then. It goes to `preprod`, and to `main`
+behind it, so that the branch production deploys from stops disagreeing with production today.
 
-**Start the branch.** In the **DevOps Pipeline** panel, **New User Story**, as a contributor would,
-with four answers of your own:
+**Start the branch.** In the **DevOps Pipeline** panel, **New User Story**:
 
-| Question       | Your answer                                                         |
-|----------------|---------------------------------------------------------------------|
-| Target branch  | `integration`, so it travels up with the next release               |
-| Type of branch | **Fix**: the repository is wrong about production, and you fix that |
-| Name           | `US-046-needs-reinspection`                                         |
-| Org to work in | `helios-dev`, as usual: nothing is built, only retrieved            |
+| Question       | Your answer                                                                     |
+|----------------|---------------------------------------------------------------------------------|
+| Target branch  | `preprod`, the branch a hotfix starts from, offered since Lab 3.1               |
+| Type of branch | **Fix**: the repository is wrong about production, and you are fixing that      |
+| Name           | `US-046-needs-reinspection`                                                     |
+| Org to work in | `helios-dev`, as usual: nothing is built here, only retrieved                   |
 
-It creates `fix/US-046-needs-reinspection` from the latest `integration`.
+It creates `fix/US-046-needs-reinspection` from the latest `preprod`.
 
 **Retrieve from production, and only what changed.** Open the **Metadata Retriever**. At the top,
 switch the org **(1)** from `helios-dev` to `helios-prod`, where the value exists and nowhere else,
@@ -255,17 +273,33 @@ The third one is the trap: production being behind looks exactly like production
 file diff. Here the diff is the new value, a few lines, and nothing else. Stage the file, commit it
 as `US-046 Bring the Needs Reinspection status back from production`.
 
-**Publish and open the Pull Request.** **Save / Publish User Story**, as in Lab 1.5, then **Create
-Pull Request** in the actions bar, as in Lab 1.6. When both checks are green, **Squash and merge**
-it: this one is an ordinary story, one change, one commit.
+**Publish and open the Pull Request into `preprod`.** **Save / Publish User Story**, as in Lab 1.5,
+then **Create Pull Request** in the actions bar, as in Lab 1.6. Its check deploys the field against
+`helios-preprod`, which is the point: the value is now rehearsed like any other change instead of
+existing in one org by hand. Green, merge, and watch the deployment.
 
-### 8. Let the next release carry it
+**Then release it to production**, the **+ PR** chip from `preprod` to `main`, exactly as in step 4.
+Deploying a picklist value production already has changes nothing in production, and that is the
+expected result: the deployment is green, the org does not move, and `main` now says what production
+says.
 
-It flows to `uat`, then to `preprod` and `main` with the next release, the capstone of Lab 3.10, at
-which point production and the repository agree again.
+### 8. Retrofit it down, so the pipeline agrees too
 
-That last sentence is the whole point: **not to change production, but to stop production being
-changed back.**
+`main` and `preprod` hold the value. `uat` and `integration` still do not, and the next story that
+touches `Status__c` from `integration` would take it away again. So this ends the way Part 1 ended,
+with the same operation, for the same reason.
+
+Do Part 2 again on this one: **New User Story**, type **Retrofit**, name `US-046-retrofit`, target
+`integration`, then **Git: Fetch**, **Git: Merge...**, `origin/main`, solve anything that conflicts,
+publish, and merge the Pull Request.
+
+Production, `main`, `preprod`, `uat` and `integration` now say the same thing about
+`Installation__c.Status__c`, and no deployment can quietly disagree with any of them.
+
+**The shape to remember**, and it is the same shape both times: something reached production that
+the pipeline below does not have. It goes in at `preprod`, forward to `main`, then back down to
+`integration`. A change made by hand in an org needs one extra step before that, retrieving it, and
+that step is the whole price of not having used the pipeline in the first place.
 
 <details markdown="1"><summary>Under the hood: the two commands and the two configuration keys</summary>
 

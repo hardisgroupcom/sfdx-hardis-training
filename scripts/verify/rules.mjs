@@ -862,8 +862,9 @@ export const RULES = [
   {
     id: "3.7", level: 3, lab: 7,
     title: "The hotfix shipped and the admin change is back in the sources",
-    // Right after the lab the retrofit is on integration, and reaches main with the
-    // next release, in the capstone. That is the lab done right, so it passes now.
+    // The lab sends the admin's picklist value in at preprod, forward to main, then
+    // back down to integration with a retrofit, so both branches carry it by the end.
+    // Reading integration here keeps a learner who stopped after the retrofit passing.
     now: (ctx) => firstPassing(
       () => ruleCheck("3.7")(ctx),
       () => {
@@ -876,7 +877,7 @@ export const RULES = [
         }
         const hotfix = ["main", "preprod"].some((b) => hasHotfix(ctx, b));
         return hotfix
-          ? pass("The hotfix reached production, and the admin change is on integration, waiting for the next release")
+          ? pass("The hotfix reached production, and the admin change is back in the pipeline")
           : miss("the US-045 fix is not on preprod or main: the validation rule still refuses a back-dated cancellation", `${HOTFIX_RULE} on branches preprod and main`);
       }
     ),

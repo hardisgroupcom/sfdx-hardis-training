@@ -2835,6 +2835,17 @@
           "py": 84.3
         }
       ]
+    },
+    "vscode/devops-pipeline-level3.png#release-to-prod": {
+      "pills": [
+        {
+          "n": 1,
+          "x": 70.4,
+          "y": 29.0,
+          "w": 2.2,
+          "h": 2.4
+        }
+      ]
     }
   }
 }
