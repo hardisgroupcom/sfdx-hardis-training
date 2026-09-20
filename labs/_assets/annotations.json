@@ -2846,6 +2846,32 @@
           "h": 2.4
         }
       ]
+    },
+    "vscode/work-new-story-type.png#retrofit": {
+      "pills": [
+        {
+          "n": 1,
+          "x": 27.2,
+          "y": 44.5,
+          "w": 69.8,
+          "h": 4.9,
+          "px": 25.8,
+          "py": 46.0
+        }
+      ]
+    },
+    "vscode/git-retrofit-pick.png#origin-main": {
+      "pills": [
+        {
+          "n": 1,
+          "x": 30.7,
+          "y": 5.2,
+          "w": 38.8,
+          "h": 5.6,
+          "px": 29.2,
+          "py": 8.0
+        }
+      ]
     }
   }
 }

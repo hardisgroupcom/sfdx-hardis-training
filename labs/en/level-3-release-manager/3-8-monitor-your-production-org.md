@@ -193,7 +193,7 @@ What you are reading for is the **shape** of each finding, so that you recognise
 | **Apex on an old API version**  | It will break at a Salesforce release, on a date you do not control        |
 
 The one finding you should genuinely expect here is in the **backup** rather than in a check: the
-`Needs Reinspection` picklist value from Lab 3.7 is in the org, and now it is in the monitoring
+validation rule Lab 3.7 hotfixed is in the org with its new formula, and now it is in the monitoring
 repository's git history, dated. That is the answer to "when did that change", and it is the part of
 monitoring that pays for itself first.
 

@@ -129,5 +129,7 @@
   "web/github-secrets-actions.png": "0f68971b2033cec6",
   "vscode/pipeline-config-user-stories--target-branches.png": "26546b3d431ff956",
   "vscode/training-menu-authorization.png": "b19659ebeaa756c3",
-  "vscode/devops-pipeline-level3.png#release-to-prod": "37e7e597934770a8"
+  "vscode/devops-pipeline-level3.png#release-to-prod": "37e7e597934770a8",
+  "vscode/work-new-story-type.png#retrofit": "9d64fe171e96a349",
+  "vscode/git-retrofit-pick.png#origin-main": "e7b39d50ef531d74"
 }

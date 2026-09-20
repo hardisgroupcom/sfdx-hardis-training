@@ -658,7 +658,7 @@
           "lab": 7,
           "slug": "3-7-hotfix-and-retrofit",
           "title": "Production is broken: hotfix and retrofit",
-          "description": "Ship a Salesforce hotfix through preprod and main, retrofit it back into integration, and repair a picklist value an admin added straight in production.",
+          "description": "Ship a Salesforce hotfix from preprod to production when a validation rule formula breaks production, then retrofit it back down into integration.",
           "time": "35 min"
         },
         {

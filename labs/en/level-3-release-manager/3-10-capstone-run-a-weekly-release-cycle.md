@@ -125,11 +125,10 @@ Read what it says it looked for. The checks assert outcomes on the `integration`
 a story built in your org but never merged does not count, and neither does one merged into a branch
 that is not `integration`.
 
-**The Lab 3.7 check wants `Needs Reinspection` on `main`.**
-That is check `3.8`, and at the end of the level it looks at `main`, not `integration`. The hotfix is
-there since Lab 3.7, which only took it as far as `integration`. Thursday is what satisfies it: the
-release that takes the week's work to production carries it along. If you have not run
-Thursday yet, run it.
+**The Lab 3.7 check says the hotfix is not in `integration`.**
+The hotfix reached `main` in Lab 3.7 part 2, and part 3 is what brings it back down. If you stopped
+after the release, go back and do the retrofit: the check reads both branches, because a fix that
+production has and `integration` has not is a fix the next story quietly removes.
 
 **A teammate simulation says there is nothing to commit.**
 That story is already merged. Each teammate story merges once per level, and the ones Level 3 uses

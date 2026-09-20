@@ -86,6 +86,9 @@
   "git-palette-merge": {
     "gate": "git-merge"
   },
+  "git-retrofit-pick": {
+    "gate": "git-retrofit"
+  },
   "installed-packages": {
     "gate": "installed-packages"
   },

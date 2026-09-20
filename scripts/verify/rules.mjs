@@ -861,38 +861,22 @@ export const RULES = [
   },
   {
     id: "3.7", level: 3, lab: 7,
-    title: "The hotfix shipped and the admin change is back in the sources",
-    // The lab sends the admin's picklist value in at preprod, forward to main, then
-    // back down to integration with a retrofit, so both branches carry it by the end.
-    // Reading integration here keeps a learner who stopped after the retrofit passing.
-    now: (ctx) => firstPassing(
-      () => ruleCheck("3.7")(ctx),
-      () => {
-        const status = ctx.readOn(DEV, FIELD("Installation__c", "Status__c")) || "";
-        if (!/Needs_Reinspection|Needs Reinspection/i.test(status)) {
-          return miss(
-            "the picklist value an admin added by hand in production is not in the sources",
-            `${FIELD("Installation__c", "Status__c")} on branch ${DEV}, expected a "Needs Reinspection" value`
-          );
-        }
-        const hotfix = ["main", "preprod"].some((b) => hasHotfix(ctx, b));
-        return hotfix
-          ? pass("The hotfix reached production, and the admin change is back in the pipeline")
-          : miss("the US-045 fix is not on preprod or main: the validation rule still refuses a back-dated cancellation", `${HOTFIX_RULE} on branches preprod and main`);
-      }
-    ),
+    title: "The hotfix shipped, and the retrofit brought it back down",
+    // The lab ends with the retrofit merged into integration, so the outcome is the
+    // same the minute it finishes and three labs later: one rule, no now().
     check: (ctx) => {
-      const status = ctx.readOn("main", FIELD("Installation__c", "Status__c")) || "";
-      const hasRetrofit = /Needs_Reinspection|Needs Reinspection/i.test(status);
-      if (!hasRetrofit) {
+      if (!hasHotfix(ctx, "main")) {
         return miss(
-          "the picklist value an admin added by hand in production is not in the sources",
-          `${FIELD("Installation__c", "Status__c")} on branch main, expected a "Needs Reinspection" value`
+          "the US-045 fix is not on main, so production still refuses a back-dated cancellation",
+          `${HOTFIX_RULE} on branch main. Lab 3.7 part 2 releases preprod into main`
         );
       }
-      return hasHotfix(ctx, "main")
-        ? pass("The hotfix and the admin change are both on main")
-        : miss("the US-045 fix is not on main: the validation rule still refuses a back-dated cancellation", `${HOTFIX_RULE} on branch main`);
+      return hasHotfix(ctx, DEV)
+        ? pass("The hotfix is in production, and the retrofit put it back into integration")
+        : miss(
+          "the hotfix is in production but not in integration, so the next story there deploys the old formula over it",
+          `${HOTFIX_RULE} on branch ${DEV}. Lab 3.7 part 3 is the retrofit`
+        );
     }
   },
   {
@@ -930,8 +914,8 @@ export const RULES = [
     id: "3.10", level: 3, lab: 10,
     title: "Capstone: a full release cycle",
     check: (ctx) => {
-      // The week's release carried Romain's US-055 to production. The Lab 3.7 value is on main
-      // since that lab, so finding it here says the retrofits and the release both held.
+      // The week's release carried Romain's US-055 to production. The Lab 3.7 hotfix is on
+      // main since that lab, so finding it here says the week's promotions kept it.
       const installDate = ctx.readOn("main", FIELD("Installation__c", "Install_Date__c")) || "";
       if (!/<inlineHelpText>/.test(installDate)) {
         return miss(
@@ -939,12 +923,11 @@ export const RULES = [
           `${FIELD("Installation__c", "Install_Date__c")} on branch main`
         );
       }
-      const status = ctx.readOn("main", FIELD("Installation__c", "Status__c")) || "";
-      return /Needs Reinspection/.test(status)
-        ? pass("The week's release reached production, and main still carries the Lab 3.7 value")
+      return hasHotfix(ctx, "main")
+        ? pass("The week's release reached production, and main still carries the Lab 3.7 hotfix")
         : miss(
-          "main lost the Needs Reinspection value of Lab 3.7 somewhere in the week's promotions",
-          `${FIELD("Installation__c", "Status__c")} on branch main`
+          "main lost the Lab 3.7 hotfix somewhere in the week's promotions, so the incident is back",
+          `${HOTFIX_RULE} on branch main`
         );
     }
   }
