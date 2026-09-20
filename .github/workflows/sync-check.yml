@@ -37,6 +37,13 @@ jobs:
       - name: Every link resolves
         run: node scripts/verify/check-links.mjs
 
+      # "Reset this level" resets to these branches, so a release that forgets
+      # to publish them ships a rescue command that cannot rescue anybody, and a
+      # stale one drops a learner into a state the labs no longer describe.
+      - name: The reset branches are published and current
+        if: github.repository == 'hardisgroupcom/sfdx-hardis-training'
+        run: node scripts/build/start-branches.mjs --check
+
       - name: Every command a lab relies on still exists
         run: |
           npm install --global @salesforce/cli >/dev/null 2>&1

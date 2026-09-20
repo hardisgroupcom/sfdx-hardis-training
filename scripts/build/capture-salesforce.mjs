@@ -227,6 +227,10 @@ async function main() {
 main()
   .then(() => process.exit(0))
   .catch((error) => {
-    console.error(error.message || error);
+    // A navigation failure carries the url it was opening, and the frontdoor
+    // url this script uses has the org's access token in its sid parameter.
+    // That message would otherwise land in a terminal, a log, or an issue.
+    const reason = String(error.message || error).replace(/sid=[^&\s'"]+/g, "sid=[redacted]");
+    console.error(reason);
     process.exit(1);
   });

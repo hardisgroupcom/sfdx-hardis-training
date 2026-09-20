@@ -26,7 +26,7 @@
  */
 import fs from "fs";
 import path from "path";
-import { fileURLToPath, pathToFileURL } from "url";
+import { fileURLToPath } from "url";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..", "..");
@@ -197,8 +197,7 @@ if (CHECK) {
   changed.forEach((file) => console.log(`  ${file}`));
 }
 
-export { block, labLabel };
-
-if (import.meta.url !== pathToFileURL(process.argv[1]).href) {
-  // Imported for its helpers: nothing else to do
-}
+// No export, and no guard pretending there is one. What used to sit here was
+// an empty if, below code that had already written into three repositories:
+// importing this file rewrote the product documentation as a side effect.
+// It is a script, it is run as one, and nothing imports it.

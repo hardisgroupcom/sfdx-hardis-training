@@ -497,7 +497,9 @@ export const RULES = [
       const text = actionFiles.map((f) => ctx.readOn(DEV, f) || "").join("\n");
       const hasData = /dataImport|data:import|HeliosCrewRefData|CrewCapacity/i.test(text);
       const hasSchedule = /schedule|CrewCapacityBatch/i.test(text);
-      const hasManual = /manual/i.test(text);
+      // The word on its own matches a comment. A declared manual action carries
+      // the type, which is what the Deployment Actions editor writes.
+      const hasManual = /type:\s*["']?manual\b/i.test(text);
       const missing = [
         !hasData ? "the data import action" : null,
         !hasSchedule ? "the batch schedule action" : null,
@@ -525,6 +527,19 @@ export const RULES = [
       // The outcome, not the procedure: the query has to be out of the loop. Any
       // shape that queries once for the whole list passes, which is what an IN bind
       // on the collection looks like however it is written.
+      // A learner who adds a bulk query but leaves the per-record one inside the
+      // loop has fixed nothing, and the governor limit is still reached. Read
+      // schedulableOn alone: the class also ships earliestInstallDate, which
+      // queries one installation on purpose and is none of this lab's business.
+      const fromMethod = cls.slice(cls.indexOf("schedulableOn"));
+      const nextMethod = fromMethod.search(/\n {4}(public|private|protected|static)\s/);
+      const body = nextMethod === -1 ? fromMethod : fromMethod.slice(0, nextMethod);
+      if (/WHERE\s+Installation__c\s*=\s*:/i.test(body)) {
+        return miss(
+          "schedulableOn still queries one installation at a time inside its loop, whatever else was added beside it",
+          `force-app/main/default/classes/InstallationScheduler.cls on branch ${DEV}, expected that query to be gone from schedulableOn`
+        );
+      }
       if (!/WHERE\s+Installation__c\s+IN\s*:/i.test(cls)) {
         return miss(
           "schedulableOn still queries inside its loop: one SOQL per installation hits the governor limit",
