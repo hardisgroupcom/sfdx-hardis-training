@@ -105,7 +105,10 @@ function colorPillReferences(content) {
     `<span class="pill-ref pill-ref-${Number(n)}">(${Number(n)})</span>`;
   return content
     .replace(/\*\*\((\d{1,2})\)\*\*/g, (whole, n) => paint(n))
-    .replace(/\*\*([^*\n]*?)\((\d{1,2})\)([^*\n]*?)\*\*/g, (whole, before, n, after) => {
+    // No `<` in the two groups, so this pass cannot reach across a pill the
+    // pass above already painted and wrap its span a second time: the source
+    // `**Add Org** **(1)**, then pick **...**` did exactly that.
+    .replace(/\*\*([^*<\n]*?)\((\d{1,2})\)([^*<\n]*?)\*\*/g, (whole, before, n, after) => {
       // A bold run holding a number: keep the bold on the words, paint the number
       const left = before ? `**${before.replace(/\s+$/, "")}** ` : "";
       const right = after.trim() ? ` **${after.trim()}**` : "";
