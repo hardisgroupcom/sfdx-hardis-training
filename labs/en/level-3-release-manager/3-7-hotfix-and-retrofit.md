@@ -241,12 +241,12 @@ behind it, so that the branch production deploys from stops disagreeing with pro
 
 **Start the branch.** In the **DevOps Pipeline** panel, **New User Story**:
 
-| Question       | Your answer                                                                     |
-|----------------|---------------------------------------------------------------------------------|
-| Target branch  | `preprod`, the branch a hotfix starts from, offered since Lab 3.1               |
-| Type of branch | **Fix**: the repository is wrong about production, and you are fixing that      |
-| Name           | `US-046-needs-reinspection`                                                     |
-| Org to work in | `helios-dev`, as usual: nothing is built here, only retrieved                   |
+| Question       | Your answer                                                                |
+|----------------|----------------------------------------------------------------------------|
+| Target branch  | `preprod`, the branch a hotfix starts from, offered since Lab 3.1          |
+| Type of branch | **Fix**: the repository is wrong about production, and you are fixing that |
+| Name           | `US-046-needs-reinspection`                                                |
+| Org to work in | `helios-dev`, as usual: nothing is built here, only retrieved              |
 
 It creates `fix/US-046-needs-reinspection` from the latest `preprod`.
 
