@@ -282,16 +282,16 @@ OK  helios-uat is created, for 30 days.
 OK  helios-dev holds the app, your permission set and the sample data.
 ...
 
-6 of 8  Which org each branch deploys to
-OK  integration now names the org of every branch, and is pushed.
-
-7 of 8  Changes through a Pull Request, merged once green
-OK  integration now takes changes through a Pull Request only, merged once its checks are green.
-OK  uat now takes changes through a Pull Request only, merged once its checks are green.
-
-8 of 8  The credentials the CI jobs use
+6 of 8  The credentials the CI jobs use
 OK  SFDX_AUTH_URL_INTEGRATION is set on your-handle/sfdx-hardis-training.
 OK  SFDX_AUTH_URL_UAT is set on your-handle/sfdx-hardis-training.
+
+7 of 8  Which org each branch deploys to
+OK  integration now names the org of every branch, and is pushed.
+
+8 of 8  Changes through a Pull Request, merged once green
+OK  integration now takes changes through a Pull Request only, merged once its checks are green.
+OK  uat now takes changes through a Pull Request only, merged once its checks are green.
 ```
 
 Count on fifteen to twenty minutes, nearly all of it steps 4 and 5, when Salesforce creates the orgs

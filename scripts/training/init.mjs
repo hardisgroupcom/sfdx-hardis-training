@@ -689,16 +689,10 @@ export default async function init(args) {
   step(5, "The Helios app in each of them");
   await seedScratchOrgs(usernames, { force: args.reseed === true, ownerName: devHubOwnerName(devHub) });
 
-  step(6, "Which org each branch deploys to");
-  const published = writeBranchConfigs(pipeline, usernames, slug);
-
-  // After the branch configuration, which is pushed straight to integration,
-  // and before the secrets, the one step that can stop the command.
-  step(7, "Changes through a Pull Request, merged once green");
-  info(c.dim(`    A Pull Request into ${pipeline.map((s) => s.branch).join(" or ")} merges only once ${REQUIRED_CHECKS.join(" and ")} are green.`));
-  const protectedBranches = protectBranches(slug, pipeline.map((s) => s.branch));
-
-  step(8, "The credentials the CI jobs use");
+  // Before the branch configuration, because pushing that starts the deployment
+  // job of integration straight away: written after, the job runs with no
+  // credential and the learner's pipeline is red before Lab 1.3.
+  step(6, "The credentials the CI jobs use");
   // Once Lab 3.1 moved the pipeline to JWT and deleted the auth URL secrets, running
   // this again, to rebuild an expired scratch org, must not bring the shortcut back
   const projectConfig = gitOut(["show", `origin/${pipeline[0].branch}:config/.sfdx-hardis.yml`]);
@@ -707,6 +701,15 @@ export default async function init(args) {
   } else {
     setSecrets(slug, pipeline);
   }
+
+  step(7, "Which org each branch deploys to");
+  const published = writeBranchConfigs(pipeline, usernames, slug);
+
+  // After the branch configuration, which is pushed straight to integration:
+  // protecting the branch first would refuse that push.
+  step(8, "Changes through a Pull Request, merged once green");
+  info(c.dim(`    A Pull Request into ${pipeline.map((s) => s.branch).join(" or ")} merges only once ${REQUIRED_CHECKS.join(" and ")} are green.`));
+  const protectedBranches = protectBranches(slug, pipeline.map((s) => s.branch));
 
   title("Done");
   info(`Your fork:               https://github.com/${slug}`);
