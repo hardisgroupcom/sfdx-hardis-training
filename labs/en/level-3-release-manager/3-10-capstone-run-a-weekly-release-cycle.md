@@ -73,8 +73,9 @@ Promote `uat` into `preprod` first, and check `helios-preprod` behaves. Then cre
 Request from `preprod` into `main`, titled `Release ...`. Read the counts line in the sfdx-hardis comment and stop if anything is being
 deleted that you were not expecting. Merge, watch, verify, do the manual steps.
 
-This release is also what finally carries the Lab 3.7 picklist value into `main`, so the `Needs Reinspection`
-picklist value reaches production through the pipeline and the check for Lab 3.7 passes.
+Everything Lab 3.7 put in at `preprod` is already in `main`, so this release should not be moving
+it again. Read the counts line with that in mind: what goes out this week is Romain's help text and
+the retrofits travelling up from `integration`, and `deleted: 0` is still the number to stop on.
 
 Then generate the release notes of the release to `main`, add the sentence at the top that says what
 this release is for, and put them in the description of the Pull Request from `preprod` into

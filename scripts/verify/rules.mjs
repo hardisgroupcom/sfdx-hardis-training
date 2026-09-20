@@ -930,7 +930,8 @@ export const RULES = [
     id: "3.10", level: 3, lab: 10,
     title: "Capstone: a full release cycle",
     check: (ctx) => {
-      // The week's release carried Romain's US-055 and the Lab 3.7 picklist value to production
+      // The week's release carried Romain's US-055 to production. The Lab 3.7 value is on main
+      // since that lab, so finding it here says the retrofits and the release both held.
       const installDate = ctx.readOn("main", FIELD("Installation__c", "Install_Date__c")) || "";
       if (!/<inlineHelpText>/.test(installDate)) {
         return miss(
@@ -940,9 +941,9 @@ export const RULES = [
       }
       const status = ctx.readOn("main", FIELD("Installation__c", "Status__c")) || "";
       return /Needs Reinspection/.test(status)
-        ? pass("The week's release reached production, the Lab 3.7 picklist value with it")
+        ? pass("The week's release reached production, and main still carries the Lab 3.7 value")
         : miss(
-          "the release reached main without the Needs Reinspection value of Lab 3.7",
+          "main lost the Needs Reinspection value of Lab 3.7 somewhere in the week's promotions",
           `${FIELD("Installation__c", "Status__c")} on branch main`
         );
     }
