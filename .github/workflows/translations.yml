@@ -45,3 +45,10 @@ jobs:
 
       - name: Every table's pipes line up
         run: node scripts/i18n/align-tables.mjs --check
+
+      # Reports, never fails: a deliberate difference is allowed, and the French
+      # home page has one. It is here to be read on the Pull Request, because a
+      # translation that lost an image or an "Under the hood" block shows up
+      # nowhere else.
+      - name: Translations keep the shape of their source
+        run: node scripts/i18n/check-structure.mjs

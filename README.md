@@ -138,6 +138,8 @@ node scripts/build/mocks.mjs             # regenerate the Helios screenshot fixt
 node scripts/build/lab-crossrefs.mjs     # link every mention of another lab, in every locale
 node scripts/i18n/check-translations.mjs # which translations their English source has moved past
 node scripts/i18n/stamp-source-rev.mjs fr  # stamp source_rev from git, after committing the English side
+node scripts/i18n/check-structure.mjs    # a translation that lost an image or a block, reported not enforced
+node scripts/i18n/align-tables.mjs       # re-pad the tables of a translated lab
 ```
 
 Screenshots are captured from the extension repository, which must be a sibling clone:

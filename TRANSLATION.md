@@ -82,6 +82,21 @@ node scripts/i18n/stamp-source-rev.mjs fr         # after re-reading, stamp them
 
 A translation behind its source is not an error: it is a list of what to re-read.
 
+## Shape
+
+Staleness is one way a translation rots. Losing something is the other, and it is quieter: a
+paragraph skipped, an image left out, an "Under the hood" block never carried over. Nothing fails,
+and a learner meets it as a step that points at a picture which is not there.
+
+```bash
+node scripts/i18n/check-structure.mjs
+```
+
+It compares headings, images, code fences, `<details>` blocks, `**(n)**` pill references,
+admonitions and tables, and says nothing about the words. It reports and never fails, because a
+deliberate difference is allowed: today the French home page carries one admonition more than the
+English one, the note saying the product stays in English. Read the list rather than silencing it.
+
 ## What never gets translated
 
 Org aliases, branch names, API names, User Story ids, command lines, `Helios Energy` and the
