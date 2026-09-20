@@ -23,8 +23,8 @@ docs_dir: site-src
 theme:
   name: material
   # Holds the Giscus comment widget every page ends with, and the banner that
-  # says the course is not finished. Delete main.html when it is finished, and
-  # keep the folder for the comments.
+  # says the course is in QA and asks for comments. Delete main.html when the
+  # course is released, and keep the folder for the comments.
   custom_dir: site-overrides
   language: en
   font: false
