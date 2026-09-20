@@ -26,6 +26,11 @@ concurrency:
 jobs:
   build:
     name: Build with Zensical
+    # The site of this course is published from this repository only. A learner's
+    # fork has no Pages site, so the deploy job below fails there, on every push
+    # to main, with a red cross they cannot do anything about and that says
+    # nothing about their work.
+    if: github.repository == 'hardisgroupcom/sfdx-hardis-training'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
@@ -64,6 +69,7 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     needs: build
+    if: github.repository == 'hardisgroupcom/sfdx-hardis-training'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
