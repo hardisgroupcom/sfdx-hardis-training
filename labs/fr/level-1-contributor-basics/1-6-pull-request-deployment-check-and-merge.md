@@ -97,10 +97,10 @@ C'est ce que le relecteur lit en premier. Cliquez sur **Create pull request**.
 
 Ouvrez l'onglet **Checks** **(1)**. Deux d'entre eux comptent ici, et les deux démarrent tout seuls :
 
-| Contrôle                                      | Ce qu'il fait                                                                                      |
-|-----------------------------------------------|-----------------------------------------------------------------------------------------------------|
-| **Simulate Deployment (sfdx-hardis)** **(3)** | Déploie votre métadonnée dans `helios-integration` en mode validation, et lance les tests Apex       |
-| **Mega-Linter** **(2)**                       | Lance les linters de qualité de code sur le dépôt                                                    |
+| Contrôle                                      | Ce qu'il fait                                                                                  |
+|-----------------------------------------------|------------------------------------------------------------------------------------------------|
+| **Simulate Deployment (sfdx-hardis)** **(3)** | Déploie votre métadonnée dans `helios-integration` en mode validation, et lance les tests Apex |
+| **Mega-Linter** **(2)**                       | Lance les linters de qualité de code sur le dépôt                                              |
 
 ![L'onglet Checks d'une Pull Request, listant les jobs qui ont tourné](../../_assets/annotated/web/github-pr-checks.png)
 

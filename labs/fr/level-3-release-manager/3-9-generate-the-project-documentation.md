@@ -70,12 +70,12 @@ Cela prend quelques minutes sur un petit projet comme Helios.
 
 Quatre sortes de pages, et il vaut la peine de les distinguer :
 
-| Page                                 | Ce qu'elle contient                                                                                                              | Qui la lit                                                                 |
-|--------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------|
-| **Pages d'objet**                    | Chaque champ avec son type, sa description et son help text, les règles de validation, les types d'enregistrement, les relations    | Un admin à qui on demande de modifier quelque chose                          |
-| **Pages de flow**                    | Un diagramme lisible de chaque flow, plus ses conditions d'entrée et ses éléments                                                    | Quiconque doit comprendre l'automatisation sans ouvrir Flow Builder          |
-| **Pages Apex**                       | Les classes, leurs méthodes, leur ApexDoc                                                                                            | Un développeur                                                               |
-| **Pages de packages et de profils**  | Ce qui est installé, ce que les permission sets accordent                                                                            | Un audit                                                                     |
+| Page                                | Ce qu'elle contient                                                                                                              | Qui la lit                                                          |
+|-------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------|
+| **Pages d'objet**                   | Chaque champ avec son type, sa description et son help text, les règles de validation, les types d'enregistrement, les relations | Un admin à qui on demande de modifier quelque chose                 |
+| **Pages de flow**                   | Un diagramme lisible de chaque flow, plus ses conditions d'entrée et ses éléments                                                | Quiconque doit comprendre l'automatisation sans ouvrir Flow Builder |
+| **Pages Apex**                      | Les classes, leurs méthodes, leur ApexDoc                                                                                        | Un développeur                                                      |
+| **Pages de packages et de profils** | Ce qui est installé, ce que les permission sets accordent                                                                        | Un audit                                                            |
 
 Ouvrez `docs/objects/Installation__c.md`. Chaque champ que vous et vos collègues avez créé au fil des
 trois niveaux y est, avec les descriptions que vous avez écrites dans Setup.

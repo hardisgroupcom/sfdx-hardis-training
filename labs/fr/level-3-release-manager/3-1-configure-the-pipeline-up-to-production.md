@@ -101,12 +101,12 @@ a besoin de livrer correctement.
 
 Quatre questions, et leurs réponses sont tout le pipeline :
 
-| Question                                                                             | Réponse Helios                                                                              |
-|--------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
-| Quelles branches sont **majeures**, c'est-à-dire ont une org et un job de déploiement ? | `integration`, `uat`, `preprod`, `main`                                                     |
-| Quelle branche peut merger dans quelle autre ?                                       | `integration` dans `uat`, `uat` dans `preprod`, `preprod` dans `main`. Rien n'en saute une   |
-| Quelle branche est la production ?                                                   | `main`                                                                                       |
-| D'où part un correctif urgent ?                                                      | De `preprod`, pour qu'il n'emporte jamais ce qui attend encore dans `integration` et `uat`   |
+| Question                                                                                | Réponse Helios                                                                             |
+|-----------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|
+| Quelles branches sont **majeures**, c'est-à-dire ont une org et un job de déploiement ? | `integration`, `uat`, `preprod`, `main`                                                    |
+| Quelle branche peut merger dans quelle autre ?                                          | `integration` dans `uat`, `uat` dans `preprod`, `preprod` dans `main`. Rien n'en saute une |
+| Quelle branche est la production ?                                                      | `main`                                                                                     |
+| D'où part un correctif urgent ?                                                         | De `preprod`, pour qu'il n'emporte jamais ce qui attend encore dans `integration` et `uat` |
 
 Si vous ne savez pas les énoncer en une phrase chacune, les configurer n'y changera rien.
 
@@ -276,10 +276,10 @@ Chaque secret est un formulaire : le **Name (1)**, le **Secret (2)** collé depu
 
 ![Le formulaire New secret, avec le nom et la valeur copiée depuis le panneau](../../_assets/annotated/web/github-secret-new.png)
 
-| Nom                           | Valeur                                    |
-|-------------------------------|-------------------------------------------|
-| `SFDX_CLIENT_ID_INTEGRATION`  | la consumer key affichée par la commande  |
-| `SFDX_CLIENT_KEY_INTEGRATION` | la passphrase affichée par la commande    |
+| Nom                           | Valeur                                   |
+|-------------------------------|------------------------------------------|
+| `SFDX_CLIENT_ID_INTEGRATION`  | la consumer key affichée par la commande |
+| `SFDX_CLIENT_KEY_INTEGRATION` | la passphrase affichée par la commande   |
 
 Le suffixe est **le nom de la branche en majuscules**. C'est toute la convention, et c'est pourquoi
 les noms ne sont pas arbitraires.
@@ -297,13 +297,13 @@ laissez la commande créer l'application.
 
 Ce qu'elle a écrit, et où :
 
-| Quoi                                      | Où                                                                             | Ce que c'est                                                   |
-|-------------------------------------------|--------------------------------------------------------------------------------|----------------------------------------------------------------|
-| La configuration de branche               | `config/branches/.sfdx-hardis.integration.yml`                                 | `targetUsername`, `instanceUrl` et `mergeTargets`              |
-| Une clé privée chiffrée                   | `config/branches/.jwt/integration.key`                                         | L'identifiant lui-même, destiné à être commité                 |
-| Un certificat                             | `integration.crt` dans votre dossier personnel, supprimé après le déploiement  | Ce qui est téléversé dans l'org                                |
-| Une définition d'External Client App      | déployée dans l'org par la commande                                            | Ce contre quoi Salesforce authentifie                          |
-| Deux valeurs à stocker comme secrets      | affichées dans le panneau de la commande                                       | `SFDX_CLIENT_ID_INTEGRATION` et `SFDX_CLIENT_KEY_INTEGRATION`  |
+| Quoi                                 | Où                                                                            | Ce que c'est                                                  |
+|--------------------------------------|-------------------------------------------------------------------------------|---------------------------------------------------------------|
+| La configuration de branche          | `config/branches/.sfdx-hardis.integration.yml`                                | `targetUsername`, `instanceUrl` et `mergeTargets`             |
+| Une clé privée chiffrée              | `config/branches/.jwt/integration.key`                                        | L'identifiant lui-même, destiné à être commité                |
+| Un certificat                        | `integration.crt` dans votre dossier personnel, supprimé après le déploiement | Ce qui est téléversé dans l'org                               |
+| Une définition d'External Client App | déployée dans l'org par la commande                                           | Ce contre quoi Salesforce authentifie                         |
+| Deux valeurs à stocker comme secrets | affichées dans le panneau de la commande                                      | `SFDX_CLIENT_ID_INTEGRATION` et `SFDX_CLIENT_KEY_INTEGRATION` |
 
 La clé privée est **chiffrée**, avec une passphrase que la commande génère au hasard et que seul
 votre secret détient. Le dépôt seul ne suffit pas à s'authentifier, et c'est ce qui rend acceptable
@@ -330,11 +330,11 @@ un bug.
 
 Même engrenage, **Add/Configure Org**, trois fois de plus, une par branche et son org :
 
-| Branche   | Org              | Réponse pour l'URL de base                                                 | Merge dans   | Secrets                                             |
-|-----------|------------------|----------------------------------------------------------------------------|--------------|-----------------------------------------------------|
-| `uat`     | `helios-uat`     | **🧪 Sandbox or Scratch org (test.salesforce.com)**                        | `preprod`    | `SFDX_CLIENT_ID_UAT`, `SFDX_CLIENT_KEY_UAT`         |
-| `preprod` | `helios-preprod` | **☢️ Other: Dev org, Production org or DevHub org (login.salesforce.com)** | `main`       | `SFDX_CLIENT_ID_PREPROD`, `SFDX_CLIENT_KEY_PREPROD` |
-| `main`    | `helios-prod`    | **☢️ Other: Dev org, Production org or DevHub org (login.salesforce.com)** | ne cochez rien | `SFDX_CLIENT_ID_MAIN`, `SFDX_CLIENT_KEY_MAIN`     |
+| Branche   | Org              | Réponse pour l'URL de base                                                 | Merge dans     | Secrets                                             |
+|-----------|------------------|----------------------------------------------------------------------------|----------------|-----------------------------------------------------|
+| `uat`     | `helios-uat`     | **🧪 Sandbox or Scratch org (test.salesforce.com)**                        | `preprod`      | `SFDX_CLIENT_ID_UAT`, `SFDX_CLIENT_KEY_UAT`         |
+| `preprod` | `helios-preprod` | **☢️ Other: Dev org, Production org or DevHub org (login.salesforce.com)** | `main`         | `SFDX_CLIENT_ID_PREPROD`, `SFDX_CLIENT_KEY_PREPROD` |
+| `main`    | `helios-prod`    | **☢️ Other: Dev org, Production org or DevHub org (login.salesforce.com)** | ne cochez rien | `SFDX_CLIENT_ID_MAIN`, `SFDX_CLIENT_KEY_MAIN`       |
 
 Vérifiez l'org deux fois pour `main` : pointer la production vers la mauvaise org est l'erreur la
 plus coûteuse disponible dans ce lab. `preprod` et `main` sont des orgs Developer Edition, qui se

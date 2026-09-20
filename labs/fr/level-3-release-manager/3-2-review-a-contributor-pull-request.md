@@ -98,12 +98,12 @@ pour l'instant, l'étape 4 en parle.
 
 Parcourez le diff avec quatre questions :
 
-| Question                                       | Pourquoi cela compte                                                                                                          |
-|------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
-| **Est-ce que cela correspond à la story ?**    | Comparez avec US-052 dans le backlog. Les modifications en plus sont soit du hors-périmètre, soit un accident, et les deux méritent un commentaire |
-| **Est-ce que quelque chose disparaît ?**       | Un champ retiré, une valeur de liste de sélection retirée, une permission retirée. Salesforce déploiera volontiers une suppression |
-| **Les permissions sont-elles sur un permission set ?** | Un profil qui porte des permissions de champ veut dire que quelqu'un a contourné la convention                            |
-| **Est-ce que ce serait réversible ?**          | Si cela s'avère faux en production un vendredi, quel est le chemin du retour ?                                                  |
+| Question                                               | Pourquoi cela compte                                                                                                                               |
+|--------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Est-ce que cela correspond à la story ?**            | Comparez avec US-052 dans le backlog. Les modifications en plus sont soit du hors-périmètre, soit un accident, et les deux méritent un commentaire |
+| **Est-ce que quelque chose disparaît ?**               | Un champ retiré, une valeur de liste de sélection retirée, une permission retirée. Salesforce déploiera volontiers une suppression                 |
+| **Les permissions sont-elles sur un permission set ?** | Un profil qui porte des permissions de champ veut dire que quelqu'un a contourné la convention                                                     |
+| **Est-ce que ce serait réversible ?**                  | Si cela s'avère faux en production un vendredi, quel est le chemin du retour ?                                                                     |
 
 ### 4. Trouver ce que le robot a manqué
 

@@ -32,26 +32,26 @@ Si vous n'avez jamais utilisé Git, voici tout le vocabulaire. Rien dans le Nive
 vous le connaissiez déjà, et vous n'aurez pas une seule commande Git à taper : l'extension VS Code
 s'en charge.
 
-| Mot              | Ce que ça veut dire                                                                                                                                                         |
-|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Repository**   | Un dossier de projet, plus toutes les versions qu'il a jamais eues. On dit souvent "repo", ou "dépôt". Le repo Helios vit sur GitHub.                                        |
-| **Fork**         | Votre copie personnelle du dépôt de quelqu'un d'autre, faite en un clic, sous votre compte GitHub. Vous pouvez tout y changer, et l'original ne s'en aperçoit jamais.        |
-| **Clone**        | Télécharger un dépôt sur votre portable, pour que VS Code puisse l'ouvrir.                                                                                                  |
-| **Branch**       | Une ligne de travail nommée à l'intérieur d'un dépôt. Vous changez ce qu'il faut sur la vôtre, et la version de l'équipe reste intacte jusqu'au merge.                       |
-| **Commit**       | Enregistrer un ensemble de modifications dans l'historique du dépôt, avec un message qui dit pourquoi.                                                                       |
-| **Pull Request** | Demander que votre branche soit repliée dans celle de l'équipe. C'est là que les contrôles tournent et qu'un collègue lit ce que vous avez fait. Tout le monde dit "PR".     |
+| Mot              | Ce que ça veut dire                                                                                                                                                      |
+|------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Repository**   | Un dossier de projet, plus toutes les versions qu'il a jamais eues. On dit souvent "repo", ou "dépôt". Le repo Helios vit sur GitHub.                                    |
+| **Fork**         | Votre copie personnelle du dépôt de quelqu'un d'autre, faite en un clic, sous votre compte GitHub. Vous pouvez tout y changer, et l'original ne s'en aperçoit jamais.    |
+| **Clone**        | Télécharger un dépôt sur votre portable, pour que VS Code puisse l'ouvrir.                                                                                               |
+| **Branch**       | Une ligne de travail nommée à l'intérieur d'un dépôt. Vous changez ce qu'il faut sur la vôtre, et la version de l'équipe reste intacte jusqu'au merge.                   |
+| **Commit**       | Enregistrer un ensemble de modifications dans l'historique du dépôt, avec un message qui dit pourquoi.                                                                   |
+| **Pull Request** | Demander que votre branche soit repliée dans celle de l'équipe. C'est là que les contrôles tournent et qu'un collègue lit ce que vous avez fait. Tout le monde dit "PR". |
 
 ## Ce que vous allez faire
 
-| Lab                                                         | Titre                                                            | Durée  |
-|-------------------------------------------------------------|------------------------------------------------------------------|--------|
-| [1.1](1-1-install-vs-code-and-sfdx-hardis.md)               | Installer VS Code, Git et sfdx-hardis                            | 15 min |
-| [1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) | Créer votre Dev Hub, vos scratch orgs et votre pipeline CI/CD    | 30 min |
-| [1.3](1-3-start-a-user-story-on-a-git-branch.md)            | Démarrer une User Story sur sa propre branche Git                | 10 min |
-| [1.4](1-4-build-a-custom-field-in-your-org.md)              | Construire un champ personnalisé dans votre org Salesforce       | 15 min |
-| [1.5](1-5-retrieve-commit-and-publish-your-changes.md)      | Récupérer, commiter et publier vos modifications Salesforce      | 20 min |
+| Lab                                                         | Titre                                                              | Durée  |
+|-------------------------------------------------------------|--------------------------------------------------------------------|--------|
+| [1.1](1-1-install-vs-code-and-sfdx-hardis.md)               | Installer VS Code, Git et sfdx-hardis                              | 15 min |
+| [1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) | Créer votre Dev Hub, vos scratch orgs et votre pipeline CI/CD      | 30 min |
+| [1.3](1-3-start-a-user-story-on-a-git-branch.md)            | Démarrer une User Story sur sa propre branche Git                  | 10 min |
+| [1.4](1-4-build-a-custom-field-in-your-org.md)              | Construire un champ personnalisé dans votre org Salesforce         | 15 min |
+| [1.5](1-5-retrieve-commit-and-publish-your-changes.md)      | Récupérer, commiter et publier vos modifications Salesforce        | 20 min |
 | [1.6](1-6-pull-request-deployment-check-and-merge.md)       | Ouvrir une Pull Request, passer le contrôle de déploiement, merger | 20 min |
-| [1.7](1-7-capstone-deliver-a-user-story-on-your-own.md)     | Épreuve finale : livrer une User Story tout seul                 | 25 min |
+| [1.7](1-7-capstone-deliver-a-user-story-on-your-own.md)     | Épreuve finale : livrer une User Story tout seul                   | 25 min |
 
 ## Le menu Training
 
@@ -63,13 +63,13 @@ seul menu. Ouvrez la **Welcome page**, et sous **CUSTOM MENUS** cliquez sur la c
 
 Elles sont cinq, et les labs les appellent par ces noms :
 
-| Commande                           | Ce qu'elle fait                                                                                  |
-|------------------------------------|--------------------------------------------------------------------------------------------------|
-| **Set up my training environment** | Forke le dépôt, crée vos scratch orgs avec l'application, câble le pipeline                      |
-| **Where am I?**                    | Dit à quel niveau et à quel lab vous en êtes, et ce qu'il faut faire ensuite                      |
-| **Check my work**                  | Vérifie le lab que vous venez de terminer et affiche votre reçu                                   |
-| **Claim my badge**                 | Contrôle le niveau entier, puis ouvre votre demande de badge déjà remplie                         |
-| **Reset this level**               | Remet votre dépôt au début du Niveau 1                                                            |
+| Commande                           | Ce qu'elle fait                                                              |
+|------------------------------------|------------------------------------------------------------------------------|
+| **Set up my training environment** | Forke le dépôt, crée vos scratch orgs avec l'application, câble le pipeline  |
+| **Where am I?**                    | Dit à quel niveau et à quel lab vous en êtes, et ce qu'il faut faire ensuite |
+| **Check my work**                  | Vérifie le lab que vous venez de terminer et affiche votre reçu              |
+| **Claim my badge**                 | Contrôle le niveau entier, puis ouvre votre demande de badge déjà remplie    |
+| **Reset this level**               | Remet votre dépôt au début du Niveau 1                                       |
 
 Il y a un menu par niveau, et chacun ne contient que ce dont ce niveau a besoin : rien de ce que vous
 avez sous les yeux ne concerne un lab que vous n'avez pas encore atteint.

@@ -30,11 +30,11 @@ se disputent le même fichier et qu'une troisième ne marche pas.
 
 Vendredi après-midi. Trois stories portent la semaine :
 
-| Pull Request                              | Auteur             | Contrôles     | Ce qu'elle touche                            |
-|-------------------------------------------|--------------------|---------------|----------------------------------------------|
-| **US-018** Cap the crew size              | Mariia Pyvovarchuk | verts         | le flow d'affectation, `Helios_Delivery_Manager` |
-| **US-019** Quote PDF                      | Romain Panda       | verts         | `Helios_Delivery_Manager`                    |
-| **US-020** Refactor InstallationScheduler | Mariia Pyvovarchuk | **en échec**  | `InstallationScheduler`                      |
+| Pull Request                              | Auteur             | Contrôles    | Ce qu'elle touche                                |
+|-------------------------------------------|--------------------|--------------|--------------------------------------------------|
+| **US-018** Cap the crew size              | Mariia Pyvovarchuk | verts        | le flow d'affectation, `Helios_Delivery_Manager` |
+| **US-019** Quote PDF                      | Romain Panda       | verts        | `Helios_Delivery_Manager`                        |
+| **US-020** Refactor InstallationScheduler | Mariia Pyvovarchuk | **en échec** | `InstallationScheduler`                          |
 
 Deux d'entre elles modifient le même permission set. Une ne se déploie pas. Tout le monde veut
 rentrer chez soi.
@@ -202,11 +202,11 @@ déploiements envoient ce que leur propre commit contient.
 
 <details markdown="1"><summary>Sous le capot : les trois mécanismes et où chacun vit</summary>
 
-| Mécanisme                  | Configuration                                                     | Ce qu'il fait                                                                                 |
-|----------------------------|-------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
-| Nettoyage                  | `autoCleanTypes` dans `config/.sfdx-hardis.yml`                   | Réécrit les sources **au moment du commit**, dans la branche du contributeur                     |
-| Gestionnaire d'écrasement  | `packageNoOverwritePath` plus `manifest/package-no-overwrite.xml` | Retire des composants du package **au moment du déploiement**, quand l'org les possède déjà      |
-| Delta                      | `useDeltaDeployment`                                              | Réduit le package à ce qui a changé depuis le dernier commit déployé                             |
+| Mécanisme                 | Configuration                                                     | Ce qu'il fait                                                                               |
+|---------------------------|-------------------------------------------------------------------|---------------------------------------------------------------------------------------------|
+| Nettoyage                 | `autoCleanTypes` dans `config/.sfdx-hardis.yml`                   | Réécrit les sources **au moment du commit**, dans la branche du contributeur                |
+| Gestionnaire d'écrasement | `packageNoOverwritePath` plus `manifest/package-no-overwrite.xml` | Retire des composants du package **au moment du déploiement**, quand l'org les possède déjà |
+| Delta                     | `useDeltaDeployment`                                              | Réduit le package à ce qui a changé depuis le dernier commit déployé                        |
 
 La distinction entre les deux premiers mérite d'être tenue au clair, parce qu'ils échouent
 différemment.

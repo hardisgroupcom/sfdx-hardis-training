@@ -95,10 +95,10 @@ quelque part.
 
 C'est la seule org à laquelle vous vous inscrivez, et elle a deux rôles dans ce cours :
 
-| Quand            | Ce qu'est cette org                                                                 |
-|------------------|-------------------------------------------------------------------------------------|
-| Niveaux 1 et 2   | Votre **Dev Hub** : l'org qui crée les trois autres, et rien de plus                 |
-| Niveau 3         | La **production**, dernier arrêt du pipeline que vous aurez fini de monter d'ici là |
+| Quand          | Ce qu'est cette org                                                                 |
+|----------------|-------------------------------------------------------------------------------------|
+| Niveaux 1 et 2 | Votre **Dev Hub** : l'org qui crée les trois autres, et rien de plus                |
+| Niveau 3       | La **production**, dernier arrêt du pipeline que vous aurez fini de monter d'ici là |
 
 !!! info "Les scratch orgs, en un paragraphe"
     Une **scratch org** est une org Salesforce temporaire qu'une commande crée en deux minutes, à
@@ -383,11 +383,11 @@ Sept choses, chacune du vrai travail sur un vrai projet, et aucune à refaire vo
 - **Trois scratch orgs**, chacune contenant l'application Helios, votre permission set et les données
   d'exemple :
 
-| Org                  | À quoi elle sert                                                                          |
-|----------------------|--------------------------------------------------------------------------------------------|
-| `helios-dev`         | Votre org de développement, celle où vous construisez. Personne d'autre n'y travaille       |
-| `helios-integration` | L'org d'intégration partagée, où le travail de l'équipe est mergé et déployé                |
-| `helios-uat`         | La recette utilisateur, où le métier teste ce que l'intégration a rassemblé                 |
+| Org                  | À quoi elle sert                                                                      |
+|----------------------|---------------------------------------------------------------------------------------|
+| `helios-dev`         | Votre org de développement, celle où vous construisez. Personne d'autre n'y travaille |
+| `helios-integration` | L'org d'intégration partagée, où le travail de l'équipe est mergé et déployé          |
+| `helios-uat`         | La recette utilisateur, où le métier teste ce que l'intégration a rassemblé           |
 
 - **Dans quelle org déploie chaque branche**, écrit dans l'unique fichier de configuration par
   branche du projet, dans `config/branches/`, commité sur `integration` et poussé sur votre fork

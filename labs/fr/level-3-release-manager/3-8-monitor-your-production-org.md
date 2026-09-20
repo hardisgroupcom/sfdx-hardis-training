@@ -77,11 +77,11 @@ travaillez depuis le début du cours.
 
 Pourquoi deux dépôts, et c'est la même raison que sur les vrais projets :
 
-| Raison                   | Détail                                                                                                                                  |
-|--------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
-| Des permissions différentes | Le monitoring détient les identifiants de la production. Chaque contributeur a accès au dépôt de sources, et n'a pas besoin de celui-ci   |
-| Un rythme différent      | Le monitoring commite toutes les nuits. Mélanger cet historique avec celui de vos sources rend les deux illisibles                          |
-| Un contenu différent     | Le monitoring stocke des sauvegardes nocturnes de l'org. Il grossit, et il ne doit pas grossir dans le dépôt que les gens clonent tous les jours |
+| Raison                      | Détail                                                                                                                                           |
+|-----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
+| Des permissions différentes | Le monitoring détient les identifiants de la production. Chaque contributeur a accès au dépôt de sources, et n'a pas besoin de celui-ci          |
+| Un rythme différent         | Le monitoring commite toutes les nuits. Mélanger cet historique avec celui de vos sources rend les deux illisibles                               |
+| Un contenu différent        | Le monitoring stocke des sauvegardes nocturnes de l'org. Il grossit, et il ne doit pas grossir dans le dépôt que les gens clonent tous les jours |
 
 Votre dépôt de sources et votre dépôt de monitoring sont deux choses différentes avec deux publics
 différents. Si vous vous surprenez sur le point de répondre oui à cette question, le bon mouvement
@@ -196,11 +196,11 @@ aux utilisateurs approuvés, et la CLI continue de fonctionner pour eux.
 
 Ce que vous lisez, c'est la **forme** de chaque trouvaille, pour la reconnaître sur une vraie org :
 
-| Trouvaille sur une vraie org             | Ce que cela veut dire vraiment                                                         |
-|------------------------------------------|-------------------------------------------------------------------------------------------|
-| **Des utilisateurs inactifs toujours actifs** | Des licences payées, et des comptes qui peuvent encore se connecter                     |
-| **Une Connected App non sécurisée**      | Quelque chose peut atteindre vos données de production et personne ne se souvient de l'avoir approuvé |
-| **De l'Apex sur une vieille version d'API** | Cela cassera à une release Salesforce, à une date que vous ne maîtrisez pas               |
+| Trouvaille sur une vraie org                  | Ce que cela veut dire vraiment                                                                        |
+|-----------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| **Des utilisateurs inactifs toujours actifs** | Des licences payées, et des comptes qui peuvent encore se connecter                                   |
+| **Une Connected App non sécurisée**           | Quelque chose peut atteindre vos données de production et personne ne se souvient de l'avoir approuvé |
+| **De l'Apex sur une vieille version d'API**   | Cela cassera à une release Salesforce, à une date que vous ne maîtrisez pas                           |
 
 La seule trouvaille que vous devriez vraiment attendre ici est dans la **sauvegarde** plutôt que dans
 un contrôle : la règle de validation que le [Lab 3.7](3-7-hotfix-and-retrofit.md) a corrigée est dans l'org avec sa nouvelle
@@ -213,10 +213,10 @@ C'est l'étape qui décide si le monitoring survit six mois.
 
 Passez chaque trouvaille en revue et mettez-la dans l'un de trois paniers :
 
-| Panier                          | Ce que vous faites                                                       | Exemple                                    |
-|---------------------------------|--------------------------------------------------------------------------|--------------------------------------------|
-| **Agir maintenant**             | Corrigez-la cette semaine                                                | La Connected App non sécurisée             |
-| **Suivre**                      | Mettez-la au backlog comme une story                                     | La vieille version d'API                   |
+| Panier                           | Ce que vous faites                                                       | Exemple                                       |
+|----------------------------------|--------------------------------------------------------------------------|-----------------------------------------------|
+| **Agir maintenant**              | Corrigez-la cette semaine                                                | La Connected App non sécurisée                |
+| **Suivre**                       | Mettez-la au backlog comme une story                                     | La vieille version d'API                      |
 | **Faire taire, avec une raison** | Désactivez-la dans la configuration, avec un commentaire disant pourquoi | Un contrôle qui ne s'applique pas à cette org |
 
 Sur `helios-prod`, `ActiveScratchOrgs` va dans **Suivre** : c'est réel, c'est attendu tant que le

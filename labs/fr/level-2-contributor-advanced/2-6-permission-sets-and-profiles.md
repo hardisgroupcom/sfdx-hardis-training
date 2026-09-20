@@ -156,9 +156,9 @@ chaque branche.
 Les réglages sont groupés en onglets. Deux d'entre eux font le travail que vous venez de rencontrer,
 et il vaut la peine de savoir lequel fait quoi :
 
-| Réglage                            | Onglet                         | Ce dont il protège                                                                                     |
-|------------------------------------|--------------------------------|----------------------------------------------------------------------------------------------------------|
-| `autoCleanTypes: minimizeProfiles` | **Salesforce Project** **(2)** | Un profil qui porte des permissions dont la place est sur un permission set                                |
+| Réglage                            | Onglet                         | Ce dont il protège                                                                                        |
+|------------------------------------|--------------------------------|-----------------------------------------------------------------------------------------------------------|
+| `autoCleanTypes: minimizeProfiles` | **Salesforce Project** **(2)** | Un profil qui porte des permissions dont la place est sur un permission set                               |
 | `autoRemoveUserPermissions`        | **Salesforce Project** **(2)** | Des permissions utilisateur précises qui ne doivent jamais voyager entre orgs, quel qu'en soit le porteur |
 
 Les deux tournent sur votre machine, au moment où vous publiez : ils décident de ce que votre commit
@@ -179,9 +179,9 @@ Des sections entières sont supprimées, parce qu'un permission set peut toutes 
 Trois sections sont allégées plutôt que supprimées, en gardant seulement les entrées qu'un permission
 set ne sait pas exprimer :
 
-| Section                   | Ce qui survit                                                                            |
-|---------------------------|------------------------------------------------------------------------------------------|
-| `recordTypeVisibilities`  | seulement les entrées marquées `default` (ou `personAccountDefault`)                      |
+| Section                   | Ce qui survit                                                                                     |
+|---------------------------|---------------------------------------------------------------------------------------------------|
+| `recordTypeVisibilities`  | seulement les entrées marquées `default` (ou `personAccountDefault`)                              |
 | `applicationVisibilities` | seulement l'application par défaut, et les applications explicitement cachées (`visible` à false) |
 | `userPermissions`         | seulement les permissions explicitement **désactivées**, plus tout ce qui est sur le profil Admin |
 

@@ -179,10 +179,10 @@ change rien dans l'org, elles attendent donc le merge.
 
 **Lisez-le avant de merger.** Deux choses à chercher :
 
-| Ce que vous voyez            | Ce que cela veut dire pour vous                                                                       |
-|------------------------------|---------------------------------------------------------------------------------------------------------|
-| Une **étape manuelle**       | Quelqu'un doit cliquer quelque chose en UAT. Ce quelqu'un, c'est vous, et cela n'arrivera pas sans plan  |
-| Un **import de données**     | Des enregistrements vont être écrits en UAT. Les testeurs peuvent y avoir les leurs                      |
+| Ce que vous voyez        | Ce que cela veut dire pour vous                                                                         |
+|--------------------------|---------------------------------------------------------------------------------------------------------|
+| Une **étape manuelle**   | Quelqu'un doit cliquer quelque chose en UAT. Ce quelqu'un, c'est vous, et cela n'arrivera pas sans plan |
+| Un **import de données** | Des enregistrements vont être écrits en UAT. Les testeurs peuvent y avoir les leurs                     |
 
 Vous ne pouvez pas modifier l'action d'un contributeur depuis ici : elle appartient à sa Pull Request
 et à toutes les orgs qui suivent celle-ci, une mauvaise action se corrige donc dans une nouvelle Pull

@@ -92,9 +92,9 @@ contrôle est la première connexion JWT à `helios-prod`. Intitulez-la simpleme
 Quand le contrôle se termine, lisez le commentaire sfdx-hardis comme le [Lab 3.2](3-2-review-a-contributor-pull-request.md) l'a enseigné, et
 ajoutez deux questions qui ne valent que pour la production :
 
-| Question                                | Où regarder                                                                                                                     |
-|-----------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
-| **Est-ce que cela supprime quelque chose ?** | Le chiffre `deleted` de la ligne de compteurs. Une suppression en production est définitive et emporte des données avec elle |
+| Question                                     | Où regarder                                                                                                                        |
+|----------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
+| **Est-ce que cela supprime quelque chose ?** | Le chiffre `deleted` de la ligne de compteurs. Une suppression en production est définitive et emporte des données avec elle       |
 | **Combien de temps cela va-t-il prendre ?**  | La durée du contrôle est une estimation raisonnable. Si c'est 40 minutes, ce sont 40 minutes pendant lesquelles l'org est modifiée |
 
 Si ce chiffre n'est pas zéro et que vous ne vous y attendiez pas, **arrêtez-vous**. Le commentaire ne
@@ -147,13 +147,13 @@ deux autres : **Pipeline Settings** au [Lab 3.1](3-1-configure-the-pipeline-up-t
 
 Il couvre les 90 derniers jours par défaut, et il rend compte de cinq nombres, pas quatre :
 
-| Métrique                   | Ce qu'elle compte vraiment                                                            | À quoi ressemble le bon                                                       |
-|----------------------------|----------------------------------------------------------------------------------------|---------------------------------------------------------------------------------|
-| **Deployment Frequency**   | Les déploiements réussis enregistrés **dans l'org**, divisés par la période             | Hebdomadaire convient. Trimestriel veut dire que chaque livraison est énorme     |
-| **Lead Time for Changes**  | Par Pull Request : de sa création au déploiement survenu dans les 14 jours              | Des jours, pas des semaines. Un long délai veut dire que du travail stagne       |
-| **Change Failure Rate**    | Les déploiements en échec divisés par tous les déploiements                             | Sous 15 %. Au-dessus, le contrôle n'attrape pas ce qu'il devrait                  |
-| **Mean Time to Recovery**  | Médiane en heures, malgré le nom, d'un déploiement en échec au suivant qui réussit      | Des heures                                                                       |
-| **Deployment Rework Rate** | Les Pull Requests de hotfix, et les déploiements qui suivent un échec dans la journée   | Bas. Lisez la note ci-dessous avant d'attendre du [Lab 3.7](3-7-hotfix-and-retrofit.md) qu'il le fasse bouger   |
+| Métrique                   | Ce qu'elle compte vraiment                                                            | À quoi ressemble le bon                                                                                       |
+|----------------------------|---------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| **Deployment Frequency**   | Les déploiements réussis enregistrés **dans l'org**, divisés par la période           | Hebdomadaire convient. Trimestriel veut dire que chaque livraison est énorme                                  |
+| **Lead Time for Changes**  | Par Pull Request : de sa création au déploiement survenu dans les 14 jours            | Des jours, pas des semaines. Un long délai veut dire que du travail stagne                                    |
+| **Change Failure Rate**    | Les déploiements en échec divisés par tous les déploiements                           | Sous 15 %. Au-dessus, le contrôle n'attrape pas ce qu'il devrait                                              |
+| **Mean Time to Recovery**  | Médiane en heures, malgré le nom, d'un déploiement en échec au suivant qui réussit    | Des heures                                                                                                    |
+| **Deployment Rework Rate** | Les Pull Requests de hotfix, et les déploiements qui suivent un échec dans la journée | Bas. Lisez la note ci-dessous avant d'attendre du [Lab 3.7](3-7-hotfix-and-retrofit.md) qu'il le fasse bouger |
 
 Deux d'entre elles ne sont pas ce que leur nom suggère, et il vaut la peine de savoir lesquelles.
 **Le change failure rate est ici un taux d'échec de déploiement** : une livraison qui s'est déployée

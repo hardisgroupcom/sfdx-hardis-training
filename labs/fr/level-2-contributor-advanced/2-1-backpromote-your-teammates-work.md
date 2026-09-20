@@ -101,11 +101,11 @@ et votre org est listé par type de métadonnée, chaque élément avec sa propr
 
 Parcourez la liste plutôt que de cliquer sur "tout" :
 
-| Ce que vous voyez                                         | Ce qu'il faut faire                                                            |
-|-----------------------------------------------------------|---------------------------------------------------------------------------------|
-| De la métadonnée des trois stories mergées                | **Prenez-la.** C'est tout l'objet de la manœuvre                                 |
-| Quelque chose que vous êtes en train de construire        | **Laissez-le.** Un backpromote écraserait votre travail en cours                 |
-| Quelque chose que vous ne reconnaissez pas du tout        | **Prenez-le.** Si c'est sur `integration`, c'est la vérité de l'équipe           |
+| Ce que vous voyez                                  | Ce qu'il faut faire                                                    |
+|----------------------------------------------------|------------------------------------------------------------------------|
+| De la métadonnée des trois stories mergées         | **Prenez-la.** C'est tout l'objet de la manœuvre                       |
+| Quelque chose que vous êtes en train de construire | **Laissez-le.** Un backpromote écraserait votre travail en cours       |
+| Quelque chose que vous ne reconnaissez pas du tout | **Prenez-le.** Si c'est sur `integration`, c'est la vérité de l'équipe |
 
 Pour un fichier que les deux côtés ont modifié, le panneau propose une troisième réponse à côté de
 **Overwrite** et **Keep org version** : **Merge**. Il écrit le fichier avec les deux versions

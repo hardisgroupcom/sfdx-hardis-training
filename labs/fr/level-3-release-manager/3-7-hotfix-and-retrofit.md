@@ -189,12 +189,12 @@ a hotfix (release manager)** **(1)** :
 
 ![La question du type de branche, avec Retrofit](../../_assets/annotated/vscode/work-new-story-type--retrofit.png)
 
-| Question              | Votre réponse                                                             |
-|-----------------------|---------------------------------------------------------------------------|
-| Branche cible         | `integration`, la branche dans laquelle le retrofit revient               |
-| Type de branche       | **Retrofit**                                                              |
-| Nom                   | `US-045-retrofit`, la story dont vous ramenez le hotfix                   |
-| Org de travail        | `helios-dev` : rien n'est construit ici, l'org n'a donc guère d'importance |
+| Question        | Votre réponse                                                              |
+|-----------------|----------------------------------------------------------------------------|
+| Branche cible   | `integration`, la branche dans laquelle le retrofit revient                |
+| Type de branche | **Retrofit**                                                               |
+| Nom             | `US-045-retrofit`, la story dont vous ramenez le hotfix                    |
+| Org de travail  | `helios-dev` : rien n'est construit ici, l'org n'a donc guère d'importance |
 
 Cela crée `retrofit/US-045-retrofit` depuis la dernière `integration`. Le préfixe est une ligne de
 `branchPrefixChoices`, et il dit à quiconque lit la liste des branches que c'est la production qui
