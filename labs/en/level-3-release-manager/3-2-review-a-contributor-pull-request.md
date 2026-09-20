@@ -39,7 +39,7 @@ every org after it.
 
 ## Before you start
 
-- [ ] Lab 3.1 finished: JWT authentication on all four orgs
+- [ ] [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) finished: JWT authentication on all four orgs
 - [ ] A clean working tree
 
 ## Steps
@@ -199,7 +199,7 @@ anything deleted, the comment has told you everything it is going to: the rest i
 The scenario already ran: each one is used once. The Pull Request is in your fork, open or merged.
 
 **The checks never run after Mariia's fix.**
-Actions are disabled, or the JWT secrets are missing for `integration`. Lab 3.1.
+Actions are disabled, or the JWT secrets are missing for `integration`. [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md).
 
 **You merged before the fix.**
 Then `Total_Capacity_kW__c` is off the layout in `integration`. Run the fix scenario anyway: it

@@ -40,7 +40,7 @@ Monitoring is the part of the release manager job that happens when nothing is b
 
 ## Before you start
 
-- [ ] Lab 3.7 finished
+- [ ] [Lab 3.7](3-7-hotfix-and-retrofit.md) finished
 - [ ] `helios-prod` connected in **Orgs Manager**
 - [ ] An empty GitHub repository of your own, with `monitoring` in its name
 - [ ] About 20 of those 35 minutes will be the first monitoring run
@@ -66,7 +66,7 @@ alone, not because the two are alternatives. In a repository whose name does con
 the question is never asked at all, which is the state you want to be in before you start.
 
 So, before anything else: create an empty private repository called
-`sfdx-hardis-training-monitoring` on GitHub. Then bring it down the way Lab 1.2 brought this
+`sfdx-hardis-training-monitoring` on GitHub. Then bring it down the way [Lab 1.2](../level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) brought this
 one down: **File > Open Folder** on an empty folder, **Source Control** panel, **Clone Repository**,
 and paste the address from the green **Code** button of your new repository. Nothing in this lab
 happens in the repository you have been working in all course.
@@ -99,20 +99,20 @@ From the monitoring repository, open the **Org Monitoring Workbench** from the W
     its monitoring repository lives gets an **Open Monitoring Repository** button beside it. The
     install button only exists where the thing it installs belongs.
 
-It runs in a command panel and asks its questions one at a time, the way Lab 3.1 did:
+It runs in a command panel and asks its questions one at a time, the way [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) did:
 
 1. **Did you configure the sfdx-hardis monitoring pre-requisites on your Git server ?** The second
    answer, *ℹ️ No, bring me to the documentation!*, opens that page and ends the command, so read it
    first if you have not
-2. **Please select or connect to the org that you want to monitor** - `helios-prod`. As in Lab 3.1,
+2. **Please select or connect to the org that you want to monitor** - `helios-prod`. As in [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md),
    making it the default org restarts the command, so pick it again in the new panel
 3. **Branch monitoring_... does not exist on the remote server. Do you want to push it?** - yes.
    This one comes before the certificate, not after, and it only appears the first time
-4. Then the certificate questions from Lab 3.1, unchanged and in the same order: self-signed,
+4. Then the certificate questions from [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md), unchanged and in the same order: self-signed,
    let sfdx-hardis configure the External Client App, encrypted certificate as a file, then the same
    stop while you store the two secrets, this time in the **monitoring** repository, then the name,
    the contact email and the profile of the app. The profile list is in the language of the org's
-   user, as in Lab 3.1
+   user, as in [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md)
 5. **Do you want to save the configuration on the remote server (auto-commit)?** - yes
 
 Last, it writes the workflow on `main` and says so: *The monitoring workflow on main now runs
@@ -120,7 +120,7 @@ monitoring_...*. GitHub only schedules the workflows of the default branch, and 
 workflow** for those, so the workflow that runs every monitored org lives on `main` and lists each
 monitoring branch.
 
-It never asks for a repository name or a git provider, because it creates neither. The authentication is the same code as Lab 3.1: External Client App, JWT, two secrets to store,
+It never asks for a repository name or a git provider, because it creates neither. The authentication is the same code as [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md): External Client App, JWT, two secrets to store,
 this time in the **monitoring** repository. The key lands in `./.ssh/` rather than
 `config/branches/.jwt/`, and the configuration in a `.sfdx-hardis.yml` at the repository root, on a
 branch called `monitoring_` plus the org's domain, cut from `main`. The repository was empty, so it
@@ -193,7 +193,7 @@ What you are reading for is the **shape** of each finding, so that you recognise
 | **Apex on an old API version**  | It will break at a Salesforce release, on a date you do not control        |
 
 The one finding you should genuinely expect here is in the **backup** rather than in a check: the
-validation rule Lab 3.7 hotfixed is in the org with its new formula, and now it is in the monitoring
+validation rule [Lab 3.7](3-7-hotfix-and-retrofit.md) hotfixed is in the org with its new formula, and now it is in the monitoring
 repository's git history, dated. That is the answer to "when did that change", and it is the part of
 monitoring that pays for itself first.
 
@@ -258,7 +258,7 @@ generated for GitHub has four jobs:
 1. **Backup** runs first, on its own: `sf hardis:org:monitor:backup` retrieves the whole org in
    source format and commits it. The git history of that repository becomes an answer to "what
    changed in production, and when", which nothing else gives you. When the retrieve is done, the
-   same command regenerates the project documentation of Lab 3.9 before it finishes
+   same command regenerates the project documentation of [Lab 3.9](3-9-generate-the-project-documentation.md) before it finishes
 2. Then three jobs in parallel, each waiting only on the backup: `sf hardis:org:test:apex`,
    MegaLinter, and `sf hardis:org:monitor:all`
 
@@ -295,7 +295,7 @@ scope here, and worth knowing exists.
 ## If it goes wrong
 
 **The monitoring workflow fails at authentication.**
-Same as Lab 3.1: the External Client App needs the user pre-authorised, and the secrets have to be in
+Same as [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md): the External Client App needs the user pre-authorised, and the secrets have to be in
 the **monitoring** repository, not the source one.
 
 **Actions offers no Run workflow for Org Monitoring sfdx-hardis.**

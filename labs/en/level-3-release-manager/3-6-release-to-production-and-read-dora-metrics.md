@@ -29,13 +29,13 @@ depends_on:
 
 UAT signed off. The release goes to production this evening.
 
-This is the same mechanism as Lab 3.5, twice: `uat` into `preprod`, then `preprod` into `main`. With one
+This is the same mechanism as [Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md), twice: `uat` into `preprod`, then `preprod` into `main`. With one
 difference that is not technical: if you get it wrong, real people cannot do their jobs tomorrow.
 Everything in this lab that looks like ceremony is there because somebody skipped it once.
 
 ## Before you start
 
-- [ ] Lab 3.5 finished: `uat` carries the release and the testers signed it off
+- [ ] [Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md) finished: `uat` carries the release and the testers signed it off
 - [ ] `helios-preprod` and `helios-prod` connected, seeded, and configured as the `preprod` and
       `main` orgs in Lab 3.1
 - [ ] JWT authentication working for `preprod` and `main`
@@ -47,7 +47,7 @@ Everything in this lab that looks like ceremony is there because somebody skippe
 Before creating anything:
 
 **One: is UAT genuinely signed off?** Not "the deployment was green". Somebody tested it and said
-yes. On this project that person is you, and you did it in Lab 3.5 step 6.
+yes. On this project that person is you, and you did it in [Lab 3.5 step 6](3-5-promote-to-uat-and-write-release-notes.md#6-verify-with-a-testers-eyes).
 
 **Two: what manual steps will this carry?** Look at the deployment actions of the stories going out.
 A manual step in production is something you will do, live, in front of nobody, at whatever time the
@@ -55,16 +55,16 @@ release is. Know about it now.
 
 **Three: is production where you think it is?** Open `helios-prod` and look. It should carry what
 the course seeded into it and nothing else yet. On a real project, admins change production by hand
-between two releases, and Lab 3.7 is about exactly that. Assume nothing.
+between two releases, and [Lab 3.7](3-7-hotfix-and-retrofit.md) is about exactly that. Assume nothing.
 
 ### 2. Rehearse in preprod
 
-The same way you created the promotion in Lab 3.5: the **+ PR** chip on the arrow from `uat` to
+The same way you created the promotion in [Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md): the **+ PR** chip on the arrow from `uat` to
 `preprod`, in the DevOps Pipeline diagram. GitHub opens on the Pull Request from `uat` into
 `preprod`.
 
 Its check job is the first one to log into `helios-preprod`, and it does so with the key and the
-secrets of Lab 3.1: a green check here is your `preprod` JWT set-up working.
+secrets of [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md): a green check here is your `preprod` JWT set-up working.
 
 Title it plainly:
 
@@ -86,7 +86,7 @@ the first JWT login into `helios-prod`. Title it plainly:
 
 ### 4. Read the check like it matters
 
-When the check finishes, read the sfdx-hardis comment the way Lab 3.2 taught, and add two questions
+When the check finishes, read the sfdx-hardis comment the way [Lab 3.2](3-2-review-a-contributor-pull-request.md) taught, and add two questions
 that only apply to production:
 
 | Question                     | Where to look                                                                                                               |
@@ -136,7 +136,7 @@ formatted and completely irrelevant.
 
 Then open the **DevOps Pipeline** panel, click the gear **(1)** at the top right, and choose
 **Generate DORA Metrics Report**. The menu holds three entries and you have used the other two:
-**Pipeline Settings** in Lab 3.1, **Add/Configure Org** in Lab 3.1.
+**Pipeline Settings** in [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md), **Add/Configure Org** in [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md).
 
 ![The gear button at the top right of the DevOps Pipeline panel](../../_assets/annotated/vscode/devops-pipeline--settings-menu.png)
 
@@ -148,7 +148,7 @@ It covers the last 90 days by default, and it reports five numbers, not four:
 | **Lead Time for Changes**  | Per Pull Request: its creation, to the deployment that landed within 14 days | Days, not weeks. A long lead time means work is sitting somewhere |
 | **Change Failure Rate**    | Failed deployments divided by all deployments                                | Below 15%. Above that, the check is not catching what it should   |
 | **Mean Time to Recovery**  | Median hours, despite the name, from a failed deployment to the next success | Hours                                                             |
-| **Deployment Rework Rate** | Hotfix Pull Requests, and deployments that follow a failure within a day     | Low. Read the note below before you expect Lab 3.7 to move it     |
+| **Deployment Rework Rate** | Hotfix Pull Requests, and deployments that follow a failure within a day     | Low. Read the note below before you expect [Lab 3.7](3-7-hotfix-and-retrofit.md) to move it     |
 
 Two of those are not what the names suggest, and it is worth knowing which. **Change failure rate
 here is a deployment failure rate**: a release that deployed green and broke production on Tuesday
@@ -168,7 +168,7 @@ have somewhere to move from. Take the baseline now.
 
 The report is a file, `docs/dora/dora-report-<date>.md`, and the panel opens it for you. Keep it
 where it is: it is rebuilt from the org and the Pull Requests whenever you run the report again, so
-nothing is committed, and Lab 3.10 compares the next one with this one.
+nothing is committed, and [Lab 3.10](3-10-capstone-run-a-weekly-release-cycle.md) compares the next one with this one.
 
 <details markdown="1"><summary>Under the hood: where the DORA numbers come from</summary>
 
@@ -192,7 +192,7 @@ and it will measure the sandbox, cheerfully.
 
 **One thing to check on any project.** The rework rate recognises a corrective change by its
 branch name, and it looks for `hotfix/`, `fix/` or `bugfix/`. This project names its fix branches
-`fix/`, so the hotfix you ship in Lab 3.7 counts. Rename that prefix to something else and the
+`fix/`, so the hotfix you ship in [Lab 3.7](3-7-hotfix-and-retrofit.md) counts. Rename that prefix to something else and the
 metric quietly reads zero, with no warning. A number built on branch names is only as good as the
 naming convention, which is worth checking before quoting one at anybody.
 

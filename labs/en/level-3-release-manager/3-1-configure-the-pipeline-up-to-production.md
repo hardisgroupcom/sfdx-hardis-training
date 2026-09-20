@@ -106,7 +106,7 @@ If you cannot state them in one sentence each, configuring them will not help.
 
 `preprod` earns its place in two ways. It is the last rehearsal before production, an org that holds
 what production holds and that nobody works in, so a release that deploys there cleanly has very few
-surprises left. And it is where hotfixes start, which Lab 3.7 is about.
+surprises left. And it is where hotfixes start, which [Lab 3.7](3-7-hotfix-and-retrofit.md) is about.
 
 The order of this lab follows from one rule: **a branch has to exist before an org can be attached
 to it**. So the branches come first, then their protection, then their orgs.
@@ -131,14 +131,14 @@ next steps list the branches of your fork, and a branch VS Code has not fetched 
 
 From now on, **nobody pushes to a major branch**: not a contributor, not you. Every change reaches
 `integration`, `uat`, `preprod` and `main` through a Pull Request whose checks are green, and GitHub
-enforces it rather than trusting everybody to remember. Since Lab 1.2, `integration` and `uat`
+enforces it rather than trusting everybody to remember. Since [Lab 1.2](../level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md), `integration` and `uat`
 work that way: setting up the environment protected them. `preprod` and `main` are yours to
 protect, and a release manager does it the day the branches join the pipeline, not after the first
 bad merge.
 
 In your fork (`github.com/my-username/sfdx-hardis-training`), click **Settings** **(1)**, then
 **Branches** **(2)** in the left menu. The two rules **(4)** are the ones setting up your environment
-created in Lab 1.2. Click **Add rule** **(3)**.
+created in [Lab 1.2](../level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md). Click **Add rule** **(3)**.
 
 ![The Branches settings of a fork, with the Add rule button and the two existing rules](../../_assets/annotated/web/github-branch-rules.png)
 
@@ -402,10 +402,10 @@ nothing directly. **Ctrl+Shift+P**, **Git: Create Branch...**, and name it
 nothing is lost and nothing is on `integration` any more.
 
 **Commit them.** In the **Source Control** panel, stage the configuration files and commit them as
-`Configure the pipeline up to production`, exactly as you staged metadata in Lab 1.5.
+`Configure the pipeline up to production`, exactly as you staged metadata in [Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publish-your-changes.md).
 
 **Publish.** In the **DevOps Pipeline** panel, click the **Save / Publish** card **(1)**, the one
-every story has gone through since Lab 1.5. It asks the target branch: `integration`. It commits
+every story has gone through since [Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publish-your-changes.md). It asks the target branch: `integration`. It commits
 what is left, runs the cleaning, and pushes the branch.
 
 ![The Save / Publish card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--save-publish.png)
@@ -417,7 +417,7 @@ branch, already pointing at `integration`.
 ![The end of the Save / Publish command, with its actions bar](../../_assets/annotated/vscode/work-save-completed.png)
 
 The same bar carries the `package.xml` the command generated **(2)** and the deployment actions of
-this Pull Request **(3)**, as in Lab 1.6. This branch changes no metadata, so both are short.
+this Pull Request **(3)**, as in [Lab 1.6](../level-1-contributor-basics/1-6-pull-request-deployment-check-and-merge.md). This branch changes no metadata, so both are short.
 
 !!! tip "The shortcut this course keeps for later"
     **Training: Level 3** > **Publish my pipeline configuration** does all of the above in one
@@ -431,11 +431,11 @@ working.
 
 When both checks are green, merge with **Merge pull request**, not with a squash: this is not a
 feature, and the configuration has to travel to `uat`, `preprod` and `main` with the promotions,
-commit for commit (Lab 1.6). Then **Pull** in the **Source Control** panel: your `integration` gets
+commit for commit ([Lab 1.6](../level-1-contributor-basics/1-6-pull-request-deployment-check-and-merge.md)). Then **Pull** in the **Source Control** panel: your `integration` gets
 the configuration back, merged.
 
 `uat`, `preprod` and `main` prove their keys the first time a Pull Request goes into them: the
-promotion to `uat` in Lab 3.5, then `preprod` and `main` in Lab 3.6.
+promotion to `uat` in [Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md), then `preprod` and `main` in [Lab 3.6](3-6-release-to-production-and-read-dora-metrics.md).
 
 <details markdown="1"><summary>Under the hood: what the JWT flow actually does</summary>
 
@@ -512,7 +512,7 @@ Open the **DevOps Pipeline** panel and click **Refresh**. This is the pipeline y
 5. The four orgs **(5)**, one per branch, in the order the work travels through them
 
 That diagram is now the truth about this project, and the thing you point at when a stakeholder asks
-"so where is it". The **+ PR** buttons on the arrows are the promotion Pull Requests, and Lab 3.5 is
+"so where is it". The **+ PR** buttons on the arrows are the promotion Pull Requests, and [Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md) is
 the first time you click one.
 
 ## What you should see

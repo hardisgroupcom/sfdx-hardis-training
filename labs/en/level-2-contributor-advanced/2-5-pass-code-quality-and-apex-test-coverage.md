@@ -53,7 +53,7 @@ this lab makes you meet one of each.
 
 ## Before you start
 
-- [ ] Lab 2.4 finished and merged
+- [ ] [Lab 2.4](2-4-ship-reference-data-and-a-batch-with-deployment-actions.md) finished and merged
 - [ ] Willing to read fifteen lines of Apex. You do not have to write any: every block in this lab
       is there to be copied, and what the lab is really teaching is how to read what the robots say
       about it
@@ -198,7 +198,7 @@ Note what the assertions do: they check the **behaviour the story asked for**, w
 says why. A test that only runs the code to lift a percentage is worse than no test, because it
 makes the number lie.
 
-The `Crew_Size__c = 2` on the record the second test creates is not decoration. Lab 2.3 made that
+The `Crew_Size__c = 2` on the record the second test creates is not decoration. [Lab 2.3](2-3-fix-broken-records-with-an-apex-deployment-action.md) made that
 field mandatory, so any test that inserts an installation without it now fails, and a failing test
 is a failing deployment. Every test class in the org has to be checked for this, and that is the
 real price of making a field required.

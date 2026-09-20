@@ -37,7 +37,7 @@ incidents come from.
 
 ## Before you start
 
-- [ ] Lab 3.2 finished: Mariia's layout fix merged into `integration`
+- [ ] [Lab 3.2](3-2-review-a-contributor-pull-request.md) finished: Mariia's layout fix merged into `integration`
 
 ## Part 1: read the log
 
@@ -56,7 +56,7 @@ colour means. Click the marker to open the run.
 
 An sfdx-hardis deployment log has the same shape every time:
 
-**One: authentication.** Which org, which mechanism. After Lab 3.1 this says JWT. If it ever says
+**One: authentication.** Which org, which mechanism. After [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) this says JWT. If it ever says
 something else, something changed that you did not change.
 
 **Two: what to deploy.** The package it computed, and where from. This is the interesting part and
@@ -218,14 +218,14 @@ Steps 2, 3 and 4 are all off in this project, so what Salesforce receives is ste
 
 **Cleaning is not in that list, and this is the thing to take away.** The `autoCleanTypes` rules run
 inside `sf hardis:work:save`, on a contributor's machine, before the commit. They rewrite the files
-on disk and commit the result, which is why Lab 1.5 could show you the diff they produced. By
+on disk and commit the result, which is why [Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publish-your-changes.md) could show you the diff they produced. By
 the time a deployment runs, there is nothing left to clean: the repository already is the cleaned
 version.
 
 Two failure modes worth recognising:
 
 - **The org drifted.** Somebody changed something in the org by hand and the deployment overwrites
-  it without a word, because nothing compared. Lab 3.7 is about that
+  it without a word, because nothing compared. [Lab 3.7](3-7-hotfix-and-retrofit.md) is about that
 - **Delta lost a dependency.** Your change needs a component that did not change, so the delta does
   not carry it, and the deployment fails on a reference. The fix is not to disable delta: it is to
   include the dependency, which `manifest/package.xml` is for

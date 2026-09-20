@@ -41,7 +41,7 @@ This lab is short and it is the one you will actually use.
 
 ## Before you start
 
-- [ ] Lab 2.7 finished and merged
+- [ ] [Lab 2.7](2-7-resolve-a-git-merge-conflict.md) finished and merged
 - [ ] Nothing waiting in the **Source Control** panel that you still care about
 
 ## Steps
@@ -180,7 +180,7 @@ Nothing touches your org, and nothing touches your files.
 The reason an over-wide selection produces deletions is worth stating plainly. If your org is behind
 `integration` and you retrieve everything from it, the retrieved files are older than what is on
 `integration`, and the diff reads as "remove what they added". A backpromote before starting
-(Lab 2.1) is what prevents that.
+([Lab 2.1](2-1-backpromote-your-teammates-work.md)) is what prevents that.
 
 </details>
 

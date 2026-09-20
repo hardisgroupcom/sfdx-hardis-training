@@ -42,7 +42,7 @@ Second ticket, second day. Nobody is going to walk you through this one.
 
 ## Before you start
 
-- [ ] Lab 1.6 finished: US-014 is merged into `integration` and deployed
+- [ ] [Lab 1.6](1-6-pull-request-deployment-check-and-merge.md) finished: US-014 is merged into `integration` and deployed
 - [ ] The Source Control panel shows nothing left uncommitted
 
 ## What to do
@@ -72,9 +72,9 @@ No numbered clicks this time. The loop, in order:
 **The permission set and the field travel together.** If you retrieve the field and forget the
 permission set, the deployment succeeds and nobody can see the field. If you retrieve the
 permission set and forget the field, the deployment fails outright, because a permission set cannot
-grant something that is not there. Take both, every time. It is the same pair you took in Lab 1.5,
+grant something that is not there. Take both, every time. It is the same pair you took in [Lab 1.5](1-5-retrieve-commit-and-publish-your-changes.md),
 and the list view has the same habit: it names Panels Required, so it needs that field to be in the
-target org already, which it is since Lab 1.6.
+target org already, which it is since [Lab 1.6](1-6-pull-request-deployment-check-and-merge.md).
 
 ## What you should see
 

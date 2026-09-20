@@ -57,7 +57,7 @@ and repeat for the rest of your career on this project.
 
 ## Before you start
 
-- [ ] Lab 1.2 finished: your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`) is cloned, and `integration` and `uat` name their orgs
+- [ ] [Lab 1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) finished: your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`) is cloned, and `integration` and `uat` name their orgs
 - [ ] `helios-dev` listed as **Connected** in **Orgs Manager**
 
 ## Steps
@@ -80,7 +80,7 @@ Before the first one, it tells you something instead of asking.
 
 The first line under the header reads **Automatically selected target branch is integration**
 **(1)**. It is not a question, because there is nothing to choose: this project declares
-`integration` as the only branch a contributor may target, in `availableTargetBranches`. Lab 3.1
+`integration` as the only branch a contributor may target, in `availableTargetBranches`. [Lab 3.1](../level-3-release-manager/3-1-configure-the-pipeline-up-to-production.md)
 adds `preprod`, where urgent fixes start, and from then on the command asks, offering both.
 Under that line, the first real question already waits, with its two answers **(2)** and **(3)**:
 the next step is about them.
@@ -118,7 +118,7 @@ say, and the command tells you what it expected and asks again.
 ### 5. Which org you will build in
 
 **Which Salesforce org do you want to work in?** Take **Scratch org** **(1)**: `helios-dev` is one,
-created in Lab 1.2.
+created in [Lab 1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md).
 
 ![The question asking what kind of org this User Story is built in](../../_assets/annotated/vscode/work-new-org-type.png)
 
@@ -133,7 +133,7 @@ Then the list of orgs it could attach. Take **Reuse scratch org helios-dev** **(
 
 ![The New User Story command asking which scratch org to build in](../../_assets/annotated/vscode/work-new-org.png)
 
-This is the org Lab 1.2 filled with the Helios app, and the one you are about to change by hand in
+This is the org [Lab 1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) filled with the Helios app, and the one you are about to change by hand in
 Setup. The list does not offer `helios-integration` or `helios-uat`: the command knows those two
 belong to major branches, and building directly in a shared org is exactly what this whole way of
 working exists to stop.
@@ -148,7 +148,7 @@ than by its name. Take the named one: an address tells you nothing about which o
 
 ### 6. Read what it tells you at the end
 
-The command opens `helios-dev` in your browser: you can leave that tab for Lab 1.4. Then it finishes
+The command opens `helios-dev` in your browser: you can leave that tab for [Lab 1.4](1-4-build-a-custom-field-in-your-org.md). Then it finishes
 and prints what it did. Read it rather than closing it.
 
 ![The New User Story command, finished, with its summary](../../_assets/annotated/vscode/work-new-completed.png)
@@ -181,7 +181,7 @@ which did six things, in order:
 5. **Selected the org** as the default target for the following commands
 6. **Opened the org** in your browser, since you are about to work in it
 
-The list of scratch orgs is the ones your default Dev Hub created, which Lab 1.2 set to `helios-prod`,
+The list of scratch orgs is the ones your default Dev Hub created, which [Lab 1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) set to `helios-prod`,
 minus the ones named in `config/branches/`. Nothing here brings what is on `integration` into your
 org: that is a backpromote, and Level 2 starts with one.
 
@@ -236,7 +236,7 @@ again and take **Reuse scratch org helios-dev**.
 Welcome page > **Training: Level 1** > **Check my work**, then pick Lab 1.3.
 
 It looks for your story branch, `features/US-014-...`, the one thing this lab leaves behind. Your
-work has not reached `integration` yet, and nothing here expects it to: that is Lab 1.6.
+work has not reached `integration` yet, and nothing here expects it to: that is [Lab 1.6](1-6-pull-request-deployment-check-and-merge.md).
 
 ## Go deeper
 

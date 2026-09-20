@@ -52,7 +52,7 @@ or it happens once in your org and nowhere else, forever.
 
 ## Before you start
 
-- [ ] Lab 2.3 finished and merged
+- [ ] [Lab 2.3](2-3-fix-broken-records-with-an-apex-deployment-action.md) finished and merged
 - [ ] `helios-dev` level with `integration`
 
 ## Steps

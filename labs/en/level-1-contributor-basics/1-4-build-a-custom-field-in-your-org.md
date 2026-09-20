@@ -36,7 +36,7 @@ your own org, never in the shared one.
 
 ## Before you start
 
-- [ ] Lab 1.3 finished: you are on `features/US-014-panels-required`
+- [ ] [Lab 1.3](1-3-start-a-user-story-on-a-git-branch.md) finished: you are on `features/US-014-panels-required`
 - [ ] The Status section of the sfdx-hardis panel shows `helios-dev` as the current org
 
 ## Steps
@@ -54,7 +54,7 @@ entry is **Open** **(1)**.
 ![The actions menu of the development org in Orgs Manager](../../_assets/annotated/vscode/orgs-manager-actions.png)
 
 Your browser opens the org, already logged in. No password, no login page: the extension used the
-credential it stored when you connected the org in Lab 1.2.
+credential it stored when you connected the org in [Lab 1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md).
 
 Opening the org from this panel rather than from a bookmark is a habit worth forming. It is the
 difference between "the org I meant" and "the org that happened to be open in that tab".
@@ -81,7 +81,7 @@ to it.
 | Required       | **no**                                                        |
 
 On the field-level security screen, leave every profile unticked and click **Next**. You are going
-to grant this through a permission set, not a profile, and Lab 2.6 is about why that
+to grant this through a permission set, not a profile, and [Lab 2.6](../level-2-contributor-advanced/2-6-permission-sets-and-profiles.md) is about why that
 distinction matters more than it looks.
 
 On the page layout screen, tick **Installation Layout** so the field appears on the record.
@@ -155,7 +155,7 @@ Do the same on two more installations, so you have something to look at after th
 On three installations: a `Panels Required` value, visible in the Details tab, saved without error.
 
 And in VS Code, **nothing at all**. The repository does not know about any of this yet. Your
-changes live in one org and nowhere else, which is exactly the state Lab 1.5 exists to end.
+changes live in one org and nowhere else, which is exactly the state [Lab 1.5](1-5-retrieve-commit-and-publish-your-changes.md) exists to end.
 
 ## If it goes wrong
 

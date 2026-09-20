@@ -43,11 +43,11 @@ join, open the project, and start on a ticket.
 
 This course cannot hand you a team's environment, so it has you build a small one. You do two things
 by hand, sign up for an org and connect it, and one command does the rest while you read. The work
-starts in Lab 1.3, and everything from there on is what a real day looks like.
+starts in [Lab 1.3](1-3-start-a-user-story-on-a-git-branch.md), and everything from there on is what a real day looks like.
 
 ## Before you start
 
-- [ ] Lab 1.1 finished: the Setup panel all green
+- [ ] [Lab 1.1](1-1-install-vs-code-and-sfdx-hardis.md) finished: the Setup panel all green
 - [ ] A GitHub account
 - [ ] An email address you can open
 
@@ -247,9 +247,10 @@ line, check it says `node scripts/training.mjs`, then click **Always allow** **(
 
 ![VS Code asking how to allow the Training command, with Always allow](../../_assets/annotated/vscode/training-menu-authorization.png)
 
-Each card asks once, the first time you click it, because the extension remembers the exact command
-and not the menu. So you will see this again on **Where am I?**, on **Check my work**, and on the
-first card of Levels 2 and 3. Same answer each time.
+**Always allow** answers for the whole menu, not for that one card. The Training entries of the
+three levels stop asking, and nothing else does: the extension recognises a Training command by its
+shape and by the repository you cloned, so a custom command of any other project still asks you
+first, in this folder and in every other.
 
 !!! warning "Read the line before you allow it"
     **Allow once** runs it this time only, **Always allow** remembers it. Either is fine here: you
@@ -334,7 +335,7 @@ It made this folder point at your orgs, in the git-ignored `.sf` directory:
 
 And it protected `integration` and `uat` with one call to the GitHub API per branch: changes only
 through a Pull Request, merged only once its checks are green, for everybody. You will set the same
-rule on `preprod` and `main` in Lab 3.1:
+rule on `preprod` and `main` in [Lab 3.1](../level-3-release-manager/3-1-configure-the-pipeline-up-to-production.md):
 
     gh api -X PUT repos/<your-handle>/sfdx-hardis-training/branches/integration/protection \
       -F "required_pull_request_reviews[required_approving_review_count]=0" \
@@ -370,7 +371,7 @@ Seven things, each of them real work on a real project, and none of them yours t
   branch, in `config/branches/`, committed on `integration` and pushed to your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`). The repository
   could not know that: your orgs did not exist when it was written. It is pushed because the badge
   check clones your fork (`github.com/my-username/sfdx-hardis-training`) and reads what is actually in it. `uat` receives the same files with its
-  first promotion, in Lab 3.5, the way every change reaches it
+  first promotion, in [Lab 3.5](../level-3-release-manager/3-5-promote-to-uat-and-write-release-notes.md), the way every change reaches it
 - **`integration` and `uat` protected.** A Pull Request into either one can only be merged once
   every check GitHub runs on it has finished green, and that rule holds for you too, the owner of
   the fork. On a real project somebody set this up on day one: a merge on a red check deploys
@@ -443,7 +444,7 @@ minute because every diagram you meet later is this one with more in it.
    which is what Level 3 makes you
 
 Nothing else is drawn, because nothing else exists yet. You have no branch of your own in flight
-and no Pull Request open, so the diagram has nothing to add. Lab 1.3 puts the first box on the left
+and no Pull Request open, so the diagram has nothing to add. [Lab 1.3](1-3-start-a-user-story-on-a-git-branch.md) puts the first box on the left
 of this picture, and from then on it fills up.
 
 Your own `helios-dev` is not in the diagram either, and that is correct: the diagram shows where work
@@ -464,7 +465,7 @@ Back in the DevOps Pipeline panel, click **Refresh**. `integration` and `uat`, e
 and the GitHub icon at the top in colour rather than grey. In **Orgs Manager**, four orgs:
 `helios-prod`, `helios-dev`, `helios-integration` and `helios-uat`, all **Connected**.
 
-That is the whole of the plumbing, and the last of it you will see. From Lab 1.3 on you are doing the
+That is the whole of the plumbing, and the last of it you will see. From [Lab 1.3](1-3-start-a-user-story-on-a-git-branch.md) on you are doing the
 job rather than preparing to do it: a ticket, a branch, a change, a Pull Request, a deployment.
 
 ## If it goes wrong

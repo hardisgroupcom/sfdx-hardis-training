@@ -51,7 +51,7 @@ This lab is about the gap between a green deployment and a safe one.
 
 ## Before you start
 
-- [ ] Lab 2.2 finished and merged
+- [ ] [Lab 2.2](2-2-fix-a-missing-dependency-deployment-error.md) finished and merged
 - [ ] `helios-dev` level with `integration`
 
 ## Steps
@@ -144,7 +144,7 @@ into `force-app/main/default/classes/`, in the Explorer, with copy and paste:
 - `CrewSizeBackfillBatch.cls` and `CrewSizeBackfillBatch.cls-meta.xml`: the batch. It gives the
   default crew of two to every installation that has none
 - `CrewSizeBackfillBatchTest.cls` and `CrewSizeBackfillBatchTest.cls-meta.xml`: its test. Salesforce
-  deploys no Apex without one, and Lab 2.5 is about that gate
+  deploys no Apex without one, and [Lab 2.5](2-5-pass-code-quality-and-apex-test-coverage.md) is about that gate
 
 Then the script the action runs: create the file `scripts/apex/backfill-crew-size.apex` and copy
 this into it.

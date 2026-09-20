@@ -50,7 +50,7 @@ planners from closing their week.
 `integration` and travels `integration` to `uat` to `preprod` to `main`. A hotfix starts on
 `preprod`, the branch that holds exactly what production runs, and travels `preprod` to `main`. Same
 branches, same protection, same checks, same deployment jobs. Only the entry point differs, which is
-why Lab 3.1 put `preprod` in `availableTargetBranches`.
+why [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) put `preprod` in `availableTargetBranches`.
 
 One thing follows from that, and Part 3 is about it: `uat` and `integration` never saw the commit,
 so the next release from `integration` would deploy the old formula over the fix and bring the
@@ -58,7 +58,7 @@ incident back. Bringing `main` back down is the **retrofit**, and it is not opti
 
 ## Before you start
 
-- [ ] Lab 3.6 finished: the release is in production
+- [ ] [Lab 3.6](3-6-release-to-production-and-read-dora-metrics.md) finished: the release is in production
 - [ ] `helios-preprod` and `helios-prod` connected in **Orgs Manager**
 - [ ] Nothing waiting in the **Source Control** panel that you still care about
 
@@ -118,7 +118,7 @@ change is the added line **(3)**:
 ```
 
 A cancelled installation is finished work, exactly like a completed one, and the rule's own
-description says finished work is exempt. Read it against the questions of Lab 3.2: it matches the
+description says finished work is exempt. Read it against the questions of [Lab 3.2](3-2-review-a-contributor-pull-request.md): it matches the
 story, nothing disappears, and it is reversible in one line.
 
 Small, and its blast radius fits in one sentence: **cancelled installations can be dated in the past
@@ -219,12 +219,12 @@ It asks which branch to bring in. Pick **origin/main** **(1)**, listed under **r
 
 Tonight this merges on its own: nobody else touched that validation rule this week. When it does
 conflict, it is because somebody changed the same lines in `integration`, and the answer is the one
-from Lab 2.7: open each file under **Merge Changes**, **Resolve in Merge Editor**, and keep both
+from [Lab 2.7](../level-2-contributor-advanced/2-7-resolve-a-git-merge-conflict.md): open each file under **Merge Changes**, **Resolve in Merge Editor**, and keep both
 intents, the hotfix exception **and** whatever `integration` added. Neither side loses its work.
 
 ### 9. Publish it, and merge it into integration
 
-**Save / Publish User Story**, as in Lab 1.5. When it finishes, the actions bar along the bottom
+**Save / Publish User Story**, as in [Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publish-your-changes.md). When it finishes, the actions bar along the bottom
 starts with **Create Pull Request** **(1)**. Beside it sit the `package.xml` the command generated
 **(2)** and the deployment actions of this Pull Request **(3)**: on a retrofit both are short, because
 a retrofit carries what production already has and declares nothing new.
@@ -243,7 +243,7 @@ branch, which cuts his branch from `preprod`, and `hardis:work:save` computed th
 target, not a mode.
 
 The branch prefix is worth a second of thought, for a reason beyond tidiness: the DORA **rework
-rate** of Lab 3.6 counts hotfix Pull Requests, and recognises one by a `hotfix/`, `fix/` or
+rate** of [Lab 3.6](3-6-release-to-production-and-read-dora-metrics.md) counts hotfix Pull Requests, and recognises one by a `hotfix/`, `fix/` or
 `bugfix/` branch prefix. This project calls its fix branches `fix/`, so this one counts.
 
 **The retrofit** is Git from end to end, and nothing is retrieved from any org:
@@ -290,7 +290,7 @@ Your branch was cut from something other than the latest `integration`. Delete i
 again: **New User Story** always branches from the latest target.
 
 **The check of the retrofit fails on a deployment error.**
-Read it the way Lab 3.3 taught. A retrofit deploys what production already has, so an error here is
+Read it the way [Lab 3.3](3-3-deploy-to-integration-and-read-the-log.md) taught. A retrofit deploys what production already has, so an error here is
 almost always a component that `integration` changed and `main` has not seen, not the hotfix itself.
 
 ## Check your work

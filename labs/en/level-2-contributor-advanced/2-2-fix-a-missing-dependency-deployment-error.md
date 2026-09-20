@@ -50,7 +50,7 @@ This lab is about the gap between "it exists in my org" and "it is in the packag
 
 ## Before you start
 
-- [ ] Lab 2.1 finished
+- [ ] [Lab 2.1](2-1-backpromote-your-teammates-work.md) finished
 - [ ] `helios-dev` level with `integration`
 
 ## Steps
@@ -58,7 +58,7 @@ This lab is about the gap between "it exists in my org" and "it is in the packag
 ### 1. Take the story
 
 In the **DevOps Pipeline** panel, under **Project Contribution Workflow** **(1)**, click **New User
-Story** **(2)**, the same card as Lab 1.3.
+Story** **(2)**, the same card as [Lab 1.3](../level-1-contributor-basics/1-3-start-a-user-story-on-a-git-branch.md).
 
 ![The contribution cards of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
@@ -175,7 +175,7 @@ When a deployment says something does not exist, the first question is never "is
 It is **"is it in the package"**.
 
 Open the package: **DevOps Pipeline** panel, **Deployment packages** menu, **Package XML**, as in
-Lab 1.5. Type `Crew_Warning` in its filter box. The **Flow** row lists your flow. **CustomField**
+[Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publish-your-changes.md). Type `Crew_Warning` in its filter box. The **Flow** row lists your flow. **CustomField**
 does not list `Installation__c.Crew_Warning_Sent__c`.
 
 The integration org is being sent a flow that reads a field the package does not carry, and the

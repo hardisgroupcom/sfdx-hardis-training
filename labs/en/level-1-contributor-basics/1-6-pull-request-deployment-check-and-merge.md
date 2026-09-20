@@ -49,23 +49,23 @@ still yours to fix, not on release night.
 
 ## Before you start
 
-- [ ] Lab 1.5 finished: the branch is pushed to your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`)
-- [ ] Lab 1.2 finished: **Set up my training environment** turned Actions on and set the CI
+- [ ] [Lab 1.5](1-5-retrieve-commit-and-publish-your-changes.md) finished: the branch is pushed to your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`)
+- [ ] [Lab 1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) finished: **Set up my training environment** turned Actions on and set the CI
       credential
 
 ## Steps
 
 ### 1. Open the Pull Request
 
-Go back to the panel where **Save / Publish** finished in Lab 1.5. Along the bottom is a bar of
+Go back to the panel where **Save / Publish** finished in [Lab 1.5](1-5-retrieve-commit-and-publish-your-changes.md). Along the bottom is a bar of
 actions, and the first one is **Create Pull Request** **(1)**. Click it: the extension opens GitHub
 on the right page, with base and head already filled in.
 
 ![The end of the Save / Publish command, with its actions bar](../../_assets/annotated/vscode/work-save-completed.png)
 
 Two other things in that bar are worth knowing now, because later labs use them. **(2)** is the
-`package.xml` the command generated, the one you read in Lab 1.5 step 6. **(3)** opens the Deployment
-Actions of this Pull Request, which is what the whole of Lab 2.3 is about.
+`package.xml` the command generated, the one you read in [Lab 1.5 step 6](1-5-retrieve-commit-and-publish-your-changes.md#6-read-the-package-before-you-push). **(3)** opens the Deployment
+Actions of this Pull Request, which is what the whole of [Lab 2.3](../level-2-contributor-advanced/2-3-fix-broken-records-with-an-apex-deployment-action.md) is about.
 
 !!! note "If you closed that panel"
     Nothing is lost. Open your fork (`github.com/my-username/sfdx-hardis-training`) on GitHub: it shows a banner offering to open a Pull Request
@@ -147,7 +147,7 @@ Both checks green, the comment says success. Back on the **Conversation** tab, s
 the merge box says **All checks have passed** and **No conflicts with base branch**, and the button
 is live.
 
-It is live *because* both are green. Setting up your environment in Lab 1.2 protected `integration`:
+It is live *because* both are green. Setting up your environment in [Lab 1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) protected `integration`:
 while a check is running or red, the box reads **Merging is blocked** and the button stays grey, for
 you as for anybody else. That is the rule of every real pipeline, and here GitHub enforces it rather
 than trusting everybody to read the checks first.
@@ -231,7 +231,7 @@ rare, and when it happens it is almost always because somebody changed the targe
 between.
 
 Both jobs authenticate first, through the sfdx-hardis hook that reads
-`SFDX_AUTH_URL_INTEGRATION`, the secret **Set up my training environment** wrote in Lab 1.2. The workflow files are in
+`SFDX_AUTH_URL_INTEGRATION`, the secret **Set up my training environment** wrote in [Lab 1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md). The workflow files are in
 `.github/workflows/`, and they are worth reading once: they are about thirty lines each.
 
 The test level comes from `config/.sfdx-hardis.yml`:
@@ -266,7 +266,7 @@ The secret is missing, misnamed, or truncated. It must be named exactly
 
 **The check fails with `INVALID_CROSS_REFERENCE_KEY` on the permission set.**
 The permission set grants a field that is not in your package. You retrieved the permission set
-without the field. Redo Lab 1.5 step 3 and take both.
+without the field. Redo [Lab 1.5 step 3](1-5-retrieve-commit-and-publish-your-changes.md#3-take-yours-leave-the-rest) and take both.
 
 **The check is stuck as "Expected".**
 The workflow is waiting for a job that will never run, usually because the base of the Pull Request
@@ -279,7 +279,7 @@ way around it, and there is not meant to be.
 
 **The deployment succeeds but the field is not in the org.**
 Look at the deployed components list in the comment. If the field is not there, it is not in
-`manifest/package.xml`, and Lab 1.5 step 6 is where you read it.
+`manifest/package.xml`, and [Lab 1.5 step 6](1-5-retrieve-commit-and-publish-your-changes.md#6-read-the-package-before-you-push) is where you read it.
 
 ## Check your work
 

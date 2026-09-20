@@ -39,7 +39,7 @@ nobody is going to tell you the order to do things in.
 
 ### Monday: take in what contributors sent you
 
-Two Pull Requests wait. **US-020**, open since Lab 3.4 and still failing. And a new one from Romain:
+Two Pull Requests wait. **US-020**, open since [Lab 3.4](3-4-merge-colliding-pull-requests.md) and still failing. And a new one from Romain:
 **Training: Level 3** > **Simulate my teammates**, and pick **US-055 Install Date says which day it
 means**.
 
@@ -48,7 +48,7 @@ means**.
 For each of the two:
 
 - Read the sfdx-hardis comment
-- Read the diff with the four questions from Lab 3.2: does it match the story, does anything
+- Read the diff with the four questions from [Lab 3.2](3-2-review-a-contributor-pull-request.md): does it match the story, does anything
   disappear, are permissions on a permission set, is it reversible
 - Merge it or send it back with a comment, and say why
 
@@ -73,18 +73,18 @@ Promote `uat` into `preprod` first, and check `helios-preprod` behaves. Then cre
 Request from `preprod` into `main`, titled `Release ...`. Read the counts line in the sfdx-hardis comment and stop if anything is being
 deleted that you were not expecting. Merge, watch, verify, do the manual steps.
 
-Everything Lab 3.7 put in at `preprod` is already in `main`, so this release should not be moving
+Everything [Lab 3.7](3-7-hotfix-and-retrofit.md) put in at `preprod` is already in `main`, so this release should not be moving
 it again. Read the counts line with that in mind: what goes out this week is Romain's help text and
 the retrofits travelling up from `integration`, and `deleted: 0` is still the number to stop on.
 
 Then generate the release notes of the release to `main`, add the sentence at the top that says what
 this release is for, and put them in the description of the Pull Request from `preprod` into
-`main`, the way Lab 3.5 did for `uat`.
+`main`, the way [Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md) did for `uat`.
 
 ### Friday: measure
 
 Set `helios-prod` as your default org in **Orgs Manager**, so the report measures production rather
-than your sandbox, then run the DORA report and compare it with the baseline you took in Lab 3.6.
+than your sandbox, then run the DORA report and compare it with the baseline you took in [Lab 3.6](3-6-release-to-production-and-read-dora-metrics.md).
 
 Then read back over the week, and answer three questions for yourself, the ones a successor would
 ask:
@@ -116,7 +116,7 @@ point of having it.
 - `integration`, `uat`, `preprod` and `main` all carrying the release, in that order, each through
   its own deployment
 - Release notes in the description of the release Pull Request, with a human sentence at the top
-- A second DORA report to compare with the baseline of Lab 3.6
+- A second DORA report to compare with the baseline of [Lab 3.6](3-6-release-to-production-and-read-dora-metrics.md)
 
 ## If it goes wrong
 
@@ -125,8 +125,8 @@ Read what it says it looked for. The checks assert outcomes on the `integration`
 a story built in your org but never merged does not count, and neither does one merged into a branch
 that is not `integration`.
 
-**The Lab 3.7 check says the hotfix is not in `integration`.**
-The hotfix reached `main` in Lab 3.7 part 2, and part 3 is what brings it back down. If you stopped
+**The [Lab 3.7](3-7-hotfix-and-retrofit.md) check says the hotfix is not in `integration`.**
+The hotfix reached `main` in [Lab 3.7](3-7-hotfix-and-retrofit.md) part 2, and part 3 is what brings it back down. If you stopped
 after the release, go back and do the retrofit: the check reads both branches, because a fix that
 production has and `integration` has not is a fix the next story quietly removes.
 
@@ -136,7 +136,7 @@ are listed in each lab. Nothing is wrong: move on.
 
 **A deployment is green and the feature is not in the org.**
 Open the log and find **Listing Post-deployment actions**. If it says none were defined, the actions
-never ran, and Lab 2.4 explains what to do about it. A green job proves the metadata went in
+never ran, and [Lab 2.4](../level-2-contributor-advanced/2-4-ship-reference-data-and-a-batch-with-deployment-actions.md) explains what to do about it. A green job proves the metadata went in
 and nothing else.
 
 **The whole thing is too much to finish in one sitting.**

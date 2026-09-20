@@ -58,12 +58,12 @@ handle all three.
    installation with no install date. Save a new version of it that also refuses while any related
    handover item is not done: after its date decision, a **Get Records** of one `Handover Item` of
    this installation with `Is Done` false, a decision on whether one was found, and a **Custom
-   Error**. Describe every element you add, and give the Get Records a fault path, the way Lab 2.2
+   Error**. Describe every element you add, and give the Get Records a fault path, the way [Lab 2.2](2-2-fix-a-missing-dependency-deployment-error.md)
    had you do
 5. **Grant the new object and its fields** on the `Helios Delivery Manager` permission set, never
-   on a Profile, the way Lab 2.6 had you do: **Read**, **Create** and **Edit** on Handover Item, and
+   on a Profile, the way [Lab 2.6](2-6-permission-sets-and-profiles.md) had you do: **Read**, **Create** and **Edit** on Handover Item, and
    **Read** and **Edit** on its fields. The pipeline's user holds that permission set too, and the
-   data load of the second trap needs it, as in Lab 2.4
+   data load of the second trap needs it, as in [Lab 2.4](2-4-ship-reference-data-and-a-batch-with-deployment-actions.md)
 6. **Bring it down**: **Commit changes**, **Recent Changes**, and take what you made and nothing
    else. Commit it
 7. **Publish, Pull Request, green, merge**
@@ -73,7 +73,7 @@ handle all three.
 **One: the dependency.** The flow now reads `Handover_Item__c` and two of its fields. Do not assume
 every component it reads reached the repository: count what you created, count it again in
 `force-app/` and in the **Git Delta package.xml** report before you push. Whatever is missing, the
-deployment error three steps later names it, as in Lab 2.2, and it is cheaper to find it now.
+deployment error three steps later names it, as in [Lab 2.2](2-2-fix-a-missing-dependency-deployment-error.md), and it is cheaper to find it now.
 
 **Two: the data.** Ten records in your org are ten records in your org. A green deployment will put
 the object and the flow into `helios-integration` and the checklist will be empty there, and the
@@ -95,7 +95,7 @@ anybody.
     Lab 2.7 already merged US-018, so simulating it a second time reports nothing to commit. Each
     teammate story merges once per level.
 
-**And the data action.** Declare it the way Lab 2.4 did: the Pull Request has to exist first, so
+**And the data action.** Declare it the way [Lab 2.4](2-4-ship-reference-data-and-a-batch-with-deployment-actions.md) did: the Pull Request has to exist first, so
 publish, open it, then add the **Data** action on its **Deployment Actions** tab, **Deployment job
 only**, commit the file the editor wrote and publish again.
 
@@ -106,7 +106,7 @@ The reference records need the object to exist before they can be loaded. So:
 - The object and the flow deploy as metadata
 - The data action runs **after** the deployment, not before
 
-Same order as Lab 2.3, for the same reason: the batch class there, the object here, only exist once
+Same order as [Lab 2.3](2-3-fix-broken-records-with-an-apex-deployment-action.md), for the same reason: the batch class there, the object here, only exist once
 the deployment is done. The rule is not "always after" either: it is **what does this action need
 to already exist?**
 

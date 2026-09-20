@@ -44,7 +44,7 @@ flow and the same permission set as you. She merged this morning. You did not.
 
 ## Before you start
 
-- [ ] Lab 2.6 finished and merged
+- [ ] [Lab 2.6](2-6-permission-sets-and-profiles.md) finished and merged
 - [ ] Nothing waiting in the **Source Control** panel that you still care about
 
 ## Steps
@@ -257,7 +257,7 @@ developers included, and a flow that deploys but behaves wrongly is worse than o
 2. **Save / Publish User Story** is not what you want yet. First send what the merge brought in to
    your dev org, so `helios-dev` has Mariia's field, her grant and her cap: in the **Explorer**,
    right-click the `force-app` folder, then **SFDX: Deploy This Source to Org**, the same command
-   Lab 2.5 used on one class
+   [Lab 2.5](2-5-pass-code-quality-and-apex-test-coverage.md) used on one class
 
    It deploys every file of the folder as it is on your machine, and nothing else. The sfdx-hardis
    **Push from local files to Salesforce org** command would send your org every change git has

@@ -43,9 +43,9 @@ deploys to has real testers in it.
 
 ## Before you start
 
-- [ ] Lab 3.4 finished: US-018 and US-019 merged into `integration`
+- [ ] [Lab 3.4](3-4-merge-colliding-pull-requests.md) finished: US-018 and US-019 merged into `integration`
 - [ ] `helios-uat` connected: the scratch org Level 1 created, configured as the `uat` org since then
-- [ ] JWT authentication working for `uat` (Lab 3.1)
+- [ ] JWT authentication working for `uat` ([Lab 3.1](3-1-configure-the-pipeline-up-to-production.md))
 
 ## Steps
 
@@ -100,7 +100,7 @@ anything listed in `manifest/package-no-overwrite.xml` is taken out of the deplo
 org already has it, and created when it does not.
 
 The file does not exist yet, and you do not have to write it. In the **DevOps Pipeline** panel, open
-the **Deployment packages** menu, the one that opened **Package XML** in Lab 1.5, and pick **No
+the **Deployment packages** menu, the one that opened **Package XML** in [Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publish-your-changes.md), and pick **No
 Overwrite**. The package viewer opens on an empty list. Turn **Edit mode** on **(1)**, then click
 **Add Type** **(2)**.
 
@@ -117,7 +117,7 @@ and **Add**. The viewer wrote `manifest/package-no-overwrite.xml` for you, with 
 opens it as text, if you want to see it.
 
 Then **Training: Level 3** > **Publish my pipeline configuration**, and merge its Pull Request once
-green, as in Lab 3.1: the list of what must never be overwritten is pipeline configuration, like the
+green, as in [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md): the list of what must never be overwritten is pipeline configuration, like the
 rest.
 
 !!! note "Created where missing, never overwritten where present"
@@ -152,7 +152,7 @@ two words apart and a list of Pull Requests reads like the history of what reach
 
 Merge it with **Merge pull request**, never with a squash: a promotion carries every commit of the
 stories it promotes, and the next promotion, the retrofit and the release notes all need to find
-them one by one (Lab 1.6).
+them one by one ([Lab 1.6](../level-1-contributor-basics/1-6-pull-request-deployment-check-and-merge.md)).
 
 ### 4. Read the deployment actions it carries
 
@@ -296,7 +296,7 @@ with nothing in it. An empty release note is more often a missing token than an 
 Pull Request left on `integration`, a merge commit or the single commit of a squash alike: that is
 why a feature Pull Request can be squashed. A promotion squashed into `uat` would replace all of
 those commits by one that no story produced, and the notes of `uat` would name the promotion and
-nothing it carried. The DORA report in Lab 3.6 leans on the same link.
+nothing it carried. The DORA report in [Lab 3.6](3-6-release-to-production-and-read-dora-metrics.md) leans on the same link.
 
 **A promotion is an ordinary Pull Request.** There is no special promotion machinery in the default
 setup: `integration` into `uat` is a branch merged into another branch, and the deployment job on
@@ -323,7 +323,7 @@ reading about once you have done a few releases the ordinary way.
 ## If it goes wrong
 
 **The check fails with authentication errors for uat.**
-Lab 3.1 for the `uat` branch: the secrets, and the pre-authorisation of the External Client App in
+[Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) for the `uat` branch: the secrets, and the pre-authorisation of the External Client App in
 `helios-uat`.
 
 **The deployment fails on something that worked in integration.**

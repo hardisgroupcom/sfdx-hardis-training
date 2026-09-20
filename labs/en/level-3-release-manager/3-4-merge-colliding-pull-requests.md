@@ -42,7 +42,7 @@ Deciding what goes in, in what order, and what waits, is the job.
 
 ## Before you start
 
-- [ ] Lab 3.3 finished
+- [ ] [Lab 3.3](3-3-deploy-to-integration-and-read-the-log.md) finished
 - [ ] Nothing uncommitted
 
 ## Steps
@@ -57,7 +57,7 @@ of the left bar, where each level is a folder you unfold. Either route runs the 
 
 ![The Level 3 training menu on the Welcome page](../../_assets/annotated/vscode/welcome-custom-menu-3.png)
 
-**US-018 is not among them.** You merged it in Lab 2.7, and each teammate scenario is used
+**US-018 is not among them.** You merged it in [Lab 2.7](../level-2-contributor-advanced/2-7-resolve-a-git-merge-conflict.md), and each teammate scenario is used
 once: replaying one onto a branch that already has its files reports "Nothing to commit" and opens
 nothing.
 
@@ -121,7 +121,7 @@ Look at its diff on `Helios_Delivery_Manager`: one new `<fieldPermissions>` bloc
 `Panel_Batch__c.Quote_Pdf_Url__c`, added near the bottom of the file where the `Panel_Batch__c`
 grants live.
 
-Green, small, nothing in its way. Review it the way Lab 3.2 taught, then merge. If it is already
+Green, small, nothing in its way. Review it the way [Lab 3.2](3-2-review-a-contributor-pull-request.md) taught, then merge. If it is already
 merged, read the merged one instead and note how little there was to it.
 
 Nothing here was hard, which is exactly why it is worth knowing what happened next.
@@ -136,7 +136,7 @@ US-018 granted `Installation__c.Crew_Capacity_Cap__c`, near the top of the same 
 
 That is not luck and it is not git being clever. A conflict needs the two edits to land in the same
 place, within the few lines of context git compares. These two are about seventy lines apart in an
-alphabetically sorted file, so git took both and moved on. Lab 2.7 gave you the other case:
+alphabetically sorted file, so git took both and moved on. [Lab 2.7](../level-2-contributor-advanced/2-7-resolve-a-git-merge-conflict.md) gave you the other case:
 your `Crew_Notes__c` grant sat one line from Mariia's `Crew_Capacity_Cap__c`, git could not choose,
 and it stopped and asked.
 
@@ -176,12 +176,12 @@ project bans permissions on Profiles.
 different per org. Anything listed in `manifest/package-no-overwrite.xml` is removed from the package
 when the target org already has it, so a deployment cannot flatten a named credential that points at
 a different endpoint in each environment. The file does not exist in this project yet, so nothing is
-protected: Lab 3.5 creates it, before the first promotion to `uat`. Its location can be changed per
+protected: [Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md) creates it, before the first promotion to `uat`. Its location can be changed per
 branch, which is why you will not find it on the global **Deployment** tab **(2)**: switch the scope
 to `Branch: integration` and it is there, as **Branch-scoped custom Package-No-Overwrite path**.
 
 **Delta deployment** is **Use Delta Deployment** **(3)**, on the global **Deployment** tab, and
-Lab 3.3 showed you it is **Disabled** here. With it on, each merge deploys the components that changed
+[Lab 3.3](3-3-deploy-to-integration-and-read-the-log.md) showed you it is **Disabled** here. With it on, each merge deploys the components that changed
 rather than the declared package. It is a speed and blast-radius decision, not a safety net: it does
 not stop one merge overwriting another, because both deployments send what their own commit
 contains.

@@ -106,7 +106,7 @@ Go through the list rather than clicking "all":
 
 For a file that both sides changed, the panel offers a third answer beside **Overwrite** and **Keep
 org version**: **Merge**. It writes the file with both versions in it, marked, and you pick between
-them in the VS Code merge editor, the same way Lab 2.7 has you resolve a Pull Request conflict.
+them in the VS Code merge editor, the same way [Lab 2.7](2-7-resolve-a-git-merge-conflict.md) has you resolve a Pull Request conflict.
 Reach for it when both changes are real and you need both.
 
 The rule when you hesitate: `integration` wins. It is the shared reality, and your org is a copy of
@@ -148,7 +148,7 @@ Three things it deliberately does **not** do, and knowing them saves an afternoo
 - **It does not bring records on its own.** It deploys metadata, and it runs the deployment actions
   the merged Pull Requests declared, which is where a data load would live. If a teammate's story
   needed reference data and nobody declared an action for it, that data is not in your org, and no
-  deployment will ever put it there. Lab 2.4 is about that exact problem
+  deployment will ever put it there. [Lab 2.4](2-4-ship-reference-data-and-a-batch-with-deployment-actions.md) is about that exact problem
 - **It does not undo what you did by hand.** If you changed something in your org that
   `integration` also changed, the deployment overwrites it. That is why you read the list
 - **It does not touch the shared orgs.** A backpromote refuses a production org, and any org a

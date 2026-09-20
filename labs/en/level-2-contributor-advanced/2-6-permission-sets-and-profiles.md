@@ -40,7 +40,7 @@ This is the failure mode that makes people distrust a pipeline, and it is entire
 
 ## Before you start
 
-- [ ] Lab 2.5 finished and merged
+- [ ] [Lab 2.5](2-5-pass-code-quality-and-apex-test-coverage.md) finished and merged
 - [ ] `helios-dev` level with `integration`
 
 ## Steps

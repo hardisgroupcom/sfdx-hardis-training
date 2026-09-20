@@ -41,7 +41,7 @@ Go slowly here once, and every following story takes five minutes.
 
 ## Before you start
 
-- [ ] Lab 1.4 finished: the field exists in `helios-dev`, granted to the crew, on the layout
+- [ ] [Lab 1.4](1-4-build-a-custom-field-in-your-org.md) finished: the field exists in `helios-dev`, granted to the crew, on the layout
 - [ ] You are still on `features/US-014-panels-required`
 
 ## Steps
@@ -308,7 +308,7 @@ panel and click **Publish Branch**.
 ## If it goes wrong
 
 **Recent Changes lists things I never touched.**
-Normal on any org: the deployment Lab 1.2 made into this org counts as a change too, and so does
+Normal on any org: the deployment [Lab 1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) made into this org counts as a change too, and so does
 Salesforce's own internal churn. Tick only your four. The **Last Updated Date** column is the
 fastest way to tell: sort on it, and yours are on top.
 

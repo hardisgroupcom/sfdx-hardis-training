@@ -37,7 +37,7 @@ exactly the part worth a person's time.
 
 ## Before you start
 
-- [ ] Lab 3.8 finished
+- [ ] [Lab 3.8](3-8-monitor-your-production-org.md) finished
 - [ ] On `integration`, up to date: the documentation describes what the team merged
 
 ## Steps
@@ -140,7 +140,7 @@ their documentation, through Pull Requests of their own.
 ### 7. Make it a habit, not an event
 
 Documentation generated once is out of date in a month. The generation is a command, so it can run
-on a schedule the way the monitoring does, and the monitoring of Lab 3.8 already does it: its nightly
+on a schedule the way the monitoring does, and the monitoring of [Lab 3.8](3-8-monitor-your-production-org.md) already does it: its nightly
 backup regenerates the documentation of production before it finishes. Publishing that one, with
 the keys above, is how a project gets documentation nobody has to remember to update.
 
