@@ -193,6 +193,7 @@ async function ask(question) {
  * in Git Bash, in PowerShell and over SSH without a prompt library.
  */
 export async function select(message, choices, preselected) {
+  const knownValues = () => [...new Set(choices.flatMap((ch) => [ch.value, ...(ch.aliases || [])]))];
   if (preselected) {
     // An org answers to several names: its aliases and its username. Match any of
     // them, or a value passed on the command line is refused for no good reason.
@@ -203,17 +204,18 @@ export async function select(message, choices, preselected) {
       info(`${message} ${c.green(found.label)}`);
       return found.value;
     }
-    const known = choices.flatMap((ch) => [ch.value, ...(ch.aliases || [])]);
-    abort(`"${preselected}" is not one of: ${[...new Set(known)].join(", ")}`);
+    abort(`"${preselected}" is not one of: ${knownValues().join(", ")}`);
   }
   if (choices.length === 1) {
     info(`${message} ${c.green(choices[0].label)} ${c.dim("(the only one available)")}`);
     return choices[0].value;
   }
   if (!isInteractive()) {
+    // Naming the answers this very question accepts, rather than an example
+    // from another command that does not apply here
     abort(
       `${message} needs an answer, and this terminal cannot ask for one.`,
-      "Pass the value on the command line instead, for example: node scripts/training.mjs seed --org helios-dev"
+      `Pass one of these on the command line instead: ${knownValues().join(", ")}`
     );
   }
   if (panel.isActive()) {
