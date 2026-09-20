@@ -471,7 +471,16 @@ create, and click the card again.
 
 **It says the daily allowance is used up.**
 You created and deleted scratch orgs several times today. The allowance comes back within 24
-hours: click the card again tomorrow, and everything already done is kept.
+hours: click the card again tomorrow, and everything already done is kept. Deleting a scratch org
+does not give its allowance back, so resist the urge to delete and recreate: **Reset this level**
+puts the branches back without touching the orgs, and **Clean up a training org** empties one
+without deleting it.
+
+**A command fails with `TotalRequests Limit exceeded`.**
+A Developer Edition org answers a fixed number of API calls a day, and a long session of
+deployments, seeding and monitoring can use them up. Nothing is broken and nothing is lost: your
+work is on your fork. The allowance comes back over the following hours, so this is the moment to
+read the Under the hood blocks of the labs you have done, and to come back to the clicking later.
 
 **It says Actions could not be turned on from here.**
 GitHub hides that switch behind a banner with no API. Open the **Actions** tab of your fork (`github.com/my-username/sfdx-hardis-training`) and
