@@ -31,7 +31,7 @@ depends_on:
 
 **Level**: 3 Release Manager
 
-**Time**: ~25 min
+**Time**: ~35 min
 
 **You will**: take one broken formula from production to a fix that is live, then bring that fix
 back down into the pipeline so nothing undoes it.
@@ -305,3 +305,5 @@ It looks for the `Cancelled` exemption on `preprod` and on `main`, and for the s
 - [Hotfixes](https://sfdx-hardis.cloudity.com/salesforce-devops-hotfixes/)
 - [Retrofit](https://sfdx-hardis.cloudity.com/salesforce-devops-retrofit/)
 - [Release Manager Guide](https://sfdx-hardis.cloudity.com/salesforce-devops-release-home/)
+
+[Next: Lab 3.8 - Monitor your production org](3-8-monitor-your-production-org.md){ .md-button .md-button--primary }

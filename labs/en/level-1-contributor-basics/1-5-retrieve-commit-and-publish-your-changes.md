@@ -14,6 +14,8 @@ screenshots:
   - annotated/vscode/pipeline-cards--save-publish
   - annotated/vscode/work-save-commit-ready
   - annotated/vscode/work-save-package-xml
+  - annotated/vscode/pipeline-packages-menu--package-xml
+  - annotated/vscode/package-xml--custom-field
 depends_on:
   commands: [hardis:work:save]
   flags: []

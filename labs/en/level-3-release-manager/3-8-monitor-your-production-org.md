@@ -10,6 +10,7 @@ screenshots:
   - annotated/vscode/org-monitoring--not-a-monitoring-repo
   - annotated/vscode/monitoring-config--what-it-watches
   - annotated/vscode/org-monitoring--first-report
+  - annotated/web/github-run-workflow
 depends_on:
   commands: [hardis:org:configure:monitoring]
   flags: []

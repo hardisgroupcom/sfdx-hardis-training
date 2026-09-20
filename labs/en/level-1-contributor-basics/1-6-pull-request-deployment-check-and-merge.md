@@ -13,6 +13,7 @@ screenshots:
   - annotated/web/github-actions-deploy
   - annotated/web/github-pr-deployed
   - annotated/vscode/work-save-completed
+  - annotated/web/github-pr-merge-squash
 depends_on:
   commands: [hardis:project:deploy:smart]
   flags: [--check]

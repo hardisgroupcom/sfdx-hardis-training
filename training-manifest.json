@@ -164,7 +164,9 @@
         "annotated/vscode/source-control-retrieved--commit",
         "annotated/vscode/pipeline-cards--save-publish",
         "annotated/vscode/work-save-commit-ready",
-        "annotated/vscode/work-save-package-xml"
+        "annotated/vscode/work-save-package-xml",
+        "annotated/vscode/pipeline-packages-menu--package-xml",
+        "annotated/vscode/package-xml--custom-field"
       ]
     },
     {
@@ -202,7 +204,8 @@
         "annotated/web/github-pr-merge",
         "annotated/web/github-actions-deploy",
         "annotated/web/github-pr-deployed",
-        "annotated/vscode/work-save-completed"
+        "annotated/vscode/work-save-completed",
+        "annotated/web/github-pr-merge-squash"
       ]
     },
     {
@@ -778,7 +781,8 @@
       "screenshots": [
         "annotated/vscode/org-monitoring--not-a-monitoring-repo",
         "annotated/vscode/monitoring-config--what-it-watches",
-        "annotated/vscode/org-monitoring--first-report"
+        "annotated/vscode/org-monitoring--first-report",
+        "annotated/web/github-run-workflow"
       ]
     },
     {

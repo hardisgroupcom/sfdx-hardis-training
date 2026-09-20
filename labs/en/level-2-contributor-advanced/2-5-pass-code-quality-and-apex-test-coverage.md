@@ -28,10 +28,10 @@ run the checks before pushing.
 
 ## The situation
 
-> **US-027 - Schedule installations by panel batch availability**
+> **US-027 - Check several installations against panel availability at once**
 >
-> As a planner, I want the scheduler to refuse a date before the panels arrive, so that crews stop
-> turning up to an empty warehouse.
+> As a planner, I want to check a list of installations against panel availability in one go, so
+> that I can fill a week of planning without opening every record.
 
 An Apex change in `InstallationScheduler`. Two things will stop you, and neither is about your
 metadata being wrong:

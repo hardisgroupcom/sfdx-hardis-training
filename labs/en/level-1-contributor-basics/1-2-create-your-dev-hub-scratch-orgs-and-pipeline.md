@@ -354,8 +354,9 @@ push they make to those branches themselves, and put it back straight after.
 Seven things, each of them real work on a real project, and none of them yours to repeat:
 
 - **Your own copy of the repository**, its *fork*, under your GitHub account. Your clone pushes
-  there now, and still pulls from the team's repository. The fork carries the branches the
-  pipeline uses: `integration`, `uat`, `preprod` and `main`
+  there now, and still pulls from the team's repository. The fork carries the two branches the
+  pipeline uses today, `integration` and `uat`, and `main`. You add `preprod` yourself in
+  [Lab 3.1](../level-3-release-manager/3-1-configure-the-pipeline-up-to-production.md)
 - **Actions turned on.** GitHub disables workflows on every new fork until the owner says
   otherwise, and a fork with them off looks exactly like a broken course
 - **`helios-prod` became a Dev Hub**, which is one switch in Setup, and cannot be switched back
