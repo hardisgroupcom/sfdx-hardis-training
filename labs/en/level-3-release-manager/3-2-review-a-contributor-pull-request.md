@@ -73,9 +73,12 @@ Read the sfdx-hardis comment, top to bottom. Four things, in this order:
 4. **Tests and coverage.** Coverage every time, and a collapsed *Apex test classes* block when the
    job ran named test classes. Failures only when there are failures
 
-Reading it in that order takes two minutes. On US-052 it reads green, one component updated, nothing
-deleted, and it is right about all of it. It also tells you what the comment cannot do for you,
-which is step 3.
+Reading it in that order takes two minutes. On US-052 it reads green, a small number of components
+updated and **nothing deleted**, and it is right about all of it. The exact counts are yours, not
+the lab's: they compare your branch with what your `helios-integration` holds today, so a story that
+touches one file can still update a few components when your org is behind. `deleted: 0` is the
+number that matters here, and it is the one step 4 is about. The comment also tells you what it
+cannot do for you, which is step 3.
 
 ### 3. Read the diff, looking for what the robot cannot see
 
