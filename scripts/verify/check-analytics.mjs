@@ -99,8 +99,11 @@ async function inspect(browser, url) {
   await page.evaluate(() => {
     window.__instantMarker = true;
   });
+  // Only the navigation and the body of the page: a theme puts links in its header and
+  // its footer that go nowhere in particular, and one of them lands on a 404 page, which
+  // counts nothing and is not the tag's fault.
   const href = await page.evaluate(() => {
-    const link = [...document.querySelectorAll("a[href]")].find((a) => {
+    const link = [...document.querySelectorAll(".md-nav a[href], .md-content a[href]")].find((a) => {
       const target = new URL(a.href, location.href);
       return target.origin === location.origin && target.pathname !== location.pathname && !target.hash;
     });
@@ -110,6 +113,8 @@ async function inspect(browser, url) {
   if (href) await page.waitForTimeout(6000);
   const navigation = requests.filter((r) => r.at === "navigation");
   const instant = href ? await page.evaluate(() => window.__instantMarker === true) : false;
+  // A page that carries no content block is the 404 page, so there was no second page to count
+  const landedOnAPage = href ? await page.evaluate(() => document.querySelector(".md-content") !== null) : false;
 
   await page.close();
 
@@ -124,7 +129,7 @@ async function inspect(browser, url) {
     tagLoaded: requests.some((r) => /googletagmanager\.com\/gtag\/js/.test(r.url)),
     landingPageView: landing.some((r) => COLLECT.test(r.url)),
     navigationPageView: navigation.some((r) => COLLECT.test(r.url)),
-    followed: href,
+    followed: href && landedOnAPage ? href : null,
     instant,
   };
 }
@@ -158,15 +163,18 @@ for (const site of targets) {
     ["measurement id", report.ids.length > 0 ? report.ids.join(", ") : null, "no G- id seen"],
     ["gtag.js loaded", report.tagLoaded || null, "the tag never loaded"],
     ["page view on landing", report.landingPageView || null, "the first page view of every session is lost"],
-    [
-      report.instant ? "page view on instant navigation" : "page view on the next page",
-      report.navigationPageView || null,
-      report.followed ? "navigating to another page counted nothing" : "no internal link to follow, not checked",
-    ],
+    report.followed
+      ? [
+          report.instant ? "page view on instant navigation" : "page view on the next page",
+          report.navigationPageView || null,
+          "navigating to another page counted nothing",
+        ]
+      : ["page view on the next page", null, "no second page to follow on this site", true],
   ];
 
-  for (const [label, ok, problem] of lines) {
+  for (const [label, ok, problem, skipped] of lines) {
     if (ok) console.log(`  OK    ${label}: ${ok === true ? "yes" : ok}`);
+    else if (skipped) console.log(`  SKIP  ${label}: ${problem}`);
     else console.log(`  FAIL  ${label}: ${problem}`);
   }
 
