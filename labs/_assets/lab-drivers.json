@@ -57,7 +57,10 @@
           "command": "sf hardis:work:new",
           "timeoutMs": 900000,
           "answers": [
-            { "q": "type of User Story", "choice": "Feature: a new capability" },
+            {
+              "q": "type of User Story",
+              "choice": "Feature: a new capability"
+            },
             {
               "q": "name of your new User Story",
               "value": "US-014-panels-required"
@@ -89,7 +92,10 @@
           "command": "sf hardis:work:save",
           "timeoutMs": 1200000,
           "answers": [
-            { "q": "already committed the updated metadata", "choice": "Yes, my commit" },
+            {
+              "q": "already committed the updated metadata",
+              "choice": "Yes, my commit"
+            },
             {
               "q": "want to export|data.*export",
               "choice": "No",
