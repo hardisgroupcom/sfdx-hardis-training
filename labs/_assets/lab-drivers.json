@@ -20,6 +20,9 @@
     "A lab with a 'skip' is one the driver cannot walk, and the reason is what the run reports as",
     "not covered. Keep it honest: the labs that end in a browser or on GitHub are not panels.",
     "",
+    "A choice regex must not be anchored with ^: the panel prefixes most choice titles with an",
+    "emoji, so an anchored \"Scratch org\" never matches the row the learner clicks. Match the words.",
+    "",
     "When a lab's questions change, this file changes with the lab text, in the same Pull Request."
   ],
   "labs": [
@@ -39,7 +42,7 @@
           "$comment": "The lab says 15 to 20 minutes. A cold run that creates three scratch orgs, deploys the app into each and imports the data takes longer than that: 40 minutes was not enough on 2026-09-21.",
           "timeoutMs": 4200000,
           "answers": [
-            { "q": "Build your training environment from", "choice": "^(Yes|yes)" }
+            { "q": "Build your training environment from", "choice": "Yes" }
           ]
         }
       ]
@@ -54,14 +57,14 @@
           "command": "sf hardis:work:new",
           "timeoutMs": 900000,
           "answers": [
-            { "q": "type of User Story", "choice": "^Feature" },
+            { "q": "type of User Story", "choice": "Feature: a new capability" },
             {
               "q": "name of your new User Story",
               "value": "US-014-panels-required"
             },
             {
               "q": "Salesforce org do you want to work in",
-              "choice": "^Scratch org"
+              "choice": "Scratch org$"
             },
             {
               "q": "scratch org|which org|select .*org",
@@ -86,13 +89,13 @@
           "command": "sf hardis:work:save",
           "timeoutMs": 1200000,
           "answers": [
-            { "q": "already committed the updated metadata", "choice": "^Yes" },
+            { "q": "already committed the updated metadata", "choice": "Yes, my commit" },
             {
               "q": "want to export|data.*export",
-              "choice": "^No",
+              "choice": "No",
               "optional": true
             },
-            { "q": "push commits to git branch", "choice": "^Yes" }
+            { "q": "push commits to git branch", "choice": "Yes" }
           ]
         }
       ]
