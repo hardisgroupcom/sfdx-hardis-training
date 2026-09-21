@@ -96,7 +96,7 @@ Tout ce qu'il vous faut est dans les Labs 1.3 à 1.6. Les échecs sont les même
 **En cas de problème** de ces labs les couvrent. Résistez à l'envie de relire tout le lab : allez
 chercher la seule étape sur laquelle vous bloquez.
 
-Si votre dépôt finit dans un état que vous n'arrivez pas à démêler, Welcome page >
+Si votre repository finit dans un état que vous n'arrivez pas à démêler, Welcome page >
 **Training: Level 1** > **Reset this level** le remet au début du Niveau 1 et vous pouvez refaire
 l'épreuve finale proprement. S'en servir n'est pas échouer. Ne pas s'en servir et abandonner, si.
 
@@ -115,14 +115,14 @@ Welcome page > **Training: Level 1** > **Claim my badge**.
 
 Il recontrôle d'abord le niveau entier et refuse de demander quoi que ce soit qui ne passe pas : une
 demande qui serait rejetée est une demande qui ne vaut pas la peine d'être ouverte. Puis il ouvre le
-formulaire de demande du dépôt de formation dans votre navigateur, avec le niveau, votre nom
-d'utilisateur, votre fork (votre copie personnelle du dépôt du cours sur GitHub, par exemple
+formulaire de demande du repository de formation dans votre navigateur, avec le niveau, votre nom
+d'utilisateur, votre fork (votre copie personnelle du repository du cours sur GitHub, par exemple
 `github.com/my-username/sfdx-hardis-training`) et vos reçus déjà remplis. Cochez les trois cases et
 cliquez sur **Submit**.
 
 Ces trois cases sont à vous de cocher, et rien ne les coche à votre place. Elles disent que votre
 fork (`github.com/my-username/sfdx-hardis-training`) est public et que votre pseudo GitHub devient
-public dans le dépôt de formation, ce qui est une décision à propos de votre nom plutôt qu'une
+public dans le repository de formation, ce qui est une décision à propos de votre nom plutôt qu'une
 formalité.
 
 !!! tip "Si ce cours vous a servi"

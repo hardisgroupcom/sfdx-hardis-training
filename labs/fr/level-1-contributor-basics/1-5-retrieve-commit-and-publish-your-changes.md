@@ -30,7 +30,7 @@ depends_on:
 
 **Durée** : ~20 min
 
-**Vous allez** : faire entrer vos modifications d'org dans le dépôt, décider lesquelles appartiennent
+**Vous allez** : faire entrer vos modifications d'org dans le repository, décider lesquelles appartiennent
 à votre story, et pousser une branche prête à être relue.
 
 ## La situation
@@ -160,7 +160,7 @@ ce que trouvera quiconque lira l'historique de ce projet dans deux ans.
     fichier que vous ne savez pas expliquer est un fichier qui n'a rien à faire dans votre story, et
     le supprimer à l'aveugle ne vaut pas mieux que le commiter à l'aveugle.
 
-Votre travail est maintenant dans le dépôt, sur votre branche, sur votre machine. Il reste à le
+Votre travail est maintenant dans le repository, sur votre branche, sur votre machine. Il reste à le
 préparer pour l'équipe, et c'est ce que fait Save / Publish.
 
 ### 5. Le publier
@@ -302,7 +302,7 @@ qui a effectué, dans cet ordre :
 4. **Commité ce qu'il a modifié**, sous `chore(sfdx-hardis): update package content` et
    `chore(sfdx-hardis): clean sfdx project`. Ces commits sont ceux de l'outil, pas les vôtres : le
    vôtre est celui que vous avez écrit à l'étape 4
-5. **Poussé** la branche sur votre fork (votre copie personnelle du dépôt du cours sur GitHub, par
+5. **Poussé** la branche sur votre fork (votre copie personnelle du repository du cours sur GitHub, par
    exemple `github.com/my-username/sfdx-hardis-training`)
 
 Chacune de ces étapes est de la configuration, pas de la magie. Tout ce qu'il a fait est dans

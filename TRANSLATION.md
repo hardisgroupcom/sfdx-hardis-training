@@ -116,13 +116,19 @@ the word for a step: "Lab 2.7 step 3" in English, "Lab 2.7, étape 3" in French,
 
 Beyond the rules above:
 
-- Official Salesforce French where there is one: *ensemble d'autorisations* exists, but Salesforce
-  developers in France say **permission set**, and this course follows the developers. *Flux*,
-  *Champ*, *Objet*, *Profil*, *Type d'enregistrement*, *Règle de validation* are used as concepts
-- Developer terms stay English: flag, merge, commit, branch, fork, scratch org, sandbox, pipeline,
-  Pull Request, hotfix, backpromote, retrofit, deployment action, User Story
-- *Dépôt* for repository, *déploiement* for deployment, *récupérer* for retrieve,
-  *notes de version* for release notes, *présentation de page* for page layout
+- Official Salesforce French where there is one and where people use it: *champ*, *objet*,
+  *profil*, *type d'enregistrement*, *règle de validation* are used as concepts. *Ensemble
+  d'autorisations* exists and nobody says it, so this course says **permission set**
+- Developer terms stay English: repository, Flow, flag, merge, commit, branch, fork, scratch org,
+  sandbox, pipeline, Pull Request, hotfix, backpromote, retrofit, deployment action, User Story
+- **"repository", never "dépôt".** French Salesforce and git users say repository, the plural is
+  *repositories*, and it is masculine: *le repository*, *du repository*, *ce repository*
+- **"Flow", never "flux".** A Salesforce Flow is a Flow in French: *le flow*, *les flows*,
+  *Flow Builder*. The same goes for a JWT flow
+- The test for the whole family: what a French developer says out loud, not whether a dictionary
+  has an entry for it
+- *déploiement* for deployment, *récupérer* for retrieve, *notes de version* for release notes,
+  *présentation de page* for page layout
 - French typography: a space before `:`, `;`, `?` and `!`, and ordinary quotes rather than guillemets
   so that the markdown stays easy to diff
 - No em-dashes, the same rule the English course follows

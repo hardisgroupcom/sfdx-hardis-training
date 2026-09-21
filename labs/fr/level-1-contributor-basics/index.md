@@ -19,8 +19,8 @@ Vous avez rejoint **Helios Energy** lundi. Ils installent des panneaux solaires 
 toute l'Europe du Sud, les ventes tournent sur Salesforce, et les équipes de pose suivent chaque
 installation dans une application sur mesure appelée **Helios Delivery**.
 
-L'équipe a déjà un pipeline. Il y a un dépôt Git, une org d'intégration, un contrôle de Pull Request
-qui déploie votre travail avant que quiconque le relise. Personne ne va vous apprendre Git :
+L'équipe a déjà un pipeline. Il y a un repository Git, une org d'intégration, un contrôle de Pull
+Request qui déploie votre travail avant que quiconque le relise. Personne ne va vous apprendre Git :
 l'extension VS Code fait la partie technique, et d'ici vendredi on attend de vous que vous ayez
 livré votre première story.
 
@@ -32,14 +32,14 @@ Si vous n'avez jamais utilisé Git, voici tout le vocabulaire. Rien dans le Nive
 vous le connaissiez déjà, et vous n'aurez pas une seule commande Git à taper : l'extension VS Code
 s'en charge.
 
-| Mot              | Ce que ça veut dire                                                                                                                                                      |
-|------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Repository**   | Un dossier de projet, plus toutes les versions qu'il a jamais eues. On dit souvent "repo", ou "dépôt". Le repo Helios vit sur GitHub.                                    |
-| **Fork**         | Votre copie personnelle du dépôt de quelqu'un d'autre, faite en un clic, sous votre compte GitHub. Vous pouvez tout y changer, et l'original ne s'en aperçoit jamais.    |
-| **Clone**        | Télécharger un dépôt sur votre portable, pour que VS Code puisse l'ouvrir.                                                                                               |
-| **Branch**       | Une ligne de travail nommée à l'intérieur d'un dépôt. Vous changez ce qu'il faut sur la vôtre, et la version de l'équipe reste intacte jusqu'au merge.                   |
-| **Commit**       | Enregistrer un ensemble de modifications dans l'historique du dépôt, avec un message qui dit pourquoi.                                                                   |
-| **Pull Request** | Demander que votre branche soit repliée dans celle de l'équipe. C'est là que les contrôles tournent et qu'un collègue lit ce que vous avez fait. Tout le monde dit "PR". |
+| Mot              | Ce que ça veut dire                                                                                                                                                        |
+|------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Repository**   | Un dossier de projet, plus toutes les versions qu'il a jamais eues. On dit "repository", souvent raccourci en "repo". Le repo Helios vit sur GitHub.                       |
+| **Fork**         | Votre copie personnelle du repository de quelqu'un d'autre, faite en un clic, sous votre compte GitHub. Vous pouvez tout y changer, et l'original ne s'en aperçoit jamais. |
+| **Clone**        | Télécharger un repository sur votre portable, pour que VS Code puisse l'ouvrir.                                                                                            |
+| **Branch**       | Une ligne de travail nommée à l'intérieur d'un repository. Vous changez ce qu'il faut sur la vôtre, et la version de l'équipe reste intacte jusqu'au merge.                |
+| **Commit**       | Enregistrer un ensemble de modifications dans l'historique du repository, avec un message qui dit pourquoi.                                                                |
+| **Pull Request** | Demander que votre branche soit repliée dans celle de l'équipe. C'est là que les contrôles tournent et qu'un collègue lit ce que vous avez fait. Tout le monde dit "PR".   |
 
 ## Ce que vous allez faire
 
@@ -63,13 +63,13 @@ seul menu. Ouvrez la **Welcome page**, et sous **CUSTOM MENUS** cliquez sur la c
 
 Elles sont cinq, et les labs les appellent par ces noms :
 
-| Commande                           | Ce qu'elle fait                                                              |
-|------------------------------------|------------------------------------------------------------------------------|
-| **Set up my training environment** | Forke le dépôt, crée vos scratch orgs avec l'application, câble le pipeline  |
-| **Where am I?**                    | Dit à quel niveau et à quel lab vous en êtes, et ce qu'il faut faire ensuite |
-| **Check my work**                  | Vérifie le lab que vous venez de terminer et affiche votre reçu              |
-| **Claim my badge**                 | Contrôle le niveau entier, puis ouvre votre demande de badge déjà remplie    |
-| **Reset this level**               | Remet votre dépôt au début du Niveau 1                                       |
+| Commande                           | Ce qu'elle fait                                                                  |
+|------------------------------------|----------------------------------------------------------------------------------|
+| **Set up my training environment** | Forke le repository, crée vos scratch orgs avec l'application, câble le pipeline |
+| **Where am I?**                    | Dit à quel niveau et à quel lab vous en êtes, et ce qu'il faut faire ensuite     |
+| **Check my work**                  | Vérifie le lab que vous venez de terminer et affiche votre reçu                  |
+| **Claim my badge**                 | Contrôle le niveau entier, puis ouvre votre demande de badge déjà remplie        |
+| **Reset this level**               | Remet votre repository au début du Niveau 1                                      |
 
 Il y a un menu par niveau, et chacun ne contient que ce dont ce niveau a besoin : rien de ce que vous
 avez sous les yeux ne concerne un lab que vous n'avez pas encore atteint.
@@ -83,16 +83,16 @@ labs citent la Welcome page parce qu'une carte se montre plus facilement qu'une 
 ## Trois choses vraies pour tout le cours
 
 **Vous travaillez dans votre propre copie.** Tout ce qui se passe dans ce cours se passe dans un
-dépôt qui n'appartient qu'à vous. Vos modifications, vos erreurs, vos corrections, et rien de ce que
-vous faites n'atteint le travail de qui que ce soit d'autre. Le Lab 1.2 met cette copie en place pour
-vous en un clic, et explique pourquoi il ne peut pas en être autrement.
+repository qui n'appartient qu'à vous. Vos modifications, vos erreurs, vos corrections, et rien de
+ce que vous faites n'atteint le travail de qui que ce soit d'autre. Le Lab 1.2 met cette copie en
+place pour vous en un clic, et explique pourquoi il ne peut pas en être autrement.
 
 **Vous cliquez, vous ne tapez pas.** Chaque action de ces labs est un bouton de l'extension VS Code.
 Là où une commande apparaît, c'est dans un bloc **Sous le capot**, qui explique ce que le bouton a
 fait. Vous n'avez jamais à la retaper.
 
 **Vous pouvez toujours repartir de zéro.** Si un lab tourne mal, Welcome page >
-**Training: Level 1** > **Reset this level** remet votre dépôt au début du niveau. Un lab raté ne met
+**Training: Level 1** > **Reset this level** remet votre repository au début du niveau. Un lab raté ne met
 pas fin à votre formation.
 
 ## Si vous êtes bloqué

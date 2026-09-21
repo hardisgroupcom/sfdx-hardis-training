@@ -54,7 +54,7 @@ Pipeline. Nom `US-033-batch-cost-visibility`, org `helios-dev`.
 ![La carte New User Story du panneau DevOps Pipeline](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
 Les équipes de pose se connectent avec le profil **Helios Crew**. C'est l'un des deux profils que
-porte ce dépôt, à côté d'`Admin`, le profil System Administrator : dans le panneau **DevOps
+porte ce repository, à côté d'`Admin`, le profil System Administrator : dans le panneau **DevOps
 Pipeline**, ouvrez le menu **Deployment packages**, puis **Package XML**, et la ligne **Profile**
 liste les deux.
 
@@ -113,7 +113,7 @@ affectations de présentation de page.
 Le pipeline n'a donc pas perdu votre travail. Il a refusé de le transporter, parce que le
 transporter finirait par supprimer celui de quelqu'un d'autre.
 
-!!! note "Pourquoi les profils restent quand même dans le dépôt"
+!!! note "Pourquoi les profils restent quand même dans le repository"
     Retirer les profils des sources serait la mauvaise conclusion. Un utilisateur se connecte avec un
     profil, et ce que seul un profil contient, l'application par défaut, la présentation de page de
     chaque objet, les réglages d'onglets, les plages horaires de connexion, doit être identique dans
@@ -138,7 +138,7 @@ Batches > Edit**, cochez **Read Access** sur `Cost`, **Save**.
 Récupérez le **permission set** cette fois, commitez-le, **Save / Publish**, et ouvrez la Pull
 Request. Le rapport **Git Delta package.xml** nomme `Helios_Delivery_Crew`.
 
-Rien à ranger : le profil que vous avez publié à l'étape 1 reste dans le dépôt, nettoyé, et il
+Rien à ranger : le profil que vous avez publié à l'étape 1 reste dans le repository, nettoyé, et il
 continue d'être déployé comme il l'a toujours été.
 
 Le contrôle passe au vert. Mergez, et vérifiez `helios-integration` : **Setup > Permission Sets >
@@ -190,8 +190,8 @@ Et certaines sections ne sont jamais touchées, parce que rien d'autre ne peut l
 
 Un profil a donc toujours un rôle dans ce pipeline. Simplement beaucoup plus petit.
 
-Rien n'a été retiré de votre org. Le nettoyage change **ce que le dépôt transporte**, jamais ce que
-Salesforce contient. Votre autorisation à la mode admin est toujours dans `helios-dev`, et c'est
+Rien n'a été retiré de votre org. Le nettoyage change **ce que le repository transporte**, jamais ce
+que Salesforce contient. Votre autorisation à la mode admin est toujours dans `helios-dev`, et c'est
 exactement pour cela que le lab vous demande de la refaire sur le permission set plutôt que de
 réparer le fichier à la main.
 

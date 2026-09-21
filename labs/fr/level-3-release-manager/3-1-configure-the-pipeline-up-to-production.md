@@ -66,7 +66,7 @@ quelqu'un vous demandera pourquoi vous y passez une heure :
 3. **Ils sont liés à une personne.** Quand cette personne part ou que son token est réinitialisé, le
    pipeline s'arrête, et personne ne sait pourquoi
 
-L'alternative est un **flux JWT via une External Client App** : un certificat que vous détenez, un
+L'alternative est un **flow JWT via une External Client App** : un certificat que vous détenez, un
 utilisateur pré-autorisé, aucun mot de passe nulle part, et une révocation en supprimant une
 application. sfdx-hardis le met en place pour vous, org par org, et écrit la configuration de branche
 au passage.
@@ -123,11 +123,11 @@ attachée**. Les branches viennent donc d'abord, puis leur protection, puis leur
 `main` existe déjà : c'est la branche par défaut de tout fork. `preprod` non, et elle part de `main`,
 parce qu'elle contient ce que la production contient.
 
-Dans votre fork (votre copie personnelle du dépôt du cours sur GitHub, par exemple
-`github.com/my-username/sfdx-hardis-training`), ouvrez la page **Branches** : le compteur de branches
-à côté du sélecteur de branche, ou `github.com/my-username/sfdx-hardis-training/branches`. Cliquez
-sur **New branch** en haut à droite. Tapez `preprod` comme nom **(1)**, laissez la source sur votre
-fork et `main` **(2)**, et cliquez sur **Create new branch** **(3)**.
+Dans votre fork (votre copie personnelle du repository du cours sur GitHub, par exemple
+`github.com/my-username/sfdx-hardis-training`), ouvrez la page **Branches** : le compteur de
+branches à côté du sélecteur de branche, ou `github.com/my-username/sfdx-hardis-training/branches`.
+Cliquez sur **New branch** en haut à droite. Tapez `preprod` comme nom **(1)**, laissez la source
+sur votre fork et `main` **(2)**, et cliquez sur **Create new branch** **(3)**.
 
 ![La boîte New branch de GitHub, créant preprod à partir de main](../../_assets/annotated/web/github-new-branch.png)
 
@@ -163,7 +163,7 @@ depuis la liste ci-dessus : elle montre donc les valeurs que vous êtes sur le p
    dessous. Tapez `Simulate` et choisissez **Simulate Deployment to Major Org**, puis tapez `Mega` et
    choisissez **Mega-Linter**. Les deux atterrissent dans **Status checks that are required** : ce
    sont les deux contrôles que lance chaque Pull Request de ce cours
-4. Cochez **Do not allow bypassing the above settings** **(4)**. Sans cela, le propriétaire du dépôt,
+4. Cochez **Do not allow bypassing the above settings** **(4)**. Sans cela, le propriétaire du repository,
    c'est-à-dire vous, a encore une case pour pousser ou merger quand même
 5. Cliquez sur **Create** en bas. Sur une règle existante, le même bouton affiche **Save changes**
    **(5)**
@@ -171,10 +171,10 @@ depuis la liste ci-dessus : elle montre donc les valeurs que vous êtes sur le p
 Puis **Add rule** à nouveau, pour `main`, avec les mêmes réglages. De retour sur la liste : quatre
 règles, `integration`, `uat`, `preprod` et `main`.
 
-La zone de recherche ne propose que les contrôles qui ont tourné sur ce dépôt dans les sept derniers
-jours. Les deux ont tourné sur vos Pull Requests du Niveau 2, ils y sont donc, sauf si vous avez fait
-une longue pause : dans ce cas ouvrez d'abord n'importe quelle Pull Request vers `integration`, et
-ses contrôles les remettent dans la liste.
+La zone de recherche ne propose que les contrôles qui ont tourné sur ce repository dans les sept
+derniers jours. Les deux ont tourné sur vos Pull Requests du Niveau 2, ils y sont donc, sauf si vous
+avez fait une longue pause : dans ce cas ouvrez d'abord n'importe quelle Pull Request vers
+`integration`, et ses contrôles les remettent dans la liste.
 
 <details markdown="1"><summary>Sous le capot : ce que la règle impose</summary>
 
@@ -267,9 +267,9 @@ variables > Actions (1)**, puis cliquez sur **New repository secret (2)** :
 
 ![Là où un fork garde les valeurs que sa CI lit](../../_assets/annotated/web/github-secrets-actions.png)
 
-La page liste les **noms** des secrets que le dépôt détient et jamais leurs valeurs **(3)**. Rien,
-pas même GitHub, ne peut vous remontrer une valeur stockée. C'est toute la raison pour laquelle le
-panneau vous demande de ne pas le fermer.
+La page liste les **noms** des secrets que le repository détient et jamais leurs valeurs **(3)**.
+Rien, pas même GitHub, ne peut vous remontrer une valeur stockée. C'est toute la raison pour
+laquelle le panneau vous demande de ne pas le fermer.
 
 Chaque secret est un formulaire : le **Name (1)**, le **Secret (2)** collé depuis le panneau, puis
 **Add secret (3)**. Faites-le deux fois :
@@ -306,8 +306,8 @@ Ce qu'elle a écrit, et où :
 | Deux valeurs à stocker comme secrets | affichées dans le panneau de la commande                                      | `SFDX_CLIENT_ID_INTEGRATION` et `SFDX_CLIENT_KEY_INTEGRATION` |
 
 La clé privée est **chiffrée**, avec une passphrase que la commande génère au hasard et que seul
-votre secret détient. Le dépôt seul ne suffit pas à s'authentifier, et c'est ce qui rend acceptable
-de commiter la clé.
+votre secret détient. Le repository seul ne suffit pas à s'authentifier, et c'est ce qui rend
+acceptable de commiter la clé.
 
 ### 6. Vérifier l'autorisation qu'elle a faite pour vous
 
@@ -459,7 +459,7 @@ promotions, commit par commit ([Lab 1.6](../level-1-contributor-basics/1-6-pull-
 `uat`, `preprod` et `main` prouvent leurs clés la première fois qu'une Pull Request y entre : la
 promotion vers `uat` au [Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md), puis `preprod` et `main` au [Lab 3.6](3-6-release-to-production-and-read-dora-metrics.md).
 
-<details markdown="1"><summary>Sous le capot : ce que fait vraiment le flux JWT</summary>
+<details markdown="1"><summary>Sous le capot : ce que fait vraiment le flow JWT</summary>
 
 La commande a lancé :
 
@@ -517,10 +517,10 @@ Pipeline Settings compris, lit ce dossier.
 
 `sf hardis:project:create` aurait généré le squelette d'un nouveau projet : les workflows de chaque
 fournisseur git, `.mega-linter.yml`, `projectName`, `developmentBranch` et `autoCleanTypes`. Il
-n'écrit aucun fichier `config/branches/` et ne demande aucune org à part le Dev Hub : les fichiers de
-branche sont le travail d'Add/Configure Org, comme ci-dessus. La commande qui prend une org existante
-sans aucun dépôt et produit le premier commit est `sf hardis:org:retrieve:sources:dx`, le vrai point
-de départ de la plupart des projets.
+n'écrit aucun fichier `config/branches/` et ne demande aucune org à part le Dev Hub : les fichiers
+de branche sont le travail d'Add/Configure Org, comme ci-dessus. La commande qui prend une org
+existante sans aucun repository et produit le premier commit est `sf
+hardis:org:retrieve:sources:dx`, le vrai point de départ de la plupart des projets.
 
 </details>
 
@@ -595,8 +595,9 @@ contraire un fichier de configuration que vous avez modifié a aussi été modif
 dans le panneau **Source Control**, puis republiez.
 
 **Le contrôle que vous voulez exiger n'est pas proposé.**
-GitHub ne liste que les contrôles qui ont rendu compte sur ce dépôt dans les sept derniers jours.
-Ouvrez une Pull Request vers `integration`, laissez ses contrôles tourner, et revenez à la règle.
+GitHub ne liste que les contrôles qui ont rendu compte sur ce repository dans les sept derniers
+jours. Ouvrez une Pull Request vers `integration`, laissez ses contrôles tourner, et revenez à la
+règle.
 
 **Set up one of my training orgs échoue sur `helios-prod`.**
 La cause habituelle est une connexion expirée : reconnectez-la dans **Orgs Manager** sous le même

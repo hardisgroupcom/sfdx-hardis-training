@@ -146,8 +146,9 @@ Puis **Save / Publish** **(1)**.
 
 ![La carte Save / Publish du panneau DevOps Pipeline](../../_assets/annotated/vscode/pipeline-cards--save-publish.png)
 
-Poussez, ouvrez la Pull Request vers `integration` dans votre fork (votre copie personnelle du dépôt
-du cours sur GitHub, par exemple `github.com/my-username/sfdx-hardis-training`), et attendez.
+Poussez, ouvrez la Pull Request vers `integration` dans votre fork (votre copie personnelle du
+repository du cours sur GitHub, par exemple `github.com/my-username/sfdx-hardis-training`), et
+attendez.
 
 Le contrôle échoue, et le commentaire sfdx-hardis sur la Pull Request nomme le composant sous
 **Deployment errors** **(1)** :

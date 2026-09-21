@@ -44,9 +44,9 @@ incidents.
 
 ### 1. Ouvrir le job
 
-Onglet **Actions** de votre fork (votre copie personnelle du dépôt du cours sur GitHub, par exemple
-`github.com/my-username/sfdx-hardis-training`), l'exécution **Process Deployment (sfdx-hardis)** qui
-a démarré quand vous avez mergé.
+Onglet **Actions** de votre fork (votre copie personnelle du repository du cours sur GitHub, par
+exemple `github.com/my-username/sfdx-hardis-training`), l'exécution **Process Deployment
+(sfdx-hardis)** qui a démarré quand vous avez mergé.
 
 Ou depuis VS Code : le panneau **DevOps Pipeline** pose le job sur la flèche entre `integration` et
 son org **(1)**, coloré selon son statut, et la légende sous le diagramme **(2)** dit ce que signifie
@@ -113,11 +113,11 @@ votre Pull Request. L'écart est le coût du delta désactivé, et c'est l'argum
 
 ### 4. Savoir ce qu'est Smart Deploy, et ce qu'il n'est pas
 
-"Smart Deploy" est le nom de la commande, pas celui d'un filtre. `sf hardis:project:deploy:smart` est
-l'orchestrateur : il décide du package, réutilise un déploiement validé en Quick Deploy quand il le
-peut, lance les actions pre et post déploiement, traduit les erreurs Salesforce en conseils, et écrit
-le commentaire de la Pull Request. Il est intelligent sur le **job**, pas sur la comparaison entre
-votre dépôt et l'org composant par composant.
+"Smart Deploy" est le nom de la commande, pas celui d'un filtre. `sf hardis:project:deploy:smart`
+est l'orchestrateur : il décide du package, réutilise un déploiement validé en Quick Deploy quand il
+le peut, lance les actions pre et post déploiement, traduit les erreurs Salesforce en conseils, et
+écrit le commentaire de la Pull Request. Il est intelligent sur le **job**, pas sur la comparaison
+entre votre repository et l'org composant par composant.
 
 Deux choses qu'on suppose souvent en faire partie et qui n'en font pas partie :
 
@@ -231,8 +231,9 @@ l'étape 1.
 **Le nettoyage n'est pas dans cette liste, et c'est ce qu'il faut retenir.** Les règles
 `autoCleanTypes` tournent à l'intérieur de `sf hardis:work:save`, sur la machine d'un contributeur,
 avant le commit. Elles réécrivent les fichiers sur le disque et commitent le résultat, c'est
-pourquoi le [Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publish-your-changes.md) a pu vous montrer le diff qu'elles ont produit. Au moment où un déploiement
-tourne, il n'y a plus rien à nettoyer : le dépôt est déjà la version nettoyée.
+pourquoi le [Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publish-your-changes.md)
+a pu vous montrer le diff qu'elles ont produit. Au moment où un déploiement tourne, il n'y a plus
+rien à nettoyer : le repository est déjà la version nettoyée.
 
 Deux modes de défaillance à savoir reconnaître :
 

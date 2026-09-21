@@ -44,63 +44,64 @@ Le monitoring est la part du métier de release manager qui se joue quand rien n
 
 - [ ] [Lab 3.7](3-7-hotfix-and-retrofit.md) terminé
 - [ ] `helios-prod` connectée dans **Orgs Manager**
-- [ ] Un dépôt GitHub vide à vous, avec `monitoring` dans son nom
+- [ ] Un repository GitHub vide à vous, avec `monitoring` dans son nom
 - [ ] Environ 20 de ces 35 minutes seront la première exécution du monitoring
 
 ## Les étapes
 
-### 1. Créer d'abord le second dépôt, vous-même
+### 1. Créer d'abord le second repository, vous-même
 
-Le monitoring vit **toujours** dans son propre dépôt, séparé de celui depuis lequel votre pipeline
-déploie. Pas en général, pas par préférence : toujours. C'est la partie que les gens ratent, et c'est
-celle qui coûte cher à défaire une fois qu'une année de commits nocturnes s'est empilée au mauvais
-endroit.
+Le monitoring vit **toujours** dans son propre repository, séparé de celui depuis lequel votre
+pipeline déploie. Pas en général, pas par préférence : toujours. C'est la partie que les gens
+ratent, et c'est celle qui coûte cher à défaire une fois qu'une année de commits nocturnes s'est
+empilée au mauvais endroit.
 
-`sf hardis:org:configure:monitoring` ne crée pas ce dépôt pour vous. Il vérifie le nom de celui dans
-lequel il se trouve, et si ce nom ne contient pas `monitoring` il demande **Do you use a separate
-repository for your monitoring deployment sources?**, avec deux réponses :
+`sf hardis:org:configure:monitoring` ne crée pas ce repository pour vous. Il vérifie le nom de celui
+dans lequel il se trouve, et si ce nom ne contient pas `monitoring` il demande **Do you use a
+separate repository for your monitoring deployment sources?**, avec deux réponses :
 
 - *Yes, I'm sure because I know what I'm doing, like Roman 😊*, qui continue quoi qu'il arrive
 - *Mmmmm no, let me create another repo with the word "monitoring" in its name !*, qui arrête la
   commande
 
 **Prenez la seconde.** La question existe parce que la commande ne peut pas être certaine à partir
-d'un nom seul, pas parce que les deux sont des alternatives. Dans un dépôt dont le nom contient bien
-`monitoring`, la question n'est jamais posée, et c'est l'état dans lequel vous voulez être avant de
-commencer.
+d'un nom seul, pas parce que les deux sont des alternatives. Dans un repository dont le nom contient
+bien `monitoring`, la question n'est jamais posée, et c'est l'état dans lequel vous voulez être
+avant de commencer.
 
-Donc, avant toute chose : créez un dépôt privé vide appelé `sfdx-hardis-training-monitoring` sur
-GitHub. Faites-le ensuite descendre comme le [Lab 1.2](../level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) a fait descendre celui-ci : **File > Open
-Folder** sur un dossier vide, panneau **Source Control**, **Clone Repository**, et collez l'adresse
-du bouton vert **Code** de votre nouveau dépôt. Rien dans ce lab ne se passe dans le dépôt où vous
-travaillez depuis le début du cours.
+Donc, avant toute chose : créez un repository privé vide appelé `sfdx-hardis-training-monitoring`
+sur GitHub. Faites-le ensuite descendre comme le [Lab
+1.2](../level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) a fait
+descendre celui-ci : **File > Open Folder** sur un dossier vide, panneau **Source Control**, **Clone
+Repository**, et collez l'adresse du bouton vert **Code** de votre nouveau repository. Rien dans ce
+lab ne se passe dans le repository où vous travaillez depuis le début du cours.
 
-Pourquoi deux dépôts, et c'est la même raison que sur les vrais projets :
+Pourquoi deux repositories, et c'est la même raison que sur les vrais projets :
 
-| Raison                      | Détail                                                                                                                                           |
-|-----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
-| Des permissions différentes | Le monitoring détient les identifiants de la production. Chaque contributeur a accès au dépôt de sources, et n'a pas besoin de celui-ci          |
-| Un rythme différent         | Le monitoring commite toutes les nuits. Mélanger cet historique avec celui de vos sources rend les deux illisibles                               |
-| Un contenu différent        | Le monitoring stocke des sauvegardes nocturnes de l'org. Il grossit, et il ne doit pas grossir dans le dépôt que les gens clonent tous les jours |
+| Raison                      | Détail                                                                                                                                                |
+|-----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Des permissions différentes | Le monitoring détient les identifiants de la production. Chaque contributeur a accès au repository de sources, et n'a pas besoin de celui-ci          |
+| Un rythme différent         | Le monitoring commite toutes les nuits. Mélanger cet historique avec celui de vos sources rend les deux illisibles                                    |
+| Un contenu différent        | Le monitoring stocke des sauvegardes nocturnes de l'org. Il grossit, et il ne doit pas grossir dans le repository que les gens clonent tous les jours |
 
-Votre dépôt de sources et votre dépôt de monitoring sont deux choses différentes avec deux publics
-différents. Si vous vous surprenez sur le point de répondre oui à cette question, le bon mouvement
-est de vous arrêter et de créer le second dépôt, si tard que cela paraisse.
+Votre repository de sources et votre repository de monitoring sont deux choses différentes avec deux
+publics différents. Si vous vous surprenez sur le point de répondre oui à cette question, le bon
+mouvement est de vous arrêter et de créer le second repository, si tard que cela paraisse.
 
 ### 2. Lancer la configuration
 
-Depuis le dépôt de monitoring, ouvrez l'**Org Monitoring Workbench** depuis la Welcome page et
+Depuis le repository de monitoring, ouvrez l'**Org Monitoring Workbench** depuis la Welcome page et
 cliquez sur **Install Org Monitoring**.
 
 !!! note "Pas de bouton de ce nom ?"
-    C'est que vous êtes dans le mauvais dossier. Ouvrez le même panneau depuis le dépôt où vous
+    C'est que vous êtes dans le mauvais dossier. Ouvrez le même panneau depuis le repository où vous
     travaillez depuis le début du cours et vous obtenez ceci à la place :
 
-    ![L'Org Monitoring Workbench ouvert depuis un dépôt CI/CD](../../_assets/annotated/vscode/org-monitoring--not-a-monitoring-repo.png)
+    ![L'Org Monitoring Workbench ouvert depuis un repository CI/CD](../../_assets/annotated/vscode/org-monitoring--not-a-monitoring-repo.png)
 
     **Org Monitoring Not Present (CI/CD Repo)** **(1)** est le panneau qui vous dit qu'il
     n'installera pas le monitoring ici, et **Learn More** **(2)** est tout ce qu'il propose. Un
-    projet qui a noté où vit son dépôt de monitoring reçoit un bouton **Open Monitoring Repository**
+    projet qui a noté où vit son repository de monitoring reçoit un bouton **Open Monitoring Repository**
     à côté. Le bouton d'installation n'existe que là où ce qu'il installe a sa place.
 
 La commande tourne dans un panneau et pose ses questions une à une, comme au [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) :
@@ -115,7 +116,7 @@ La commande tourne dans un panneau et pose ses questions une à une, comme au [L
    Celle-ci vient avant le certificat, pas après, et elle n'apparaît que la première fois
 4. Puis les questions de certificat du [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md), inchangées et dans le même ordre : auto-signé,
    laisser sfdx-hardis configurer l'External Client App, certificat chiffré sous forme de fichier,
-   puis le même arrêt pendant que vous stockez les deux secrets, cette fois dans le dépôt de
+   puis le même arrêt pendant que vous stockez les deux secrets, cette fois dans le repository de
    **monitoring**, puis le nom, l'e-mail de contact et le profil de l'application. La liste des
    profils est dans la langue de l'utilisateur de l'org, comme au [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md)
 5. **Do you want to save the configuration on the remote server (auto-commit)?** - oui
@@ -125,13 +126,14 @@ monitoring_...*. GitHub ne planifie que les workflows de la branche par défaut,
 **Run workflow** que pour ceux-là : le workflow qui lance chaque org monitorée vit donc sur `main` et
 liste chaque branche de monitoring.
 
-Elle ne demande jamais de nom de dépôt ni de fournisseur git, parce qu'elle n'en crée aucun.
-L'authentification est le même code qu'au [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) : External Client App, JWT, deux secrets à stocker,
-cette fois dans le dépôt de **monitoring**. La clé atterrit dans `./.ssh/` plutôt que dans
-`config/branches/.jwt/`, et la configuration dans un `.sfdx-hardis.yml` à la racine du dépôt, sur une
-branche appelée `monitoring_` plus le domaine de l'org, tirée de `main`. Le dépôt était vide : elle
-donne donc d'abord à `main` un commit vide d'où partir. Une branche par org monitorée est la façon
-dont un seul dépôt en surveille plusieurs.
+Elle ne demande jamais de nom de repository ni de fournisseur git, parce qu'elle n'en crée aucun.
+L'authentification est le même code qu'au [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md)
+: External Client App, JWT, deux secrets à stocker, cette fois dans le repository de **monitoring**.
+La clé atterrit dans `./.ssh/` plutôt que dans `config/branches/.jwt/`, et la configuration dans un
+`.sfdx-hardis.yml` à la racine du repository, sur une branche appelée `monitoring_` plus le domaine
+de l'org, tirée de `main`. Le repository était vide : elle donne donc d'abord à `main` un commit
+vide d'où partir. Une branche par org monitorée est la façon dont un seul repository en surveille
+plusieurs.
 
 ### 3. Choisir ce qu'il surveille
 
@@ -152,26 +154,27 @@ quelque chose d'utile sur **cette** org-là, et cela ne se sait pas d'avance.
 ### 4. Le lancer une fois à la main
 
 N'attendez pas cette nuit. Le workflow, **Org Monitoring sfdx-hardis**, est planifié à `0 0 * * *`
-(minuit UTC) et accepte aussi un lancement manuel. Dans le dépôt de monitoring, ouvrez **Actions**,
-cliquez sur **Org Monitoring sfdx-hardis** **(1)** dans la liste de gauche, puis sur **Run workflow**
+(minuit UTC) et accepte aussi un lancement manuel. Dans le repository de monitoring, ouvrez
+**Actions**, cliquez sur **Org Monitoring sfdx-hardis** **(1)** dans la liste de gauche, puis sur
+**Run workflow**
 **(2)**. Laissez la branche sur `main` **(3)** et cliquez sur le **Run workflow** vert **(4)**.
 
 ![Le menu Run workflow du workflow Org Monitoring sur GitHub](../../_assets/annotated/web/github-run-workflow.png)
 
 L'exécution apparaît dans la liste quelques secondes plus tard : cliquez dessus pour la suivre.
 
-Elle prend un moment, l'essentiel étant la sauvegarde de l'org. Quand elle se termine, le dépôt
+Elle prend un moment, l'essentiel étant la sauvegarde de l'org. Quand elle se termine, le repository
 contient une sauvegarde complète des sources de la production et un jeu de rapports.
 
 ### 5. Lire le premier rapport
 
-Ouvrez le panneau **Org Monitoring Workbench** dans VS Code, pointé sur le dépôt de monitoring.
+Ouvrez le panneau **Org Monitoring Workbench** dans VS Code, pointé sur le repository de monitoring.
 
-![L'Org Monitoring Workbench, ouvert sur le dépôt CI/CD au lieu du dépôt de monitoring](../../_assets/annotated/vscode/org-monitoring--first-report.png)
+![L'Org Monitoring Workbench, ouvert sur le repository CI/CD au lieu du repository de monitoring](../../_assets/annotated/vscode/org-monitoring--first-report.png)
 
 Vérifiez d'abord la bannière **(1)**. **Org Monitoring Not Present (CI/CD Repo)** veut dire que vous
-avez ouvert le mauvais dossier : ce panneau lit le dépôt de monitoring, pas celui où vous travaillez
-depuis le début du cours. Ouvrez le dépôt de monitoring et la bannière disparaît.
+avez ouvert le mauvais dossier : ce panneau lit le repository de monitoring, pas celui où vous
+travaillez depuis le début du cours. Ouvrez le repository de monitoring et la bannière disparaît.
 
 Chaque contrôle est une carte, et les deux à ouvrir en premier sont **Detect calls to deprecated API
 versions** **(2)** et **Detect unsecured Connected Apps in an org** **(3)**.
@@ -202,10 +205,11 @@ Ce que vous lisez, c'est la **forme** de chaque trouvaille, pour la reconnaître
 | **Une Connected App non sécurisée**           | Quelque chose peut atteindre vos données de production et personne ne se souvient de l'avoir approuvé |
 | **De l'Apex sur une vieille version d'API**   | Cela cassera à une release Salesforce, à une date que vous ne maîtrisez pas                           |
 
-La seule trouvaille que vous devriez vraiment attendre ici est dans la **sauvegarde** plutôt que dans
-un contrôle : la règle de validation que le [Lab 3.7](3-7-hotfix-and-retrofit.md) a corrigée est dans l'org avec sa nouvelle
-formule, et elle est maintenant dans l'historique git du dépôt de monitoring, datée. C'est la réponse
-à "quand est-ce que cela a changé", et c'est la part du monitoring qui se rentabilise en premier.
+La seule trouvaille que vous devriez vraiment attendre ici est dans la **sauvegarde** plutôt que
+dans un contrôle : la règle de validation que le [Lab 3.7](3-7-hotfix-and-retrofit.md) a corrigée
+est dans l'org avec sa nouvelle formule, et elle est maintenant dans l'historique git du repository
+de monitoring, datée. C'est la réponse à "quand est-ce que cela a changé", et c'est la part du
+monitoring qui se rentabilise en premier.
 
 ### 6. Décider ce qui est du bruit, ce qui est la vraie compétence
 
@@ -244,20 +248,21 @@ contiennent la sévérité à partir de laquelle chaque canal est alimenté, par
 que seuls les échecs et les trouvailles critiques soient envoyés. Un message nocturne "tout va bien"
 est lu une semaine et filtré pour toujours ensuite.
 
-Ces réglages sont écrits sous `notificationConfig` dans le `.sfdx-hardis.yml` du dépôt de monitoring,
-une entrée par type de notification, fusionnée par-dessus les valeurs par défaut du produit.
+Ces réglages sont écrits sous `notificationConfig` dans le `.sfdx-hardis.yml` du repository de
+monitoring, une entrée par type de notification, fusionnée par-dessus les valeurs par défaut du
+produit.
 
 ### 8. Le rendre trouvable
 
-Le prochain release manager aura besoin du dépôt de monitoring dès son premier jour, et le seul
-endroit où il regardera est le projet. De retour dans le dépôt de sources : **DevOps Pipeline** >
-menu engrenage > **Pipeline Settings**, portée **Global Settings**, onglet **Salesforce Project**.
-**Monitoring repository** : **Edit**, collez l'adresse de votre dépôt de monitoring,
+Le prochain release manager aura besoin du repository de monitoring dès son premier jour, et le seul
+endroit où il regardera est le projet. De retour dans le repository de sources : **DevOps Pipeline**
+> menu engrenage > **Pipeline Settings**, portée **Global Settings**, onglet **Salesforce Project**.
+**Monitoring repository** : **Edit**, collez l'adresse de votre repository de monitoring,
 `https://github.com/<votre-pseudo>/sfdx-hardis-training-monitoring`, et **Save**. Puis
 **Training: Level 3** > **Publish my pipeline configuration** : c'est de la configuration de
 pipeline, comme le reste.
 
-À partir de là, l'**Org Monitoring Workbench** ouvert depuis le dépôt de sources propose
+À partir de là, l'**Org Monitoring Workbench** ouvert depuis le repository de sources propose
 **Open Monitoring Repository** au lieu d'une impasse.
 
 <details markdown="1"><summary>Sous le capot : ce qui tourne chaque nuit</summary>
@@ -270,7 +275,7 @@ et elle a copié les fichiers de CI de **tous** les fournisseurs git à la fois,
 Le workflow qu'elle a généré pour GitHub a quatre jobs :
 
 1. **Backup** tourne en premier, seul : `sf hardis:org:monitor:backup` récupère toute l'org en format
-   source et la commite. L'historique git de ce dépôt devient une réponse à "qu'est-ce qui a changé
+   source et la commite. L'historique git de ce repository devient une réponse à "qu'est-ce qui a changé
    en production, et quand", que rien d'autre ne vous donne. Quand la récupération est faite, la même
    commande régénère la documentation de projet du [Lab 3.9](3-9-generate-the-project-documentation.md) avant de se terminer
 2. Puis trois jobs en parallèle, chacun n'attendant que la sauvegarde : `sf hardis:org:test:apex`,
@@ -280,15 +285,15 @@ Le workflow qu'elle a généré pour GitHub a quatre jobs :
 `sf hardis:org:diagnose:*`, une par contrôle, puis applique les seuils et envoie les notifications.
 Vous ne les trouverez pas listées dans le workflow.
 
-`monitoringCommands` dans le `.sfdx-hardis.yml` du dépôt de monitoring n'est **pas** la liste des
-contrôles : la liste est intégrée au produit, une trentaine, et cette clé ne fait que remplacer des
-entrées par leur clé ou en ajouter de nouvelles. La laisser vide lance quand même tout.
+`monitoringCommands` dans le `.sfdx-hardis.yml` du repository de monitoring n'est **pas** la liste
+des contrôles : la liste est intégrée au produit, une trentaine, et cette clé ne fait que remplacer
+des entrées par leur clé ou en ajouter de nouvelles. La laisser vide lance quand même tout.
 `monitoringDisable` est l'interrupteur par contrôle, par clé du contrôle plutôt que par libellé, et
-mettre la `frequency` d'un contrôle à `off` le sort aussi de l'exécution. `notificationConfig` décide
-de ce qui part où, et à partir de quelle sévérité.
+mettre la `frequency` d'un contrôle à `off` le sort aussi de l'exécution. `notificationConfig`
+décide de ce qui part où, et à partir de quelle sévérité.
 
 La sauvegarde nocturne est la partie sous-estimée. Quand quelqu'un demande "quand cette règle de
-validation a-t-elle changé", la réponse est un `git log` sur le dépôt de monitoring, et cela
+validation a-t-elle changé", la réponse est un `git log` sur le repository de monitoring, et cela
 fonctionne même pour les modifications que personne n'a faites par le pipeline.
 
 Si votre organisation utilise Grafana, les résultats peuvent alimenter des [tableaux de bord prêts à
@@ -299,7 +304,7 @@ et il est bon de savoir que cela existe.
 
 ## Ce que vous devez voir
 
-- Un second dépôt, créé par vous, avec une exécution du workflow **Org Monitoring sfdx-hardis** : la
+- Un second repository, créé par vous, avec une exécution du workflow **Org Monitoring sfdx-hardis** : la
   sauvegarde, les tests Apex et MegaLinter au vert, et le job Monitoring au rouge sur
   `ActiveScratchOrgs`
 - Une sauvegarde complète des sources de `helios-prod` commitée dedans
@@ -310,8 +315,9 @@ et il est bon de savoir que cela existe.
 ## En cas de problème
 
 **Le workflow de monitoring échoue à l'authentification.**
-Comme au [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) : l'External Client App a besoin que l'utilisateur soit pré-autorisé, et les secrets
-doivent être dans le dépôt de **monitoring**, pas dans celui des sources.
+Comme au [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) : l'External Client App a besoin
+que l'utilisateur soit pré-autorisé, et les secrets doivent être dans le repository de
+**monitoring**, pas dans celui des sources.
 
 **Actions ne propose pas de Run workflow pour Org Monitoring sfdx-hardis.**
 Le workflow n'est pas sur `main`. La commande l'y écrit à la fin, sur GitHub, et le dit. Si elle a
@@ -331,8 +337,8 @@ Attendu pour une première exécution sur n'importe quelle vraie org, et peu pro
 Developer Edition vieille de quelques jours. L'étape 6 est le lab dans les deux cas.
 
 **La commande refuse de tourner.**
-Vous lui avez dit que vous n'êtes pas dans un dépôt de monitoring séparé, ce qui est la bonne réponse
-quand vous ne l'êtes pas. Revenez à l'étape 1 et créez celui de monitoring.
+Vous lui avez dit que vous n'êtes pas dans un repository de monitoring séparé, ce qui est la bonne
+réponse quand vous ne l'êtes pas. Revenez à l'étape 1 et créez celui de monitoring.
 
 ## Vérifiez votre travail
 

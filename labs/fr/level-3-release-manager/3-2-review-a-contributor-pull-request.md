@@ -51,8 +51,8 @@ qu'on ne peut pas automatiser. Une revue après le merge est un audit : la modif
 
 ![Le menu Training du niveau 3 sur la Welcome page](../../_assets/annotated/vscode/welcome-custom-menu-3.png)
 
-Cela ouvre sa Pull Request vers `integration` dans votre fork (votre copie personnelle du dépôt du
-cours sur GitHub, par exemple `github.com/my-username/sfdx-hardis-training`). Ouvrez-la depuis
+Cela ouvre sa Pull Request vers `integration` dans votre fork (votre copie personnelle du repository
+du cours sur GitHub, par exemple `github.com/my-username/sfdx-hardis-training`). Ouvrez-la depuis
 **Pull requests**, et attendez ses deux contrôles.
 
 ### 2. Lire le robot d'abord

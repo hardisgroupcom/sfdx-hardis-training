@@ -160,9 +160,9 @@ déploiement.
 Sur trois installations : une valeur `Panels Required`, visible dans l'onglet Details, enregistrée
 sans erreur.
 
-Et dans VS Code, **rien du tout**. Le dépôt ne sait encore rien de tout cela. Vos modifications
-vivent dans une org et nulle part ailleurs, et c'est exactement l'état auquel le [Lab 1.5](1-5-retrieve-commit-and-publish-your-changes.md) existe pour
-mettre fin.
+Et dans VS Code, **rien du tout**. Le repository ne sait encore rien de tout cela. Vos modifications
+vivent dans une org et nulle part ailleurs, et c'est exactement l'état auquel le [Lab
+1.5](1-5-retrieve-commit-and-publish-your-changes.md) existe pour mettre fin.
 
 ## En cas de problème
 
@@ -189,7 +189,7 @@ Welcome page > **Training: Level 1** > **Check my work**, puis choisissez le Lab
 
 Rien de votre travail n'a encore quitté l'org, le contrôle lit donc l'org elle-même : il demande à
 `helios-dev` si `Panels_Required__c` existe sur Installation et si `Helios_Delivery_Crew` peut le
-lire. Le dépôt apprend l'existence du champ au lab suivant.
+lire. Le repository apprend l'existence du champ au lab suivant.
 
 ## Pour aller plus loin
 

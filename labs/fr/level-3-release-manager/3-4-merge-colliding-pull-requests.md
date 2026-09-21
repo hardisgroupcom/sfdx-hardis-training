@@ -211,11 +211,11 @@ déploiements envoient ce que leur propre commit contient.
 La distinction entre les deux premiers mérite d'être tenue au clair, parce qu'ils échouent
 différemment.
 
-Le nettoyage est une décision **de source** : ce que le dépôt a le droit de contenir. Quand il
-écarte quelque chose, le composant n'est réellement plus dans le dépôt, et le diff le montre.
+Le nettoyage est une décision **de source** : ce que le repository a le droit de contenir. Quand il
+écarte quelque chose, le composant n'est réellement plus dans le repository, et le diff le montre.
 
 L'écrasement est une décision **de déploiement** : ce que cette org-là a le droit de recevoir. Le
-composant reste dans le dépôt, et il n'est simplement pas envoyé à une org qui a déjà sa propre
+composant reste dans le repository, et il n'est simplement pas envoyé à une org qui a déjà sa propre
 version. Une org neuve, qui n'a rien, le reçoit.
 
 C'est pourquoi un named credential a sa place dans la liste d'écrasement et pas dans les règles de

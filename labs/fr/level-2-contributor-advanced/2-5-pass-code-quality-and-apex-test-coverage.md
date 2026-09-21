@@ -228,9 +228,9 @@ scratch org met ses exécutions de tests en file d'attente, et la première de l
 dix minutes.
 
 !!! note "La bannière du haut est normale"
-    *Org Monitoring Not Present (CI/CD Repo)* veut dire que ce dépôt est un pipeline de livraison et
-    non un dépôt de monitoring. Les cartes en dessous fonctionnent quand même sur l'org que vous
-    choisissez. Le Lab 3.8 est là où le monitoring obtient son propre dépôt.
+    *Org Monitoring Not Present (CI/CD Repo)* veut dire que ce repository est un pipeline de livraison et
+    non un repository de monitoring. Les cartes en dessous fonctionnent quand même sur l'org que vous
+    choisissez. Le Lab 3.8 est là où le monitoring obtient son propre repository.
 
 !!! note "L'onglet Apex Tests est une autre chose"
     Une Pull Request dans le panneau **DevOps Pipeline** peut afficher un onglet
@@ -279,8 +279,8 @@ qui reprennent une org historique, et c'est une mesure temporaire, pas un régla
 
 **Les linters** sont MegaLinter, configuré dans `.mega-linter.yml`. La saveur Salesforce lance PMD
 via Salesforce Code Analyzer sur l'Apex, plus un scanner de flows, plus les linters génériques. Il
-tourne sur tout le dépôt pour une Pull Request vers une branche majeure, c'est pourquoi une règle
-peut se déclencher sur un fichier que vous n'avez pas écrit.
+tourne sur tout le repository pour une Pull Request vers une branche majeure, c'est pourquoi une
+règle peut se déclencher sur un fichier que vous n'avez pas écrit.
 
 Le linter, c'est votre équipe qui refuse, ou ici qui avertit. Le plancher de couverture, c'est
 Salesforce qui refuse, et le réglage du projet choisit seulement s'il faut en demander davantage. Ni
@@ -298,9 +298,10 @@ déploie très volontiers un identifiant en dur couvert à 100 %.
 ## En cas de problème
 
 **MegaLinter échoue sur des fichiers que vous n'avez jamais touchés.**
-Il analyse tout le dépôt pour une Pull Request vers une branche majeure. Si un problème préexistant
-fait surface, corrigez-le : c'est vous qui l'avez trouvé. Si c'est vraiment hors sujet, la porte de
-sortie est une exclusion documentée dans `.mega-linter.yml`, jamais une désactivation en bloc.
+Il analyse tout le repository pour une Pull Request vers une branche majeure. Si un problème
+préexistant fait surface, corrigez-le : c'est vous qui l'avez trouvé. Si c'est vraiment hors sujet,
+la porte de sortie est une exclusion documentée dans `.mega-linter.yml`, jamais une désactivation en
+bloc.
 
 **La couverture est toujours sous le seuil après l'ajout des tests.**
 La couverture est à l'échelle de l'org. Regardez le tableau par classe dans le commentaire de la Pull

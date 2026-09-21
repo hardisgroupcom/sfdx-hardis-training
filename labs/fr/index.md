@@ -11,14 +11,14 @@ source_rev: "fbf66f1518846bab2a307e8869a4aed50b7e7b2d"
 Trois parcours gratuits qui vous emmènent de "je n'ai jamais utilisé Git" à "le pipeline, c'est moi
 qui le tiens".
 
-Vous travaillerez sur un vrai dépôt, celui d'un installateur de panneaux solaires fictif,
+Vous travaillerez sur un vrai repository, celui d'un installateur de panneaux solaires fictif,
 **Helios Energy**, avec des orgs Salesforce gratuites livrées avec l'application et ses données.
 Tout ce que vous faites ici est ce qu'une vraie équipe Salesforce fait tous les jours, avec les
 mêmes outils.
 
 Si Git est nouveau pour vous, c'est exactement le point de départ prévu. Le Niveau 1 définit les six
-mots dont vous avez besoin, dépôt et fork compris, au moment où vous rencontrez chacun d'eux, et
-l'extension VS Code lance les commandes Git à votre place.
+mots dont vous avez besoin, repository et fork compris, au moment où vous rencontrez chacun d'eux,
+et l'extension VS Code lance les commandes Git à votre place.
 
 !!! info "Les outils restent en anglais"
     Le cours suppose que sfdx-hardis, son extension VS Code et votre org Salesforce sont en
@@ -72,8 +72,8 @@ que Marc B a obtenus :
 ![Badge de niveau 3 de Marc B](../_assets/badges/example-level-3.svg){ width="200" }
 
 **Claim my badge**, dans le menu Training de chaque niveau, vérifie votre travail une dernière fois
-et ouvre la demande pour vous. Un job rejoue ensuite tous les contrôles du niveau sur votre dépôt et
-publie la page du badge.
+et ouvre la demande pour vous. Un job rejoue ensuite tous les contrôles du niveau sur votre
+repository et publie la page du badge.
 
 C'est un badge, pas une certification. Il n'y a ni examen ni accréditation. Partagez-le dans
 *Featured* sur LinkedIn, pas dans *Licenses & certifications*.

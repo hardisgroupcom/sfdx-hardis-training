@@ -84,8 +84,8 @@ la liste des commandes sfdx-hardis, et choisissez
 
 Cela crée la branche `training/mate-us-018-crew-capacity` à partir de votre `integration` actuelle,
 commite les modifications de Mariia sous son nom, la pousse sur votre fork (votre copie personnelle
-du dépôt du cours sur GitHub, par exemple `github.com/my-username/sfdx-hardis-training`), et ouvre la
-Pull Request.
+du repository du cours sur GitHub, par exemple `github.com/my-username/sfdx-hardis-training`), et
+ouvre la Pull Request.
 
 Relisez-la rapidement, puis **mergez-la**. Mariia est maintenant dans `integration`, et vous êtes en
 retard.
@@ -100,13 +100,13 @@ qui a copié les fichiers de `scripts/simulate/us-018-crew-capacity/files/` par-
 travail, les a commités avec le nom et l'e-mail de Mariia, a poussé la branche sur **votre** fork et
 y a ouvert la Pull Request avec `gh pr create`.
 
-Il ne peut pas en être autrement. Une Pull Request vit dans un dépôt : vous ne pouvez pas en relire
-une qui existe chez quelqu'un d'autre. Et une branche livrée dans le dépôt il y a des mois ne
-partagerait pas d'ancêtre sensé avec l'`integration` que vous avez construite au fil de cinq labs :
-le conflit serait donc soit absent, soit absurde.
+Il ne peut pas en être autrement. Une Pull Request vit dans un repository : vous ne pouvez pas en
+relire une qui existe chez quelqu'un d'autre. Et une branche livrée dans le repository il y a des
+mois ne partagerait pas d'ancêtre sensé avec l'`integration` que vous avez construite au fil de cinq
+labs : le conflit serait donc soit absent, soit absurde.
 
-Le même jeu de correctifs a produit les vraies Pull Requests de collègues sur le dépôt public de
-formation : ce que vous relisez est donc, octet pour octet, ce que montrent les captures d'écran.
+Le même jeu de correctifs a produit les vraies Pull Requests de collègues sur le repository public
+de formation : ce que vous relisez est donc, octet pour octet, ce que montrent les captures d'écran.
 
 </details>
 
@@ -328,7 +328,7 @@ S'il manque l'un des deux côtés, la résolution a perdu du travail, et l'audit
 
 ## Ce que vous devez voir
 
-- Aucun marqueur de conflit nulle part : cherchez `<<<<<<<` dans le dépôt
+- Aucun marqueur de conflit nulle part : cherchez `<<<<<<<` dans le repository
 - Les deux permissions de champ dans `Helios_Delivery_Manager`
 - Les deux comportements dans le flow
 
@@ -354,8 +354,8 @@ Vous avez accepté le côté de Mariia sur tout le fichier. Dans le panneau **So
 **...** > **Branch** > **Abort Merge**, puis reprenez l'étape 4.
 
 **Le contrôle échoue sur un marqueur de conflit.**
-Cherchez `<<<<<<<`, `=======` et `>>>>>>>` dans tout le dépôt. Un marqueur dans un fichier XML est
-parfois toléré syntaxiquement par git et toujours fatal pour Salesforce.
+Cherchez `<<<<<<<`, `=======` et `>>>>>>>` dans tout le repository. Un marqueur dans un fichier XML
+est parfois toléré syntaxiquement par git et toujours fatal pour Salesforce.
 
 **Vous n'arrivez pas du tout à démêler.**
 **Training: Level 2 > Reset this level**, puis refaites depuis l'étape 1. Perdre vingt minutes vaut

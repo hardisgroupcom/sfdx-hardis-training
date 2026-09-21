@@ -74,7 +74,7 @@ Dans `helios-dev`, créez :
 - Une classe Apex `CrewCapacityBatch` qui recalcule `Total_Capacity_kW__c` sur les installations
   planifiées et que Salesforce peut lancer selon une planification, plus sa classe de test
   `CrewCapacityBatchTest`. **Vous n'avez pas à les écrire.** Copiez-les depuis
-  `scripts/apex/samples/` du dépôt : ce qu'elles calculent importe bien moins ici que le fait que
+  `scripts/apex/samples/` du repository : ce qu'elles calculent importe bien moins ici que le fait que
   quelqu'un doive les planifier dans chaque org, ce qui est tout l'objet du lab
 - Les accès, sur **Helios Delivery Manager** : **Read**, **Create** et **Edit** sur Crew Capacity, et
   **Read** et **Edit** sur ses quatre champs. Les planificateurs entretiennent ces nombres, et c'est
@@ -333,10 +333,10 @@ L'import de données lance SFDMU via `sf hardis:org:data:import`, la commande m�
 menu Training pour alimenter votre org. L'action de planification lance de l'Apex anonyme qui appelle
 `System.schedule`. L'action manuelle ne lance rien du tout et ne produit que du texte.
 
-Remarquez ce qu'elles ont en commun : **ce sont des fichiers du dépôt, relus dans une Pull Request,
-rejoués à l'identique dans chaque org.** Un collègue peut lire le diff et voir que cette story a
-besoin de données, d'un job et d'un clic, information qui autrement n'existe que dans la tête de
-celui qui l'a construite.
+Remarquez ce qu'elles ont en commun : **ce sont des fichiers du repository, relus dans une Pull
+Request, rejoués à l'identique dans chaque org.** Un collègue peut lire le diff et voir que cette
+story a besoin de données, d'un job et d'un clic, information qui autrement n'existe que dans la
+tête de celui qui l'a construite.
 
 </details>
 
@@ -350,7 +350,7 @@ celui qui l'a construite.
 
 **L'import de données échoue sur la sécurité au niveau des champs.**
 L'utilisateur de CI ne peut pas écrire les champs : l'autorisation de l'étape 1 manque dans
-`Helios_Delivery_Manager`, ou n'a jamais atteint le dépôt. Un déploiement n'accorde de lui-même
+`Helios_Delivery_Manager`, ou n'a jamais atteint le repository. Un déploiement n'accorde de lui-même
 aucune permission de champ à qui que ce soit. Ajoutez-les dans `helios-dev`, récupérez le permission
 set, et publiez à nouveau.
 

@@ -68,16 +68,17 @@ Récupérez-les toutes, commitez-les toutes depuis **Source Control**, publiez e
 Regardez le rapport **Git Delta package.xml** que la publication a proposé : bien plus que l'unique
 présentation de page que votre story a modifiée. Ouvrez la Pull Request et lisez le diff.
 
-Au minimum il y a **un profil**, `Admin`, le profil System Administrator. Le dépôt le porte court,
-quelques lignes, et il est revenu long de plusieurs milliers de lignes : chaque champ que vous avez
-créé dans Setup depuis le Niveau 1 a donné à ce profil une sécurité au niveau du champ, et une
-récupération de toute l'org ramène tout cela avec. Ce qui vient d'autre dépend de ce qu'a vécu votre
-org, et une récupération de toute l'org sur un vrai projet en emporte généralement une partie :
+Au minimum il y a **un profil**, `Admin`, le profil System Administrator. Le repository le porte
+court, quelques lignes, et il est revenu long de plusieurs milliers de lignes : chaque champ que
+vous avez créé dans Setup depuis le Niveau 1 a donné à ce profil une sécurité au niveau du champ, et
+une récupération de toute l'org ramène tout cela avec. Ce qui vient d'autre dépend de ce qu'a vécu
+votre org, et une récupération de toute l'org sur un vrai projet en emporte généralement une partie
+:
 
 - **une vue de liste** restée d'une story antérieure, toujours dans votre org, ou une **transaction
   security policy** que Salesforce a créée tout seul
 - **des fichiers Apex et LWC qui ne diffèrent que par leur dernier saut de ligne** : Salesforce le
-  supprime, le dépôt le garde
+  supprime, le repository le garde
 - **un champ dont la description affiche maintenant `&apos;` là où elle affichait `'`** : le même
   texte, écrit autrement
 
@@ -217,6 +218,6 @@ Welcome page > **Training: Level 2** > **Check my work**, puis choisissez le Lab
 ## Pour aller plus loin
 
 - [Publier votre User Story](https://sfdx-hardis.cloudity.com/salesforce-devops-publish-user-story/)
-- [Nettoyer un dépôt à la main](https://sfdx-hardis.cloudity.com/salesforce-devops-manual-repo-clean/)
+- [Nettoyer un repository à la main](https://sfdx-hardis.cloudity.com/salesforce-devops-manual-repo-clean/)
 
 [Suite : Lab 2.9 - Épreuve finale : livrer une User Story qui a tout](2-9-capstone-deliver-a-user-story-that-has-it-all.md){ .md-button .md-button--primary }

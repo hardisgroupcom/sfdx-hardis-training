@@ -59,7 +59,7 @@ Elles sont sept, et les labs les appellent par ces noms :
 | **Set up one of my training orgs** | Déploie l'application Helios et ses données dans une org que vous choisissez |
 | **Check my work**                  | Vérifie le lab que vous venez de terminer et affiche votre reçu              |
 | **Claim my badge**                 | Contrôle le niveau entier, puis ouvre votre demande de badge déjà remplie    |
-| **Reset this level**               | Remet votre dépôt au début du Niveau 2                                       |
+| **Reset this level**               | Remet votre repository au début du Niveau 2                                  |
 
 Il y a un menu par niveau, et chacun ne contient que ce dont ce niveau a besoin : rien de ce que vous
 avez sous les yeux ne concerne un lab que vous n'avez pas encore atteint.
@@ -77,7 +77,7 @@ supposent la boucle acquise. Mettez-vous d'abord dans un état connu :
 2. Welcome page > **Training: Level 2** > **Reset this level**
 
 Cela met votre branche `integration` sur `training/start-level-2`, c'est-à-dire ce à quoi ressemble
-le dépôt une fois le Niveau 1 terminé.
+le repository une fois le Niveau 1 terminé.
 
 ## Si vous revenez après une pause
 

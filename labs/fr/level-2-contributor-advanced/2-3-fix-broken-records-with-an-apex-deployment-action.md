@@ -143,8 +143,8 @@ enregistrements d'un coup s'arrête à la première limite de gouverneur Salesfo
 donc dans un **batch**, que Salesforce déroule par lots de 200 enregistrements, chacun dans sa propre
 transaction, quelle que soit la taille de la table.
 
-Vous n'avez pas à l'écrire. Depuis `scripts/apex/samples/` du dépôt, copiez ces quatre fichiers dans
-`force-app/main/default/classes/`, dans l'Explorer, par copier-coller :
+Vous n'avez pas à l'écrire. Depuis `scripts/apex/samples/` du repository, copiez ces quatre fichiers
+dans `force-app/main/default/classes/`, dans l'Explorer, par copier-coller :
 
 - `CrewSizeBackfillBatch.cls` et `CrewSizeBackfillBatch.cls-meta.xml` : le batch. Il donne l'équipe
   par défaut de deux personnes à toute installation qui n'en a pas
@@ -287,10 +287,10 @@ lesquelles elle tourne sont une paire de clés séparée, `includeTargetBranches
 correction de données veut en général. Un script "réinitialiser l'utilisateur d'intégration de la
 sandbox" nomme d'habitude ses branches.
 
-Parce que les actions vivent dans le dépôt et voyagent avec la Pull Request, la même séquence se
-rejoue en UAT et en production des mois plus tard, sans que personne se souvienne qu'elle existait.
-C'est toute la valeur de la chose : **la connaissance est dans le dépôt, pas dans la tête de
-quelqu'un.**
+Parce que les actions vivent dans le repository et voyagent avec la Pull Request, la même séquence
+se rejoue en UAT et en production des mois plus tard, sans que personne se souvienne qu'elle
+existait. C'est toute la valeur de la chose : **la connaissance est dans le repository, pas dans la
+tête de quelqu'un.**
 
 </details>
 
@@ -305,9 +305,9 @@ quelqu'un.**
 ## En cas de problème
 
 **L'action n'apparaît pas dans l'onglet Deployment Actions.**
-Le panneau lit la Pull Request depuis votre fork (votre copie personnelle du dépôt du cours sur
+Le panneau lit la Pull Request depuis votre fork (votre copie personnelle du repository du cours sur
 GitHub, par exemple `github.com/my-username/sfdx-hardis-training`). Si la Pull Request a été ouverte
-vers le dépôt d'origine, il ne peut pas la voir. Fermez-la et rouvrez-la avec la bonne base.
+vers le repository d'origine, il ne peut pas la voir. Fermez-la et rouvrez-la avec la bonne base.
 
 **Le script Apex échoue avec `Invalid type: CrewSizeBackfillBatch`.**
 La classe n'est pas dans l'org où le script a tourné. Soit l'action tourne **avant** le déploiement,

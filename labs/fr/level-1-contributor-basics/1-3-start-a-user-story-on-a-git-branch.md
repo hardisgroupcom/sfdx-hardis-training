@@ -50,7 +50,7 @@ Petite exprès. Ce qui compte dans ce lab n'est pas le champ, c'est la boucle qu
 point d'apprendre et de répéter pendant tout le reste de votre carrière sur ce projet.
 
 !!! info "La branche, en une phrase"
-    Une branche est une ligne de travail nommée à l'intérieur du dépôt. La vôtre démarre comme une
+    Une branche est une ligne de travail nommée à l'intérieur du repository. La vôtre démarre comme une
     copie exacte de ce que l'équipe a en ce moment. Vous y changez ce que votre story demande, et la
     version de l'équipe reste telle quelle jusqu'à ce que votre Pull Request y remerge la vôtre :
     c'est ainsi que deux personnes travaillent sur deux stories en même temps sans se marcher
@@ -59,7 +59,7 @@ point d'apprendre et de répéter pendant tout le reste de votre carrière sur c
 
 ## Avant de commencer
 
-- [ ] [Lab 1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) terminé : votre fork (votre copie personnelle du dépôt du cours sur GitHub, par
+- [ ] [Lab 1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) terminé : votre fork (votre copie personnelle du repository du cours sur GitHub, par
       exemple `github.com/my-username/sfdx-hardis-training`) est cloné, et `integration` et `uat`
       nomment leurs orgs
 - [ ] `helios-dev` listée comme **Connected** dans **Orgs Manager**

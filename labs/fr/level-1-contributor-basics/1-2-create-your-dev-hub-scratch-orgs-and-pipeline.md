@@ -38,9 +38,9 @@ pipeline câblé dessus.
 
 **Ce lab n'est pas le métier, et rien de tout cela n'arrive sur un vrai projet.**
 
-Là-bas, tout cela existe avant votre arrivée : les orgs ont été créées par celui ou celle qui a monté
-le projet, le dépôt est là depuis des années, et son pipeline déploie depuis des mois. Vous
-arriveriez, vous ouvririez le projet, et vous commenceriez sur un ticket.
+Là-bas, tout cela existe avant votre arrivée : les orgs ont été créées par celui ou celle qui a
+monté le projet, le repository est là depuis des années, et son pipeline déploie depuis des mois.
+Vous arriveriez, vous ouvririez le projet, et vous commenceriez sur un ticket.
 
 Ce cours ne peut pas vous prêter l'environnement d'une équipe, il vous en fait donc construire un
 petit. Vous faites deux choses à la main, vous inscrire à une org et la connecter, et une commande
@@ -166,7 +166,7 @@ désormais `--target-org helios-prod`, et la CLI Salesforce elle-même aussi.
 
 </details>
 
-### 3. Récupérer le dépôt
+### 3. Récupérer le repository
 
 Il vous faut le projet de formation sur votre machine avant que la commande de l'étape 5 puisse en
 construire quoi que ce soit. Prenez la copie de l'équipe pour l'instant : elle est en lecture seule,
@@ -182,9 +182,9 @@ Puis :
 1. Collez `https://github.com/hardisgroupcom/sfdx-hardis-training.git` et appuyez sur Entrée
 2. Choisissez le dossier où le mettre. VS Code crée un dossier `sfdx-hardis-training` à l'intérieur
    de celui que vous choisissez : choisissez donc l'endroit où vous voulez que vivent **tous** vos
-   dépôts désormais. Si vous n'avez pas encore un tel endroit, créez-en un : `C:\git` sous Windows,
+   repositories désormais. Si vous n'avez pas encore un tel endroit, créez-en un : `C:\git` sous Windows,
    `~/git` sous macOS et Linux. Chemin court, pas d'espaces, et pas dans OneDrive ni dans un dossier
-   qui se synchronise, parce qu'un client de synchronisation et un dépôt git se disputent les mêmes
+   qui se synchronise, parce qu'un client de synchronisation et un repository git se disputent les mêmes
    fichiers
 3. Quand on vous le demande, cliquez sur **Open** pour travailler dans le clone
 
@@ -214,8 +214,8 @@ remplis.
 
 ### 4. Installer la CLI GitHub
 
-Un outil d'abord, et uniquement pour cela. La commande de l'étape 5 utilise la
-[CLI GitHub](https://cli.github.com/), appelée `gh`, pour faire votre copie du dépôt et mettre en
+Un outil d'abord, et uniquement pour cela. La commande de l'étape 5 utilise la [CLI
+GitHub](https://cli.github.com/), appelée `gh`, pour faire votre copie du repository et mettre en
 place son automatisation. Sur sa page d'accueil, ouvrez la liste d'installation **(1)** et prenez le
 téléchargement de votre machine : **Windows - Download MSI** **(2)**, ou **macOS - Download
 binary**. Acceptez les valeurs par défaut de l'installeur.
@@ -235,7 +235,7 @@ votre navigateur la première fois qu'elle en a besoin.
     Elle est là pour qu'un seul clic puisse vous remettre un pipeline qui marche au lieu d'une
     douzaine de formulaires. Rien d'autre dans le cours n'en a besoin, et rien dans sfdx-hardis non
     plus : ce projet vit sur GitHub, et les projets GitLab, Azure DevOps et Bitbucket fonctionnent
-    exactement pareil sans elle. Sur un vrai projet vous rejoindriez un dépôt qui existe déjà, avec
+    exactement pareil sans elle. Sur un vrai projet vous rejoindriez un repository qui existe déjà, avec
     son automatisation déjà en marche, et vous n'installeriez jamais ceci.
 
 ### 5. Mettre en place votre environnement de formation
@@ -263,12 +263,13 @@ l'extension refuse donc de le lancer dans votre dos. Lisez la ligne, vérifiez q
 
 **Always allow** répond pour tout le menu, pas seulement pour cette carte. Les entrées Training des
 trois niveaux cessent de demander, et rien d'autre ne cesse : l'extension reconnaît une commande
-Training à sa forme et au dépôt que vous avez cloné, donc une commande personnalisée de n'importe
-quel autre projet vous demandera toujours d'abord, dans ce dossier comme dans tous les autres.
+Training à sa forme et au repository que vous avez cloné, donc une commande personnalisée de
+n'importe quel autre projet vous demandera toujours d'abord, dans ce dossier comme dans tous les
+autres.
 
 !!! warning "Lisez la ligne avant d'autoriser"
     **Allow once** ne lance que cette fois-ci, **Always allow** s'en souvient. Les deux conviennent
-    ici : vous voyez ce qui est lancé, et le dépôt est celui que vous avez cloné. Sur un projet monté
+    ici : vous voyez ce qui est lancé, et le repository est celui que vous avez cloné. Sur un projet monté
     par quelqu'un d'autre, lisez d'abord cette ligne. C'est le seul moment où quoi que ce soit vous
     montre ce que fait vraiment un menu personnalisé.
 
@@ -371,8 +372,8 @@ la remettent juste après.
 
 Sept choses, chacune du vrai travail sur un vrai projet, et aucune à refaire vous-même :
 
-- **Votre propre copie du dépôt**, son *fork*, sous votre compte GitHub. Votre clone pousse là-bas
-  désormais, et continue de tirer depuis le dépôt de l'équipe. Le fork porte les deux branches
+- **Votre propre copie du repository**, son *fork*, sous votre compte GitHub. Votre clone pousse là-bas
+  désormais, et continue de tirer depuis le repository de l'équipe. Le fork porte les deux branches
   qu'utilise le pipeline aujourd'hui, `integration` et `uat`, plus `main`. Vous ajouterez `preprod`
   vous-même au [Lab 3.1](../level-3-release-manager/3-1-configure-the-pipeline-up-to-production.md)
 - **Actions activées.** GitHub désactive les workflows sur chaque nouveau fork jusqu'à ce que le
@@ -391,8 +392,8 @@ Sept choses, chacune du vrai travail sur un vrai projet, et aucune à refaire vo
 
 - **Dans quelle org déploie chaque branche**, écrit dans l'unique fichier de configuration par
   branche du projet, dans `config/branches/`, commité sur `integration` et poussé sur votre fork
-  (votre copie personnelle du dépôt du cours sur GitHub, par exemple
-  `github.com/my-username/sfdx-hardis-training`). Le dépôt ne pouvait pas le savoir : vos orgs
+  (votre copie personnelle du repository du cours sur GitHub, par exemple
+  `github.com/my-username/sfdx-hardis-training`). Le repository ne pouvait pas le savoir : vos orgs
   n'existaient pas quand il a été écrit. C'est poussé parce que le contrôle du badge clone votre fork
   (`github.com/my-username/sfdx-hardis-training`) et lit ce qui s'y trouve réellement. `uat` reçoit
   les mêmes fichiers avec sa première promotion, au [Lab 3.5](../level-3-release-manager/3-5-promote-to-uat-and-write-release-notes.md), comme tout changement qui l'atteint
@@ -403,7 +404,7 @@ Sept choses, chacune du vrai travail sur un vrai projet, et aucune à refaire vo
   c'est la personne suivante qui s'en aperçoit
 - **Un identifiant par job de CI.** Les jobs de CI sont les jobs automatisés que GitHub lance pour
   vous, sur ses machines plutôt que sur les vôtres, et ces machines ne peuvent pas atteindre une org
-  Salesforce sans identifiant. Ils sont gardés comme secrets du dépôt, nommés
+  Salesforce sans identifiant. Ils sont gardés comme secrets du repository, nommés
   `SFDX_AUTH_URL_INTEGRATION` et `SFDX_AUTH_URL_UAT`
 
 !!! warning "Les scratch orgs expirent au bout de 30 jours"
@@ -422,7 +423,7 @@ Sept choses, chacune du vrai travail sur un vrai projet, et aucune à refaire vo
     majeure](https://sfdx-hardis.cloudity.com/salesforce-devops-setup-auth/).
 
     Ce conseil est juste, et il parle de vraies orgs majeures. Ici les orgs sont des scratch orgs
-    jetables contenant des installations solaires fictives, dans un dépôt qui vous appartient, pour
+    jetables contenant des installations solaires fictives, dans un repository qui vous appartient, pour
     une formation. Le marché est le suivant : un débutant atteint un pipeline qui marche dès sa
     première heure au lieu de son deuxième jour.
 
@@ -561,7 +562,7 @@ Welcome page > **Training: Level 1** > **Check my work**, puis choisissez le Lab
 
 ## Pour aller plus loin
 
-- [Cloner le dépôt](https://sfdx-hardis.cloudity.com/salesforce-devops-clone-repository/)
+- [Cloner le repository](https://sfdx-hardis.cloudity.com/salesforce-devops-clone-repository/)
 - [Créer un token d'accès Git](https://sfdx-hardis.cloudity.com/salesforce-devops-git-tokens/)
 - [Authentification GitHub Actions](https://sfdx-hardis.cloudity.com/salesforce-devops-setup-auth-github/)
 

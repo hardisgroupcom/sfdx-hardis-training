@@ -50,7 +50,7 @@ qu'il est encore à vous de le corriger, pas le soir de la mise en production.
 
 ## Avant de commencer
 
-- [ ] [Lab 1.5](1-5-retrieve-commit-and-publish-your-changes.md) terminé : la branche est poussée sur votre fork (votre copie personnelle du dépôt du
+- [ ] [Lab 1.5](1-5-retrieve-commit-and-publish-your-changes.md) terminé : la branche est poussée sur votre fork (votre copie personnelle du repository du
       cours sur GitHub, par exemple `github.com/my-username/sfdx-hardis-training`)
 - [ ] [Lab 1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) terminé : **Set up my training environment** a activé Actions et posé l'identifiant de
       CI
@@ -81,11 +81,11 @@ Vérifiez deux choses avant de cliquer, à chaque fois sans exception :
 1. **base** est `integration`, dans **votre** fork
 2. **compare** est `features/US-014-panels-required`
 
-!!! danger "Vérifiez le dépôt de base"
-    GitHub met par défaut comme base d'une Pull Request de fork le dépôt **d'origine**. Si la base
+!!! danger "Vérifiez le repository de base"
+    GitHub met par défaut comme base d'une Pull Request de fork le repository **d'origine**. Si la base
     dit `hardisgroupcom/sfdx-hardis-training`, cliquez dessus et remplacez-la par votre propre fork.
     Une Pull Request ouverte en amont ne peut pas atteindre votre org, ne passera jamais au vert, et
-    ajoute du bruit dans un dépôt qu'utilisent quelques centaines d'autres apprenants.
+    ajoute du bruit dans un repository qu'utilisent quelques centaines d'autres apprenants.
 
 Le titre indique **Features/us 014 panels required** : GitHub l'invente à partir du nom de branche
 dès qu'une branche porte plus d'un commit, et la vôtre en porte deux, celui que vous avez écrit et
@@ -100,7 +100,7 @@ Ouvrez l'onglet **Checks** **(1)**. Deux d'entre eux comptent ici, et les deux d
 | Contrôle                                      | Ce qu'il fait                                                                                  |
 |-----------------------------------------------|------------------------------------------------------------------------------------------------|
 | **Simulate Deployment (sfdx-hardis)** **(3)** | Déploie votre métadonnée dans `helios-integration` en mode validation, et lance les tests Apex |
-| **Mega-Linter** **(2)**                       | Lance les linters de qualité de code sur le dépôt                                              |
+| **Mega-Linter** **(2)**                       | Lance les linters de qualité de code sur le repository                                         |
 
 ![L'onglet Checks d'une Pull Request, listant les jobs qui ont tourné](../../_assets/annotated/web/github-pr-checks.png)
 
@@ -189,8 +189,8 @@ Supprimez ensuite la branche. GitHub propose un bouton pour cela. Une branche me
 une chose de plus dans la liste de tout le monde, sans aucun bénéfice.
 
 !!! note "À quoi sert le linter, puisqu'il n'avait rien à dire"
-    MegaLinter lit tout le dépôt, pas seulement votre modification, et signale tout ce qui enfreint
-    les règles de qualité du projet. Il n'a rien trouvé ici parce que ce dépôt est propre. Quand il
+    MegaLinter lit tout le repository, pas seulement votre modification, et signale tout ce qui enfreint
+    les règles de qualité du projet. Il n'a rien trouvé ici parce que ce repository est propre. Quand il
     trouve quelque chose, il l'écrit sur la Pull Request de la même façon que le contrôle de
     déploiement, et le fait qu'une trouvaille fasse échouer le job ou non est un choix que le projet
     fait dans `.mega-linter.yml`. Un job qui échoue bloque le merge, comme le contrôle de
@@ -284,9 +284,9 @@ Le permission set accorde un champ qui n'est pas dans votre package. Vous avez r
 set sans le champ. Refaites le [Lab 1.5, étape 3](1-5-retrieve-commit-and-publish-your-changes.md#3-prendre-les-votres-laisser-le-reste) et prenez les deux.
 
 **Le contrôle reste bloqué sur "Expected".**
-Le workflow attend un job qui ne tournera jamais, en général parce que la base de la Pull Request est
-le dépôt d'origine et non votre fork (`github.com/my-username/sfdx-hardis-training`). Fermez-la et
-rouvrez-la avec la bonne base.
+Le workflow attend un job qui ne tournera jamais, en général parce que la base de la Pull Request
+est le repository d'origine et non votre fork (`github.com/my-username/sfdx-hardis-training`).
+Fermez-la et rouvrez-la avec la bonne base.
 
 **La boîte de merge dit Merging is blocked, et le bouton est gris.**
 Un contrôle requis tourne encore, ou il a échoué. Attendez-le, ou ouvrez-le depuis l'onglet

@@ -91,8 +91,9 @@ déjà été promu, **(4)** prévisualise les notes de ce qui ne l'a pas été.
 
 Un composant de l'application Helios est censé être différent dans chaque org : le remote site
 setting `Helios_Warehouse`, l'adresse du système de stock de l'entrepôt avec lequel les lots de
-panneaux sont réservés. La production parle au vrai entrepôt, l'UAT au système de test de l'entrepôt.
-Un admin a posé cette adresse en UAT à la main, et le dépôt porte celle de production.
+panneaux sont réservés. La production parle au vrai entrepôt, l'UAT au système de test de
+l'entrepôt. Un admin a posé cette adresse en UAT à la main, et le repository porte celle de
+production.
 
 Voyez-le vous-même : dans `helios-uat`, **Setup > Remote Site Settings**, ouvrez `Helios_Warehouse`,
 **Edit**, et mettez **Remote Site URL** à `https://warehouse-test.helios.invalid`, comme l'a fait
@@ -126,7 +127,7 @@ de pipeline, comme le reste.
 
 !!! note "Créé là où il manque, jamais écrasé là où il est"
     Une org neuve, une sandbox fraîche par exemple, n'a pas encore de `Helios_Warehouse`, et le
-    déploiement le crée depuis le dépôt. À partir de là il appartient à cette org. Le gestionnaire
+    déploiement le crée depuis le repository. À partir de là il appartient à cette org. Le gestionnaire
     d'écrasement ne compare pas les versions : présent veut dire protégé.
 
 ### 3. Créer la Pull Request de promotion

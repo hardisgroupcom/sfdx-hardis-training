@@ -29,9 +29,9 @@ ans, à partir des sources que vous avez déjà.
 
 Victor connaissait cette org. Victor est parti.
 
-Ce qui existe : deux ans de métadonnées dans un dépôt git. Ce qui n'existe pas : la moindre
-description de ce à quoi servent les objets, de la façon dont les flows s'articulent, ou de la raison
-pour laquelle le planificateur se comporte comme il le fait.
+Ce qui existe : deux ans de métadonnées dans un repository git. Ce qui n'existe pas : la moindre
+description de ce à quoi servent les objets, de la façon dont les flows s'articulent, ou de la
+raison pour laquelle le planificateur se comporte comme il le fait.
 
 Vous n'allez pas écrire cela à la main. L'essentiel peut être généré, et la part qui ne le peut pas
 est exactement celle qui mérite le temps d'une personne.
@@ -174,8 +174,8 @@ générées ont besoin. Une navigation que vous auriez écrite à la main est do
 l'exécution suivante, ce qui vaut d'être su avant d'y passer une soirée.
 
 Les diagrammes de flow sont du Mermaid, généré depuis le XML du flow. Cela veut dire qu'ils sont du
-texte dans le dépôt : ils se diffent, se relisent et se versionnent comme tout le reste, et ils ne se
-décalent jamais par rapport au flow qu'ils décrivent.
+texte dans le repository : ils se diffent, se relisent et se versionnent comme tout le reste, et ils
+ne se décalent jamais par rapport au flow qu'ils décrivent.
 
 Deux commandes voisines à connaître :
 

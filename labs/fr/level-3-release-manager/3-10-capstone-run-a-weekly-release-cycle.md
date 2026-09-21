@@ -185,8 +185,9 @@ suppriment toutes seules au bout de 30 jours. Les deux orgs Developer Edition qu
 entreprise solaire fictive peuvent très bien rester comme terrain d'essai, et `helios-prod` reste un
 Dev Hub d'où créer des scratch orgs. Si vous les gardez, supprimez les secrets
 `SFDX_AUTH_URL_INTEGRATION` et `SFDX_AUTH_URL_UAT` s'ils traînent encore, et souvenez-vous que les
-certificats JWT de votre fork (votre copie personnelle du dépôt du cours sur GitHub, par exemple
-`github.com/my-username/sfdx-hardis-training`) sont de vrais identifiants vers de vraies orgs.
+certificats JWT de votre fork (votre copie personnelle du repository du cours sur GitHub, par
+exemple `github.com/my-username/sfdx-hardis-training`) sont de vrais identifiants vers de vraies
+orgs.
 
 **Trois : la fonctionnalité des branches de promotion.** Tout ce que vous avez fait promeut **tout ce
 qui attend** d'une branche vers la suivante. Certaines équipes ont besoin de promouvoir un
@@ -198,7 +199,7 @@ trois niveaux plus tôt.
 ## Merci
 
 Si un lab était flou, faux, ou supposait quelque chose qu'il n'aurait pas dû, dites-le : ouvrez une
-issue sur le dépôt de formation. Les labs les plus difficiles à suivre sont en général ceux que
+issue sur le repository de formation. Les labs les plus difficiles à suivre sont en général ceux que
 personne n'a signalés.
 
 ## Pour aller plus loin

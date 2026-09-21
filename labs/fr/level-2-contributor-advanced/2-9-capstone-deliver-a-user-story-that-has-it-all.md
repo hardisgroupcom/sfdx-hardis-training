@@ -71,10 +71,11 @@ savez déjà traiter les trois.
 ### Les trois choses qui vous attendent
 
 **Une : la dépendance.** Le flow lit maintenant `Handover_Item__c` et deux de ses champs. Ne
-présumez pas que chaque composant qu'il lit a atteint le dépôt : comptez ce que vous avez créé,
+présumez pas que chaque composant qu'il lit a atteint le repository : comptez ce que vous avez créé,
 recomptez-le dans `force-app/` et dans le rapport **Git Delta package.xml** avant de pousser. Ce qui
-manque, l'erreur de déploiement trois étapes plus loin le nommera, comme au [Lab 2.2](2-2-fix-a-missing-dependency-deployment-error.md), et il est moins
-coûteux de le trouver maintenant.
+manque, l'erreur de déploiement trois étapes plus loin le nommera, comme au [Lab
+2.2](2-2-fix-a-missing-dependency-deployment-error.md), et il est moins coûteux de le trouver
+maintenant.
 
 **Deux : les données.** Dix enregistrements dans votre org sont dix enregistrements dans votre org.
 Un déploiement vert mettra l'objet et le flow dans `helios-integration` et la checklist y sera vide,
@@ -126,7 +127,7 @@ Dans `helios-integration`, après le merge :
 Tout ce qu'il vous faut est dans les Labs 2.2, 2.4 et 2.7. Allez chercher la seule étape sur laquelle
 vous bloquez plutôt que de relire les labs.
 
-**Training: Level 2 > Reset this level** si le dépôt vous échappe. Il réinitialise au début du
+**Training: Level 2 > Reset this level** si le repository vous échappe. Il réinitialise au début du
 Niveau 2, ce qui veut dire refaire l'épreuve finale, pas tout le niveau.
 
 ## Vérifiez votre travail

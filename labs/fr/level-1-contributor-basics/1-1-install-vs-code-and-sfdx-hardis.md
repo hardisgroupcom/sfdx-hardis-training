@@ -43,7 +43,7 @@ des autres à votre place.
     déjà un pipeline, et elle se moque du fournisseur git de ce projet : GitHub, GitLab, Azure
     DevOps et Bitbucket fonctionnent tous pareil à partir d'ici. Si quelqu'un vous a envoyé ici pour
     vous équiper avant votre premier jour, **terminez ce lab et arrêtez-vous**. Le Lab 1.2 est là où
-    commence la partie propre à la formation : orgs Salesforce gratuites, dépôt d'entraînement,
+    commence la partie propre à la formation : orgs Salesforce gratuites, repository d'entraînement,
     données fictives. Rien de tout cela n'a sa place sur un vrai projet.
 
 ## Avant de commencer
@@ -224,8 +224,8 @@ presque toujours la réponse.
 
 ## La suite
 
-Si vous êtes venu ici pour équiper un vrai projet, vous avez fini : ouvrez le dépôt de votre équipe
-et le panneau **DevOps Pipeline** vous dira le reste.
+Si vous êtes venu ici pour équiper un vrai projet, vous avez fini : ouvrez le repository de votre
+équipe et le panneau **DevOps Pipeline** vous dira le reste.
 
 Si vous suivez la formation, le [Lab 1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) vous construit un petit environnement de travail : une org
 Salesforce gratuite, trois scratch orgs créées à partir d'elle, une copie du projet, et un pipeline.
