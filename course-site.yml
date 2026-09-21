@@ -137,7 +137,7 @@ extra:
   analytics:
     provider: google
     # TODO replace with the measurement id of the course data stream
-    property: G-XXXXXXXXXX
+    property: G-SE20CZ58E1
 
   # The language selector in the header. Each entry points at the home page of
   # that language, not at the translation of the page being read: the theme has
