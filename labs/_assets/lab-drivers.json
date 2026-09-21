@@ -38,7 +38,10 @@
           "command": "node scripts/training.mjs init",
           "timeoutMs": 2400000,
           "answers": [
-            { "q": "Build your training environment from", "choice": "^(Yes|yes)" }
+            {
+              "q": "Build your training environment from",
+              "choice": "^(Yes|yes)"
+            }
           ]
         }
       ]
