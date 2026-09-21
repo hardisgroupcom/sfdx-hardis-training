@@ -256,8 +256,11 @@ That is one full delivery loop. Every story for the rest of your life on this pr
 ## If it goes wrong
 
 **The checks never start.**
-Actions are still disabled on your fork (`github.com/my-username/sfdx-hardis-training`). Run **Training: Level 1 > Set up my training environment**
-again: it turns them on, and tells you what to click if GitHub will not let it.
+Actions are still disabled on your fork (`github.com/my-username/sfdx-hardis-training`). GitHub hides
+that switch behind a banner no command can reach: open the **Actions** tab of your fork and click
+**I understand my workflows, go ahead and enable them**. Then close and reopen your Pull Request, so
+the checks run on it. Re-running **Set up my training environment** will not do it for you, because
+there is no API behind that banner.
 
 **The check fails at authentication:** *No authentication found for org integration*.
 The secret is missing, misnamed, or truncated. It must be named exactly

@@ -95,7 +95,7 @@
               "choice": "No",
               "optional": true
             },
-            { "q": "push commits to git branch", "choice": "Yes" }
+            { "q": "push to remote git branch", "choice": "Yes" }
           ]
         }
       ]
