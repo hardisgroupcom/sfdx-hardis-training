@@ -31,7 +31,17 @@
     {
       "id": "1.2",
       "title": "Create your Dev Hub, scratch orgs and CI/CD pipeline",
-      "skip": "this is the setup of the run itself (fork, scratch orgs, secrets), performed before the driver starts rather than replayed by it"
+      "$comment": "Steps 1 to 4 (sign up for the org, connect it, clone, install gh) are done once before the run. Step 5 is driven here. Step 7, signing the extension in to GitHub, is an interactive OAuth and cannot be driven.",
+      "steps": [
+        {
+          "label": "Set up my training environment",
+          "command": "node scripts/training.mjs init",
+          "timeoutMs": 2400000,
+          "answers": [
+            { "q": "Build your training environment from", "choice": "^(Yes|yes)" }
+          ]
+        }
+      ]
     },
     {
       "id": "1.3",
