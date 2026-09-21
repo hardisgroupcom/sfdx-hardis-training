@@ -125,13 +125,21 @@ for (const file of localeDirs.flatMap((dir) => walk(dir))) {
       }
       pills.forEach((n) => declared.add(n));
     }
-    if (declared.size === 0) {
-      continue;
-    }
-
     const cited = new Set(
       [...block.join("\n").matchAll(/\*\*\((\d+)\)\*\*/g)].map((m) => Number(m[1]))
     );
+    // A step whose images carry no pills at all is fine, and several do: the
+    // level menus are shown plain. What is not fine is such a step still
+    // pointing at a number, which sends a reader hunting for a marker that was
+    // never drawn. Skipping the step outright used to hide exactly that.
+    if (declared.size === 0) {
+      if (cited.size > 0) {
+        problems.push(
+          `${rel}:${images[0].line} "${heading}" cites (${[...cited].sort((a, b) => a - b).join("), (")}) but no image of this step carries a pill`
+        );
+      }
+      continue;
+    }
     const invented = [...cited].filter((n) => !declared.has(n)).sort((a, b) => a - b);
     const uncited = [...declared].filter((n) => !cited.has(n)).sort((a, b) => a - b);
     const shown = images.map((i) => i.target.split("/").pop()).join(", ");
