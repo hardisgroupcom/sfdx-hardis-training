@@ -36,7 +36,8 @@
         {
           "label": "Set up my training environment",
           "command": "node scripts/training.mjs init",
-          "timeoutMs": 2400000,
+          "$comment": "The lab says 15 to 20 minutes. A cold run that creates three scratch orgs, deploys the app into each and imports the data takes longer than that: 40 minutes was not enough on 2026-09-21.",
+          "timeoutMs": 4200000,
           "answers": [
             { "q": "Build your training environment from", "choice": "^(Yes|yes)" }
           ]
