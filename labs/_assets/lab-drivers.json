@@ -44,9 +44,18 @@
           "timeoutMs": 900000,
           "answers": [
             { "q": "type of User Story", "choice": "^Feature" },
-            { "q": "name of your new User Story", "value": "US-014-panels-required" },
-            { "q": "Salesforce org do you want to work in", "choice": "^Scratch org" },
-            { "q": "scratch org|which org|select .*org", "choice": "Reuse scratch org helios-dev" }
+            {
+              "q": "name of your new User Story",
+              "value": "US-014-panels-required"
+            },
+            {
+              "q": "Salesforce org do you want to work in",
+              "choice": "^Scratch org"
+            },
+            {
+              "q": "scratch org|which org|select .*org",
+              "choice": "Reuse scratch org helios-dev"
+            }
           ]
         }
       ]
@@ -67,7 +76,11 @@
           "timeoutMs": 1200000,
           "answers": [
             { "q": "already committed the updated metadata", "choice": "^Yes" },
-            { "q": "want to export|data.*export", "choice": "^No", "optional": true },
+            {
+              "q": "want to export|data.*export",
+              "choice": "^No",
+              "optional": true
+            },
             { "q": "push commits to git branch", "choice": "^Yes" }
           ]
         }
