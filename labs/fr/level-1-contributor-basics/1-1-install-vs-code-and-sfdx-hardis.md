@@ -5,7 +5,7 @@ description: "Installez Git, Node.js, VS Code et l'extension sfdx-hardis, puis l
 level: 1
 lab: 1
 lang: fr
-source_rev: "f544baa668133cfc09ee8f73050f7e5167ee8258"
+source_rev: "3da26b76cc8d4ae750c2ff7df3bae9c4d23b08f5"
 screenshots:
   - annotated/web/git-download
   - annotated/web/vscode-download
@@ -71,6 +71,16 @@ des autres à votre place.
 ## Les étapes
 
 ### 1. Installer VS Code et l'extension
+
+!!! tip "Dans Agentforce Vibes, commencez aux extensions"
+    Les trois téléchargements ci-dessous sont déjà dans l'onglet : Git, Node.js et l'éditeur
+    lui-même viennent avec. Passez-les et allez directement à **l'installation des extensions**,
+    vers la fin de cette étape. Une différence là-bas : la vue Extensions d'un IDE dans le
+    navigateur cherche dans
+    [Open VSX](https://open-vsx.org/extension/NicolasVuillamy/vscode-sfdx-hardis) et non dans le
+    Visual Studio Marketplace, et le pack est le même, sous le même nom. Et partout où ce lab dit de
+    redémarrer VS Code, rechargez l'onglet du navigateur : cela fait la même chose, c'est-à-dire
+    permettre à l'éditeur de voir ce qui vient d'être installé.
 
 D'abord [Git](https://git-scm.com/downloads). Git est l'outil qui enregistre chaque version d'un
 projet et la déplace entre votre portable et l'endroit où votre équipe garde le projet, et tout le
@@ -154,6 +164,11 @@ Une nouvelle icône apparaît dans la barre de gauche **(1)**. Cliquez dessus : 
 
 Il vous faut la CLI Salesforce et quelques plugins. Vous n'allez pas les installer à la main :
 l'extension a un panneau qui vérifie ce qui manque et l'installe.
+
+!!! tip "Dans Agentforce Vibes, la CLI Salesforce est déjà là"
+    Sa carte est verte avant même que vous commenciez, et le panneau n'a plus que les plugins à
+    installer. Lancez le même **Run pending installs** et lisez la même liste ; elle est simplement
+    plus courte.
 
 Sur la Welcome page, le bouton en haut à gauche du bandeau d'en-tête **(1)** ouvre le panneau Setup.
 Il n'y a pas de carte appelée Setup : le bouton porte l'état de vos dépendances, il affiche donc
