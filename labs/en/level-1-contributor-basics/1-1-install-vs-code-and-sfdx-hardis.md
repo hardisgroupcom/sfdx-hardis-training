@@ -46,8 +46,10 @@ five things have to be on your machine, and the last of them installs most of th
     real project.
 
 !!! tip "No VS Code? A browser tab or another editor does it"
-    [Agentforce Vibes](https://www.salesforce.com/agentforce/developers/vibe-coding/ide/) is VS Code inside Google Chrome, launched from any Salesforce
-    developer sandbox, and this whole course runs in it. Two differences and no others: the
+    [Agentforce Vibes](https://www.salesforce.com/agentforce/developers/vibe-coding/ide/) is VS Code inside Google Chrome, launched from a Salesforce org:
+    a developer sandbox, or the free Developer Edition org [Lab 1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md)
+    signs you up for, which means this path costs nothing and needs nothing you do not already
+    create here. The whole course runs in it. Two differences and no others: the
     Salesforce CLI is already there, so the part of the Setup panel that installs it has nothing to
     do, and the extension comes from [Open VSX](https://open-vsx.org/extension/NicolasVuillamy/vscode-sfdx-hardis)
     rather than the Visual Studio Marketplace. Every panel, every button and every step below is
@@ -59,8 +61,9 @@ five things have to be on your machine, and the last of them installs most of th
 
 ## Before you start
 
-- [ ] A computer where you can install software, and permission to do so, **or** a Salesforce
-      developer sandbox to launch Agentforce Vibes from
+- [ ] A computer where you can install software, and permission to do so, **or** any Salesforce
+      org to launch Agentforce Vibes from: a developer sandbox, or the free Developer Edition org
+      of Lab 1.2
 
 ## Steps
 
