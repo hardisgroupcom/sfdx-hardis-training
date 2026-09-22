@@ -106,10 +106,19 @@
       "3": "Release Manager"
     },
     "cast": {
-      "victor": { "role": "Release manager. A quitté l'entreprise entre le niveau 2 et le niveau 3, et c'est pour cela que le pipeline est le vôtre maintenant." },
-      "mariia": { "role": "Contributrice senior. Merge avant vous, sur les fichiers que vous avez touchés." },
-      "romain": { "role": "Contributeur, travaille sur la partie devis de l'application." },
-      "you": { "name": "Vous", "role": "Nouvelle recrue au niveau 1, contributeur de confiance au niveau 2, release manager au niveau 3." }
+      "victor": {
+        "role": "Release manager. A quitté l'entreprise entre le niveau 2 et le niveau 3, et c'est pour cela que le pipeline est le vôtre maintenant."
+      },
+      "mariia": {
+        "role": "Contributrice senior. Merge avant vous, sur les fichiers que vous avez touchés."
+      },
+      "romain": {
+        "role": "Contributeur, travaille sur la partie devis de l'application."
+      },
+      "you": {
+        "name": "Vous",
+        "role": "Nouvelle recrue au niveau 1, contributeur de confiance au niveau 2, release manager au niveau 3."
+      }
     },
     "stories": {
       "US-014": {
@@ -150,9 +159,7 @@
       "US-019": {
         "title": "Générer un PDF de devis depuis une opportunité",
         "story": "En tant que commercial, je veux un bouton qui génère le PDF du devis, afin d'arrêter de le refaire dans un tableur.",
-        "acceptance": [
-          "L'autorisation est donnée aux managers"
-        ]
+        "acceptance": ["L'autorisation est donnée aux managers"]
       },
       "US-052": {
         "title": "La présentation de page Installation sur deux colonnes",
@@ -165,10 +172,7 @@
       "US-020": {
         "title": "Refactorer InstallationScheduler",
         "story": "En tant que développeur, je veux que le scheduler soit découpé en méthodes testables, afin qu'on arrête d'en avoir peur.",
-        "acceptance": [
-          "Comportement inchangé",
-          "Couverture au-dessus du seuil"
-        ]
+        "acceptance": ["Comportement inchangé", "Couverture au-dessus du seuil"]
       },
       "US-021": {
         "title": "Prévenir le planificateur quand une équipe est trop petite",
@@ -206,9 +210,7 @@
       "US-033": {
         "title": "Les équipes de pose peuvent lire le coût du lot de panneaux",
         "story": "En tant que membre de l'équipe de pose, je veux voir le coût du lot que je suis en train d'installer, afin de déclarer une casse avec la bonne valeur.",
-        "acceptance": [
-          "L'équipe de pose peut lire Panel Batch Cost"
-        ]
+        "acceptance": ["L'équipe de pose peut lire Panel Batch Cost"]
       },
       "US-034": {
         "title": "Les toits plats demandent une équipe d'au moins trois personnes",
