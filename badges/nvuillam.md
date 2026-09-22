@@ -7,8 +7,8 @@ title: Nicolas Vuillamy
 GitHub: [@nvuillam](https://github.com/nvuillam)
 <br/>Trailblazer: [nvuillamy](https://www.salesforce.com/trailblazer/nvuillamy)
 
-| | Badge | Awarded | Verified |
-|---|---|---|---|
+|                                                          | Badge                           | Awarded    | Verified     |
+|----------------------------------------------------------|---------------------------------|------------|--------------|
 | ![sfdx-hardis Release Manager](img/nvuillam-level-3.svg) | **sfdx-hardis Release Manager** | 2026-09-22 | 23/23 checks |
 
 ## What these mean
