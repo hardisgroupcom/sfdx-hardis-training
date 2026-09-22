@@ -69,6 +69,15 @@ five things have to be on your machine, and the last of them installs most of th
 
 ### 1. Install VS Code and the extension
 
+!!! tip "In Agentforce Vibes, start at the extensions"
+    The three downloads below are already in the tab: Git, Node.js and the editor itself come with
+    it. Skip them and go straight to **the extensions**, near the end of this step. One difference
+    there: the Extensions view of a browser IDE searches
+    [Open VSX](https://open-vsx.org/extension/NicolasVuillamy/vscode-sfdx-hardis) rather than the
+    Visual Studio Marketplace, and the pack is the same one under the same name. And wherever this
+    lab says to restart VS Code, reload the browser tab instead: it does the same thing, which is
+    to let the editor see what was just installed.
+
 First [Git](https://git-scm.com/downloads). Git is the tool that records every version of a project
 and moves it between your laptop and wherever your team keeps the project, and everything else in
 this course sits on it. You will
@@ -146,6 +155,10 @@ tab is where every lab of this course starts.
 
 You need the Salesforce CLI and a few plugins. You are not going to install them by hand: the
 extension has a panel that checks what is missing and installs it.
+
+!!! tip "In Agentforce Vibes, the Salesforce CLI is already there"
+    Its card is green before you start, and the panel has only the plugins left to install. Run the
+    same **Run pending installs** and read the same list; there is simply less of it.
 
 On the Welcome page, the button at the top left of the header band **(1)** opens the Setup panel.
 There is no card called Setup: the button is labelled with the state of your dependencies, so it

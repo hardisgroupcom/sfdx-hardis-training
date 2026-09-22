@@ -215,6 +215,16 @@ defaults.
     change until it starts again. Close VS Code completely, windows and all, and open it again on
     the project. Skip this and step 5 stops at once, saying the GitHub CLI is not installed.
 
+!!! tip "In Agentforce Vibes, the installer is a different one"
+    The tab runs on Linux, so neither the Windows MSI nor the macOS binary is your download: the
+    same page carries the Linux instructions, a package manager line or a tarball to unpack, and
+    the terminal of the tab is where they go. Reload the tab afterwards rather than restarting
+    VS Code.
+
+    If that container will not let you install anything, this is the one step that needs `gh`:
+    run **step 5 from a machine that has it**, and come back here once the fork exists and its
+    secrets are set. Nothing later in the course calls `gh` again.
+
 You never have to run `gh` yourself. The command in step 5 uses it and signs you in through your
 browser the first time it needs to.
 
@@ -480,7 +490,9 @@ job rather than preparing to do it: a ticket, a branch, a change, a Pull Request
 **It says the GitHub CLI is not installed, and you just installed it.**
 VS Code was open during the install and does not see it yet. Close VS Code completely, open it
 again, and click the card again. If it still says so, install it from
-[cli.github.com](https://cli.github.com/), as step 4 shows.
+[cli.github.com](https://cli.github.com/), as step 4 shows. In Agentforce Vibes, reload the browser
+tab instead of restarting VS Code, and check that the Linux install of step 4 actually finished:
+`gh --version` in the terminal answers if it did.
 
 **It says no connected org was found.**
 Step 2 is not finished: connect your Developer Edition org in **Orgs Manager** and name it
