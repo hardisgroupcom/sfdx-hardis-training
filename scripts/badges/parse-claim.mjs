@@ -10,7 +10,12 @@
  * Writes on stdout, for $GITHUB_OUTPUT:
  *   valid, reason, level, handle, trailblazer, trailblazer_name, trailblazer_state, repo
  */
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import { fetchTrailblazerProfile } from "./trailblazer.mjs";
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 const body = process.env.ISSUE_BODY || "";
 const author = (process.env.ISSUE_AUTHOR || "").trim();
@@ -168,6 +173,36 @@ if (author && owner.toLowerCase() !== author.toLowerCase()) {
       "Edit this issue with a repository you own, and the audit runs again on its own."
     ].join("\n")
   );
+}
+
+// Badges are filed under the Trailblazer username, and nothing proves that the
+// person opening this issue owns the one they typed. What the audit does prove
+// is the GitHub repository, so the rule is first come: a username already
+// carrying somebody else's badge cannot be taken, and a typo that lands on a
+// stranger is refused rather than overwriting their page.
+const existingRecord = path.join(ROOT, "badges", `${trailblazer}.json`);
+if (fs.existsSync(existingRecord)) {
+  let recipient = null;
+  try {
+    recipient = JSON.parse(fs.readFileSync(existingRecord, "utf8")).recipient || null;
+  } catch {
+    // An unreadable record blocks nobody: the award rewrites it anyway
+  }
+  if (recipient && recipient.toLowerCase() !== owner.toLowerCase()) {
+    reject(
+      [
+        "## That Trailblazer username already belongs to somebody else",
+        "",
+        `The badges filed under \`${trailblazer}\` were awarded to the GitHub account \`${recipient}\`.`,
+        "",
+        "Badges are filed under the Trailblazer username, so two people cannot share one.",
+        "",
+        "If it was a typo, edit this issue with your own Trailblazer username and the audit runs again",
+        "on its own. If that really is your username and this is not your GitHub account, open an issue",
+        "saying so and it will be sorted out by hand."
+      ].join("\n")
+    );
+  }
 }
 
 output({
