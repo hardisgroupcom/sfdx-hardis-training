@@ -5,12 +5,14 @@
  *   node scripts/build/site.mjs && python -m zensical build -f course-site.yml
  *   node scripts/verify/check-nav.mjs
  *
- * Three things, all of them invisible until a reader falls through them:
+ * Four things, all of them invisible until a reader falls through them:
  *
  *   1. the left menu of a page holds that page's language and nothing else,
  *   2. the translate widget lands on the same page in the other language,
  *      rather than on the home page of that language,
- *   3. the previous and next arrows stay inside one language.
+ *   3. the previous and next arrows stay inside one language,
+ *   4. no page carries a <link rel="alternate">, which would hand the click
+ *      back to the theme and undo (2). See the languages key in course-site.yml.
  *
  * All three come from the "lang" front matter every page carries, read by the
  * three partials under site-overrides/. A Zensical upgrade that changes those
@@ -121,7 +123,7 @@ for (const file of walk(SITE)) {
   // a French reader on the English home page. The translate widget is in the
   // header too and points at another language on purpose: it is checked below,
   // and its links are the ones carrying hreflang.
-  const menu = section(html, "md-header", "md-content").replace(/<a href="[^"]+" hreflang="[^"]+"[^>]*>/g, "");
+  const menu = section(html, "md-header", "md-content").replace(/<a href="[^"]+"[^>]*hreflang="[^"]+"[^>]*>/g, "");
   if (menu) {
     menus++;
     for (const href of hrefs(menu)) {
@@ -133,7 +135,7 @@ for (const file of walk(SITE)) {
   }
 
   // 2. The translate widget, one link per language
-  const widget = [...html.matchAll(/<a href="([^"]+)" hreflang="([^"]+)" class="md-select__link"/g)];
+  const widget = [...html.matchAll(/<a href="([^"]+)"[^>]*hreflang="([^"]+)"[^>]*class="md-select__link"/g)];
   if (widget.length > 0 && locale) {
     widgets++;
     for (const [, href, other] of widget) {
@@ -154,7 +156,16 @@ for (const file of walk(SITE)) {
     }
   }
 
-  // 3. The previous and next arrows
+  // 3. No <link rel="alternate"> in the head. The theme reads those as the roots
+  // of other sites, asks each one for its sitemap.xml, and takes over every click
+  // into them. Here the languages are folders of one site, so the lookup finds
+  // nothing and the reader lands on the home page of the other language whatever
+  // the widget says. Naming the config key "alternate" again is all it takes.
+  if (/<link[^>]+rel="alternate"/.test(html)) {
+    problems.push(`${relative}: carries a <link rel="alternate">, which gives the theme the language switch back`);
+  }
+
+  // 4. The previous and next arrows
   for (const match of html.matchAll(/<a href="([^"]+)" class="md-footer__link md-footer__link--(prev|next)"/g)) {
     const target = localeOf(resolveHref(match[1], pageDir));
     if (target && locale && target !== locale) {

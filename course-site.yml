@@ -127,6 +127,10 @@ extra_javascript:
   # A guard: the template puts nothing after the footer, so anything found
   # there came from a page swap that went wrong. See after-footer.js.
   - theme/javascripts/after-footer.js
+  # The theme swaps pages without reloading and leaves the header alone, so the
+  # translate widget kept the links of the page the reader landed on. This
+  # rebuilds them on every page change. See language-switch.js.
+  - theme/javascripts/language-switch.js
 
 extra:
   # Google Analytics, on the course's own data stream inside the sfdx-hardis
@@ -152,7 +156,18 @@ extra:
   # below for a page that has no counterpart. Each entry holds the home page of
   # its language, and English is first because it is the reference: every other
   # locale is a translation of labs/en/.
-  alternate:
+  #
+  # It is deliberately NOT called "alternate", which is the name the theme reads.
+  # Under that name the theme emits <link rel="alternate"> in the head, and its
+  # own language machinery then treats each of those links as the root of a
+  # separate site: it asks for <root>/sitemap.xml, and it takes over every click
+  # into that root. Here the languages are folders of one site, /fr/sitemap.xml
+  # does not exist, and the lookup that follows finds nothing, so a click on
+  # Français from Lab 2.2 landed on the French home page whatever the link said.
+  # Renaming the key is what leaves the click alone. Checked by
+  # scripts/verify/check-nav.mjs, which fails if a rel=alternate link comes back,
+  # and by scripts/verify/check-language-switch.mjs, which clicks the widget.
+  languages:
     - name: English
       link: /sfdx-hardis-training/
       lang: en

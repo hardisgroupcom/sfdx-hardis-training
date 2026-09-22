@@ -24,6 +24,7 @@
 -#}
 {% import "partials/nav-item.html" as item with context %}
 {% import "partials/course-locale.html" as course with context %}
+{% set page_lang = course.lang(page) | trim %}
 {% set class = "md-nav md-nav--primary" %}
 {% if "navigation.tabs" in features %}
   {% set class = class ~ " md-nav--lifted" %}
@@ -31,7 +32,11 @@
 {% if "toc.integrate" in features %}
   {% set class = class ~ " md-nav--integrated" %}
 {% endif %}
-<nav class="{{ class }}" aria-label="{{ lang.t('nav') }}" data-md-level="0">
+{#- The language and the root of the site travel with the menu, because the menu
+    is inside the element the theme swaps on instant navigation and the header is
+    not. site-theme/javascripts/language-switch.js reads them from here to keep
+    the translate widget pointing at the page being read. -#}
+<nav class="{{ class }}" aria-label="{{ lang.t('nav') }}" data-md-level="0" data-course-lang="{{ page_lang }}" data-course-base="{{ nav.homepage.url | url }}">
   <label class="md-nav__title" for="__drawer">
     <a href="{{ course.home(page) | trim | url }}" title="{{ config.site_name | e }}" class="md-nav__button md-logo" aria-label="{{ config.site_name }}" data-md-component="logo">
       {% include "partials/logo.html" %}
@@ -43,7 +48,6 @@
       {% include "partials/source.html" %}
     </div>
   {% endif %}
-  {% set page_lang = course.lang(page) | trim %}
   <ul class="md-nav__list" data-md-scrollfix>
     {% for nav_item in nav.items %}
       {% set path = "__nav_" ~ loop.index %}

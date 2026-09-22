@@ -36,12 +36,16 @@
     </button>
     <div class="md-select__inner">
       <ul class="md-select__list">
-        {% for alt in config.extra.alternate %}
+        {% for alt in config.extra.languages %}
           {#- The same page in that language when this page has one, its home
               page otherwise. -#}
           {% set href = (alt.lang ~ "/" ~ rest) if rest else alt.link %}
           <li class="md-select__item">
-            <a href="{{ href | url }}" hreflang="{{ alt.lang }}" class="md-select__link">
+            {#- data-course-home is the fallback link, written as course-site.yml
+                holds it so it stays right from any page: language-switch.js
+                rebuilds this href after an instant navigation, which leaves the
+                header of the page the reader landed on. -#}
+            <a href="{{ href | url }}" hreflang="{{ alt.lang }}" data-course-home="{{ alt.link }}" class="md-select__link">
               {{ alt.name }}
             </a>
           </li>

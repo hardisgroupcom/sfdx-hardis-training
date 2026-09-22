@@ -19,7 +19,7 @@
 {% macro home(page) %}
   {%- set page_lang = lang(page) | trim -%}
   {%- set _ = namespace(url = config.extra.homepage | d(nav.homepage.url, true)) -%}
-  {%- for alt in config.extra.alternate | d([]) -%}
+  {%- for alt in config.extra.languages | d([]) -%}
     {%- if alt.lang == page_lang -%}
       {%- set _.url = alt.link -%}
     {%- endif -%}

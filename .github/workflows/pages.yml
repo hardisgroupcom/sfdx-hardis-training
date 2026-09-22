@@ -74,6 +74,11 @@ jobs:
           npx playwright-core install --with-deps chrome
           node scripts/verify/check-scroll.mjs
 
+      # The widget keeps the page only if a script rebuilds its links after an
+      # instant navigation, and only a browser can say that it does.
+      - name: The translate widget keeps the page
+        run: node scripts/verify/check-language-switch.mjs
+
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
         with:
           path: site
