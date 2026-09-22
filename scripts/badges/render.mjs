@@ -2,7 +2,12 @@
 /**
  * Writes a learner's badge: the SVG, the machine readable record and the page.
  *
- *   node scripts/badges/render.mjs --audit /tmp/audit.json --issue 42 --trailblazer nvuillamy
+ *   node scripts/badges/render.mjs --audit /tmp/audit.json --issue 42 \
+ *     --trailblazer nvuillamy --trailblazer-name "Nicolas Vuillamy" --name "Nicolas Vuillamy"
+ *
+ * `--trailblazer-name` is the name on the Trailblazer profile and `--name` the
+ * GitHub display name. The badge prefers the first and falls back to the second,
+ * then to the handle.
  *
  * A badge exists the moment these three files are committed. The site only
  * renders them, so a broken Pages build never blocks an award.
@@ -40,9 +45,14 @@ const today = new Date().toISOString().slice(0, 10);
 const definition = LEVELS[level];
 
 // ------------------------------------------------------------------- SVG
-// The GitHub display name, set by the claim workflow from the GitHub API. A
-// handle without a display name shows the handle twice, which is fine.
-const fullName = (typeof args.name === "string" && args.name.trim()) || handle;
+// Whose name this is, in the order of who is most likely to have spelled it the
+// way the person wants it read: their Trailblazer profile first, since this is a
+// Salesforce badge and that profile is the one it links to; then their GitHub
+// display name; then their handle, for somebody who set neither.
+const text = (value) => (typeof value === "string" && value.trim() ? value.trim() : null);
+const trailblazerName = text(args["trailblazer-name"]);
+const githubName = text(args.name);
+const fullName = trailblazerName || githubName || handle;
 
 function svg() {
   return renderSvg({ level, handle, fullName, trailblazer: args.trailblazer || null, date: today });
@@ -57,6 +67,11 @@ const record = fs.existsSync(recordPath) ? JSON.parse(fs.readFileSync(recordPath
 
 record.recipient = handle;
 record.trailblazer = args.trailblazer || record.trailblazer || null;
+// Kept in the record so the index can list people by name without asking the
+// Trailblazer API again on every site build, and so a badge still reads right
+// when that API is unreachable or the profile later goes private.
+record.name = fullName;
+record.trailblazerName = trailblazerName || record.trailblazerName || null;
 record.badges = (record.badges || []).filter((badge) => badge.level !== level);
 record.badges.push({
   // An Open Badges shaped structure, unsigned in v1. Real certifications, if
@@ -89,12 +104,13 @@ const rows = record.badges
   .join("\n");
 
 const page = `---
-title: ${handle}
+title: ${record.name}
 ---
 
-# Badges earned by ${handle}
+# Badges earned by ${record.name}
 
-${record.trailblazer ? `Trailblazer profile: [${record.trailblazer}](https://www.salesforce.com/trailblazer/${record.trailblazer})\n` : ""}
+GitHub: [@${handle}](https://github.com/${handle})
+${record.trailblazer ? `<br/>Trailblazer: [${record.trailblazer}](https://www.salesforce.com/trailblazer/${record.trailblazer})\n` : ""}
 | | Badge | Awarded | Verified |
 |---|---|---|---|
 ${rows}

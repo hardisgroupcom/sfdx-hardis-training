@@ -302,13 +302,52 @@ const badgesDir = path.join(ROOT, "badges");
 const badgePages = copyTree(badgesDir, path.join(OUT, "badges"), (name) => name.endsWith(".md") && !name.startsWith("_"));
 copyTree(path.join(badgesDir, "img"), path.join(OUT, "badges", "img"), (name) => name.endsWith(".svg"));
 
-const handles = fs.existsSync(badgesDir)
-  ? fs
-    .readdirSync(badgesDir)
-    .filter((name) => name.endsWith(".json"))
-    .map((name) => name.replace(/\.json$/, ""))
-    .sort()
-  : [];
+// One row per badge holder, read from the records the claim wrote. The name and
+// the Trailblazer username are stored there on purpose: the site build never
+// calls the Trailblazer API, so a build is not at the mercy of it being up, and
+// a badge keeps reading right if a profile later goes private.
+const holders = (fs.existsSync(badgesDir)
+  ? fs.readdirSync(badgesDir).filter((name) => name.endsWith(".json"))
+  : []
+)
+  .map((file) => {
+    const handle = file.replace(/\.json$/, "");
+    let record = {};
+    try {
+      record = JSON.parse(fs.readFileSync(path.join(badgesDir, file), "utf8"));
+    } catch (error) {
+      console.warn(`badges/${file} could not be read, listing it by handle: ${error.message}`);
+    }
+    const badges = Array.isArray(record.badges) ? record.badges : [];
+    const highest = badges.reduce((best, badge) => (best === null || badge.level > best.level ? badge : best), null);
+    return {
+      handle,
+      // A record written before names were stored has only the handle
+      name: typeof record.name === "string" && record.name.trim() ? record.name.trim() : handle,
+      trailblazer: typeof record.trailblazer === "string" && record.trailblazer.trim() ? record.trailblazer.trim() : null,
+      highest
+    };
+  })
+  .sort((a, b) => a.name.localeCompare(b.name, "en", { sensitivity: "base" }) || a.handle.localeCompare(b.handle));
+
+const holderRows = [
+  "| | Name | Highest badge | GitHub | Trailblazer |",
+  "|---|---|---|---|---|",
+  ...holders.map((holder) => {
+    // An <img> and not markdown: the badge is drawn 320 square, and a table cell
+    // wants a thumbnail. Plain HTML sizes it without depending on an extension.
+    const image = holder.highest
+      ? `<img src="img/${holder.handle}-level-${holder.highest.level}.svg" alt="${holder.highest.name}" width="72"/>`
+      : "";
+    const trailblazer = holder.trailblazer
+      ? `[${holder.trailblazer}](https://www.salesforce.com/trailblazer/${holder.trailblazer})`
+      : "";
+    return (
+      `| ${image} | [${holder.name}](${holder.handle}.md) | ${holder.highest ? holder.highest.name : ""} ` +
+      `| [@${holder.handle}](https://github.com/${holder.handle}) | ${trailblazer} |`
+    );
+  })
+].join("\n");
 
 const badgeIndex = [
   frontMatter({
@@ -321,9 +360,7 @@ const badgeIndex = [
   "It is a badge, not a certification: there is no exam here. What it says is that a job read the",
   "person's public repository and found the work.",
   "",
-  handles.length === 0
-    ? "Nobody has claimed a badge yet. Be the first."
-    : handles.map((handle) => `- [${handle}](${handle}.md)`).join("\n"),
+  holders.length === 0 ? "Nobody has claimed a badge yet. Be the first." : holderRows,
   "",
   "## Claim yours",
   "",

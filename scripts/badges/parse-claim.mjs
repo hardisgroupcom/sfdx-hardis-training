@@ -8,8 +8,10 @@
  *
  * Reads: ISSUE_BODY, ISSUE_AUTHOR
  * Writes on stdout, for $GITHUB_OUTPUT:
- *   valid, reason, level, handle, trailblazer, repo
+ *   valid, reason, level, handle, trailblazer, trailblazer_name, trailblazer_state, repo
  */
+import { fetchTrailblazerProfile } from "./trailblazer.mjs";
+
 const body = process.env.ISSUE_BODY || "";
 const author = (process.env.ISSUE_AUTHOR || "").trim();
 
@@ -83,6 +85,37 @@ if (!/^[A-Za-z0-9._-]{1,60}$/.test(trailblazer)) {
   );
 }
 
+// The shape being right does not make the profile real. A badge page links to
+// this username for as long as the badge exists, and a username with nothing
+// behind it makes the whole page look made up.
+const profile = await fetchTrailblazerProfile(trailblazer);
+if (profile.state === "missing") {
+  reject(
+    [
+      "## That Trailblazer username does not exist",
+      "",
+      `There is no public Trailblazer profile for \`${trailblazer}\`.`,
+      "",
+      "Your badge page links to your profile, so the username has to be a real one. It is the last",
+      "part of your own profile URL, and it is **not** your email or your Salesforce username:",
+      "",
+      "```",
+      "https://www.salesforce.com/trailblazer/mytrailblazerusername",
+      "                                       ^^^^^^^^^^^^^^^^^^^^^",
+      "```",
+      "",
+      "If you do not have one yet, set it at <https://trailhead.salesforce.com/en/profile> under",
+      "**Edit Profile**.",
+      "",
+      "Edit this issue with the right username, and the audit runs again on its own."
+    ].join("\n")
+  );
+}
+// `private` and `unknown` both pass. A private profile is a real one, and an API
+// that could not be reached is not the learner's problem: a third party being
+// down must never cost somebody a badge. Neither gives a name, and the badge
+// falls back to the GitHub one.
+
 // ------------------------------------------------------------- repository
 const repoRaw = field("Public repository URL");
 const repoMatch = repoRaw.match(/^https:\/\/github\.com\/([A-Za-z0-9][A-Za-z0-9-]{0,38})\/([A-Za-z0-9._-]{1,100}?)(?:\.git)?\/?$/);
@@ -143,5 +176,7 @@ output({
   level: String(level),
   handle: owner,
   trailblazer,
+  trailblazer_name: profile.name || "",
+  trailblazer_state: profile.state,
   repo: `https://github.com/${owner}/${repo}.git`
 });
