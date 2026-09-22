@@ -35,6 +35,12 @@
   every page carries in its front matter, and only when there is one. A reader
   who never picked a language is never moved, and a crawler carries no cookie,
   so the page a search engine sees is the page it asked for.
+
+  A link can say which language it means, with ?lang=en or ?lang=fr, and that
+  wins over the cookie: it is how a link shared in a language, a step of the
+  English Trailmix for one, reaches a reader who once picked another. Asking for
+  the language of the page it is on pins that page; asking for another moves to
+  it, as if the picker had been used.
 -#}
 {% block extrahead %}
   {% set page_lang = (page.meta | d({}, true)).lang | d(config.theme.language | d("en")) %}
@@ -44,13 +50,18 @@
       var alternates = {{ (page.meta | d({}, true)).alternates | d({}, true) | tojson }};
       var base = new URL({{ (nav.homepage.url | url) | tojson }} || ".", window.location.href).pathname;
       try {
+        var asked = new URLSearchParams(window.location.search).get("lang");
+        if (asked) {
+          document.cookie =
+            "course-language=" + encodeURIComponent(asked) + "; path=" + base + "; max-age=31536000; samesite=lax";
+        }
         var cookie = document.cookie.split("; ").filter(function (one) {
           return one.indexOf("course-language=") === 0;
         })[0];
         if (!cookie) {
           return;
         }
-        var preferred = decodeURIComponent(cookie.slice("course-language=".length));
+        var preferred = asked || decodeURIComponent(cookie.slice("course-language=".length));
         if (!preferred || preferred === here) {
           return;
         }

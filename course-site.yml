@@ -206,8 +206,9 @@ nav:
   # tree with the titles filled in, which is the file to read when a locale is
   # added or a lab renamed.
   #
-  # The backlog and the badges come last and are in no language: they are
-  # written once, in English, and they show at the end of every menu.
+  # The backlog and the badges are generated per language, so each course block
+  # ends with its own. The one entry in no language is the link to the
+  # sfdx-hardis documentation: another site, written once, in English.
   - Home: index.md
   - "Level 1 - Contributor basics":
       - Start here: en/level-1-contributor-basics/index.md

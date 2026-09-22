@@ -103,6 +103,7 @@ const langOf = (relative) => (facts.get(relative) && facts.get(relative).lang) |
 const problems = [];
 let menus = 0;
 let pickers = 0;
+const unreadable = [];
 
 for (const file of pages) {
   const relative = path.relative(SITE, file).replace(/\\/g, "/");
@@ -110,6 +111,10 @@ for (const file of pages) {
   const html = fs.readFileSync(file, "utf8");
   const self = facts.get(relative);
   if (!self) {
+    // Every page of this site carries the menu, so a page without it means the
+    // element changed shape and this script is reading nothing. Silence here
+    // would be a green check over an unchecked site.
+    unreadable.push(relative);
     continue;
   }
 
@@ -199,6 +204,19 @@ for (const file of pages) {
 }
 
 console.log(`${menus} menu(s) and ${pickers} language picker(s) checked over ${pages.length} page(s).`);
+
+if (unreadable.length > 0) {
+  console.error(
+    `\n${unreadable.length} page(s) whose menu this script could not read, so nothing was checked on them:`
+  );
+  unreadable.slice(0, 5).forEach((one) => console.error(`  ${one}`));
+  console.error("  The nav element or its class changed. Read pageFacts() against partials/nav.html.");
+  process.exit(1);
+}
+if (menus === 0 || pickers === 0) {
+  console.error("\nNo menu and no picker was read at all: this script checked nothing.");
+  process.exit(1);
+}
 
 if (problems.length > 0) {
   console.error(`\n${problems.length} page(s) that leak another language:`);

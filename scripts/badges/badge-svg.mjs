@@ -63,8 +63,8 @@ export function escapeXml(value) {
 }
 
 // Long names get a smaller font rather than running off the face of the badge
-function fitSize(text, max, width) {
-  return Math.max(10, Math.min(max, Math.floor(width / (String(text).length * 0.56))));
+function fitSize(text, max, width, min = 10) {
+  return Math.max(min, Math.min(max, Math.floor(width / (String(text).length * 0.56))));
 }
 
 /**
@@ -91,8 +91,15 @@ export function renderSvg({ level, handle, fullName, trailblazer, date }) {
     // Functions, not strings, for what a learner typed: a string replacement expands
     // $& and $' patterns, and a name holding one would rewrite the badge
     .replace(/\{\{FULLNAME\}\}/g, () => escapeXml(name))
-    .replace(/\{\{FULLNAME_SIZE\}\}/g, String(fitSize(name, 19, 208)))
+    .replace(/\{\{FULLNAME_SIZE\}\}/g, String(fitSize(name, 19, 190)))
     .replace(/\{\{HANDLE\}\}/g, () => escapeXml(handle))
+    // The hexagon narrows towards its foot, so each line gets the width the
+    // shape has at its height: 150px for the Trailblazer line, 115px for the
+    // handle. Below 7px nothing is readable anyway, and the template cuts the
+    // block to the hexagon, so a username longer than anyone has is trimmed
+    // instead of hanging outside the badge.
+    .replace(/\{\{HANDLE_SIZE\}\}/g, String(fitSize(`@${handle}`, 10.5, 115, 7)))
+    .replace(/\{\{TRAILBLAZER_SIZE\}\}/g, String(fitSize(trailblazer ? `Trailblazer ${trailblazer}` : "", 10.5, 150, 7)))
     .replace(/\{\{TRAILBLAZER_LINE\}\}/g, () => (trailblazer ? `Trailblazer ${escapeXml(trailblazer)}` : ""))
     .replace(/\{\{DATE\}\}/g, date);
 }

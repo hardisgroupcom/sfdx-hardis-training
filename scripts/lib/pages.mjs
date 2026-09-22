@@ -138,7 +138,12 @@ export function badgesPage({ s, holders, badgeHref, badgeImage, claimUrl, record
  * every language, so a claim never has to write a page per locale and an old
  * badge gains the new languages by itself.
  */
-export function badgePage({ s, record, badgeImage, courseUrl }) {
+export function badgePage({ s, holder, badgeImage, courseUrl }) {
+  // The holder, not the raw record: a record written before names were stored
+  // has only its key, and site.mjs is where that is filled in. Reading the
+  // record here put "undefined" on the page while the index listed the person
+  // correctly.
+  const record = holder.record;
   const badges = record.badges || [];
   const rows = badges.map((badge) => row([
     `![${badge.name}](${badgeImage(badge.level)})`,
@@ -152,11 +157,11 @@ export function badgePage({ s, record, badgeImage, courseUrl }) {
     : s.badge.meaning.fallbackRepository;
 
   return [
-    `# ${fill(s.badge.heading, { name: record.name })}`,
+    `# ${fill(s.badge.heading, { name: holder.name })}`,
     "",
-    `${s.badge.github}: [@${record.recipient}](https://github.com/${record.recipient})`,
-    record.trailblazer
-      ? `<br/>${s.badge.trailblazer}: [${record.trailblazer}](https://www.salesforce.com/trailblazer/${record.trailblazer})`
+    holder.recipient ? `${s.badge.github}: [@${holder.recipient}](https://github.com/${holder.recipient})` : "",
+    holder.trailblazer
+      ? `<br/>${s.badge.trailblazer}: [${holder.trailblazer}](https://www.salesforce.com/trailblazer/${holder.trailblazer})`
       : "",
     "",
     row(s.badge.columns),

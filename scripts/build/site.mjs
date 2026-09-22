@@ -10,9 +10,9 @@
  *   labs/en/level-1-contributor-basics/1-1-*.md  -> site-src/en/level-1-contributor-basics/1-1-*.md
  *   labs/_assets/**                -> site-src/_assets/**
  *   site-theme/**                  -> site-src/theme/**
- *   BACKLOG.md                     -> site-src/BACKLOG.md
- *   training-universe.json stories -> site-src/BACKLOG/US-nnn.md and US-nnn.json
- *   badges/<trailblazer>.md        -> site-src/badges/<trailblazer>.md
+ *   BACKLOG.md, one per locale     -> site-src/BACKLOG.md and site-src/<locale>/BACKLOG.md
+ *   training-universe.json stories -> site-src/[<locale>/]BACKLOG/US-nnn.md, and US-nnn.json once
+ *   badges/<trailblazer>.json      -> site-src/[<locale>/]badges/<trailblazer>.md, built from the record
  *   badges/<trailblazer>.json      -> site-src/badges/<trailblazer>.json (read by other sites)
  *
  *   node scripts/build/site.mjs
@@ -72,7 +72,12 @@ function alternatesFrontMatter(byLocale) {
  * its banner and its place in the picker all read it.
  */
 function withAlternates(content, byLocale, lang) {
-  const declares = /^---\r?\n[\s\S]*?^lang:/m.test(content);
+  // Only the front matter counts. An unbounded match reaches into the body, and
+  // a page whose text happens to hold a line starting with "lang:", a YAML
+  // sample or a translated criterion, would be taken as declaring its language:
+  // no lang is injected, the theme falls back to the site language, and a French
+  // page lands in the English menu.
+  const declares = /^---\r?\n(?:(?!---)[\s\S])*?^lang:/m.test(content);
   const block = [!declares && lang ? `lang: ${lang}` : null, alternatesFrontMatter(byLocale)]
     .filter(Boolean)
     .join("\n");
@@ -526,7 +531,7 @@ function badgePages() {
       }
       const page = badgePage({
         s,
-        record: holder.record,
+        holder,
         badgeImage: (level) => `${images}/${holder.key}-level-${level}.svg`,
         courseUrl: `${universe.course.site}/`
       });

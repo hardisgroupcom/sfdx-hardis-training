@@ -99,6 +99,14 @@ The theme speaks the language of the page too, from its own dictionary:
 `site-overrides/partials/language.html` picks it from the front matter, so a locale Zensical has
 no dictionary for fails the build there, which is the moment to find out.
 
+## A link that knows its language
+
+The language a reader picks is remembered in a cookie for a year, and a page opened in another
+language moves to the same page in the remembered one. A link can override that with `?lang=en` or
+`?lang=fr`, which also becomes the new preference: it is how a link shared in one language reaches a
+reader who once picked another. The steps of a Trailmix are the case that matters, because each
+Trailmix is one language and its targets are shared far from the site.
+
 The site already serves `/en/...`, so `/fr/...` needs no restructuring.
 
 ## Staleness
@@ -112,6 +120,19 @@ node scripts/i18n/stamp-source-rev.mjs fr         # after re-reading, stamp them
 ```
 
 A translation behind its source is not an error: it is a list of what to re-read.
+
+The generated pages are checked the same way, and one way more. `i18n/<locale>.json` carries its own
+`source_rev`, naming the commit of `i18n/en.json` it was translated from, and a key it does not
+answer is a failure rather than a report: the site falls back to English key by key, so the hole
+reads as an English sentence in the middle of a French paragraph and nothing else shows it.
+
+```bash
+node scripts/i18n/check-i18n.mjs                  # missing keys (fails), and staleness (reports)
+node scripts/i18n/check-i18n.mjs --stamp          # after re-reading i18n/en.json
+```
+
+It also checks the fiction: every User Story, level and cast member of `training-universe.json` has
+its translation, with the same number of acceptance criteria as the story it belongs to.
 
 ## Shape
 
