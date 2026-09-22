@@ -5,7 +5,7 @@ description: "Installez Git, Node.js, VS Code et l'extension sfdx-hardis, puis l
 level: 1
 lab: 1
 lang: fr
-source_rev: "6099ed3e75cdc7bb8dcdd76fb7247616e374bbe8"
+source_rev: "08595387af770957a4e88f5ccb68153ac30b6ddd"
 screenshots:
   - annotated/web/git-download
   - annotated/web/vscode-download
@@ -46,7 +46,7 @@ des autres à votre place.
     commence la partie propre à la formation : orgs Salesforce gratuites, repository d'entraînement,
     données fictives. Rien de tout cela n'a sa place sur un vrai projet.
 
-!!! tip "Pas le droit d'installer quoi que ce soit ? Faites-le dans un onglet"
+!!! tip "Pas de VS Code ? Un onglet ou un autre éditeur suffit"
     [Agentforce Vibes](https://www.salesforce.com/agentforce/developers/vibe-coding/ide/) est VS Code dans Google Chrome, lancé depuis n'importe quelle
     sandbox de développement Salesforce, et tout ce cours y fonctionne. Deux différences et pas une
     de plus : la CLI Salesforce est déjà là, donc la partie du panneau Setup qui l'installe n'a rien
@@ -54,6 +54,10 @@ des autres à votre place.
     et non du Visual Studio Marketplace. Chaque panneau, chaque bouton et chaque étape ci-dessous
     sont les mêmes, et les captures d'écran aussi : elles ont été prises dans VS Code de bureau, qui
     est le même éditeur.
+
+    [Cursor](https://cursor.com/) et les autres éditeurs construits sur VS Code fonctionnent pareil, et depuis
+    le même Open VSX. Quel que soit celui que vous utilisez, la suite de ce lab est écrite pour ce
+    que vous y voyez.
 
 ## Avant de commencer
 
