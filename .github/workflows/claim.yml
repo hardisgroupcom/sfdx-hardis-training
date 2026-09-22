@@ -23,7 +23,13 @@ name: Audit a badge claim
 
 on:
   issues:
-    types: [opened, edited, reopened]
+    # `labeled` matters: the issue form asks for the badge-claim label, and GitHub
+    # drops a label the repository does not define, silently. A claim that arrives
+    # without it is skipped by the job condition below and nobody is ever told.
+    # With `labeled`, adding the label by hand re-runs the audit.
+    # The label itself must exist in the repository. It is not versioned with this
+    # file, so if badge claims stop being audited, check that first.
+    types: [opened, edited, reopened, labeled]
 
 permissions: read-all
 
