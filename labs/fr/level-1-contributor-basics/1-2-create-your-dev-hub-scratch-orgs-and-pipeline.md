@@ -5,7 +5,7 @@ description: "Inscrivez-vous à une org Salesforce Developer Edition gratuite, p
 level: 1
 lab: 2
 lang: fr
-source_rev: "3da26b76cc8d4ae750c2ff7df3bae9c4d23b08f5"
+source_rev: "60e8cb86afb0208776d978f59206c02cf8f85bf3"
 screenshots:
   - annotated/web/sf-signup
   - annotated/web/gh-cli-download
@@ -228,9 +228,12 @@ binary**. Acceptez les valeurs par défaut de l'installeur.
     décompresser, et le terminal de l'onglet est l'endroit où elles vont. Rechargez l'onglet ensuite,
     plutôt que de redémarrer VS Code.
 
-    Si ce conteneur ne vous laisse rien installer, c'est la seule étape qui a besoin de `gh` :
-    faites l'**étape 5 depuis une machine qui l'a**, et revenez ici une fois le fork créé et ses
-    secrets posés. Rien de plus loin dans le cours ne rappelle `gh`.
+    `gh` ne sert pas qu'à cette étape, et cela vaut donc la peine de le réussir ici. Les commandes
+    derrière **Publish my work**, **Simulate my teammates**, **Check my work** et **Claim my badge**
+    l'appellent toutes : il ouvre vos Pull Requests, joue les merges de vos collègues, lit les
+    secrets de votre fork pour vérifier un niveau, et regarde votre étoile et la visibilité de votre
+    repository au moment de la réclamation. Un conteneur qui refuse de l'installer vous arrêtera
+    plus loin, pas ici.
 
 !!! warning "Redémarrez VS Code après l'avoir installée"
     L'installeur ajoute `gh` au **PATH**, et un VS Code déjà ouvert ne voit pas le changement avant
