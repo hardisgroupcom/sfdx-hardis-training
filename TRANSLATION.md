@@ -53,7 +53,8 @@ matches the labels. That is their choice to make, and the course does not sugges
 1. `cp -r labs/en labs/<locale>`
 2. Translate every `.md` file, keeping the front matter keys, the file names, the `**(1)**` pill
    references and the image paths
-3. In each translated file, set `lang: <locale>`
+3. In each translated file, set `lang: <locale>`. It is what the site reads to keep the menu of a
+   page in one language, and what the translate widget swaps to reach the same page
 4. Declare the locale in the three places that need a word in it:
    - `TROUBLESHOOTING` in `scripts/build/site.mjs`, the translated "If it goes wrong" heading, which
      is how that section gets folded on the site
@@ -66,7 +67,13 @@ matches the labels. That is their choice to make, and the course does not sugges
    `node scripts/i18n/stamp-source-rev.mjs <locale>`, which writes each `source_rev` from git
 7. `node scripts/build/universe.mjs`, then `node scripts/build/site.mjs`
 8. Add the locale to the `nav` and to `extra.alternate` in `course-site.yml`, and a banner in
-   `site-overrides/main.html`
+   `site-overrides/main.html`. The `nav` holds one flat course per language, English first, and a
+   reader only ever sees one of them: `site-overrides/partials/nav.html` keeps the entries whose
+   language is the language of the page. `extra.alternate` is the home page of the locale, where
+   the logo points and where the translate widget falls back for a page with no counterpart
+9. Build the site, then `node scripts/verify/check-nav.mjs`: it says that each menu holds one
+   language, that the translate widget lands on the same page in the other language, and that the
+   previous and next arrows stay inside one language
 
 The site already serves `/en/...`, so `/fr/...` needs no restructuring.
 
