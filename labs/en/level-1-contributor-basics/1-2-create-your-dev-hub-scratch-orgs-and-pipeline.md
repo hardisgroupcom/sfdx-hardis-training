@@ -221,9 +221,11 @@ defaults.
     the terminal of the tab is where they go. Reload the tab afterwards rather than restarting
     VS Code.
 
-    If that container will not let you install anything, this is the one step that needs `gh`:
-    run **step 5 from a machine that has it**, and come back here once the fork exists and its
-    secrets are set. Nothing later in the course calls `gh` again.
+    `gh` is not only for this step, so it is worth getting right here. The commands behind
+    **Publish my work**, **Simulate my teammates**, **Check my work** and **Claim my badge** all
+    call it: it opens your Pull Requests, plays your teammates' merges, reads the secrets of your
+    fork to check a level, and looks at your star and your repository's visibility when you claim.
+    A container that will not let you install it will stop you later, not here.
 
 You never have to run `gh` yourself. The command in step 5 uses it and signs you in through your
 browser the first time it needs to.
