@@ -5,7 +5,7 @@ description: "Installez Git, Node.js, VS Code et l'extension sfdx-hardis, puis l
 level: 1
 lab: 1
 lang: fr
-source_rev: "08595387af770957a4e88f5ccb68153ac30b6ddd"
+source_rev: "f544baa668133cfc09ee8f73050f7e5167ee8258"
 screenshots:
   - annotated/web/git-download
   - annotated/web/vscode-download
@@ -47,8 +47,11 @@ des autres à votre place.
     données fictives. Rien de tout cela n'a sa place sur un vrai projet.
 
 !!! tip "Pas de VS Code ? Un onglet ou un autre éditeur suffit"
-    [Agentforce Vibes](https://www.salesforce.com/agentforce/developers/vibe-coding/ide/) est VS Code dans Google Chrome, lancé depuis n'importe quelle
-    sandbox de développement Salesforce, et tout ce cours y fonctionne. Deux différences et pas une
+    [Agentforce Vibes](https://www.salesforce.com/agentforce/developers/vibe-coding/ide/) est VS Code dans Google Chrome, lancé depuis une org Salesforce :
+    une sandbox de développement, ou l'org Developer Edition gratuite pour laquelle le
+    [Lab 1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) vous inscrit, ce qui veut dire
+    que ce chemin ne coûte rien et ne demande rien que vous ne créiez déjà ici. Tout ce cours y
+    fonctionne. Deux différences et pas une
     de plus : la CLI Salesforce est déjà là, donc la partie du panneau Setup qui l'installe n'a rien
     à faire, et l'extension vient d'[Open VSX](https://open-vsx.org/extension/NicolasVuillamy/vscode-sfdx-hardis)
     et non du Visual Studio Marketplace. Chaque panneau, chaque bouton et chaque étape ci-dessous
@@ -62,7 +65,8 @@ des autres à votre place.
 ## Avant de commencer
 
 - [ ] Un ordinateur sur lequel vous pouvez installer des logiciels, et le droit de le faire, **ou**
-      une sandbox de développement Salesforce depuis laquelle lancer Agentforce Vibes
+      n'importe quelle org Salesforce depuis laquelle lancer Agentforce Vibes : une sandbox de
+      développement, ou l'org Developer Edition gratuite du Lab 1.2
 
 ## Les étapes
 
