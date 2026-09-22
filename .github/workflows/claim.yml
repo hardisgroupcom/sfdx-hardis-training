@@ -14,6 +14,9 @@
 #     repository cannot exhaust the runner.
 #  5. Serialise with a concurrency group. Two claims landing together both commit
 #     to main, and without serialisation the second push is rejected.
+#  6. Ask for the site build after committing a badge. A push made with
+#     GITHUB_TOKEN never triggers a workflow, so nothing else will, and the badge
+#     page this workflow links to would not exist.
 #
 # The learner's code is never checked out into the workspace: it is cloned into a
 # temporary directory and read. That is what keeps this simple, and it is why the
@@ -46,6 +49,9 @@ jobs:
     permissions:
       contents: write
       issues: write
+      # To start the site build below. A push made with GITHUB_TOKEN never
+      # triggers a workflow, so the badge has to ask for the build explicitly.
+      actions: write
     steps:
       - name: Checkout the training repository
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
@@ -72,7 +78,10 @@ jobs:
         run: |
           printf '%s\n' "$REASON" > /tmp/comment.md
           gh issue comment "$ISSUE" --body-file /tmp/comment.md
-          gh issue edit "$ISSUE" --add-label needs-work
+          # `|| true`: the label is not versioned with this file. A repository
+          # that does not define it used to fail this step AFTER the comment was
+          # posted, so the learner was told what to fix and the run went red.
+          gh issue edit "$ISSUE" --add-label needs-work || true
           exit 0
 
       # Rule 4: shallow, blob-filtered, size-capped, time-capped.
@@ -116,7 +125,7 @@ jobs:
             echo "_Nothing was read from your account, and no credential was used._"
           } > /tmp/comment.md
           gh issue comment "$ISSUE" --body-file /tmp/comment.md
-          gh issue edit "$ISSUE" --add-label needs-work
+          gh issue edit "$ISSUE" --add-label needs-work || true
 
       # Rule 1: only this repository's code runs, and it only reads the clone.
       - name: Audit
@@ -169,6 +178,13 @@ jobs:
               exit 1
             fi
           fi
+          # GitHub does not start a workflow from a push made with GITHUB_TOKEN,
+          # so the commit above never reached the site build and the badge page
+          # linked below stayed a 404 until somebody happened to push to main.
+          # workflow_dispatch is the documented exception to that rule.
+          if ! gh workflow run "Build and publish the training site" --ref "${GITHUB_REF_NAME}"; then
+            echo "The site build could not be started: the badge is committed, so the page appears on the next build."
+          fi
           {
             cat /tmp/report.md
             echo
@@ -185,4 +201,4 @@ jobs:
           ISSUE: ${{ github.event.issue.number }}
         run: |
           gh issue comment "$ISSUE" --body-file /tmp/report.md
-          gh issue edit "$ISSUE" --add-label needs-work
+          gh issue edit "$ISSUE" --add-label needs-work || true
