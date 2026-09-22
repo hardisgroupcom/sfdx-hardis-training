@@ -167,13 +167,20 @@ extra:
   # Renaming the key is what leaves the click alone. Checked by
   # scripts/verify/check-nav.mjs, which fails if a rel=alternate link comes back,
   # and by scripts/verify/check-language-switch.mjs, which clicks the widget.
+  #
+  # The flag is what the picker shows, in the header and in its list, because a
+  # flag is read without reading. They are two plain SVG files of the theme, not
+  # emoji: Windows ships no flag glyphs and renders them as the two letters of
+  # the country code.
   languages:
     - name: English
       link: /sfdx-hardis-training/
       lang: en
+      flag: theme/images/flags/gb.svg
     - name: Français
       link: /sfdx-hardis-training/fr/
       lang: fr
+      flag: theme/images/flags/fr.svg
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/hardisgroupcom/sfdx-hardis
@@ -235,7 +242,8 @@ nav:
       - en/level-3-release-manager/3-9-generate-the-project-documentation.md
       - en/level-3-release-manager/3-10-capstone-run-a-weekly-release-cycle.md
   - Help: en/help.md
-  - Link map: en/link-map.md
+  - Backlog: BACKLOG.md
+  - Badges: badges/index.md
   - Accueil: fr/index.md
   - "Niveau 1 - Contributeur Salesforce DevOps, les bases":
       - Commencer ici: fr/level-1-contributor-basics/index.md
@@ -270,7 +278,6 @@ nav:
       - fr/level-3-release-manager/3-9-generate-the-project-documentation.md
       - fr/level-3-release-manager/3-10-capstone-run-a-weekly-release-cycle.md
   - Aide: fr/help.md
-  - Plan des liens: fr/link-map.md
+  - Backlog: fr/BACKLOG.md
+  - Badges: fr/badges/index.md
   - sfdx-hardis documentation: https://sfdx-hardis.cloudity.com/
-  - Backlog: BACKLOG.md
-  - Badges: badges/index.md

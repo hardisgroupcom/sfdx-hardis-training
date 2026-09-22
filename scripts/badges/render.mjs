@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 /**
- * Writes a learner's badge: the SVG, the machine readable record and the page.
+ * Writes a learner's badge: the SVG and the machine readable record.
+ *
+ * The page a learner shares is built from that record by scripts/build/site.mjs,
+ * in every language of the course.
  *
  *   node scripts/badges/render.mjs --audit /tmp/audit.json --issue 42 \
  *     --trailblazer nvuillamy --trailblazer-name "Nicolas Vuillamy" --name "Nicolas Vuillamy"
@@ -9,12 +12,12 @@
  * GitHub display name. The badge prefers the first and falls back to the second,
  * then to the handle.
  *
- * A badge exists the moment these three files are committed. The site only
+ * A badge exists the moment these two files are committed. The site only
  * renders them, so a broken Pages build never blocks an award.
  *
  * ## Everything is keyed by the Trailblazer username
  *
- * `badges/<trailblazer>.json`, `badges/<trailblazer>.md` and
+ * `badges/<trailblazer>.json` and
  * `badges/img/<trailblazer>-level-N.svg`, so that anything holding a Trailblazer
  * username can ask the site what that person earned, with one GET and no index
  * to walk:
@@ -180,45 +183,12 @@ record.badges.push({
 record.badges.sort((a, b) => a.level - b.level);
 fs.writeFileSync(recordPath, JSON.stringify(record, null, 2) + "\n", "utf8");
 
-// ------------------------------------------------------------- badge page
-const rows = record.badges
-  .map((badge) => `| ![${badge.name}](img/${key}-level-${badge.level}.svg) | **${badge.name}** | ${badge.issuedOn} | ${badge.checksPassed}/${badge.checksTotal} checks |`)
-  .join("\n");
-
-const page = `---
-title: ${record.name}
----
-
-# Badges earned by ${record.name}
-
-GitHub: [@${handle}](https://github.com/${handle})
-${record.trailblazer ? `<br/>Trailblazer: [${record.trailblazer}](https://www.salesforce.com/trailblazer/${record.trailblazer})\n` : ""}
-| | Badge | Awarded | Verified |
-|---|---|---|---|
-${rows}
-
-## What these mean
-
-Each badge was awarded by a job that cloned ${record.badges[0] && record.badges[0].evidence[0] ? `[the repository](${record.badges[0].evidence[0].url})` : "the learner's public repository"}
-and re-ran every check of the level against its actual content and history. A level 2 badge also
-re-ran the level 1 checks, and a level 3 badge re-ran all three.
-
-What is verified is the work in the repository: the fields, the deployment actions, the resolved
-conflicts, the pipeline configuration. What is **not** verified is the state of anybody's Salesforce
-orgs. Nobody is asked for org credentials, and this is not an exam.
-
-## It is a badge, not a certification
-
-There is no exam and no accreditation here. Share this page under *Featured* on LinkedIn, or as a
-course. Not under *Licenses & certifications*.
-
-[Take the course](${SITE}/){ .md-button }
-`;
-
-fs.writeFileSync(path.join(BADGES, `${key}.md`), page, "utf8");
+// The page is not written here. scripts/build/site.mjs builds it from this
+// record on every site build, once per language, so a badge claimed before a
+// language existed gains its page in it without anybody touching the claim, and
+// the words of that page live with the other translations, in i18n/<locale>.json.
 
 console.log(`Badge written for ${handle} as ${key}, level ${level}:`);
-console.log(`  badges/${key}.md`);
 console.log(`  badges/${key}.json`);
 console.log(`  badges/img/${key}-level-${level}.svg`);
 if (movedFrom) {

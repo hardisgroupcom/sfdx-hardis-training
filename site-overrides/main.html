@@ -23,6 +23,51 @@
   partials that keep each language to itself, nav.html, header.html,
   alternate.html and footer.html.
 -->
+{#-
+  The language a reader picked, honoured before the page is painted.
+
+  site-theme/javascripts/language-switch.js writes the choice in a cookie when
+  the picker is used. Reading it back belongs here rather than there, because
+  the theme loads its scripts at the end of the body: from there, a reader who
+  chose French would see the English page drawn before it was replaced.
+
+  It only ever moves a reader to the same page in their own language, which
+  every page carries in its front matter, and only when there is one. A reader
+  who never picked a language is never moved, and a crawler carries no cookie,
+  so the page a search engine sees is the page it asked for.
+-#}
+{% block extrahead %}
+  {% set page_lang = (page.meta | d({}, true)).lang | d(config.theme.language | d("en")) %}
+  <script>
+    (function () {
+      var here = {{ page_lang | tojson }};
+      var alternates = {{ (page.meta | d({}, true)).alternates | d({}, true) | tojson }};
+      var base = new URL({{ (nav.homepage.url | url) | tojson }} || ".", window.location.href).pathname;
+      try {
+        var cookie = document.cookie.split("; ").filter(function (one) {
+          return one.indexOf("course-language=") === 0;
+        })[0];
+        if (!cookie) {
+          return;
+        }
+        var preferred = decodeURIComponent(cookie.slice("course-language=".length));
+        if (!preferred || preferred === here) {
+          return;
+        }
+        var target = alternates[preferred];
+        if (typeof target !== "string") {
+          return;
+        }
+        var url = new URL(target, new URL(base, window.location.href)).pathname;
+        if (url !== window.location.pathname) {
+          window.location.replace(url + window.location.search + window.location.hash);
+        }
+      } catch (error) {
+        // A browser with no cookies stays where it is, which is the page asked for
+      }
+    })();
+  </script>
+{% endblock %}
 {% block announce %}
   {% if page and page.url and page.url[:3] == 'fr/' %}
     <strong>Ce cours est en phase de relecture.</strong> Il est complet et a été déroulé de bout en

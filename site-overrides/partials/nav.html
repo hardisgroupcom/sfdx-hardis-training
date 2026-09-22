@@ -32,11 +32,13 @@
 {% if "toc.integrate" in features %}
   {% set class = class ~ " md-nav--integrated" %}
 {% endif %}
-{#- The language and the root of the site travel with the menu, because the menu
-    is inside the element the theme swaps on instant navigation and the header is
-    not. site-theme/javascripts/language-switch.js reads them from here to keep
-    the translate widget pointing at the page being read. -#}
-<nav class="{{ class }}" aria-label="{{ lang.t('nav') }}" data-md-level="0" data-course-lang="{{ page_lang }}" data-course-base="{{ nav.homepage.url | url }}">
+{#- The language of the page, the root of the site and where this page is read
+    in each language travel with the menu, because the menu is inside the element
+    the theme swaps on instant navigation and the header is not.
+    site-theme/javascripts/language-switch.js reads them from here to keep the
+    language picker pointing at the page being read. -#}
+{% set alternates = (page.meta | d({}, true)).alternates | d({}, true) %}
+<nav class="{{ class }}" aria-label="{{ lang.t('nav') }}" data-md-level="0" data-course-lang="{{ page_lang }}" data-course-base="{{ nav.homepage.url | url }}"{% for alt in config.extra.languages | d([]) %} data-course-alt-{{ alt.lang }}="{{ alternates[alt.lang] | d('') }}"{% endfor %}>
   <label class="md-nav__title" for="__drawer">
     <a href="{{ course.home(page) | trim | url }}" title="{{ config.site_name | e }}" class="md-nav__button md-logo" aria-label="{{ config.site_name }}" data-md-component="logo">
       {% include "partials/logo.html" %}
