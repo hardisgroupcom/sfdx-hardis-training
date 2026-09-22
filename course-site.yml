@@ -47,7 +47,12 @@ theme:
     - search.highlight
     - toc.follow
   logo: theme/images/cloudity-text-logo-white.svg
-  favicon: theme/images/cloudity-logo.svg
+  # The level 3 hexagon with the Cloudity mark inside it, generated from the
+  # colours of badge-svg.mjs by scripts/badges/social.mjs, so the icon follows
+  # the badges the day the ramp changes. A favicon is 16px: nothing else of the
+  # badge survives, and the gold rim is what keeps it visible on a white tab
+  # strip and on a dark one.
+  favicon: theme/images/badge-mark.svg
   palette:
     - scheme: default
       primary: custom

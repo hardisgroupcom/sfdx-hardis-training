@@ -132,13 +132,40 @@ export function badgesPage({ s, holders, badgeHref, badgeImage, claimUrl, record
 }
 
 /**
+ * The row of share buttons under a badge.
+ *
+ * The point of a badge is that somebody shares it, and every network wants its
+ * own intent URL. LinkedIn comes first because that is where a Salesforce
+ * credential lands; the others are there so nobody has to copy the URL by hand.
+ * Each one carries the page, which is what holds the card a feed renders, and a
+ * line of text for the networks that take one.
+ */
+function shareButtons({ s, holder, pageUrl }) {
+  const url = encodeURIComponent(pageUrl);
+  const text = encodeURIComponent(fill(s.badge.shareText, { name: holder.name, badge: holder.highest ? holder.highest.name : s.badges.heading }));
+  const networks = [
+    { label: s.badge.networks.linkedin, href: `https://www.linkedin.com/sharing/share-offsite/?url=${url}`, primary: true },
+    { label: s.badge.networks.x, href: `https://twitter.com/intent/tweet?url=${url}&text=${text}` },
+    { label: s.badge.networks.facebook, href: `https://www.facebook.com/sharer/sharer.php?u=${url}` },
+    { label: s.badge.networks.bluesky, href: `https://bsky.app/intent/compose?text=${text}%20${url}` },
+    { label: s.badge.networks.whatsapp, href: `https://wa.me/?text=${text}%20${url}` },
+    { label: s.badge.networks.email, href: `mailto:?subject=${text}&body=${url}` }
+  ];
+  return [
+    networks
+      .map((one) => `[${one.label}](${one.href}){ .md-button${one.primary ? " .md-button--primary" : ""} }`)
+      .join("\n")
+  ];
+}
+
+/**
  * One badge holder's page, from the record the claim wrote.
  *
  * The record is the source: the page is built from it on every site build, in
  * every language, so a claim never has to write a page per locale and an old
  * badge gains the new languages by itself.
  */
-export function badgePage({ s, holder, badgeImage, courseUrl }) {
+export function badgePage({ s, holder, badgeImage, courseUrl, pageUrl }) {
   // The holder, not the raw record: a record written before names were stored
   // has only its key, and site.mjs is where that is filled in. Reading the
   // record here put "undefined" on the page while the index listed the person
@@ -176,6 +203,7 @@ export function badgePage({ s, holder, badgeImage, courseUrl }) {
     "",
     ...s.badge.notCertification.body,
     "",
+    ...(pageUrl ? [`## ${s.badge.shareHeading}`, "", ...shareButtons({ s, holder, pageUrl }), ""] : []),
     `[${s.badge.takeTheCourse}](${courseUrl}){ .md-button }`,
     ""
   ].join("\n");

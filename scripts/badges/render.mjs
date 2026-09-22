@@ -34,6 +34,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { parseArgs } from "../lib/util.mjs";
 import { LEVELS, renderSvg } from "./badge-svg.mjs";
+import { writeCardFor } from "./social.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..", "..");
@@ -188,9 +189,23 @@ fs.writeFileSync(recordPath, JSON.stringify(record, null, 2) + "\n", "utf8");
 // language existed gains its page in it without anybody touching the claim, and
 // the words of that page live with the other translations, in i18n/<locale>.json.
 
+// The card a share of the badge page shows. Best effort on purpose: it needs a
+// browser, and a claim must not fail because one could not be installed. When it
+// does not happen here, the page falls back to the card of the course until
+// somebody runs scripts/badges/rerender.mjs.
+let card = null;
+try {
+  card = await writeCardFor(key);
+} catch (error) {
+  console.warn(`  (no social card: ${error.message.split("\n")[0]})`);
+}
+
 console.log(`Badge written for ${handle} as ${key}, level ${level}:`);
 console.log(`  badges/${key}.json`);
 console.log(`  badges/img/${key}-level-${level}.svg`);
+if (card) {
+  console.log(`  badges/social/${key}.png`);
+}
 if (movedFrom) {
   console.log(`  (moved from ${movedFrom}, which was removed)`);
 }

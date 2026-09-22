@@ -318,6 +318,11 @@ const frontMatter = (meta) => {
   if (meta.description) {
     lines.push(`description: ${JSON.stringify(meta.description)}`);
   }
+  // The picture a share of this page shows. Only a badge page sets one; every
+  // other page falls back to the card of the course, in main.html.
+  if (meta.social) {
+    lines.push(`social: ${JSON.stringify(meta.social)}`);
+  }
   return `${lines.join("\n")}\n---\n\n`;
 };
 for (const file of ["TRANSLATION.md"]) {
@@ -449,6 +454,10 @@ const stories = storyPages();
 // build and a claim never has to write a page per locale.
 const badgesDir = path.join(ROOT, "badges");
 copyTree(path.join(badgesDir, "img"), path.join(OUT, "badges", "img"), (name) => name.endsWith(".svg"));
+// The card a share shows, one per holder, written by scripts/badges/social.mjs.
+// LinkedIn does not render SVG, so this one is a PNG and it is committed like
+// the badge image itself.
+copyTree(path.join(badgesDir, "social"), path.join(OUT, "badges", "social"), (name) => name.endsWith(".png"));
 // The records are published as they are, at /badges/<trailblazer>.json, so that
 // anything holding a Trailblazer username can ask what that person earned with
 // one GET. The Trailhead Banner project is the reason this exists. GitHub Pages
@@ -529,15 +538,30 @@ function badgePages() {
       for (const other of locales) {
         alternates[other] = `${localePrefix(other)}badges/${holder.key}/`;
       }
+      const pageUrl = `${universe.course.site}/${localePrefix(locale)}badges/${holder.key}/`;
       const page = badgePage({
         s,
         holder,
         badgeImage: (level) => `${images}/${holder.key}-level-${level}.svg`,
-        courseUrl: `${universe.course.site}/`
+        courseUrl: `${universe.course.site}/`,
+        pageUrl
       });
+      // The card of this holder when there is one, the course card otherwise:
+      // a badge awarded before social.mjs existed has none until it is re-run
+      const card = path.join(badgesDir, "social", `${holder.key}.png`);
+      const social = fs.existsSync(card) ? `badges/social/${holder.key}.png` : null;
+      const highest = holder.highest ? holder.highest.name : s.badges.heading;
       fs.writeFileSync(
         path.join(dir, `${holder.key}.md`),
-        withAlternates(frontMatter({ title: holder.name }) + page, alternates, locale),
+        withAlternates(
+          frontMatter({
+            title: holder.name,
+            description: fill(s.badge.description, { name: holder.name, badge: highest }),
+            social
+          }) + page,
+          alternates,
+          locale
+        ),
         "utf8"
       );
       written++;
