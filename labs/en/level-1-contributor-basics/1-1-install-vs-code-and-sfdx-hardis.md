@@ -45,7 +45,7 @@ five things have to be on your machine, and the last of them installs most of th
     starts: free Salesforce orgs, a training repository, fictional data. None of that belongs on a
     real project.
 
-!!! tip "Not allowed to install anything? Do it in a browser tab"
+!!! tip "No VS Code? A browser tab or another editor does it"
     [Agentforce Vibes](https://www.salesforce.com/agentforce/developers/vibe-coding/ide/) is VS Code inside Google Chrome, launched from any Salesforce
     developer sandbox, and this whole course runs in it. Two differences and no others: the
     Salesforce CLI is already there, so the part of the Setup panel that installs it has nothing to
@@ -53,6 +53,9 @@ five things have to be on your machine, and the last of them installs most of th
     rather than the Visual Studio Marketplace. Every panel, every button and every step below is
     the same, and so are the screenshots: they were taken in desktop VS Code, which is the same
     editor.
+
+    [Cursor](https://cursor.com/) and the other editors built on VS Code work the same way, and from the same
+    Open VSX listing. Whichever one you use, the rest of this lab is written for what you see in it.
 
 ## Before you start
 
