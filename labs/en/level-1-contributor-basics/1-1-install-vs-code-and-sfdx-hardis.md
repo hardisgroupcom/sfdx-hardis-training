@@ -45,9 +45,19 @@ five things have to be on your machine, and the last of them installs most of th
     starts: free Salesforce orgs, a training repository, fictional data. None of that belongs on a
     real project.
 
+!!! tip "Not allowed to install anything? Do it in a browser tab"
+    [Agentforce Vibes](https://www.salesforce.com/agentforce/developers/vibe-coding/ide/) is VS Code inside Google Chrome, launched from any Salesforce
+    developer sandbox, and this whole course runs in it. Two differences and no others: the
+    Salesforce CLI is already there, so the part of the Setup panel that installs it has nothing to
+    do, and the extension comes from [Open VSX](https://open-vsx.org/extension/NicolasVuillamy/vscode-sfdx-hardis)
+    rather than the Visual Studio Marketplace. Every panel, every button and every step below is
+    the same, and so are the screenshots: they were taken in desktop VS Code, which is the same
+    editor.
+
 ## Before you start
 
-- [ ] A computer where you can install software, and permission to do so
+- [ ] A computer where you can install software, and permission to do so, **or** a Salesforce
+      developer sandbox to launch Agentforce Vibes from
 
 ## Steps
 
