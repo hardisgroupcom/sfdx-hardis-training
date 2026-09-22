@@ -109,6 +109,7 @@ for (const file of localeDirs.flatMap((dir) => walk(dir))) {
       continue;
     }
 
+    const before = problems.length;
     const declared = new Set();
     for (const image of images) {
       if (!/_assets\/annotated\//.test(image.target)) {
@@ -133,7 +134,10 @@ for (const file of localeDirs.flatMap((dir) => walk(dir))) {
     // pointing at a number, which sends a reader hunting for a marker that was
     // never drawn. Skipping the step outright used to hide exactly that.
     if (declared.size === 0) {
-      if (cited.size > 0) {
+      // Only when every image of the step was found and annotated. Otherwise the
+      // real cause was already reported just above, and adding "no image carries
+      // a pill" on top of it reads as a second, contradictory diagnosis.
+      if (cited.size > 0 && problems.length === before) {
         problems.push(
           `${rel}:${images[0].line} "${heading}" cites (${[...cited].sort((a, b) => a - b).join("), (")}) but no image of this step carries a pill`
         );
