@@ -9,23 +9,14 @@
       "L'équipe de delivery travaille en itérations de trois semaines. Chaque story ci-dessous est du",
       "vrai travail pour l'application `Helios Delivery`, et chacune est un lab de ce cours."
     ],
-    "columns": [
-      "Story",
-      "Niveau",
-      "Titre",
-      "Responsable",
-      "Branch"
-    ],
+    "columns": ["Story", "Niveau", "Titre", "Responsable", "Branch"],
     "inFull": "Les stories en détail",
     "owner": "Responsable",
     "branch": "Branch",
     "lab": "Lab",
     "acceptance": "Critères d'acceptation :",
     "team": "L'équipe",
-    "teamColumns": [
-      "Qui",
-      "Rôle"
-    ]
+    "teamColumns": ["Qui", "Rôle"]
   },
   "story": {
     "owner": "Responsable",
@@ -45,13 +36,7 @@
       "C'est un badge, pas une certification : il n'y a pas d'examen ici. Ce qu'il dit, c'est qu'un job a",
       "lu le repository public de la personne et y a trouvé le travail."
     ],
-    "columns": [
-      "",
-      "Nom",
-      "Badge le plus élevé",
-      "GitHub",
-      "Trailblazer"
-    ],
+    "columns": ["", "Nom", "Badge le plus élevé", "GitHub", "Trailblazer"],
     "nobody": "Personne n'a encore réclamé de badge. Soyez la première personne.",
     "claim": {
       "heading": "Réclamer le vôtre",
@@ -86,12 +71,7 @@
     "heading": "Badges obtenus par {name}",
     "github": "GitHub",
     "trailblazer": "Trailblazer",
-    "columns": [
-      "",
-      "Badge",
-      "Obtenu le",
-      "Vérifié"
-    ],
+    "columns": ["", "Badge", "Obtenu le", "Vérifié"],
     "checks": "{passed}/{total} vérifications",
     "meaning": {
       "heading": "Ce qu'ils veulent dire",
@@ -199,9 +179,7 @@
       "US-019": {
         "title": "Générer un PDF de devis depuis une opportunité",
         "story": "En tant que commercial, je veux un bouton qui génère le PDF du devis, afin d'arrêter de le refaire dans un tableur.",
-        "acceptance": [
-          "L'autorisation est donnée aux managers"
-        ]
+        "acceptance": ["L'autorisation est donnée aux managers"]
       },
       "US-052": {
         "title": "La présentation de page Installation sur deux colonnes",
@@ -214,10 +192,7 @@
       "US-020": {
         "title": "Refactorer InstallationScheduler",
         "story": "En tant que développeur, je veux que le scheduler soit découpé en méthodes testables, afin qu'on arrête d'en avoir peur.",
-        "acceptance": [
-          "Comportement inchangé",
-          "Couverture au-dessus du seuil"
-        ]
+        "acceptance": ["Comportement inchangé", "Couverture au-dessus du seuil"]
       },
       "US-021": {
         "title": "Prévenir le planificateur quand une équipe est trop petite",
@@ -255,9 +230,7 @@
       "US-033": {
         "title": "Les équipes de pose peuvent lire le coût du lot de panneaux",
         "story": "En tant que membre de l'équipe de pose, je veux voir le coût du lot que je suis en train d'installer, afin de déclarer une casse avec la bonne valeur.",
-        "acceptance": [
-          "L'équipe de pose peut lire Panel Batch Cost"
-        ]
+        "acceptance": ["L'équipe de pose peut lire Panel Batch Cost"]
       },
       "US-034": {
         "title": "Les toits plats demandent une équipe d'au moins trois personnes",
