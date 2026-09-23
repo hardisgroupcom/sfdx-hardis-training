@@ -195,6 +195,10 @@ it came from.
 A cherry-pick rewrites the commit SHA, which is why the Pull Request has to declare what it carries
 in words: nothing in git links the copy to the Pull Request it came from any more.
 
+<!-- command-links:start -->
+Command documentation: [hardis:project:promotion:create](https://sfdx-hardis.cloudity.com/hardis/project/promotion/create/)
+<!-- command-links:end -->
+
 </details>
 
 ### 5. Read what it created

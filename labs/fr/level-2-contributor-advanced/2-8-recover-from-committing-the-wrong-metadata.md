@@ -188,6 +188,10 @@ clairement. Si votre org est en retard sur `integration` et que vous récupérez
 fichiers récupérés sont plus anciens que ce qui est sur `integration`, et le diff se lit comme
 "enlever ce qu'ils ont ajouté". Un backpromote avant de commencer ([Lab 2.1](2-1-backpromote-your-teammates-work.md)) est ce qui évite cela.
 
+<!-- command-links:start -->
+Documentation des commandes : [hardis:work:resetselection](https://sfdx-hardis.cloudity.com/hardis/work/resetselection/), [hardis:work:save](https://sfdx-hardis.cloudity.com/hardis/work/save/)
+<!-- command-links:end -->
+
 </details>
 
 ## Ce que vous devez voir
@@ -213,7 +217,7 @@ mergée, puis refaites la story proprement. N'essayez pas de réparer `integrati
 
 ## Vérifiez votre travail
 
-Welcome page > **Training: Level 2** > **Check my work**, puis choisissez le Lab 2.8.
+Welcome page > **Training: Level 2** > **Check my work**, puis choisissez le **Lab 2.8**.
 
 ## Pour aller plus loin
 

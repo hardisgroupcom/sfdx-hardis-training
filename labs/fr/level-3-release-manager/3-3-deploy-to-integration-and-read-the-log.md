@@ -89,7 +89,7 @@ qui le corrige.
 **Le déploiement delta.** Au lieu d'envoyer le package déclaré, sfdx-hardis calcule ce qui a changé
 entre le commit déjà déployé dans cette org et le nouveau, et n'envoie que cela. Un déploiement
 Salesforce complet d'un projet mature prend 40 minutes ; un delta en prend 3. La contrepartie est que
-l'org doit vraiment être au commit où le pipeline la croit.
+l'org doit vraiment être au commit où la pipeline la croit.
 
 ![Le panneau Global Pipeline Settings, onglet Deployment](../../_assets/annotated/vscode/pipeline-config-deployment--delta.png)
 
@@ -243,6 +243,10 @@ Deux modes de défaillance à savoir reconnaître :
   le delta ne l'emporte donc pas, et le déploiement échoue sur une référence. La correction n'est pas
   de désactiver le delta : c'est d'inclure la dépendance, ce à quoi sert `manifest/package.xml`
 
+<!-- command-links:start -->
+Documentation des commandes : [hardis:project:deploy:smart](https://sfdx-hardis.cloudity.com/hardis/project/deploy/smart/), [hardis:work:save](https://sfdx-hardis.cloudity.com/hardis/work/save/)
+<!-- command-links:end -->
+
 </details>
 
 ## Ce que vous devez voir
@@ -275,7 +279,7 @@ son push. Si vous avez modifié `.forceignore` sur `integration` entre-temps, cl
 
 ## Vérifiez votre travail
 
-Welcome page > **Training: Level 3** > **Check my work**, puis choisissez le Lab 3.3.
+Welcome page > **Training: Level 3** > **Check my work**, puis choisissez le **Lab 3.3**.
 
 ## Pour aller plus loin
 

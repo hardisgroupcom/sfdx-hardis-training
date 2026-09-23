@@ -246,7 +246,7 @@ dans la même branche est la façon dont un release manager perd une soirée.
 
 ## Vérifiez votre travail
 
-Welcome page > **Training: Level 3** > **Check my work**, puis choisissez le Lab 3.4.
+Welcome page > **Training: Level 3** > **Check my work**, puis choisissez le **Lab 3.4**.
 
 ## Pour aller plus loin
 

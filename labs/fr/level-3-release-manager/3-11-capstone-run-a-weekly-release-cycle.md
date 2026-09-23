@@ -33,7 +33,7 @@ vous dire dans quel ordre faire les choses.
 ## Avant de commencer
 
 - [ ] Labs 3.1 à 3.10 terminés
-- [ ] Les quatre orgs du pipeline fonctionnelles, les quatre branches qui déploient
+- [ ] Les quatre orgs de la pipeline fonctionnelles, les quatre branches qui déploient
 
 ## La semaine
 
@@ -88,7 +88,7 @@ depuis le [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md). `deleted
 semaine dernière ; celle-ci transporte US-058 de manière ordinaire, et `uat` et `preprod` contiennent
 de nouveau la même chose. Vérifiez-le plutôt que de le supposer : le nœud `uat` du diagramme compte
 zéro User Story en attente une fois la promotion mergée. Une promotion branch qui n'est jamais suivie
-d'une promotion complète, c'est ainsi qu'un pipeline cesse d'être un pipeline.
+d'une promotion complète, c'est ainsi qu'une pipeline cesse d'être une pipeline.
 
 Générez ensuite les notes de version de la livraison vers `main`, ajoutez en haut la phrase qui dit à
 quoi sert cette livraison, et mettez-les dans la description de la Pull Request de `preprod` vers
@@ -131,7 +131,7 @@ qui est bien l'intérêt de l'avoir.
 - Les notes de version dans la description de la Pull Request de livraison, avec une phrase humaine
   en haut
 - Un deuxième rapport DORA à comparer avec la ligne de base du [Lab 3.6](3-6-release-to-production-and-read-dora-metrics.md)
-- `uat` qui compte zéro User Story en attente : US-058 a rattrapé US-057 et le pipeline est aligné
+- `uat` qui compte zéro User Story en attente : US-058 a rattrapé US-057 et la pipeline est alignée
   de nouveau
 
 ## En cas de problème
@@ -163,7 +163,7 @@ quelque chose de mergé, et aucun ne reporte un état inachevé sur le suivant.
 ## Vérifiez votre travail
 
 Welcome page > **Training: Level 3** > **Check my work**, puis choisissez
-**Everything in level 3**.
+**Everything in level 3, capstone included**.
 
 Dix contrôles.
 
@@ -195,7 +195,7 @@ Trois choses à faire dans la semaine qui suit, par ordre d'utilité :
 
 **Un : emportez la checklist d'installation vers votre propre projet.** La
 [checklist d'installation](https://sfdx-hardis.cloudity.com/salesforce-devops-setup-checklist/) est
-la liste de tout ce dont un vrai pipeline a besoin. Vous en avez maintenant fait l'essentiel une
+la liste de tout ce dont une vraie pipeline a besoin. Vous en avez maintenant fait l'essentiel une
 fois. Parcourez-la sur le projet où vous travaillez réellement et comptez ce qui manque.
 
 **Deux : supprimez vos orgs de formation, ou gardez-les délibérément.** Les scratch orgs se
@@ -208,7 +208,7 @@ exemple `github.com/my-username/sfdx-hardis-training`) sont de vrais identifiant
 orgs.
 
 **Trois : gardez les promotion branches comme exception.** Le [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md) vous en a fait
-assembler une, et cette semaine a remis le pipeline en place. Sur un vrai projet la pression va dans
+assembler une, et cette semaine a remis la pipeline en place. Sur un vrai projet la pression va dans
 l'autre sens : le premier sous-ensemble est accepté pour une bonne raison, le deuxième parce que le
 premier a marché, et au bout d'un trimestre plus personne ne sait ce que contient chaque org. Si vous
 vous retrouvez à en assembler une toutes les semaines, ce qu'il faut corriger est la validation, pas

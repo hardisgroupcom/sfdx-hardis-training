@@ -1,7 +1,7 @@
 ---
 id: lab-3-1
-title: "Lab 3.1 - Configurer le pipeline CI/CD jusqu'à la production"
-description: "Étendez un pipeline Salesforce à deux étages jusqu'à la production : branches, protections, et chaque org configurée et authentifiée en JWT par Add/Configure Org."
+title: "Lab 3.1 - Configurer la pipeline CI/CD jusqu'à la production"
+description: "Étendez une pipeline Salesforce à deux étages jusqu'à la production : branches, protections, et chaque org configurée et authentifiée en JWT par Add/Configure Org."
 level: 3
 lab: 1
 lang: fr
@@ -31,13 +31,13 @@ depends_on:
   docs: [salesforce-devops-setup-home, salesforce-devops-setup-auth, salesforce-devops-setup-auth-github, salesforce-devops-setup-existing-org]
 ---
 
-# Lab 3.1 - Configurer le pipeline CI/CD jusqu'à la production
+# Lab 3.1 - Configurer la pipeline CI/CD jusqu'à la production
 
 **Niveau** : 3 Release Manager
 
 **Durée** : ~75 min
 
-**Vous allez** : transformer un pipeline à deux étages en un pipeline à quatre étages qui atteint la
+**Vous allez** : transformer une pipeline à deux étages en une pipeline à quatre étages qui atteint la
 production, donner à chaque étage son org et un identifiant avec lequel un vrai projet peut vivre, et
 publier tout cela de la façon dont toute modification atteint une branche majeure : par une Pull
 Request.
@@ -73,7 +73,7 @@ application. sfdx-hardis le met en place pour vous, org par org, et écrit la co
 au passage.
 
 C'est votre première semaine. Rien de tout cela n'est inhabituel : la plupart des projets démarrent
-avec les étages dont ils ont besoin le premier jour, et finir le pipeline attend le jour où quelqu'un
+avec les étages dont ils ont besoin le premier jour, et finir la pipeline attend le jour où quelqu'un
 a besoin de livrer correctement.
 
 ## Avant de commencer
@@ -100,7 +100,7 @@ a besoin de livrer correctement.
 
 ### 1. Décider la forme
 
-Quatre questions, et leurs réponses sont tout le pipeline :
+Quatre questions, et leurs réponses sont toute la pipeline :
 
 | Question                                                                                | Réponse Helios                                                                             |
 |-----------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|
@@ -143,7 +143,7 @@ Toute modification atteint `integration`, `uat`, `preprod` et `main` par une Pul
 contrôles sont verts, et GitHub l'impose au lieu de faire confiance à chacun pour s'en souvenir.
 Depuis le [Lab 1.2](../level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md), `integration` et `uat` fonctionnent ainsi : la mise en place de l'environnement
 les a protégées. `preprod` et `main` sont à vous de protéger, et un release manager le fait le jour
-où les branches rejoignent le pipeline, pas après le premier mauvais merge.
+où les branches rejoignent la pipeline, pas après le premier mauvais merge.
 
 Dans votre fork (`github.com/my-username/sfdx-hardis-training`), cliquez sur **Settings** **(1)**,
 puis **Branches** **(2)** dans le menu de gauche. Les deux règles **(4)** sont celles que la mise en
@@ -427,7 +427,7 @@ refuse de tourner tant que la liste est absente, au lieu de deviner que chaque b
 promouvoir vers toutes les autres.
 
 **Rien ne change aujourd'hui.** Avec la fonctionnalité active et aucune branche `promotion/...` dans
-le repository, le pipeline se comporte exactement comme il y a une minute. Elle est activée
+le repository, la pipeline se comporte exactement comme il y a une minute. Elle est activée
 maintenant à cause de l'endroit où le réglage doit se trouver au [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md), et l'étape suivante
 explique pourquoi ce n'est pas évident.
 
@@ -442,11 +442,11 @@ explique pourquoi ce n'est pas évident.
 
 Une promotion branch est coupée depuis sa branche **cible**, et le job de déploiement de sa Pull
 Request lit donc la configuration que porte `preprod`, pas celle que porte `integration`. Une
-configuration de projet n'atteint `preprod` qu'en remontant le pipeline avec les promotions, ce qui
+configuration de projet n'atteint `preprod` qu'en remontant la pipeline avec les promotions, ce qui
 sur ce cours arrive aux Labs 3.5 et 3.6.
 
 Activez la fonctionnalité ici et elle arrive toute seule dans `uat`, `preprod` et `main`, avec le
-reste de la configuration du pipeline, à temps pour le [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md). Activez-la au [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md) et vous vous
+reste de la configuration de la pipeline, à temps pour le [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md). Activez-la au [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md) et vous vous
 devez trois merges avant de pouvoir vous en servir, ce qui est exactement le genre de détail qui fait
 passer une fonctionnalité Beta pour cassée alors qu'elle est seulement en retard.
 
@@ -549,6 +549,10 @@ dit seulement au panneau pipeline de VS Code quelle forme attendre : `secretsOnl
 identifiants vivent entièrement dans les secrets de CI, `encryptedCert`, la valeur par défaut, veut
 dire que chaque branche majeure a une clé commitée.
 
+<!-- command-links:start -->
+Documentation de la commande : [hardis:project:configure:auth](https://sfdx-hardis.cloudity.com/hardis/project/configure/auth/)
+<!-- command-links:end -->
+
 </details>
 
 <details markdown="1"><summary>Sous le capot : les fichiers que vous venez de publier</summary>
@@ -573,7 +577,7 @@ et `config/branches/` contient maintenant quatre fichiers, chacun avec `targetUs
 **Une branche majeure n'est déclarée "majeure" nulle part.** Elle le devient en ayant un fichier de
 configuration de branche avec une org dedans. C'est tout le mécanisme, et le savoir veut dire que
 vous pouvez lire n'importe quel projet sfdx-hardis en deux minutes en listant `config/branches/`.
-Chaque écran qui lit les branches majeures, le diagramme du pipeline et le sélecteur de portée de
+Chaque écran qui lit les branches majeures, le diagramme de la pipeline et le sélecteur de portée de
 Pipeline Settings compris, lit ce dossier.
 
 `sf hardis:project:create` aurait généré le squelette d'un nouveau projet : les workflows de chaque
@@ -583,11 +587,15 @@ de branche sont le travail d'Add/Configure Org, comme ci-dessus. La commande qui
 existante sans aucun repository et produit le premier commit est `sf
 hardis:org:retrieve:sources:dx`, le vrai point de départ de la plupart des projets.
 
+<!-- command-links:start -->
+Documentation des commandes : [hardis:project:create](https://sfdx-hardis.cloudity.com/hardis/project/create/), [hardis:org:retrieve:sources:dx](https://sfdx-hardis.cloudity.com/hardis/org/retrieve/sources/dx/)
+<!-- command-links:end -->
+
 </details>
 
 ### 13. Regarder le diagramme à nouveau
 
-Ouvrez le panneau **DevOps Pipeline** et cliquez sur **Refresh**. Voici le pipeline que vous avez
+Ouvrez le panneau **DevOps Pipeline** et cliquez sur **Refresh**. Voici la pipeline que vous avez
 construit :
 
 ![Le panneau DevOps Pipeline avec quatre branches majeures, chacune déployant dans son org](../../_assets/annotated/vscode/devops-pipeline-level3--four-stages.png)
@@ -668,7 +676,7 @@ alias, et relancez.
 
 ## Vérifiez votre travail
 
-Welcome page > **Training: Level 3** > **Check my work**, puis choisissez le Lab 3.1.
+Welcome page > **Training: Level 3** > **Check my work**, puis choisissez le **Lab 3.1**.
 
 ## Pour aller plus loin
 

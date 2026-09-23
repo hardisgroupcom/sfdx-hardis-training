@@ -319,6 +319,10 @@ everything: [promotion
 branches](https://sfdx-hardis.cloudity.com/salesforce-devops-promotion-branches/). [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md) uses
 it, deliberately late, because it makes sense once you have done a few releases the ordinary way.
 
+<!-- command-links:start -->
+Command documentation: [hardis:doc:release-notes](https://sfdx-hardis.cloudity.com/hardis/doc/release-notes/)
+<!-- command-links:end -->
+
 </details>
 
 ## What you should see
@@ -350,7 +354,7 @@ returned nothing and only warned; or the merges were squashed, so there is no li
 
 ## Check your work
 
-Welcome page > **Training: Level 3** > **Check my work**, then pick Lab 3.5.
+Welcome page > **Training: Level 3** > **Check my work**, then pick **Lab 3.5**.
 
 ## Go deeper
 

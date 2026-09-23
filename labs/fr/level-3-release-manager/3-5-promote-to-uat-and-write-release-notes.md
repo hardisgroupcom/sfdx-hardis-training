@@ -202,7 +202,7 @@ comme faite. Laissez-la décochée et la promotion suivante vous la redemandera.
 
 Mergez la promotion. L'exécution **Process Deployment (sfdx-hardis)** démarre, cette fois sur `uat`.
 
-C'est le premier déploiement vers cette org par le pipeline : il sera donc plus gros que ceux vers
+C'est le premier déploiement vers cette org par la pipeline : il sera donc plus gros que ceux vers
 integration, l'UAT est en retard de tout ce que l'équipe a fait. Comptez plusieurs minutes.
 
 Quand il se termine, faites les étapes manuelles que le commentaire listait, dans `helios-uat`.
@@ -336,6 +336,10 @@ promotion](https://sfdx-hardis.cloudity.com/salesforce-devops-promotion-branches
 [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md) s'en sert, délibérément tard, parce que cela prend son sens une fois que vous avez
 fait quelques livraisons de la façon ordinaire.
 
+<!-- command-links:start -->
+Documentation de la commande : [hardis:doc:release-notes](https://sfdx-hardis.cloudity.com/hardis/doc/release-notes/)
+<!-- command-links:end -->
+
 </details>
 
 ## Ce que vous devez voir
@@ -368,7 +372,7 @@ la recherche de Pull Requests n'a donc rien renvoyé et s'est contentée d'avert
 
 ## Vérifiez votre travail
 
-Welcome page > **Training: Level 3** > **Check my work**, puis choisissez le Lab 3.5.
+Welcome page > **Training: Level 3** > **Check my work**, puis choisissez le **Lab 3.5**.
 
 ## Pour aller plus loin
 

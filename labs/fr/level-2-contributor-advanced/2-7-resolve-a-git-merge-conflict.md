@@ -363,7 +363,7 @@ mieux que merger quelque chose que vous ne comprenez pas.
 
 ## Vérifiez votre travail
 
-Welcome page > **Training: Level 2** > **Check my work**, puis choisissez le Lab 2.7.
+Welcome page > **Training: Level 2** > **Check my work**, puis choisissez le **Lab 2.7**.
 
 Le contrôle vérifie des **résultats, pas une procédure** : les deux modifications présentes et
 correctes sur `integration`, aucun marqueur restant. Peu importe comment vous y êtes arrivé, y

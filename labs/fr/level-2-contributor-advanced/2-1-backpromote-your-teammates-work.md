@@ -183,6 +183,10 @@ backpromote suivant sache où commencer, depuis n'importe quelle machine et n'im
 C'est aussi pourquoi la commande a besoin d'un token de fournisseur git : sans lui, elle ne peut pas
 lire son propre historique, et elle s'arrête.
 
+<!-- command-links:start -->
+Documentation de la commande : [hardis:work:backpromote](https://sfdx-hardis.cloudity.com/hardis/work/backpromote/)
+<!-- command-links:end -->
+
 </details>
 
 ## Ce que vous devez voir
@@ -207,7 +211,7 @@ branche si vous l'aviez commité, et le déploiement n'a changé que l'org.
 
 ## Vérifiez votre travail
 
-Welcome page > **Training: Level 2** > **Check my work**, puis choisissez le Lab 2.1.
+Welcome page > **Training: Level 2** > **Check my work**, puis choisissez le **Lab 2.1**.
 
 ## Pour aller plus loin
 

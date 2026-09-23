@@ -188,6 +188,10 @@ Si le projet a un fournisseur d'IA configuré, le générateur peut aussi écrir
 manquantes plutôt que de laisser des vides. Utile, et pas un substitut aux trois paragraphes de
 l'étape 5 : un modèle peut décrire ce qu'est un champ, pas pourquoi le métier en a besoin.
 
+<!-- command-links:start -->
+Documentation des commandes : [hardis:doc:project2markdown](https://sfdx-hardis.cloudity.com/hardis/doc/project2markdown/), [hardis:doc:override-prompts](https://sfdx-hardis.cloudity.com/hardis/doc/override-prompts/), [hardis:doc:plugin:generate](https://sfdx-hardis.cloudity.com/hardis/doc/plugin/generate/)
+<!-- command-links:end -->
+
 </details>
 
 ## Ce que vous devez voir
@@ -215,7 +219,7 @@ suivantes produisent de petits diffs.
 
 ## Vérifiez votre travail
 
-Welcome page > **Training: Level 3** > **Check my work**, puis choisissez le Lab 3.9.
+Welcome page > **Training: Level 3** > **Check my work**, puis choisissez le **Lab 3.9**.
 
 ## Pour aller plus loin
 

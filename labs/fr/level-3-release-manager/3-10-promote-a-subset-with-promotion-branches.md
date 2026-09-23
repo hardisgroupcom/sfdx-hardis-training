@@ -5,7 +5,7 @@ description: "Transportez une seule User Story approuvée de uat vers preprod av
 level: 3
 lab: 10
 lang: fr
-source_rev: "a3eb2367dcb6598268f551512068ff12b1e85004"
+source_rev: "3d64f246ca0872cf81caf7c470ee7fe079fdaf6a"
 screenshots:
   - annotated/vscode/welcome-custom-menu-3
   - annotated/vscode/pipeline-config-danger--promotion-branches
@@ -73,7 +73,7 @@ qu'elle est, US-058 comprise.
 
 ### 1. Vérifier que la fonctionnalité est active, et où elle est autorisée
 
-Les deux réglages dont ce lab a besoin ont été publiés au [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) et remontent le pipeline avec
+Les deux réglages dont ce lab a besoin ont été publiés au [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) et remontent la pipeline avec
 chaque promotion depuis. Regardez-les avant de compter dessus.
 
 Ouvrez le panneau **DevOps Pipeline**, le menu engrenage, **Pipeline Settings**, portée **Global
@@ -195,7 +195,7 @@ qu'une seule cible. Avec plusieurs cibles autorisées, la commande aurait posé 
 
 La branche est nommée `promotion/<source>/<cible>/<YYYY-MM-DD>-<HHMM>`, en UTC, et un `-2`, `-3`
 n'est ajouté que si cette minute est déjà prise. La forme est fixe et non configurable : les jobs de
-déploiement, le diagramme du pipeline et les notes de version reconnaissent tous une promotion à ça.
+déploiement, le diagramme de la pipeline et les notes de version reconnaissent tous une promotion à ça.
 
 Elle est coupée depuis `origin/preprod`, pas depuis `uat`. C'est toute l'astuce : une branche qui
 part de la cible et ne reçoit que les commits choisis ne peut pas transporter ce que vous n'avez pas
@@ -206,6 +206,10 @@ commit de `uat` dont elle vient.
 Un cherry-pick réécrit le SHA du commit, et c'est pour cela que la Pull Request doit déclarer en
 toutes lettres ce qu'elle transporte : plus rien dans git ne relie la copie à la Pull Request dont
 elle vient.
+
+<!-- command-links:start -->
+Documentation de la commande : [hardis:project:promotion:create](https://sfdx-hardis.cloudity.com/hardis/project/promotion/create/)
+<!-- command-links:end -->
 
 </details>
 
@@ -295,7 +299,7 @@ ce lab est celui où la seconde compte.
 
 ### 8. Compter ce que cela a coûté
 
-Regardez le pipeline maintenant, et dites à voix haute ce qui est vrai :
+Regardez la pipeline maintenant, et dites à voix haute ce qui est vrai :
 
 - `uat` contient US-057 et US-058. `preprod` ne contient qu'US-057
 - `helios-uat` et `helios-preprod` ne sont plus la même org, et elles resteront différentes jusqu'à
@@ -324,7 +328,7 @@ n'importe quelle autre story la veille d'une livraison, et la prochaine Pull Req
 Ce sur quoi sfdx-hardis doit faire attention, c'est US-057, qui est dans les **deux** branches par
 des chemins différents : mergée dans `uat`, cherry-pickée dans `preprod`. La prochaine promotion de
 `uat` fera aussi remonter le commit d'origine, et git mergera proprement parce que le contenu y est
-déjà. Le diagramme du pipeline et les notes de version savent tous les deux qu'elle a déjà été
+déjà. Le diagramme de la pipeline et les notes de version savent tous les deux qu'elle a déjà été
 promue (`promotedAway`), elle est donc listée une seule fois, sur la branche qu'elle a réellement
 atteinte, et les notes de la livraison suivante ne l'annoncent pas deux fois.
 
@@ -351,7 +355,7 @@ actions s'exécutent en production aussi.
 **La fenêtre d'uat n'a ni cases à cocher ni bouton Create promotion.**
 Soit la fonctionnalité est inactive dans la configuration que lit votre workspace, soit
 `allowedPromotionSteps` ne nomme pas `uat` comme source avec `preprod` comme cible. L'étape 1 montre
-les deux. Une étape qui pointe vers une branche dans laquelle le pipeline ne merge pas n'ouvre rien,
+les deux. Une étape qui pointe vers une branche dans laquelle la pipeline ne merge pas n'ouvre rien,
 et c'est volontaire.
 
 **La commande s'arrête en disant que les étapes autorisées manquent.**
