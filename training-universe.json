@@ -443,9 +443,7 @@
         "Planners can pick it on an installation that is already planned"
       ],
       "branch": "training/mate-us-057-awaiting-parts",
-      "metadata": [
-        "Installation__c.Status__c"
-      ]
+      "metadata": ["Installation__c.Status__c"]
     },
     {
       "id": "US-058",

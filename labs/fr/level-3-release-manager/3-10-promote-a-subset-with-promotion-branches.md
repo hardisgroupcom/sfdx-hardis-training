@@ -224,9 +224,9 @@ promotionPullRequests: [NNN]
 
 ## Carried Pull Requests
 
-| Pull Request | Title | Author | Source branch | Commit |
-|---|---|---|---|---|
-| #NNN | US-057 Park an installation that is waiting for parts | Mariia Pyvovarchuk | `training/mate-us-057-awaiting-parts` | `7c41ab9` |
+| Pull Request | Title                                                 | Author             | Source branch                         | Commit    |
+|--------------|-------------------------------------------------------|--------------------|---------------------------------------|-----------|
+| #NNN         | US-057 Park an installation that is waiting for parts | Mariia Pyvovarchuk | `training/mate-us-057-awaiting-parts` | `7c41ab9` |
 ````
 
 **Ce bloc yaml est la déclaration**, et chaque job qui tourne sur cette Pull Request le lit. C'est

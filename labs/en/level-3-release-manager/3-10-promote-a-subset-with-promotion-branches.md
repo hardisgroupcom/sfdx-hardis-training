@@ -212,9 +212,9 @@ promotionPullRequests: [NNN]
 
 ## Carried Pull Requests
 
-| Pull Request | Title | Author | Source branch | Commit |
-|---|---|---|---|---|
-| #NNN | US-057 Park an installation that is waiting for parts | Mariia Pyvovarchuk | `training/mate-us-057-awaiting-parts` | `7c41ab9` |
+| Pull Request | Title                                                 | Author             | Source branch                         | Commit    |
+|--------------|-------------------------------------------------------|--------------------|---------------------------------------|-----------|
+| #NNN         | US-057 Park an installation that is waiting for parts | Mariia Pyvovarchuk | `training/mate-us-057-awaiting-parts` | `7c41ab9` |
 ````
 
 **That yaml block is the declaration**, and every job that runs on this Pull Request reads it. It is
