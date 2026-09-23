@@ -5,7 +5,7 @@ description: "Transportez une seule User Story approuvée de uat vers preprod av
 level: 3
 lab: 10
 lang: fr
-source_rev: "ed7a1945f5852ece1409b68dfa3161d14c12e40d"
+source_rev: "e9553a6a7ef341a7da8fb1a339dcbabb0337c4a4"
 screenshots:
   - annotated/vscode/welcome-custom-menu-3
   - annotated/vscode/pipeline-config-danger--promotion-branches
