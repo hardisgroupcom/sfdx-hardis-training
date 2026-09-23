@@ -126,10 +126,9 @@
         "s'agit, et rien de personnel. Une image par niveau, partagée par toutes les personnes qui l'ont obtenue, et",
         "c'est ce qui rend son adresse publiable.",
         "",
-        "[Trailhead Banner](https://thb.nabondance.me/) la lit dans le record : tapez votre nom d'utilisateur",
-        "Trailblazer et l'outil dessine une bannière LinkedIn avec votre rang, vos compteurs de badges et de",
-        "certifications, et le badge le plus élevé que vous avez réclamé ici. Générez-la, puis mettez-la en",
-        "bannière de votre profil LinkedIn."
+        "[Trailhead Banner](https://thb.nabondance.me/) la lit dans le record : tapez votre nom d'utilisateur Trailblazer",
+        "et l'outil dessine une bannière LinkedIn avec votre rang, vos compteurs de badges et de certifications, et le",
+        "badge le plus élevé que vous avez réclamé ici. Générez-la, puis mettez-la en bannière de votre profil LinkedIn."
       ],
       "record": "Le record complet, en JSON"
     }
