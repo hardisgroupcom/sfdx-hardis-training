@@ -217,9 +217,9 @@ promotionPullRequests: [NNN]
 
 ## Carried Pull Requests
 
-| Pull Request | Title                                                 | Author             | Source branch                         | Commit    |
-|--------------|-------------------------------------------------------|--------------------|---------------------------------------|-----------|
-| #NNN         | US-057 Park an installation that is waiting for parts | my-username        | `training/mate-us-057-awaiting-parts` | `7c41ab9` |
+| Pull Request | Title                                                 | Author      | Source branch                         | Commit    |
+|--------------|-------------------------------------------------------|-------------|---------------------------------------|-----------|
+| #NNN         | US-057 Park an installation that is waiting for parts | my-username | `training/mate-us-057-awaiting-parts` | `7c41ab9` |
 ````
 
 The **Author** column is the GitHub account that opened the Pull Request, so on this course it is
