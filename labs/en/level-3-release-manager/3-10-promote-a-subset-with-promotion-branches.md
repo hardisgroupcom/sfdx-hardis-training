@@ -167,10 +167,11 @@ Then read the log, because it is doing something you would otherwise be doing by
 
 ```
 Creating promotion branch promotion/uat/preprod/2026-09-24-0930 from origin/preprod...
-Cherry-picking #NNN US-057 Park an installation that is waiting for parts...
-Promotion branch promotion/uat/preprod/2026-09-24-0930 assembled with 1 User Story(ies): #NNN
+Cherry-picking #NNN US-057 Park an installation that is waiting for parts (my-username) [7c41ab9]...
+Pushing promotion branch promotion/uat/preprod/2026-09-24-0930...
 Creating the Pull Request from promotion/uat/preprod/2026-09-24-0930 to preprod...
 Promotion Pull Request created: https://github.com/my-username/sfdx-hardis-training/pull/NNN
+Promotion branch promotion/uat/preprod/2026-09-24-0930 assembled with 1 User Story(ies): #NNN
 ```
 
 <details markdown="1"><summary>Under the hood: what the button ran, and what the branch name means</summary>
@@ -218,8 +219,18 @@ promotionPullRequests: [NNN]
 
 | Pull Request | Title                                                 | Author             | Source branch                         | Commit    |
 |--------------|-------------------------------------------------------|--------------------|---------------------------------------|-----------|
-| #NNN         | US-057 Park an installation that is waiting for parts | Mariia Pyvovarchuk | `training/mate-us-057-awaiting-parts` | `7c41ab9` |
+| #NNN         | US-057 Park an installation that is waiting for parts | my-username        | `training/mate-us-057-awaiting-parts` | `7c41ab9` |
 ````
+
+The **Author** column is the GitHub account that opened the Pull Request, so on this course it is
+your own handle rather than Mariia's: the teammate wrote the commit, `Simulate my teammates` opened
+the Pull Request with your account. The branch window of the panel shows the commit author, which is
+why the two disagree.
+
+The **Title** comes from the Pull Request, read through the git provider API, and that call needs a
+token in the environment (`GITHUB_TOKEN` or `CI_SFDX_HARDIS_GITHUB_TOKEN`), the same one
+[Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md) needs for the release notes. Without one the row still carries the right Pull Request
+and the right commit, and the title reads `PR #NNN`.
 
 **That yaml block is the declaration**, and every job that runs on this Pull Request reads it. It is
 how US-057 keeps, in `preprod`, everything it would have had in an ordinary promotion: its
@@ -354,6 +365,11 @@ answer is usually to promote the story it depends on as well.
 The deployment job read a configuration with the feature off. Check that `preprod` carries
 `enablePromotionBranches: true` in `config/.sfdx-hardis.yml`: the branch the job reads is the
 promotion branch, which was cut from `preprod`.
+
+**The carried table says `PR #NNN` instead of the story title.**
+There is no git provider token in the environment, so the command could not read the Pull Request.
+The promotion itself is correct: the right commit was cherry-picked and the right number declared.
+Set `GITHUB_TOKEN` and the titles and authors come back.
 
 **The deployment is much bigger than one story.**
 Look at what the branch was cut from. A promotion branch built when `preprod` was behind carries the

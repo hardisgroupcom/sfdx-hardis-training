@@ -5,7 +5,7 @@ description: "Lisez correctement un log de déploiement sfdx-hardis, puis relise
 level: 3
 lab: 3
 lang: fr
-source_rev: "4661bc03d2558cec0b10dc8f320de2e8a4617d66"
+source_rev: "a34ea6fe2995834d2ab32fd72793082b541c84c8"
 screenshots:
   - annotated/vscode/pipeline-config-deployment--delta
   - annotated/vscode/orgs-manager

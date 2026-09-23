@@ -5,7 +5,7 @@ description: "Livrez une User Story Salesforce de bout en bout sans pas-à-pas :
 level: 1
 lab: 7
 lang: fr
-source_rev: "8cf533715aad51a6a517e15d899f0982af9fb07e"
+source_rev: "a34ea6fe2995834d2ab32fd72793082b541c84c8"
 screenshots:
 depends_on:
   commands: [hardis:work:new, hardis:work:save]

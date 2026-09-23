@@ -5,7 +5,7 @@ description: "Générez une documentation lisible d'une org Salesforce non docum
 level: 3
 lab: 9
 lang: fr
-source_rev: "a3eb2367dcb6598268f551512068ff12b1e85004"
+source_rev: "ed7a1945f5852ece1409b68dfa3161d14c12e40d"
 screenshots:
   - annotated/vscode/documentation-workbench--generate-and-deploy
 depends_on:

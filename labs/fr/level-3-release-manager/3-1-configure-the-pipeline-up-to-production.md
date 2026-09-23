@@ -5,7 +5,7 @@ description: "Étendez une pipeline Salesforce à deux étages jusqu'à la produ
 level: 3
 lab: 1
 lang: fr
-source_rev: "a3eb2367dcb6598268f551512068ff12b1e85004"
+source_rev: "ed7a1945f5852ece1409b68dfa3161d14c12e40d"
 screenshots:
   - annotated/vscode/devops-pipeline--one-column
   - annotated/web/github-new-branch
@@ -657,6 +657,18 @@ L'External Client App derrière cette consumer key n'a jamais été créée : la
 après avoir affiché les deux valeurs. Relancez **Add/Configure Org** pour cette branche, stockez les
 deux nouvelles valeurs, et republiez.
 
+**Add/Configure Org s'arrête en demandant si vous avez supprimé l'External Client App.**
+Vous lancez la commande une deuxième fois pour cette branche, et l'app qu'elle déploie est déjà dans
+l'org : elle vous demande donc de retirer l'ancienne d'abord (*External Client App named
+`sfdxhardis<branche>` already exists ... Have you deleted it?*). Dans l'org, **Setup > External
+Client App Manager**, supprimez cette app, puis répondez oui. C'est le chemin normal dès que l'une
+des entrées ci-dessus vous renvoie dans **Add/Configure Org**.
+
+**Add/Configure Org s'arrête juste après "Selected Org", sans poser aucune question.**
+La liste des orgs a proposé un org `helios-` qui n'existe plus, en général parce qu'un scratch org a
+été reconstruit sous le même alias. Voir l'entrée ci-dessus : la dernière réponse de la liste,
+**I already authenticated my org but I don't see it !**, vide ce cache.
+
 **Tout passe alors que les secrets JWT manquent.**
 Un secret d'auth URL est encore là et l'emporte toujours. Étape 10.
 
@@ -669,6 +681,14 @@ dans le panneau **Source Control**, puis republiez.
 GitHub ne liste que les contrôles qui ont rendu compte sur ce repository dans les sept derniers
 jours. Ouvrez une Pull Request vers `integration`, laissez ses contrôles tourner, et revenez à la
 règle.
+
+**Set up my training environment échoue avec `There is already a Child Relationship named
+Installations on Account`.**
+Vous avez nettoyé cet org avec **Clean up a training org** et vous y remettez l'app. Supprimer un
+objet personnalisé ne l'efface pas : il reste dans **Setup > Objects and Fields > Deleted Objects**
+et garde ses noms de relation réservés, donc l'app ne peut pas être recréée à côté de lui. Effacez-le
+là, puis relancez **Set up my training environment**. Sur un scratch org, il est plus rapide de
+laisser **Set up my training environment** en construire un nouveau.
 
 **Set up one of my training orgs échoue sur `helios-prod`.**
 La cause habituelle est une connexion expirée : reconnectez-la dans **Orgs Manager** sous le même

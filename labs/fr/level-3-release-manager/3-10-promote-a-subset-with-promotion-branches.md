@@ -5,7 +5,7 @@ description: "Transportez une seule User Story approuvée de uat vers preprod av
 level: 3
 lab: 10
 lang: fr
-source_rev: "3d64f246ca0872cf81caf7c470ee7fe079fdaf6a"
+source_rev: "ed7a1945f5852ece1409b68dfa3161d14c12e40d"
 screenshots:
   - annotated/vscode/welcome-custom-menu-3
   - annotated/vscode/pipeline-config-danger--promotion-branches
@@ -178,10 +178,11 @@ Lisez ensuite le log, parce qu'il fait quelque chose que vous feriez à la main 
 
 ```
 Creating promotion branch promotion/uat/preprod/2026-09-24-0930 from origin/preprod...
-Cherry-picking #NNN US-057 Park an installation that is waiting for parts...
-Promotion branch promotion/uat/preprod/2026-09-24-0930 assembled with 1 User Story(ies): #NNN
+Cherry-picking #NNN US-057 Park an installation that is waiting for parts (my-username) [7c41ab9]...
+Pushing promotion branch promotion/uat/preprod/2026-09-24-0930...
 Creating the Pull Request from promotion/uat/preprod/2026-09-24-0930 to preprod...
 Promotion Pull Request created: https://github.com/my-username/sfdx-hardis-training/pull/NNN
+Promotion branch promotion/uat/preprod/2026-09-24-0930 assembled with 1 User Story(ies): #NNN
 ```
 
 <details markdown="1"><summary>Sous le capot : ce que le bouton a lancé, et ce que le nom de la branche veut dire</summary>
@@ -230,8 +231,18 @@ promotionPullRequests: [NNN]
 
 | Pull Request | Title                                                 | Author             | Source branch                         | Commit    |
 |--------------|-------------------------------------------------------|--------------------|---------------------------------------|-----------|
-| #NNN         | US-057 Park an installation that is waiting for parts | Mariia Pyvovarchuk | `training/mate-us-057-awaiting-parts` | `7c41ab9` |
+| #NNN         | US-057 Park an installation that is waiting for parts | my-username        | `training/mate-us-057-awaiting-parts` | `7c41ab9` |
 ````
+
+La colonne **Author** est le compte GitHub qui a ouvert la Pull Request : sur cette formation,
+c'est donc votre propre identifiant et non celui de Mariia. La coéquipière a écrit le commit,
+**Simulate my teammates** a ouvert la Pull Request avec votre compte. La fenêtre de branche du
+panneau affiche l'auteur du commit, et c'est pour cela que les deux ne disent pas la même chose.
+
+La colonne **Title** vient de la Pull Request, lue via l'API du git provider, et cet appel a besoin
+d'un token dans l'environnement (`GITHUB_TOKEN` ou `CI_SFDX_HARDIS_GITHUB_TOKEN`), le même que celui
+dont le [Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md) a besoin pour les notes de version. Sans token, la ligne porte quand même
+la bonne Pull Request et le bon commit, et le titre affiche `PR #NNN`.
 
 **Ce bloc yaml est la déclaration**, et chaque job qui tourne sur cette Pull Request le lit. C'est
 ainsi qu'US-057 garde, dans `preprod`, tout ce qu'elle aurait eu dans une promotion ordinaire : ses
@@ -375,6 +386,11 @@ promouvoir aussi la story dont elle dépend.
 Le job de déploiement a lu une configuration avec la fonctionnalité inactive. Vérifiez que `preprod`
 porte bien `enablePromotionBranches: true` dans `config/.sfdx-hardis.yml` : la branche que le job lit
 est la promotion branch, qui a été coupée depuis `preprod`.
+
+**Le tableau des Pull Requests portées affiche `PR #NNN` au lieu du titre de la story.**
+Il n'y a pas de token de git provider dans l'environnement, donc la commande n'a pas pu lire la
+Pull Request. La promotion elle-même est correcte : le bon commit a été cherry-pické et le bon
+numéro déclaré. Définissez `GITHUB_TOKEN` et les titres et les auteurs reviennent.
 
 **Le déploiement est beaucoup plus gros qu'une story.**
 Regardez depuis quoi la branche a été coupée. Une promotion branch construite alors que `preprod`

@@ -624,6 +624,18 @@ The External Client App behind that consumer key was never created: the command 
 printed the two values. Run **Add/Configure Org** again for that branch, store the two new values,
 and publish again.
 
+**Add/Configure Org stops asking whether you deleted the External Client App.**
+You are running it a second time for that branch, and the app it deploys is already in the org, so
+it asks you to remove the old one first: *External Client App named `sfdxhardis<branch>` already
+exists ... Have you deleted it?* In the org, **Setup > External Client App Manager**, delete that
+app, then answer yes. It is the normal path whenever an entry above sends you back through
+**Add/Configure Org**.
+
+**Add/Configure Org stops straight after "Selected Org", with none of the questions asked.**
+The org list offered a `helios-` org that no longer exists, usually because a scratch org was
+rebuilt under the same alias. See the entry above: the last answer of the list,
+**I already authenticated my org but I don't see it !**, clears that cache.
+
 **Everything passes even with the JWT secrets missing.**
 An auth URL secret is still there and still winning. Step 10.
 
@@ -635,6 +647,14 @@ then publish again.
 **The check you want to require is not suggested.**
 GitHub only lists checks that reported on this repository in the last seven days. Open a Pull
 Request into `integration`, let its checks run, and come back to the rule.
+
+**Set up my training environment fails with `There is already a Child Relationship named
+Installations on Account`.**
+You cleaned that org up with **Clean up a training org** and are now putting the app back. Deleting
+a custom object does not erase it: it sits in **Setup > Objects and Fields > Deleted Objects** and
+keeps its relationship names reserved, so the app cannot be created again next to it. Erase it
+there, then run **Set up my training environment** again. On a scratch org it is quicker to let
+**Set up my training environment** build a new one.
 
 **Set up one of my training orgs fails on `helios-prod`.**
 The usual cause is an expired connection: reconnect it in **Orgs Manager** under the same alias, and
