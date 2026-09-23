@@ -303,6 +303,23 @@
           "Une formule Crew Workload sur Installation",
           "Sur la présentation de page, lisible par les managers"
         ]
+      },
+      "US-057": {
+        "title": "Mettre en pause une installation qui attend une pièce",
+        "story": "En tant que planificateur, je veux un statut pour une installation bloquée par une pièce manquante, afin que le rapport hebdomadaire cesse de la compter en retard.",
+        "acceptance": [
+          "Status propose Awaiting Parts",
+          "Les planificateurs peuvent le choisir sur une installation déjà planifiée"
+        ]
+      },
+      "US-058": {
+        "title": "Enregistrer la durée de garantie sur un panel batch",
+        "story": "En tant que commercial, je veux que la durée de garantie soit stockée sur le panel batch, afin que le devis dise combien de temps les panneaux sont couverts.",
+        "acceptance": [
+          "Un champ Warranty Years existe sur Panel Batch",
+          "Il est sur la présentation de page Panel Batch",
+          "Les managers peuvent le lire et l'écrire"
+        ]
       }
     }
   },

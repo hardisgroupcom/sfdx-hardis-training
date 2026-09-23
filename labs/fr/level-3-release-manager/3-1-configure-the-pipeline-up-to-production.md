@@ -5,7 +5,7 @@ description: "Étendez un pipeline Salesforce à deux étages jusqu'à la produc
 level: 3
 lab: 1
 lang: fr
-source_rev: "4661bc03d2558cec0b10dc8f320de2e8a4617d66"
+source_rev: "a3eb2367dcb6598268f551512068ff12b1e85004"
 screenshots:
   - annotated/vscode/devops-pipeline--one-column
   - annotated/web/github-new-branch
@@ -19,13 +19,14 @@ screenshots:
   - annotated/vscode/pipeline-config--target-branches
   - annotated/vscode/pipeline-config-user-stories--target-branches
   - annotated/vscode/pipeline-config-deployment--deployment-tab
+  - annotated/vscode/pipeline-config-danger--promotion-branches
   - annotated/vscode/pipeline-cards--save-publish
   - annotated/vscode/work-save-completed
   - annotated/vscode/devops-pipeline-level3--four-stages
 depends_on:
   commands: [hardis:project:configure:auth]
   flags: []
-  config: [availableTargetBranches, availableTargetBranchesLabels, productionBranch, mergeTargets, targetUsername, instanceUrl, orgAuthenticationMode]
+  config: [availableTargetBranches, availableTargetBranchesLabels, productionBranch, mergeTargets, targetUsername, instanceUrl, orgAuthenticationMode, enablePromotionBranches, allowedPromotionSteps]
   panels: [pipeline, pipelineConfig, orgManager, commandExecution, promptInput]
   docs: [salesforce-devops-setup-home, salesforce-devops-setup-auth, salesforce-devops-setup-auth-github, salesforce-devops-setup-existing-org]
 ---
@@ -396,7 +397,62 @@ Toujours dans **Pipeline Settings**, portée **Global Settings** **(1)**, ouvrez
 **(4)**, changez-le en *Encrypted certificate key files*, et **Save**. Désormais le panneau vérifie
 `config/branches/.jwt/<branche>.key` pour chaque branche majeure et le dit quand il en manque une.
 
-### 10. Supprimer le raccourci, avant que quoi que ce soit ne prouve quoi que ce soit
+### 10. Activer les promotion branches, pour une semaine que vous espérez ne pas avoir
+
+Un réglage de plus, sur le même panneau, et c'est le seul de ce lab que vous activez pour quelque
+chose qui n'est pas encore arrivé.
+
+La plupart des semaines, un release manager promeut une branche entière : tout ce qui est dans `uat`
+part vers `preprod` ensemble, parce que c'est la version que les testeurs ont testée. Certaines
+semaines, le métier valide une story et pas celle d'à côté, et la date de livraison ne bouge pas.
+sfdx-hardis a une fonctionnalité en Beta pour cette semaine-là, les **promotion branches**, et le
+[Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md) est l'endroit où vous vous en servez.
+
+Toujours dans **Pipeline Settings**, portée **Global Settings**, ouvrez l'onglet **Danger Zone**.
+
+![La Danger Zone des Global Pipeline Settings, avec les deux réglages des promotion branches](../../_assets/annotated/vscode/pipeline-config-danger--promotion-branches.png)
+
+L'onglet s'ouvre sur un avertissement, *Use these settings with caution, be sure to understand their
+impact as they drift from DevOps best practices*, et il vaut pour chaque réglage qui s'y trouve,
+celui-ci compris.
+
+Cliquez sur **Edit**, activez **Enable promotion branches (Beta)** **(1)**, puis ajoutez une ligne à
+**Allowed promotion steps (Beta)** **(2)** avec **Source branch** `uat` et **Target branch**
+`preprod`. **Save**.
+
+Le second réglage est exigé par le premier, et c'est une vraie décision plutôt que de la paperasse :
+il dit qu'un release manager sur ce projet peut assembler un sous-ensemble en entrant dans `preprod`,
+l'étape juste avant la production, et nulle part ailleurs. `sf hardis:project:promotion:create`
+refuse de tourner tant que la liste est absente, au lieu de deviner que chaque branche majeure peut
+promouvoir vers toutes les autres.
+
+**Rien ne change aujourd'hui.** Avec la fonctionnalité active et aucune branche `promotion/...` dans
+le repository, le pipeline se comporte exactement comme il y a une minute. Elle est activée
+maintenant à cause de l'endroit où le réglage doit se trouver au [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md), et l'étape suivante
+explique pourquoi ce n'est pas évident.
+
+<details markdown="1"><summary>Sous le capot : pourquoi cela ne peut pas attendre le lab qui en a besoin</summary>
+
+`config/.sfdx-hardis.yml` a gagné :
+
+    enablePromotionBranches: true
+    allowedPromotionSteps:
+      - source: uat
+        target: preprod
+
+Une promotion branch est coupée depuis sa branche **cible**, et le job de déploiement de sa Pull
+Request lit donc la configuration que porte `preprod`, pas celle que porte `integration`. Une
+configuration de projet n'atteint `preprod` qu'en remontant le pipeline avec les promotions, ce qui
+sur ce cours arrive aux Labs 3.5 et 3.6.
+
+Activez la fonctionnalité ici et elle arrive toute seule dans `uat`, `preprod` et `main`, avec le
+reste de la configuration du pipeline, à temps pour le [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md). Activez-la au [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md) et vous vous
+devez trois merges avant de pouvoir vous en servir, ce qui est exactement le genre de détail qui fait
+passer une fonctionnalité Beta pour cassée alors qu'elle est seulement en retard.
+
+</details>
+
+### 11. Supprimer le raccourci, avant que quoi que ce soit ne prouve quoi que ce soit
 
 Dans votre fork (`github.com/my-username/sfdx-hardis-training`) : **Settings > Secrets and variables
 > Actions**, trouvez `SFDX_AUTH_URL_INTEGRATION` et `SFDX_AUTH_URL_UAT`, et supprimez les deux.
@@ -406,10 +462,11 @@ Faites-le maintenant, avant de publier. L'étape d'authentification de chaque jo
 existent, un job vert ne prouve rien sur vos clés : il s'est connecté à l'ancienne. Une fois qu'ils
 ont disparu, la seule entrée est celle du JWT, et le prochain job vert est donc la preuve.
 
-### 11. Publier la configuration par une Pull Request
+### 12. Publier la configuration par une Pull Request
 
 Tout ce que vous avez fait est constitué de fichiers sur votre disque, sur `integration` : les quatre
-fichiers de branche, les quatre clés, les branches cibles et le mode d'authentification. Ils
+fichiers de branche, les quatre clés, les branches cibles, le mode d'authentification et les deux
+réglages des promotion branches. Ils
 atteignent `integration` comme toute modification, par une Pull Request aux contrôles verts. La
 protection de l'étape 3 refuserait tout le reste.
 
@@ -480,7 +537,7 @@ La clé privée est déchiffrée au début du job avec `SFDX_CLIENT_KEY_INTEGRAT
 **Comment le hook d'authentification choisit.** Pour une branche `<B>`, il cherche d'abord
 `SFDX_AUTH_URL_<B>`, dans cette orthographe puis en majuscules. S'il en trouve une, il s'en sert et
 s'arrête, avant même que les variables JWT soient lues. Ce n'est que s'il n'y en a aucune qu'il
-continue vers `SFDX_CLIENT_ID_<B>` plus la clé. Cet ordre est la raison pour laquelle l'étape 10
+continue vers `SFDX_CLIENT_ID_<B>` plus la clé. Cet ordre est la raison pour laquelle l'étape 11
 vient avant la publication.
 
 La recherche JWT accepte aussi un `SFDX_CLIENT_ID` tout court sans suffixe, en dernier recours et
@@ -505,6 +562,10 @@ dire que chaque branche majeure a une clé commitée.
       - "The shared integration org, where every contributor merges"
       - "Hotfixes on the production version, agreed with the release manager"
     orgAuthenticationMode: encryptedCert
+    enablePromotionBranches: true
+    allowedPromotionSteps:
+      - source: uat
+        target: preprod
 
 et `config/branches/` contient maintenant quatre fichiers, chacun avec `targetUsername`,
 `instanceUrl` et `mergeTargets`, plus un dossier `.jwt` avec quatre clés chiffrées.
@@ -524,7 +585,7 @@ hardis:org:retrieve:sources:dx`, le vrai point de départ de la plupart des proj
 
 </details>
 
-### 12. Regarder le diagramme à nouveau
+### 13. Regarder le diagramme à nouveau
 
 Ouvrez le panneau **DevOps Pipeline** et cliquez sur **Refresh**. Voici le pipeline que vous avez
 construit :
@@ -551,6 +612,8 @@ de promotion, et le [Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md) est
 - Votre Pull Request de configuration mergée dans `integration`, avec `sf org login jwt` dans le log
   de son contrôle
 - Le panneau DevOps Pipeline avec quatre colonnes et aucun avertissement de clé manquante
+- `enablePromotionBranches` et une étape autorisée dans la Danger Zone de Pipeline Settings, qui ne
+  font rien jusqu'au [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md)
 
 ## En cas de problème
 

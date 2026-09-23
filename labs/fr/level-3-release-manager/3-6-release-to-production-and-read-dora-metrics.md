@@ -5,7 +5,7 @@ description: "Livrez via preprod vers votre org de production, vérifiez-la, pui
 level: 3
 lab: 6
 lang: fr
-source_rev: "4661bc03d2558cec0b10dc8f320de2e8a4617d66"
+source_rev: "a3eb2367dcb6598268f551512068ff12b1e85004"
 screenshots:
   - annotated/vscode/orgs-manager
   - annotated/vscode/devops-pipeline--settings-menu
@@ -174,7 +174,7 @@ cinquième livraison, quand les nombres ont d'où bouger. Prenez la ligne de bas
 
 Le rapport est un fichier, `docs/dora/dora-report-<date>.md`, et le panneau vous l'ouvre. Laissez-le
 là où il est : il est reconstruit depuis l'org et les Pull Requests à chaque nouvelle exécution du
-rapport, rien n'est donc commité, et le [Lab 3.10](3-10-capstone-run-a-weekly-release-cycle.md) compare le suivant avec celui-ci.
+rapport, rien n'est donc commité, et le [Lab 3.11](3-11-capstone-run-a-weekly-release-cycle.md) compare le suivant avec celui-ci.
 
 <details markdown="1"><summary>Sous le capot : d'où viennent les nombres DORA</summary>
 
