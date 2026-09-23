@@ -171,6 +171,12 @@ l'issue.
 
 Le badge s'appelle **sfdx-hardis Release Manager**.
 
+!!! tip "La mettre en bannière LinkedIn"
+    [Trailhead Banner](https://thb.nabondance.me/) dessine une image de couverture LinkedIn à partir
+    d'un nom d'utilisateur Trailblazer, et il y affiche le badge sfdx-hardis le plus élevé que vous
+    avez réclamé ici. Tapez votre nom d'utilisateur, générez l'image, et mettez-la en bannière de
+    votre profil LinkedIn.
+
 ## Que faire de tout cela
 
 Trois choses à faire dans la semaine qui suit, par ordre d'utilité :

@@ -144,6 +144,12 @@ puisse le lire. S'il est privé, la commande propose de le rendre public.
     Il n'y a ici ni examen ni accréditation. Partagez-le dans *Featured* sur LinkedIn, pas dans
     *Licenses & certifications*.
 
+!!! tip "La mettre en bannière LinkedIn"
+    [Trailhead Banner](https://thb.nabondance.me/) dessine une image de couverture LinkedIn à partir
+    d'un nom d'utilisateur Trailblazer, et il y affiche le badge sfdx-hardis le plus élevé que vous
+    avez réclamé ici. Tapez votre nom d'utilisateur, générez l'image, et mettez-la en bannière de
+    votre profil LinkedIn.
+
 ## La suite
 
 Le Niveau 1 vous a appris la boucle quand tout se passe bien. Le Niveau 2 est l'autre moitié : le

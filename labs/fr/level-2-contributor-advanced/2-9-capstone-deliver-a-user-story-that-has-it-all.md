@@ -156,6 +156,12 @@ que le formulaire s'ouvre.
 Le badge de ce niveau s'appelle **sfdx-hardis Contributor Advanced**. Le Niveau 1 vous rend capable
 de livrer une User Story ; le Niveau 2 vous rend capable de traiter tout ce qui tourne mal en chemin.
 
+!!! tip "La mettre en bannière LinkedIn"
+    [Trailhead Banner](https://thb.nabondance.me/) dessine une image de couverture LinkedIn à partir
+    d'un nom d'utilisateur Trailblazer, et il y affiche le badge sfdx-hardis le plus élevé que vous
+    avez réclamé ici. Tapez votre nom d'utilisateur, générez l'image, et mettez-la en bannière de
+    votre profil LinkedIn.
+
 ## La suite
 
 Vous pouvez vous arrêter ici et être vraiment bon dans le métier de contributeur.
