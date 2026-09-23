@@ -629,7 +629,9 @@
         "mergeTargets",
         "targetUsername",
         "instanceUrl",
-        "orgAuthenticationMode"
+        "orgAuthenticationMode",
+        "enablePromotionBranches",
+        "allowedPromotionSteps"
       ],
       "docs": [
         "salesforce-devops-setup-home",
@@ -657,6 +659,7 @@
         "annotated/vscode/pipeline-config--target-branches",
         "annotated/vscode/pipeline-config-user-stories--target-branches",
         "annotated/vscode/pipeline-config-deployment--deployment-tab",
+        "annotated/vscode/pipeline-config-danger--promotion-branches",
         "annotated/vscode/pipeline-cards--save-publish",
         "annotated/vscode/work-save-completed",
         "annotated/vscode/devops-pipeline-level3--four-stages"
@@ -970,9 +973,49 @@
       "id": "lab-3-10",
       "level": 3,
       "lab": 10,
+      "title": "Promote a subset with promotion branches (Beta)",
+      "file": "labs/en/level-3-release-manager/3-10-promote-a-subset-with-promotion-branches.md",
+      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-10-promote-a-subset-with-promotion-branches/",
+      "commands": [
+        "hardis:project:promotion:create",
+        "hardis:project:deploy:smart",
+        "hardis:doc:release-notes"
+      ],
+      "flags": [],
+      "config": [
+        "enablePromotionBranches",
+        "allowedPromotionSteps",
+        "mergeTargets"
+      ],
+      "docs": [
+        "salesforce-devops-promotion-branches",
+        "hardis/project/promotion/create"
+      ],
+      "panels": [
+        "pipeline",
+        "pipelineConfig",
+        "commandExecution"
+      ],
+      "screenshots": [
+        "annotated/vscode/welcome-custom-menu-3",
+        "annotated/vscode/pipeline-config-danger--promotion-branches",
+        "annotated/vscode/pipeline-branch-modal-promotion--pick-what-goes",
+        "annotated/vscode/devops-pipeline-promotion--in-flight"
+      ],
+      "translations": {
+        "fr": {
+          "file": "labs/fr/level-3-release-manager/3-10-promote-a-subset-with-promotion-branches.md",
+          "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/fr/level-3-release-manager/3-10-promote-a-subset-with-promotion-branches/"
+        }
+      }
+    },
+    {
+      "id": "lab-3-11",
+      "level": 3,
+      "lab": 11,
       "title": "Capstone: run a weekly release cycle",
-      "file": "labs/en/level-3-release-manager/3-10-capstone-run-a-weekly-release-cycle.md",
-      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-10-capstone-run-a-weekly-release-cycle/",
+      "file": "labs/en/level-3-release-manager/3-11-capstone-run-a-weekly-release-cycle.md",
+      "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-3-release-manager/3-11-capstone-run-a-weekly-release-cycle/",
       "commands": [
         "hardis:project:deploy:smart",
         "hardis:doc:release-notes",
@@ -995,8 +1038,8 @@
       ],
       "translations": {
         "fr": {
-          "file": "labs/fr/level-3-release-manager/3-10-capstone-run-a-weekly-release-cycle.md",
-          "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/fr/level-3-release-manager/3-10-capstone-run-a-weekly-release-cycle/"
+          "file": "labs/fr/level-3-release-manager/3-11-capstone-run-a-weekly-release-cycle.md",
+          "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/fr/level-3-release-manager/3-11-capstone-run-a-weekly-release-cycle/"
         }
       }
     }
@@ -1131,11 +1174,17 @@
       "salesforce-project-doc-generate": [
         "lab-3-9"
       ],
-      "salesforce-devops-release-home": [
+      "salesforce-devops-promotion-branches": [
         "lab-3-10"
       ],
-      "salesforce-devops-setup-checklist": [
+      "hardis/project/promotion/create": [
         "lab-3-10"
+      ],
+      "salesforce-devops-release-home": [
+        "lab-3-11"
+      ],
+      "salesforce-devops-setup-checklist": [
+        "lab-3-11"
       ]
     },
     "panels": {
@@ -1166,7 +1215,8 @@
         "lab-3-5",
         "lab-3-6",
         "lab-3-7",
-        "lab-3-10"
+        "lab-3-10",
+        "lab-3-11"
       ],
       "orgManager": [
         "lab-1-2",
@@ -1193,7 +1243,8 @@
         "lab-1-5",
         "lab-2-7",
         "lab-2-8",
-        "lab-3-1"
+        "lab-3-1",
+        "lab-3-10"
       ],
       "backpromote": [
         "lab-2-1"
@@ -1214,7 +1265,8 @@
       "pipelineConfig": [
         "lab-2-6",
         "lab-3-1",
-        "lab-3-4"
+        "lab-3-4",
+        "lab-3-10"
       ],
       "monitoringConfig": [
         "lab-3-8"
@@ -1269,7 +1321,8 @@
         "lab-3-5",
         "lab-3-6",
         "lab-3-7",
-        "lab-3-10"
+        "lab-3-10",
+        "lab-3-11"
       ],
       "hardis:work:backpromote": [
         "lab-2-1"
@@ -1286,17 +1339,21 @@
       ],
       "hardis:doc:release-notes": [
         "lab-3-5",
-        "lab-3-10"
+        "lab-3-10",
+        "lab-3-11"
       ],
       "hardis:doc:dora-report": [
         "lab-3-6",
-        "lab-3-10"
+        "lab-3-11"
       ],
       "hardis:org:configure:monitoring": [
         "lab-3-8"
       ],
       "hardis:doc:project2markdown": [
         "lab-3-9"
+      ],
+      "hardis:project:promotion:create": [
+        "lab-3-10"
       ]
     },
     "config": {
@@ -1324,7 +1381,8 @@
         "lab-3-1",
         "lab-3-5",
         "lab-3-6",
-        "lab-3-10"
+        "lab-3-10",
+        "lab-3-11"
       ],
       "customCommands": [
         "lab-1-2"
@@ -1396,10 +1454,18 @@
         "lab-3-1",
         "lab-3-6",
         "lab-3-7",
-        "lab-3-10"
+        "lab-3-11"
       ],
       "orgAuthenticationMode": [
         "lab-3-1"
+      ],
+      "enablePromotionBranches": [
+        "lab-3-1",
+        "lab-3-10"
+      ],
+      "allowedPromotionSteps": [
+        "lab-3-1",
+        "lab-3-10"
       ],
       "useDeltaDeployment": [
         "lab-3-3",

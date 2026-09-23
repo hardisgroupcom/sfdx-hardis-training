@@ -430,6 +430,41 @@
         "Helios_Delivery_Manager"
       ],
       "seededFailure": "A .forceignore wildcard added in the same Pull Request matches the new field, so no deployment sends it, and the layout and the permission set that use it are refused"
+    },
+    {
+      "id": "US-057",
+      "level": 3,
+      "lab": 10,
+      "author": "mariia",
+      "title": "Park an installation that is waiting for parts",
+      "story": "As a planner, I want a status for an installation held up by a missing part, so that the weekly report stops counting it as late.",
+      "acceptance": [
+        "Status offers Awaiting Parts",
+        "Planners can pick it on an installation that is already planned"
+      ],
+      "branch": "training/mate-us-057-awaiting-parts",
+      "metadata": [
+        "Installation__c.Status__c"
+      ]
+    },
+    {
+      "id": "US-058",
+      "level": 3,
+      "lab": 10,
+      "author": "romain",
+      "title": "Record the warranty term on a panel batch",
+      "story": "As a sales rep, I want the warranty term stored on the panel batch, so that the quote says how long the panels are covered for.",
+      "acceptance": [
+        "A Warranty Years field exists on Panel Batch",
+        "It is on the Panel Batch layout",
+        "Managers can read and write it"
+      ],
+      "branch": "training/mate-us-058-warranty-term",
+      "metadata": [
+        "Panel_Batch__c.Warranty_Years__c",
+        "Panel_Batch__c-Panel Batch Layout",
+        "Helios_Delivery_Manager"
+      ]
     }
   ],
   "pullRequests": [
@@ -607,7 +642,7 @@
       "level": 3,
       "slug": "level-3-release-manager",
       "name": "Release Manager",
-      "duration": "about 6 h",
+      "duration": "about 6 h 40",
       "prerequisite": 2,
       "badge": "sfdx-hardis Release Manager",
       "star": "hardisgroupcom/vscode-sfdx-hardis",
@@ -677,7 +712,14 @@
         },
         {
           "lab": 10,
-          "slug": "3-10-capstone-run-a-weekly-release-cycle",
+          "slug": "3-10-promote-a-subset-with-promotion-branches",
+          "title": "Promote a subset with promotion branches (Beta)",
+          "description": "Carry one approved User Story from uat to preprod with an sfdx-hardis promotion branch, and weigh what that shortcut costs the orgs behind it.",
+          "time": "35 min"
+        },
+        {
+          "lab": 11,
+          "slug": "3-11-capstone-run-a-weekly-release-cycle",
           "title": "Capstone: run a weekly release cycle",
           "description": "Run a full week as a Salesforce release manager with no step-by-step: review, integrate, promote to UAT, release to production and measure.",
           "time": "45 min"

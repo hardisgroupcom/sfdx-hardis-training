@@ -1,9 +1,9 @@
 ---
-id: lab-3-10
-title: "Lab 3.10 - Capstone: run a weekly release cycle"
+id: lab-3-11
+title: "Lab 3.11 - Capstone: run a weekly release cycle"
 description: "Run a full week as a Salesforce release manager with no step-by-step: review, integrate, promote to UAT, release to production and measure."
 level: 3
-lab: 10
+lab: 11
 lang: en
 source_rev: ""
 screenshots:
@@ -16,7 +16,7 @@ depends_on:
   docs: [salesforce-devops-release-home, salesforce-devops-setup-checklist]
 ---
 
-# Lab 3.10 - Capstone: run a weekly release cycle
+# Lab 3.11 - Capstone: run a weekly release cycle
 
 **Level**: 3 Release Manager
 
@@ -32,7 +32,7 @@ nobody is going to tell you the order to do things in.
 
 ## Before you start
 
-- [ ] Labs 3.1 to 3.9 finished
+- [ ] Labs 3.1 to 3.10 finished
 - [ ] All four pipeline orgs working, all four branches deploying
 
 ## The week
@@ -42,6 +42,10 @@ nobody is going to tell you the order to do things in.
 Two Pull Requests wait. **US-020**, open since [Lab 3.4](3-4-merge-colliding-pull-requests.md) and still failing. And a new one from Romain:
 **Training: Level 3** > **Simulate my teammates**, and pick **US-055 Install Date says which day it
 means**.
+
+One more thing is waiting, and not in a Pull Request: **US-058**, the warranty term, sitting in
+`uat` since [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md) because the promotion branch went around it. The approval came through
+over the weekend. Nothing to do about it today, and Thursday is where it matters.
 
 ![The Level 3 training menu on the Welcome page](../../_assets/annotated/vscode/welcome-custom-menu-3.png)
 
@@ -74,8 +78,15 @@ Request from `preprod` into `main`, titled `Release ...`. Read the counts line i
 deleted that you were not expecting. Merge, watch, verify, do the manual steps.
 
 Everything [Lab 3.7](3-7-hotfix-and-retrofit.md) put in at `preprod` is already in `main`, so this release should not be moving
-it again. Read the counts line with that in mind: what goes out this week is Romain's help text and
-the retrofits travelling up from `integration`, and `deleted: 0` is still the number to stop on.
+it again. Read the counts line with that in mind: what goes out this week is Romain's help text,
+the retrofits travelling up from `integration`, and US-058, which has been waiting in `uat` since
+[Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md). `deleted: 0` is still the number to stop on.
+
+**That promotion is also what ends the exception.** US-057 went to `preprod` on its own last week;
+this one carries US-058 the ordinary way, and `uat` and `preprod` hold the same thing again. Check
+it rather than assume it: the `uat` node of the diagram counts zero User Stories waiting once the
+promotion is merged. A promotion branch that is never followed by a full promotion is how a pipeline
+stops being a pipeline.
 
 Then generate the release notes of the release to `main`, add the sentence at the top that says what
 this release is for, and put them in the description of the Pull Request from `preprod` into
@@ -117,6 +128,8 @@ point of having it.
   its own deployment
 - Release notes in the description of the release Pull Request, with a human sentence at the top
 - A second DORA report to compare with the baseline of [Lab 3.6](3-6-release-to-production-and-read-dora-metrics.md)
+- `uat` counting zero User Stories waiting: US-058 caught up with US-057 and the pipeline is aligned
+  again
 
 ## If it goes wrong
 
@@ -184,11 +197,11 @@ place to try things, and `helios-prod` stays a Dev Hub you can create scratch or
 them, delete the `SFDX_AUTH_URL_INTEGRATION` and `SFDX_AUTH_URL_UAT` secrets if they are somehow
 still there, and remember the JWT certificates in your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`) are real credentials to real orgs.
 
-**Three: the promotion branches feature.** Everything you did promotes **everything waiting** from
-one branch to the next. Some teams need to promote a subset. That is what
-[promotion branches](https://sfdx-hardis.cloudity.com/salesforce-devops-promotion-branches/) are
-for, it is in Beta, and it will make sense to you now in a way it would not have three levels
-ago.
+**Three: keep promotion branches as the exception.** [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md) had you assemble one, and this
+week put the pipeline back. On a real project the pressure runs the other way: the first subset is
+agreed for a good reason, the second because the first one worked, and after a quarter nobody can
+say what any org contains. If you find yourself assembling one every week, the thing to fix is the
+sign-off, not the tooling.
 
 ## Thank you
 

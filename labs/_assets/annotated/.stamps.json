@@ -131,5 +131,8 @@
   "vscode/training-menu-authorization.png": "b19659ebeaa756c3",
   "vscode/devops-pipeline-level3.png#release-to-prod": "37e7e597934770a8",
   "vscode/work-new-story-type.png#retrofit": "9d64fe171e96a349",
-  "vscode/git-retrofit-pick.png#origin-main": "e7b39d50ef531d74"
+  "vscode/git-retrofit-pick.png#origin-main": "e7b39d50ef531d74",
+  "vscode/pipeline-branch-modal-promotion.png#pick-what-goes": "1210f2c1bac5bab9",
+  "vscode/devops-pipeline-promotion.png#in-flight": "76f98e3a17f31e58",
+  "vscode/pipeline-config-danger.png#promotion-branches": "235c0c0c20028ae6"
 }

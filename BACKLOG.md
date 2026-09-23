@@ -28,6 +28,8 @@ for the `Helios Delivery` app, and every one of them is a lab in this course.
 | [US-046](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-046/) | 3 | Needs Reinspection status, added in production by an admin | You | `retrofit/US-046-needs-reinspection` |
 | [US-055](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-055/) | 3 | Install Date says which day it means | Romain Panda | `training/mate-us-055-install-date-help` |
 | [US-056](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-056/) | 3 | Show the panels each crew member has to lay | Romain Panda | `training/mate-us-056-crew-workload` |
+| [US-057](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-057/) | 3 | Park an installation that is waiting for parts | Mariia Pyvovarchuk | `training/mate-us-057-awaiting-parts` |
+| [US-058](https://hardisgroupcom.github.io/sfdx-hardis-training/BACKLOG/US-058/) | 3 | Record the warranty term on a panel batch | Romain Panda | `training/mate-us-058-warranty-term` |
 
 ## The stories in full
 
@@ -316,6 +318,37 @@ Acceptance criteria:
 
 - A Crew Workload formula on Installation
 - On the layout, readable by managers
+
+<a id="US-057"></a>
+
+### US-057 - Park an installation that is waiting for parts
+
+**Owner**: Mariia Pyvovarchuk  
+**Branch**: `training/mate-us-057-awaiting-parts`  
+**Lab**: 3.10
+
+> As a planner, I want a status for an installation held up by a missing part, so that the weekly report stops counting it as late.
+
+Acceptance criteria:
+
+- Status offers Awaiting Parts
+- Planners can pick it on an installation that is already planned
+
+<a id="US-058"></a>
+
+### US-058 - Record the warranty term on a panel batch
+
+**Owner**: Romain Panda  
+**Branch**: `training/mate-us-058-warranty-term`  
+**Lab**: 3.10
+
+> As a sales rep, I want the warranty term stored on the panel batch, so that the quote says how long the panels are covered for.
+
+Acceptance criteria:
+
+- A Warranty Years field exists on Panel Batch
+- It is on the Panel Batch layout
+- Managers can read and write it
 
 ## The team
 

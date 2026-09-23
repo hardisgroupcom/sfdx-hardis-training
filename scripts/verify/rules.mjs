@@ -927,6 +927,34 @@ export const RULES = [
   },
   {
     id: "3.10", level: 3, lab: 10,
+    title: "One approved User Story was carried to preprod on its own",
+    check: (ctx) => {
+      if (!ctx.hasBranch("preprod")) {
+        return miss("there is no preprod branch", "your fork");
+      }
+      const status = ctx.readOn("preprod", FIELD("Installation__c", "Status__c")) || "";
+      if (!/Awaiting Parts/.test(status)) {
+        return miss(
+          "preprod does not carry US-057, so nothing was promoted to it this lab",
+          `${FIELD("Installation__c", "Status__c")} on branch preprod. Lab 3.10 step 4 assembles the promotion`
+        );
+      }
+      // Whichever way the promotion Pull Request was merged, the commits it carries were
+      // copied with git cherry-pick -x, which leaves its trailer in the message. The branch
+      // name survives in the merge commit of an ordinary merge. Either one is evidence that
+      // US-057 travelled on its own rather than with the whole of uat, and both stay true
+      // after the capstone brings the rest of uat up.
+      const history = ctx.log("preprod");
+      return /cherry picked from commit/i.test(history) || /promotion\/uat\/preprod\//.test(history)
+        ? pass("US-057 reached preprod through a promotion branch, ahead of the rest of uat")
+        : miss(
+          "US-057 is in preprod, but nothing in the history of preprod came from a promotion branch: it arrived with the whole of uat instead",
+          "the history of preprod. Lab 3.10 step 4, Create promotion from uat"
+        );
+    }
+  },
+  {
+    id: "3.11", level: 3, lab: 11,
     title: "Capstone: a full release cycle",
     check: (ctx) => {
       // The week's release carried Romain's US-055 to production. The Lab 3.7 hotfix is on
