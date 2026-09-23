@@ -53,17 +53,15 @@ Pas de clics numérotés cette fois. La boucle, dans l'ordre :
    org** et **Reuse scratch org helios-dev**. Votre org a déjà US-014, puisque vous l'y avez
    construite
 2. **Construisez-la dans `helios-dev`**
-
-- Un champ **Long Text Area** `Crew_Notes__c` sur `Installation__c`, 4000 caractères, avec une
-    description et un help text
-- Accordez-lui **Read** et **Edit** sur `Helios Delivery Crew`, parce que c'est un membre de
-    l'équipe de pose qui écrit les notes. Personne d'autre ne le voit pour le moment : le tour
-    des planificateurs vient au Niveau 2
-- Sur la présentation de page Installation
-- Une vue de liste sur Installation appelée **Open Installations**, visible par tous les
-    utilisateurs, avec **Filter by Owner** sur **All installations**, filtrée sur un statut autre
-    que Completed, et affichant le compte, le statut, la date d'installation et Panels Required
-
+   - Un champ **Long Text Area** `Crew_Notes__c` sur `Installation__c`, 4000 caractères, avec une
+     description et un help text
+   - Accordez-lui **Read** et **Edit** sur `Helios Delivery Crew`, parce que c'est un membre de
+     l'équipe de pose qui écrit les notes. Personne d'autre ne le voit pour le moment : le tour
+     des planificateurs vient au Niveau 2
+   - Sur la présentation de page Installation
+   - Une vue de liste sur Installation appelée **Open Installations**, visible par tous les
+     utilisateurs, avec **Filter by Owner** sur **All installations**, filtrée sur un statut autre
+     que Completed, et affichant le compte, le statut, la date d'installation et Panels Required
 3. **Récupérez les métadonnées.** **Commit changes**, **Recent Changes**, **Search Metadata**, et prenez
    le champ, la présentation de page, la vue de liste et le permission set. Rien d'autre.
    Commitez-les
