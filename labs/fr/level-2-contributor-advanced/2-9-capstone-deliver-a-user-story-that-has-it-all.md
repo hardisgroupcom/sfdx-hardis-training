@@ -5,7 +5,7 @@ description: "Livrez une User Story Salesforce avec une dépendance à vérifier
 level: 2
 lab: 9
 lang: fr
-source_rev: "4661bc03d2558cec0b10dc8f320de2e8a4617d66"
+source_rev: "9d153b14ca4bbf63f6a59585d2773914b7a8d51a"
 screenshots:
 depends_on:
   commands: [hardis:work:new, hardis:work:save, hardis:org:data:import]
