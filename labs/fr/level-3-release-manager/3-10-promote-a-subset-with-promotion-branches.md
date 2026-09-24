@@ -5,7 +5,7 @@ description: "Transportez trois User Stories approuvées sur cinq de uat vers pr
 level: 3
 lab: 10
 lang: fr
-source_rev: "f8c23723f341906003afc9fb31b91921a310a7ea"
+source_rev: "fef2bad25625f91dc9dcac78c7d86e07c32060d7"
 screenshots:
   - annotated/vscode/welcome-custom-menu-3
   - annotated/vscode/pipeline-config-danger--promotion-branches
@@ -188,11 +188,11 @@ en une phrase qui nomme la story à merger d'abord.
 
 Vous avez trois options et l'outil n'en sert qu'une. Sachez pourquoi vous choisissez celle-là.
 
-| Option                                          | Ce qu'elle coûte                                                                                                                      | Quand elle est la bonne                                                                                                       |
-|-------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
-| **Attendre les validations**                    | La livraison glisse d'une semaine                                                                                                     | Presque toujours. C'est la seule option qui garde les orgs alignées                                                           |
-| **Sortir US-058 et US-060 de `uat`**            | Deux reverts sur une branche sur laquelle d'autres construisent, et les deux stories devront revenir plus tard, rebasées et retestées | Quand une story est vraiment mauvaise, pas simplement non validée                                                             |
-| **Transporter US-057, US-059 et US-061 seules** | `uat` et `preprod` divergent jusqu'à la prochaine promotion complète, et il faut décrocher US-059 d'US-058                            | Quand la date est fixe, que les validations n'arriveront pas, et que les stories laissées derrière sont bien là où elles sont |
+| Option                                          | Ce qu'elle coûte                                                                                                                                                                                                                     | Quand elle est la bonne                                                                                                       |
+|-------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
+| **Attendre les validations**                    | La livraison glisse d'une semaine                                                                                                                                                                                                    | Presque toujours. C'est la seule option qui garde les orgs alignées                                                           |
+| **Sortir US-058 et US-060 de `uat`**            | Deux reverts, chacun sur une feature branch à part qui passe par `integration` puis `uat` comme n'importe quelle story, jamais un commit directement sur `uat`, et les deux stories devront revenir plus tard, rebasées et retestées | Quand une story est vraiment mauvaise, pas simplement non validée                                                             |
+| **Transporter US-057, US-059 et US-061 seules** | `uat` et `preprod` divergent jusqu'à la prochaine promotion complète, et il faut décrocher US-059 d'US-058                                                                                                                           | Quand la date est fixe, que les validations n'arriveront pas, et que les stories laissées derrière sont bien là où elles sont |
 
 Cette semaine, c'est la troisième, et la raison est écrite : la bascule de l'entrepôt.
 
