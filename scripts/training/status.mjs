@@ -24,7 +24,6 @@ export default async function status() {
     warn("You are working in the training repository itself, not in your own fork.");
     info(c.dim("    Everything in this course happens in your fork. See Lab 1.2."));
   }
-  // Also fetches origin, which the lab rules below read
   adviseCourseUpdate({ quietWhenCurrent: false });
 
   // ------------------------------------------------------------ the orgs

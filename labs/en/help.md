@@ -42,8 +42,9 @@ the day you forked it: the scripts behind the **Training** menu, the teammate st
 course adds a lab or fixes one of those, your fork does not get it on its own.
 
 Every training command tells you when that happened: it checks your fork against the course
-first, and says how many changes you are missing. **Where am I?** always shows it. Badge claims of
-other learners are left out, since they change nothing a lab runs.
+first, and says how many changes you are missing. **Where am I?** always shows it. Changes to the
+lab pages, the translations, the site and the badges of other learners are left out, since you read
+them here and they change nothing your fork runs.
 
 To bring the changes in, click **Update my course** in the Training menu of your level. It merges
 the course into a branch of its own, made from your `integration`, and opens a Pull Request into

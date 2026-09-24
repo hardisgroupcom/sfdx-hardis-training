@@ -66,7 +66,15 @@ export default async function reset(args) {
       );
     }
   }
-  const pipelineConfig = branchConfigOn("integration");
+  // Read from GitHub, not from the local branch: the configuration of Lab 3.1
+  // reaches integration through a Pull Request merged on github.com, and a
+  // learner who never pulled would otherwise reset without their keys
+  run("git", ["fetch", "--quiet", "origin", "integration"], { quiet: true, capture: true });
+  const pipelineConfig = branchConfigOn(
+    run("git", ["rev-parse", "--verify", "--quiet", "origin/integration"], { quiet: true, capture: true }).code === 0
+      ? "origin/integration"
+      : "integration"
+  );
   // The one command a learner runs to get out of a broken state: if the
   // checkout is refused, say so instead of reporting a reset that never
   // happened and force-pushing a branch that never moved.

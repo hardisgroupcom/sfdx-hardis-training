@@ -9,13 +9,31 @@
  *
  * This compares the fork's integration branch with the main branch of the
  * training repository, the upstream remote that Set up my training environment
- * declares. Commits that only record a badge are left out: every learner who
- * claims one adds such a commit, and none of them changes anything a lab runs.
+ * declares. Only commits that change something the fork runs count: a badge
+ * claim, a lab page, a translation or the site change nothing a training
+ * command or a CI job of the fork reads, and nagging about them would teach
+ * learners to ignore the message.
  */
-import { c, info, warn, run, gitOut, universe } from "./util.mjs";
+import { c, info, warn, run, gitOut, universe, hasGh } from "./util.mjs";
 
-// What a badge claim writes, and nothing else
-const BADGE_ONLY = /^badges\//;
+/**
+ * What the fork never runs: badge claims, the lab pages and their images, the
+ * translations, the site, the documentation. Everything else counts, the
+ * scripts, config/, force-app/, manifest/, .github/ and training-universe.json
+ * first.
+ */
+const NOT_RUN_BY_THE_FORK = [
+  /^badges\//,
+  /^labs\//,
+  /^i18n\//,
+  /^site-theme\//,
+  /^site-overrides\//,
+  /^site-src\//,
+  /^course-site\.yml$/,
+  /^mkdocs-nav\.yml$/,
+  /^training-manifest\.json$/,
+  /^[^/]+\.md$/
+];
 
 /** The branch the update is compared with and merged into. */
 export const UPDATE_BASE = "integration";
@@ -29,7 +47,7 @@ function remoteUrl(name) {
 
 function slugOf(url) {
   const match = (url || "").match(/github\.com[/:]([^/]+)\/([^/.]+)/i);
-  return match ? `${match[1]}/${match[2]}`.toLowerCase() : null;
+  return match ? `${match[1]}/${match[2]}` : null;
 }
 
 /**
@@ -40,7 +58,7 @@ function slugOf(url) {
 export function hasCourseUpstream() {
   const upstream = slugOf(remoteUrl("upstream"));
   const origin = slugOf(remoteUrl("origin"));
-  return Boolean(upstream && origin && upstream !== origin);
+  return Boolean(upstream && origin && upstream.toLowerCase() !== origin.toLowerCase());
 }
 
 /** Adds the upstream remote when a clone lost it. Returns false when it cannot. */
@@ -50,10 +68,7 @@ export function ensureCourseUpstream() {
   }
   const origin = slugOf(remoteUrl("origin"));
   const upstreamRepo = universe().course.upstreamRepo;
-  if (!origin || origin === upstreamRepo.toLowerCase()) {
-    return false;
-  }
-  if (remoteUrl("upstream")) {
+  if (!origin || origin.toLowerCase() === upstreamRepo.toLowerCase() || remoteUrl("upstream")) {
     return false;
   }
   info(c.dim("    Adding the training repository as the upstream remote."));
@@ -62,13 +77,15 @@ export function ensureCourseUpstream() {
 }
 
 /**
- * Fetches what the comparison needs. Quiet and forgiving: offline, the check
- * simply has nothing new to say, and the command the learner clicked carries on.
+ * Fetches the two refs the comparison reads, and nothing else: the main branch
+ * of the course and the integration branch of the fork, which moves on GitHub
+ * whenever the learner merges a Pull Request there. Quiet and forgiving:
+ * offline, the check has nothing new to say and the command carries on.
  */
 export function fetchCourse() {
   const env = { GIT_TERMINAL_PROMPT: "0" };
   const upstream = run("git", ["fetch", "--quiet", "upstream", "main"], { quiet: true, capture: true, env });
-  run("git", ["fetch", "--quiet", "origin", "--prune"], { quiet: true, capture: true, env });
+  run("git", ["fetch", "--quiet", "origin", UPDATE_BASE], { quiet: true, capture: true, env });
   return upstream.code === 0;
 }
 
@@ -77,8 +94,9 @@ function refExists(ref) {
 }
 
 /**
- * The commits of the training repository the given branch does not have, badge
- * claims left out, newest first: [{ sha, subject }].
+ * The commits of the training repository the given branch does not have, the
+ * ones that change nothing the fork runs left out, newest first:
+ * [{ sha, subject }].
  */
 export function missingCourseCommits(ref = `origin/${UPDATE_BASE}`) {
   if (!refExists("upstream/main") || !refExists(ref)) {
@@ -98,20 +116,34 @@ export function missingCourseCommits(ref = `origin/${UPDATE_BASE}`) {
       const [sha, ...subject] = header.split("\t");
       return { sha, subject: subject.join("\t"), files };
     })
-    .filter((commit) => commit.files.length > 0 && !commit.files.every((file) => BADGE_ONLY.test(file)))
+    .filter((commit) => commit.files.some((file) => !NOT_RUN_BY_THE_FORK.some((pattern) => pattern.test(file))))
     .map(({ sha, subject }) => ({ sha, subject }));
 }
 
 /**
- * An Update my course branch already pushed, whose Pull Request is waiting:
- * it holds every course change, but integration does not have them yet.
+ * The Pull Request of an update that is still open, from GitHub: { number, url,
+ * branch }, or null. Asked of GitHub rather than read from the branches: a
+ * squash-merged or closed update leaves its branch behind, and a branch is no
+ * proof that anything is waiting.
  */
-export function pendingUpdateBranch() {
-  const branches = gitOut(["branch", "-r", "--list", `origin/${UPDATE_BRANCH_PREFIX}*`])
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean);
-  return branches.find((branch) => missingCourseCommits(branch).length === 0) || null;
+export function openUpdatePullRequest() {
+  const slug = slugOf(remoteUrl("origin"));
+  if (!slug || !hasGh()) {
+    return null;
+  }
+  const res = run("gh", ["pr", "list", "--repo", slug, "--base", UPDATE_BASE, "--state", "open", "--json", "number,url,headRefName"], {
+    quiet: true,
+    capture: true
+  });
+  if (res.code !== 0) {
+    return null;
+  }
+  try {
+    const pr = JSON.parse(res.stdout || "[]").find((p) => (p.headRefName || "").startsWith(UPDATE_BRANCH_PREFIX));
+    return pr ? { number: pr.number, url: pr.url, branch: pr.headRefName } : null;
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -133,11 +165,11 @@ export function adviseCourseUpdate({ fetch = true, quietWhenCurrent = true } = {
     }
     return 0;
   }
-  const waiting = pendingUpdateBranch();
+  const waiting = openUpdatePullRequest();
   console.log("");
   if (waiting) {
-    warn(`Your fork is missing ${missing.length} change(s) of the course, and their Pull Request is waiting.`);
-    info(`    Merge the Pull Request of ${c.bold(waiting.replace(/^origin\//, ""))} into ${UPDATE_BASE} with ${c.bold("Merge pull request")}, then Pull.`);
+    warn(`Your fork is missing ${missing.length} change(s) of the course, and an update Pull Request is open.`);
+    info(`    Merge ${c.cyan(waiting.url)} into ${UPDATE_BASE} with ${c.bold("Merge pull request")}, never a squash, then Pull.`);
   } else {
     warn(`Your fork is missing ${missing.length} change(s) of the course since you forked it.`);
     missing.slice(0, 3).forEach((commit) => info(c.dim(`    ${commit.subject}`)));
