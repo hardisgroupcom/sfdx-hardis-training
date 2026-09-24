@@ -109,12 +109,18 @@ export default async function reset(args) {
  * They name your orgs, which the reference branches cannot know, and Set up my
  * training environment wrote them in Lab 1. A reset that dropped them would
  * leave a pipeline that deploys nowhere.
+ *
+ * The encrypted keys of Lab 3.1 go with them. The branch files it wrote are
+ * kept, and Lab 3.1 deleted the auth URL secrets: a reset that dropped the keys
+ * left a Level 3 pipeline whose every check failed on "You must be logged to an
+ * org", until Lab 3.1 was done again. The keys are hex text, so they survive
+ * the same round trip as the branch files.
  */
 function branchConfigOn(branch) {
   const files = gitOut(["ls-tree", "-r", "--name-only", branch, "--", "config/branches/"])
     .split("\n")
     .map((f) => f.trim())
-    .filter((f) => /\.sfdx-hardis\.[^/]+\.yml$/.test(f));
+    .filter((f) => /\.sfdx-hardis\.[^/]+\.yml$/.test(f) || /^config\/branches\/\.jwt\/[^/]+\.key$/.test(f));
   return files.map((file) => ({ file, content: run("git", ["show", `${branch}:${file}`], { capture: true, quiet: true }).stdout }));
 }
 
