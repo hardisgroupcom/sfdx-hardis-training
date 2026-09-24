@@ -68,8 +68,9 @@ thousands of components an org contains. Click **Search Metadata** **(3)**.
 
 ![The Metadata Retriever listing the recent changes of the org](../../_assets/annotated/vscode/metadata-retriever-recent-changes--find.png)
 
-About thirty results come back **(4)**, each with what it is, its name, who last touched it and
-when. Every one of them carries your name, and most of them are not your story.
+The count of results is at **(4)**: a few dozen on your org, fewer in the picture. Each row says
+what it is, its name, who last touched it and when. Every one of them carries your name, and most of
+them are not your story.
 
 !!! info "Why the list is longer than your story"
     A scratch org remembers every component that arrived in it, however it arrived. In Lab 1.2,
@@ -324,7 +325,8 @@ panel and click **Publish Branch**.
   the field, the layout and the two permission sets
 - `manifest/package.xml` gaining one line, the new field, in a commit the tool made
 - Your branch on GitHub, in your fork (`github.com/my-username/sfdx-hardis-training`), under **Branches**
-- The DevOps Pipeline panel showing your branch feeding `integration`, with no Pull Request yet
+- The DevOps Pipeline panel still without your branch: it draws a branch once it has a Pull
+  Request, and yours gets one in [Lab 1.6](1-6-pull-request-deployment-check-and-merge.md)
 
 ## If it goes wrong
 

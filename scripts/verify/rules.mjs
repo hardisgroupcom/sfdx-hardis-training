@@ -221,7 +221,7 @@ function forkSecretNames(ctx) {
   if (!slug) {
     return null;
   }
-  const res = spawnSync("gh", ["secret", "list", "-R", slug, "--json", "name"], { cwd: ctx.dir, encoding: "utf8", shell: process.platform === "win32" });
+  const res = spawnSync("gh", ["secret", "list", "-R", slug, "--json", "name"], { cwd: ctx.dir, encoding: "utf8" });
   if (res.status !== 0) {
     return null;
   }
@@ -231,6 +231,36 @@ function forkSecretNames(ctx) {
     return null;
   }
 }
+
+/**
+ * The workflows GitHub runs on the learner's fork, by file name, or null when they cannot be read.
+ * A brand new fork lists none at all until its owner clicks the banner of its Actions tab, and a
+ * fork in that state has every branch right while nothing ever checks or deploys it.
+ */
+function forkActiveWorkflows(ctx) {
+  const url = ctx.git(["remote", "get-url", "origin"]);
+  const slug = (url.match(/github\.com[/:]([^/]+\/[^/.]+?)(?:\.git)?$/) || [])[1];
+  if (!slug) {
+    return null;
+  }
+  const res = spawnSync("gh", ["api", `repos/${slug}/actions/workflows?per_page=100`], {
+    cwd: ctx.dir,
+    encoding: "utf8"
+  });
+  if (res.status !== 0) {
+    return null;
+  }
+  try {
+    return JSON.parse(res.stdout)
+      .workflows.filter((workflow) => workflow.state === "active")
+      .map((workflow) => path.basename(workflow.path));
+  } catch {
+    return null;
+  }
+}
+
+/** The workflows a Pull Request of the course cannot do without. */
+const PIPELINE_WORKFLOWS = ["check-deploy.yml", "process-deploy.yml", "megalinter.yml"];
 
 /** The dev org alias, as the universe names it. */
 const DEV_ORG = "helios-dev";
@@ -258,7 +288,15 @@ export const RULES = [
           return miss(`targetUsername is still empty in ${file}`, `branch ${DEV}. ${rerun}`);
         }
       }
-      return pass("integration and uat both name their org");
+      const active = forkActiveWorkflows(ctx);
+      const off = active === null ? [] : PIPELINE_WORKFLOWS.filter((file) => !active.includes(file));
+      if (off.length > 0) {
+        return miss(
+          `GitHub does not run ${off.join(", ")} on your fork, so nothing will check or deploy your work`,
+          "the Actions tab of your fork: click I understand my workflows, go ahead and enable them, then run Set up my training environment again"
+        );
+      }
+      return pass("integration and uat both name their org, and the fork runs its pipeline workflows");
     }
   },
   {

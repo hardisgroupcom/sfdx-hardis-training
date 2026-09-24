@@ -143,11 +143,12 @@ Les deux sont des installeurs suivant-suivant-terminer.
 
     La même chose vaut pour un terminal que vous aviez déjà ouvert.
 
+<a id="install-the-extension-pack"></a>
+
 Ouvrez ensuite VS Code et installez les extensions. L'icône **Extensions** **(1)** se trouve dans la
 barre étroite de gauche, et ressemble à quatre petits carrés dont l'un est détaché. Cliquez dessus,
 tapez `hardis` dans la zone de recherche **(2)**, et cliquez sur **Install** sur **SFDX Hardis
 Extension Pack for Salesforce, by Cloudity** **(3)**, publié par Nicolas Vuillamy.
-{ #install-the-extension-pack }
 
 ![La vue Extensions de VS Code, avec hardis tapé dans la zone de recherche](../../_assets/annotated/vscode/extensions-install.png)
 

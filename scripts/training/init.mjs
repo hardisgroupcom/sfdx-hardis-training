@@ -40,7 +40,7 @@ import os from "os";
 import path from "path";
 import {
   ROOT, c, title, info, ok, warn, abort, run, runAsync, runJson, parseJsonOutput, git, gitOut,
-  select, confirm, connectedOrgs, orgChoices, universe, ensureGh, repoSlug
+  select, confirm, connectedOrgs, orgChoices, universe, ensureGh, repoSlug, openUrl
 } from "../lib/util.mjs";
 import { deployAppToAll, grantManager, loadData, recordSeeded, alreadySeeded } from "./seed.mjs";
 import { REQUIRED_CHECKS, protectBranches, withProtectionLifted } from "../lib/protection.mjs";
@@ -54,6 +54,8 @@ const DURATION_DAYS = 30;
 // preprod is created by the release manager in Lab 3.1, from main.
 const PIPELINE_BRANCHES = ["integration", "uat"];
 const STEPS = 8;
+// How long step 2 waits for the learner to click the Actions banner of a new fork.
+const ACTIONS_WAIT_MINUTES = 10;
 
 /** The orgs this command owns, read from the universe so the labs and the code agree. */
 function trainingOrgs() {
@@ -504,9 +506,27 @@ export function ensurePipelineBranches() {
  *
  * Returns the names still parked, empty when they all run.
  */
+// The workflow files of the fork, read from its default branch.
+// One name per line rather than JSON: the contents API answers with an array,
+// and parseJsonOutput reads objects only.
+function workflowFiles(slug) {
+  const res = run("gh", ["api", `repos/${slug}/contents/.github/workflows`, "-q", ".[].name"], {
+    capture: true,
+    quiet: true
+  });
+  return res.code === 0 ? res.stdout.split(/\r?\n/).filter((name) => /\.ya?ml$/.test(name.trim())) : [];
+}
+
 function enableForkWorkflows(slug) {
   const listed = ghJson(["api", `repos/${slug}/actions/workflows`, "--paginate"]);
   const workflows = listed?.workflows || [];
+  // A brand new fork lists no workflow at all: GitHub registers them only once
+  // the owner clicks the banner of the Actions tab. An empty list next to
+  // workflow files is that banner, not a fork with nothing left to enable, and
+  // reading it as success is how the push of step 7 started no job at all.
+  if (listed && workflows.length === 0) {
+    return workflowFiles(slug);
+  }
   for (const workflow of workflows) {
     if (workflow.state === "active") {
       continue;
@@ -525,7 +545,7 @@ function enableForkWorkflows(slug) {
   return after.workflows.filter((workflow) => workflow.state !== "active").map((workflow) => workflow.name);
 }
 
-function ensureActions(slug) {
+async function ensureActions(slug) {
   step(2, "Actions turned on");
 
   const permissions = ghJson(["api", `repos/${slug}/actions/permissions`]);
@@ -537,7 +557,24 @@ function ensureActions(slug) {
   }
 
   const enabled = ghJson(["api", `repos/${slug}/actions/permissions`])?.enabled === true;
-  const parked = enabled ? enableForkWorkflows(slug) : [];
+  let parked = enabled ? enableForkWorkflows(slug) : [];
+
+  // The banner has no API: the learner clicks it, and this waits for that
+  // click. Now rather than at the end, because step 7 pushes to integration and
+  // that push only starts its deployment job once the workflows run.
+  if (enabled && parked.length > 0) {
+    const url = `https://github.com/${slug}/actions`;
+    info("    GitHub keeps the workflows of a new fork switched off until you say otherwise.");
+    info(`    Your browser opens ${c.cyan(url)}: click`);
+    info(`    ${c.bold("I understand my workflows, go ahead and enable them")}, then come back here.`);
+    openUrl(url);
+    info(c.dim(`    Waiting for that click, up to ${ACTIONS_WAIT_MINUTES} minutes...`));
+    const until = Date.now() + ACTIONS_WAIT_MINUTES * 60 * 1000;
+    while (parked.length > 0 && Date.now() < until) {
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      parked = enableForkWorkflows(slug);
+    }
+  }
 
   if (enabled && parked.length === 0) {
     ok("Actions are on, and every workflow of your fork runs.");
@@ -757,7 +794,7 @@ export default async function init(args) {
   }
 
   const slug = await ensureFork(handle);
-  const actionsOn = ensureActions(slug);
+  const actionsOn = await ensureActions(slug);
 
   step(3, "Your Dev Hub");
   await ensureDevHub(devHub);

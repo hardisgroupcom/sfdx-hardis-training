@@ -311,6 +311,13 @@ autres.
     Si le navigateur ne s'est pas ouvert, l'adresse est affichée juste sous le code. Dans
     Agentforce Vibes il ne s'ouvre pas tout seul : cliquez sur le lien affiché.
 
+!!! tip "Puis il vous demande un clic sur GitHub"
+    GitHub désactive les workflows de chaque nouveau fork, derrière une bannière qu'aucune commande
+    ne peut presser. L'étape 2 des huit ouvre l'onglet **Actions** de votre fork dans votre
+    navigateur, et attend. Cliquez sur **I understand my workflows, go ahead and enable them**,
+    revenez dans VS Code, et la commande continue toute seule. Sans ce clic, rien ne vérifierait ni
+    ne déploierait jamais votre travail.
+
 La commande ne demande pas quelle org utiliser : vous en avez connecté une, nommée `helios-prod`,
 elle prend donc celle-là, le dit, et ne demande qu'un oui avant de changer quoi que ce soit. Puis
 elle déroule huit étapes et vous tient au courant au fur et à mesure :
@@ -598,10 +605,11 @@ perdu : votre travail est sur votre fork. Le quota revient au fil des heures qui
 le moment de lire les blocs Sous le capot des labs que vous avez faits, et de revenir cliquer plus
 tard.
 
-**Il dit qu'Actions n'a pas pu être activé depuis ici.**
-GitHub cache cet interrupteur derrière une bannière sans API. Ouvrez l'onglet **Actions** de votre
-fork (`github.com/my-username/sfdx-hardis-training`) et cliquez sur **I understand my workflows, go
-ahead and enable them**. Un clic, et la commande n'a plus rien à faire.
+**Il dit qu'Actions n'a pas pu être activé depuis ici, ou que des workflows sont encore en attente.**
+GitHub cache cet interrupteur derrière une bannière sans API, et la commande a cessé d'attendre
+votre clic. Ouvrez l'onglet **Actions** de votre fork (`github.com/my-username/sfdx-hardis-training`)
+et cliquez sur **I understand my workflows, go ahead and enable them**. Puis recliquez sur **Set up
+my training environment** : il voit les workflows tourner et n'a plus rien à faire.
 
 **L'onglet Actions n'affiche aucun workflow.**
 Vous avez forké à la main à un moment donné en laissant "Copy the `main` branch only" coché.

@@ -70,8 +70,9 @@ sur **Search Metadata** **(3)**.
 
 ![Le Metadata Retriever listant les modifications récentes de l'org](../../_assets/annotated/vscode/metadata-retriever-recent-changes--find.png)
 
-Une trentaine de résultats reviennent **(4)**, chacun avec ce qu'il est, son nom, qui l'a touché en
-dernier et quand. Tous portent votre nom, et la plupart ne sont pas votre story.
+Le nombre de résultats est en **(4)** : quelques dizaines sur votre org, moins sur l'image. Chaque
+ligne dit ce qu'elle est, son nom, qui l'a touchée en dernier et quand. Toutes portent votre nom, et
+la plupart ne sont pas votre story.
 
 !!! info "Pourquoi la liste est plus longue que votre story"
     Une scratch org se souvient de chaque composant qui y est arrivé, quelle qu'en soit la voie. Au
@@ -344,8 +345,8 @@ Répondez **Yes** et la branche part sur votre fork
 - `manifest/package.xml` gagnant une ligne, le nouveau champ, dans un commit fait par l'outil
 - Votre branche sur GitHub, dans votre fork (`github.com/my-username/sfdx-hardis-training`), sous
   **Branches**
-- Le panneau DevOps Pipeline montrant votre branche qui alimente `integration`, sans Pull Request
-  pour l'instant
+- Le panneau DevOps Pipeline toujours sans votre branche : il dessine une branche dès qu'elle a une
+  Pull Request, et la vôtre en reçoit une au [Lab 1.6](1-6-pull-request-deployment-check-and-merge.md)
 
 ## En cas de problème
 
