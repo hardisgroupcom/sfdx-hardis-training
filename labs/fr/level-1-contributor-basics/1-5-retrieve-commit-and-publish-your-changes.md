@@ -5,7 +5,7 @@ description: "Faites entrer vos modifications d'org dans Git avec le Metadata Re
 level: 1
 lab: 5
 lang: fr
-source_rev: "a34ea6fe2995834d2ab32fd72793082b541c84c8"
+source_rev: "4e07ca72f292110fec265b043b9fb58e23eeb7d9"
 screenshots:
   - annotated/vscode/pipeline-cards--commit-changes
   - annotated/vscode/metadata-retriever-recent-changes--find
