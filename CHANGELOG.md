@@ -1,20 +1,17 @@
 # Changelog
 
 What changed in the course, for learners and trainers. The course has no versions: each section is
-the day its changes reached the published site.
+a day, newest first, and a change goes under the date of the day it is made.
 
-## Unreleased
+## 2026-09-24
 
+- Level 3: a new Lab 3.10 on promotion branches (Beta), and the capstone becomes Lab 3.11.
 - Lab 3.10: two GitHub screenshots of a real promotion, the Pull Request description and the red check naming the files with conflict markers.
 - Lab 3.10: the explanation of the cherry-pick conflict now matches what git writes, in the layout and in the permission set.
 - Reset this level: the start branches are published from `main` automatically, so a reset always lands on the current labs.
 - New **Update my course** in the Training menu of every level: brings the course changes made since you forked, through a Pull Request into `integration`, without losing your work.
 - Every training command, and **Where am I?**, tells you when your fork is missing course changes (other learners' badge claims are ignored).
 - Reset this level keeps the certificate keys of Lab 3.1, so a Level 3 pipeline still logs in to its orgs after a reset.
-
-## 2026-09-24
-
-- Level 3: a new Lab 3.10 on promotion branches (Beta), and the capstone becomes Lab 3.11.
 
 ## 2026-09-23
 
