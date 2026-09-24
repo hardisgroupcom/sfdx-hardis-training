@@ -5,7 +5,7 @@ description: "Transportez trois User Stories approuvées sur cinq de uat vers pr
 level: 3
 lab: 10
 lang: fr
-source_rev: "6867d0d674f13b26d5273852cf6ea1fafa07add2"
+source_rev: "9dad8d20634fe26a6b2d94040c95f8b420b63aac"
 screenshots:
   - annotated/vscode/welcome-custom-menu-3
   - annotated/vscode/pipeline-config-danger--promotion-branches
@@ -317,9 +317,8 @@ l'entrée Supplier ensemble. Git coupe le bloc là où les lignes cessent de co�
 élément XML commence : dans la présentation de page, les deux lignes qui ouvrent la ligne Warranty
 Years ouvrent aussi la ligne qui suit sur `preprod`, donc elles restent juste au-dessus des
 marqueurs, et le côté entrant va du champ Warranty Years aux lignes d'ouverture de la ligne qui
-suit Supplier. L'étape 6 montre à quoi cela ressemble. La réponse recommandée committe les fichiers
-exactement comme ça, pour que la branche puisse être poussée, la Pull Request ouverte, et la
-décision prise là où on peut la relire.
+suit Supplier. La réponse recommandée committe les fichiers exactement comme ça, pour que la
+branche puisse être poussée, la Pull Request ouverte, et la décision prise là où on peut la relire.
 
 <!-- command-links:start -->
 Documentation de la commande : [hardis:project:promotion:create](https://sfdx-hardis.cloudity.com/hardis/project/promotion/create/)
