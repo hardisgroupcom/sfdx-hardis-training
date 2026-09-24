@@ -43,9 +43,10 @@ Two Pull Requests wait. **US-020**, open since [Lab 3.4](3-4-merge-colliding-pul
 **Training: Level 3** > **Simulate my teammates**, and pick **US-055 Install Date says which day it
 means**.
 
-One more thing is waiting, and not in a Pull Request: **US-058**, the warranty term, sitting in
-`uat` since [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md) because the promotion branch went around it. The approval came through
-over the weekend. Nothing to do about it today, and Thursday is where it matters.
+Two more things are waiting, and not in a Pull Request: **US-058**, the warranty term, and
+**US-060**, the scaffolding flag, sitting in `uat` since [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md) because the promotion branch
+went around them. The wording was approved over the weekend and the crews were briefed on Monday.
+Nothing to do about them today, and Thursday is where it matters.
 
 ![The Level 3 training menu on the Welcome page](../../_assets/annotated/vscode/welcome-custom-menu-3.png)
 
@@ -79,14 +80,17 @@ deleted that you were not expecting. Merge, watch, verify, do the manual steps.
 
 Everything [Lab 3.7](3-7-hotfix-and-retrofit.md) put in at `preprod` is already in `main`, so this release should not be moving
 it again. Read the counts line with that in mind: what goes out this week is Romain's help text,
-the retrofits travelling up from `integration`, and US-058, which has been waiting in `uat` since
-[Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md). `deleted: 0` is still the number to stop on.
+the retrofits travelling up from `integration`, and US-058 and US-060, which have been waiting in
+`uat` since [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md). `deleted: 0` is still the number to stop on.
 
-**That promotion is also what ends the exception.** US-057 went to `preprod` on its own last week;
-this one carries US-058 the ordinary way, and `uat` and `preprod` hold the same thing again. Check
-it rather than assume it: the `uat` node of the diagram counts zero User Stories waiting once the
-promotion is merged. A promotion branch that is never followed by a full promotion is how a pipeline
-stops being a pipeline.
+**That promotion is also what ends the exception.** US-057, US-059 and US-061 went to `preprod` on
+their own last week; this one carries US-058 and US-060 the ordinary way, and `uat` and `preprod`
+hold the same thing again. It merges without a conflict because [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md) step 9 retrofitted the
+promotion into `integration` the same day: the two files solved on the promotion branch meet their
+originals with a common point git knows about. Check it rather than assume it: the `uat` node of
+the diagram counts zero User Stories waiting once the promotion is merged, and `helios-preprod` has
+a Warranty Years field on Panel Batch at last. A promotion branch that is never followed by a full
+promotion is how a pipeline stops being a pipeline.
 
 Then generate the release notes of the release to `main`, add the sentence at the top that says what
 this release is for, and put them in the description of the Pull Request from `preprod` into
@@ -128,8 +132,8 @@ point of having it.
   its own deployment
 - Release notes in the description of the release Pull Request, with a human sentence at the top
 - A second DORA report to compare with the baseline of [Lab 3.6](3-6-release-to-production-and-read-dora-metrics.md)
-- `uat` counting zero User Stories waiting: US-058 caught up with US-057 and the pipeline is aligned
-  again
+- `uat` counting zero User Stories waiting: US-058 and US-060 caught up with the three stories
+  promoted ahead of them, and the pipeline is aligned again
 
 ## If it goes wrong
 
@@ -146,6 +150,12 @@ production has and `integration` has not is a fix the next story quietly removes
 **A teammate simulation says there is nothing to commit.**
 That story is already merged. Each teammate story merges once per level, and the ones Level 3 uses
 are listed in each lab. Nothing is wrong: move on.
+
+**Thursday's promotion of `uat` into `preprod` reports conflicts.**
+The retrofit of [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md) step 9 is missing, and git meets the promotion's two files again with
+nothing telling it which side was a decision. Do that retrofit now, from `preprod` into
+`integration`, then promote `integration` into `uat` again before you promote `uat`: the conflict is
+gone, because `uat` then carries the reconciliation.
 
 **A deployment is green and the feature is not in the org.**
 Open the log and find **Listing Post-deployment actions**. If it says none were defined, the actions

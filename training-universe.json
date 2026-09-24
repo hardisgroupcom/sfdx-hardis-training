@@ -463,6 +463,65 @@
         "Panel_Batch__c-Panel Batch Layout",
         "Helios_Delivery_Manager"
       ]
+    },
+    {
+      "id": "US-059",
+      "level": 3,
+      "lab": 10,
+      "author": "romain",
+      "title": "Record the supplier of a panel batch",
+      "story": "As a buyer, I want the supplier stored on the panel batch, so that a warranty claim goes to the right company without digging out the invoice.",
+      "acceptance": [
+        "A Supplier field exists on Panel Batch",
+        "It is on the Panel Batch layout",
+        "Managers can read and write it"
+      ],
+      "branch": "training/mate-us-059-supplier",
+      "metadata": [
+        "Panel_Batch__c.Supplier__c",
+        "Panel_Batch__c-Panel Batch Layout",
+        "Helios_Delivery_Manager"
+      ]
+    },
+    {
+      "id": "US-060",
+      "level": 3,
+      "lab": 10,
+      "author": "mariia",
+      "title": "Flag an installation that needs scaffolding",
+      "story": "As a planner, I want to flag an installation that needs scaffolding, so that the crew books it before the day instead of finding out on site.",
+      "acceptance": [
+        "A Scaffolding Required checkbox exists on Installation",
+        "It is on the Installation layout",
+        "Crews can see it, planners can set it"
+      ],
+      "branch": "training/mate-us-060-scaffolding",
+      "metadata": [
+        "Installation__c.Scaffolding_Required__c",
+        "Installation__c-Installation Layout",
+        "Helios_Delivery_Crew",
+        "Helios_Delivery_Manager"
+      ]
+    },
+    {
+      "id": "US-061",
+      "level": 3,
+      "lab": 10,
+      "author": "mariia",
+      "title": "Record the gate code of a site",
+      "story": "As a crew member, I want the gate code of the site on the installation, so that I get in without phoning the customer at seven in the morning.",
+      "acceptance": [
+        "A Gate Code field exists on Installation",
+        "It is on the Installation layout",
+        "Crews can read it, planners can edit it"
+      ],
+      "branch": "training/mate-us-061-gate-code",
+      "metadata": [
+        "Installation__c.Gate_Code__c",
+        "Installation__c-Installation Layout",
+        "Helios_Delivery_Crew",
+        "Helios_Delivery_Manager"
+      ]
     }
   ],
   "pullRequests": [
@@ -640,7 +699,7 @@
       "level": 3,
       "slug": "level-3-release-manager",
       "name": "Release Manager",
-      "duration": "about 6 h 40",
+      "duration": "about 7 h 05",
       "prerequisite": 2,
       "badge": "sfdx-hardis Release Manager",
       "star": "hardisgroupcom/vscode-sfdx-hardis",
@@ -712,8 +771,8 @@
           "lab": 10,
           "slug": "3-10-promote-a-subset-with-promotion-branches",
           "title": "Promote a subset with promotion branches (Beta)",
-          "description": "Carry one approved User Story from uat to preprod with an sfdx-hardis promotion branch, and weigh what that shortcut costs the orgs behind it.",
-          "time": "35 min"
+          "description": "Carry three approved User Stories out of five from uat to preprod with an sfdx-hardis promotion branch, solve the cherry-pick conflict it raises, and weigh what that shortcut costs.",
+          "time": "60 min"
         },
         {
           "lab": 11,

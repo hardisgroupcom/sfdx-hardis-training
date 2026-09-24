@@ -12,7 +12,7 @@
   "commitMessage": "US-057 Park an installation that is waiting for parts\n\nAwaiting Parts value on Installation__c.Status__c, so the weekly report\nstops counting a job held up by a missing part as late.",
   "prTitle": "US-057 Park an installation that is waiting for parts",
   "prBody": "Planners cancel and recreate an installation when a part does not arrive, which loses its history.\nThis gives them a status to park it in.\n\n- `Installation__c.Status__c`: new restricted picklist value `Awaiting Parts`\n\nStory: US-057 in BACKLOG.md",
-  "nextStep": "Review it and merge it into integration, with US-058. Lab 3.10 step 2.",
+  "nextStep": "Review it and merge it into integration, then take the next story: Lab 3.10 step 2 gives the order.",
   "patches": [
     {
       "file": "force-app/main/default/objects/Installation__c/fields/Status__c.field-meta.xml",
