@@ -6,11 +6,11 @@ Three free learning paths that take you from "I have never used Git" to "I own t
 
 **Start here: [hardisgroupcom.github.io/sfdx-hardis-training](https://hardisgroupcom.github.io/sfdx-hardis-training/)**
 
-| Level                        | Audience                                                         | Time   | Prerequisite   |
-|------------------------------|------------------------------------------------------------------|--------|----------------|
-| **1 - Contributor basics**   | Admins and developers joining a team that already has a pipeline | 2 h    | none           |
-| **2 - Contributor advanced** | The same people, once the easy stories are behind them           | 4 h    | Level 1        |
-| **3 - Release Manager**      | The person who owns the pipeline, the orgs and the releases      | 7 h    | Levels 1 and 2 |
+| Level                        | Audience                                                         | Time | Prerequisite   |
+|------------------------------|------------------------------------------------------------------|------|----------------|
+| **1 - Contributor basics**   | Admins and developers joining a team that already has a pipeline | 2 h  | none           |
+| **2 - Contributor advanced** | The same people, once the easy stories are behind them           | 4 h  | Level 1        |
+| **3 - Release Manager**      | The person who owns the pipeline, the orgs and the releases      | 7 h  | Levels 1 and 2 |
 
 You work on a real repository for a fictional solar installer, **Helios Energy**, with free
 Salesforce orgs that come pre-loaded with the app and its data. Everything is free: no paid
