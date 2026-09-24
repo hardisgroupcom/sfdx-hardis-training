@@ -1,17 +1,14 @@
 # Changelog
 
 What changed in the course, for learners and trainers. The course has no versions: each section is
-the day its changes reached the published site.
-
-## Unreleased
-
-- Lab 3.10: two GitHub screenshots of a real promotion, the Pull Request description and the red check naming the files with conflict markers.
-- Lab 3.10: the explanation of the cherry-pick conflict now matches what git writes, in the layout and in the permission set.
-- Reset this level: the start branches are published from `main` automatically, so a reset always lands on the current labs.
+a day, newest first, and a change goes under the date of the day it is made.
 
 ## 2026-09-24
 
 - Level 3: a new Lab 3.10 on promotion branches (Beta), and the capstone becomes Lab 3.11.
+- Lab 3.10: two GitHub screenshots of a real promotion, the Pull Request description and the red check naming the files with conflict markers.
+- Lab 3.10: the explanation of the cherry-pick conflict now matches what git writes, in the layout and in the permission set.
+- Reset this level: the start branches are published from `main` automatically, so a reset always lands on the current labs.
 
 ## 2026-09-23
 
