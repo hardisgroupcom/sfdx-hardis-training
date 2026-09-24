@@ -42,6 +42,9 @@ const ICON = path.join(ROOT, "site-theme", "images", "badge-mark.svg");
 
 const universe = JSON.parse(fs.readFileSync(path.join(ROOT, "training-universe.json"), "utf8"));
 const SITE = universe.course.site;
+// The course URL as a picture prints it: a card is often seen without the link
+// under it, reposted or screenshotted, and then it is the only way to the course
+const SITE_LABEL = SITE.replace(/^https?:\/\//, "").replace(/\/$/, "");
 
 export const CARD = { width: 1200, height: 630 };
 export const POST = { width: 1200, height: 1200 };
@@ -119,7 +122,8 @@ export function badgeCardSvg(one) {
   <text x="620" y="340" font-family="${FONT}" font-size="${fit(label, 52, 540, 28)}" font-weight="700" fill="${def.lite}">${escapeXml(label)}</text>
   <rect x="620" y="378" width="170" height="52" rx="26" fill="${def.pill}"/>
   <text x="705" y="413" text-anchor="middle" font-family="${FONT}" font-size="26" font-weight="700" letter-spacing="3" fill="${def.ink}">LEVEL ${level}</text>
-  <text x="620" y="520" font-family="${FONT}" font-size="28" fill="#B9B3D0">Free Salesforce DevOps course</text>`);
+  <text x="620" y="505" font-family="${FONT}" font-size="28" fill="#B9B3D0">Free Salesforce DevOps course</text>
+  <text x="620" y="548" font-family="${FONT}" font-size="${fit(SITE_LABEL, 24, 540, 18)}" fill="#8A84A6">${escapeXml(SITE_LABEL)}</text>`);
 }
 
 /**
@@ -129,7 +133,6 @@ export function badgeCardSvg(one) {
  */
 export function postImageSvg(one) {
   const { def, svg, name } = highestBadge(one);
-  const site = SITE.replace(/^https?:\/\//, "").replace(/\/$/, "");
 
   return shell(
     `  <text x="600" y="95" text-anchor="middle" font-family="${FONT}" font-size="30" font-weight="600" letter-spacing="5" fill="#A87BFF">SFDX-HARDIS TRAINING</text>
@@ -137,7 +140,7 @@ export function postImageSvg(one) {
   <text x="600" y="870" text-anchor="middle" font-family="${FONT}" font-size="${fit(name, 76, 1040, 40)}" font-weight="700" fill="#FFFFFF">${escapeXml(name)}</text>
   <text x="600" y="945" text-anchor="middle" font-family="${FONT}" font-size="${fit(def.name, 48, 1040, 28)}" font-weight="700" fill="${def.lite}">${escapeXml(def.name)}</text>
   <text x="600" y="1030" text-anchor="middle" font-family="${FONT}" font-size="32" fill="#B9B3D0">Free Salesforce DevOps training with sfdx-hardis</text>
-  <text x="600" y="1090" text-anchor="middle" font-family="${FONT}" font-size="28" fill="#8A84A6">${escapeXml(site)}</text>`,
+  <text x="600" y="1090" text-anchor="middle" font-family="${FONT}" font-size="28" fill="#8A84A6">${escapeXml(SITE_LABEL)}</text>`,
     POST
   );
 }
@@ -168,7 +171,7 @@ export function courseCardSvg() {
   <text x="600" y="124" text-anchor="middle" font-family="${FONT}" font-size="24" fill="#B9B3D0">Three free hands-on levels, from your first Pull Request to owning the pipeline</text>
   ${badges}
   ${names}
-  <text x="600" y="586" text-anchor="middle" font-family="${FONT}" font-size="22" fill="#6F6A8A">Free and open source, by Cloudity</text>`);
+  <text x="600" y="590" text-anchor="middle" font-family="${FONT}" font-size="22" fill="#8A84A6">Free and open source, by Cloudity - ${escapeXml(SITE_LABEL)}</text>`);
 }
 
 /**
