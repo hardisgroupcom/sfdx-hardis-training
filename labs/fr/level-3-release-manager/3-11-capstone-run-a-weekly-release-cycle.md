@@ -5,7 +5,7 @@ description: "Menez une semaine entière de release manager Salesforce sans pas-
 level: 3
 lab: 11
 lang: fr
-source_rev: "ed7a1945f5852ece1409b68dfa3161d14c12e40d"
+source_rev: "0dc7f79d02b7090ab393c38f76a8ccb48c2b1cb5"
 screenshots:
   - annotated/vscode/welcome-custom-menu-3
 depends_on:
@@ -43,9 +43,10 @@ Deux Pull Requests attendent. **US-020**, ouverte depuis le [Lab 3.4](3-4-merge-
 nouvelle de Romain : **Training: Level 3** > **Simulate my teammates**, et choisissez
 **US-055 Install Date says which day it means**.
 
-Une troisième chose attend, et pas dans une Pull Request : **US-058**, la durée de garantie, posée
-dans `uat` depuis le [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md) parce que la promotion branch est passée à côté. La validation
-est arrivée pendant le week-end. Rien à en faire aujourd'hui, et c'est jeudi que cela compte.
+Deux autres choses attendent, et pas dans une Pull Request : **US-058**, la durée de garantie, et
+**US-060**, le signal d'échafaudage, posées dans `uat` depuis le [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md) parce que la
+promotion branch est passée à côté. La formulation a été validée pendant le week-end et les équipes
+ont été informées lundi. Rien à en faire aujourd'hui, et c'est jeudi que cela compte.
 
 ![Le menu Training du niveau 3 sur la Welcome page](../../_assets/annotated/vscode/welcome-custom-menu-3.png)
 
@@ -81,14 +82,18 @@ vous ne vous attendiez pas. Mergez, regardez, vérifiez, faites les étapes manu
 
 Tout ce que le [Lab 3.7](3-7-hotfix-and-retrofit.md) a posé sur `preprod` est déjà dans `main`, cette livraison ne devrait donc pas
 le redéplacer. Lisez la ligne de compteurs avec cela en tête : ce qui sort cette semaine est le help
-text de Romain, les retrofits qui remontent depuis `integration`, et US-058, qui attend dans `uat`
-depuis le [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md). `deleted: 0` reste le nombre sur lequel s'arrêter.
+text de Romain, les retrofits qui remontent depuis `integration`, et US-058 et US-060, qui attendent
+dans `uat` depuis le [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md). `deleted: 0` reste le nombre sur lequel s'arrêter.
 
-**Cette promotion est aussi ce qui met fin à l'exception.** US-057 est partie seule vers `preprod` la
-semaine dernière ; celle-ci transporte US-058 de manière ordinaire, et `uat` et `preprod` contiennent
-de nouveau la même chose. Vérifiez-le plutôt que de le supposer : le nœud `uat` du diagramme compte
-zéro User Story en attente une fois la promotion mergée. Une promotion branch qui n'est jamais suivie
-d'une promotion complète, c'est ainsi qu'une pipeline cesse d'être une pipeline.
+**Cette promotion est aussi ce qui met fin à l'exception.** US-057, US-059 et US-061 sont parties
+seules vers `preprod` la semaine dernière ; celle-ci transporte US-058 et US-060 de manière
+ordinaire, et `uat` et `preprod` contiennent de nouveau la même chose. Elle merge sans conflit parce
+que l'étape 9 du [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md) a retrofité la promotion dans `integration` le jour même : les
+deux fichiers résolus sur la promotion branch retrouvent leurs originaux avec un point commun que
+git connaît. Vérifiez-le plutôt que de le supposer : le nœud `uat` du diagramme compte zéro User
+Story en attente une fois la promotion mergée, et `helios-preprod` a enfin un champ Warranty Years
+sur Panel Batch. Une promotion branch qui n'est jamais suivie d'une promotion complète, c'est ainsi
+qu'une pipeline cesse d'être une pipeline.
 
 Générez ensuite les notes de version de la livraison vers `main`, ajoutez en haut la phrase qui dit à
 quoi sert cette livraison, et mettez-les dans la description de la Pull Request de `preprod` vers
@@ -131,8 +136,8 @@ qui est bien l'intérêt de l'avoir.
 - Les notes de version dans la description de la Pull Request de livraison, avec une phrase humaine
   en haut
 - Un deuxième rapport DORA à comparer avec la ligne de base du [Lab 3.6](3-6-release-to-production-and-read-dora-metrics.md)
-- `uat` qui compte zéro User Story en attente : US-058 a rattrapé US-057 et la pipeline est alignée
-  de nouveau
+- `uat` qui compte zéro User Story en attente : US-058 et US-060 ont rattrapé les trois stories
+  promues avant elles, et la pipeline est alignée de nouveau
 
 ## En cas de problème
 
@@ -150,6 +155,12 @@ prochaine story retire en silence.
 **Une simulation de collègue dit qu'il n'y a rien à commiter.**
 Cette story est déjà mergée. Chaque story de collègue se merge une fois par niveau, et celles
 qu'utilise le Niveau 3 sont listées dans chaque lab. Rien ne va mal : passez à la suite.
+
+**La promotion de `uat` vers `preprod` de jeudi signale des conflits.**
+Le retrofit de l'étape 9 du [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md) manque, et git retrouve les deux fichiers de la promotion
+sans rien qui lui dise quel côté était une décision. Faites ce retrofit maintenant, de `preprod`
+vers `integration`, puis promouvez de nouveau `integration` vers `uat` avant de promouvoir `uat` : le
+conflit a disparu, parce que `uat` porte alors la réconciliation.
 
 **Un déploiement est vert et la fonctionnalité n'est pas dans l'org.**
 Ouvrez le log et trouvez **Listing Post-deployment actions**. S'il dit qu'aucune n'était définie,
