@@ -227,10 +227,12 @@ your own handle rather than Mariia's: the teammate wrote the commit, `Simulate m
 the Pull Request with your account. The branch window of the panel shows the commit author, which is
 why the two disagree.
 
-The **Title** comes from the Pull Request, read through the git provider API, and that call needs a
-token in the environment (`GITHUB_TOKEN` or `CI_SFDX_HARDIS_GITHUB_TOKEN`), the same one
-[Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md) needs for the release notes. Without one the row still carries the right Pull Request
-and the right commit, and the title reads `PR #NNN`.
+The **Title** comes from the Pull Request, read through the git provider API. The command requires
+that connection and refuses to start without it, so a promotion behaves the same on GitHub, GitLab,
+Bitbucket and Azure DevOps and every carried row names its real story. You never see the refusal
+here: the extension passes its own GitHub connection, signed in since
+[Lab 1.2](../level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md). From a terminal or an agent, the token has to be provided
+(`GITHUB_TOKEN`, in the environment or in a `.env` file at the repository root).
 
 **That yaml block is the declaration**, and every job that runs on this Pull Request reads it. It is
 how US-057 keeps, in `preprod`, everything it would have had in an ordinary promotion: its
@@ -366,10 +368,12 @@ The deployment job read a configuration with the feature off. Check that `prepro
 `enablePromotionBranches: true` in `config/.sfdx-hardis.yml`: the branch the job reads is the
 promotion branch, which was cut from `preprod`.
 
-**The carried table says `PR #NNN` instead of the story title.**
-There is no git provider token in the environment, so the command could not read the Pull Request.
-The promotion itself is correct: the right commit was cherry-picked and the right number declared.
-Set `GITHUB_TOKEN` and the titles and authors come back.
+**The command stops saying it needs the git provider connection.**
+The promotion is assembled from the Pull Requests of `uat`, and only the git provider names them
+reliably, so the command refuses to guess without it. In VS Code that connection is the GitHub
+sign-in of [Lab 1.2](../level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md), and the extension passes it on its own: sign in again if it
+was revoked. From a terminal or an agent, set `GITHUB_TOKEN`, in the environment or in a `.env`
+file at the repository root, and keep that file out of git.
 
 **The deployment is much bigger than one story.**
 Look at what the branch was cut from. A promotion branch built when `preprod` was behind carries the

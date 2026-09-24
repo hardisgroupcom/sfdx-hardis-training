@@ -239,10 +239,12 @@ c'est donc votre propre identifiant et non celui de Mariia. La coéquipière a �
 **Simulate my teammates** a ouvert la Pull Request avec votre compte. La fenêtre de branche du
 panneau affiche l'auteur du commit, et c'est pour cela que les deux ne disent pas la même chose.
 
-La colonne **Title** vient de la Pull Request, lue via l'API du git provider, et cet appel a besoin
-d'un token dans l'environnement (`GITHUB_TOKEN` ou `CI_SFDX_HARDIS_GITHUB_TOKEN`), le même que celui
-dont le [Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md) a besoin pour les notes de version. Sans token, la ligne porte quand même
-la bonne Pull Request et le bon commit, et le titre affiche `PR #NNN`.
+La colonne **Title** vient de la Pull Request, lue via l'API du git provider. La commande exige
+cette connexion et refuse de démarrer sans elle : une promotion se comporte ainsi de la même façon
+sur GitHub, GitLab, Bitbucket et Azure DevOps, et chaque ligne portée nomme sa vraie story. Ici
+vous ne voyez jamais ce refus : l'extension transmet sa propre connexion GitHub, ouverte depuis le
+[Lab 1.2](../level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md). Depuis un terminal ou un agent, le token doit être fourni
+(`GITHUB_TOKEN`, dans l'environnement ou dans un fichier `.env` à la racine du repository).
 
 **Ce bloc yaml est la déclaration**, et chaque job qui tourne sur cette Pull Request le lit. C'est
 ainsi qu'US-057 garde, dans `preprod`, tout ce qu'elle aurait eu dans une promotion ordinaire : ses
@@ -387,10 +389,13 @@ Le job de déploiement a lu une configuration avec la fonctionnalité inactive. 
 porte bien `enablePromotionBranches: true` dans `config/.sfdx-hardis.yml` : la branche que le job lit
 est la promotion branch, qui a été coupée depuis `preprod`.
 
-**Le tableau des Pull Requests portées affiche `PR #NNN` au lieu du titre de la story.**
-Il n'y a pas de token de git provider dans l'environnement, donc la commande n'a pas pu lire la
-Pull Request. La promotion elle-même est correcte : le bon commit a été cherry-pické et le bon
-numéro déclaré. Définissez `GITHUB_TOKEN` et les titres et les auteurs reviennent.
+**La commande s'arrête en disant qu'elle a besoin de la connexion au git provider.**
+La promotion est assemblée à partir des Pull Requests de `uat`, et seul le git provider les nomme
+de façon fiable, donc la commande refuse de deviner sans lui. Dans VS Code, cette connexion est la
+session GitHub du [Lab 1.2](../level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md), et l'extension la transmet toute seule : reconnectez-vous si
+elle a été révoquée. Depuis un terminal ou un agent, définissez `GITHUB_TOKEN`, dans
+l'environnement ou dans un fichier `.env` à la racine du repository, et gardez ce fichier hors de
+git.
 
 **Le déploiement est beaucoup plus gros qu'une story.**
 Regardez depuis quoi la branche a été coupée. Une promotion branch construite alors que `preprod`
