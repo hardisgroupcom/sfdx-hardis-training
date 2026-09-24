@@ -5,7 +5,7 @@ description: "Transportez trois User Stories approuvées sur cinq de uat vers pr
 level: 3
 lab: 10
 lang: fr
-source_rev: "0dc7f79d02b7090ab393c38f76a8ccb48c2b1cb5"
+source_rev: "c9b9104f9d1a55130c818a7b22206a27992cd46c"
 screenshots:
   - annotated/vscode/welcome-custom-menu-3
   - annotated/vscode/pipeline-config-danger--promotion-branches
@@ -536,9 +536,11 @@ côté `<<<<<<< HEAD`, **Accept Incoming Change** le côté `>>>>>>>`, **Accept 
 l'un après l'autre, et chacun d'eux retire les marqueurs. Aucun ne sait que le côté entrant contient
 deux entrées et qu'une seule a sa place, et c'est la partie que vous avez faite.
 
-Le job de contrôle lance `git grep` sur les trois marqueurs, sur les fichiers que la promotion
-transporte par rapport à `preprod`, et arrête le déploiement avec le commentaire que vous avez lu à
-l'étape 5. Les deux fichiers du [Lab 2.7](../level-2-contributor-advanced/2-7-resolve-a-git-merge-conflict.md) contiennent des marqueurs comme matériel
+Le job de contrôle lance `git grep` sur les marqueurs d'ouverture et de fermeture (`<<<<<<< ` et
+`>>>>>>> `, puisqu'une ligne de `=======` est légitime en markdown), sur tous les fichiers suivis de
+la branch, et arrête le déploiement avec le commentaire que vous avez lu à l'étape 5. Il lit les
+fichiers tels qu'ils sont extraits, jamais l'historique git, donc il fonctionne sur le clone
+superficiel qu'un job de CI fait. Les deux fichiers du [Lab 2.7](../level-2-contributor-advanced/2-7-resolve-a-git-merge-conflict.md) contiennent des marqueurs comme matériel
 pédagogique, donc ce projet les liste dans `promotionConflictMarkersIgnoredFiles` de
 `config/.sfdx-hardis.yml` et le job les laisse tranquilles.
 
