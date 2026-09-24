@@ -663,17 +663,21 @@ const grant = (field) =>
   `    <fieldPermissions>\n        <editable>true</editable>\n        <field>${field}</field>\n        <readable>true</readable>\n    </fieldPermissions>\n`;
 const layoutSource = fs.readFileSync(path.join(ROOT, PROMOTION_CONFLICT_FILES[0]), "utf8").replace(/\r\n/g, "\n");
 const permsetSource = fs.readFileSync(path.join(ROOT, PROMOTION_CONFLICT_FILES[1]), "utf8").replace(/\r\n/g, "\n");
+// The row after Cost is External Id: the lab's step 6 prints it under the Supplier row, and the
+// "row that follows on preprod" sentence relies on it, so the anchor names it rather than
+// accepting whatever row comes next.
 const layoutAnchor = layoutItem("Cost__c") + layoutItemOpen;
+const layoutAfter = "                <field>External_Id__c</field>\n";
 const permsetAnchor = grant("Panel_Batch__c.Serial_Prefix__c");
-if (!layoutSource.includes(layoutAnchor) || !permsetSource.includes(permsetAnchor)) {
+if (!layoutSource.includes(layoutAnchor + layoutAfter) || !permsetSource.includes(permsetAnchor)) {
   console.error("The Panel Batch layout or the manager permission set no longer holds the lines the conflict fixture anchors on.");
   process.exit(1);
 }
 write(
   path.join(OUT, "promotion-conflict", PROMOTION_CONFLICT_FILES[0]),
   layoutSource.replace(
-    layoutAnchor,
-    layoutAnchor + conflictMarkers(layoutItemClose("Warranty_Years__c") + layoutItem("Supplier__c") + layoutItemOpen)
+    layoutAnchor + layoutAfter,
+    layoutAnchor + conflictMarkers(layoutItemClose("Warranty_Years__c") + layoutItem("Supplier__c") + layoutItemOpen) + layoutAfter
   )
 );
 write(

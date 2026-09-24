@@ -7,7 +7,7 @@
 # state the labs no longer describe: on 2026-09-24 the three branches predated
 # the Lab 3.10 release, and Simulate my teammates on a reset Level 3 did not
 # know US-058. The monthly consistency check reports that; this job removes the
-# step to forget.
+# step to forget. A push by hand is only for a run of this job that failed.
 name: Publish the reset branches
 
 on:
@@ -26,8 +26,10 @@ jobs:
   publish:
     name: Build the start branches from main and push them
     # The shared repository only: a learner's fork resets from upstream, and its
-    # own start branches are never read.
-    if: github.repository == 'hardisgroupcom/sfdx-hardis-training'
+    # own start branches are never read. And main only: the script builds from
+    # the checked out branch, and a manual run from a feature branch would
+    # publish that branch as the state every level starts from.
+    if: github.repository == 'hardisgroupcom/sfdx-hardis-training' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -35,6 +37,7 @@ jobs:
       # The token stays in the checkout on purpose: the script pushes with it.
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
+          ref: main
           persist-credentials: true
           fetch-depth: 0
 
@@ -49,6 +52,3 @@ jobs:
 
       - name: Build and push training/start-level-1, -2 and -3
         run: node scripts/build/start-branches.mjs --push
-
-      - name: They match what main says
-        run: node scripts/build/start-branches.mjs --check

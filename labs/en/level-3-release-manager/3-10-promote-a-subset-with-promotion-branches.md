@@ -302,7 +302,7 @@ brought on the `>>>>>>>` side, the Warranty Years entry and the Supplier entry t
 the block where the lines stop matching, not where an XML element starts: in the layout, the two
 opening lines of the Warranty Years row are also the opening lines of the row that follows on
 `preprod`, so they sit just above the markers, and the incoming side runs from the Warranty Years
-field to the opening lines of the row after Supplier. Step 6 shows what that looks like. The
+field to the opening lines of the row after Supplier. The
 recommended answer commits the files exactly like that, so the branch can be pushed, the Pull
 Request opened, and the decision made where it can be reviewed.
 
