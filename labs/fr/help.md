@@ -3,7 +3,7 @@ title: "Aide"
 description: "Où poser votre question quand une étape du cours ne fonctionne pas, et ce que Cloudity propose à une équipe qui utilise sfdx-hardis sur un vrai projet Salesforce : mise en place, formation et support."
 id: help
 lang: fr
-source_rev: "fc6954d3c4e0728198f404d0be20439b291214d5"
+source_rev: "dd2d4d4ea73edc165941a654aca1555f82185c60"
 ---
 
 # Aide
@@ -45,8 +45,9 @@ projet. Quand le cours ajoute un lab ou corrige l'un de ces éléments, votre fo
 tout seul.
 
 Chaque commande du cours vous le dit : elle compare d'abord votre fork au cours, et indique combien
-de changements vous manquent. **Where am I?** l'affiche toujours. Les demandes de badge des autres
-participants sont ignorées, car elles ne changent rien à ce qu'un lab exécute.
+de changements vous manquent. **Where am I?** l'affiche toujours. Les changements des pages de
+labs, des traductions, du site et les badges des autres participants sont ignorés : vous les lisez
+ici, et ils ne changent rien à ce que votre fork exécute.
 
 Pour récupérer les changements, cliquez sur **Update my course** dans le menu Training de votre
 niveau. La commande merge le cours dans une branche à elle, créée depuis votre `integration`, et
