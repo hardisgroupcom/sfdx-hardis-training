@@ -699,7 +699,7 @@
       "level": 3,
       "slug": "level-3-release-manager",
       "name": "Release Manager",
-      "duration": "about 7 h 05",
+      "duration": "about 7 h",
       "prerequisite": 2,
       "badge": "sfdx-hardis Release Manager",
       "star": "hardisgroupcom/vscode-sfdx-hardis",
@@ -772,7 +772,7 @@
           "slug": "3-10-promote-a-subset-with-promotion-branches",
           "title": "Promote a subset with promotion branches (Beta)",
           "description": "Carry three approved User Stories out of five from uat to preprod with an sfdx-hardis promotion branch, solve the cherry-pick conflict it raises, and weigh what that shortcut costs.",
-          "time": "60 min"
+          "time": "55 min"
         },
         {
           "lab": 11,

@@ -27,7 +27,7 @@ depends_on:
 
 **Level**: 3 Release Manager
 
-**Time**: ~60 min
+**Time**: ~55 min
 
 **You will**: ship three approved User Stories to preprod while two others stay behind in UAT, solve
 the conflict that one of them drags along, and put the pipeline back afterwards, using the one
