@@ -4,12 +4,12 @@ description: "Tenez une pipeline CI/CD Salesforce avec sfdx-hardis : environneme
 id: l3-home
 level: 3
 lang: fr
-source_rev: "0dc7f79d02b7090ab393c38f76a8ccb48c2b1cb5"
+source_rev: "8f5b7cdee8d2c49b954a13c7b42aa8b00a5ec6b6"
 ---
 
 # Niveau 3 - Release manager Salesforce DevOps
 
-**Durée** : environ 7 h 05.
+**Durée** : environ 7 h.
 
 **Prérequis** : le [Niveau 1](../level-1-contributor-basics/index.md) **et** le
 [Niveau 2](../level-2-contributor-advanced/index.md). Les deux sont obligatoires, et l'audit du
@@ -86,7 +86,7 @@ Les mêmes commandes sont dans la vue **SFDX HARDIS** de la barre de gauche, sou
 | [3.7](3-7-hotfix-and-retrofit.md)                         | La production est cassée : hotfix et retrofit                  | 35 min |
 | [3.8](3-8-monitor-your-production-org.md)                 | Monitorer votre org de production                              | 35 min |
 | [3.9](3-9-generate-the-project-documentation.md)          | Générer la documentation du projet Salesforce                  | 20 min |
-| [3.10](3-10-promote-a-subset-with-promotion-branches.md)  | Promouvoir un sous-ensemble avec les promotion branches (Beta) | 60 min |
+| [3.10](3-10-promote-a-subset-with-promotion-branches.md)  | Promouvoir un sous-ensemble avec les promotion branches (Beta) | 55 min |
 | [3.11](3-11-capstone-run-a-weekly-release-cycle.md)       | Épreuve finale : mener un cycle de release hebdomadaire        | 45 min |
 
 ## Une org de plus
