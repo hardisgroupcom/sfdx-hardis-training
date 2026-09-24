@@ -296,7 +296,7 @@ Acceptance criteria:
 
 **Owner**: Romain Panda  
 **Branch**: `training/mate-us-055-install-date-help`  
-**Lab**: 3.10
+**Lab**: 3.11
 
 > As a crew lead, I want Install Date to say whether it is the day we go on site or the day the panels arrive, so that nobody drives to an empty site.
 
