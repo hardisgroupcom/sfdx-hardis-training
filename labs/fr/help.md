@@ -3,7 +3,7 @@ title: "Aide"
 description: "Où poser votre question quand une étape du cours ne fonctionne pas, et ce que Cloudity propose à une équipe qui utilise sfdx-hardis sur un vrai projet Salesforce : mise en place, formation et support."
 id: help
 lang: fr
-source_rev: "03f914446cf04a638dc913d7ab6ca3c037018ce7"
+source_rev: "fc6954d3c4e0728198f404d0be20439b291214d5"
 ---
 
 # Aide
@@ -35,6 +35,29 @@ qui sort chaque mois a commencé par le rapport de bug de quelqu'un.
 3. Pour le produit plutôt que pour le cours, lisez la
    [documentation sfdx-hardis](https://sfdx-hardis.cloudity.com/) et cherchez dans les
    [issues](https://github.com/hardisgroupcom/sfdx-hardis/issues) avant d'en ouvrir une.
+
+## Quand le cours a changé après votre fork
+
+Les pages des labs sont toujours à jour : vous les lisez sur ce site. Ce que contient votre fork
+est figé au jour où vous l'avez créé : les scripts derrière le menu **Training**, les stories de
+collègues de **Simulate my teammates**, les règles de **Check my work** et la configuration du
+projet. Quand le cours ajoute un lab ou corrige l'un de ces éléments, votre fork ne le reçoit pas
+tout seul.
+
+Chaque commande du cours vous le dit : elle compare d'abord votre fork au cours, et indique combien
+de changements vous manquent. **Where am I?** l'affiche toujours. Les demandes de badge des autres
+participants sont ignorées, car elles ne changent rien à ce qu'un lab exécute.
+
+Pour récupérer les changements, cliquez sur **Update my course** dans le menu Training de votre
+niveau. La commande merge le cours dans une branche à elle, créée depuis votre `integration`, et
+ouvre une Pull Request vers `integration`, comme tout changement dans ce cours. Attendez ses
+contrôles, mergez-la avec **Merge pull request**, jamais en squash, puis faites **Pull** dans le
+panneau Source Control. Votre travail est conservé.
+
+Si le cours et vous avez modifié le même fichier, la commande s'arrête, annule tout et nomme les
+fichiers. Faites alors soit **Reset this level**, qui recommence le niveau depuis son état actuel et
+jette votre travail sur `integration` dans ce niveau, soit le merge à la main, comme le
+[Lab 2.7](level-2-contributor-advanced/2-7-resolve-a-git-merge-conflict.md) résout un conflit.
 
 ## De l'aide sur un vrai projet
 
