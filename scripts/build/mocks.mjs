@@ -646,15 +646,24 @@ writeJson(path.join(OUT, "git-provider-mock-promotion.json"), {
 // on the promotion branch: the HEAD side of each block is empty, because preprod
 // never had Warranty Years, and the incoming side brings the Supplier entry with
 // the Warranty Years one it was written under. What the editor shot shows.
+//
+// The layout block is cut where git cuts it, not on an element boundary: the
+// `<layoutItems>` and `<behavior>` lines that open the Warranty Years row also
+// open the External Id row that follows on preprod, so git keeps them above the
+// markers, and the incoming side runs from `<field>Warranty_Years__c</field>` to
+// the `<behavior>` line of the row after Supplier. Proven on a real promotion on
+// 2026-09-24; a fixture cut on element boundaries shows a block the learner never
+// meets. The permission set block does fall on grant boundaries.
 const conflictMarkers = (incoming) =>
   `<<<<<<< HEAD\n=======\n${incoming}>>>>>>> ${conflicting.commit} (${conflicting.merged.title} (#${conflicting.number}))\n`;
-const layoutItem = (field) =>
-  `            <layoutItems>\n                <behavior>Edit</behavior>\n                <field>${field}</field>\n            </layoutItems>\n`;
+const layoutItemOpen = "            <layoutItems>\n                <behavior>Edit</behavior>\n";
+const layoutItemClose = (field) => `                <field>${field}</field>\n            </layoutItems>\n`;
+const layoutItem = (field) => layoutItemOpen + layoutItemClose(field);
 const grant = (field) =>
   `    <fieldPermissions>\n        <editable>true</editable>\n        <field>${field}</field>\n        <readable>true</readable>\n    </fieldPermissions>\n`;
 const layoutSource = fs.readFileSync(path.join(ROOT, PROMOTION_CONFLICT_FILES[0]), "utf8").replace(/\r\n/g, "\n");
 const permsetSource = fs.readFileSync(path.join(ROOT, PROMOTION_CONFLICT_FILES[1]), "utf8").replace(/\r\n/g, "\n");
-const layoutAnchor = layoutItem("Cost__c");
+const layoutAnchor = layoutItem("Cost__c") + layoutItemOpen;
 const permsetAnchor = grant("Panel_Batch__c.Serial_Prefix__c");
 if (!layoutSource.includes(layoutAnchor) || !permsetSource.includes(permsetAnchor)) {
   console.error("The Panel Batch layout or the manager permission set no longer holds the lines the conflict fixture anchors on.");
@@ -662,7 +671,10 @@ if (!layoutSource.includes(layoutAnchor) || !permsetSource.includes(permsetAncho
 }
 write(
   path.join(OUT, "promotion-conflict", PROMOTION_CONFLICT_FILES[0]),
-  layoutSource.replace(layoutAnchor, layoutAnchor + conflictMarkers(layoutItem("Warranty_Years__c") + layoutItem("Supplier__c")))
+  layoutSource.replace(
+    layoutAnchor,
+    layoutAnchor + conflictMarkers(layoutItemClose("Warranty_Years__c") + layoutItem("Supplier__c") + layoutItemOpen)
+  )
 );
 write(
   path.join(OUT, "promotion-conflict", PROMOTION_CONFLICT_FILES[1]),

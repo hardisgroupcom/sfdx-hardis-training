@@ -45,7 +45,9 @@
       "url": "https://code.visualstudio.com/download",
       "width": 1440,
       "height": 820,
-      "click": ["button:has-text('Reject')"],
+      "click": [
+        "button:has-text('Reject')"
+      ],
       "settle": 2000,
       "hideText": [
         {
@@ -229,8 +231,15 @@
       "width": 1440,
       "height": 900,
       "settle": 2000,
-      "clickFirst": ["button:has-text('New branch')"],
-      "fill": [["div[role='dialog'] input[type='text']", "preprod"]],
+      "clickFirst": [
+        "button:has-text('New branch')"
+      ],
+      "fill": [
+        [
+          "div[role='dialog'] input[type='text']",
+          "preprod"
+        ]
+      ],
       "selector": "div[role='dialog']"
     },
     {
@@ -275,8 +284,13 @@
           "max": 300
         }
       ],
-      "hide": ["img.avatar", "img[src*='avatars.githubusercontent.com']"],
-      "clickFirst": ["summary:has-text('Run workflow')"],
+      "hide": [
+        "img.avatar",
+        "img[src*='avatars.githubusercontent.com']"
+      ],
+      "clickFirst": [
+        "summary:has-text('Run workflow')"
+      ],
       "clipAround": {
         "selector": "details[open]",
         "padding": {
@@ -357,7 +371,10 @@
       "width": 1440,
       "height": 1100,
       "settle": 3000,
-      "hide": ["img.avatar", "img[src*='avatars.githubusercontent.com']"],
+      "hide": [
+        "img.avatar",
+        "img[src*='avatars.githubusercontent.com']"
+      ],
       "clip": {
         "x": 0,
         "y": 58,
@@ -372,7 +389,10 @@
       "width": 1440,
       "height": 1000,
       "settle": 3000,
-      "hide": ["img.avatar", "img[src*='avatars.githubusercontent.com']"],
+      "hide": [
+        "img.avatar",
+        "img[src*='avatars.githubusercontent.com']"
+      ],
       "evaluate": [
         "(() => { const set = (el, v) => { const proto = el.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype; Object.getOwnPropertyDescriptor(proto, 'value').set.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true })); }; const name = document.querySelector('#secret_name, input[name=secret_name]'); const value = document.querySelector('#secret_value, textarea[name=secret_value]'); if (name) set(name, 'SFDX_CLIENT_ID_INTEGRATION'); if (value) set(value, '3MVG9EXAMPLE.the.consumer.key.the.panel.printed'); })()"
       ],
@@ -382,6 +402,32 @@
         "width": 1440,
         "height": 540
       }
+    },
+    {
+      "name": "github-pr-promotion-description",
+      "_comment": "Lab 3.10 step 5: the description a promotion Pull Request is created with, the conflict warning, the promotionPullRequests block, the carried table and the folded prompt for a coding agent.",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/44",
+      "width": 1440,
+      "height": 2400,
+      "settle": 5000,
+      "selector": ".timeline-comment .comment-body",
+      "maxHeight": 1500,
+      "evaluate": [
+        "(() => { for (const el of document.querySelectorAll(\"body *\")) { const p = getComputedStyle(el).position; if (p === \"sticky\" || p === \"fixed\") { el.style.visibility = \"hidden\"; } } })()"
+      ]
+    },
+    {
+      "name": "github-pr-promotion-markers",
+      "_comment": "Lab 3.10 step 5: the sfdx-hardis comment of the red check, naming the two files still holding conflict markers.",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/44",
+      "width": 1440,
+      "height": 2400,
+      "settle": 5000,
+      "selector": ".timeline-comment:has-text(\"Git conflict markers in the promotion branch\") .comment-body",
+      "maxHeight": 1200,
+      "evaluate": [
+        "(() => { for (const el of document.querySelectorAll(\"body *\")) { const p = getComputedStyle(el).position; if (p === \"sticky\" || p === \"fixed\") { el.style.visibility = \"hidden\"; } } })()"
+      ]
     }
   ]
 }
