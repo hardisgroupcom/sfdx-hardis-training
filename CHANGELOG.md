@@ -3,6 +3,15 @@
 What changed in the course, for learners and trainers. The course has no versions: each section is
 a day, newest first, and a change goes under the date of the day it is made.
 
+## 2026-09-25
+
+- **Set up my training environment** waits for the one click GitHub asks for on a new fork, instead of reporting Actions on while no workflow ran.
+- Check my work for Lab 1.2 fails when the fork runs none of its pipeline workflows.
+- Lab 1.4 describes the Installation record page as it is: fields edited in place, no Details tab.
+- Lab 1.5 no longer promises your branch in the pipeline diagram before its Pull Request exists.
+- The first Pull Request of Lab 1.6 gets a clean MegaLinter comment.
+- The badge claim says **Create**, the label of the GitHub button.
+
 ## 2026-09-24
 
 - The course has its own **Free training** page on the sfdx-hardis documentation site, linked from its menu, its home page and its guides.
