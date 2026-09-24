@@ -536,8 +536,8 @@ côté `<<<<<<< HEAD`, **Accept Incoming Change** le côté `>>>>>>>`, **Accept 
 l'un après l'autre, et chacun d'eux retire les marqueurs. Aucun ne sait que le côté entrant contient
 deux entrées et qu'une seule a sa place, et c'est la partie que vous avez faite.
 
-Le job de contrôle lance `git grep` sur les marqueurs d'ouverture et de fermeture (`<<<<<<< ` et
-`>>>>>>> `, puisqu'une ligne de `=======` est légitime en markdown), sur tous les fichiers suivis de
+Le job de contrôle lance `git grep` sur les marqueurs d'ouverture et de fermeture (`<<<<<<<` et
+`>>>>>>>`, puisqu'une ligne de `=======` est légitime en markdown), sur tous les fichiers suivis de
 la branch, et arrête le déploiement avec le commentaire que vous avez lu à l'étape 5. Il lit les
 fichiers tels qu'ils sont extraits, jamais l'historique git, donc il fonctionne sur le clone
 superficiel qu'un job de CI fait. Les deux fichiers du [Lab 2.7](../level-2-contributor-advanced/2-7-resolve-a-git-merge-conflict.md) contiennent des marqueurs comme matériel
