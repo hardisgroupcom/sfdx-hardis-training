@@ -511,8 +511,10 @@ conflict somebody committed on purpose. **Accept Current Change** keeps the `<<<
 and every one of them removes the markers. None of them knows that the incoming side holds two
 entries and that only one belongs, which is the part you did.
 
-The check job runs `git grep` for the three markers over the files the promotion carries against
-`preprod`, and stops the deployment with the comment you read in step 5. The two files of
+The check job runs `git grep` for the opening and closing markers (`<<<<<<< ` and `>>>>>>> `, since
+a line of `=======` is legitimate in markdown) over every tracked file of the branch, and stops the
+deployment with the comment you read in step 5. It reads the files as they are checked out, never
+the git history, so it works on the shallow clone a CI job makes. The two files of
 [Lab 2.7](../level-2-contributor-advanced/2-7-resolve-a-git-merge-conflict.md) hold markers as teaching material, so this project lists them in
 `promotionConflictMarkersIgnoredFiles` of `config/.sfdx-hardis.yml` and the job leaves them alone.
 
