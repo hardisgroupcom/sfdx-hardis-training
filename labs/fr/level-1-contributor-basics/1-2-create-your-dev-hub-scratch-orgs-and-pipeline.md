@@ -5,7 +5,7 @@ description: "Inscrivez-vous à une org Salesforce Developer Edition gratuite, p
 level: 1
 lab: 2
 lang: fr
-source_rev: "4e07ca72f292110fec265b043b9fb58e23eeb7d9"
+source_rev: "2537bdf1c86222acb1074ecc13c1269b2923aea4"
 screenshots:
   - annotated/web/sf-signup
   - annotated/web/gh-cli-download
