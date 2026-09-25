@@ -5,7 +5,7 @@ description: "Ouvrez une Pull Request GitHub, lisez le contrôle de déploiement
 level: 1
 lab: 6
 lang: fr
-source_rev: "73eac21691ef803b05712d5adfd945e732097fd5"
+source_rev: "3d1910a7d9826b7af652c5ef7f69067b42eed5a3"
 screenshots:
   - annotated/web/github-pr-checks
   - annotated/web/github-pr-comment
