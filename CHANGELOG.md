@@ -20,6 +20,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 - Lab 3.5 tests the crew cap on an installation it sets to Planned.
 - Lab 3.7 squashes the hotfix, like every fix.
 - Lab 3.11 counts eleven checks.
+- Level 1 pictures of the DevOps Pipeline show a Level 1 fork, and the training menus show **Update my course**.
 
 ## 2026-09-24
 

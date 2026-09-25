@@ -7,11 +7,11 @@ lab: 5
 lang: en
 source_rev: ""
 screenshots:
-  - annotated/vscode/pipeline-cards--commit-changes
+  - annotated/vscode/pipeline-cards-level1--commit-changes
   - annotated/vscode/metadata-retriever-recent-changes--find
   - annotated/vscode/metadata-retriever-selected--us-014
   - annotated/vscode/source-control-retrieved--commit
-  - annotated/vscode/pipeline-cards--save-publish
+  - annotated/vscode/pipeline-cards-level1--save-publish
   - annotated/vscode/work-save-commit-ready
   - annotated/vscode/work-save-package-xml
   - annotated/vscode/pipeline-packages-menu--package-xml
@@ -56,7 +56,7 @@ on your machine.
 In the **DevOps Pipeline** panel, under **Project Contribution Workflow**, click the **Commit
 changes** card **(1)**.
 
-![The Commit changes card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--commit-changes.png)
+![The Commit changes card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards-level1--commit-changes.png)
 
 It opens the **Metadata Retriever**, which is where every publish starts.
 
@@ -175,7 +175,7 @@ for the team, and that is what Save / Publish does.
 
 In the **DevOps Pipeline** panel, click the **Save / Publish** card **(1)**.
 
-![The Save / Publish card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--save-publish.png)
+![The Save / Publish card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards-level1--save-publish.png)
 
 The first question is the one that catches everybody out.
 

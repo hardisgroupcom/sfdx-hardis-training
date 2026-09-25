@@ -1,6 +1,9 @@
 {
   "_comment": "VS Code images scripts/build/shots.mjs cannot find in vscode/.shot-gates.json: the ones taken by hand, and the ones taken under another pipeline state (SF_MOCK_PIPELINE_STATE) then copied in under another name. 'file' is the name the harness writes, the key the name the labs use.",
-  "manual": ["extensions-install", "clone-repository"],
+  "manual": [
+    "extensions-install",
+    "clone-repository"
+  ],
   "variants": {
     "devops-pipeline-fresh": {
       "gate": "devops-pipeline",
@@ -91,6 +94,24 @@
       "_env_comment": "Lab 3.1 step 10 and Lab 3.10 step 1: the Danger Zone of the Global Pipeline Settings, where enablePromotionBranches and allowedPromotionSteps are set.",
       "env": {
         "SFDX_HARDIS_DOC_SCREENSHOTS_PROMOTION": "true"
+      }
+    },
+    "pipeline-cards-level1": {
+      "_comment": "The cards as Level 1 sees them: no feature branch and no open Pull Request yet. The default state is the Level 2 world.",
+      "gate": "pipeline-cards",
+      "file": "pipeline-cards",
+      "state": "fresh",
+      "env": {
+        "SFDX_HARDIS_DOC_SCREENSHOTS_BRANCH": "features/US-014-panels-required"
+      }
+    },
+    "pipeline-packages-menu": {
+      "_comment": "Only Lab 1.5 shows it, so it is taken in the Level 1 state.",
+      "gate": "pipeline-menus",
+      "file": "pipeline-packages-menu",
+      "state": "fresh",
+      "env": {
+        "SFDX_HARDIS_DOC_SCREENSHOTS_BRANCH": "features/US-014-panels-required"
       }
     }
   }
