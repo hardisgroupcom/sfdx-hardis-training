@@ -21,6 +21,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 - Lab 3.7 squashes the hotfix, like every fix.
 - Lab 3.11 counts eleven checks.
 - Level 1 pictures of the DevOps Pipeline show a Level 1 fork, and the training menus show **Update my course**.
+- Lab 2.1 pictures show the three stories a learner brings down, and Lab 2.3 the one action of its Pull Request.
 
 ## 2026-09-24
 

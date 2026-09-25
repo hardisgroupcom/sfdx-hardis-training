@@ -110,6 +110,14 @@
       "env": {
         "SFDX_HARDIS_DOC_SCREENSHOTS_BRANCH": "features/US-014-panels-required"
       }
+    },
+    "pipeline-pr-actions-list": {
+      "_comment": "Lab 2.3 shows the one action its Pull Request carries: the fixture holds one of each type for the editor captures, so this keeps only the backfill.",
+      "gate": "pipeline-modals",
+      "file": "pipeline-pr-actions-list",
+      "env": {
+        "SFDX_HARDIS_DOC_SCREENSHOTS_ACTIONS_KEEP": "7a1c3d2e-2d0b-4f1e-8e3b-024b00000004"
+      }
     }
   }
 }
