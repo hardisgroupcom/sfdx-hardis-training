@@ -7,14 +7,19 @@ a day, newest first, and a change goes under the date of the day it is made.
 
 - **Set up my training environment** waits for the one click GitHub asks for on a new fork, instead of reporting Actions on while no workflow ran.
 - Check my work for Lab 1.2 fails when the fork runs none of its pipeline workflows.
+- The monthly checks of the course no longer run on learners' forks.
 - Lab 1.4 describes the Installation record page as it is: fields edited in place, no Details tab.
 - Lab 1.5 no longer promises your branch in the pipeline diagram before its Pull Request exists.
-- Lab 1.6 explains the warning a green MegaLinter comment can still carry.
+- Lab 1.6 explains the MegaLinter warnings, and what to do when MegaLinter pushes a commit onto your branch.
 - The badge claim says **Create**, the label of the GitHub button.
-- **Simulate my teammates** no longer leaves an unpushed branch behind when the story is already merged, which made **Claim my badge** refuse Level 3.
-- Lab 1.6 says what to do when MegaLinter pushes a fix commit onto your branch.
-- Lab 2.2, 2.5, 2.7 and 2.8: the checkbox stays off the layout, the flow description of the diff is asked for, MegaLinter keeps its findings on older code, the rebuilt flow is staged rather than committed before the merge, and the Admin profile is several hundred lines rather than thousands.
-- Lab 3.5 tests the crew cap on an installation made planned in the same edit, Lab 3.7 squashes the hotfix like every fix, and Lab 3.11 counts eleven checks.
+- **Simulate my teammates** no longer leaves a branch behind that made **Claim my badge** refuse Level 3.
+- Lab 2.2 keeps the new checkbox off the layout, and asks for the flow description its picture shows.
+- Lab 2.5 no longer promises a MegaLinter check with no findings.
+- Lab 2.7 stages the rebuilt flow instead of committing it before the merge.
+- Lab 2.8 gives the real size of the retrieved Admin profile.
+- Lab 3.5 tests the crew cap on an installation it sets to Planned.
+- Lab 3.7 squashes the hotfix, like every fix.
+- Lab 3.11 counts eleven checks.
 
 ## 2026-09-24
 

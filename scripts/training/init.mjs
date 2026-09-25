@@ -496,36 +496,49 @@ export function ensurePipelineBranches() {
 }
 
 // ------------------------------------------------------------- actions on
-/**
- * Every workflow of the fork that GitHub parked, put back to work.
- *
- * A fork arrives with Actions allowed and its workflows in `disabled_fork`,
- * which is a different switch from the repository permission above and the one
- * the banner flips. It has an API of its own, so this does not need the banner:
- * enable each parked workflow, then read them back.
- *
- * Returns the names still parked, empty when they all run.
- */
-// The workflow files of the fork, read from its default branch.
-// One name per line rather than JSON: the contents API answers with an array,
-// and parseJsonOutput reads objects only.
+// The workflow files of the fork, read from its default branch, or null when
+// they cannot be read. One name per line rather than JSON: the contents API
+// answers with an array, and parseJsonOutput reads objects only.
 function workflowFiles(slug) {
   const res = run("gh", ["api", `repos/${slug}/contents/.github/workflows`, "-q", ".[].name"], {
     capture: true,
     quiet: true
   });
-  return res.code === 0 ? res.stdout.split(/\r?\n/).filter((name) => /\.ya?ml$/.test(name.trim())) : [];
+  if (res.code !== 0) {
+    return null;
+  }
+  return res.stdout
+    .split(/\r?\n/)
+    .map((name) => name.trim())
+    .filter((name) => /\.ya?ml$/.test(name));
 }
 
+/**
+ * Every workflow of the fork that GitHub parked, put back to work.
+ *
+ * A fork arrives with Actions allowed and its workflows in `disabled_fork`,
+ * which is a different switch from the repository permission above. It has an
+ * API of its own: enable each parked workflow, then read them back.
+ *
+ * A brand new fork is one step earlier: it lists no workflow at all, because
+ * GitHub registers them only once the owner clicks the banner of the Actions
+ * tab, and that banner has no API. An empty list next to workflow files is that
+ * banner, not a fork with nothing left to enable: reading it as success is how
+ * the push of step 7 started no job at all.
+ *
+ * Returns { parked, banner }: the names still parked, empty when they all run,
+ * and whether the banner is what holds them. Returns null when GitHub could not
+ * be read, which says nothing either way.
+ */
 function enableForkWorkflows(slug) {
   const listed = ghJson(["api", `repos/${slug}/actions/workflows`, "--paginate"]);
-  const workflows = listed?.workflows || [];
-  // A brand new fork lists no workflow at all: GitHub registers them only once
-  // the owner clicks the banner of the Actions tab. An empty list next to
-  // workflow files is that banner, not a fork with nothing left to enable, and
-  // reading it as success is how the push of step 7 started no job at all.
-  if (listed && workflows.length === 0) {
-    return workflowFiles(slug);
+  if (!Array.isArray(listed?.workflows)) {
+    return null;
+  }
+  const workflows = listed.workflows;
+  if (workflows.length === 0) {
+    const files = workflowFiles(slug);
+    return files === null ? null : { parked: files, banner: files.length > 0 };
   }
   for (const workflow of workflows) {
     if (workflow.state === "active") {
@@ -539,13 +552,12 @@ function enableForkWorkflows(slug) {
   const after = ghJson(["api", `repos/${slug}/actions/workflows`, "--paginate"]);
   // A read that fails says nothing either way, and claiming success on it is
   // how a learner ends up with a Pull Request nothing ever checks
-  if (!after?.workflows) {
-    return workflows.filter((workflow) => workflow.state !== "active").map((workflow) => workflow.name);
-  }
-  return after.workflows.filter((workflow) => workflow.state !== "active").map((workflow) => workflow.name);
+  const read = Array.isArray(after?.workflows) ? after.workflows : workflows;
+  const parked = read.filter((workflow) => workflow.state !== "active").map((workflow) => workflow.name);
+  return { parked, banner: false };
 }
 
-async function ensureActions(slug) {
+async function ensureActions(slug, { wait = true } = {}) {
   step(2, "Actions turned on");
 
   const permissions = ghJson(["api", `repos/${slug}/actions/permissions`]);
@@ -557,12 +569,13 @@ async function ensureActions(slug) {
   }
 
   const enabled = ghJson(["api", `repos/${slug}/actions/permissions`])?.enabled === true;
-  let parked = enabled ? enableForkWorkflows(slug) : [];
+  let state = enabled ? enableForkWorkflows(slug) : null;
 
   // The banner has no API: the learner clicks it, and this waits for that
   // click. Now rather than at the end, because step 7 pushes to integration and
-  // that push only starts its deployment job once the workflows run.
-  if (enabled && parked.length > 0) {
+  // that push only starts its deployment job once the workflows run. Only for
+  // the banner: a workflow GitHub refused to enable has no banner to click.
+  if (wait && state?.banner) {
     const url = `https://github.com/${slug}/actions`;
     info("    GitHub keeps the workflows of a new fork switched off until you say otherwise.");
     info(`    Your browser opens ${c.cyan(url)}: click`);
@@ -570,13 +583,15 @@ async function ensureActions(slug) {
     openUrl(url);
     info(c.dim(`    Waiting for that click, up to ${ACTIONS_WAIT_MINUTES} minutes...`));
     const until = Date.now() + ACTIONS_WAIT_MINUTES * 60 * 1000;
-    while (parked.length > 0 && Date.now() < until) {
+    while (state?.parked.length !== 0 && Date.now() < until) {
       await new Promise((resolve) => setTimeout(resolve, 5000));
-      parked = enableForkWorkflows(slug);
+      // A read that fails, a network blip or a rate limit, keeps what was known
+      state = enableForkWorkflows(slug) || state;
     }
   }
 
-  if (enabled && parked.length === 0) {
+  const parked = state?.parked || [];
+  if (enabled && state && parked.length === 0) {
     ok("Actions are on, and every workflow of your fork runs.");
     return true;
   }
@@ -584,13 +599,15 @@ async function ensureActions(slug) {
   // Two different switches, and the second one is the one a learner meets as an
   // empty Checks tab on a Pull Request that looks perfectly fine.
   warn(
-    enabled
-      ? `Actions are on, but ${parked.length} workflow(s) are still parked: ${parked.join(", ")}.`
-      : "Actions could not be turned on from here."
+    !enabled
+      ? "Actions could not be turned on from here."
+      : state
+        ? `Actions are on, but ${parked.length} workflow(s) are still parked: ${parked.join(", ")}.`
+        : "Actions are on, but GitHub did not say whether the workflows of your fork run."
   );
   info(`    Open ${c.cyan(`https://github.com/${slug}/actions`)} and click`);
   info(`    ${c.bold("I understand my workflows, go ahead and enable them")}.`);
-  info("    It is one click, and then this command has nothing left to do.");
+  info("    It is one click. Then run this command again, which checks that they run.");
   info("");
   info("    If a Pull Request is already open, its checks will not start on their own");
   info(`    afterwards. Run ${c.bold("Training > Trigger my workflows")} once and they will.`);
@@ -794,7 +811,8 @@ export default async function init(args) {
   }
 
   const slug = await ensureFork(handle);
-  const actionsOn = await ensureActions(slug);
+  // --no-actions-wait: for automation with no browser, where nobody can click the banner
+  const actionsOn = await ensureActions(slug, { wait: args["no-actions-wait"] !== true });
 
   step(3, "Your Dev Hub");
   await ensureDevHub(devHub);

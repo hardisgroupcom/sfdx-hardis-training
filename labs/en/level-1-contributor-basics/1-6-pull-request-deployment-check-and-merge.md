@@ -325,8 +325,8 @@ way around it, and there is not meant to be.
 **A commit you did not make, `chore(megalinter): apply linters fixes`, is on your branch.**
 MegaLinter reformatted a file of your Pull Request and pushed the result. GitHub does not start the
 checks again for a commit its own robot pushed, so they are missing or red on it and the merge stays
-blocked. Open the **Checks** tab and click **Re-run all jobs**. Before your next push, **Pull** in
-the **Source Control** panel, or the push is rejected because your branch is behind.
+blocked. **Pull** in the **Source Control** panel to bring the robot's commit to your computer, then
+run **Training: Level 1 > Trigger my workflows**: a push of yours is what starts the checks again.
 
 **The deployment succeeds but the field is not in the org.**
 Look at the deployed components list in the comment. If the field is not there, it is not in

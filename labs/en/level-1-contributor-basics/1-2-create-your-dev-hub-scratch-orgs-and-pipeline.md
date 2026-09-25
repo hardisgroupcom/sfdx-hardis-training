@@ -574,7 +574,10 @@ read the Under the hood blocks of the labs you have done, and to come back to th
 GitHub hides that switch behind a banner with no API, and the command stopped waiting for your
 click. Open the **Actions** tab of your fork (`github.com/my-username/sfdx-hardis-training`) and
 click **I understand my workflows, go ahead and enable them**. Then click **Set up my training
-environment** again: it sees the workflows running and has nothing left to do.
+environment** again, which checks that they run. Its earlier push to `integration` started
+nothing, and nothing in Level 1 depends on it: your first merge deploys to `integration` anyway.
+A Pull Request you have already opened gets no checks on its own, though: run **Training: Level 1 >
+Trigger my workflows** once for it.
 
 **The Actions tab shows no workflows.**
 You forked by hand at some point and left "Copy the `main` branch only" ticked. Delete the fork on
