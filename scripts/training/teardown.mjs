@@ -302,6 +302,12 @@ export default async function teardown(args) {
       "--target-org", target,
       "--test-level", "NoTestRun",
       "--ignore-warnings",
+      // Erased, not sent to Setup > Deleted Objects. A deleted object keeps its
+      // lookups for 15 days, and the Installation__c.Account__c of a deleted
+      // Installation still owns the "Installations" relationship name on Account:
+      // the next seed of the same org then fails on it. Scratch and Developer
+      // Edition orgs both accept this.
+      "--purge-on-delete",
       "--wait", "60"
     ]);
     if (deploy.code === 0) {
