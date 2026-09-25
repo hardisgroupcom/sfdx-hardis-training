@@ -5,7 +5,7 @@ description: "Votre org de développement est en retard sur integration. Faites-
 level: 2
 lab: 1
 lang: fr
-source_rev: "a34ea6fe2995834d2ab32fd72793082b541c84c8"
+source_rev: "071fe1a5506146b9a09ca8741a6d6d137a5d5d47"
 screenshots:
   - annotated/vscode/backpromote-result--what-it-did
   - annotated/vscode/pipeline-cards--backpromote
