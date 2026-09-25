@@ -176,7 +176,7 @@ quelque chose de mergé, et aucun ne reporte un état inachevé sur le suivant.
 Welcome page > **Training: Level 3** > **Check my work**, puis choisissez
 **Everything in level 3, capstone included**.
 
-Dix contrôles.
+Onze contrôles.
 
 ## Demandez votre badge
 

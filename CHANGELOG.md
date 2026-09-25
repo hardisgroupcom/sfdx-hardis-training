@@ -11,6 +11,10 @@ a day, newest first, and a change goes under the date of the day it is made.
 - Lab 1.5 no longer promises your branch in the pipeline diagram before its Pull Request exists.
 - The first Pull Request of Lab 1.6 gets a clean MegaLinter comment.
 - The badge claim says **Create**, the label of the GitHub button.
+- **Simulate my teammates** no longer leaves an unpushed branch behind when the story is already merged, which made **Claim my badge** refuse Level 3.
+- Lab 1.6 says what to do when MegaLinter pushes a fix commit onto your branch.
+- Lab 2.2, 2.5, 2.7 and 2.8: the checkbox stays off the layout, the flow description of the diff is asked for, MegaLinter keeps its findings on older code, the rebuilt flow is staged rather than committed before the merge, and the Admin profile is several hundred lines rather than thousands.
+- Lab 3.5 tests the crew cap on an installation made planned in the same edit, Lab 3.7 squashes the hotfix like every fix, and Lab 3.11 counts eleven checks.
 
 ## 2026-09-24
 
