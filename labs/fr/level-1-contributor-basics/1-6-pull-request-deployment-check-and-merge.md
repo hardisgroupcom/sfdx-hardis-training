@@ -343,9 +343,9 @@ seuls. Il n'y a pas de contournement, et ce n'est pas censé en avoir.
 **Un commit que vous n'avez pas fait, `chore(megalinter): apply linters fixes`, est sur votre branche.**
 MegaLinter a reformaté un fichier de votre Pull Request et a poussé le résultat. GitHub ne relance
 pas les contrôles pour un commit poussé par son propre robot : ils manquent ou sont rouges dessus, et
-le merge reste bloqué. Ouvrez l'onglet **Checks** et cliquez sur **Re-run all jobs**. Avant votre
-prochain push, faites **Pull** dans le panneau **Source Control**, sinon le push est refusé parce que
-votre branche est en retard.
+le merge reste bloqué. Faites **Pull** dans le panneau **Source Control** pour ramener le commit du
+robot sur votre ordinateur, puis lancez **Training: Level 1 > Trigger my workflows** : c'est un push de votre
+part qui relance les contrôles.
 
 **Le déploiement réussit mais le champ n'est pas dans l'org.**
 Regardez la liste des composants déployés dans le commentaire. Si le champ n'y est pas, c'est qu'il

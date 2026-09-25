@@ -609,7 +609,10 @@ tard.
 GitHub cache cet interrupteur derrière une bannière sans API, et la commande a cessé d'attendre
 votre clic. Ouvrez l'onglet **Actions** de votre fork (`github.com/my-username/sfdx-hardis-training`)
 et cliquez sur **I understand my workflows, go ahead and enable them**. Puis recliquez sur **Set up
-my training environment** : il voit les workflows tourner et n'a plus rien à faire.
+my training environment**, qui vérifie qu'ils tournent. Son push précédent sur `integration` n'a
+rien lancé, et rien au Niveau 1 n'en dépend : votre premier merge déploie de toute façon dans
+`integration`. Une Pull Request que vous avez déjà ouverte ne reçoit pas de contrôles toute
+seule, en revanche : lancez une fois **Training: Level 1 > Trigger my workflows** pour elle.
 
 **L'onglet Actions n'affiche aucun workflow.**
 Vous avez forké à la main à un moment donné en laissant "Copy the `main` branch only" coché.
