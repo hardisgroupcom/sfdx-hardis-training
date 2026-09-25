@@ -3,6 +3,11 @@
 What changed in the course, for learners and trainers. The course has no versions: each section is
 a day, newest first, and a change goes under the date of the day it is made.
 
+## 2026-09-26
+
+- The course site publishes again: the changes of 2026-09-25 below never reached it, because four labs named another lab without linking it.
+- **Clean up a training org** works on an org that was used: it deletes the old versions of the Helios flows, and erases the objects instead of leaving them under Deleted Objects, where they made the next **Set up my training environment** fail.
+
 ## 2026-09-25
 
 - Lab 3.8 answers the new question about the CI/CD repository that deploys to the org, and explains the `AGENTS.md` the nightly backup writes for coding agents.
