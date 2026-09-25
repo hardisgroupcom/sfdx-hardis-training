@@ -149,6 +149,38 @@ System.debug('Aborted ' + jobs.size() + ' scheduled job(s)');
   }
   info(deactivated > 0 ? `  ${deactivated} flow(s) deactivated` : c.dim("  No active flow to deactivate"));
 
+  // The flow versions, deleted one by one. A deactivated flow with more than
+  // one version still refuses the destructive deploy with the same "insufficient
+  // access rights on cross-reference id", and each old version holds the objects
+  // ("used by another feature: Flow Version"). Level 2 updates two of these flows
+  // and every walk adds a version, so an org used once is already in that state.
+  // Deleting the last version deletes the flow itself.
+  const versions = run(
+    "sf",
+    ["data", "query", "--use-tooling-api", "-q",
+      "SELECT Id FROM Flow WHERE Definition.DeveloperName IN ('Installation_Assign_Crew','Installation_Close_Check','Installation_Crew_Warning')",
+      "--target-org", target, "--json"],
+    { capture: true, quiet: true }
+  );
+  let versionIds = [];
+  try {
+    versionIds = JSON.parse(versions.stdout).result.records.map((r) => r.Id);
+  } catch {
+    versionIds = [];
+  }
+  let deleted = 0;
+  for (const id of versionIds) {
+    const gone = run(
+      "sf",
+      ["data", "delete", "record", "--use-tooling-api", "--sobject", "Flow", "--record-id", id, "--target-org", target],
+      { quiet: true }
+    );
+    if (gone.code === 0) {
+      deleted++;
+    }
+  }
+  info(deleted > 0 ? `  ${deleted} flow version(s) deleted` : c.dim("  No flow version to delete"));
+
   // The record page, put back to the standard one. A Lightning page assigned as
   // an object's record page is "active", and an active page cannot be deleted.
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "helios-deactivate-"));
