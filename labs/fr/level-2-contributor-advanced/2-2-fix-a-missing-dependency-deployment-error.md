@@ -5,7 +5,7 @@ description: "Modifiez un flow Salesforce existant, puis lisez correctement un c
 level: 2
 lab: 2
 lang: fr
-source_rev: "a34ea6fe2995834d2ab32fd72793082b541c84c8"
+source_rev: "73eac21691ef803b05712d5adfd945e732097fd5"
 screenshots:
   - annotated/web/github-pr-check-failed
   - annotated/web/github-pr-flow-diff

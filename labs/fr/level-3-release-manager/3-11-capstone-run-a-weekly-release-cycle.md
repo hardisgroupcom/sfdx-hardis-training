@@ -5,7 +5,7 @@ description: "Menez une semaine entière de release manager Salesforce sans pas-
 level: 3
 lab: 11
 lang: fr
-source_rev: "810d4dfb1955110f1f91b4b18f7de130b2a1cc98"
+source_rev: "3b02d1f7c5bf4acfda4269d3a54da9fb1b9fb9a0"
 screenshots:
   - annotated/vscode/welcome-custom-menu-3
 depends_on:

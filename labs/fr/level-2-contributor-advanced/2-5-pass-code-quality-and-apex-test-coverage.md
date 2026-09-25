@@ -5,7 +5,7 @@ description: "Corrigez un avertissement PMD et la couverture de code Apex qui bl
 level: 2
 lab: 5
 lang: fr
-source_rev: "a34ea6fe2995834d2ab32fd72793082b541c84c8"
+source_rev: "73eac21691ef803b05712d5adfd945e732097fd5"
 screenshots:
   - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/org-monitoring--apex-tests
