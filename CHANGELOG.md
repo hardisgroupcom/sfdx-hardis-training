@@ -9,7 +9,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 - Check my work for Lab 1.2 fails when the fork runs none of its pipeline workflows.
 - Lab 1.4 describes the Installation record page as it is: fields edited in place, no Details tab.
 - Lab 1.5 no longer promises your branch in the pipeline diagram before its Pull Request exists.
-- The first Pull Request of Lab 1.6 gets a clean MegaLinter comment.
+- Lab 1.6 explains the warning a green MegaLinter comment can still carry.
 - The badge claim says **Create**, the label of the GitHub button.
 - **Simulate my teammates** no longer leaves an unpushed branch behind when the story is already merged, which made **Claim my badge** refuse Level 3.
 - Lab 1.6 says what to do when MegaLinter pushes a fix commit onto your branch.
