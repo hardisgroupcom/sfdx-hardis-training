@@ -77,7 +77,7 @@ D'abord le champ dont le flow a besoin pour ne pas avertir deux fois. Dans `heli
 | Field Name    | `Crew_Warning_Sent__c` |
 | Default Value | Décoché                |
 
-Laissez **Visible** décoché pour tous les profils, comme au Lab 1.4, et sur le dernier écran
+Laissez **Visible** décoché pour tous les profils, comme au [Lab 1.4](../level-1-contributor-basics/1-4-build-a-custom-field-in-your-org.md), et sur le dernier écran
 décochez **Installation Layout** : personne d'autre que le flow n'a besoin de cette case, elle ne va
 donc sur aucune page.
 

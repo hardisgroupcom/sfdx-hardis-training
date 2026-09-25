@@ -214,7 +214,7 @@ Open `helios-uat` and check the two stories are genuinely usable, not just deplo
 
 - A crew larger than the cap is brought back down to the cap when you save. The rule runs when a
   planned installation gets its crew, and UAT has none left planned since the crew size backfill of
-  Lab 2.3, so make one: on any installation, set `Status` to `Planned`, `Crew Capacity Cap` to 3 and
+  [Lab 2.3](../level-2-contributor-advanced/2-3-fix-broken-records-with-an-apex-deployment-action.md), so make one: on any installation, set `Status` to `Planned`, `Crew Capacity Cap` to 3 and
   `Crew Size` to 6, in the same edit, and save. It reads 3, and it has moved on to `Scheduled`
 - The quote PDF permission is on the manager permission set
 - **Setup > Remote Site Settings** still says `https://warehouse-test.helios.invalid` for

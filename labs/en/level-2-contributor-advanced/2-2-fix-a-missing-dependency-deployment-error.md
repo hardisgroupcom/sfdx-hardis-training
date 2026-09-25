@@ -77,7 +77,7 @@ First, the field the flow needs so it does not warn twice. In `helios-dev`,
 | Field Name    | `Crew_Warning_Sent__c` |
 | Default Value | Unchecked              |
 
-Leave **Visible** unticked for every profile, as in Lab 1.4, and on the last screen untick
+Leave **Visible** unticked for every profile, as in [Lab 1.4](../level-1-contributor-basics/1-4-build-a-custom-field-in-your-org.md), and on the last screen untick
 **Installation Layout**: nobody but the flow needs this checkbox, so it goes on no page.
 
 Then the flow. **Setup > Flows**, open **Installation Crew Warning**. It is active, so Flow Builder
