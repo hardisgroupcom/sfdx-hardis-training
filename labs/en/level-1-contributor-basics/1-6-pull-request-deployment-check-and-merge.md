@@ -320,6 +320,12 @@ A required check is still running, or it failed. Wait for it, or open it from th
 fix what it reports on your branch, and push again: the checks run again on their own. There is no
 way around it, and there is not meant to be.
 
+**A commit you did not make, `chore(megalinter): apply linters fixes`, is on your branch.**
+MegaLinter reformatted a file of your Pull Request and pushed the result. GitHub does not start the
+checks again for a commit its own robot pushed, so they are missing or red on it and the merge stays
+blocked. Open the **Checks** tab and click **Re-run all jobs**. Before your next push, **Pull** in
+the **Source Control** panel, or the push is rejected because your branch is behind.
+
 **The deployment succeeds but the field is not in the org.**
 Look at the deployed components list in the comment. If the field is not there, it is not in
 `manifest/package.xml`, and [Lab 1.5 step 6](1-5-retrieve-commit-and-publish-your-changes.md#6-read-the-package-before-you-push) is where you read it.
