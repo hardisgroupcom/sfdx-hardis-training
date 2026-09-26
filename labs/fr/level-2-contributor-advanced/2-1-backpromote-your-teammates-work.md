@@ -5,7 +5,7 @@ description: "Votre org de développement est en retard sur integration. Faites-
 level: 2
 lab: 1
 lang: fr
-source_rev: "2c030400d51afc24ed0639276e13602bd58da6ae"
+source_rev: "6af1d01c9f033ddcbab49bac53353ec66cfd482b"
 screenshots:
   - annotated/vscode/sidebar-commands-custom-menu-2--training-menu
   - annotated/web/github-pr-files
@@ -99,11 +99,11 @@ l'a commité avec le nom et l'email de Romain, a poussé la branche et ouvert la
 `gh pr create`. Vos propres modifications non commitées, s'il y en avait, ont été mises de côté
 d'abord et remises en place à la fin.
 
-Avec **Yes** au merge, elle a demandé à GitHub l'état des checks de la Pull Request toutes les
-quinze secondes (`gh pr checks`), et lancé `gh pr merge --squash` dès que
-**Simulate Deployment to Major Org** et **Mega-Linter** étaient verts tous les deux. La même règle
-que le bouton : la branche `integration` de votre fork est protégée, et GitHub refuserait le merge
-tant qu'un check est rouge ou en cours.
+Avec **Yes** au merge, elle vous a d'abord rendu votre propre branche, puis a demandé à GitHub
+l'état des checks de la Pull Request toutes les vingt secondes (`gh pr checks`), et lancé
+`gh pr merge --squash` dès qu'ils étaient tous verts, **Simulate Deployment to Major Org** et
+**Mega-Linter** compris. La même règle que le bouton : la branche `integration` de votre fork est
+protégée, et GitHub refuserait le merge tant qu'un check est rouge ou en cours.
 
 </details>
 
@@ -286,8 +286,8 @@ org.
 
 ## En cas de problème
 
-**Simulate my teammates a attendu 20 minutes et n'a pas mergé.**
-L'onglet Checks de la Pull Request est sans doute vide : GitHub Actions est désactivé sur votre fork.
+**Simulate my teammates dit qu'aucun check n'a tourné sur la Pull Request.**
+L'onglet Checks de la Pull Request est vide : GitHub Actions est désactivé sur votre fork.
 Le [Lab 1.6](../level-1-contributor-basics/1-6-pull-request-deployment-check-and-merge.md), étape 2, explique comment l'activer.
 Mergez-la ensuite vous-même, étape 1b.
 
