@@ -160,7 +160,9 @@ Son contrôle déploie contre la production en mode validation, ce qui est exact
 
 Mergez, et regardez l'exécution **Process Deployment (sfdx-hardis)** sur `main`. Quand elle se
 termine, le commentaire sfdx-hardis dit ce qui a atteint l'org : la bannière **(1)**, la ligne de
-compteurs **(2)**, et les tickets qu'il a reconnus **(3)**.
+compteurs **(2)**, et la ligne Quick Deploy **(3)** : le merge a libéré la validation que son contrôle
+avait déjà faite sur la production, au lieu de déployer à nouveau. L'image est le commentaire d'un
+déploiement précédent, vos compteurs sont donc différents.
 
 ![Le commentaire sfdx-hardis sur une Pull Request mergée](../../_assets/annotated/web/github-pr-deployed.png)
 
