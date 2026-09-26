@@ -10,6 +10,8 @@ a day, newest first, and a change goes under the date of the day it is made.
 - **Clean up a training org** also removes the External Client Apps of Lab 3.1, which stopped **Add/Configure Org** the next time Level 3 was walked on the same orgs.
 - **Trigger my workflows** works after the Actions banner is clicked late: it no longer waits for the scheduled workflows GitHub keeps off on a fork.
 - Labs 2.4, 3.5 and 3.6 say when a ticked manual action is recorded: by the next job that carries its Pull Request, so a pre-deployment step is done and ticked before the merge.
+- Lab 3.6 warns that a second DORA report on the same day replaces the baseline Lab 3.11 compares with.
+- Lab 3.7 names the Quick Deploy line of the deployment comment, the one its picture marks.
 
 ## 2026-09-25
 

@@ -10,7 +10,7 @@ import os from "os";
 import path from "path";
 import {
   ROOT, c, title, info, ok, warn, abort, run, select, confirm,
-  connectedOrgs, orgChoices, universe
+  connectedOrgs, orgChoices, universe, parseJsonOutput
 } from "../lib/util.mjs";
 
 // Everything the course puts in an org, across all three levels. A name that is
@@ -164,7 +164,7 @@ System.debug('Aborted ' + jobs.size() + ' scheduled job(s)');
   );
   let versionIds = [];
   try {
-    versionIds = JSON.parse(versions.stdout).result.records.map((r) => r.Id);
+    versionIds = (parseJsonOutput(versions.stdout)?.result?.records || []).map((r) => r.Id);
   } catch {
     versionIds = [];
   }
@@ -246,6 +246,12 @@ System.debug('Aborted ' + jobs.size() + ' scheduled job(s)');
  * learner who walks Level 3 twice on the same orgs. The app and its four
  * settings records go in one destructive deploy. Allowed to fail, like the rest.
  */
+// Only the names the course creates: Add/Configure Org names its app sfdxhardis<branch>,
+// Install Org Monitoring sfdxhardismon_<org>, and the settings records start with the
+// app name. Every sfdx-hardis project names its apps the same way, so matching any
+// sfdxhardis* app would also take another project's app off the learner's own Dev Hub.
+const COURSE_APP_NAME = /^sfdxhardis(integration|uat|preprod|main|mon_)/i;
+
 const APP_CLIENT_TYPES = [
   "ExtlClntAppOauthConfigurablePolicies",
   "ExtlClntAppConfigurablePolicies",
@@ -263,7 +269,7 @@ function removeCourseAppClients(target) {
     });
     let names = [];
     try {
-      names = (JSON.parse(listed.stdout).result || []).map((r) => r.fullName).filter((n) => /^sfdxhardis/i.test(n));
+      names = (parseJsonOutput(listed.stdout)?.result || []).map((r) => r.fullName).filter((n) => COURSE_APP_NAME.test(n));
     } catch {
       names = [];
     }
