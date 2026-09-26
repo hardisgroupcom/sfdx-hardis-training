@@ -43,17 +43,10 @@ import { REQUIRED_CHECKS } from "../lib/protection.mjs";
 const SIMULATE_DIR = path.join(ROOT, "scripts", "simulate");
 
 /**
- * Whether the fork already has an open Pull Request for that branch. `gh pr
- * create` fails the same way whether one exists, the network is down or gh is
- * signed out, and only the first of those is good news.
- */
-function openPullRequestExists(slug, branch) {
-  return pullRequestOf(slug, branch, "open") !== null;
-}
-
-/**
  * The most recent Pull Request of the fork for that branch in that state
  * ("open", "merged", "closed" or "all"), as { number, url, state }, or null.
+ * `gh pr create` fails the same way whether one exists, the network is down or
+ * gh is signed out, and only the first of those is good news, so this is asked.
  */
 function pullRequestOf(slug, branch, state) {
   if (!slug || !hasGh()) {
@@ -291,7 +284,11 @@ export default async function simulate(args) {
     // address of the Pull Request is the one line the learner needs next, and
     // what gh prints goes nowhere they can see when this runs in the panel.
     let pr = { code: 1, stdout: "", stderr: "" };
-    for (let attempt = 1; attempt <= 3; attempt++) {
+    // Asked first: a run again on a branch whose Pull Request is still open would
+    // otherwise spend its three tries on "it already exists", reported as a branch
+    // GitHub cannot see yet
+    const openBefore = pullRequestOf(slug, scenario.branch, "open");
+    for (let attempt = 1; attempt <= 3 && !openBefore; attempt++) {
       pr = run("gh", [
         "pr", "create",
         // Named explicitly: in a fork with no default repository set, gh picks
@@ -313,9 +310,9 @@ export default async function simulate(args) {
     fs.rmSync(bodyFile, { force: true });
     // "It already exists" is the only failure that means success here, and the
     // way to know is to ask the fork rather than to assume
-    const alreadyOpen = pr.code !== 0 && openPullRequestExists(slug, scenario.branch);
+    const alreadyOpen = openBefore || (pr.code !== 0 ? pullRequestOf(slug, scenario.branch, "open") : null);
     if (alreadyOpen) {
-      prUrl = pullRequestOf(slug, scenario.branch, "open")?.url || `https://github.com/${slug}/pulls`;
+      prUrl = alreadyOpen.url || `https://github.com/${slug}/pulls`;
       ok("The new commit is on the Pull Request your teammate already opened");
       info(`  ${c.cyan(prUrl)}`);
     } else if (pr.code !== 0) {
@@ -354,6 +351,15 @@ export default async function simulate(args) {
  * wrong is in its log, not in this command.
  */
 async function mergeWhenGreen(slug, branch, prUrl) {
+  // MERGED, CLOSED or OPEN, or null when GitHub could not be asked
+  const stateOf = (ref) => {
+    const res = run("gh", ["pr", "view", ref, "--repo", slug, "--json", "state"], { capture: true, quiet: true });
+    try {
+      return JSON.parse(res.stdout || "{}").state || null;
+    } catch {
+      return null;
+    }
+  };
   title("Waiting for the checks of the Pull Request");
   info(`  ${c.cyan(prUrl)}`);
   const pullsUrl = prUrl;
@@ -365,14 +371,7 @@ async function mergeWhenGreen(slug, branch, prUrl) {
   while (Date.now() - started < timeoutMs) {
     // The learner may merge it on GitHub while this waits, which is the lab's other
     // path: that is the job done, not something to report as a failure.
-    const current = run("gh", ["pr", "view", ref, "--repo", slug, "--json", "state"], { capture: true, quiet: true });
-    const state = (() => {
-      try {
-        return JSON.parse(current.stdout || "{}").state;
-      } catch {
-        return null;
-      }
-    })();
+    const state = stateOf(ref);
     if (state === "MERGED") {
       ok(`The Pull Request is merged: you merged it on GitHub. ${c.cyan(prUrl)}`);
       run("git", ["fetch", "origin", "--prune"], { quiet: true });
@@ -395,11 +394,11 @@ async function mergeWhenGreen(slug, branch, prUrl) {
     // A check can be listed twice, a run cancelled by a newer one for instance, so
     // each is read as its best state. A cancelled run is not a failure: Mega-Linter
     // cancels itself when it pushes a fix commit, and a new run follows.
-    const stateOf = (name) => {
+    const checkState = (name) => {
       const buckets = checks.filter((check) => check.name === name).map((check) => check.bucket);
       return ["pass", "pending", "fail"].find((bucket) => buckets.includes(bucket)) || "missing";
     };
-    const required = REQUIRED_CHECKS.map(stateOf);
+    const required = REQUIRED_CHECKS.map(checkState);
     const failed = REQUIRED_CHECKS.filter((name, i) => required[i] === "fail");
     if (failed.length > 0) {
       warn(`${failed.join(" and ")} failed, so the Pull Request was not merged.`);
@@ -410,7 +409,23 @@ async function mergeWhenGreen(slug, branch, prUrl) {
       ok("All checks passed");
       const merge = run("gh", ["pr", "merge", ref, "--repo", slug, "--squash"], { capture: true, quiet: true });
       if (merge.code !== 0) {
+        // The learner can press the button in the same seconds, and GitHub then refuses
+        // the second merge while it still reports the Pull Request as open for a moment.
+        // Measured once: both merges in the same second, OPEN read right after. Asked
+        // again for ten seconds before calling it a failure.
+        for (let attempt = 0; attempt < 5; attempt++) {
+          if (stateOf(ref) === "MERGED") {
+            ok(`The Pull Request is merged: you merged it on GitHub. ${c.cyan(prUrl)}`);
+            run("git", ["fetch", "origin", "--prune"], { quiet: true });
+            return true;
+          }
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+        }
+        const why = `${merge.stderr || merge.stdout}`.trim().split(/\r?\n/).pop();
         warn("The Pull Request could not be merged automatically. Merge it yourself on GitHub.");
+        if (why) {
+          info(c.dim(`    GitHub said: ${why}`));
+        }
         info(`  ${c.cyan(pullsUrl)}`);
         return false;
       }
