@@ -78,20 +78,30 @@ function isStarred(slug) {
   return run("gh", ["api", `user/starred/${slug}`, "--silent"], { capture: true, quiet: true }).code === 0;
 }
 
-/** Every branch that carries commits the remote does not have yet. */
-function unpushedBranches() {
-  const out = gitOut(["for-each-ref", "--format=%(refname:short)|%(upstream:short)|%(upstream:track)", "refs/heads"]);
-  return out
+/**
+ * Every branch that carries commits your fork on GitHub does not have yet.
+ *
+ * Compared with the fork itself, not with the branch git says it follows: after
+ * Reset this level, integration used to follow the course's start branch, and
+ * showed "ahead" for commits that were on the fork all along. A branch that was
+ * never pushed but holds no commit of its own is not work waiting either.
+ */
+function unpushedBranches(majors) {
+  return gitOut(["for-each-ref", "--format=%(refname:short)", "refs/heads"])
     .split(/\r?\n/)
+    .map((b) => b.trim())
     .filter(Boolean)
-    .map((line) => {
-      const [branch, upstream, track] = line.split("|");
-      return { branch, upstream, track: track || "" };
-    })
     // A backpromote branch is the tool's own workspace, rebuilt on every run and
     // never pushed by anybody. It is not work waiting to be published.
-    .filter((b) => !b.branch.startsWith("backpromote/"))
-    .filter((b) => !b.upstream || b.track.includes("ahead"));
+    .filter((branch) => !branch.startsWith("backpromote/"))
+    // Major branches only change through Pull Requests, so they cannot be pushed
+    // from here, and the checks above already read them on the fork
+    .filter((branch) => !majors.includes(branch))
+    .map((branch) => ({
+      branch,
+      commits: Number(gitOut(["rev-list", "--count", branch, "--not", "--remotes=origin"]) || 0)
+    }))
+    .filter((b) => b.commits > 0);
 }
 
 export default async function claim(args) {
@@ -143,16 +153,17 @@ export default async function claim(args) {
   // The audit reads your repository on GitHub, not this folder. A commit that
   // never left the machine verifies here and fails there, which is the most
   // confusing rejection there is.
-  const unpushed = unpushedBranches();
+  const unpushed = unpushedBranches(u.branches?.majors || ["integration", "uat", "preprod", "main"]);
   if (unpushed.length > 0) {
     info("");
     fail("Some of your work is only on this computer.");
     for (const b of unpushed) {
-      info(c.yellow(`    ${b.branch}  ${b.upstream ? b.track : "has never been pushed"}`));
+      info(c.yellow(`    ${b.branch}  ${b.commits} commit(s) not on GitHub`));
     }
     info("");
-    info("  The audit reads your repository on GitHub, so push first:");
-    info("  Source Control panel, the ... menu, Push. Then claim again.");
+    info("  The audit reads your repository on GitHub, so push first. Push only sends");
+    info("  the branch you are on: switch to each branch above (its name, bottom left");
+    info("  of VS Code), then Source Control panel, the ... menu, Push. Then claim again.");
     process.exitCode = 1;
     return;
   }
