@@ -105,7 +105,9 @@ Merge. The **Process Deployment (sfdx-hardis)** run starts, this time on `main`.
 Watch it. Not because you can do anything while it runs, but because knowing whether it failed at
 minute two or minute thirty-five changes what you do next.
 
-When it finishes, do any manual steps, then check the org.
+When it finishes, do the post-deployment manual steps, if any, then check the org. The
+pre-deployment ones belong before the merge: do them, tick their boxes in the check comment, then
+merge, and the deployment job records them, as in [Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md).
 
 ### 6. Verify in production
 

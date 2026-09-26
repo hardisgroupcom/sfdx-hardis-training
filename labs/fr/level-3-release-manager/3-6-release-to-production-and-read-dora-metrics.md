@@ -109,7 +109,10 @@ Regardez-la. Non parce que vous pouvez faire quoi que ce soit pendant qu'elle to
 savoir si elle a échoué à la deuxième minute ou à la trente-cinquième change ce que vous faites
 ensuite.
 
-Quand elle se termine, faites les éventuelles étapes manuelles, puis vérifiez l'org.
+Quand elle se termine, faites les éventuelles étapes manuelles post-déploiement, puis vérifiez
+l'org. Celles de pré-déploiement se font avant le merge : faites-les, cochez leurs cases dans le
+commentaire du contrôle, puis mergez, et le job de déploiement les enregistre, comme au
+[Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md).
 
 ### 6. Vérifier en production
 
