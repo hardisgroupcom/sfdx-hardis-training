@@ -5,7 +5,7 @@ description: "Un déploiement vert n'est pas une fonctionnalité qui marche. Liv
 level: 2
 lab: 4
 lang: fr
-source_rev: "a34ea6fe2995834d2ab32fd72793082b541c84c8"
+source_rev: "2ff4d0faf3b366e9e689becf0b6dbf7374ab9d8b"
 screenshots:
   - annotated/web/github-pr-deployment-actions
   - annotated/vscode/pipeline-cards--new-user-story
