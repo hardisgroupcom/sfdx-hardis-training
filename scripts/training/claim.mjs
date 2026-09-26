@@ -161,9 +161,20 @@ export default async function claim(args) {
       info(c.yellow(`    ${b.branch}  ${b.commits} commit(s) not on GitHub`));
     }
     info("");
-    info("  The audit reads your repository on GitHub, so push first. Push only sends");
-    info("  the branch you are on: switch to each branch above (its name, bottom left");
-    info("  of VS Code), then Source Control panel, the ... menu, Push. Then claim again.");
+    info("  The badge audit reads your repository on GitHub, not this computer, so these");
+    info("  commits must be sent to GitHub first. Push sends only the branch you are on,");
+    info("  so do this for each branch listed above:");
+    info("");
+    info(`    1. Click the branch name in the bottom left corner of VS Code (it shows the`);
+    info(`       branch you are on), then pick ${unpushed.length === 1 ? c.bold(unpushed[0].branch) : "the branch"} in the list that opens at the top.`);
+    info("       If VS Code says you have uncommitted changes, commit them first.");
+    info("    2. Open the Source Control panel: the icon with three circles joined by lines,");
+    info("       in the bar on the left side of VS Code (or Ctrl+Shift+G).");
+    info("    3. At the top of that panel, click the ... menu, then Push.");
+    info("       If VS Code asks whether to publish the branch, answer OK: it is not on");
+    info("       GitHub yet, and publishing is how it gets there.");
+    info("");
+    info("  Then click Claim my badge again.");
     process.exitCode = 1;
     return;
   }
