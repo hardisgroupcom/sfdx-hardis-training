@@ -79,11 +79,11 @@ sfdx-hardis command list.
 
 The command panel asks three questions:
 
-| Question                                 | Answer                                                      |
-|------------------------------------------|-------------------------------------------------------------|
-| Which teammate work do you need?         | **US-018 Cap the crew size a planner can assign**           |
-| Create it?                               | **Yes**                                                     |
-| Merge it for you once its checks pass?   | **Yes**, unless you want to merge it yourself on GitHub     |
+| Question                               | Answer                                                  |
+|----------------------------------------|---------------------------------------------------------|
+| Which teammate work do you need?       | **US-018 Cap the crew size a planner can assign**       |
+| Create it?                             | **Yes**                                                 |
+| Merge it for you once its checks pass? | **Yes**, unless you want to merge it yourself on GitHub |
 
 It creates the branch `training/mate-us-018-crew-capacity` from your current `integration`, commits
 Mariia's changes under her name, pushes it to your fork (your own copy of the course repository on

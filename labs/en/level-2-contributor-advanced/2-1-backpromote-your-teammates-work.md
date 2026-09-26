@@ -63,11 +63,11 @@ teammates** **(2)**. The same entry is on the Welcome page, under **Training: Le
 
 A command panel opens and asks three questions. Answer them this way:
 
-| Question                                 | Answer                                                     |
-|------------------------------------------|------------------------------------------------------------|
-| Which teammate work do you need?         | **US-017 Record who signed an installation off**           |
-| Create it?                               | **Yes**                                                    |
-| Merge it for you once its checks pass?   | **Yes**, unless you want to merge it yourself (step 1b)    |
+| Question                               | Answer                                                  |
+|----------------------------------------|---------------------------------------------------------|
+| Which teammate work do you need?       | **US-017 Record who signed an installation off**        |
+| Create it?                             | **Yes**                                                 |
+| Merge it for you once its checks pass? | **Yes**, unless you want to merge it yourself (step 1b) |
 
 If VS Code first asks how to allow the Training command, choose **Always allow**, as in
 [Lab 1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md).
