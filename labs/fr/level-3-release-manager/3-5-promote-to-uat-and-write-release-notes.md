@@ -205,7 +205,11 @@ Mergez la promotion. L'exécution **Process Deployment (sfdx-hardis)** démarre,
 C'est le premier déploiement vers cette org par la pipeline : il sera donc plus gros que ceux vers
 integration, l'UAT est en retard de tout ce que l'équipe a fait. Comptez plusieurs minutes.
 
-Quand il se termine, faites les étapes manuelles que le commentaire listait, dans `helios-uat`.
+L'étape de délivrabilité est une étape **pre-deploy** : sa place est avant le merge, comme le dit
+l'étape 4. Si vous l'avez faite dans `helios-uat` et avez coché sa case, le log de ce job le dit :
+*Manual action Set Email Deliverability to All Email has been confirmed as done in org branch uat*.
+Sinon, faites-la maintenant et cochez la case : le prochain job qui porte cette Pull Request
+l'enregistre.
 
 Puis lisez le log à la recherche du gestionnaire d'écrasement, au-dessus du déploiement, parmi les
 lignes qui commencent par `[NoOverwrite]` :
@@ -279,7 +283,8 @@ Sur cette promotion, les notes générées s'ouvrent ainsi :
 
 Viennent ensuite un tableau des tickets, un des Pull Requests avec leurs auteurs et dates de merge,
 les métadonnées modifiées par type, et les deployment actions avec leur statut dans `uat` : l'étape
-manuelle de délivrabilité toujours **manual**, les imports et la planification **success**.
+manuelle de délivrabilité **success** si vous avez coché sa case avant le merge et **manual**
+sinon, les imports et la planification **success**.
 
 Lisez-les puis améliorez-les. Des notes générées sont une liste complète, et une note de version que
 le métier lit a besoin de deux choses que le générateur ne peut pas connaître :

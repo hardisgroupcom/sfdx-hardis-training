@@ -196,7 +196,10 @@ Merge the promotion. The **Process Deployment (sfdx-hardis)** run starts, this t
 This is the first deployment to this org through the pipeline, so it will be larger than the ones to
 integration: UAT is behind by everything the team has done. Expect several minutes.
 
-When it finishes, do the manual steps the comment listed, in `helios-uat`.
+The deliverability step is a **pre-deploy** one: its place is before the merge, as step 4 says.
+If you did it in `helios-uat` and ticked its box, the log of this job says so: *Manual action Set
+Email Deliverability to All Email has been confirmed as done in org branch uat*. If you did not,
+do it now and tick the box: the next job that carries this Pull Request records it.
 
 Then read the log for the overwrite manager, above the deployment, among the lines that start
 with `[NoOverwrite]`:
@@ -268,7 +271,8 @@ On this promotion, the generated notes open like this:
 
 Then come a table of the tickets, one of the Pull Requests with their authors and merge dates, the
 metadata changed by type, and the deployment actions with their status in `uat`: the manual
-deliverability step still **manual**, the imports and the schedule **success**.
+deliverability step **success** if you ticked its box before the merge and **manual** if not, the
+imports and the schedule **success**.
 
 Read it and then improve it. Generated notes are a complete list, and a release note the business
 reads needs two things the generator cannot know:
