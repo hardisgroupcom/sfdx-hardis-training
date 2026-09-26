@@ -24,6 +24,10 @@
  *               such a story without the one under it, which is what makes its
  *               cherry-pick conflict for real. The check says which story to
  *               merge first instead of failing on a line it cannot find.
+ *   offerMerge  true when merging the Pull Request is not what the lab teaches:
+ *               the learner is offered to have it merged for them, once its
+ *               checks are green. Lab 2.1 is about the backpromote that follows,
+ *               and a learner stuck on the merge never reaches it.
  */
 import fs from "fs";
 import path from "path";
@@ -31,6 +35,7 @@ import {
   ROOT, c, title, info, ok, warn, abort, run, git, gitOut,
   select, confirm, universe, hasGh, repoSlug
 } from "../lib/util.mjs";
+import { REQUIRED_CHECKS } from "../lib/protection.mjs";
 
 const SIMULATE_DIR = path.join(ROOT, "scripts", "simulate");
 
@@ -248,6 +253,7 @@ export default async function simulate(args) {
     abort("The branch could not be pushed to your fork.", "Check that origin points at your own fork and that you can push to it.");
   }
 
+  let prOpen = false;
   if (!hasGh()) {
     warn("The GitHub CLI is not installed, so the Pull Request was not opened automatically.");
     info(`  Open it yourself: ${c.cyan(`https://github.com/${slug}/compare/${base}...${scenario.branch}?expand=1`)}`);
@@ -285,21 +291,99 @@ export default async function simulate(args) {
     // way to know is to ask the fork rather than to assume
     const alreadyOpen = pr.code !== 0 && openPullRequestExists(slug, scenario.branch);
     if (alreadyOpen) {
+      prOpen = true;
       ok("The new commit is on the Pull Request your teammate already opened");
     } else if (pr.code !== 0) {
       warn("The Pull Request could not be opened automatically. It may already exist.");
       info(`  Check: ${c.cyan(`https://github.com/${slug}/pulls`)}`);
     } else {
+      prOpen = true;
       ok("Pull Request opened");
       const url = (pr.stdout || "").match(/https:\/\/\S+\/pull\/\d+/);
       info(`  ${c.cyan(url ? url[0] : `https://github.com/${slug}/pulls`)}`);
     }
   }
 
+  let merged = false;
+  if (prOpen && scenario.offerMerge) {
+    info("");
+    info("  You can merge it yourself on GitHub, the way the lab shows, or let this command do it:");
+    info("  it waits for the checks of the Pull Request to pass, about two to four minutes, then merges it.");
+    const mergeIt = args.merge !== undefined ? args.merge === true || args.merge === "true" : await confirm("Merge it for you once its checks pass?", true);
+    if (mergeIt) {
+      merged = await mergeWhenGreen(slug, scenario.branch);
+    }
+  }
+
   restore();
 
   title("Done");
-  info(`  ${scenario.nextStep}`);
+  info(`  ${merged && scenario.nextStepMerged ? scenario.nextStepMerged : scenario.nextStep}`);
+}
+
+/**
+ * Waits for the required checks of a Pull Request, then squash merges it.
+ *
+ * The same rule as the merge button: nothing is merged while a check is running
+ * or red, which the branch protection of the fork would refuse anyway. A red
+ * check stops here and sends the learner to the Pull Request, because what is
+ * wrong is in its log, not in this command.
+ */
+async function mergeWhenGreen(slug, branch) {
+  title("Waiting for the checks of the Pull Request");
+  const pullsUrl = `https://github.com/${slug}/pulls`;
+  const started = Date.now();
+  const timeoutMs = 20 * 60 * 1000;
+  let lastReport = 0;
+  while (Date.now() - started < timeoutMs) {
+    // gh exits non-zero while a check is pending or failed, so the exit code says
+    // nothing: the JSON does. No output at all means GitHub has not attached the
+    // checks yet, which is normal in the first seconds after the push.
+    const res = run("gh", ["pr", "checks", branch, "--repo", slug, "--json", "name,bucket"], { capture: true, quiet: true });
+    let checks = [];
+    try {
+      checks = JSON.parse(res.stdout || "[]");
+    } catch {
+      checks = [];
+    }
+    // A check can be listed twice, a run cancelled by a newer one for instance, so
+    // each is read as its best state. A cancelled run is not a failure: Mega-Linter
+    // cancels itself when it pushes a fix commit, and a new run follows.
+    const stateOf = (name) => {
+      const buckets = checks.filter((check) => check.name === name).map((check) => check.bucket);
+      return ["pass", "pending", "fail"].find((bucket) => buckets.includes(bucket)) || "missing";
+    };
+    const required = REQUIRED_CHECKS.map(stateOf);
+    const failed = REQUIRED_CHECKS.filter((name, i) => required[i] === "fail");
+    if (failed.length > 0) {
+      warn(`${failed.join(" and ")} failed, so the Pull Request was not merged.`);
+      info(`  Open it to read why: ${c.cyan(pullsUrl)}`);
+      return false;
+    }
+    if (required.every((state) => state === "pass")) {
+      ok("All checks passed");
+      const merge = run("gh", ["pr", "merge", branch, "--repo", slug, "--squash"], { capture: true, quiet: true });
+      if (merge.code !== 0) {
+        warn("The Pull Request could not be merged automatically. Merge it yourself on GitHub.");
+        info(`  ${c.cyan(pullsUrl)}`);
+        return false;
+      }
+      ok("Pull Request merged into its base branch");
+      run("git", ["fetch", "origin", "--prune"], { quiet: true });
+      return true;
+    }
+    if (Date.now() - lastReport > 30 * 1000) {
+      lastReport = Date.now();
+      const minutes = Math.floor((Date.now() - started) / 60000);
+      const waiting = REQUIRED_CHECKS.filter((name, i) => required[i] !== "pass");
+      info(`  Still running after ${minutes} min: ${waiting.join(", ")}`);
+    }
+    await new Promise((resolve) => setTimeout(resolve, 15 * 1000));
+  }
+  warn("The checks did not finish within 20 minutes, so the Pull Request was not merged.");
+  info("  If its Checks tab is empty, GitHub Actions are off on your fork: Lab 1.6 step 2 says how to turn them on.");
+  info(`  Then merge it yourself on GitHub: ${c.cyan(pullsUrl)}`);
+  return false;
 }
 
 /**
