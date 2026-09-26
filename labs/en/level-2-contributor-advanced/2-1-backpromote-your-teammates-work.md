@@ -95,10 +95,11 @@ It applied the patch set of `scripts/simulate/us-017-sign-off/` to your working 
 with Romain's name and email, pushed the branch and opened the Pull Request with `gh pr create`.
 Your own uncommitted changes, if you had any, were put aside first and put back at the end.
 
-With **Yes** to the merge, it asked GitHub for the state of the Pull Request's checks every fifteen
-seconds (`gh pr checks`), and ran `gh pr merge --squash` once **Simulate Deployment to Major Org**
-and **Mega-Linter** were both green. The same rule as the button: your fork's `integration` is
-protected, and GitHub would refuse the merge while a check is red or running.
+With **Yes** to the merge, it gave you back your own branch first, then asked GitHub for the state
+of the Pull Request's checks every twenty seconds (`gh pr checks`), and ran `gh pr merge --squash`
+once all of them, **Simulate Deployment to Major Org** and **Mega-Linter** among them, were green.
+The same rule as the button: your fork's `integration` is protected, and GitHub would refuse the
+merge while a check is red or running.
 
 </details>
 
@@ -271,8 +272,8 @@ Open `helios-dev` and check that the metadata from the three merged stories is t
 
 ## If it goes wrong
 
-**Simulate my teammates waited 20 minutes and did not merge.**
-The Checks tab of the Pull Request is probably empty: GitHub Actions are off on your fork.
+**Simulate my teammates says no check ran on the Pull Request.**
+The Checks tab of the Pull Request is empty: GitHub Actions are off on your fork.
 [Lab 1.6](../level-1-contributor-basics/1-6-pull-request-deployment-check-and-merge.md), step 2, says how to turn them on. Then
 merge it yourself, step 1b.
 

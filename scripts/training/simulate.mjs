@@ -38,7 +38,7 @@ import {
   ROOT, c, title, info, ok, warn, abort, run, git, gitOut,
   select, confirm, universe, hasGh, repoSlug
 } from "../lib/util.mjs";
-import { REQUIRED_CHECKS } from "../lib/protection.mjs";
+import { waitForPullRequestChecks } from "../lib/course-updates.mjs";
 
 const SIMULATE_DIR = path.join(ROOT, "scripts", "simulate");
 
@@ -91,6 +91,8 @@ export default async function simulate(args) {
     "scenario"
   );
   const scenario = scenarios.find((s) => s.id === id);
+  // Level 2 is about what comes after the merge; in Level 3 the merge is the lesson
+  const offersMerge = Boolean(level) && (scenario.offerMergeLevels || []).includes(level);
 
   // Somebody who changes an org rather than the repository: an admin in production
   if (scenario.kind === "org") {
@@ -252,7 +254,7 @@ export default async function simulate(args) {
     const mergedBefore = pullRequestOf(slug, scenario.branch, "merged");
     if (mergedBefore) {
       ok(`Your teammate's Pull Request is already merged: ${c.cyan(mergedBefore.url)}`);
-      if (scenario.nextStepMerged) {
+      if (scenario.nextStepMerged && offersMerge) {
         info(`  ${scenario.nextStepMerged}`);
       }
     }
@@ -325,125 +327,107 @@ export default async function simulate(args) {
     }
   }
 
+  // The commit the Pull Request has to carry before its checks mean anything, read
+  // while the teammate branch is still checked out
+  const pushed = gitOut(["rev-parse", "HEAD"]);
+
+  // Before the wait, which can take minutes: the learner is back on their own
+  // branch with their own work while GitHub runs the checks
+  restore();
+
   let merged = false;
-  if (prUrl && level && (scenario.offerMergeLevels || []).includes(level)) {
-    info("");
-    info("  You can merge it yourself on GitHub, the way the lab shows, or let this command do it:");
-    info("  it waits for the checks of the Pull Request to pass, about two to four minutes, then merges it.");
-    const mergeIt = args.merge !== undefined ? args.merge === true || args.merge === "true" : await confirm("Merge it for you once its checks pass?", true);
+  if (prUrl && offersMerge) {
+    // A scripted run (--yes) merges only when it says so with --merge: it may be the
+    // one meant to review and merge next
+    let mergeIt = args.merge === true || args.merge === "true";
+    if (args.merge === undefined && args.yes !== true) {
+      info("");
+      info("  You can merge it yourself on GitHub, the way the lab shows, or let this command do it:");
+      info("  it waits for the checks of the Pull Request to pass, about two to four minutes, then merges it.");
+      mergeIt = await confirm("Merge it for you once its checks pass?", true);
+    }
     if (mergeIt) {
-      merged = await mergeWhenGreen(slug, scenario.branch, prUrl);
+      merged = await mergeWhenGreen(slug, prUrl, pushed);
     }
   }
-
-  restore();
 
   title("Done");
   info(`  ${merged && scenario.nextStepMerged ? scenario.nextStepMerged : scenario.nextStep}`);
 }
 
 /**
- * Waits for the required checks of a Pull Request, then squash merges it.
+ * Waits for the checks of a Pull Request, then squash merges it. Returns true
+ * once it is merged, by this command or by the learner on GitHub.
  *
  * The same rule as the merge button: nothing is merged while a check is running
  * or red, which the branch protection of the fork would refuse anyway. A red
  * check stops here and sends the learner to the Pull Request, because what is
  * wrong is in its log, not in this command.
  */
-async function mergeWhenGreen(slug, branch, prUrl) {
-  // MERGED, CLOSED or OPEN, or null when GitHub could not be asked
-  const stateOf = (ref) => {
-    const res = run("gh", ["pr", "view", ref, "--repo", slug, "--json", "state"], { capture: true, quiet: true });
-    try {
-      return JSON.parse(res.stdout || "{}").state || null;
-    } catch {
-      return null;
-    }
-  };
+async function mergeWhenGreen(slug, prUrl, pushed) {
   title("Waiting for the checks of the Pull Request");
   info(`  ${c.cyan(prUrl)}`);
-  const pullsUrl = prUrl;
-  // The number when there is one: the fallback address of the pulls page is not a Pull Request
-  const ref = /\/pull\/\d+/.test(prUrl) ? prUrl : branch;
-  const started = Date.now();
-  const timeoutMs = 20 * 60 * 1000;
-  let lastReport = 0;
-  while (Date.now() - started < timeoutMs) {
-    // The learner may merge it on GitHub while this waits, which is the lab's other
-    // path: that is the job done, not something to report as a failure.
-    const state = stateOf(ref);
-    if (state === "MERGED") {
-      ok(`The Pull Request is merged: you merged it on GitHub. ${c.cyan(prUrl)}`);
-      run("git", ["fetch", "origin", "--prune"], { quiet: true });
-      return true;
-    }
-    if (state === "CLOSED") {
-      warn(`The Pull Request was closed without being merged. Run Simulate my teammates again to reopen it. ${c.cyan(prUrl)}`);
-      return false;
-    }
-    // gh exits non-zero while a check is pending or failed, so the exit code says
-    // nothing: the JSON does. No output at all means GitHub has not attached the
-    // checks yet, which is normal in the first seconds after the push.
-    const res = run("gh", ["pr", "checks", branch, "--repo", slug, "--json", "name,bucket"], { capture: true, quiet: true });
-    let checks = [];
+  const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const view = () => {
+    const res = run("gh", ["pr", "view", prUrl, "--repo", slug, "--json", "state,headRefOid"], { capture: true, quiet: true });
     try {
-      checks = JSON.parse(res.stdout || "[]");
+      return JSON.parse(res.stdout || "{}");
     } catch {
-      checks = [];
+      return {};
     }
-    // A check can be listed twice, a run cancelled by a newer one for instance, so
-    // each is read as its best state. A cancelled run is not a failure: Mega-Linter
-    // cancels itself when it pushes a fix commit, and a new run follows.
-    const checkState = (name) => {
-      const buckets = checks.filter((check) => check.name === name).map((check) => check.bucket);
-      return ["pass", "pending", "fail"].find((bucket) => buckets.includes(bucket)) || "missing";
-    };
-    const required = REQUIRED_CHECKS.map(checkState);
-    const failed = REQUIRED_CHECKS.filter((name, i) => required[i] === "fail");
-    if (failed.length > 0) {
-      warn(`${failed.join(" and ")} failed, so the Pull Request was not merged.`);
-      info(`  Open it to read why: ${c.cyan(pullsUrl)}`);
-      return false;
-    }
-    if (required.every((state) => state === "pass")) {
-      ok("All checks passed");
-      const merge = run("gh", ["pr", "merge", ref, "--repo", slug, "--squash"], { capture: true, quiet: true });
-      if (merge.code !== 0) {
-        // The learner can press the button in the same seconds, and GitHub then refuses
-        // the second merge while it still reports the Pull Request as open for a moment.
-        // Measured once: both merges in the same second, OPEN read right after. Asked
-        // again for ten seconds before calling it a failure.
-        for (let attempt = 0; attempt < 5; attempt++) {
-          if (stateOf(ref) === "MERGED") {
-            ok(`The Pull Request is merged: you merged it on GitHub. ${c.cyan(prUrl)}`);
-            run("git", ["fetch", "origin", "--prune"], { quiet: true });
-            return true;
-          }
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-        }
-        const why = `${merge.stderr || merge.stdout}`.trim().split(/\r?\n/).pop();
-        warn("The Pull Request could not be merged automatically. Merge it yourself on GitHub.");
-        if (why) {
-          info(c.dim(`    GitHub said: ${why}`));
-        }
-        info(`  ${c.cyan(pullsUrl)}`);
-        return false;
-      }
-      ok("Pull Request merged into its base branch");
-      run("git", ["fetch", "origin", "--prune"], { quiet: true });
-      return true;
-    }
-    if (Date.now() - lastReport > 30 * 1000) {
-      lastReport = Date.now();
-      const minutes = Math.floor((Date.now() - started) / 60000);
-      const waiting = REQUIRED_CHECKS.filter((name, i) => required[i] !== "pass");
-      info(`  Still running after ${minutes} min: ${waiting.join(", ")}`);
-    }
-    await new Promise((resolve) => setTimeout(resolve, 15 * 1000));
+  };
+  const merged = () => {
+    ok(`Pull Request merged into its base branch: ${c.cyan(prUrl)}`);
+    run("git", ["fetch", "origin", "--prune"], { quiet: true });
+    return true;
+  };
+
+  // Right after a push onto a Pull Request that was already open, GitHub can still
+  // list the checks of the commit before, red or green. Read them only once the
+  // Pull Request carries the commit just pushed.
+  for (let attempt = 0; attempt < 12 && view().headRefOid !== pushed; attempt++) {
+    await wait(5000);
   }
-  warn("The checks did not finish within 20 minutes, so the Pull Request was not merged.");
-  info("  If its Checks tab is empty, GitHub Actions are off on your fork: Lab 1.6 step 2 says how to turn them on.");
-  info(`  Then merge it yourself on GitHub: ${c.cyan(pullsUrl)}`);
+
+  const result = await waitForPullRequestChecks(slug, prUrl, { timeoutMs: 20 * 60 * 1000 });
+  // The learner may have merged it on GitHub while this waited: the job is done
+  if (view().state === "MERGED") {
+    return merged();
+  }
+  if (result.none) {
+    warn("No check ran on the Pull Request, so it was not merged.");
+    info("  GitHub Actions are probably off on your fork: Lab 1.6 step 2 says how to turn them on.");
+    info(`  Then merge it yourself on GitHub: ${c.cyan(prUrl)}`);
+    return false;
+  }
+  if (!result.ok) {
+    const what = result.timedOut ? "did not finish within 20 minutes" : "failed";
+    warn(`${result.failed.map((check) => check.name).join(" and ")} ${what}, so the Pull Request was not merged.`);
+    info(`  Open it to read why: ${c.cyan(prUrl)}`);
+    return false;
+  }
+
+  ok("All checks passed");
+  const merge = run("gh", ["pr", "merge", prUrl, "--repo", slug, "--squash", "--match-head-commit", pushed], { capture: true, quiet: true });
+  if (merge.code === 0) {
+    return merged();
+  }
+  // The learner can press the button in the same seconds, and GitHub then refuses
+  // the second merge while it still reports the Pull Request as open for a moment.
+  // Measured once: both merges in the same second, OPEN read right after. Asked
+  // again for ten seconds before calling it a failure.
+  for (let attempt = 0; attempt < 5; attempt++) {
+    if (view().state === "MERGED") {
+      return merged();
+    }
+    await wait(2000);
+  }
+  const why = `${merge.stderr || merge.stdout}`.trim().split(/\r?\n/).pop();
+  warn("The Pull Request could not be merged automatically. Merge it yourself on GitHub.");
+  if (why) {
+    info(c.dim(`    GitHub said: ${why}`));
+  }
+  info(`  ${c.cyan(prUrl)}`);
   return false;
 }
 
