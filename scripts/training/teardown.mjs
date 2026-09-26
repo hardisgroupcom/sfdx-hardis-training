@@ -238,6 +238,63 @@ System.debug('Aborted ' + jobs.size() + ' scheduled job(s)');
   info(page.code === 0 ? "  The Installation record page is back to the standard one" : c.dim("  No Lightning record page to deactivate"));
 }
 
+/**
+ * The External Client Apps Lab 3.1 deploys, one per major branch, named
+ * sfdxhardis<branch>. They hold nothing of the app, but they outlive it: the
+ * next Add/Configure Org on the same org stops on "External Client App named
+ * sfdxhardisintegration already exists ... Have you deleted it?", which is every
+ * learner who walks Level 3 twice on the same orgs. The app and its four
+ * settings records go in one destructive deploy. Allowed to fail, like the rest.
+ */
+const APP_CLIENT_TYPES = [
+  "ExtlClntAppOauthConfigurablePolicies",
+  "ExtlClntAppConfigurablePolicies",
+  "ExtlClntAppOauthSettings",
+  "ExtlClntAppGlobalOauthSettings",
+  "ExternalClientApplication"
+];
+
+function removeCourseAppClients(target) {
+  const found = [];
+  for (const type of APP_CLIENT_TYPES) {
+    const listed = run("sf", ["org", "list", "metadata", "-m", type, "--target-org", target, "--json"], {
+      capture: true,
+      quiet: true
+    });
+    let names = [];
+    try {
+      names = (JSON.parse(listed.stdout).result || []).map((r) => r.fullName).filter((n) => /^sfdxhardis/i.test(n));
+    } catch {
+      names = [];
+    }
+    if (names.length > 0) {
+      found.push([type, names]);
+    }
+  }
+  if (!found.some(([type]) => type === "ExternalClientApplication")) {
+    info(c.dim("  No External Client App of the course to remove"));
+    return;
+  }
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "helios-apps-"));
+  const pkg = (types) =>
+    `<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+${types.map(([type, names]) => `    <types>\n${names.map((n) => `        <members>${n}</members>\n`).join("")}        <name>${type}</name>\n    </types>\n`).join("")}    <version>64.0</version>
+</Package>
+`;
+  fs.writeFileSync(path.join(dir, "package.xml"), pkg([]), "utf8");
+  fs.writeFileSync(path.join(dir, "destructiveChangesPost.xml"), pkg(found), "utf8");
+  const gone = run(
+    "sf",
+    ["project", "deploy", "start", "--metadata-dir", dir, "--target-org", target,
+      "--test-level", "NoTestRun", "--ignore-warnings", "--wait", "30"],
+    { quiet: true }
+  );
+  fs.rmSync(dir, { recursive: true, force: true });
+  const apps = found.find(([type]) => type === "ExternalClientApplication")[1];
+  info(gone.code === 0 ? `  External Client App(s) removed: ${apps.join(", ")}` : c.dim("  The External Client Apps could not be removed"));
+}
+
 export default async function teardown(args) {
   title("Clean up a training org");
 
@@ -284,6 +341,7 @@ export default async function teardown(args) {
 
   title("2 of 3  Letting go of what holds the metadata");
   releaseHolds(target);
+  removeCourseAppClients(target);
 
   title("3 of 3  Removing the Helios metadata");
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "helios-destroy-"));
