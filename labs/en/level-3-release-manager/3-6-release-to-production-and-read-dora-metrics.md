@@ -170,7 +170,9 @@ have somewhere to move from. Take the baseline now.
 
 The report is a file, `docs/dora/dora-report-<date>.md`, and the panel opens it for you. Keep it
 where it is: it is rebuilt from the org and the Pull Requests whenever you run the report again, so
-nothing is committed, and [Lab 3.11](3-11-capstone-run-a-weekly-release-cycle.md) compares the next one with this one.
+nothing is committed, and [Lab 3.11](3-11-capstone-run-a-weekly-release-cycle.md) compares the next one with this one. The file is named after the day,
+so a second report on the same day replaces it: if you go on to [Lab 3.11](3-11-capstone-run-a-weekly-release-cycle.md) today, note the five numbers
+first, or copy the file under another name.
 
 <details markdown="1"><summary>Under the hood: where the DORA numbers come from</summary>
 

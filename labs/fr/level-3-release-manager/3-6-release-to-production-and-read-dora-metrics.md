@@ -177,7 +177,9 @@ cinquième livraison, quand les nombres ont d'où bouger. Prenez la ligne de bas
 
 Le rapport est un fichier, `docs/dora/dora-report-<date>.md`, et le panneau vous l'ouvre. Laissez-le
 là où il est : il est reconstruit depuis l'org et les Pull Requests à chaque nouvelle exécution du
-rapport, rien n'est donc commité, et le [Lab 3.11](3-11-capstone-run-a-weekly-release-cycle.md) compare le suivant avec celui-ci.
+rapport, rien n'est donc commité, et le [Lab 3.11](3-11-capstone-run-a-weekly-release-cycle.md) compare le suivant avec celui-ci. Le fichier porte le
+nom du jour : un second rapport le même jour le remplace. Si vous enchaînez avec le
+[Lab 3.11](3-11-capstone-run-a-weekly-release-cycle.md) aujourd'hui, notez d'abord les cinq chiffres, ou copiez le fichier sous un autre nom.
 
 <details markdown="1"><summary>Sous le capot : d'où viennent les nombres DORA</summary>
 
