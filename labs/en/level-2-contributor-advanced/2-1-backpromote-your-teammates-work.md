@@ -70,7 +70,7 @@ A command panel opens and asks three questions. Answer them this way:
 | Merge it for you once its checks pass? | **Yes**, unless you want to merge it yourself (step 1b) |
 
 If VS Code first asks how to allow the Training command, choose **Always allow**, as in
-[Lab 1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md).
+[Lab 1.2](../level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md).
 
 The command creates the branch `training/mate-us-017-sign-off` from your current `integration`,
 commits Romain's change under his name, pushes it to your fork on GitHub and opens the Pull Request.
@@ -132,7 +132,7 @@ Only if you answered **No**, or if the panel could not merge.
 
    ![The merge method menu of a Pull Request, with Squash and merge](../../_assets/annotated/web/github-pr-merge-squash.png)
 
-This is the same merge as [Lab 1.6](1-6-pull-request-deployment-check-and-merge.md), step 4. A
+This is the same merge as [Lab 1.6](../level-1-contributor-basics/1-6-pull-request-deployment-check-and-merge.md), step 4. A
 check that fails here is not your fault and not something to fix: run **Simulate my teammates**
 again, it recreates the branch and the Pull Request.
 
@@ -273,7 +273,7 @@ Open `helios-dev` and check that the metadata from the three merged stories is t
 
 **Simulate my teammates waited 20 minutes and did not merge.**
 The Checks tab of the Pull Request is probably empty: GitHub Actions are off on your fork.
-[Lab 1.6](1-6-pull-request-deployment-check-and-merge.md), step 2, says how to turn them on. Then
+[Lab 1.6](../level-1-contributor-basics/1-6-pull-request-deployment-check-and-merge.md), step 2, says how to turn them on. Then
 merge it yourself, step 1b.
 
 **The panel says "Nothing to commit".**
