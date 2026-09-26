@@ -27,5 +27,7 @@
       "layoutField": "Crew_Capacity_Cap__c",
       "after": "Crew_Size__c"
     }
-  ]
+  ],
+  "offerMergeLevels": [2],
+  "nextStepMerged": "Mariia is in integration and you are behind. Go on with Lab 2.7 step 3: publish your own change."
 }

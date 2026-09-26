@@ -79,7 +79,8 @@ The panel prints its address: keep it, you need it in step 1b.
 With **Yes** to the last question, the panel then waits for the two checks of the Pull Request,
 about two to four minutes, and merges it as soon as both are green. It writes
 **Pull Request merged into its base branch**, then **Done**. You can skip step 1b and go straight to
-step 2.
+step 2. If you merge it yourself on GitHub while the panel is still waiting, it notices and stops
+there too.
 
 If it says a check failed, or that it could not merge, nothing is lost: the Pull Request is still
 open, and step 1b is the way to finish.
@@ -276,7 +277,8 @@ The Checks tab of the Pull Request is probably empty: GitHub Actions are off on 
 merge it yourself, step 1b.
 
 **The panel says "Nothing to commit".**
-Romain's change is already in your `integration`: you merged it earlier. Go on with step 2.
+Romain's change is already in your `integration`: you merged it earlier, and the panel prints the
+address of that merged Pull Request. Go on with step 2.
 
 **The panel says there is nothing to backpromote.**
 Your org is already level with `integration`, which happens if you just finished Level 1 in the same

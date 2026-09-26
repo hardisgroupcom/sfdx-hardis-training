@@ -24,10 +24,13 @@
  *               such a story without the one under it, which is what makes its
  *               cherry-pick conflict for real. The check says which story to
  *               merge first instead of failing on a line it cannot find.
- *   offerMerge  true when merging the Pull Request is not what the lab teaches:
- *               the learner is offered to have it merged for them, once its
- *               checks are green. Lab 2.1 is about the backpromote that follows,
- *               and a learner stuck on the merge never reaches it.
+ *   offerMergeLevels
+ *               the levels where merging the Pull Request is not what the lab
+ *               teaches: run from their Training menu, the learner is offered to
+ *               have it merged for them once its checks are green. Level 2 labs
+ *               are about what comes after the merge, and a learner stuck on it
+ *               never gets there. Level 3 is the release manager's, and there the
+ *               review and the merge are the lesson.
  */
 import fs from "fs";
 import path from "path";
@@ -45,18 +48,29 @@ const SIMULATE_DIR = path.join(ROOT, "scripts", "simulate");
  * signed out, and only the first of those is good news.
  */
 function openPullRequestExists(slug, branch) {
+  return pullRequestOf(slug, branch, "open") !== null;
+}
+
+/**
+ * The most recent Pull Request of the fork for that branch in that state
+ * ("open", "merged", "closed" or "all"), as { number, url, state }, or null.
+ */
+function pullRequestOf(slug, branch, state) {
+  if (!slug || !hasGh()) {
+    return null;
+  }
   const listed = run(
     "gh",
-    ["pr", "list", "-R", slug, "--head", branch, "--state", "open", "--json", "number"],
+    ["pr", "list", "-R", slug, "--head", branch, "--state", state, "--json", "number,url,state", "--limit", "1"],
     { capture: true, quiet: true }
   );
   if (listed.code !== 0) {
-    return false;
+    return null;
   }
   try {
-    return JSON.parse(listed.stdout || "[]").length > 0;
+    return JSON.parse(listed.stdout || "[]")[0] || null;
   } catch {
-    return false;
+    return null;
   }
 }
 
@@ -239,6 +253,16 @@ export default async function simulate(args) {
     ok("Nothing new to commit: the branch goes as it is");
   } else {
     warn(`Nothing to commit: the teammate changes are already in your ${from} branch.`);
+    // Most often because the learner already merged this Pull Request, by hand or
+    // from an earlier run: that is the step done, not a failure, and the address
+    // tells them where it went
+    const mergedBefore = pullRequestOf(slug, scenario.branch, "merged");
+    if (mergedBefore) {
+      ok(`Your teammate's Pull Request is already merged: ${c.cyan(mergedBefore.url)}`);
+      if (scenario.nextStepMerged) {
+        info(`  ${scenario.nextStepMerged}`);
+      }
+    }
     restore();
     // The branch was only made to hold the teammate commit, and there is none. Left
     // behind, it is a branch nobody pushed, and Claim my badge refuses to run until
@@ -253,7 +277,7 @@ export default async function simulate(args) {
     abort("The branch could not be pushed to your fork.", "Check that origin points at your own fork and that you can push to it.");
   }
 
-  let prOpen = false;
+  let prUrl = null;
   if (!hasGh()) {
     warn("The GitHub CLI is not installed, so the Pull Request was not opened automatically.");
     info(`  Open it yourself: ${c.cyan(`https://github.com/${slug}/compare/${base}...${scenario.branch}?expand=1`)}`);
@@ -291,27 +315,27 @@ export default async function simulate(args) {
     // way to know is to ask the fork rather than to assume
     const alreadyOpen = pr.code !== 0 && openPullRequestExists(slug, scenario.branch);
     if (alreadyOpen) {
-      prOpen = true;
+      prUrl = pullRequestOf(slug, scenario.branch, "open")?.url || `https://github.com/${slug}/pulls`;
       ok("The new commit is on the Pull Request your teammate already opened");
+      info(`  ${c.cyan(prUrl)}`);
     } else if (pr.code !== 0) {
       warn("The Pull Request could not be opened automatically. It may already exist.");
       info(`  Check: ${c.cyan(`https://github.com/${slug}/pulls`)}`);
     } else {
-      prOpen = true;
       ok("Pull Request opened");
-      const url = (pr.stdout || "").match(/https:\/\/\S+\/pull\/\d+/);
-      info(`  ${c.cyan(url ? url[0] : `https://github.com/${slug}/pulls`)}`);
+      prUrl = (pr.stdout || "").match(/https:\/\/\S+\/pull\/\d+/)?.[0] || `https://github.com/${slug}/pulls`;
+      info(`  ${c.cyan(prUrl)}`);
     }
   }
 
   let merged = false;
-  if (prOpen && scenario.offerMerge) {
+  if (prUrl && level && (scenario.offerMergeLevels || []).includes(level)) {
     info("");
     info("  You can merge it yourself on GitHub, the way the lab shows, or let this command do it:");
     info("  it waits for the checks of the Pull Request to pass, about two to four minutes, then merges it.");
     const mergeIt = args.merge !== undefined ? args.merge === true || args.merge === "true" : await confirm("Merge it for you once its checks pass?", true);
     if (mergeIt) {
-      merged = await mergeWhenGreen(slug, scenario.branch);
+      merged = await mergeWhenGreen(slug, scenario.branch, prUrl);
     }
   }
 
@@ -329,13 +353,35 @@ export default async function simulate(args) {
  * check stops here and sends the learner to the Pull Request, because what is
  * wrong is in its log, not in this command.
  */
-async function mergeWhenGreen(slug, branch) {
+async function mergeWhenGreen(slug, branch, prUrl) {
   title("Waiting for the checks of the Pull Request");
-  const pullsUrl = `https://github.com/${slug}/pulls`;
+  info(`  ${c.cyan(prUrl)}`);
+  const pullsUrl = prUrl;
+  // The number when there is one: the fallback address of the pulls page is not a Pull Request
+  const ref = /\/pull\/\d+/.test(prUrl) ? prUrl : branch;
   const started = Date.now();
   const timeoutMs = 20 * 60 * 1000;
   let lastReport = 0;
   while (Date.now() - started < timeoutMs) {
+    // The learner may merge it on GitHub while this waits, which is the lab's other
+    // path: that is the job done, not something to report as a failure.
+    const current = run("gh", ["pr", "view", ref, "--repo", slug, "--json", "state"], { capture: true, quiet: true });
+    const state = (() => {
+      try {
+        return JSON.parse(current.stdout || "{}").state;
+      } catch {
+        return null;
+      }
+    })();
+    if (state === "MERGED") {
+      ok(`The Pull Request is merged: you merged it on GitHub. ${c.cyan(prUrl)}`);
+      run("git", ["fetch", "origin", "--prune"], { quiet: true });
+      return true;
+    }
+    if (state === "CLOSED") {
+      warn(`The Pull Request was closed without being merged. Run Simulate my teammates again to reopen it. ${c.cyan(prUrl)}`);
+      return false;
+    }
     // gh exits non-zero while a check is pending or failed, so the exit code says
     // nothing: the JSON does. No output at all means GitHub has not attached the
     // checks yet, which is normal in the first seconds after the push.
@@ -362,7 +408,7 @@ async function mergeWhenGreen(slug, branch) {
     }
     if (required.every((state) => state === "pass")) {
       ok("All checks passed");
-      const merge = run("gh", ["pr", "merge", branch, "--repo", slug, "--squash"], { capture: true, quiet: true });
+      const merge = run("gh", ["pr", "merge", ref, "--repo", slug, "--squash"], { capture: true, quiet: true });
       if (merge.code !== 0) {
         warn("The Pull Request could not be merged automatically. Merge it yourself on GitHub.");
         info(`  ${c.cyan(pullsUrl)}`);

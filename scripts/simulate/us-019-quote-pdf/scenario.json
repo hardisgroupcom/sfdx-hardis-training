@@ -22,5 +22,7 @@
         "readable": true
       }
     }
-  ]
+  ],
+  "offerMergeLevels": [2],
+  "nextStepMerged": "Romain is in integration. Bring integration into your branch from the Source Control panel, as Lab 2.9 says."
 }
