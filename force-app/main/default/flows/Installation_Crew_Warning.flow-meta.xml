@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>64.0</apiVersion>
+    <apiVersion>66.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
         <description>Keeps the fault message so that a failed warning leaves a trace.</description>
@@ -39,13 +39,16 @@
             <label>Too Small</label>
         </rules>
     </decisions>
-    <description>Warns the planner when the crew assigned to an installation is too small. It warns on every save, which the planners have started to complain about.</description>
+    <description>Warns the planner when the crew assigned to an installation is too small for the panels it needs.</description>
     <environments>Default</environments>
     <formulas>
         <description>True when fewer than two people are assigned.</description>
         <name>crewTooSmall</name>
         <dataType>Boolean</dataType>
-        <expression>{!$Record.Crew_Size__c} &lt; 2</expression>
+        <expression>AND(
+  {!$Record.Crew_Size__c} * 8 &lt; {!$Record.Panels_Required__c},
+  NOT({!$Record.Crew_Warning_Sent__c})
+)</expression>
     </formulas>
     <interviewLabel>Installation Crew Warning {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Installation Crew Warning</label>
@@ -68,6 +71,9 @@
         <label>Create Warning Task</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
+        <connector>
+            <targetReference>Mark_Warning_Sent</targetReference>
+        </connector>
         <faultConnector>
             <targetReference>Log_Fault</targetReference>
         </faultConnector>
@@ -92,6 +98,24 @@
         <object>Task</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
+    <recordUpdates>
+        <description>Mark Warning Sent à True</description>
+        <name>Mark_Warning_Sent</name>
+        <label>Mark Warning Sent</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <faultConnector>
+            <isGoTo>true</isGoTo>
+            <targetReference>Log_Fault</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>Crew_Warning_Sent__c</field>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
     <start>
         <locationX>0</locationX>
         <locationY>0</locationY>
@@ -101,6 +125,13 @@
         <filterLogic>and</filterLogic>
         <filters>
             <field>Crew_Size__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Panels_Required__c</field>
             <operator>IsNull</operator>
             <value>
                 <booleanValue>false</booleanValue>
