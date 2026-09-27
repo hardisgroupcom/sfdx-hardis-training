@@ -282,7 +282,7 @@
       "id": "lab-2-1",
       "level": 2,
       "lab": 1,
-      "title": "Backpromote: catch your org up with the team",
+      "title": "Backpromote: catch your dev org up with the team",
       "file": "labs/en/level-2-contributor-advanced/2-1-backpromote-your-teammates-work.md",
       "url": "https://hardisgroupcom.github.io/sfdx-hardis-training/en/level-2-contributor-advanced/2-1-backpromote-your-teammates-work/",
       "commands": [
@@ -342,6 +342,7 @@
         "packageXml"
       ],
       "screenshots": [
+        "annotated/vscode/pipeline-packages-menu--package-xml",
         "annotated/web/github-pr-check-failed",
         "annotated/web/github-pr-flow-diff",
         "annotated/salesforce/flow-builder-crew-warning",

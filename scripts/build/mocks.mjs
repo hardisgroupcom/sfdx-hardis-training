@@ -854,6 +854,10 @@ if (fs.existsSync(baseline)) {
 // shipped in the training repository. The fixture needs it all the same: the
 // screenshots show the finished state of that lab.
 writeJson(path.join(PROJECT, "scripts", "data", "HeliosCrewRefData", "export.json"), {
+  // What Lab 2.4 has the learner type in the Create Workspace form. Without it the
+  // deployment action editor reads "Label not defined in export.json"
+  sfdxHardisLabel: "Crew capacity reference data",
+  sfdxHardisDescription: "The 12 Crew Capacity records every org needs: panels a day per crew type and roof type.",
   objects: [
     {
       query: "SELECT External_Id__c, Crew_Type__c, Roof_Type__c, Panels_Per_Day__c FROM Crew_Capacity__c",

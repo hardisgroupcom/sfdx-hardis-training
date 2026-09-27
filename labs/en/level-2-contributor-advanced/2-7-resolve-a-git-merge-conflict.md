@@ -135,7 +135,7 @@ two of you wrote in the same place: Mariia granted a field on the permission set
 you granted yours, and she connected the same assignment element in the flow to a decision of her
 own. A merge tool cannot know which of two connectors should win. You can.
 
-### 4. Bring integration into your branch
+### 4. Merge integration into your branch
 
 Open the **Source Control** panel, the icon of three small circles joined by lines in the left bar.
 
@@ -151,7 +151,7 @@ command is in the **...** menu at the top of the Source Control panel, under **B
 
 ![The Command Palette filtered on Git: Merge](../../_assets/annotated/vscode/git-palette-merge--merge.png)
 
-VS Code asks which branch to bring in. Type `integration` and pick **origin/integration** **(1)**,
+VS Code asks which branch to merge. Type `integration` and pick **origin/integration** **(1)**,
 listed under **remote branches**: the copy of `integration` that is on GitHub, with Mariia's work in
 it. Not the plain `integration` if it is listed too: that is the copy on your machine, which you
 have not updated since you branched.

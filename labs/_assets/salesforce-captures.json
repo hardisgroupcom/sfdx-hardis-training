@@ -5,7 +5,8 @@
   "lookups": {
     "crewPermSetId": "SELECT Id FROM PermissionSet WHERE Name = 'Helios_Delivery_Crew' LIMIT 1",
     "installationId": "SELECT Id FROM Installation__c WHERE Name = 'INST-00001' LIMIT 1",
-    "crewWarningFlowId": "SELECT ActiveVersionId FROM FlowDefinitionView WHERE ApiName = 'Installation_Crew_Warning'"
+    "crewWarningFlowId": "SELECT ActiveVersionId FROM FlowDefinitionView WHERE ApiName = 'Installation_Crew_Warning'",
+    "assignCrewFlowId": "SELECT ActiveVersionId FROM FlowDefinitionView WHERE ApiName = 'Installation_Assign_Crew'"
   },
   "captures": [
     {
@@ -29,23 +30,32 @@
     {
       "name": "new-field-details",
       "skip": "Step 2 of the wizard, unreachable for the same reason as new-field-type.",
-      "click": ["input[name='goNext']"]
+      "click": [
+        "input[name='goNext']"
+      ]
     },
     {
       "name": "new-field-security",
       "skip": "Step 3 of the wizard, unreachable for the same reason as new-field-type.",
-      "click": ["input[name='goNext']"]
+      "click": [
+        "input[name='goNext']"
+      ]
     },
     {
       "name": "new-field-layouts",
       "skip": "Step 4 of the wizard, unreachable for the same reason as new-field-type. Never click past it: the next button on step 4 is Save.",
-      "click": ["input[name='goNext']"]
+      "click": [
+        "input[name='goNext']"
+      ]
     },
     {
       "name": "permission-set-object-settings",
       "path": "/lightning/setup/PermSets/page?address=%2F{{crewPermSetId}}",
       "frame": "iframe",
-      "click": ["a:has-text('Object Settings')", "a:has-text('Installations')"],
+      "click": [
+        "a:has-text('Object Settings')",
+        "a:has-text('Installations')"
+      ],
       "after": "text=Field Permissions",
       "width": 1720,
       "height": 1250,
@@ -97,25 +107,43 @@
       "width": 1600,
       "height": 950,
       "load": 15000,
-      "click": ["text=Edit >> nth=0"],
+      "click": [
+        "text=Edit >> nth=0"
+      ],
       "settle": 3000
     },
     {
       "name": "flow-builder-formula",
-      "_comment": "Lab 2.2 step 2.2: the crewTooSmall formula, opened from the Toolbox and left without Done.",
+      "_comment": "Lab 2.2 step 2.2: the crewTooSmall formula, opened from the Toolbox, with the description and the formula the lab asks for typed in, and left without Done. The two textarea selectors are to be checked on the first capture.",
       "path": "/builder_platform_interaction/flowBuilder.app?flowId={{crewWarningFlowId}}",
       "width": 1600,
       "height": 950,
       "load": 15000,
-      "click": ["button[title*='Toolbox']", "text=crewTooSmall"],
+      "click": [
+        "button[title*='Toolbox']",
+        "text=crewTooSmall"
+      ],
       "settle": 3000,
-      "hide": [".slds-popover_tooltip", "[role='tooltip']"],
+      "hide": [
+        ".slds-popover_tooltip",
+        "[role='tooltip']"
+      ],
       "clip": {
         "x": 380,
         "y": 140,
         "width": 840,
         "height": 600
-      }
+      },
+      "fillAfter": [
+        [
+          "section[role='dialog'] textarea >> nth=0",
+          "True when eight panels a person do not cover the job, and no warning was sent yet"
+        ],
+        [
+          "section[role='dialog'] textarea >> nth=1",
+          "AND(\n  {!$Record.Crew_Size__c} * 8 < {!$Record.Panels_Required__c},\n  NOT({!$Record.Crew_Warning_Sent__c})\n)"
+        ]
+      ]
     },
     {
       "name": "flow-builder-add-element",
@@ -124,8 +152,57 @@
       "width": 1600,
       "height": 1250,
       "load": 15000,
-      "mouse": [[476, 808]],
+      "mouse": [
+        [
+          476,
+          808
+        ]
+      ],
       "settle": 3000
+    },
+    {
+      "name": "crew-capacity-records",
+      "_comment": "Lab 2.4 step 1: the list of the 12 Crew Capacity records that Create my lab records made. The object has no tab, and this address opens its list all the same. Needs an org holding the records: run Create my lab records on it first.",
+      "path": "/lightning/o/Crew_Capacity__c/list?filterName=All",
+      "width": 1440,
+      "height": 900,
+      "load": 12000,
+      "settle": 3000,
+      "clip": {
+        "x": 0,
+        "y": 90,
+        "width": 1440,
+        "height": 620
+      }
+    },
+    {
+      "name": "flow-builder-assign-crew",
+      "_comment": "Lab 2.7 step 1: the Installation Assign Crew flow on the canvas, where the Flat roof decision goes, before the assignment it ends on. The + of the connector has no stable selector: set its window pixels in mouse on the first capture, then the Decision entry of the Add Element menu. Nothing is saved.",
+      "path": "/builder_platform_interaction/flowBuilder.app?flowId={{assignCrewFlowId}}",
+      "width": 1600,
+      "height": 950,
+      "load": 15000,
+      "settle": 3000,
+      "mouse": [],
+      "hide": [
+        ".slds-popover_tooltip",
+        "[role='tooltip']"
+      ]
+    },
+    {
+      "name": "flow-builder-assign-crew-decision",
+      "_comment": "Lab 2.7 step 1: the new decision of the Flat roof rule, filled in the way the lab says, and left without Done. Continues from flow-builder-assign-crew (no path). Selectors to be set on the first capture. Nothing is saved.",
+      "width": 1600,
+      "height": 950,
+      "settle": 3000,
+      "click": [
+        "text=Decision"
+      ],
+      "fillAfter": [],
+      "hide": [
+        ".slds-popover_tooltip",
+        "[role='tooltip']"
+      ]
     }
   ]
 }

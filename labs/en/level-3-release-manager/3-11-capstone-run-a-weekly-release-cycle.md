@@ -183,7 +183,8 @@ machine before it opens anything, so you find out here rather than on the issue.
 !!! tip "If the course helped you"
     [hardisgroupcom/vscode-sfdx-hardis](https://github.com/hardisgroupcom/vscode-sfdx-hardis) is the
     extension every click of this course went through. A star is how an open source project stays
-    visible. It is up to you: the badge does not depend on it.
+    visible: open its page and click **Star**, at the top right. Give it a star if you liked this
+    course!
 
 The badge is **sfdx-hardis Release Manager**.
 
