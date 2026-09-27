@@ -7,6 +7,7 @@ lab: 9
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/web/github-star-megalinter
 depends_on:
   commands: [hardis:work:new, hardis:work:save, hardis:org:data:import]
   flags: []
@@ -53,7 +54,13 @@ handle all three.
 2. **Build the object**: `Handover_Item__c`, with `External_Id__c` (Text 40, external id, unique),
    `Installation__c` (lookup), `Label__c`, `Sequence__c`, `Is_Done__c`, `Is_Template__c`
 3. **Build the reference data**: 10 template `Handover_Item__c` records with no installation, the
-   checklist every job starts from
+   checklist every job starts from. **You create these by hand, in `helios-dev`**, like any record:
+   open the org from **Orgs Manager**, then replace everything after `salesforce.com` in the
+   address bar with `/lightning/o/Handover_Item__c/list` (the object has no tab, and this page
+   works without one). Click **New** ten times. For each record, give an **External Id**
+   (`HANDOVER-TPL-01` to `HANDOVER-TPL-10`), a **Label** (`Panels fixed and torqued`,
+   `Inverter commissioned`, `Isolator labelled`...), a **Sequence** (10, 20, 30...), tick
+   **Is Template**, and leave **Installation** empty
 4. **Update the close check**: the flow `Installation Close Check` already refuses to close an
    installation with no install date. Save a new version of it that also refuses while any related
    handover item is not done: after its date decision, a **Get Records** of one `Handover Item` of
@@ -64,7 +71,7 @@ handle all three.
    on a Profile, the way [Lab 2.6](2-6-permission-sets-and-profiles.md) had you do: **Read**, **Create** and **Edit** on Handover Item, and
    **Read** and **Edit** on its fields. The pipeline's user holds that permission set too, and the
    data load of the second trap needs it, as in [Lab 2.4](2-4-ship-reference-data-and-a-batch-with-deployment-actions.md)
-6. **Bring it down**: **Commit changes**, **Recent Changes**, and take what you made and nothing
+6. **Retrieve it**: **Commit changes**, **Recent Changes**, and take what you made and nothing
    else. Commit it
 7. **Publish, Pull Request, green, merge**
 
@@ -80,8 +87,11 @@ the object and the flow into `helios-integration` and the checklist will be empt
 feature will do nothing at all. Build a data workspace and declare an action.
 
 **Three: the teammate on the same file.** Before you open your Pull Request, run **Training:
-Level 2 > Simulate my teammates** and pick **US-019**, then merge it. Romain adds a quote PDF field
-and grants it on `Helios Delivery Manager`, the same permission set your checklist needs. Bring
+Level 2 > Simulate my teammates** and pick **US-019**. Romain adds a quote PDF field and grants it
+on `Helios Delivery Manager`, the same permission set your checklist needs. Answer **Yes** to
+**Merge it for you once its checks pass?** and the panel merges his Pull Request as soon as its
+checks are green, or answer **No** and merge it yourself on GitHub from the address the panel
+prints, the way [Lab 2.1](2-1-backpromote-your-teammates-work.md), step 1b, shows. Then bring
 `integration` into your branch from the **Source Control** panel.
 
 This time git merges it on its own, with no conflict: Salesforce keeps the permissions of a
@@ -145,7 +155,10 @@ you skipped Level 1, that is where it will say so, and the command says it befor
 !!! tip "If the course helped you"
     [oxsecurity/megalinter](https://github.com/oxsecurity/megalinter) is the linting engine behind
     the quality gate your Pull Requests went through. A star is how an open source project stays
-    visible. It is up to you: the badge does not depend on it.
+    visible: open its page and click **Star** **(1)**, at the top right. Give it a star if you liked this
+    course!
+
+    ![The Star button of the MegaLinter repository on GitHub](../../_assets/annotated/web/github-star-megalinter.png)
 
 The badge for this level is called **sfdx-hardis Contributor Advanced**. Level 1 makes you able to
 deliver a User Story; Level 2 makes you able to deal with everything that goes wrong on the way.

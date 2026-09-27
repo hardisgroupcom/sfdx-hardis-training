@@ -3,8 +3,55 @@
 What changed in the course, for learners and trainers. The course has no versions: each section is
 a day, newest first, and a change goes under the date of the day it is made.
 
+## 2026-09-27
+
+- Helios starts with the package-no-overwrite.xml every sfdx-hardis project gets, and Lab 3.5 adds the warehouse remote site setting to it.
+- Pull Request checks are faster: MegaLinter no longer runs checkov and grype on the course.
+- New **Create my lab records** entry in the Level 2 Training menu: Lab 2.4 no longer asks you to type the 12 Crew Capacity records, it creates them and you check them.
+- The Apex code analyzer now blocks a Pull Request, as on a real project: Lab 2.5 shows the query in a loop refused, and the Apex samples the labs copy no longer carry findings.
+- Lab 2.4 gives the SOQL query and the label to type when you create the data workspace, links SFDMU, and says how precise a manual action must be.
+- Lab 2.8 step 4 says there is nothing to click, and Lab 2.9 says how to create the checklist records by hand.
+- Clearer wording across the labs: retrieve, merge and bring back replace vaguer verbs, and the capstones ask for a GitHub star if you liked the course.
+
+## 2026-09-26
+
+- After **Reset this level** on Level 2, **Set up one of my training orgs** and every Pull Request into integration no longer fail on the Signed Off By field, which the start state granted before US-017 created it.
+- Lab 2.1 walks through merging Romain's Pull Request click by click, with screenshots. In Level 2, **Simulate my teammates** prints the address of the teammate Pull Request and offers to merge it for you once its checks pass, and it knows when you already merged it yourself.
+- **Claim my badge** no longer says your work is only on this computer when it is on your fork: after **Reset this level**, `integration` showed as not pushed, and so did branches pushed without tracking. The help page says how to claim from a fork made before this fix.
+- The course site publishes again: the changes of 2026-09-25 below never reached it, because four labs named another lab without linking it.
+- **Clean up a training org** works on an org that was used: it deletes the old versions of the Helios flows, and erases the objects instead of leaving them under Deleted Objects, where they made the next **Set up my training environment** fail.
+- **Clean up a training org** also removes the External Client Apps of Lab 3.1, which stopped **Add/Configure Org** the next time Level 3 was walked on the same orgs.
+- **Trigger my workflows** works after the Actions banner is clicked late: it no longer waits for the scheduled workflows GitHub keeps off on a fork.
+- Labs 2.4, 3.5 and 3.6 say when a ticked manual action is recorded: by the next job that carries its Pull Request, so a pre-deployment step is done and ticked before the merge.
+- Lab 2.2 keeps the new Crew Warning Sent field visible to the System Administrator profile, so Flow Builder can offer it, and says how to fix a field created without it.
+- Lab 3.6 warns that a second DORA report on the same day replaces the baseline Lab 3.11 compares with.
+- Lab 3.7 names the Quick Deploy line of the deployment comment, the one its picture marks.
+
+## 2026-09-25
+
+- Lab 3.8 answers the new question about the CI/CD repository that deploys to the org, and explains the `AGENTS.md` the nightly backup writes for coding agents.
+- **Set up my training environment** waits for the one click GitHub asks for on a new fork, instead of reporting Actions on while no workflow ran.
+- Check my work for Lab 1.2 fails when the fork runs none of its pipeline workflows.
+- The monthly checks of the course no longer run on learners' forks.
+- Lab 1.4 describes the Installation record page as it is: fields edited in place, no Details tab.
+- Lab 1.5 no longer promises your branch in the pipeline diagram before its Pull Request exists.
+- Lab 1.6 explains the MegaLinter warnings, and what to do when MegaLinter pushes a commit onto your branch.
+- The badge claim says **Create**, the label of the GitHub button.
+- **Simulate my teammates** no longer leaves a branch behind that made **Claim my badge** refuse Level 3.
+- Lab 2.2 keeps the new checkbox off the layout, and asks for the flow description its picture shows.
+- Lab 2.5 no longer promises a MegaLinter check with no findings.
+- Lab 2.7 stages the rebuilt flow instead of committing it before the merge.
+- Lab 2.8 gives the real size of the retrieved Admin profile.
+- Lab 3.5 tests the crew cap on an installation it sets to Planned.
+- Lab 3.7 squashes the hotfix, like every fix.
+- Lab 3.11 counts eleven checks.
+- Level 1 pictures of the DevOps Pipeline show a Level 1 fork, and the training menus show **Update my course**.
+- Lab 2.1 pictures show the three stories a learner brings down, and Lab 2.3 the one action of its Pull Request.
+
 ## 2026-09-24
 
+- The course has its own **Free training** page on the sfdx-hardis documentation site, linked from its menu, its home page and its guides.
+- **Update my course** and **Reset this level** no longer fail on a course change to the workflow files: GitHub is asked once for the permission they need.
 - Level 3: a new Lab 3.10 on promotion branches (Beta), and the capstone becomes Lab 3.11.
 - Lab 3.10: two GitHub screenshots of a real promotion, the Pull Request description and the red check naming the files with conflict markers.
 - Lab 3.10: the explanation of the cherry-pick conflict now matches what git writes, in the layout and in the permission set.

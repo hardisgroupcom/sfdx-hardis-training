@@ -5,7 +5,7 @@ description: "Ouvrez une Pull Request GitHub, lisez le contrôle de déploiement
 level: 1
 lab: 6
 lang: fr
-source_rev: "a34ea6fe2995834d2ab32fd72793082b541c84c8"
+source_rev: "9c0626c6cc38da209d2afd619561a0e94eaff865"
 screenshots:
   - annotated/web/github-pr-checks
   - annotated/web/github-pr-comment
@@ -46,7 +46,7 @@ qu'il est encore à vous de le corriger, pas le soir de la mise en production.
     Une Pull Request demande qu'une branche soit fusionnée dans une autre, la vôtre dans `integration`
     ici. C'est une page sur GitHub qui contient trois choses : ce que votre branche change, le
     résultat de chaque contrôle qui a tourné dessus, et la conversation sur l'opportunité de la
-    faire entrer. Rien ne bouge tant que quelqu'un ne clique pas sur Merge. Tout le monde dit "PR".
+    merger. Rien ne bouge tant que quelqu'un ne clique pas sur Merge. Tout le monde dit "PR".
 
 ## Avant de commencer
 
@@ -216,13 +216,16 @@ avant chaque merge.
 Supprimez ensuite la branche. GitHub propose un bouton pour cela. Une branche mergée qui traîne est
 une chose de plus dans la liste de tout le monde, sans aucun bénéfice.
 
-!!! note "À quoi sert le linter, puisqu'il n'avait rien à dire"
+!!! note "À quoi sert le linter, et pourquoi son commentaire peut afficher un avertissement"
     MegaLinter lit tout le repository, pas seulement votre modification, et signale tout ce qui enfreint
-    les règles de qualité du projet. Il n'a rien trouvé ici parce que ce repository est propre. Quand il
-    trouve quelque chose, il l'écrit sur la Pull Request de la même façon que le contrôle de
-    déploiement, et le fait qu'une trouvaille fasse échouer le job ou non est un choix que le projet
-    fait dans `.mega-linter.yml`. Un job qui échoue bloque le merge, comme le contrôle de
-    déploiement. Le Niveau 2 a un lab où il vous bloque, exprès.
+    les règles de qualité du projet. Il écrit son verdict sur la Pull Request de la même façon que le
+    contrôle de déploiement. Votre modification n'en enfreint aucune, le contrôle est donc vert, et le
+    commentaire peut quand même afficher **Success with warnings**, avec une ligne ⚠️ pour un linter
+    que le projet garde non bloquant, comme l'auditeur des fichiers de workflow GitHub Actions. Qu'une
+    trouvaille fasse échouer le job ou non est un choix que le projet fait dans `.mega-linter.yml`,
+    et un job qui échoue bloque le merge, comme le contrôle de déploiement. Le
+    [Lab 2.5](../level-2-contributor-advanced/2-5-pass-code-quality-and-apex-test-coverage.md) vous fait rencontrer une trouvaille qui ne fait qu'avertir, et un contrôle
+    qui bloque.
 
 ### 5. Regarder le vrai déploiement
 
@@ -336,6 +339,13 @@ Fermez-la et rouvrez-la avec la bonne base.
 Un contrôle requis tourne encore, ou il a échoué. Attendez-le, ou ouvrez-le depuis l'onglet
 **Checks**, corrigez sur votre branche ce qu'il signale, et repoussez : les contrôles retournent tout
 seuls. Il n'y a pas de contournement, et ce n'est pas censé en avoir.
+
+**Un commit que vous n'avez pas fait, `chore(megalinter): apply linters fixes`, est sur votre branche.**
+MegaLinter a reformaté un fichier de votre Pull Request et a poussé le résultat. GitHub ne relance
+pas les contrôles pour un commit poussé par son propre robot : ils manquent ou sont rouges dessus, et
+le merge reste bloqué. Faites **Pull** dans le panneau **Source Control** pour ramener le commit du
+robot sur votre ordinateur, puis lancez **Training: Level 1 > Trigger my workflows** : c'est un push de votre
+part qui relance les contrôles.
 
 **Le déploiement réussit mais le champ n'est pas dans l'org.**
 Regardez la liste des composants déployés dans le commentaire. Si le champ n'y est pas, c'est qu'il

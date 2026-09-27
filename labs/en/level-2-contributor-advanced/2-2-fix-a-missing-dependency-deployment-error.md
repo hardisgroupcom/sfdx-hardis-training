@@ -7,6 +7,9 @@ lab: 2
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/vscode/package-xml-filtered
+  - annotated/vscode/editor-field-file
+  - annotated/vscode/pipeline-packages-menu--package-xml
   - annotated/web/github-pr-check-failed
   - annotated/web/github-pr-flow-diff
   - annotated/salesforce/flow-builder-crew-warning
@@ -77,6 +80,12 @@ First, the field the flow needs so it does not warn twice. In `helios-dev`,
 | Field Name    | `Crew_Warning_Sent__c` |
 | Default Value | Unchecked              |
 
+On the field-level security screen, tick **Visible** for **System Administrator** only, and on the
+last screen untick **Installation Layout**: nobody but the flow needs this checkbox, so it goes on no
+page. That one tick is for you, not for the flow: Flow Builder only offers the fields the person
+editing the flow can read, and without it **Crew Warning Sent** is missing from the list of step 2.
+The flow itself runs in system mode and needs no grant.
+
 Then the flow. **Setup > Flows**, open **Installation Crew Warning**. It is active, so Flow Builder
 opens the running version: every change you make is saved as a **new version**, and the old one
 keeps running until you activate yours.
@@ -114,7 +123,9 @@ Three changes, and the picture above shows where each one starts:
 
     ![The Add Element menu, with Update Triggering Record](../../_assets/annotated/salesforce/flow-builder-add-element.png)
 
-**Save As New Version** **(4)**, then **Activate**, the button that replaces **Deactivate** on the
+**Save As New Version** **(4)**. The window it opens holds the description of the flow: replace it
+with `Warns the planner when the crew assigned to an installation is too small for the panels it
+needs.`, since the flow no longer warns on every save. Then **Activate**, the button that replaces **Deactivate** on the
 new version.
 
 !!! info "Why the flow has a fault path at all"
@@ -126,11 +137,11 @@ new version.
 Test it: open an installation, set `Panels Required` to 40 and `Crew Size` to 2, save. A task
 appears in its **Activity**. Save again: no second task. That is the story working, in your org.
 The checkbox itself stays out of sight: no permission set grants it, because nobody but the flow
-needs it.
+needs it, and the only person who can read it is the administrator who built the flow.
 
 ### 3. Publish the flow, and watch the check fail
 
-Bring it down the way Level 1 taught you: **DevOps Pipeline > Commit changes**, **Recent Changes**,
+Retrieve it the way Level 1 taught you: **DevOps Pipeline > Commit changes**, **Recent Changes**,
 **Search Metadata**. The story is about the flow, so tick the flow `Installation_Crew_Warning`,
 retrieve it, and commit it from **Source Control**.
 
@@ -174,9 +185,16 @@ ago and the flow you just tested reads it.
 When a deployment says something does not exist, the first question is never "is it in the org".
 It is **"is it in the package"**.
 
-Open the package: **DevOps Pipeline** panel, **Deployment packages** menu, **Package XML**, as in
-[Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publish-your-changes.md). Type `Crew_Warning` in its filter box. The **Flow** row lists your flow. **CustomField**
-does not list `Installation__c.Crew_Warning_Sent__c`.
+Open the package: in the **DevOps Pipeline** panel, the **Deployment packages** menu **(1)**, then
+**Package XML** **(2)**, as in [Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publish-your-changes.md).
+
+![The Deployment packages menu of the DevOps Pipeline panel, with Package XML](../../_assets/annotated/vscode/pipeline-packages-menu--package-xml.png)
+
+Type `Crew_Warning` in its filter box **(1)**. One row is left, **Flow** **(2)**: the package
+carries your flow. There is no **CustomField** row at all: the package does not carry
+`Installation__c.Crew_Warning_Sent__c`.
+
+![The package viewer filtered on Crew_Warning, with only the Flow row left](../../_assets/annotated/vscode/package-xml-filtered.png)
 
 The integration org is being sent a flow that reads a field the package does not carry, and the
 integration org does not have that field either. From Salesforce's point of view the error is
@@ -196,7 +214,10 @@ Open the **Metadata Retriever** panel:
 
 ![The Metadata Retriever panel, with its org selector, its filters and the Search Metadata button](../../_assets/annotated/vscode/metadata-retriever.png)
 
-The field appears under `force-app/main/default/objects/Installation__c/fields/`.
+The field appears under `force-app/main/default/objects/Installation__c/fields/` **(1)**, in the
+**Explorer** view of VS Code.
+
+![The retrieved field file in the Explorer, open in the editor](../../_assets/annotated/vscode/editor-field-file.png)
 
 The habit to take away: when you change something that **reads** another component, retrieve that
 component too. A flow reads fields, a layout shows them, a permission set grants them. Anything new
@@ -245,6 +266,13 @@ Command documentation: [hardis:project:deploy:smart](https://sfdx-hardis.cloudit
 - After the merge, the flow present and active in `helios-integration`
 
 ## If it goes wrong
+
+**Flow Builder does not offer Crew Warning Sent.**
+You created the field with **Visible** unticked for every profile, so you cannot read it, and Flow
+Builder only lists the fields you can read. **Setup > Object Manager > Installation > Fields &
+Relationships > Crew Warning Sent > Set Field-Level Security**, tick **Visible** for **System
+Administrator**, **Save**. Then reload Flow Builder: the field is in the list of **Update Triggering
+Record**, and the `crewTooSmall` formula accepts it.
 
 **The retrieve brings nothing.**
 The org selector of the Metadata Retriever points at another org. It must read `helios-dev`, where
