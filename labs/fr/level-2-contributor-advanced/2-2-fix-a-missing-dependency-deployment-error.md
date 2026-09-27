@@ -5,8 +5,10 @@ description: "Modifiez un flow Salesforce existant, puis lisez correctement un c
 level: 2
 lab: 2
 lang: fr
-source_rev: "8bc390afe8fb943bdfa3eadd477b54ef38001e7f"
+source_rev: "ecec979441416a4d9c6a3f833bbb555facb88aa6"
 screenshots:
+  - annotated/vscode/package-xml-filtered
+  - annotated/vscode/editor-field-file
   - annotated/vscode/pipeline-packages-menu--package-xml
   - annotated/web/github-pr-check-failed
   - annotated/web/github-pr-flow-diff
@@ -196,8 +198,11 @@ puis **Package XML** **(2)**, comme au [Lab 1.5](../level-1-contributor-basics/1
 
 ![Le menu Deployment packages du panneau DevOps Pipeline, avec Package XML](../../_assets/annotated/vscode/pipeline-packages-menu--package-xml.png)
 
-Tapez `Crew_Warning` dans sa zone de filtre. La ligne **Flow** liste votre flow.
-**CustomField** ne liste pas `Installation__c.Crew_Warning_Sent__c`.
+Tapez `Crew_Warning` dans sa zone de filtre **(1)**. Il reste une ligne, **Flow** **(2)** : le
+package porte votre flow. Il n'y a aucune ligne **CustomField** : le package ne porte pas
+`Installation__c.Crew_Warning_Sent__c`.
+
+![Le visualiseur de package filtré sur Crew_Warning, avec la seule ligne Flow](../../_assets/annotated/vscode/package-xml-filtered.png)
 
 On envoie à l'org d'intégration un flow qui lit un champ que le package ne porte pas, et l'org
 d'intégration n'a pas ce champ non plus. Du point de vue de Salesforce, l'erreur est exactement
@@ -218,7 +223,10 @@ Ouvrez le panneau **Metadata Retriever** :
 
 ![Le panneau Metadata Retriever, avec son sélecteur d'org, ses filtres et le bouton Search Metadata](../../_assets/annotated/vscode/metadata-retriever.png)
 
-Le champ apparaît sous `force-app/main/default/objects/Installation__c/fields/`.
+Le champ apparaît sous `force-app/main/default/objects/Installation__c/fields/` **(1)**, dans la
+vue **Explorer** de VS Code.
+
+![Le fichier du champ rapatrié dans l'Explorer, ouvert dans l'éditeur](../../_assets/annotated/vscode/editor-field-file.png)
 
 L'habitude à retenir : quand vous modifiez quelque chose qui **lit** un autre composant, récupérez
 aussi ce composant. Un flow lit des champs, une présentation de page les affiche, un permission set

@@ -5,8 +5,9 @@ description: "Livrez une User Story Salesforce de bout en bout sans pas-à-pas :
 level: 1
 lab: 7
 lang: fr
-source_rev: "8bc390afe8fb943bdfa3eadd477b54ef38001e7f"
+source_rev: "ecec979441416a4d9c6a3f833bbb555facb88aa6"
 screenshots:
+  - annotated/web/github-star-sfdx-hardis
 depends_on:
   commands: [hardis:work:new, hardis:work:save]
   flags: []
@@ -130,8 +131,10 @@ formalité.
 !!! tip "Si ce cours vous a servi"
     [hardisgroupcom/sfdx-hardis](https://github.com/hardisgroupcom/sfdx-hardis) est le projet open
     source dont parle tout ce cours. Une étoile est ce qui permet à un projet comme celui-ci de
-    rester visible : ouvrez sa page et cliquez sur **Star**, en haut à droite. Donnez une étoile si
+    rester visible : ouvrez sa page et cliquez sur **Star** **(1)**, en haut à droite. Donnez une étoile si
     vous avez aimé ce cours !
+
+    ![Le bouton Star du repository sfdx-hardis sur GitHub](../../_assets/annotated/web/github-star-sfdx-hardis.png)
 
 Un job clone ensuite votre fork (`github.com/my-username/sfdx-hardis-training`), rejoue sur lui tous
 les contrôles ci-dessus, et répond sur l'issue. Personne ne le relit à la main, cela prend donc

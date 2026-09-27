@@ -5,8 +5,11 @@ description: "Un déploiement vert n'est pas une fonctionnalité qui marche. Liv
 level: 2
 lab: 4
 lang: fr
-source_rev: "8bc390afe8fb943bdfa3eadd477b54ef38001e7f"
+source_rev: "ecec979441416a4d9c6a3f833bbb555facb88aa6"
 screenshots:
+  - annotated/vscode/sidebar-commands-custom-menu-2--lab-records
+  - annotated/salesforce/crew-capacity-records
+  - annotated/vscode/editor-crew-capacity-csv
   - annotated/web/github-pr-deployment-actions
   - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/data-workbench
@@ -84,15 +87,19 @@ Dans `helios-dev`, créez :
 Puis les enregistrements. Helios prend en charge 12 combinaisons, trois types d'équipe par quatre
 types de toiture, et chacune a besoin d'un enregistrement Crew Capacity qui dit combien de panneaux
 par jour cette équipe pose sur cette toiture. Saisir douze enregistrements n'apprend rien de ce dont
-parle ce lab, alors le menu Training les crée : **Training: Level 2** > **Create my lab records**,
-choisissez **Lab 2.4 - the 12 Crew Capacity records**, puis **helios-dev**, et répondez **Yes** à
-**Create them?**.
+parle ce lab, alors le menu Training les crée : **Training: Level 2** **(1)** > **Create my lab
+records** **(2)**, choisissez **Lab 2.4 - the 12 Crew Capacity records**, puis **helios-dev**, et
+répondez **Yes** à **Create them?**.
+
+![Le menu Training du Niveau 2, avec Create my lab records](../../_assets/annotated/vscode/sidebar-commands-custom-menu-2--lab-records.png)
 
 Le panneau vérifie d'abord que votre objet et ses quatre champs sont dans l'org, puis crée les
 enregistrements, les liste, et termine par un lien **See them in the org**. Ouvrez-le : la liste
-montre douze enregistrements Crew Capacity, de `CAP-ELECTRICAL-FLAT` à `CAP-ROOF-TILE`. Si le
-panneau dit qu'un champ manque, terminez d'abord l'objet, puis relancez-le : il met à jour les mêmes
-douze enregistrements au lieu d'en créer d'autres.
+**All** de Crew Capacity indique **12 items** **(1)**, de `CAP-ROOF-TILE` à `CAP-ELECTRICAL-METAL`.
+Si le panneau dit qu'un champ manque, terminez d'abord l'objet, puis relancez-le : il met à jour les
+mêmes douze enregistrements au lieu d'en créer d'autres.
+
+![La liste All de Crew Capacity dans helios-dev, avec ses 12 enregistrements](../../_assets/annotated/salesforce/crew-capacity-records.png)
 
 <details markdown="1"><summary>Sous le capot : comment les enregistrements ont été créés</summary>
 
@@ -101,7 +108,8 @@ L'entrée du menu a lancé :
     node scripts/training.mjs records
 
 qui a chargé `scripts/lab-records/lab-2-4/Crew_Capacity__c.csv` dans `helios-dev` avec
-`sf data upsert bulk`, en rapprochant sur `External_Id__c`. Sur un vrai projet, quelqu'un saisit ces
+`sf data upsert bulk`, en rapprochant sur `External_Id__c`, et a ajouté une vue de liste **All** à
+l'objet s'il n'en avait pas, pour que le lien ait une liste à ouvrir. Sur un vrai projet, quelqu'un saisit ces
 enregistrements dans l'org, ou les charge depuis un tableur : dans les deux cas ils n'existent que
 dans une org, et c'est le problème que la suite de ce lab résout.
 
@@ -162,12 +170,14 @@ Puis **Export data**. Il pose deux questions : s'il faut utiliser votre org par 
 et si vous confirmez l'export. Oui aux deux. Le panneau tire vos 12 enregistrements dans
 `scripts/data/HeliosCrewRefData/Crew_Capacity__c.csv`.
 
-Ouvrez ce fichier et lisez-le. Douze lignes, une colonne par champ, chacune avec un identifiant
-externe stable, et une colonne `Id` en premier : les identifiants d'enregistrement de `helios-dev`,
+Ouvrez ce fichier **(1)** et lisez-le. Douze lignes, une colonne par champ, chacune avec un
+identifiant externe stable **(3)**, et une colonne `Id` en premier **(2)** : les identifiants d'enregistrement de `helios-dev`,
 qui ne veulent rien dire ailleurs et que l'import ignore, parce qu'il fait correspondre sur
 l'identifiant externe. Ce fichier est désormais versionné, relu et déployé comme n'importe quelle
 autre source. Les dossiers `logs`, `reports` et `target` que l'export a aussi écrits à côté sont
 ignorés par git : rien à commiter de ce côté.
+
+![Le Crew_Capacity__c.csv exporté, ouvert dans l'éditeur](../../_assets/annotated/vscode/editor-crew-capacity-csv.png)
 
 !!! tip "Pourquoi l'identifiant externe n'est pas facultatif"
     `Upsert` sur `External_Id__c` veut dire que lancer l'import deux fois met à jour les mêmes douze
