@@ -1,6 +1,9 @@
 {
   "_comment": "VS Code images scripts/build/shots.mjs cannot find in vscode/.shot-gates.json: the ones taken by hand, and the ones taken under another pipeline state (SF_MOCK_PIPELINE_STATE) then copied in under another name. 'file' is the name the harness writes, the key the name the labs use.",
-  "manual": ["extensions-install", "clone-repository"],
+  "manual": [
+    "extensions-install",
+    "clone-repository"
+  ],
   "variants": {
     "devops-pipeline-fresh": {
       "gate": "devops-pipeline",
@@ -118,6 +121,21 @@
       "env": {
         "SFDX_HARDIS_DOC_SCREENSHOTS_ACTIONS_KEEP": "7a1c3d2e-2d0b-4f1e-8e3b-024b00000004"
       }
+    },
+    "package-xml-filtered": {
+      "gate": "training-files",
+      "file": "package-xml-filtered",
+      "_comment": "Labs 2.2 and 2.4. Listed here until the first capture writes its gate into .shot-gates.json."
+    },
+    "editor-field-file": {
+      "gate": "training-files",
+      "file": "editor-field-file",
+      "_comment": "Labs 2.2 and 2.4. Listed here until the first capture writes its gate into .shot-gates.json."
+    },
+    "editor-crew-capacity-csv": {
+      "gate": "training-files",
+      "file": "editor-crew-capacity-csv",
+      "_comment": "Labs 2.2 and 2.4. Listed here until the first capture writes its gate into .shot-gates.json."
     }
   }
 }

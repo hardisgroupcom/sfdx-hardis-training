@@ -134,6 +134,12 @@ writeJson(path.join(OUT, "universe.json"), {
   // two clicks on that column header. The four US-014 rows are then the four
   // at the top, whose heights the next setting lists for the clicks that tick
   // them. They follow the dates of the sourceMembers list below.
+  // The training-files shots (Labs 2.2 and 2.4): the package viewer filtered the
+  // way Lab 2.2 step 4 filters it, then two files opened in the editor with the
+  // Explorer showing where they sit. The field is written into the fixture below.
+  packageXmlFilter: "Crew_Warning",
+  labFieldFile: "force-app/main/default/objects/Installation__c/fields/Crew_Warning_Sent__c.field-meta.xml",
+  labCsvFile: "scripts/data/HeliosCrewRefData/Crew_Capacity__c.csv",
   retrieverSortClicks: "1680,413;1680,413",
   retrieverRows: "459,510,561,611",
   // The files the Source Control shot shows after that retrieve: the four
@@ -840,6 +846,14 @@ STAGES.forEach((stage, index) => {
   );
 });
 write(path.join(PROJECT, "force-app", "main", "default", "classes", ".gitkeep"), "");
+// The field Lab 2.2 retrieves, for the shot that shows where it lands
+write(
+  path.join(PROJECT, "force-app", "main", "default", "objects", "Installation__c", "fields", "Crew_Warning_Sent__c.field-meta.xml"),
+  fs.readFileSync(
+    path.join(ROOT, "scripts", "start-states", "level-3", "files", "force-app", "main", "default", "objects", "Installation__c", "fields", "Crew_Warning_Sent__c.field-meta.xml"),
+    "utf8"
+  )
+);
 // The real manifest: the labs open it in the package viewer, and the reader
 // compares the picture with what their own clone shows.
 write(path.join(PROJECT, "manifest", "package.xml"), fs.readFileSync(path.join(ROOT, "manifest", "package.xml"), "utf8"));
