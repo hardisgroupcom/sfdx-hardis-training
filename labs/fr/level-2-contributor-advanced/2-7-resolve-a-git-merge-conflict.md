@@ -5,7 +5,7 @@ description: "Une collègue a mergé en premier sur le même flow et le même pe
 level: 2
 lab: 7
 lang: fr
-source_rev: "26480524514753ce9058724689c148988ba61775"
+source_rev: "8bc390afe8fb943bdfa3eadd477b54ef38001e7f"
 screenshots:
   - annotated/vscode/sidebar-commands-custom-menu-2--training-menu
   - annotated/vscode/pipeline-cards--new-user-story
@@ -141,7 +141,7 @@ accordé un champ sur le permission set à une ligne de là où vous avez accord
 relié le même élément d'affectation dans le flow à une décision à elle. Un outil de merge ne peut pas
 savoir lequel de deux connecteurs doit l'emporter. Vous, si.
 
-### 4. Faire entrer integration dans votre branche
+### 4. Merger integration dans votre branche
 
 Ouvrez le panneau **Source Control**, l'icône de trois petits cercles reliés par des traits dans la
 barre de gauche.
@@ -158,7 +158,7 @@ même commande est dans le menu **...** en haut du panneau Source Control, sous 
 
 ![La Command Palette filtrée sur Git: Merge](../../_assets/annotated/vscode/git-palette-merge--merge.png)
 
-VS Code demande quelle branche faire entrer. Tapez `integration` et choisissez **origin/integration**
+VS Code demande quelle branche merger. Tapez `integration` et choisissez **origin/integration**
 **(1)**, listée sous **remote branches** : la copie d'`integration` qui est sur GitHub, avec le
 travail de Mariia dedans. Pas l'`integration` toute seule si elle est aussi listée : c'est la copie
 de votre machine, que vous n'avez pas mise à jour depuis que vous avez branché.
@@ -296,7 +296,7 @@ est pire qu'un flow qui échoue.
 3. Ouvrez **Flow Builder** dans l'org, sur `Installation_Assign_Crew`, et rajoutez votre règle de
    toiture plate, **avant** son plafond : le flow porte d'abord l'équipe d'une toiture plate à trois,
    et son plafond, qui tourne maintenant en dernier, a le dernier mot
-4. Revenez dans VS Code, faites descendre le flow reconstruit avec **Commit changes**, et indexez-le
+4. Revenez dans VS Code, faites un retrieve du flow reconstruit avec **Commit changes**, et indexez-le
    dans **Source Control**, à côté du permission set. Ne commitez pas encore : un merge se termine
    par un seul commit, et l'étape suivante le fait
 

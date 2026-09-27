@@ -5,7 +5,7 @@ description: "Un déploiement vert n'est pas une fonctionnalité qui marche. Liv
 level: 2
 lab: 4
 lang: fr
-source_rev: "2ff4d0faf3b366e9e689becf0b6dbf7374ab9d8b"
+source_rev: "8bc390afe8fb943bdfa3eadd477b54ef38001e7f"
 screenshots:
   - annotated/web/github-pr-deployment-actions
   - annotated/vscode/pipeline-cards--new-user-story
@@ -81,8 +81,31 @@ Dans `helios-dev`, créez :
   aussi le permission set que porte l'utilisateur de la pipeline dans chaque org : sans lui, le
   chargement de données de l'étape 4 trouverait des champs qu'il n'a pas le droit d'écrire
 
-Créez ensuite 12 enregistrements Crew Capacity dans votre org, un par combinaison de type d'équipe et
-de type de toiture qu'Helios prend en charge.
+Puis les enregistrements. Helios prend en charge 12 combinaisons, trois types d'équipe par quatre
+types de toiture, et chacune a besoin d'un enregistrement Crew Capacity qui dit combien de panneaux
+par jour cette équipe pose sur cette toiture. Saisir douze enregistrements n'apprend rien de ce dont
+parle ce lab, alors le menu Training les crée : **Training: Level 2** > **Create my lab records**,
+choisissez **Lab 2.4 - the 12 Crew Capacity records**, puis **helios-dev**, et répondez **Yes** à
+**Create them?**.
+
+Le panneau vérifie d'abord que votre objet et ses quatre champs sont dans l'org, puis crée les
+enregistrements, les liste, et termine par un lien **See them in the org**. Ouvrez-le : la liste
+montre douze enregistrements Crew Capacity, de `CAP-ELECTRICAL-FLAT` à `CAP-ROOF-TILE`. Si le
+panneau dit qu'un champ manque, terminez d'abord l'objet, puis relancez-le : il met à jour les mêmes
+douze enregistrements au lieu d'en créer d'autres.
+
+<details markdown="1"><summary>Sous le capot : comment les enregistrements ont été créés</summary>
+
+L'entrée du menu a lancé :
+
+    node scripts/training.mjs records
+
+qui a chargé `scripts/lab-records/lab-2-4/Crew_Capacity__c.csv` dans `helios-dev` avec
+`sf data upsert bulk`, en rapprochant sur `External_Id__c`. Sur un vrai projet, quelqu'un saisit ces
+enregistrements dans l'org, ou les charge depuis un tableur : dans les deux cas ils n'existent que
+dans une org, et c'est le problème que la suite de ce lab résout.
+
+</details>
 
 ### 2. Publier et regarder rien échouer
 
@@ -112,18 +135,28 @@ le projet porte déjà sont listés à gauche **(2)** : `HeliosBaseline` est cel
 Training pour alimenter votre org.
 
 Un workspace est un dossier de fichiers CSV plus la recette qui dit quel objet chacun remplit et
-comment. Il est exécuté par SFDMU, le chargeur de données qu'utilise sfdx-hardis, et rien dedans
-n'est propre à une org.
+comment. Il est exécuté par [SFDMU](https://github.com/forcedotcom/SFDX-Data-Move-Utility), le chargeur de
+données qu'utilise sfdx-hardis, et rien dedans n'est propre à une org.
 
 ![Le Data Import/Export Workbench, où les workspaces SFDMU se créent et se lancent](../../_assets/annotated/vscode/data-workbench.png)
 
-Créez un nouveau workspace nommé `HeliosCrewRefData` :
+Créez un nouveau workspace :
 
-1. **Create Workspace**, et nommez-le `HeliosCrewRefData`
-2. Ajoutez l'objet `Crew_Capacity__c`
-3. Opération : **Upsert**
-4. Identifiant externe : `External_Id__c`
-5. Champs : les quatre que vous avez créés
+1. **Create Workspace** **(1)**, et remplissez ses trois champs :
+   - **Workspace Name** : `HeliosCrewRefData`, le nom de son dossier sous `scripts/data/`
+   - **Display Label** : `Crew capacity reference data`, le nom qu'affichent les panneaux, par
+     exemple quand vous choisissez ce workspace dans une action de déploiement à l'étape 4
+   - **Description** : `The 12 Crew Capacity records every org needs: panels a day per crew type and
+     roof type.`
+2. **Add Object**, et collez ceci dans **SOQL Query**. Elle nomme l'objet et les quatre champs que
+   vous avez créés :
+
+    ```sql
+    SELECT External_Id__c, Crew_Type__c, Roof_Type__c, Panels_Per_Day__c FROM Crew_Capacity__c
+    ```
+
+3. **Operation** : **Upsert**
+4. **External Id (for Upsert)** : `External_Id__c`
 
 Puis **Export data**. Il pose deux questions : s'il faut utiliser votre org par défaut, `helios-dev`,
 et si vous confirmez l'export. Oui aux deux. Le panneau tire vos 12 enregistrements dans
@@ -229,6 +262,12 @@ Une étape manuelle ne fait rien. Elle **apparaît dans le commentaire de la Pul
 rapport de déploiement**, de sorte que la personne qui livre en production est prévenue, dans la
 livraison elle-même, qu'il y a un clic à faire. C'est la différence entre une étape manuelle qui est
 faite et une qui vit dans une page Confluence que personne n'ouvre.
+
+Écrivez-la donc pour quelqu'un qui n'a jamais vu votre story : chaque clic, dans l'ordre, avec les
+noms exacts à l'écran, et ce que la page montre une fois que c'est fait, comme les quatre lignes
+ci-dessus. Le release manager la fait dans une org que vous n'avez jamais ouverte, souvent le jour
+de la livraison. S'il doit deviner ce que vous vouliez, il devinera, et une mauvaise supposition en
+production est pire que pas d'étape du tout.
 
 ### 5. Lire le commentaire de la Pull Request
 
