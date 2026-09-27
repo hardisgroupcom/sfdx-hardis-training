@@ -128,7 +128,9 @@ again, and nothing else changes.** That is a hotfix.
 
 ### 4. Merge it into preprod
 
-When the check is green, **Merge pull request** **(1)**:
+When the check is green, merge it with **Squash and merge**, from the arrow beside **Merge pull
+request** **(1)**: Romain's branch is a fix, and a fix is squashed like every User Story
+([Lab 1.6](../level-1-contributor-basics/1-6-pull-request-deployment-check-and-merge.md)). The promotion into `main` that follows is merged, not squashed.
 
 ![Merging a Pull Request on GitHub](../../_assets/annotated/web/github-pr-merge.png)
 
@@ -154,7 +156,9 @@ the same gate, on the real org, taking two minutes.
 
 Merge, and watch the **Process Deployment (sfdx-hardis)** run on `main`. When it finishes, the
 sfdx-hardis comment says what reached the org: the banner **(1)**, the counts line **(2)**, and the
-tickets it recognised **(3)**.
+Quick Deploy line **(3)**: the merge released the validation its check had already run on
+production, rather than deploying again. The picture is the comment of an earlier deployment, so
+your counts are different.
 
 ![The sfdx-hardis comment on a merged Pull Request](../../_assets/annotated/web/github-pr-deployed.png)
 
@@ -208,7 +212,7 @@ Then the Command Palette again, type `Git: Merge`, and pick **Git: Merge...** **
 
 ![Git Merge in the Command Palette](../../_assets/annotated/vscode/git-palette-merge--merge.png)
 
-It asks which branch to bring in. Pick **origin/main** **(1)**, listed under **remote branches**:
+It asks which branch to merge. Pick **origin/main** **(1)**, listed under **remote branches**:
 
 ![The branch picker, with origin main](../../_assets/annotated/vscode/git-retrofit-pick--origin-main.png)
 

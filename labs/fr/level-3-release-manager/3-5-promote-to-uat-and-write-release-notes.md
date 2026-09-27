@@ -5,7 +5,7 @@ description: "Protégez ce que l'UAT garde pour elle avec package-no-overwrite, 
 level: 3
 lab: 5
 lang: fr
-source_rev: "810d4dfb1955110f1f91b4b18f7de130b2a1cc98"
+source_rev: "dd66f0b0d98198e8a0e40fd57b516f4abcce664b"
 screenshots:
   - annotated/vscode/devops-pipeline-level3--create-promotion
   - annotated/vscode/pipeline-branch-modal-level3--what-it-carries
@@ -104,12 +104,15 @@ l'adresse de production en UAT sans un mot. Le **gestionnaire d'écrasement** es
 cela : tout ce qui est listé dans `manifest/package-no-overwrite.xml` est retiré du déploiement quand
 l'org cible le possède déjà, et créé quand elle ne l'a pas.
 
-Le fichier n'existe pas encore, et vous n'avez pas à l'écrire. Dans le panneau **DevOps Pipeline**,
+Helios a déjà ce fichier : c'est la liste avec laquelle démarre tout projet sfdx-hardis. Elle protège
+les composants qu'une org garde pour elle presque partout, rapports et tableaux de bord maintenus en
+production, connected apps, named credentials, certificats. Les remote site settings n'y sont pas
+encore, et vous n'avez pas à écrire de XML pour les ajouter. Dans le panneau **DevOps Pipeline**,
 ouvrez le menu **Deployment packages**, celui qui ouvrait **Package XML** au [Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publish-your-changes.md), et choisissez
-**No Overwrite**. Le visualiseur de package s'ouvre sur une liste vide. Activez le **Edit mode**
+**No Overwrite**. Le visualiseur de package s'ouvre sur cette liste. Activez le **Edit mode**
 **(1)**, puis cliquez sur **Add Type** **(2)**.
 
-![Le visualiseur de package sur la liste no-overwrite vide, en mode édition](../../_assets/annotated/vscode/package-no-overwrite-edit--add-type.png)
+![Le visualiseur de package sur la liste no-overwrite par défaut, en mode édition](../../_assets/annotated/vscode/package-no-overwrite-edit--add-type.png)
 
 Tapez `RemoteSiteSetting`, le nom que Salesforce donne à ce type de composant, dans **Metadata Type
 API Name** **(1)**, et cliquez sur **Add** **(2)**.
@@ -117,9 +120,10 @@ API Name** **(1)**, et cliquez sur **Add** **(2)**.
 ![La fenêtre Add Metadata Type du visualiseur de package](../../_assets/annotated/vscode/package-no-overwrite-add-type--type.png)
 
 La nouvelle ligne **RemoteSiteSetting** a un bouton **Add member** : cliquez dessus, tapez
-`Helios_Warehouse`, et **Add**. Le visualiseur a écrit `manifest/package-no-overwrite.xml` pour vous,
-avec la forme de `manifest/package.xml` : un bloc par type de composant, ses membres listés par nom.
-**Edit File** l'ouvre en texte, si vous voulez le voir.
+`Helios_Warehouse`, et **Add**. Le visualiseur a ajouté un bloc `RemoteSiteSetting` à
+`manifest/package-no-overwrite.xml` pour vous. Le fichier a la forme de `manifest/package.xml` : un
+bloc par type de composant, ses membres listés par nom, ou `*` pour tous. **Edit File** l'ouvre en
+texte, si vous voulez le voir.
 
 Puis **Training: Level 3** > **Publish my pipeline configuration**, et mergez sa Pull Request une
 fois verte, comme au [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) : la liste de ce qui ne doit jamais être écrasé est de la configuration
@@ -205,7 +209,11 @@ Mergez la promotion. L'exécution **Process Deployment (sfdx-hardis)** démarre,
 C'est le premier déploiement vers cette org par la pipeline : il sera donc plus gros que ceux vers
 integration, l'UAT est en retard de tout ce que l'équipe a fait. Comptez plusieurs minutes.
 
-Quand il se termine, faites les étapes manuelles que le commentaire listait, dans `helios-uat`.
+L'étape de délivrabilité est une étape **pre-deploy** : sa place est avant le merge, comme le dit
+l'étape 4. Si vous l'avez faite dans `helios-uat` et avez coché sa case, le log de ce job le dit :
+*Manual action Set Email Deliverability to All Email has been confirmed as done in org branch uat*.
+Sinon, faites-la maintenant et cochez la case : le prochain job qui porte cette Pull Request
+l'enregistre.
 
 Puis lisez le log à la recherche du gestionnaire d'écrasement, au-dessus du déploiement, parmi les
 lignes qui commencent par `[NoOverwrite]` :
@@ -222,9 +230,11 @@ Type RemoteSiteSetting: 1 item(s) skipped because they already exist in the targ
 Ouvrez `helios-uat` et vérifiez que les deux stories sont réellement utilisables, pas seulement
 déployées :
 
-- Une équipe plus grande que le plafond est ramenée au plafond à l'enregistrement : mettez
-  `Crew Capacity Cap` à 3 et `Crew Size` à 6 sur une installation planifiée, enregistrez, et il
-  affiche 3
+- Une équipe plus grande que le plafond est ramenée au plafond à l'enregistrement. La règle s'exécute
+  quand une installation planifiée reçoit son équipe, et UAT n'en a plus aucune au statut planifié
+  depuis le remplissage de la taille d'équipe du [Lab 2.3](../level-2-contributor-advanced/2-3-fix-broken-records-with-an-apex-deployment-action.md) : créez-en une. Sur n'importe quelle
+  installation, mettez `Status` à `Planned`, `Crew Capacity Cap` à 3 et `Crew Size` à 6 dans la même
+  modification, et enregistrez. Il affiche 3, et elle est passée à `Scheduled`
 - La permission du PDF de devis est sur le permission set des managers
 - **Setup > Remote Site Settings** dit toujours `https://warehouse-test.helios.invalid` pour
   `Helios_Warehouse` : la promotion ne l'a pas touché
@@ -277,7 +287,8 @@ Sur cette promotion, les notes générées s'ouvrent ainsi :
 
 Viennent ensuite un tableau des tickets, un des Pull Requests avec leurs auteurs et dates de merge,
 les métadonnées modifiées par type, et les deployment actions avec leur statut dans `uat` : l'étape
-manuelle de délivrabilité toujours **manual**, les imports et la planification **success**.
+manuelle de délivrabilité **success** si vous avez coché sa case avant le merge et **manual**
+sinon, les imports et la planification **success**.
 
 Lisez-les puis améliorez-les. Des notes générées sont une liste complète, et une note de version que
 le métier lit a besoin de deux choses que le générateur ne peut pas connaître :

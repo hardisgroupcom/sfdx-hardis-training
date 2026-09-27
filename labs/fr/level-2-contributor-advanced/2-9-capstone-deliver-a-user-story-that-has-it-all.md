@@ -5,8 +5,9 @@ description: "Livrez une User Story Salesforce avec une dépendance à vérifier
 level: 2
 lab: 9
 lang: fr
-source_rev: "a34ea6fe2995834d2ab32fd72793082b541c84c8"
+source_rev: "ecec979441416a4d9c6a3f833bbb555facb88aa6"
 screenshots:
+  - annotated/web/github-star-megalinter
 depends_on:
   commands: [hardis:work:new, hardis:work:save, hardis:org:data:import]
   flags: []
@@ -53,18 +54,25 @@ savez déjà traiter les trois.
 2. **Construisez l'objet** : `Handover_Item__c`, avec `External_Id__c` (Text 40, identifiant externe,
    unique), `Installation__c` (lookup), `Label__c`, `Sequence__c`, `Is_Done__c`, `Is_Template__c`
 3. **Construisez les données de référence** : 10 enregistrements `Handover_Item__c` modèles sans
-   installation, la checklist dont part chaque chantier
+   installation, la checklist dont part chaque chantier. **Vous les créez à la main, dans
+   `helios-dev`**, comme n'importe quel enregistrement : ouvrez l'org depuis **Orgs Manager**, puis
+   remplacez tout ce qui suit `salesforce.com` dans la barre d'adresse par
+   `/lightning/o/Handover_Item__c/list` (l'objet n'a pas d'onglet, et cette page fonctionne sans).
+   Cliquez dix fois sur **New**. Pour chaque enregistrement, donnez un **External Id**
+   (`HANDOVER-TPL-01` à `HANDOVER-TPL-10`), un **Label** (`Panels fixed and torqued`,
+   `Inverter commissioned`, `Isolator labelled`...), une **Sequence** (10, 20, 30...), cochez
+   **Is Template**, et laissez **Installation** vide
 4. **Mettez à jour le contrôle de clôture** : le flow `Installation Close Check` refuse déjà de
    clôturer une installation sans date d'installation. Enregistrez-en une nouvelle version qui
    refuse aussi tant qu'un élément de handover lié n'est pas fait : après sa décision sur la date, un
    **Get Records** d'un `Handover Item` de cette installation avec `Is Done` à faux, une décision sur
    le fait qu'on en a trouvé un, et une **Custom Error**. Décrivez chaque élément que vous ajoutez,
-   et donnez un chemin de fault au Get Records, comme le [Lab 2.2](2-2-fix-a-missing-dependency-deployment-error.md) vous l'a fait faire
+   et donnez un fault path au Get Records, comme le [Lab 2.2](2-2-fix-a-missing-dependency-deployment-error.md) vous l'a fait faire
 5. **Accordez le nouvel objet et ses champs** sur le permission set `Helios Delivery Manager`, jamais
    sur un profil, comme le [Lab 2.6](2-6-permission-sets-and-profiles.md) vous l'a fait faire : **Read**, **Create** et **Edit** sur
    Handover Item, et **Read** et **Edit** sur ses champs. L'utilisateur de la pipeline porte lui aussi
    ce permission set, et le chargement de données du deuxième piège en a besoin, comme au [Lab 2.4](2-4-ship-reference-data-and-a-batch-with-deployment-actions.md)
-6. **Récupérez les métadonnées** : **Commit changes**, **Recent Changes**, et prenez ce que vous avez fait
+6. **Faites un retrieve** : **Commit changes**, **Recent Changes**, et prenez ce que vous avez fait
    et rien d'autre. Commitez
 7. **Publiez, Pull Request, vert, merge**
 
@@ -82,9 +90,12 @@ Un déploiement vert mettra l'objet et le flow dans `helios-integration` et la c
 et la fonctionnalité ne fera rien du tout. Construisez un data workspace et déclarez une action.
 
 **Trois : le collègue sur le même fichier.** Avant d'ouvrir votre Pull Request, lancez **Training:
-Level 2 > Simulate my teammates** et choisissez **US-019**, puis mergez-la. Romain ajoute un champ de
-PDF de devis et l'accorde sur `Helios Delivery Manager`, le permission set même dont votre checklist
-a besoin. Faites entrer `integration` dans votre branche depuis le panneau **Source Control**.
+Level 2 > Simulate my teammates** et choisissez **US-019**. Romain ajoute un champ de PDF de devis et
+l'accorde sur `Helios Delivery Manager`, le permission set même dont votre checklist a besoin.
+Répondez **Yes** à **Merge it for you once its checks pass?** et le panneau merge sa Pull Request dès
+que ses checks sont verts, ou répondez **No** et mergez-la vous-même sur GitHub depuis l'adresse
+affichée par le panneau, comme le montre le [Lab 2.1](2-1-backpromote-your-teammates-work.md),
+étape 1b. Faites ensuite entrer `integration` dans votre branche depuis le panneau **Source Control**.
 
 Cette fois git merge tout seul, sans conflit : Salesforce garde les permissions d'un permission set
 par ordre alphabétique, son autorisation `Panel_Batch__c` et les vôtres sur `Handover_Item__c`
@@ -151,7 +162,10 @@ que le formulaire s'ouvre.
 !!! tip "Si ce cours vous a servi"
     [oxsecurity/megalinter](https://github.com/oxsecurity/megalinter) est le moteur de linting
     derrière la barrière de qualité que vos Pull Requests ont traversée. Une étoile est ce qui permet
-    à un projet open source de rester visible. C'est vous qui voyez : le badge n'en dépend pas.
+    à un projet open source de rester visible : ouvrez sa page et cliquez sur **Star** **(1)**, en haut
+    à droite. Donnez une étoile si vous avez aimé ce cours !
+
+    ![Le bouton Star du repository MegaLinter sur GitHub](../../_assets/annotated/web/github-star-megalinter.png)
 
 Le badge de ce niveau s'appelle **sfdx-hardis Contributor Advanced**. Le Niveau 1 vous rend capable
 de livrer une User Story ; le Niveau 2 vous rend capable de traiter tout ce qui tourne mal en chemin.

@@ -134,6 +134,12 @@ writeJson(path.join(OUT, "universe.json"), {
   // two clicks on that column header. The four US-014 rows are then the four
   // at the top, whose heights the next setting lists for the clicks that tick
   // them. They follow the dates of the sourceMembers list below.
+  // The training-files shots (Labs 2.2 and 2.4): the package viewer filtered the
+  // way Lab 2.2 step 4 filters it, then two files opened in the editor with the
+  // Explorer showing where they sit. The field is written into the fixture below.
+  packageXmlFilter: "Crew_Warning",
+  labFieldFile: "force-app/main/default/objects/Installation__c/fields/Crew_Warning_Sent__c.field-meta.xml",
+  labCsvFile: "scripts/data/HeliosCrewRefData/Crew_Capacity__c.csv",
   retrieverSortClicks: "1680,413;1680,413",
   retrieverRows: "459,510,561,611",
   // The files the Source Control shot shows after that retrieve: the four
@@ -345,6 +351,10 @@ function ticketsOf(story) {
   ];
 }
 
+// The learner's GitHub login as the labs write it, and helios-dev as a backpromote
+// branch names it: a scratch org has no sandbox name, so its org id in lowercase
+const LEARNER_LOGIN = "my-username";
+const HELIOS_DEV_ORG_KEY = (MOCK_ORGS.find((org) => org.alias === "helios-dev")?.orgId || "helios-dev").toLowerCase();
 const MY_PR_NUMBER = 24;
 const MY_PR_BRANCH = "features/US-024-crew-size-required";
 
@@ -743,53 +753,56 @@ if (fs.existsSync(basePlanFile)) {
     alias: "helios-dev",
     username: usernameFor("helios-dev"),
     instanceUrl: instanceUrlFor("helios-dev"),
-    sandboxName: "helios-dev"
+    sandboxName: HELIOS_DEV_ORG_KEY,
+    orgType: "scratch"
   };
   plan.parentBranch = "integration";
   plan.allowedParentBranches = ["integration"];
+  // A scratch org has no sandbox name, so the branch is named after its org id
   plan.backpromoteBranch = {
     ...plan.backpromoteBranch,
-    name: "backpromote/integration/helios-dev"
+    name: `backpromote/integration/${HELIOS_DEV_ORG_KEY}`
   };
   plan.checkout = {
     ...plan.checkout,
-    originalBranch: "features/US-021-crew-size-warning",
-    currentBranch: "features/US-021-crew-size-warning"
+    originalBranch: "integration",
+    currentBranch: "integration"
   };
 
-  // The three teammate stories that merged while the learner was away, which is
-  // exactly the situation Lab 2.1 puts them in.
+  // Lab 2.1 as a learner walks it (2026-09-25): the fork's own first three Pull
+  // Requests, US-014 and US-016 from Level 1 and US-017 that Romain's simulated
+  // branch brings, all opened with the learner's account. No deployment action.
   const BACKPROMOTED = [
-    { id: "US-018", title: "Cap the crew size a planner can assign", author: "Mariia Pyvovarchuk", branch: "training/mate-us-018-crew-capacity", items: 3, actions: 0 },
-    { id: "US-019", title: "Generate a quote PDF from an opportunity", author: "Romain Panda", branch: "training/mate-us-019-quote-pdf", items: 2, actions: 0 },
-    { id: "US-026", title: "Crew capacity reference data and nightly recalculation", author: "You", branch: "features/US-026-crew-capacity-data", items: 2, actions: 2 }
+    { number: 3, title: "US-017 Record who signed an installation off", branch: "training/mate-us-017-sign-off", items: 3 },
+    { number: 2, title: "US-016 Crew Notes and the Open Installations list view", branch: "features/US-016-crew-notes", items: 5 },
+    { number: 1, title: "US-014 Panels Required on Installation", branch: "features/US-014-panels-required", items: 5 }
   ];
   plan.pullRequests = BACKPROMOTED.map((story, i) => ({
     ...(plan.pullRequests[i] || plan.pullRequests[0]),
-    number: 51 + i,
-    title: `${story.id} ${story.title}`,
-    author: story.author,
+    number: story.number,
+    title: story.title,
+    author: LEARNER_LOGIN,
     sourceBranch: story.branch,
-    webUrl: `${WEB}/pull/${51 + i}`,
+    webUrl: `${WEB}/pull/${story.number}`,
     itemCount: story.items,
-    actionCount: story.actions,
+    actionCount: 0,
     selected: true,
     inWindow: true,
     scanned: true
   }));
   plan.window = {
     ...plan.window,
-    startPullRequest: 51
+    startPullRequest: 1
   };
 
   const ITEMS = [
-    ["Flow", "Installation_Assign_Crew", ["force-app/main/default/flows/Installation_Assign_Crew.flow-meta.xml"], 51],
-    ["PermissionSet", "Helios_Delivery_Manager", ["force-app/main/default/permissionsets/Helios_Delivery_Manager.permissionset-meta.xml"], 51],
-    ["CustomField", "Installation__c.Crew_Capacity_Cap__c", ["force-app/main/default/objects/Installation__c/fields/Crew_Capacity_Cap__c.field-meta.xml"], 51],
-    ["PermissionSet", "Helios_Delivery_Crew", ["force-app/main/default/permissionsets/Helios_Delivery_Crew.permissionset-meta.xml"], 52],
-    ["Layout", "Opportunity-Opportunity Layout", ["force-app/main/default/layouts/Opportunity-Opportunity Layout.layout-meta.xml"], 52],
-    ["CustomObject", "Crew_Capacity__c", ["force-app/main/default/objects/Crew_Capacity__c/Crew_Capacity__c.object-meta.xml"], 53],
-    ["ApexClass", "CrewCapacityBatch", ["force-app/main/default/classes/CrewCapacityBatch.cls", "force-app/main/default/classes/CrewCapacityBatch.cls-meta.xml"], 53]
+    ["CustomField", "Installation__c.Crew_Notes__c", ["force-app/main/default/objects/Installation__c/fields/Crew_Notes__c.field-meta.xml"], 2],
+    ["CustomField", "Installation__c.Panels_Required__c", ["force-app/main/default/objects/Installation__c/fields/Panels_Required__c.field-meta.xml"], 1],
+    ["CustomField", "Installation__c.Signed_Off_By__c", ["force-app/main/default/objects/Installation__c/fields/Signed_Off_By__c.field-meta.xml"], 3],
+    ["Layout", "Installation__c-Installation Layout", ["force-app/main/default/layouts/Installation__c-Installation Layout.layout-meta.xml"], 3],
+    ["ListView", "Installation__c.Open_Installations", ["force-app/main/default/objects/Installation__c/listViews/Open_Installations.listView-meta.xml"], 2],
+    ["PermissionSet", "Helios_Delivery_Crew", ["force-app/main/default/permissionsets/Helios_Delivery_Crew.permissionset-meta.xml"], 1],
+    ["PermissionSet", "Helios_Delivery_Manager", ["force-app/main/default/permissionsets/Helios_Delivery_Manager.permissionset-meta.xml"], 3]
   ];
   plan.items = ITEMS.map(([type, name, files, pr], i) => ({
     ...(plan.items[i] || plan.items[0]),
@@ -802,20 +815,8 @@ if (fs.existsSync(basePlanFile)) {
     noOverwrite: false
   }));
 
-  const ACTIONS = [
-    ["load-crew-capacity", "Load the crew capacity reference data", "data", "post", false],
-    ["email-deliverability", "Set Email Deliverability to All Email", "manual", "pre", true]
-  ];
-  plan.actions = ACTIONS.map(([id, label, type, phase, manual], i) => ({
-    ...(plan.actions[i] || plan.actions[0]),
-    id,
-    label,
-    type,
-    phase,
-    manual,
-    pullRequest: 53,
-    runnable: !manual
-  }));
+  // Deployment actions arrive in Lab 2.3: none of these three stories has one
+  plan.actions = [];
 
   if (plan.deletions) {
     plan.deletions = [];
@@ -845,9 +846,22 @@ STAGES.forEach((stage, index) => {
   );
 });
 write(path.join(PROJECT, "force-app", "main", "default", "classes", ".gitkeep"), "");
+// The field Lab 2.2 retrieves, for the shot that shows where it lands
+write(
+  path.join(PROJECT, "force-app", "main", "default", "objects", "Installation__c", "fields", "Crew_Warning_Sent__c.field-meta.xml"),
+  fs.readFileSync(
+    path.join(ROOT, "scripts", "start-states", "level-3", "files", "force-app", "main", "default", "objects", "Installation__c", "fields", "Crew_Warning_Sent__c.field-meta.xml"),
+    "utf8"
+  )
+);
 // The real manifest: the labs open it in the package viewer, and the reader
 // compares the picture with what their own clone shows.
 write(path.join(PROJECT, "manifest", "package.xml"), fs.readFileSync(path.join(ROOT, "manifest", "package.xml"), "utf8"));
+// The default no-overwrite list Lab 3.5 opens and adds the remote site setting to
+write(
+  path.join(PROJECT, "manifest", "package-no-overwrite.xml"),
+  fs.readFileSync(path.join(ROOT, "manifest", "package-no-overwrite.xml"), "utf8")
+);
 
 // SFDMU workspaces, so the Data Workbench panel has content and the data
 // deployment action resolves its project path instead of reporting it missing.
@@ -859,6 +873,10 @@ if (fs.existsSync(baseline)) {
 // shipped in the training repository. The fixture needs it all the same: the
 // screenshots show the finished state of that lab.
 writeJson(path.join(PROJECT, "scripts", "data", "HeliosCrewRefData", "export.json"), {
+  // What Lab 2.4 has the learner type in the Create Workspace form. Without it the
+  // deployment action editor reads "Label not defined in export.json"
+  sfdxHardisLabel: "Crew capacity reference data",
+  sfdxHardisDescription: "The 12 Crew Capacity records every org needs: panels a day per crew type and roof type.",
   objects: [
     {
       query: "SELECT External_Id__c, Crew_Type__c, Roof_Type__c, Panels_Per_Day__c FROM Crew_Capacity__c",
@@ -867,16 +885,16 @@ writeJson(path.join(PROJECT, "scripts", "data", "HeliosCrewRefData", "export.jso
     }
   ]
 });
+// What Export data writes in Lab 2.4: the twelve records, with the Id column the
+// lab tells the reader about. The Level 3 start state carries that very export.
 write(
   path.join(PROJECT, "scripts", "data", "HeliosCrewRefData", "Crew_Capacity__c.csv"),
-  [
-    "External_Id__c,Crew_Type__c,Roof_Type__c,Panels_Per_Day__c",
-    "CAP-ROOF-TILE,Roof,Tile,18",
-    "CAP-ROOF-SLATE,Roof,Slate,14",
-    "CAP-ROOF-FLAT,Roof,Flat,26",
-    "CAP-ROOF-METAL,Roof,Metal,22",
-    ""
-  ].join("\n")
+  fs
+    .readFileSync(
+      path.join(ROOT, "scripts", "start-states", "level-3", "files", "scripts", "data", "HeliosCrewRefData", "Crew_Capacity__c.csv"),
+      "utf8"
+    )
+    .replace(/^\uFEFF/, "")
 );
 
 // Deployment actions of the Level 2 labs, declared on the learner own Pull

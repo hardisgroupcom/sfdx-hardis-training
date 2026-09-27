@@ -99,12 +99,15 @@ production address back in UAT without a word. The **overwrite manager** is for 
 anything listed in `manifest/package-no-overwrite.xml` is taken out of the deployment when the target
 org already has it, and created when it does not.
 
-The file does not exist yet, and you do not have to write it. In the **DevOps Pipeline** panel, open
-the **Deployment packages** menu, the one that opened **Package XML** in [Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publish-your-changes.md), and pick **No
-Overwrite**. The package viewer opens on an empty list. Turn **Edit mode** on **(1)**, then click
+Helios already has that file: it is the list every sfdx-hardis project starts with. It protects the
+components an org keeps for itself almost everywhere, reports and dashboards maintained in
+production, connected apps, named credentials, certificates. Remote site settings are not in it yet,
+and you do not have to write XML to add them. In the **DevOps Pipeline** panel, open the
+**Deployment packages** menu, the one that opened **Package XML** in [Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publish-your-changes.md), and pick **No
+Overwrite**. The package viewer opens on that list. Turn **Edit mode** on **(1)**, then click
 **Add Type** **(2)**.
 
-![The package viewer on the empty no-overwrite list, in edit mode](../../_assets/annotated/vscode/package-no-overwrite-edit--add-type.png)
+![The package viewer on the default no-overwrite list, in edit mode](../../_assets/annotated/vscode/package-no-overwrite-edit--add-type.png)
 
 Type `RemoteSiteSetting`, the name Salesforce gives this kind of component, in **Metadata Type API
 Name** **(1)**, and click **Add** **(2)**.
@@ -112,9 +115,9 @@ Name** **(1)**, and click **Add** **(2)**.
 ![The Add Metadata Type window of the package viewer](../../_assets/annotated/vscode/package-no-overwrite-add-type--type.png)
 
 The new **RemoteSiteSetting** row has an **Add member** button: click it, type `Helios_Warehouse`,
-and **Add**. The viewer wrote `manifest/package-no-overwrite.xml` for you, with the shape of
-`manifest/package.xml`: one block per kind of component, its members listed by name. **Edit File**
-opens it as text, if you want to see it.
+and **Add**. The viewer added a `RemoteSiteSetting` block to `manifest/package-no-overwrite.xml`
+for you. The file has the shape of `manifest/package.xml`: one block per kind of component, its
+members listed by name, or `*` for all of them. **Edit File** opens it as text, if you want to see it.
 
 Then **Training: Level 3** > **Publish my pipeline configuration**, and merge its Pull Request once
 green, as in [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md): the list of what must never be overwritten is pipeline configuration, like the
@@ -196,7 +199,10 @@ Merge the promotion. The **Process Deployment (sfdx-hardis)** run starts, this t
 This is the first deployment to this org through the pipeline, so it will be larger than the ones to
 integration: UAT is behind by everything the team has done. Expect several minutes.
 
-When it finishes, do the manual steps the comment listed, in `helios-uat`.
+The deliverability step is a **pre-deploy** one: its place is before the merge, as step 4 says.
+If you did it in `helios-uat` and ticked its box, the log of this job says so: *Manual action Set
+Email Deliverability to All Email has been confirmed as done in org branch uat*. If you did not,
+do it now and tick the box: the next job that carries this Pull Request records it.
 
 Then read the log for the overwrite manager, above the deployment, among the lines that start
 with `[NoOverwrite]`:
@@ -212,8 +218,10 @@ Type RemoteSiteSetting: 1 item(s) skipped because they already exist in the targ
 
 Open `helios-uat` and check the two stories are genuinely usable, not just deployed:
 
-- A crew larger than the cap is brought back down to the cap when you save: put `Crew Capacity Cap`
-  at 3 and `Crew Size` at 6 on a planned installation, save, and it reads 3
+- A crew larger than the cap is brought back down to the cap when you save. The rule runs when a
+  planned installation gets its crew, and UAT has none left planned since the crew size backfill of
+  [Lab 2.3](../level-2-contributor-advanced/2-3-fix-broken-records-with-an-apex-deployment-action.md), so make one: on any installation, set `Status` to `Planned`, `Crew Capacity Cap` to 3 and
+  `Crew Size` to 6, in the same edit, and save. It reads 3, and it has moved on to `Scheduled`
 - The quote PDF permission is on the manager permission set
 - **Setup > Remote Site Settings** still says `https://warehouse-test.helios.invalid` for
   `Helios_Warehouse`: the promotion left it alone
@@ -266,7 +274,8 @@ On this promotion, the generated notes open like this:
 
 Then come a table of the tickets, one of the Pull Requests with their authors and merge dates, the
 metadata changed by type, and the deployment actions with their status in `uat`: the manual
-deliverability step still **manual**, the imports and the schedule **success**.
+deliverability step **success** if you ticked its box before the merge and **manual** if not, the
+imports and the schedule **success**.
 
 Read it and then improve it. Generated notes are a complete list, and a release note the business
 reads needs two things the generator cannot know:

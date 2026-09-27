@@ -5,7 +5,7 @@ description: "Livrez un hotfix Salesforce de preprod vers la production quand la
 level: 3
 lab: 7
 lang: fr
-source_rev: "a34ea6fe2995834d2ab32fd72793082b541c84c8"
+source_rev: "8bc390afe8fb943bdfa3eadd477b54ef38001e7f"
 screenshots:
   - annotated/salesforce/validation-rule
   - annotated/vscode/welcome-custom-menu-3
@@ -132,7 +132,9 @@ Petite, et son rayon d'impact tient en une phrase : **les installations annulée
 
 ### 4. Le merger dans preprod
 
-Quand le contrôle est vert, **Merge pull request** **(1)** :
+Quand le contrôle est vert, mergez-la avec **Squash and merge**, depuis la flèche à côté de **Merge
+pull request** **(1)** : la branche de Romain est un correctif, et un correctif se squashe comme
+chaque User Story ([Lab 1.6](../level-1-contributor-basics/1-6-pull-request-deployment-check-and-merge.md)). La promotion vers `main` qui suit est mergée, pas squashée.
 
 ![Merger une Pull Request sur GitHub](../../_assets/annotated/web/github-pr-merge.png)
 
@@ -158,7 +160,9 @@ Son contrôle déploie contre la production en mode validation, ce qui est exact
 
 Mergez, et regardez l'exécution **Process Deployment (sfdx-hardis)** sur `main`. Quand elle se
 termine, le commentaire sfdx-hardis dit ce qui a atteint l'org : la bannière **(1)**, la ligne de
-compteurs **(2)**, et les tickets qu'il a reconnus **(3)**.
+compteurs **(2)**, et la ligne Quick Deploy **(3)** : le merge a libéré la validation que son contrôle
+avait déjà faite sur la production, au lieu de déployer à nouveau. L'image est le commentaire d'un
+déploiement précédent, vos compteurs sont donc différents.
 
 ![Le commentaire sfdx-hardis sur une Pull Request mergée](../../_assets/annotated/web/github-pr-deployed.png)
 
@@ -212,7 +216,7 @@ Puis la Command Palette à nouveau, tapez `Git: Merge`, et choisissez **Git: Mer
 
 ![Git Merge dans la Command Palette](../../_assets/annotated/vscode/git-palette-merge--merge.png)
 
-Elle demande quelle branche faire entrer. Choisissez **origin/main** **(1)**, listée sous
+Elle demande quelle branche merger. Choisissez **origin/main** **(1)**, listée sous
 **remote branches** :
 
 ![Le sélecteur de branche, avec origin main](../../_assets/annotated/vscode/git-retrofit-pick--origin-main.png)

@@ -1,17 +1,17 @@
 ---
 id: lab-1-5
 title: "Lab 1.5 - Récupérer, commiter et publier vos modifications Salesforce"
-description: "Faites entrer vos modifications d'org dans Git avec le Metadata Retriever de sfdx-hardis, ne stagez que les fichiers de votre story, commitez, et publiez votre branche."
+description: "Rapatriez vos modifications d'org dans Git avec le Metadata Retriever de sfdx-hardis, ne stagez que les fichiers de votre story, commitez, et publiez votre branche."
 level: 1
 lab: 5
 lang: fr
-source_rev: "a34ea6fe2995834d2ab32fd72793082b541c84c8"
+source_rev: "9c0626c6cc38da209d2afd619561a0e94eaff865"
 screenshots:
-  - annotated/vscode/pipeline-cards--commit-changes
+  - annotated/vscode/pipeline-cards-level1--commit-changes
   - annotated/vscode/metadata-retriever-recent-changes--find
   - annotated/vscode/metadata-retriever-selected--us-014
   - annotated/vscode/source-control-retrieved--commit
-  - annotated/vscode/pipeline-cards--save-publish
+  - annotated/vscode/pipeline-cards-level1--save-publish
   - annotated/vscode/work-save-commit-ready
   - annotated/vscode/work-save-package-xml
   - annotated/vscode/pipeline-packages-menu--package-xml
@@ -30,7 +30,7 @@ depends_on:
 
 **Durée** : ~20 min
 
-**Vous allez** : faire entrer vos modifications d'org dans le repository, décider lesquelles appartiennent
+**Vous allez** : rapatrier vos modifications d'org dans le repository, décider lesquelles appartiennent
 à votre story, et pousser une branche prête à être relue.
 
 ## La situation
@@ -57,7 +57,7 @@ ce qui est sur votre machine.
 Dans le panneau **DevOps Pipeline**, sous **Project Contribution Workflow**, cliquez sur la carte
 **Commit changes** **(1)**.
 
-![La carte Commit changes du panneau DevOps Pipeline](../../_assets/annotated/vscode/pipeline-cards--commit-changes.png)
+![La carte Commit changes du panneau DevOps Pipeline](../../_assets/annotated/vscode/pipeline-cards-level1--commit-changes.png)
 
 Elle ouvre le **Metadata Retriever**, par lequel commence chaque publication.
 
@@ -70,8 +70,9 @@ sur **Search Metadata** **(3)**.
 
 ![Le Metadata Retriever listant les modifications récentes de l'org](../../_assets/annotated/vscode/metadata-retriever-recent-changes--find.png)
 
-Une trentaine de résultats reviennent **(4)**, chacun avec ce qu'il est, son nom, qui l'a touché en
-dernier et quand. Tous portent votre nom, et la plupart ne sont pas votre story.
+Le nombre de résultats est en **(4)** : quelques dizaines sur votre org, moins sur l'image. Chaque
+ligne dit ce qu'elle est, son nom, qui l'a touchée en dernier et quand. Toutes portent votre nom, et
+la plupart ne sont pas votre story.
 
 !!! info "Pourquoi la liste est plus longue que votre story"
     Une scratch org se souvient de chaque composant qui y est arrivé, quelle qu'en soit la voie. Au
@@ -121,7 +122,7 @@ dans Salesforce et rien sur votre branche pour l'instant.
     compte sur un vrai projet, où quelqu'un d'autre a pu écrire ces fichiers ; pas ici, où rien
     d'autre que votre propre org n'y a touché.
 
-### 4. Commiter ce qui est descendu
+### 4. Commiter ce que vous avez rapatrié
 
 Ouvrez le panneau **Source Control** **(1)** : dans la barre de gauche, l'icône dessinée comme trois
 petits cercles reliés par des traits, à la manière d'une branche. Les quatre fichiers écrits par la
@@ -183,7 +184,7 @@ préparer pour l'équipe, et c'est ce que fait Save / Publish.
 
 Dans le panneau **DevOps Pipeline**, cliquez sur la carte **Save / Publish** **(1)**.
 
-![La carte Save / Publish du panneau DevOps Pipeline](../../_assets/annotated/vscode/pipeline-cards--save-publish.png)
+![La carte Save / Publish du panneau DevOps Pipeline](../../_assets/annotated/vscode/pipeline-cards-level1--save-publish.png)
 
 La première question est celle qui piège tout le monde.
 
@@ -344,8 +345,8 @@ Répondez **Yes** et la branche part sur votre fork
 - `manifest/package.xml` gagnant une ligne, le nouveau champ, dans un commit fait par l'outil
 - Votre branche sur GitHub, dans votre fork (`github.com/my-username/sfdx-hardis-training`), sous
   **Branches**
-- Le panneau DevOps Pipeline montrant votre branche qui alimente `integration`, sans Pull Request
-  pour l'instant
+- Le panneau DevOps Pipeline toujours sans votre branche : il dessine une branche dès qu'elle a une
+  Pull Request, et la vôtre en reçoit une au [Lab 1.6](1-6-pull-request-deployment-check-and-merge.md)
 
 ## En cas de problème
 
