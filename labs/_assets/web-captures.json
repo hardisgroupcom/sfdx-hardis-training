@@ -415,44 +415,47 @@
     },
     {
       "name": "github-star-sfdx-hardis",
-      "_comment": "Level 1 capstone: the header of the repository page, where the Star button is. Taken signed in, so the button reads Star rather than asking to sign in. The clip is a first guess: check it on the first capture.",
+      "_comment": "Level 1 capstone: the header of the repository page, where the Star button is. Taken signed out, which is what a learner who is not the owner sees: the Star button, without Edit Pins or Settings.",
       "url": "https://github.com/hardisgroupcom/sfdx-hardis",
       "width": 1440,
       "height": 900,
       "settle": 4000,
+      "fresh": true,
       "clip": {
-        "x": 560,
-        "y": 60,
-        "width": 880,
-        "height": 140
+        "x": 0,
+        "y": 80,
+        "width": 1440,
+        "height": 110
       }
     },
     {
       "name": "github-star-megalinter",
-      "_comment": "Level 2 capstone: the header of the repository page, where the Star button is. Taken signed in, so the button reads Star rather than asking to sign in. The clip is a first guess: check it on the first capture.",
+      "_comment": "Level 2 capstone: the header of the repository page, where the Star button is. Taken signed out, which is what a learner who is not the owner sees: the Star button, without Edit Pins or Settings.",
       "url": "https://github.com/oxsecurity/megalinter",
       "width": 1440,
       "height": 900,
       "settle": 4000,
+      "fresh": true,
       "clip": {
-        "x": 560,
-        "y": 60,
-        "width": 880,
-        "height": 140
+        "x": 0,
+        "y": 80,
+        "width": 1440,
+        "height": 110
       }
     },
     {
       "name": "github-star-vscode-sfdx-hardis",
-      "_comment": "Level 3 capstone: the header of the repository page, where the Star button is. Taken signed in, so the button reads Star rather than asking to sign in. The clip is a first guess: check it on the first capture.",
+      "_comment": "Level 3 capstone: the header of the repository page, where the Star button is. Taken signed out, which is what a learner who is not the owner sees: the Star button, without Edit Pins or Settings.",
       "url": "https://github.com/hardisgroupcom/vscode-sfdx-hardis",
       "width": 1440,
       "height": 900,
       "settle": 4000,
+      "fresh": true,
       "clip": {
-        "x": 560,
-        "y": 60,
-        "width": 880,
-        "height": 140
+        "x": 0,
+        "y": 80,
+        "width": 1440,
+        "height": 110
       }
     }
   ]

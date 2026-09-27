@@ -7,6 +7,7 @@ lab: 9
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/web/github-star-megalinter
 depends_on:
   commands: [hardis:work:new, hardis:work:save, hardis:org:data:import]
   flags: []
@@ -154,8 +155,10 @@ you skipped Level 1, that is where it will say so, and the command says it befor
 !!! tip "If the course helped you"
     [oxsecurity/megalinter](https://github.com/oxsecurity/megalinter) is the linting engine behind
     the quality gate your Pull Requests went through. A star is how an open source project stays
-    visible: open its page and click **Star**, at the top right. Give it a star if you liked this
+    visible: open its page and click **Star** **(1)**, at the top right. Give it a star if you liked this
     course!
+
+    ![The Star button of the MegaLinter repository on GitHub](../../_assets/annotated/web/github-star-megalinter.png)
 
 The badge for this level is called **sfdx-hardis Contributor Advanced**. Level 1 makes you able to
 deliver a User Story; Level 2 makes you able to deal with everything that goes wrong on the way.

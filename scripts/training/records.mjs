@@ -10,6 +10,8 @@
  * under scripts/lab-records/. The load is an upsert on the external id, so running
  * it twice leaves the same records, and it never deletes anything.
  */
+import fs from "fs";
+import os from "os";
 import path from "path";
 import {
   ROOT, c, title, info, ok, abort, run, runJson,
@@ -92,6 +94,9 @@ export default async function records(args) {
     );
   }
   ok("Records created");
+  if (ensureAllListView(target, entry)) {
+    ok(`The ${entry.objectLabel} list shows every record`);
+  }
 
   title("3 of 3  What is in the org now");
   const query = `SELECT ${entry.fields.join(", ")} FROM ${entry.object} ORDER BY ${entry.externalId}`;
@@ -108,5 +113,50 @@ export default async function records(args) {
   if (instanceUrl) {
     info("");
     info(`  See them in the org: ${c.cyan(`${instanceUrl}/lightning/o/${entry.object}/list?filterName=All`)}`);
+  }
+}
+
+/**
+ * Makes sure the object has an "All" list view, which the link at the end opens.
+ *
+ * An object created in Setup gets one, but an object that arrived by deployment,
+ * as in the orgs the course seeds, has none, and the link then opens a page that
+ * says the resource does not exist. Deployed only when missing, so a learner's
+ * own list view is never touched. Returns false when it could not be checked or
+ * made: the records are there all the same.
+ */
+export function ensureAllListView(target, entry) {
+  const existing = runJson("sf", [
+    "data", "query", "--target-org", target, "--json",
+    "--query", `SELECT Id FROM ListView WHERE SobjectType = '${entry.object}' AND DeveloperName = 'All'`
+  ]);
+  if (existing && existing.result && existing.result.totalSize > 0) {
+    return true;
+  }
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "helios-listview-"));
+  try {
+    fs.writeFileSync(
+      path.join(dir, "sfdx-project.json"),
+      JSON.stringify({ packageDirectories: [{ path: "force-app", default: true }], sourceApiVersion: "64.0" }),
+      "utf8"
+    );
+    const listViews = path.join(dir, "force-app", "main", "default", "objects", entry.object, "listViews");
+    fs.mkdirSync(listViews, { recursive: true });
+    const columns = ["NAME", ...entry.fields].map((f) => `    <columns>${f}</columns>`).join("\n");
+    fs.writeFileSync(
+      path.join(listViews, "All.listView-meta.xml"),
+      `<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All</fullName>
+${columns}
+    <filterScope>Everything</filterScope>
+    <label>All</label>
+</ListView>
+`,
+      "utf8"
+    );
+    return run("sf", ["project", "deploy", "start", "--source-dir", "force-app", "--target-org", target, "--ignore-conflicts"], { cwd: dir, quiet: true, capture: true }).code === 0;
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
   }
 }

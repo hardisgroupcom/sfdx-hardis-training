@@ -7,6 +7,7 @@ lab: 7
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/web/github-star-sfdx-hardis
 depends_on:
   commands: [hardis:work:new, hardis:work:save]
   flags: []
@@ -123,7 +124,9 @@ name rather than a formality.
 !!! tip "If the course helped you"
     [hardisgroupcom/sfdx-hardis](https://github.com/hardisgroupcom/sfdx-hardis) is the open source
     project this whole course is about. A star is how a project like it stays visible: open its
-    page and click **Star**, at the top right. Give it a star if you liked this course!
+    page and click **Star** **(1)**, at the top right. Give it a star if you liked this course!
+
+    ![The Star button of the sfdx-hardis repository on GitHub](../../_assets/annotated/web/github-star-sfdx-hardis.png)
 
 A job then clones your fork (`github.com/my-username/sfdx-hardis-training`), re-runs every check above against it, and answers on the issue. Nobody
 reviews it by hand, so it usually takes a couple of minutes. If something does not verify, the

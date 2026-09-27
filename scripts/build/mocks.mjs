@@ -880,16 +880,16 @@ writeJson(path.join(PROJECT, "scripts", "data", "HeliosCrewRefData", "export.jso
     }
   ]
 });
+// What Export data writes in Lab 2.4: the twelve records, with the Id column the
+// lab tells the reader about. The Level 3 start state carries that very export.
 write(
   path.join(PROJECT, "scripts", "data", "HeliosCrewRefData", "Crew_Capacity__c.csv"),
-  [
-    "External_Id__c,Crew_Type__c,Roof_Type__c,Panels_Per_Day__c",
-    "CAP-ROOF-TILE,Roof,Tile,18",
-    "CAP-ROOF-SLATE,Roof,Slate,14",
-    "CAP-ROOF-FLAT,Roof,Flat,26",
-    "CAP-ROOF-METAL,Roof,Metal,22",
-    ""
-  ].join("\n")
+  fs
+    .readFileSync(
+      path.join(ROOT, "scripts", "start-states", "level-3", "files", "scripts", "data", "HeliosCrewRefData", "Crew_Capacity__c.csv"),
+      "utf8"
+    )
+    .replace(/^\uFEFF/, "")
 );
 
 // Deployment actions of the Level 2 labs, declared on the learner own Pull

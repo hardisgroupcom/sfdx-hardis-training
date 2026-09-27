@@ -7,6 +7,9 @@ lab: 4
 lang: en
 source_rev: ""
 screenshots:
+  - annotated/vscode/sidebar-commands-custom-menu-2--lab-records
+  - annotated/salesforce/crew-capacity-records
+  - annotated/vscode/editor-crew-capacity-csv
   - annotated/web/github-pr-deployment-actions
   - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/data-workbench
@@ -84,14 +87,18 @@ In `helios-dev`, create:
 Then the records. Helios supports 12 combinations, three crew types by four roof types, and each
 one needs a Crew Capacity record saying how many panels a day that crew lays on that roof. Typing
 twelve records teaches nothing this lab is about, so the Training menu creates them:
-**Training: Level 2** > **Create my lab records**, pick **Lab 2.4 - the 12 Crew Capacity records**,
-then **helios-dev**, and answer **Yes** to **Create them?**.
+**Training: Level 2** **(1)** > **Create my lab records** **(2)**, pick **Lab 2.4 - the 12 Crew
+Capacity records**, then **helios-dev**, and answer **Yes** to **Create them?**.
+
+![The Level 2 Training menu, with Create my lab records](../../_assets/annotated/vscode/sidebar-commands-custom-menu-2--lab-records.png)
 
 The panel first checks that your object and its four fields are in the org, then creates the
-records, lists them, and ends with a **See them in the org** link. Open it: the list shows twelve
-Crew Capacity records, from `CAP-ELECTRICAL-FLAT` to `CAP-ROOF-TILE`. If the panel says a field
-is missing, finish the object first, then run it again: it updates the same twelve records rather
-than creating more.
+records, lists them, and ends with a **See them in the org** link. Open it: the **All** list of
+Crew Capacity reads **12 items** **(1)**, from `CAP-ROOF-TILE` to `CAP-ELECTRICAL-METAL`. If the
+panel says a field is missing, finish the object first, then run it again: it updates the same
+twelve records rather than creating more.
+
+![The All list of Crew Capacity in helios-dev, with its 12 records](../../_assets/annotated/salesforce/crew-capacity-records.png)
 
 <details markdown="1"><summary>Under the hood: how the records were created</summary>
 
@@ -100,7 +107,8 @@ The menu entry ran:
     node scripts/training.mjs records
 
 which loaded `scripts/lab-records/lab-2-4/Crew_Capacity__c.csv` into `helios-dev` with
-`sf data upsert bulk`, matching on `External_Id__c`. On a real project somebody enters these
+`sf data upsert bulk`, matching on `External_Id__c`, and added an **All** list view to the object
+when it had none, so the link has a list to open. On a real project somebody enters these
 records in the org, or loads them from a spreadsheet: either way they exist in one org only, which
 is the problem the rest of this lab solves.
 
@@ -161,11 +169,13 @@ Then **Export data**. It asks two questions: whether to use your default org, `h
 whether you confirm the export. Yes to both. The panel pulls your 12 records into
 `scripts/data/HeliosCrewRefData/Crew_Capacity__c.csv`.
 
-Open that file and read it. Twelve rows, one column per field, each with a stable external id, and
-an `Id` column first: the record ids of `helios-dev`, which mean nothing anywhere else and which
+Open that file **(1)** and read it. Twelve rows, one column per field, each with a stable external
+id **(3)**, and an `Id` column first **(2)**: the record ids of `helios-dev`, which mean nothing anywhere else and which
 the import ignores, because it matches on the external id. That file is now versioned, reviewed
 and deployed like any other source. The `logs`, `reports` and `target` folders the export also
 wrote next to it are git-ignored: nothing to commit there.
+
+![The exported Crew_Capacity__c.csv, open in the editor](../../_assets/annotated/vscode/editor-crew-capacity-csv.png)
 
 !!! tip "Why the external id is not optional"
     `Upsert` on `External_Id__c` means running the import twice updates the same twelve records

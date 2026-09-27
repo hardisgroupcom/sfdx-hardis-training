@@ -103,7 +103,7 @@
     },
     {
       "name": "flow-builder-formula",
-      "_comment": "Lab 2.2 step 2.2: the crewTooSmall formula, opened from the Toolbox, with the description and the formula the lab asks for typed in, and left without Done. The two textarea selectors are to be checked on the first capture.",
+      "_comment": "Lab 2.2 step 2.2: the crewTooSmall formula, opened from the Toolbox, with the description and the formula the lab asks for typed in, and left without Done.",
       "path": "/builder_platform_interaction/flowBuilder.app?flowId={{crewWarningFlowId}}",
       "width": 1600,
       "height": 950,
@@ -119,11 +119,11 @@
       },
       "fillAfter": [
         [
-          "section[role='dialog'] textarea >> nth=0",
+          "textarea.slds-textarea >> nth=0",
           "True when eight panels a person do not cover the job, and no warning was sent yet"
         ],
         [
-          "section[role='dialog'] textarea >> nth=1",
+          "textarea[name='Formula']",
           "AND(\n  {!$Record.Crew_Size__c} * 8 < {!$Record.Panels_Required__c},\n  NOT({!$Record.Crew_Warning_Sent__c})\n)"
         ]
       ]
@@ -155,24 +155,32 @@
     },
     {
       "name": "flow-builder-assign-crew",
-      "_comment": "Lab 2.7 step 1: the Installation Assign Crew flow on the canvas, where the Flat roof decision goes, before the assignment it ends on. The + of the connector has no stable selector: set its window pixels in mouse on the first capture, then the Decision entry of the Add Element menu. Nothing is saved.",
+      "_comment": "Lab 2.7 step 1: the Installation Assign Crew flow in Auto-Layout, with the Flat Roof Minimum decision after Move To Scheduled. Read from helios-uat, whose flow carries the finished rule. Switching the canvas to Auto-Layout only changes the view: nothing is saved.",
       "path": "/builder_platform_interaction/flowBuilder.app?flowId={{assignCrewFlowId}}",
       "width": 1600,
       "height": 950,
       "load": 15000,
       "settle": 3000,
-      "mouse": [],
-      "hide": [".slds-popover_tooltip", "[role='tooltip']"]
+      "hide": [".slds-popover_tooltip", "[role='tooltip']"],
+      "click": ["button:has-text('Free-Form')", "text=Auto-Layout"]
     },
     {
-      "name": "flow-builder-assign-crew-decision",
-      "_comment": "Lab 2.7 step 1: the new decision of the Flat roof rule, filled in the way the lab says, and left without Done. Continues from flow-builder-assign-crew (no path). Selectors to be set on the first capture. Nothing is saved.",
+      "name": "flow-builder-assign-crew-full",
+      "_comment": "Lab 2.7 step 7.3: the same flow zoomed to fit, so the flat roof rule and the cap under it are both in view: the minimum first, the cap last. Fit to view is the second button of the zoom bar, bottom left of the canvas, in window pixels. Nothing is saved.",
+      "path": "/builder_platform_interaction/flowBuilder.app?flowId={{assignCrewFlowId}}",
       "width": 1600,
       "height": 950,
+      "load": 15000,
+      "click": ["button:has-text('Free-Form')", "text=Auto-Layout"],
+      "mouse": [[57, 890]],
       "settle": 3000,
-      "click": ["text=Decision"],
-      "fillAfter": [],
-      "hide": [".slds-popover_tooltip", "[role='tooltip']"]
+      "hide": [".slds-popover_tooltip", "[role='tooltip']"],
+      "clip": {
+        "x": 560,
+        "y": 215,
+        "width": 480,
+        "height": 700
+      }
     }
   ]
 }
