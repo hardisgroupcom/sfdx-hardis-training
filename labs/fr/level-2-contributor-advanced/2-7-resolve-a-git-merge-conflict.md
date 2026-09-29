@@ -179,6 +179,9 @@ Deux fichiers reviennent marqués en conflit. Ils apparaissent dans le panneau s
 
 ![Le panneau Source Control avec les fichiers en conflit sous Merge Changes](../../_assets/annotated/vscode/git-merge-conflicts--merge-changes.png)
 
+La capture ne montre que le permission set. La vôtre montre aussi le flow `Installation_Assign_Crew`
+au-dessus, avec son propre **!** : deux fichiers, comme GitHub l'a dit.
+
 <details markdown="1"><summary>Sous le capot : ce qu'a lancé Merge Branch</summary>
 
     git fetch origin
