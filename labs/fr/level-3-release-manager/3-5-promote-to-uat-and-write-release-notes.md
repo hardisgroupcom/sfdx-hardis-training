@@ -279,11 +279,15 @@ Sur cette promotion, les notes générées s'ouvrent ainsi :
 
 | Metric           | Value |
 |------------------|-------|
-| Pull Requests    | 19    |
+| Pull Requests    | 20    |
 | Tickets          | 15    |
 | Contributors     | 1     |
-| Added / Modified | 33    |
+| Added / Modified | 34    |
 ```
+
+Le nombre de Pull Requests compte les deux qui ne portent aucune story : votre Pull Request de
+configuration de l'étape 2, et la promotion elle-même. Le vôtre peut différer d'un ou deux, selon le
+nombre de stories de collègues que vous avez mergées.
 
 Viennent ensuite un tableau des tickets, un des Pull Requests avec leurs auteurs et dates de merge,
 les métadonnées modifiées par type, et les deployment actions avec leur statut dans `uat` : l'étape
