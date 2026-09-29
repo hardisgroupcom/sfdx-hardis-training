@@ -49,8 +49,8 @@ jobs:
     permissions:
       contents: write
       issues: write
-      # To start the site build below. A push made with GITHUB_TOKEN never
-      # triggers a workflow, so the badge has to ask for the build explicitly.
+      # To start the site build and the reset branches below. A push made with
+      # GITHUB_TOKEN never triggers a workflow, so the badge has to ask for both.
       actions: write
     steps:
       - name: Checkout the training repository
@@ -198,6 +198,13 @@ jobs:
           # workflow_dispatch is the documented exception to that rule.
           if ! gh workflow run "Build and publish the training site" --ref "${GITHUB_REF_NAME}"; then
             echo "The site build could not be started: the badge is committed, so the page appears on the next build."
+          fi
+          # Same rule for the reset branches. They are built from main, so
+          # without this they lag every badge commit: a learner's retrofit
+          # (Labs 3.7 and 3.10) then carries the badge files main has and
+          # integration does not, and start-branches.mjs --check reports stale.
+          if ! gh workflow run "Publish the reset branches" --ref "${GITHUB_REF_NAME}"; then
+            echo "The reset branches could not be republished: the next push to main does it."
           fi
           {
             cat /tmp/report.md
