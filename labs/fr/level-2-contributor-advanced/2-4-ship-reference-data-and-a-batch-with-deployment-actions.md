@@ -148,6 +148,9 @@ données qu'utilise sfdx-hardis, et rien dedans n'est propre à une org.
 
 ![Le Data Import/Export Workbench, où les workspaces SFDMU se créent et se lancent](../../_assets/annotated/vscode/data-workbench.png)
 
+La capture a été prise à la fin de cette étape : elle montre déjà `HeliosCrewRefData` sous
+`HeliosBaseline`. La vôtre ne montre que `HeliosBaseline` tant que vous ne l'avez pas créé.
+
 Créez un nouveau workspace :
 
 1. **Create Workspace** **(1)**, et remplissez ses trois champs :
