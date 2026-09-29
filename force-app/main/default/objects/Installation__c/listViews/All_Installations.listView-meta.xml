@@ -5,7 +5,7 @@
     <columns>Account__c</columns>
     <columns>Status__c</columns>
     <columns>Install_Date__c</columns>
-    <columns>Crew_Size__c</columns>
+    <columns>Panels_Required__c</columns>
     <filterScope>Everything</filterScope>
     <label>All Installations</label>
 </ListView>
