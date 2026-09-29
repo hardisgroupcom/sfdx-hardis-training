@@ -171,7 +171,7 @@ each with a **!** **(2)**, and the status bar says a merge is in progress.
 
 ![The Source Control panel with the conflicting files under Merge Changes](../../_assets/annotated/vscode/git-merge-conflicts--merge-changes.png)
 
-The picture lists only the permission set. Yours lists the flow `Installation_Assign_Crew` above it,
+The picture lists only the permission set. Yours also lists the flow `Installation_Assign_Crew`,
 with its own **!**: two files, as GitHub said.
 
 <details markdown="1"><summary>Under the hood: what Merge Branch ran</summary>
