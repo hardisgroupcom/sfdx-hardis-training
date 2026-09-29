@@ -285,9 +285,10 @@ Sur cette promotion, les notes générées s'ouvrent ainsi :
 | Added / Modified | 34    |
 ```
 
-Le nombre de Pull Requests compte les deux qui ne portent aucune story : votre Pull Request de
-configuration de l'étape 2, et la promotion elle-même. Le vôtre peut différer d'un ou deux, selon le
-nombre de stories de collègues que vous avez mergées.
+Le décompte inclut les Pull Requests qui ne portent aucune story : celles de configuration du [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md)
+et de l'étape 2, et la promotion elle-même. Le vôtre dépend de votre parcours : près de 20 après les
+Niveaux 1 et 2, beaucoup moins après **Reset this level**, qui démarre le Niveau 3 sans leurs Pull
+Requests.
 
 Viennent ensuite un tableau des tickets, un des Pull Requests avec leurs auteurs et dates de merge,
 les métadonnées modifiées par type, et les deployment actions avec leur statut dans `uat` : l'étape

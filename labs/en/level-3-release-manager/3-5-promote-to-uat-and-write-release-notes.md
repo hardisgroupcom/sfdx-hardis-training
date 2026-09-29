@@ -272,9 +272,10 @@ On this promotion, the generated notes open like this:
 | Added / Modified | 34    |
 ```
 
-The count of Pull Requests includes the two that carry no story: your configuration Pull Request
-of step 2, and the promotion itself. Yours can differ by one or two, depending on how many
-teammate stories you merged.
+The count includes the Pull Requests that carry no story: the configuration ones of [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) and
+of step 2, and the promotion itself. Yours depends on how you got here: close to 20 after walking
+Levels 1 and 2, far fewer after **Reset this level**, which starts Level 3 without their Pull
+Requests.
 
 Then come a table of the tickets, one of the Pull Requests with their authors and merge dates, the
 metadata changed by type, and the deployment actions with their status in `uat`: the manual
