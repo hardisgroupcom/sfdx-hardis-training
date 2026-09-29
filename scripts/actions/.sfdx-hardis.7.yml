@@ -1,0 +1,9 @@
+commandsPostDeploy:
+  - id: 53c4f4f2-431e-48de-9887-38318853dbb6
+    label: Backfill Crew Size on existing installations
+    type: apex
+    command: ""
+    parameters:
+      apexScript: scripts/apex/backfill-crew-size.apex
+    runOnlyOnceByOrg: true
+    context: process-deployment-only
