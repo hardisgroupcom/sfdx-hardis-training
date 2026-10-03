@@ -289,11 +289,11 @@ failed row **(2)** offers the three ways out.
 None of them runs the deployment job again: the metadata is in the org already, and a second
 deployment would only redo what worked. The right way out depends on why each action failed:
 
-| Why it failed                                      | Way out                           |
-|----------------------------------------------------|-----------------------------------|
-| The org was missing something, and now it has it   | **Retry**                         |
-| The action itself is wrong                         | Move it to a fix Pull Request     |
-| Somebody already did it by hand                    | **Mark as done**                  |
+| Why it failed                                    | Way out                       |
+|--------------------------------------------------|-------------------------------|
+| The org was missing something, and now it has it | **Retry**                     |
+| The action itself is wrong                       | Move it to a fix Pull Request |
+| Somebody already did it by hand                  | **Mark as done**              |
 
 ### 11. Fix the org, then retry
 
@@ -339,6 +339,10 @@ The button ran:
   others as `not-run`, linked to the failed one: that is how the command knew what to offer next
 - An action with a `customUsername` runs as that user. When your computer is not connected with
   it, the command asks you to log in with it, and checks you did
+
+<!-- command-links:start -->
+Command documentation: [hardis:project:action:run](https://sfdx-hardis.cloudity.com/hardis/project/action/run/)
+<!-- command-links:end -->
 
 </details>
 
@@ -418,6 +422,7 @@ Salesforce object, nothing to install. That comment is also where a release mana
 promotion, to see what is still red.
 
 <!-- command-links:start -->
+Command documentation: [hardis:project:action:run](https://sfdx-hardis.cloudity.com/hardis/project/action/run/), [hardis:project:action:update](https://sfdx-hardis.cloudity.com/hardis/project/action/update/), [hardis:project:action:set-status](https://sfdx-hardis.cloudity.com/hardis/project/action/set-status/)
 <!-- command-links:end -->
 
 </details>
