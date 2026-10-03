@@ -392,7 +392,7 @@ twenty seconds, so do it by hand, the way a release manager does when a release 
 Then, in the **Deployment Actions** tab, open the menu of **Add the deployment user to the Crew
 Leads group** and click **Mark as done**. Nothing opens: sfdx-hardis records it in the background
 as done in `integration`, with a note naming you, and ticks its checkbox in the Pull Request
-comments. A notification says when it is recorded, and the action shows **Done** in the tab.
+comments. The button reads **Marking as done...** until the action shows **Done** in the tab.
 
 The next deployment to `integration` skips it. In `uat` and beyond it still runs, because nobody
 did it there.
