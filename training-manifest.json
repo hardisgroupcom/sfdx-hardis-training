@@ -760,8 +760,7 @@
         "annotated/vscode/pipeline-branch-modal-actions-failed",
         "annotated/vscode/action-run-prompts",
         "annotated/vscode/pipeline-edit-action-moved",
-        "annotated/web/github-pr-deployment-actions-moved",
-        "annotated/vscode/action-set-status"
+        "annotated/web/github-pr-deployment-actions-moved"
       ],
       "translations": {
         "fr": {
