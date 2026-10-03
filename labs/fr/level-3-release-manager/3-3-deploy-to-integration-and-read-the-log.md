@@ -5,7 +5,7 @@ description: "Lisez un log de déploiement sfdx-hardis, trouvez ce qu'un joker .
 level: 3
 lab: 3
 lang: fr
-source_rev: "0ca5dcadb6dd8699d8338c297dc1d92e3db19529"
+source_rev: "5c3b22c14939f749c9d254114933be6f3eef2fd4"
 screenshots:
   - annotated/vscode/pipeline-config-deployment--delta
   - annotated/vscode/orgs-manager
@@ -349,9 +349,9 @@ Le bouton a lancé :
 - **Pas de déploiement.** Elle lance la seule action, avec le code qu'un job de déploiement utilise
   pour chaque action : filtres de branches cibles, références aux sorties d'autres actions,
   contrôles de validité
-- **L'org vient de la branche.** `integration` désigne `helios-integration` par l'`instanceUrl` de
-  `config/branches/.sfdx-hardis.integration.yml`, et la commande utilise l'org de cette instance à
-  laquelle vous êtes connecté. Les commandes `sf` que l'action démarre la ciblent pour cette
+- **L'org vient de la branche.** `integration` désigne `helios-integration` par le
+  `targetUsername` de `config/branches/.sfdx-hardis.integration.yml`, et la commande utilise cette
+  org telle que vous l'avez connectée dans Orgs Manager. Les commandes `sf` que l'action démarre la ciblent pour cette
   exécution seulement : votre org par défaut ne change pas
 - **Le résultat va dans le commentaire de la Pull Request**, avec votre nom d'utilisateur git et
   votre nom d'utilisateur Salesforce dans la note, grâce au jeton du fournisseur git que VS Code
