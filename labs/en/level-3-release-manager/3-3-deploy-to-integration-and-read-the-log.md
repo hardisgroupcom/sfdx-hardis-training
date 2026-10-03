@@ -282,7 +282,7 @@ actions (1)**: ❌ for the one that failed, ⏸️ for the two it stopped, each 
 **The DevOps Pipeline**: click `integration`, then the **Deployment Actions** tab. The actions are
 grouped by Pull Request, numbered in the order they run. The **Status** column **(1)** gives each
 action its state in the org of `integration`, and the failed one carries **Retry** and **Mark as
-done** buttons **(2)**. The menu at the end of each row holds the rest, **Move to my Pull Request**
+done in integration** buttons **(2)**. The menu at the end of each row holds the rest, **Move to my Pull Request**
 included.
 
 ![The Deployment Actions tab of integration, with the status of each action and the menu of a failed one](../../_assets/annotated/vscode/pipeline-branch-modal-actions-failed.png)
@@ -390,7 +390,7 @@ twenty seconds, so do it by hand, the way a release manager does when a release 
 2. Add your user to **Selected Members**, then **Save**
 
 Then, in the **Deployment Actions** tab, open the menu of **Add the deployment user to the Crew
-Leads group** and click **Mark as done**. Nothing opens: sfdx-hardis records it in the background
+Leads group** and click **Mark as done in integration**. Nothing opens: sfdx-hardis records it in the background
 as done in `integration`, with a note naming you, and ticks its checkbox in the Pull Request
 comments. The button reads **Marking as done...** until the action shows **Done** in the tab.
 
