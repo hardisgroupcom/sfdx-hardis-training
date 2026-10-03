@@ -27,7 +27,7 @@
  *   movedFrom   the id of the scenario whose merged Pull Request this one moves
  *               deployment actions from, to fix their definition after they
  *               failed (Lab 3.3): the actions listed in moveActions leave the
- *               actions file of that Pull Request, and {{MOVED_FROM}} in a file
+ *               actions file of that Pull Request, and __MOVED_FROM__ in a file
  *               of this one is its number
  *   files whose path holds {{PR}}
  *               a deployment actions file is named after the Pull Request that
@@ -777,11 +777,11 @@ export function numberedFiles(scenario) {
 }
 
 /**
- * Write the files named after the Pull Request number, with {{PR}} and {{MOVED_FROM}} replaced
+ * Write the files named after the Pull Request number, with {{PR}} and __MOVED_FROM__ replaced (a token Prettier leaves alone in YAML)
  * in their path and their content.
  */
 export function writeNumberedFiles(scenario, prNumber, movedFromPr, root = ROOT) {
-  const fill = (text) => text.replaceAll("{{PR}}", String(prNumber)).replaceAll("{{MOVED_FROM}}", String(movedFromPr || ""));
+  const fill = (text) => text.replaceAll("{{PR}}", String(prNumber)).replaceAll("__MOVED_FROM__", String(movedFromPr || ""));
   return numberedFiles(scenario).map((relPath) => {
     const to = path.join(root, fill(relPath));
     fs.mkdirSync(path.dirname(to), { recursive: true });

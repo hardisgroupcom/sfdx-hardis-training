@@ -1034,7 +1034,7 @@ const RECOVERY_FIX_PR_NUMBER = 72;
 const recoveryStory = u.userStories.find((s) => s.id === "US-062");
 const recoveryScenario = (id) => path.join(ROOT, "scripts", "simulate", id, "files", "scripts", "actions", ".sfdx-hardis.{{PR}}.yml");
 const fillRecovery = (file, prNumber) =>
-  fs.readFileSync(file, "utf8").replaceAll("{{MOVED_FROM}}", String(RECOVERY_PR_NUMBER)).replace(/\r\n/g, "\n");
+  fs.readFileSync(file, "utf8").replaceAll("__MOVED_FROM__", String(RECOVERY_PR_NUMBER)).replace(/\r\n/g, "\n");
 const recoveryActionIds = [1, 2, 3].map((n) => `7d1e4b90-3c2a-4f5e-8a6b-06200000000${n}`);
 const recoveryJobUrl = `${WEB}/actions/runs/4301`;
 writeJson(path.join(OUT, "git-provider-mock-action-recovery.json"), {

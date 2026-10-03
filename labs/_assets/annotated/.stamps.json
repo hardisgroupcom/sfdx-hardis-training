@@ -157,5 +157,6 @@
   "vscode/pipeline-branch-modal-actions-failed.png": "58e3f0964f03c9af",
   "vscode/action-run-prompts.png": "c9b3f1f78c84c0fb",
   "vscode/pipeline-edit-action-moved.png": "9bfe68b68c0effbb",
-  "vscode/action-set-status.png": "1da6f17fa008e520"
+  "vscode/action-set-status.png": "1da6f17fa008e520",
+  "web/github-pr-deployment-actions-failed.png": "49ae4e5809ad5b48"
 }

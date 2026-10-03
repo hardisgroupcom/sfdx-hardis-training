@@ -329,8 +329,8 @@ The button ran:
 - **No deployment.** It runs the one action, with the code a deployment job uses for each action:
   target branch filters, references to the outputs of other actions, validity checks
 - **The org comes from the branch.** `integration` names `helios-integration` through the
-  `instanceUrl` of `config/branches/.sfdx-hardis.integration.yml`, and the command uses the org of
-  that instance you are connected to. The `sf` commands the action starts target it for this run
+  `targetUsername` of `config/branches/.sfdx-hardis.integration.yml`, and the command uses that
+  org as you connected it in Orgs Manager. The `sf` commands the action starts target it for this run
   only: your default org does not change
 - **The result goes to the Pull Request comment**, with your git user name and your Salesforce
   username in the note, through the git provider token VS Code holds. Without one, the command
