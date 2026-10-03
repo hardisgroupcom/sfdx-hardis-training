@@ -153,5 +153,9 @@
   "salesforce/flow-builder-assign-crew-full.png": "75b5288745b65e9f",
   "web/github-star-sfdx-hardis.png": "edaed3e63e065bdd",
   "web/github-star-megalinter.png": "61c3292576a7cbed",
-  "web/github-star-vscode-sfdx-hardis.png": "ddcc14c93fbbf014"
+  "web/github-star-vscode-sfdx-hardis.png": "ddcc14c93fbbf014",
+  "vscode/pipeline-branch-modal-actions-failed.png": "58e3f0964f03c9af",
+  "vscode/action-run-prompts.png": "c9b3f1f78c84c0fb",
+  "vscode/pipeline-edit-action-moved.png": "9bfe68b68c0effbb",
+  "vscode/action-set-status.png": "1da6f17fa008e520"
 }

@@ -280,8 +280,8 @@ actions (1)**: ❌ for the one that failed, ⏸️ for the two it stopped, each 
 
 ![The Deployment Actions comment with one failed action and two stopped ones](../../_assets/annotated/web/github-pr-deployment-actions-failed.png)
 
-**The DevOps Pipeline**: click `integration`, then the **Deployment Actions** tab. The **Status in
-integration** column **(1)** gives each action its state in the org, and the menu at the end of a
+**The DevOps Pipeline**: click `integration`, then the **Deployment Actions** tab. The **Status**
+column **(1)** gives each action its state in the org of `integration`, and the menu at the end of a
 failed row **(2)** offers the three ways out.
 
 ![The Deployment Actions tab of integration, with the status of each action and the menu of a failed one](../../_assets/annotated/vscode/pipeline-branch-modal-actions-failed.png)
