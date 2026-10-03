@@ -3,6 +3,17 @@
     <apiVersion>64.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <customErrors>
+        <description>Bloque la clôture si la vérification des éléments de handover échoue techniquement, pour ne jamais clôturer sans contrôle.</description>
+        <name>Handover_Check_Failed</name>
+        <label>Handover Check Failed</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <customErrorMessages>
+            <errorMessage>Impossible de vérifier les éléments de handover : {!$Flow.FaultMessage}</errorMessage>
+            <isFieldError>false</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <customErrors>
         <description>Refuses to close an installation that was never given an install date.</description>
         <name>Install_Date_Missing</name>
         <label>Install Date Missing</label>
@@ -19,6 +30,9 @@
         <label>No Install Date</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Get_Open_Handover_Item</targetReference>
+        </defaultConnector>
         <defaultConnectorLabel>Install date set</defaultConnectorLabel>
         <rules>
             <name>Date_Missing</name>
@@ -36,7 +50,7 @@
             <label>Date missing</label>
         </rules>
     </decisions>
-    <description>An installation cannot be closed without an install date.</description>
+    <description>An installation cannot be closed without an install date V2</description>
     <environments>Default</environments>
     <interviewLabel>Installation Close Check {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Installation Close Check</label>
@@ -53,6 +67,35 @@
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <description>Recherche un élément de handover de cette installation qui n&apos;est pas encore fait. S&apos;il en existe un, l&apos;installation ne peut pas être clôturée.</description>
+        <name>Get_Open_Handover_Item</name>
+        <label>Get Open Handover Item</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <faultConnector>
+            <targetReference>Handover_Check_Failed</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Installation__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Is_Done__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Handover_Item__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <start>
         <locationX>0</locationX>
         <locationY>0</locationY>
@@ -72,5 +115,5 @@
         <recordTriggerType>Update</recordTriggerType>
         <triggerType>RecordBeforeSave</triggerType>
     </start>
-    <status>Active</status>
+    <status>Obsolete</status>
 </Flow>

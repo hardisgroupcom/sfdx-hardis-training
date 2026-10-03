@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Label__c</fullName>
+    <label>Label</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Panels fixed and torqued</fullName>
+                <default>false</default>
+                <label>Panels fixed and torqued</label>
+            </value>
+            <value>
+                <fullName>Inverter commissioned</fullName>
+                <default>false</default>
+                <label>Inverter commissioned</label>
+            </value>
+            <value>
+                <fullName>Isolator labelled</fullName>
+                <default>false</default>
+                <label>Isolator labelled</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
