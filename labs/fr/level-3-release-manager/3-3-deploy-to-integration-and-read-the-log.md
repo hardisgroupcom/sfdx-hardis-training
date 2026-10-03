@@ -5,7 +5,7 @@ description: "Lisez un log de déploiement sfdx-hardis, trouvez ce qu'un joker .
 level: 3
 lab: 3
 lang: fr
-source_rev: "5c3b22c14939f749c9d254114933be6f3eef2fd4"
+source_rev: "79b0a4262e70033fe2a94c1d4e5ac3aaf73e1f6e"
 screenshots:
   - annotated/vscode/pipeline-config-deployment--delta
   - annotated/vscode/orgs-manager
@@ -295,9 +295,11 @@ case à cocher. Le tableau **Status by org branch** **(2)** dit la même chose d
 
 ![Le commentaire Deployment Actions avec une action en échec et deux actions arrêtées](../../_assets/annotated/web/github-pr-deployment-actions-failed.png)
 
-**La DevOps Pipeline** : cliquez sur `integration`, puis sur l'onglet **Deployment Actions**. La
-colonne **Status** **(1)** donne l'état de chaque action dans l'org d'`integration`, et le menu au
-bout d'une ligne en échec **(2)** propose les trois façons d'en sortir.
+**La DevOps Pipeline** : cliquez sur `integration`, puis sur l'onglet **Deployment Actions**. Les
+actions sont regroupées par Pull Request, numérotées dans l'ordre où elles tournent. La colonne
+**Status** **(1)** donne l'état de chaque action dans l'org d'`integration`, et celle en échec porte
+les boutons **Retry** et **Mark as done** **(2)**. Le menu au bout de chaque ligne contient le reste,
+**Move to my Pull Request** compris.
 
 ![L'onglet Deployment Actions d'integration, avec l'état de chaque action et le menu d'une action en échec](../../_assets/annotated/vscode/pipeline-branch-modal-actions-failed.png)
 
@@ -324,8 +326,8 @@ La définition de l'action est lue dans la branche que vous avez récupérée. R
 et faites un pull, depuis le nom de branche de la barre d'état et le panneau Source Control, pour
 que le fichier d'actions de Mariia soit là.
 
-De retour dans l'onglet **Deployment Actions**, ouvrez le menu de **Put the delivery managers in
-the Crew Leads group** et cliquez sur **Retry**. La commande tourne dans VS Code, sur
+De retour dans l'onglet **Deployment Actions**, cliquez sur **Retry** sur la ligne de **Put the
+delivery managers in the Crew Leads group**. La commande tourne dans VS Code, sur
 `helios-integration` :
 
 - l'action tourne et passe au vert, et la commande demande quoi faire des deux actions que son échec
