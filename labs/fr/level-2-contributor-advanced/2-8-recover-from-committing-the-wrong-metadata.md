@@ -63,6 +63,10 @@ Récupérez-les toutes, commitez-les toutes depuis **Source Control**, publiez e
 
 ![Le Metadata Retriever, avec toutes les lignes sélectionnées](../../_assets/annotated/vscode/metadata-retriever-recent-changes--select-all.png)
 
+Dans une org où Agentforce est activé, la liste peut aussi porter des lignes `GenOpAgentConfig`, aux
+noms de vos flows. Salesforce CLI ne connaît pas encore ce type, donc la récupération s'arrête et le
+nomme : décochez ces lignes et relancez la récupération.
+
 ### 2. Regarder ce que vous avez fait
 
 Regardez le rapport **Git Delta package.xml** que la publication a proposé : bien plus que l'unique
