@@ -5,7 +5,7 @@ description: "Lisez un log de déploiement sfdx-hardis, trouvez ce qu'un joker .
 level: 3
 lab: 3
 lang: fr
-source_rev: "8b0ed27fb127e4b7ac73f22ed6fc4ea7037e18c2"
+source_rev: "072bcccd9f364628d97fa42470157b31d8a4ce1d"
 screenshots:
   - annotated/vscode/pipeline-config-deployment--delta
   - annotated/vscode/orgs-manager
@@ -418,8 +418,8 @@ livraison ne peut pas attendre :
 Ensuite, dans l'onglet **Deployment Actions**, ouvrez le menu de **Add the deployment user to the
 Crew Leads group** et cliquez sur **Mark as done**. Rien ne s'ouvre : sfdx-hardis l'enregistre en
 arrière-plan comme faite dans `integration`, avec une note qui vous nomme, et coche sa case dans les
-commentaires de la Pull Request. Une notification dit quand c'est enregistré, et l'action affiche
-**Done** dans l'onglet.
+commentaires de la Pull Request. Le bouton affiche **Marking as done...** jusqu'à ce que l'action
+affiche **Done** dans l'onglet.
 
 Le prochain déploiement vers `integration` la saute. Dans `uat` et au-delà, elle tourne toujours,
 parce que personne ne l'y a faite.
