@@ -5,6 +5,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 
 ## 2026-10-03
 
+- Labs 2.4 and 3.5: a manual step declared before the deployment now stops the check until it is ticked or marked as done, then the check is run again.
 - Lab 3.3 gains a Part 3: a teammate Pull Request whose post-deployment actions fail after the merge, recovered with Retry, a fix Pull Request and Mark as done from the Deployment Actions tab. It needs the next versions of sfdx-hardis and of the VS Code extension.
 - Lab 2.3 shows the Deployment Actions tab as the next VS Code extension draws it: actions grouped by Pull Request, the type and the phase under the label.
 

@@ -416,7 +416,8 @@
       "flags": [],
       "config": [
         "dataPackages",
-        "commandsPostDeploy"
+        "commandsPostDeploy",
+        "failValidationOnPendingManualActions"
       ],
       "docs": [
         "salesforce-devops-agent-data-workspaces",
@@ -821,7 +822,8 @@
       "config": [
         "mergeTargets",
         "availableTargetBranches",
-        "packageNoOverwritePath"
+        "packageNoOverwritePath",
+        "failValidationOnPendingManualActions"
       ],
       "docs": [
         "salesforce-devops-deploy-major-branches",
@@ -1500,6 +1502,10 @@
       ],
       "dataPackages": [
         "lab-2-4"
+      ],
+      "failValidationOnPendingManualActions": [
+        "lab-2-4",
+        "lab-3-5"
       ],
       "testCoverageNotBlocking": [
         "lab-2-5"
