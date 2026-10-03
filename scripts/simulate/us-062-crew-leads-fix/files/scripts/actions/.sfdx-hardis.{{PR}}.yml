@@ -9,4 +9,4 @@ commandsPostDeploy:
     command: ""
     context: process-deployment-only
     runOnlyOnceByOrg: true
-    movedFrom: {{MOVED_FROM}}
+    movedFrom: { { MOVED_FROM } }

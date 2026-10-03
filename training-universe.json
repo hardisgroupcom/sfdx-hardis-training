@@ -443,7 +443,10 @@
         "The crew capacity recalculated once after the deployment"
       ],
       "branch": "training/mate-us-062-crew-leads",
-      "metadata": ["scripts/apex/crew-leads-add-delivery-managers.apex", "scripts/apex/crew-leads-add-deployment-user.apex"],
+      "metadata": [
+        "scripts/apex/crew-leads-add-delivery-managers.apex",
+        "scripts/apex/crew-leads-add-deployment-user.apex"
+      ],
       "seededFailure": "The Crew Leads group was created by hand in the dev org and never shipped, and the crew capacity action names a class that does not exist, so two post-deployment actions fail after the merge"
     },
     {
