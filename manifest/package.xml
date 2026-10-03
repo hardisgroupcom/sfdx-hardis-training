@@ -86,7 +86,6 @@
         <name>PermissionSet</name>
     </types>
     <types>
-        <members>Admin</members>
         <members>Helios Crew</members>
         <name>Profile</name>
     </types>
