@@ -3327,19 +3327,6 @@
         }
       ]
     },
-    "vscode/action-set-status.png": {
-      "pills": [
-        {
-          "n": 1,
-          "x": 26,
-          "y": 19.3,
-          "w": 47.6,
-          "h": 2.8,
-          "px": 23.2,
-          "py": 20.6
-        }
-      ]
-    },
     "web/github-pr-deployment-actions-failed.png": {
       "pills": [
         {

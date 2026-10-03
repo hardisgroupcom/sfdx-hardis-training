@@ -15,7 +15,6 @@ screenshots:
   - annotated/vscode/action-run-prompts
   - annotated/vscode/pipeline-edit-action-moved
   - annotated/web/github-pr-deployment-actions-moved
-  - annotated/vscode/action-set-status
 depends_on:
   commands: [hardis:project:deploy:smart, hardis:project:action:run, hardis:project:action:set-status, hardis:project:action:update]
   flags: [--move-to-pr, --org-branch]
@@ -391,10 +390,9 @@ twenty seconds, so do it by hand, the way a release manager does when a release 
 2. Add your user to **Selected Members**, then **Save**
 
 Then, in the **Deployment Actions** tab, open the menu of **Add the deployment user to the Crew
-Leads group** and click **Mark as done**. The command records it as done in `integration`, with a
-note naming you **(1)**, and ticks its checkbox in the Pull Request comments.
-
-![The command runner recording the action as done by hand](../../_assets/annotated/vscode/action-set-status.png)
+Leads group** and click **Mark as done**. Nothing opens: sfdx-hardis records it in the background
+as done in `integration`, with a note naming you, and ticks its checkbox in the Pull Request
+comments. A notification says when it is recorded, and the action shows **Done** in the tab.
 
 The next deployment to `integration` skips it. In `uat` and beyond it still runs, because nobody
 did it there.

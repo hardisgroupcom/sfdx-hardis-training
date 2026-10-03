@@ -15,7 +15,6 @@ screenshots:
   - annotated/vscode/action-run-prompts
   - annotated/vscode/pipeline-edit-action-moved
   - annotated/web/github-pr-deployment-actions-moved
-  - annotated/vscode/action-set-status
 depends_on:
   commands: [hardis:project:deploy:smart, hardis:project:action:run, hardis:project:action:set-status, hardis:project:action:update]
   flags: [--move-to-pr, --org-branch]
@@ -417,11 +416,10 @@ livraison ne peut pas attendre :
 2. Ajoutez votre utilisateur dans **Selected Members**, puis **Save**
 
 Ensuite, dans l'onglet **Deployment Actions**, ouvrez le menu de **Add the deployment user to the
-Crew Leads group** et cliquez sur **Mark as done**. La commande l'enregistre comme faite dans
-`integration`, avec une note qui vous nomme **(1)**, et coche sa case dans les commentaires de la
-Pull Request.
-
-![Le panneau de commande qui enregistre l'action comme faite à la main](../../_assets/annotated/vscode/action-set-status.png)
+Crew Leads group** et cliquez sur **Mark as done**. Rien ne s'ouvre : sfdx-hardis l'enregistre en
+arrière-plan comme faite dans `integration`, avec une note qui vous nomme, et coche sa case dans les
+commentaires de la Pull Request. Une notification dit quand c'est enregistré, et l'action affiche
+**Done** dans l'onglet.
 
 Le prochain déploiement vers `integration` la saute. Dans `uat` et au-delà, elle tourne toujours,
 parce que personne ne l'y a faite.
