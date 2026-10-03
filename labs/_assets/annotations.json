@@ -3361,6 +3361,19 @@
           "py": 46.5
         }
       ]
+    },
+    "web/github-pr-deployment-actions-moved.png": {
+      "pills": [
+        {
+          "n": 1,
+          "x": 56.6,
+          "y": 55.3,
+          "w": 14.8,
+          "h": 7,
+          "px": 76.5,
+          "py": 57.5
+        }
+      ]
     }
   }
 }
