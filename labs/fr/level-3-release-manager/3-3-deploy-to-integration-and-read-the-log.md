@@ -5,7 +5,7 @@ description: "Lisez un log de déploiement sfdx-hardis, trouvez ce qu'un joker .
 level: 3
 lab: 3
 lang: fr
-source_rev: "4fab8e4311867a9191cbc9e72411f422a42ebc0f"
+source_rev: "0ca5dcadb6dd8699d8338c297dc1d92e3db19529"
 screenshots:
   - annotated/vscode/pipeline-config-deployment--delta
   - annotated/vscode/orgs-manager
@@ -296,7 +296,7 @@ case à cocher. Le tableau **Status by org branch** **(2)** dit la même chose d
 ![Le commentaire Deployment Actions avec une action en échec et deux actions arrêtées](../../_assets/annotated/web/github-pr-deployment-actions-failed.png)
 
 **La DevOps Pipeline** : cliquez sur `integration`, puis sur l'onglet **Deployment Actions**. La
-colonne **Status in integration** **(1)** donne l'état de chaque action dans l'org, et le menu au
+colonne **Status** **(1)** donne l'état de chaque action dans l'org d'`integration`, et le menu au
 bout d'une ligne en échec **(2)** propose les trois façons d'en sortir.
 
 ![L'onglet Deployment Actions d'integration, avec l'état de chaque action et le menu d'une action en échec](../../_assets/annotated/vscode/pipeline-branch-modal-actions-failed.png)
