@@ -5,7 +5,7 @@ description: "Lisez un log de déploiement sfdx-hardis, trouvez ce qu'un joker .
 level: 3
 lab: 3
 lang: fr
-source_rev: "072bcccd9f364628d97fa42470157b31d8a4ce1d"
+source_rev: "e1e75b7dc4682f7532e515d1bcebe0b71ca9fe06"
 screenshots:
   - annotated/vscode/pipeline-config-deployment--delta
   - annotated/vscode/orgs-manager
@@ -297,7 +297,7 @@ case à cocher. Le tableau **Status by org branch** **(2)** dit la même chose d
 **La DevOps Pipeline** : cliquez sur `integration`, puis sur l'onglet **Deployment Actions**. Les
 actions sont regroupées par Pull Request, numérotées dans l'ordre où elles tournent. La colonne
 **Status** **(1)** donne l'état de chaque action dans l'org d'`integration`, et celle en échec porte
-les boutons **Retry** et **Mark as done** **(2)**. Le menu au bout de chaque ligne contient le reste,
+les boutons **Retry** et **Mark as done in integration** **(2)**. Le menu au bout de chaque ligne contient le reste,
 **Move to my Pull Request** compris.
 
 ![L'onglet Deployment Actions d'integration, avec l'état de chaque action et le menu d'une action en échec](../../_assets/annotated/vscode/pipeline-branch-modal-actions-failed.png)
@@ -416,7 +416,7 @@ livraison ne peut pas attendre :
 2. Ajoutez votre utilisateur dans **Selected Members**, puis **Save**
 
 Ensuite, dans l'onglet **Deployment Actions**, ouvrez le menu de **Add the deployment user to the
-Crew Leads group** et cliquez sur **Mark as done**. Rien ne s'ouvre : sfdx-hardis l'enregistre en
+Crew Leads group** et cliquez sur **Mark as done in integration**. Rien ne s'ouvre : sfdx-hardis l'enregistre en
 arrière-plan comme faite dans `integration`, avec une note qui vous nomme, et coche sa case dans les
 commentaires de la Pull Request. Le bouton affiche **Marking as done...** jusqu'à ce que l'action
 affiche **Done** dans l'onglet.
