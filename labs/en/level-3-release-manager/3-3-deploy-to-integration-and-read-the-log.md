@@ -280,9 +280,11 @@ actions (1)**: ❌ for the one that failed, ⏸️ for the two it stopped, each 
 
 ![The Deployment Actions comment with one failed action and two stopped ones](../../_assets/annotated/web/github-pr-deployment-actions-failed.png)
 
-**The DevOps Pipeline**: click `integration`, then the **Deployment Actions** tab. The **Status**
-column **(1)** gives each action its state in the org of `integration`, and the menu at the end of a
-failed row **(2)** offers the three ways out.
+**The DevOps Pipeline**: click `integration`, then the **Deployment Actions** tab. The actions are
+grouped by Pull Request, numbered in the order they run. The **Status** column **(1)** gives each
+action its state in the org of `integration`, and the failed one carries **Retry** and **Mark as
+done** buttons **(2)**. The menu at the end of each row holds the rest, **Move to my Pull Request**
+included.
 
 ![The Deployment Actions tab of integration, with the status of each action and the menu of a failed one](../../_assets/annotated/vscode/pipeline-branch-modal-actions-failed.png)
 
@@ -307,8 +309,8 @@ The action definition is read from the branch you have checked out. Check out `i
 pull it, from the branch name in the status bar and the Source Control panel, so Mariia's actions
 file is there.
 
-Back in the **Deployment Actions** tab, open the menu of **Put the delivery managers in the Crew
-Leads group** and click **Retry**. The command runs in VS Code, against `helios-integration`:
+Back in the **Deployment Actions** tab, click **Retry** on the row of **Put the delivery managers in
+the Crew Leads group**. The command runs in VS Code, against `helios-integration`:
 
 - the action runs and goes green, and the command asks what to do with the two actions its failure
   stopped **(1)**
