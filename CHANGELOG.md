@@ -5,6 +5,8 @@ a day, newest first, and a change goes under the date of the day it is made.
 
 ## 2026-10-04
 
+- The screenshots of the DevOps Pipeline panel show it as the next VS Code extension draws it: a Pull Requests search button in the header, and a Pull Request window with General, Tickets, Deployment Actions, Validation, Code Quality and Deployment tabs.
+- Lab 2.3: the picture of the feature branch and of the badge of its Pull Request shows the diagram again, with both marked.
 - Lab 2.4: after declaring the three deployment actions, an explicit step says to commit their file and publish again, so the Pull Request carries them, and names the VS Code message that reminds you.
 - Lab 3.3: the screenshot of the Deployment Actions tab shows the switch to the next promotion above the actions, and every item of the row menu.
 - Labs 2.3 and 2.4: the deployment actions file shows the ids the editor generates, and says not to change them.
