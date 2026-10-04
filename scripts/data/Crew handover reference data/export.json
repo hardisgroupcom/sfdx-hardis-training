@@ -1,0 +1,16 @@
+{
+  "sfdxHardisLabel": "handover data",
+  "sfdxHardisDescription": "import des data handover à partir de la scratch org",
+  "objects": [
+    {
+      "query": "SELECT External_id__c, Name,  Installation__c, Sequence__c, Is_Done__c, Is_Template__c, Label__c FROM Handover_Item__c ",
+      "operation": "Upsert",
+      "externalId": "External_id__c",
+      "master": true,
+      "deleteOldData": false,
+      "useQueryAll": false,
+      "allOrNone": true,
+      "updateWithMockData": false
+    }
+  ]
+}
