@@ -1,0 +1,9 @@
+commandsPostDeploy:
+  - id: b455e40c-9d13-486d-b9a2-8381706924f6
+    label: load hand over reference data
+    type: data
+    command: ""
+    parameters:
+      sfdmuProject: Crew handover reference data
+    runOnlyOnceByOrg: true
+    context: process-deployment-only
