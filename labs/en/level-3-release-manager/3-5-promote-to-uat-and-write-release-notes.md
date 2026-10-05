@@ -353,6 +353,15 @@ Command documentation: [hardis:doc:release-notes](https://sfdx-hardis.cloudity.c
 
 ## If it goes wrong
 
+**The deployment job to uat is red on "Put the delivery managers in the Crew Leads group".**
+You did [Lab 3.3](3-3-deploy-to-integration-and-read-the-log.md) before 2026-10-05, when Mariia's fix did not ship the Crew Leads public group
+yet: `helios-uat` has none, and her first action looks for it. The metadata is deployed, so do not
+deploy again. Recover it the way Lab 3.3 taught: create the group in `helios-uat` (**Setup** >
+**Public Groups** > **New**, group name `Helios_Crew_Leads`), then in the **DevOps Pipeline** panel
+click `uat`, **Deployment Actions** tab, **Retry** on the failed action, and answer **Run all the
+next actions**. Create the same group in `helios-preprod` and `helios-prod` before their promotions
+in [Lab 3.6](3-6-release-to-production-and-read-dora-metrics.md).
+
 **The check fails with authentication errors for uat.**
 [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) for the `uat` branch: the secrets, and the pre-authorisation of the External Client App in
 `helios-uat`.
