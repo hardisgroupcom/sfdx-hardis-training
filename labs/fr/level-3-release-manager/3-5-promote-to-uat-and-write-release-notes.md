@@ -5,7 +5,7 @@ description: "Protégez ce que l'UAT garde pour elle avec package-no-overwrite, 
 level: 3
 lab: 5
 lang: fr
-source_rev: "92d632ca7c80162d5a137015a77a60277e17d879"
+source_rev: "bac4a1ec653b25aa1cafb4976c6d4897e1e074aa"
 screenshots:
   - annotated/vscode/devops-pipeline-level3--create-promotion
   - annotated/vscode/pipeline-branch-modal-level3--what-it-carries
@@ -371,6 +371,16 @@ Documentation de la commande : [hardis:doc:release-notes](https://sfdx-hardis.cl
 - Les notes de version dans la description de la Pull Request de promotion
 
 ## En cas de problème
+
+**Le job de déploiement vers uat est rouge sur « Put the delivery managers in the Crew Leads group ».**
+Vous avez fait le [Lab 3.3](3-3-deploy-to-integration-and-read-the-log.md) avant le 2026-10-05, quand le correctif de Mariia ne livrait pas encore le
+groupe public Crew Leads : `helios-uat` n'en a pas, et sa première action le cherche. Les
+métadonnées sont déployées, donc ne redéployez pas. Rattrapez-le comme le [Lab 3.3](3-3-deploy-to-integration-and-read-the-log.md) l'a montré : créez
+le groupe dans `helios-uat` (**Setup** > **Public Groups** > **New**, nom de groupe
+`Helios_Crew_Leads`), puis dans le panneau **DevOps Pipeline** cliquez sur `uat`, onglet
+**Deployment Actions**, **Retry** sur l'action en échec, et répondez **Run all the next
+actions**. Faites de même dans `helios-preprod` et `helios-prod` avant leurs promotions, ou lancez
+d'abord **Training: Level 3** > **Update my course** : le groupe voyage alors avec les sources.
 
 **Le contrôle échoue avec des erreurs d'authentification pour uat.**
 [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) pour la branche `uat` : les secrets, et la pré-autorisation de l'External Client App dans
