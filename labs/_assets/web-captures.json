@@ -386,7 +386,7 @@
     {
       "name": "github-pr-promotion-description",
       "_comment": "Lab 3.10 step 5: the description a promotion Pull Request is created with, the conflict warning, the promotionPullRequests block, the carried table and the folded prompt for a coding agent.",
-      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/44",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/38",
       "width": 1440,
       "height": 2400,
       "settle": 5000,
@@ -401,7 +401,7 @@
     {
       "name": "github-pr-promotion-markers",
       "_comment": "Lab 3.10 step 5: the sfdx-hardis comment of the red check, naming the two files still holding conflict markers.",
-      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/44",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/38",
       "width": 1440,
       "height": 2400,
       "settle": 5000,
