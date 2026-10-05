@@ -3,4 +3,5 @@
 # DevOps Pipeline panel: gear menu > Pipeline Settings, scope Branch: uat.
 targetUsername: test-9eowlxyur487@example.com
 instanceUrl: https://test.salesforce.com
-mergeTargets: []
+mergeTargets:
+  - preprod
