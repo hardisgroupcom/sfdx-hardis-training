@@ -184,7 +184,7 @@
     },
     {
       "name": "github-pr-files",
-      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/121/files",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/17/files",
       "width": 1440,
       "height": 1200,
       "settle": 6000,
@@ -211,7 +211,7 @@
     {
       "name": "github-branch-rule",
       "_comment": "The integration rule that Set up my training environment creates. Its id changes whenever the rule is created again: read it with gh api graphql, branchProtectionRules { databaseId pattern }.",
-      "url": "https://github.com/nvuillam/sfdx-hardis-training/settings/branch_protection_rules/83423610",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/settings/branch_protection_rules/84223371",
       "width": 1440,
       "height": 2400,
       "settle": 3000,
@@ -290,7 +290,7 @@
     {
       "name": "github-pr-check-failed",
       "_comment": "Lab 2.2 step 3: the sfdx-hardis comment of a US-021 Pull Request whose flow reads a field the package does not carry. Taken before the fix: the comment is updated in place afterwards.",
-      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/109",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/4",
       "width": 1440,
       "height": 1800,
       "settle": 5000,
@@ -299,7 +299,7 @@
     {
       "name": "github-pr-flow-diff",
       "_comment": "Lab 2.2 step 3: the visual diff sfdx-hardis posts for each Flow a Pull Request changes.",
-      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/109",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/4",
       "width": 1440,
       "height": 2500,
       "settle": 8000,
@@ -312,7 +312,7 @@
     {
       "name": "github-pr-deployment-actions",
       "_comment": "Lab 2.4 step 5: the Deployment Actions comment sfdx-hardis keeps on a Pull Request, after the check of US-026 and before the merge.",
-      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/111",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/7",
       "width": 1440,
       "height": 2400,
       "settle": 5000,
@@ -326,7 +326,7 @@
       "name": "github-pr-promotion-actions",
       "fresh": true,
       "_comment": "Lab 3.5 step 4: the deployment actions a promotion Pull Request collects from every story it carries, with the manual checklist above the tables.",
-      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/125",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/23",
       "width": 1440,
       "height": 2400,
       "settle": 5000,
@@ -340,7 +340,7 @@
       "name": "github-pr-release-notes",
       "fresh": true,
       "_comment": "Lab 3.5 step 7: the release notes, improved by hand, pasted in the description of the promotion Pull Request.",
-      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/125",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training/pull/23",
       "width": 1440,
       "height": 2400,
       "settle": 5000,
