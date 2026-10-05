@@ -270,10 +270,10 @@ On this promotion, the generated notes open like this:
 
 | Metric           | Value |
 |------------------|-------|
-| Pull Requests    | 20    |
-| Tickets          | 15    |
+| Pull Requests    | 22    |
+| Tickets          | 16    |
 | Contributors     | 1     |
-| Added / Modified | 34    |
+| Added / Modified | 38    |
 ```
 
 The count includes the Pull Requests that carry no story: the configuration ones of [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) and

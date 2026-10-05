@@ -213,8 +213,9 @@ and the package it sent was built like this:
    package. `enableDeltaDeploymentBetweenMajorBranches` controls whether the same applies to a
    major-to-major deployment, and is off by default because a promotion to production is the worst
    possible place to discover that the org drifted
-3. **The overwrite manager**, when `manifest/package-no-overwrite.xml` lists something: the org is queried, and
-   any component **listed in that file** that the org already has is taken out. It is scoped to its
+3. **The overwrite manager**, when the package holds something `manifest/package-no-overwrite.xml` lists:
+   the org is queried, and any component **listed in that file** that the org already has is taken out.
+   When nothing in the package matches the list, the org is not queried at all, and the log says so. It is scoped to its
    own list and nothing else, and a component it protects is still created in an org that does not
    have it yet
 4. **Deploy-on-change**, if `manifest/packageDeployOnChange.xml` exists: those components, and only
@@ -367,6 +368,12 @@ Request:
 
 - **Files changed**: the action left the actions file of US-062 and arrived in the file of the new
   Pull Request, with `className: CrewCapacityBatch` and `movedFrom` set to the number of US-062
+- still in **Files changed**: a new file, `groups/Helios_Crew_Leads.group-meta.xml`, and one more
+  block in `manifest/package.xml`. A public group is metadata like any other, and Mariia put hers in
+  the sources. In `integration` the deployment finds the group you created in step 11 and leaves it
+  as it is. In `uat`, `preprod` and production, where nobody created anything, the deployment
+  creates it before the actions run. Without that file, the first action would fail in each of
+  them the way it failed here
 - the **Deployment Actions** tab of her Pull Request: open the action, and the editor shows where
   it comes from, under **Moved from (1)**
 
@@ -438,6 +445,8 @@ Command documentation: [hardis:project:action:run](https://sfdx-hardis.cloudity.
   action with a note saying you ran it, ↪️ for the crew capacity action, ✅ for the last one with a
   note saying you closed it by hand
 - In `helios-integration`, a **Crew Leads** public group holding the delivery managers and you
+- `force-app/main/default/groups/Helios_Crew_Leads.group-meta.xml` on `integration`, so the next
+  orgs get the group from the deployment
 
 ## If it goes wrong
 
