@@ -379,8 +379,8 @@ métadonnées sont déployées, donc ne redéployez pas. Rattrapez-le comme le [
 le groupe dans `helios-uat` (**Setup** > **Public Groups** > **New**, nom de groupe
 `Helios_Crew_Leads`), puis dans le panneau **DevOps Pipeline** cliquez sur `uat`, onglet
 **Deployment Actions**, **Retry** sur l'action en échec, et répondez **Run all the next
-actions**. Faites de même dans `helios-preprod` et `helios-prod` avant leurs promotions, ou lancez
-d'abord **Training: Level 3** > **Update my course** : le groupe voyage alors avec les sources.
+actions**. Créez le même groupe dans `helios-preprod` et `helios-prod` avant leurs promotions du
+[Lab 3.6](3-6-release-to-production-and-read-dora-metrics.md).
 
 **Le contrôle échoue avec des erreurs d'authentification pour uat.**
 [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) pour la branche `uat` : les secrets, et la pré-autorisation de l'External Client App dans
