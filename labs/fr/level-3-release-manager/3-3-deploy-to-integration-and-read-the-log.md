@@ -5,7 +5,7 @@ description: "Lisez un log de déploiement sfdx-hardis, trouvez ce qu'un joker .
 level: 3
 lab: 3
 lang: fr
-source_rev: "92d632ca7c80162d5a137015a77a60277e17d879"
+source_rev: "867e1a6f169325d15fa5d47a32d823aae4deb0c3"
 screenshots:
   - annotated/vscode/pipeline-config-deployment--delta
   - annotated/vscode/orgs-manager
@@ -285,8 +285,8 @@ Le job de déploiement passe au rouge. Les métadonnées sont déployées, puis 
 System.QueryException: List has no rows for assignment to SObject
 ```
 
-Mariia a créé le groupe à la main dans sa propre org, et un groupe public relève du setup : rien dans
-sa Pull Request ne le crée.
+Mariia a créé le groupe à la main dans sa propre org, dans Setup, comme on en crée un le plus
+souvent : rien dans sa Pull Request ne le crée.
 
 **Le commentaire Deployment Actions** de sa Pull Request liste les trois actions sous **Failed
 actions (1)** : ❌ pour celle qui a échoué, ⏸️ pour les deux qu'elle a arrêtées, chacune avec une
@@ -395,7 +395,7 @@ Request :
 - toujours dans **Files changed** : un nouveau fichier, `groups/Helios_Crew_Leads.group-meta.xml`,
   et un bloc de plus dans `manifest/package.xml`. Un groupe public est une métadonnée comme une
   autre, et Mariia a mis le sien dans les sources. Dans `integration`, le déploiement trouve le
-  groupe que vous avez créé à l'étape 11 et le laisse tel quel. Dans `uat`, `preprod` et la
+  groupe que vous avez créé à l'étape 11 et le garde, sous le libellé `Crew Leads`. Dans `uat`, `preprod` et la
   production, où personne n'a rien créé, le déploiement le crée avant que les actions ne
   s'exécutent. Sans ce fichier, la première action échouerait dans chacune d'elles comme elle a
   échoué ici
