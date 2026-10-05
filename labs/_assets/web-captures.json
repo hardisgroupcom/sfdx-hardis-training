@@ -261,7 +261,7 @@
     {
       "name": "github-run-workflow",
       "_comment": "Lab 3.8 step 4: the Run workflow menu of the Org Monitoring workflow, in a monitoring repository made by an earlier run of the course. The menu is opened, never submitted.",
-      "url": "https://github.com/nvuillam/sfdx-hardis-training-monitoring-run2/actions/workflows/org-monitoring.yml",
+      "url": "https://github.com/nvuillam/sfdx-hardis-training-monitoring-run3/actions/workflows/org-monitoring.yml",
       "width": 1440,
       "height": 900,
       "settle": 2000,

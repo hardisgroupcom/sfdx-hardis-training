@@ -283,10 +283,10 @@ Sur cette promotion, les notes générées s'ouvrent ainsi :
 
 | Metric           | Value |
 |------------------|-------|
-| Pull Requests    | 20    |
-| Tickets          | 15    |
+| Pull Requests    | 22    |
+| Tickets          | 16    |
 | Contributors     | 1     |
-| Added / Modified | 34    |
+| Added / Modified | 38    |
 ```
 
 Le décompte inclut les Pull Requests qui ne portent aucune story : celles de configuration du [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md)

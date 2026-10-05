@@ -327,8 +327,9 @@ marquer, et sfdx-hardis publie un commentaire **Deployment Actions** sur la Pull
 - **Pending manual actions** **(1)** : votre étape de délivrabilité, avec une case à cocher, pour
   `integration`
 - **Status by org branch** **(2)** : une ligne par action, avec son moment. L'étape de délivrabilité,
-  **pre-deploy**, attend quelqu'un ; l'import et la planification, **post-deploy**, sont marqués
-  **skipped**, parce qu'un contrôle ne change rien
+  **pre-deploy**, attend quelqu'un ; l'import et la planification, **post-deploy**, indiquent
+  **not run in this org branch yet**, parce que le contrôle s'est arrêté avant eux, et qu'un
+  contrôle ne lance ni l'un ni l'autre de toute façon
 
 Faites le clic dans `helios-integration` (elle affiche déjà **All email** sur vos scratch orgs, c'est
 donc une vérification de dix secondes), puis cochez la case **(1)**. Dans VS Code, **Mark as done in
