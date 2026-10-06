@@ -309,7 +309,7 @@ which performed, in order:
 4. **Committed what it changed**, as `chore(sfdx-hardis): update package content` and
    `chore(sfdx-hardis): clean sfdx project`. Those commits are the tool's, not yours: yours is the
    one you wrote at step 4
-5. **Pushed** the branch to your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`)
+5. **Pushed** the branch to your fork
 
 Every one of those steps is configuration, not magic. Everything it did is in
 `config/.sfdx-hardis.yml`, and a project that wants different behaviour changes that file.
@@ -331,7 +331,7 @@ panel and click **Publish Branch**.
 - The **Git Delta package.xml** report naming your four components and nothing you did not touch:
   the field, the layout and the two permission sets
 - `manifest/package.xml` gaining one line, the new field, in a commit the tool made
-- Your branch on GitHub, in your fork (`github.com/my-username/sfdx-hardis-training`), under **Branches**
+- Your branch on GitHub, in your fork, under **Branches**
 - The DevOps Pipeline panel still without your branch: it draws a branch once it has a Pull
   Request, and yours gets one in [Lab 1.6](1-6-pull-request-deployment-check-and-merge.md)
 
@@ -362,14 +362,14 @@ cleaning rules in the Under the hood block above. Nothing is lost in your org: c
 is committed, never what is in Salesforce.
 
 **Push is rejected.**
-Your fork (`github.com/my-username/sfdx-hardis-training`) moved, usually because you reset a level. Pull first: Source Control panel, **...** menu,
+Your fork moved, usually because you reset a level. Pull first: Source Control panel, **...** menu,
 **Pull**.
 
 ## Check your work
 
 Welcome page > **Training: Level 1** > **Check my work**, then pick **Lab 1.5**.
 
-It reads the copy of your branch in your fork (`github.com/my-username/sfdx-hardis-training`), the one Save / Publish pushed: the field, the
+It reads the copy of your branch in your fork, the one Save / Publish pushed: the field, the
 permission set granting it, and the layout carrying it. A commit that stayed on your machine does
 not count, because nobody else can see it.
 

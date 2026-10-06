@@ -299,7 +299,7 @@ That is one full delivery loop. Every story for the rest of your life on this pr
 ## If it goes wrong
 
 **The checks never start.**
-Actions are still disabled on your fork (`github.com/my-username/sfdx-hardis-training`). GitHub hides
+Actions are still disabled on your fork. GitHub hides
 that switch behind a banner no command can reach: open the **Actions** tab of your fork and click
 **I understand my workflows, go ahead and enable them**. Re-running **Set up my training
 environment** will not do it for you, because there is no API behind that banner.
@@ -321,7 +321,7 @@ without the field. Redo [Lab 1.5 step 3](1-5-retrieve-commit-and-publish-your-ch
 
 **The check is stuck as "Expected".**
 The workflow is waiting for a job that will never run, usually because the base of the Pull Request
-is the original repository and not your fork (`github.com/my-username/sfdx-hardis-training`). Close it and open it again with the right base.
+is the original repository and not your fork. Close it and open it again with the right base.
 
 **The merge box says Merging is blocked, and the button is grey.**
 A required check is still running, or it failed. Wait for it, or open it from the **Checks** tab,
