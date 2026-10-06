@@ -5,7 +5,7 @@ description: "Ouvrez une Pull Request GitHub, lisez le contrôle de déploiement
 level: 1
 lab: 6
 lang: fr
-source_rev: "8234def2c3d19cf3752d21be9c04204c40ca0ff8"
+source_rev: "0990e9994b61a2ade22a0280849ae5fe07d2acb0"
 screenshots:
   - annotated/web/github-pr-checks
   - annotated/web/github-pr-comment
@@ -315,7 +315,7 @@ projet, sera cette boucle.
 ## En cas de problème
 
 **Les contrôles ne démarrent jamais.**
-Actions est encore désactivé sur votre fork (`github.com/my-username/sfdx-hardis-training`). GitHub
+Actions est encore désactivé sur votre fork. GitHub
 cache cet interrupteur derrière une bannière qu'aucune commande ne peut atteindre : ouvrez l'onglet
 **Actions** de votre fork et cliquez sur **I understand my workflows, go ahead and enable them**.
 Relancer **Set up my training environment** ne le fera pas à votre place : il n'y a pas d'API
@@ -338,7 +338,7 @@ set sans le champ. Refaites le [Lab 1.5, étape 3](1-5-retrieve-commit-and-publi
 
 **Le contrôle reste bloqué sur "Expected".**
 Le workflow attend un job qui ne tournera jamais, en général parce que la base de la Pull Request
-est le repository d'origine et non votre fork (`github.com/my-username/sfdx-hardis-training`).
+est le repository d'origine et non votre fork.
 Fermez-la et rouvrez-la avec la bonne base.
 
 **La boîte de merge dit Merging is blocked, et le bouton est gris.**
