@@ -234,10 +234,7 @@
         "Contributors can start a hotfix from preprod"
       ],
       "branch": "features/US-050-pipeline-up-to-production",
-      "metadata": [
-        "config/.sfdx-hardis.yml",
-        "config/branches"
-      ]
+      "metadata": ["config/.sfdx-hardis.yml", "config/branches"]
     },
     {
       "id": "US-052",
