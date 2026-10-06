@@ -5,7 +5,7 @@ description: "Ouvrez une Pull Request GitHub, lisez le contrôle de déploiement
 level: 1
 lab: 6
 lang: fr
-source_rev: "0990e9994b61a2ade22a0280849ae5fe07d2acb0"
+source_rev: "e02b8da9d8186fdb3574371c6b54375323049f2d"
 screenshots:
   - annotated/web/github-pr-checks
   - annotated/web/github-pr-comment
@@ -315,7 +315,7 @@ projet, sera cette boucle.
 ## En cas de problème
 
 **Les contrôles ne démarrent jamais.**
-Actions est encore désactivé sur votre fork. GitHub
+Actions est encore désactivé sur votre fork (`github.com/my-username/sfdx-hardis-training`). GitHub
 cache cet interrupteur derrière une bannière qu'aucune commande ne peut atteindre : ouvrez l'onglet
 **Actions** de votre fork et cliquez sur **I understand my workflows, go ahead and enable them**.
 Relancer **Set up my training environment** ne le fera pas à votre place : il n'y a pas d'API

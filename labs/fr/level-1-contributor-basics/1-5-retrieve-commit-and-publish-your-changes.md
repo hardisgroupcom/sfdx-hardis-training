@@ -5,7 +5,7 @@ description: "Rapatriez vos modifications d'org dans Git avec le Metadata Retrie
 level: 1
 lab: 5
 lang: fr
-source_rev: "0990e9994b61a2ade22a0280849ae5fe07d2acb0"
+source_rev: "e02b8da9d8186fdb3574371c6b54375323049f2d"
 screenshots:
   - annotated/vscode/pipeline-cards-level1--commit-changes
   - annotated/vscode/metadata-retriever-recent-changes--find
@@ -348,7 +348,7 @@ Répondez **Yes** et la branche part sur votre fork
 - Le rapport **Git Delta package.xml** nommant vos quatre composants et rien que vous n'ayez touché :
   le champ, la présentation de page et les deux permission sets
 - `manifest/package.xml` gagnant une ligne, le nouveau champ, dans un commit fait par l'outil
-- Votre branche sur GitHub, dans votre fork, sous
+- Votre branche sur GitHub, dans votre fork (`github.com/my-username/sfdx-hardis-training`), sous
   **Branches**
 - Le panneau DevOps Pipeline toujours sans votre branche : il dessine une branche dès qu'elle a une
   Pull Request, et la vôtre en reçoit une au [Lab 1.6](1-6-pull-request-deployment-check-and-merge.md)
