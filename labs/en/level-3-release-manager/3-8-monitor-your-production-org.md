@@ -105,8 +105,8 @@ It runs in a command panel and asks its questions one at a time, the way [Lab 3.
 1. **Did you configure the sfdx-hardis monitoring pre-requisites on your Git server ?** The second
    answer, *ℹ️ No, bring me to the documentation!*, opens that page and ends the command, so read it
    first if you have not
-2. **Please select or connect to the org that you want to monitor** - `helios-prod`. As in [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md),
-   making it the default org restarts the command, so pick it again in the new panel
+2. **Please select or connect to the org that you want to monitor** - `helios-prod`. The command makes it your default org. If it asks for the org a second time,
+   pick `helios-prod` again
 3. **What is the address of the CI/CD repository that deploys to this org? (optional)** - the
    address of your fork, `https://github.com/<your-handle>/sfdx-hardis-training`. It is the mirror
    of step 8: the monitoring repository records where the pipeline lives, so that a coding agent

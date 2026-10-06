@@ -108,11 +108,15 @@ export default async function reset(args) {
   run("git", ["fetch", "--quiet", "origin", "integration"], { quiet: true, capture: true });
   run("git", ["branch", "--set-upstream-to=origin/integration", "integration"], { quiet: true, capture: true });
   if (push.code !== 0) {
-    // integration only takes Pull Requests: the learner cannot push it by hand
+    // integration only takes Pull Requests: the learner cannot push it by hand.
+    // Steps 4 and 5 stop here too: deleting the fork's branches closes their Pull
+    // Requests, and setting up the orgs again, for a fork still holding the old
+    // work, would leave the orgs and the repository disagreeing.
     warn("The push was refused, so your fork was not reset. Run Reset this level again.");
-  } else {
-    ok("Your fork is level with the reset point");
+    info(c.dim("    Nothing else was changed: your branches and your orgs are as they were."));
+    return;
   }
+  ok("Your fork is level with the reset point");
 
   title("4 of 5  Clearing the branches of this level");
   const branchesCleared = await clearLevelBranches(u, level, args);
@@ -126,8 +130,8 @@ export default async function reset(args) {
   info(`  ${c.cyan(`${u.course.site}/en/${levelDef.slug}/`)}`);
   if (!branchesCleared) {
     info("");
-    info(c.dim("  The branches of this level are still there. New User Story reuses a branch of the"));
-    info(c.dim("  same name, with its old commits: delete it first in the Source Control panel."));
+    info(c.dim("  The branches of this level are still there. New User Story never reuses a branch,"));
+    info(c.dim("  so it will ask you for another name at each story of this level that has one."));
   }
   if (orgsLeft.length > 0) {
     info("");

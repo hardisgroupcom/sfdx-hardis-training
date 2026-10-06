@@ -491,7 +491,7 @@ async function mergeWhenGreen(slug, prUrl, pushed) {
   // Request, and the head then moves past the commit pushed here. Merging with
   // --match-head-commit is what stops anything somebody else pushed from being
   // merged unseen, so the new head is taken only when every commit on top is
-  // that fix, by the GitHub Actions bot. Its checks are waited for again, once:
+  // that fix, committed by the GitHub Actions bot. Its checks are waited for again, once:
   // a head that moves a second time is refused like anything else.
   let head = pushed;
   const fixedHead = linterFixHead(slug, prUrl, pushed);
@@ -503,6 +503,12 @@ async function mergeWhenGreen(slug, prUrl, pushed) {
     const again = await waitForPullRequestChecks(slug, prUrl, { timeoutMs: 20 * 60 * 1000 });
     if (view().state === "MERGED") {
       return merged();
+    }
+    // No check on the fix means nothing proved it: never merge a commit no check ran on
+    if (again.none) {
+      warn("No check ran on the fix of MegaLinter, so the Pull Request was not merged.");
+      info(`  Merge it yourself on GitHub once its checks are green: ${c.cyan(prUrl)}`);
+      return false;
     }
     if (!again.ok) {
       const what = again.timedOut ? "did not finish within 20 minutes" : "failed";
@@ -546,27 +552,36 @@ const LINTER_FIX_HEADLINE = "chore(megalinter): apply linters fixes";
  * more (a force push), or when any newer commit is somebody else's.
  */
 function linterFixHead(slug, prUrl, pushed) {
-  const res = run("gh", ["pr", "view", prUrl, "--repo", slug, "--json", "commits,headRefOid"], { capture: true, quiet: true });
-  let pr = {};
+  // The REST list of the Pull Request commits, because it carries the committer: the
+  // auto-commit action of the MegaLinter workflow commits as github-actions[bot] but
+  // keeps the learner who triggered the run as the author. Measured on a learner fork.
+  const number = (prUrl.match(/\/pull\/(\d+)/) || [])[1];
+  if (!number) {
+    return null;
+  }
+  const res = run("gh", ["api", `repos/${slug}/pulls/${number}/commits?per_page=100`], { capture: true, quiet: true });
+  let commits = [];
   try {
-    pr = JSON.parse(res.stdout || "{}");
+    commits = JSON.parse(res.stdout || "[]");
   } catch {
     return null;
   }
-  if (!pr.headRefOid || pr.headRefOid === pushed) {
+  if (!Array.isArray(commits) || commits.length === 0) {
     return null;
   }
-  const commits = pr.commits || [];
-  const at = commits.findIndex((commit) => commit.oid === pushed);
+  const head = commits[commits.length - 1].sha;
+  if (head === pushed) {
+    return null;
+  }
+  const at = commits.findIndex((commit) => commit.sha === pushed);
   const newer = at < 0 ? [] : commits.slice(at + 1);
-  const byTheBot = (commit) =>
-    (commit.authors || []).length > 0 &&
-    (commit.authors || []).every((author) => /github-actions/i.test(`${author.login || ""} ${author.name || ""}`));
+  const committedByTheBot = (commit) =>
+    /^github-actions(\[bot\])?$/i.test(commit.committer?.login || "") ||
+    /^github-actions(\[bot\])?$/i.test(commit.commit?.committer?.name || "");
+  const headline = (commit) => (commit.commit?.message || "").split(/\r?\n/)[0];
   const onlyFixes =
-    newer.length > 0 &&
-    newer[newer.length - 1].oid === pr.headRefOid &&
-    newer.every((commit) => commit.messageHeadline === LINTER_FIX_HEADLINE && byTheBot(commit));
-  return onlyFixes ? pr.headRefOid : null;
+    newer.length > 0 && newer.every((commit) => headline(commit) === LINTER_FIX_HEADLINE && committedByTheBot(commit));
+  return onlyFixes ? head : null;
 }
 
 /**
