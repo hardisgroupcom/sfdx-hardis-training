@@ -342,7 +342,7 @@ deploy.
 **The deployment fails with `You cannot deploy to a required field: Installation__c.Crew_Size__c`.**
 It comes from the permission set `Helios_Delivery_Manager`, and it means your org is ahead of
 `integration`: `Crew_Size__c` is already required there, which only [Lab 2.3](2-3-fix-broken-records-with-an-apex-deployment-action.md) does. It usually
-follows a **Reset this level** after a run that went past Lab 2.3, because the reset used to leave
+follows a **Reset this level** after a run that went past [Lab 2.3](2-3-fix-broken-records-with-an-apex-deployment-action.md), because the reset used to leave
 the orgs alone. Run **Training: Level 2 > Set up one of my training orgs** on `helios-dev`, which
 **Reset this level** now offers to do for you, then run the backpromote again. Or untick
 `Helios_Delivery_Manager` in the list of step 4 and take the rest, knowing that Romain's field
