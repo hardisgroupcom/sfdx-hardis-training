@@ -5,6 +5,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 
 ## 2026-10-06
 
+- Lab 2.4: the Helios project turns on the stop of the check on a pending manual step, which sfdx-hardis no longer does by default.
 - Clean up a training org says when a step failed instead of "nothing to remove", and retries when the org's address briefly does not answer.
 - Lab 1.3: what to do when New User Story says the branch already exists.
 - Lab 1.6: the checks table names the pills the picture carries, the check comment picture shows the Simulated deployment line, and the deployment one its table of changes.
