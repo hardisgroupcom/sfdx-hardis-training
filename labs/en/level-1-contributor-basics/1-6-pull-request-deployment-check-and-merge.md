@@ -107,8 +107,8 @@ Open the **Checks** tab **(1)**. Two of them matter here, and both start on thei
 
 | Check                                         | What it does                                                                                |
 |-----------------------------------------------|---------------------------------------------------------------------------------------------|
-| **Simulate Deployment (sfdx-hardis)** **(3)** | Deploys your metadata into `helios-integration` in validation mode, and runs the Apex tests |
-| **Mega-Linter** **(2)**                       | Runs the code quality linters over the repository                                           |
+| **Simulate Deployment (sfdx-hardis)** **(2)** | Deploys your metadata into `helios-integration` in validation mode, and runs the Apex tests |
+| **Mega-Linter** **(3)**                       | Runs the code quality linters over the repository                                           |
 
 ![The Checks tab of a Pull Request, listing the jobs that ran](../../_assets/annotated/web/github-pr-checks.png)
 
