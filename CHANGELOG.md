@@ -7,7 +7,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 
 - Clean up a training org says when a step failed instead of "nothing to remove", and retries when the org's address briefly does not answer.
 - Lab 1.3: what to do when New User Story says the branch already exists.
-- Lab 1.6: the checks table names the pills the picture carries, and both Pull Request comment pictures show the Simulated deployment line.
+- Lab 1.6: the checks table names the pills the picture carries, the check comment picture shows the Simulated deployment line, and the deployment one its table of changes.
 - Level 1: the address of your fork is spelled out where a step opens it, not in every paragraph.
 - Labs 1.6 and 3.2: the Pull Request comment reads "Simulated deployment" on a check, with a table of the changes per type of component.
 - Lab 3.5: the Pull Request comment shows the remote site setting protected by package-no-overwrite.xml.

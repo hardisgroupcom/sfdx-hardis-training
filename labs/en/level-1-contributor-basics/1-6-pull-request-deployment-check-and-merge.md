@@ -299,7 +299,7 @@ That is one full delivery loop. Every story for the rest of your life on this pr
 ## If it goes wrong
 
 **The checks never start.**
-Actions are still disabled on your fork. GitHub hides
+Actions are still disabled on your fork (`github.com/my-username/sfdx-hardis-training`). GitHub hides
 that switch behind a banner no command can reach: open the **Actions** tab of your fork and click
 **I understand my workflows, go ahead and enable them**. Re-running **Set up my training
 environment** will not do it for you, because there is no API behind that banner.

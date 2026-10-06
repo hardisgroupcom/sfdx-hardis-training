@@ -331,7 +331,7 @@ panel and click **Publish Branch**.
 - The **Git Delta package.xml** report naming your four components and nothing you did not touch:
   the field, the layout and the two permission sets
 - `manifest/package.xml` gaining one line, the new field, in a commit the tool made
-- Your branch on GitHub, in your fork, under **Branches**
+- Your branch on GitHub, in your fork (`github.com/my-username/sfdx-hardis-training`), under **Branches**
 - The DevOps Pipeline panel still without your branch: it draws a branch once it has a Pull
   Request, and yours gets one in [Lab 1.6](1-6-pull-request-deployment-check-and-merge.md)
 

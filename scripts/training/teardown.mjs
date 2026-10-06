@@ -148,10 +148,15 @@ System.debug('Deleted ' + groups.size() + ' public group(s)');
         "--target-org", target, "--json"],
       { capture: true, quiet: true }
     );
+    if (found.code !== 0) {
+      stillActive.push(`${flow} (could not be read: ${firstError(found)})`);
+      continue;
+    }
     let id = null;
     try {
       id = JSON.parse(found.stdout).result.records[0].Id;
     } catch {
+      // Not in this org: nothing to deactivate
       continue;
     }
     const off = runSf(["api", "request", "rest", `services/data/v64.0/tooling/sobjects/FlowDefinition/${id}`,
@@ -183,6 +188,9 @@ System.debug('Deleted ' + groups.size() + ' public group(s)');
     { capture: true, quiet: true }
   );
   let versionIds = [];
+  if (versions.code !== 0) {
+    warn(`  Could not list the flow versions: ${firstError(versions)}`);
+  }
   try {
     versionIds = (parseJsonOutput(versions.stdout)?.result?.records || []).map((r) => r.Id);
   } catch {
@@ -252,7 +260,7 @@ System.debug('Deleted ' + groups.size() + ' public group(s)');
 `,
     "utf8"
   );
-  const page = runSf(["project", "deploy", "start", "--metadata-dir", dir, "--target-org", target,
+  const page = run("sf", ["project", "deploy", "start", "--metadata-dir", dir, "--target-org", target,
       "--test-level", "NoTestRun", "--ignore-warnings", "--wait", "30"],
     { quiet: true }
   );
@@ -290,6 +298,9 @@ function removeCourseAppClients(target) {
       capture: true,
       quiet: true
     });
+    if (listed.code !== 0) {
+      warn(`  Could not list the ${type} of the org: ${firstError(listed)}`);
+    }
     let names = [];
     try {
       names = (parseJsonOutput(listed.stdout)?.result || []).map((r) => r.fullName).filter((n) => COURSE_APP_NAME.test(n));
@@ -313,13 +324,13 @@ ${types.map(([type, names]) => `    <types>\n${names.map((n) => `        <member
 `;
   fs.writeFileSync(path.join(dir, "package.xml"), pkg([]), "utf8");
   fs.writeFileSync(path.join(dir, "destructiveChangesPost.xml"), pkg(found), "utf8");
-  const gone = runSf(["project", "deploy", "start", "--metadata-dir", dir, "--target-org", target,
+  const gone = run("sf", ["project", "deploy", "start", "--metadata-dir", dir, "--target-org", target,
       "--test-level", "NoTestRun", "--ignore-warnings", "--wait", "30"],
     { quiet: true }
   );
   fs.rmSync(dir, { recursive: true, force: true });
   const apps = found.find(([type]) => type === "ExternalClientApplication")[1];
-  info(gone.code === 0 ? `  External Client App(s) removed: ${apps.join(", ")}` : c.dim("  The External Client Apps could not be removed"));
+  reportStep(gone, `  External Client App(s) removed: ${apps.join(", ")}`, `remove the External Client Apps ${apps.join(", ")}`);
 }
 
 export default async function teardown(args) {
@@ -445,6 +456,9 @@ ${types}
  * --target-org ... The org cannot be found"). A cleanup step then failed without a
  * word: two flows stayed active, and the destructive deploy that follows refused
  * the flow versions and the objects they use. That failure is retried.
+ *
+ * For the short calls only: the deploys of this file stream their output instead,
+ * because they can run for minutes and a captured call shows nothing meanwhile.
  */
 function runSf(args, options = {}) {
   let res = null;
@@ -458,7 +472,10 @@ function runSf(args, options = {}) {
   return res;
 }
 
-const TRANSIENT_DNS_ERROR = /DomainNotFoundError|ENOTFOUND|getaddrinfo|EAI_AGAIN/;
+// Only the DNS check of the CLI, which fails before any request reaches the org: a call retried on it
+// has done nothing yet. A network error later on (ENOTFOUND while polling) could re-run a call that
+// already worked, so it is reported rather than retried.
+const TRANSIENT_DNS_ERROR = /DomainNotFoundError/;
 
 /**
  * Says what a cleanup step did. A failure is reported as a failure: these steps
@@ -480,5 +497,5 @@ function firstError(res) {
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter((line) => line !== "");
-  return lines.find((line) => /error|failed|cannot|invalid/i.test(line)) || lines[0] || `exit code ${res.code}`;
+  return lines.find((line) => /error|failed|cannot|invalid/i.test(line)) || lines[0] || `exit code ${res.code}, see the output above`;
 }
