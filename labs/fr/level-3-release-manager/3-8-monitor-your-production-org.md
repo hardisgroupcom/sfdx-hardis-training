@@ -5,7 +5,7 @@ description: "Mettez en place le monitoring nocturne sfdx-hardis sur votre org S
 level: 3
 lab: 8
 lang: fr
-source_rev: "09bff33e8e50e55040c828a2ed3feca23e226ef8"
+source_rev: "a29af323eb61655bedb4165d78703017b9e32691"
 screenshots:
   - annotated/vscode/org-monitoring--not-a-monitoring-repo
   - annotated/vscode/monitoring-config--what-it-watches
@@ -109,9 +109,8 @@ La commande tourne dans un panneau et pose ses questions une à une, comme au [L
 1. **Did you configure the sfdx-hardis monitoring pre-requisites on your Git server ?** La deuxième
    réponse, *ℹ️ No, bring me to the documentation!*, ouvre cette page et met fin à la commande :
    lisez-la donc d'abord si ce n'est pas fait
-2. **Please select or connect to the org that you want to monitor** - `helios-prod`. Comme au
-   [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md), en faire l'org par défaut relance la commande : rechoisissez-la donc dans le nouveau
-   panneau
+2. **Please select or connect to the org that you want to monitor** - `helios-prod`. La commande en fait votre org par défaut. Si elle vous redemande l'org,
+   choisissez à nouveau `helios-prod`
 3. **What is the address of the CI/CD repository that deploys to this org? (optional)** - l'adresse
    de votre fork, `https://github.com/<your-handle>/sfdx-hardis-training`. C'est le miroir de
    l'étape 8 : le repository de monitoring retient où vit la pipeline, pour qu'un agent de code ouvert
