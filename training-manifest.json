@@ -503,6 +503,7 @@
         "salesforce-devops-work-on-user-story-profiles"
       ],
       "panels": [
+        "metadataRetriever",
         "pipelineConfig",
         "packageXml"
       ],
@@ -1284,7 +1285,8 @@
         "lab-3-1"
       ],
       "metadataRetriever": [
-        "lab-1-5"
+        "lab-1-5",
+        "lab-2-6"
       ],
       "packageXml": [
         "lab-1-5",
