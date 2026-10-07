@@ -5,17 +5,17 @@ description: "Vous avez publié bien plus que votre story. Voyez ce que cela fai
 level: 2
 lab: 8
 lang: fr
-source_rev: "b713e1290641687d724b25c8ae3b5cdef3a404b5"
+source_rev: "76638d6bc8fedd4ecbcb798f9b026bb80023e7bd"
 screenshots:
   - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/metadata-retriever-recent-changes--select-all
   - annotated/vscode/sidebar
   - annotated/vscode/pipeline-cards--save-publish
 depends_on:
-  commands: [hardis:work:resetselection, hardis:work:save]
-  flags: []
+  commands: [hardis:mdapi:read, hardis:work:resetselection, hardis:work:save]
+  flags: [--active-only]
   config: []
-  panels: [commandExecution, packageXml]
+  panels: [metadataRetriever, commandExecution, packageXml]
   docs: [salesforce-devops-publish-user-story, salesforce-devops-manual-repo-clean]
 ---
 
