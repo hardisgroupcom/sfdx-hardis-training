@@ -5,6 +5,8 @@ a day, newest first, and a change goes under the date of the day it is made.
 
 ## 2026-10-07
 
+- Labs 1.5, 2.2 and 2.8: the Metadata Retriever screenshots show its new **Retrieve mode** list.
+- Labs 2.6 and 2.8: the Metadata Retriever now brings Profiles back whole, with only the permissions they grant, and the labs say what that changes in the file you commit.
 - Claim my badge no longer asks you to push a feature branch you squash merged and deleted on GitHub.
 - Create my lab records no longer ends on "EPERM" on Windows after creating the records, and neither do the other Training commands that deploy from a temporary folder.
 - Lab 2.1: the Backpromote panel lists four steps while it computes its plan, and the picture follows.
