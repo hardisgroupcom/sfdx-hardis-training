@@ -278,13 +278,13 @@ On this promotion, the generated notes open like this:
 | Metric           | Value |
 |------------------|-------|
 | Pull Requests    | 22    |
-| Tickets          | 16    |
+| Tickets          | 17    |
 | Contributors     | 1     |
 | Added / Modified | 38    |
 ```
 
-The count includes the Pull Requests that carry no story: the configuration ones of [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) and
-of step 2, and the promotion itself. Yours depends on how you got here: a little over 20 after walking
+The count includes the Pull Requests that carry no story, the configuration one of step 2 and the
+promotion itself, and the configuration of [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md), which went through its own story, US-050. Yours depends on how you got here: a little over 20 after walking
 Levels 1 and 2, far fewer after **Reset this level**, which starts Level 3 without their Pull
 Requests.
 
