@@ -120,11 +120,12 @@ delete somebody else's.
     `force-app/main/default/profiles/`, stay in `manifest/package.xml`, and are deployed with
     everything else.
 
-    They stay **short** on purpose. A Profile retrieved whole lists hundreds of user permissions, and
-    Salesforce adds and removes some at every release, three times a year: a full Profile committed
-    in spring can fail to deploy in autumn on a permission that no longer exists. The short version
-    names only what this project decided, and `minimizeProfiles` keeps it short every time somebody
-    publishes one.
+    They carry **no permission** on purpose. A Profile retrieved whole lists hundreds of user
+    permissions, and Salesforce adds and removes some at every release, three times a year: a full
+    Profile committed in spring can fail to deploy in autumn on a permission that no longer exists.
+    `minimizeProfiles` takes the permissions out every time somebody publishes a Profile. What stays
+    can still be long, because a Profile retrieved whole lists the tab setting and the page layout of
+    every object of the org: those are exactly what only a Profile can hold.
 
 ### 5. Do it the way the project expects
 
