@@ -10,7 +10,7 @@ import os from "os";
 import path from "path";
 import {
   ROOT, c, title, info, ok, warn, abort, run, select, confirm,
-  connectedOrgs, orgChoices, universe, parseJsonOutput
+  connectedOrgs, orgChoices, universe, parseJsonOutput, removeTempDir
 } from "../lib/util.mjs";
 
 // Everything the course puts in an org, across all three levels. A name that is
@@ -264,7 +264,7 @@ System.debug('Deleted ' + groups.size() + ' public group(s)');
       "--test-level", "NoTestRun", "--ignore-warnings", "--wait", "30"],
     { quiet: true }
   );
-  fs.rmSync(dir, { recursive: true, force: true });
+  removeTempDir(dir);
   reportStep(page, "  The Installation record page is back to the standard one", "put the Installation record page back to the standard one");
 }
 
@@ -328,7 +328,7 @@ ${types.map(([type, names]) => `    <types>\n${names.map((n) => `        <member
       "--test-level", "NoTestRun", "--ignore-warnings", "--wait", "30"],
     { quiet: true }
   );
-  fs.rmSync(dir, { recursive: true, force: true });
+  removeTempDir(dir);
   const apps = found.find(([type]) => type === "ExternalClientApplication")[1];
   reportStep(gone, `  External Client App(s) removed: ${apps.join(", ")}`, `remove the External Client Apps ${apps.join(", ")}`);
 }
@@ -413,7 +413,7 @@ export default async function teardown(args) {
       info(c.dim("  Some of it was still held. Second pass, now that what held it is gone..."));
     }
   }
-  fs.rmSync(dir, { recursive: true, force: true });
+  removeTempDir(dir);
   if (deploy.code !== 0) {
     abort(
       `The metadata could not be removed from ${target}.`,

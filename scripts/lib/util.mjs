@@ -227,6 +227,21 @@ export function gitOut(args) {
   return run("git", args, { capture: true, quiet: true }).stdout.trim();
 }
 
+/**
+ * Removes a temporary folder a command wrote for one sf call. On Windows the sf
+ * process can still hold a file of it for a moment after it exits, and the
+ * removal then fails with EPERM: it is tried again a few times, and a folder that
+ * stays is left to the system temp cleanup rather than failing the command that
+ * already did its work.
+ */
+export function removeTempDir(dir) {
+  try {
+    fs.rmSync(dir, { recursive: true, force: true, maxRetries: 10, retryDelay: 300 });
+  } catch {
+    // left in the system temp folder
+  }
+}
+
 // ------------------------------------------------------------------ prompts
 /** The learner dismissed the question in the panel: stop where the CLI stops. */
 function cancelled(message) {
