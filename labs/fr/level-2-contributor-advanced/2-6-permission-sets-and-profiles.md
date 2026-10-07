@@ -5,7 +5,7 @@ description: "Une permission accordée sur un profil s'évapore après un déplo
 level: 2
 lab: 6
 lang: fr
-source_rev: "b713e1290641687d724b25c8ae3b5cdef3a404b5"
+source_rev: "1f8568ef2dd1a7d6a25d399cf7ed0fbdb3a89756"
 screenshots:
   - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/pipeline-config
@@ -129,11 +129,13 @@ transporter finirait par supprimer celui de quelqu'un d'autre.
     chaque org. `Admin` et `Helios Crew` restent donc dans `force-app/main/default/profiles/`,
     restent dans `manifest/package.xml`, et sont déployés avec tout le reste.
 
-    Ils restent **courts** exprès. Un profil récupéré en entier liste des centaines de permissions
-    utilisateur, et Salesforce en ajoute et en retire à chaque release, trois fois par an : un profil
-    complet commité au printemps peut échouer au déploiement à l'automne sur une permission qui
-    n'existe plus. La version courte ne nomme que ce que ce projet a décidé, et `minimizeProfiles` la
-    garde courte à chaque fois que quelqu'un en publie un.
+    Ils ne portent **aucune permission**, exprès. Un profil récupéré en entier liste des centaines de
+    permissions utilisateur, et Salesforce en ajoute et en retire à chaque release, trois fois par an :
+    un profil complet commité au printemps peut échouer au déploiement à l'automne sur une permission
+    qui n'existe plus. `minimizeProfiles` retire les permissions à chaque fois que quelqu'un publie un
+    profil. Ce qui reste peut quand même être long, car un profil récupéré en entier liste le réglage
+    d'onglet et la présentation de page de chaque objet de l'org : c'est exactement ce que seul un
+    profil peut porter.
 
 ### 5. Le faire comme le projet l'attend
 
