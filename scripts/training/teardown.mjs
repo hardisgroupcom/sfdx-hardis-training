@@ -98,7 +98,7 @@ System.debug('Unassigned ' + psa.size() + ' permission set assignment(s)');
     "utf8"
   );
   const unassigned = runSf(["apex", "run", "--file", apexFile, "--target-org", target], { quiet: true });
-  fs.rmSync(apexFile, { force: true });
+  removeTempDir(apexFile);
   reportStep(unassigned, "  Permission sets unassigned", "unassign the permission sets");
 
   // The scheduled jobs. Lab 2.4 schedules CrewCapacityBatch nightly, and a
@@ -118,7 +118,7 @@ System.debug('Aborted ' + jobs.size() + ' scheduled job(s)');
     "utf8"
   );
   const unscheduled = runSf(["apex", "run", "--file", jobsFile, "--target-org", target], { quiet: true });
-  fs.rmSync(jobsFile, { force: true });
+  removeTempDir(jobsFile);
 
   // The public group of Lab 3.3. The lab is built on its absence: the first
   // action of US-062 fails because the org has no Crew Leads group, and the
@@ -134,7 +134,7 @@ System.debug('Deleted ' + groups.size() + ' public group(s)');
     "utf8"
   );
   const ungrouped = runSf(["apex", "run", "--file", groupFile, "--target-org", target], { quiet: true });
-  fs.rmSync(groupFile, { force: true });
+  removeTempDir(groupFile);
   reportStep(ungrouped, "  Crew Leads public group removed, when there was one", "remove the Crew Leads public group");
   reportStep(unscheduled, "  Scheduled jobs aborted", "abort the scheduled jobs");
 
@@ -370,7 +370,7 @@ export default async function teardown(args) {
   const apexFile = path.join(os.tmpdir(), `helios-teardown-${Date.now()}.apex`);
   fs.writeFileSync(apexFile, deleteStandardApex(), "utf8");
   const apex = run("sf", ["apex", "run", "--file", apexFile, "--target-org", target]);
-  fs.rmSync(apexFile, { force: true });
+  removeTempDir(apexFile);
   if (apex.code !== 0) {
     warn("The records could not all be deleted. The metadata removal below still runs.");
   } else {

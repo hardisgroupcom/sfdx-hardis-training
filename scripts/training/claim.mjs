@@ -88,15 +88,10 @@ function isStarred(slug) {
  *
  * A branch squash merged and then deleted on GitHub, as Lab 1.6 does, is not
  * work waiting either: its commits are in no branch of the fork any more, but
- * GitHub keeps them under the head of its Pull Request. --ignore-missing, because
- * a Pull Request head this clone never fetched would otherwise fail the count,
- * and a failed count reads as zero.
+ * GitHub keeps them under the head of its Pull Request. claim() fetches those
+ * heads under refs/remotes/origin/pull/, so --remotes=origin counts them.
  */
 function unpushedBranches(majors) {
-  const pullRequestHeads = gitOut(["ls-remote", "origin", "refs/pull/*/head"])
-    .split(/\r?\n/)
-    .map((line) => line.split(/\s+/)[0])
-    .filter((sha) => /^[0-9a-f]{40}$/.test(sha));
   return gitOut(["for-each-ref", "--format=%(refname:short)", "refs/heads"])
     .split(/\r?\n/)
     .map((b) => b.trim())
@@ -109,9 +104,7 @@ function unpushedBranches(majors) {
     .filter((branch) => !majors.includes(branch))
     .map((branch) => ({
       branch,
-      commits: Number(
-        gitOut(["rev-list", "--ignore-missing", "--count", branch, "--not", "--remotes=origin", ...pullRequestHeads]) || 0
-      )
+      commits: Number(gitOut(["rev-list", "--count", branch, "--not", "--remotes=origin"]) || 0)
     }))
     .filter((b) => b.commits > 0);
 }
@@ -134,7 +127,13 @@ export default async function claim(args) {
   // so the same ground is covered here rather than on a rejected issue.
   // Read the fork as it is now: a Pull Request merged on GitHub is not in the
   // local branches until a fetch, and the badge audit reads the fork
-  run("git", ["fetch", "origin", "--prune"], { quiet: true, capture: true });
+  // The heads of the fork's Pull Requests too: the commits of a branch squash merged and deleted
+  // on GitHub live there only (unpushedBranches)
+  run(
+    "git",
+    ["fetch", "origin", "--prune", "+refs/heads/*:refs/remotes/origin/*", "+refs/pull/*/head:refs/remotes/origin/pull/*"],
+    { quiet: true, capture: true }
+  );
   const ctx = makeContext(ROOT);
   const missing = [];
   for (const levelDef of levels) {

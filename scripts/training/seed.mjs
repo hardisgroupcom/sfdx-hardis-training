@@ -245,7 +245,7 @@ export function applyDrift(alias) {
       const tmp = path.join(ROOT, ".training-drift.apex");
       fs.writeFileSync(tmp, step.code, "utf8");
       const res = run("sf", ["apex", "run", "--file", tmp, "--target-org", alias], { quiet: true, capture: true });
-      fs.rmSync(tmp, { force: true });
+      removeTempDir(tmp);
       if (res.code === 0) {
         done.push(step.label);
       } else {

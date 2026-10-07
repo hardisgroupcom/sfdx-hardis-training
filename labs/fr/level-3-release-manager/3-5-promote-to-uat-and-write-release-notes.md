@@ -296,8 +296,10 @@ Sur cette promotion, les notes générées s'ouvrent ainsi :
 | Added / Modified | 38    |
 ```
 
-Le décompte inclut les Pull Requests qui ne portent aucune story, celle de configuration de l'étape 2
-et la promotion elle-même, et la configuration du [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md), passée par sa propre story, US-050. Le vôtre dépend de votre parcours : un peu plus de 20 après les
+Il y a plus de Pull Requests que de tickets : la Pull Request de configuration de l'étape 2 et la
+promotion elle-même ne portent aucune story, et certaines stories ont pris deux Pull Requests, comme
+US-062 et son correctif au [Lab 3.3](3-3-deploy-to-integration-and-read-the-log.md). La configuration du [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) a son propre ticket, US-050,
+parce qu'elle est passée par sa propre story. Le vôtre dépend de votre parcours : un peu plus de 20 après les
 Niveaux 1 et 2, beaucoup moins après **Reset this level**, qui démarre le Niveau 3 sans leurs Pull
 Requests.
 

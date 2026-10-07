@@ -11,7 +11,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 - Lab 3.3: about sixty components are deployed to integration by Level 3.
 - Lab 3.5: the promotion notes count 17 tickets, the configuration story of Lab 3.1 among them.
 - The hotfix teammate of Lab 3.7 commits a message that says what the fix does.
-- Every VS Code picture taken again on sfdx-hardis 8.14.
+- The VS Code pictures taken again on sfdx-hardis 8.14, the promotion conflict question excepted: its previous picture shows every answer.
 
 ## 2026-10-06
 
