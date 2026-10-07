@@ -12,10 +12,10 @@ screenshots:
   - annotated/vscode/sidebar
   - annotated/vscode/pipeline-cards--save-publish
 depends_on:
-  commands: [hardis:work:resetselection, hardis:work:save]
-  flags: []
+  commands: [hardis:mdapi:read, hardis:work:resetselection, hardis:work:save]
+  flags: [--active-only]
   config: []
-  panels: [commandExecution, packageXml]
+  panels: [metadataRetriever, commandExecution, packageXml]
   docs: [salesforce-devops-publish-user-story, salesforce-devops-manual-repo-clean]
 ---
 

@@ -10,8 +10,8 @@ screenshots:
   - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/pipeline-config
 depends_on:
-  commands: [hardis:work:save]
-  flags: []
+  commands: [hardis:mdapi:read, hardis:work:save]
+  flags: [--active-only]
   config: [autoCleanTypes, minimizeProfiles, autoRemoveUserPermissions]
   panels: [metadataRetriever, pipelineConfig, packageXml]
   docs: [salesforce-devops-work-on-user-story-profiles]
@@ -120,12 +120,13 @@ delete somebody else's.
     `force-app/main/default/profiles/`, stay in `manifest/package.xml`, and are deployed with
     everything else.
 
-    They carry **no permission** on purpose. A Profile retrieved whole lists hundreds of user
-    permissions, and Salesforce adds and removes some at every release, three times a year: a full
-    Profile committed in spring can fail to deploy in autumn on a permission that no longer exists.
-    `minimizeProfiles` takes the permissions out every time somebody publishes a Profile. What stays
-    can still be long, because a Profile retrieved whole lists the tab setting and the page layout of
-    every object of the org: those are exactly what only a Profile can hold.
+    They carry **no field, object, class or Flow permission** on purpose, and no user permission
+    except on `Admin`. A Profile retrieved whole lists hundreds of user permissions, and Salesforce
+    adds and removes some at every release, three times a year: a full Profile committed in spring
+    can fail to deploy in autumn on a permission that no longer exists. `minimizeProfiles` takes
+    those permissions out every time somebody publishes a Profile. What stays can still be long,
+    because a Profile retrieved whole lists the tab setting and the page layout of every object of
+    the org: those are exactly what only a Profile can hold.
 
 ### 5. Do it the way the project expects
 
@@ -222,8 +223,8 @@ the integration org user, which **Training: Level 2 > Set up one of my training 
 
 **The Profile comes back a thousand lines long.**
 A Profile retrieved whole keeps, after the cleaning, the tab settings and the page layout of every
-object of the org: only a Profile can hold those, so they stay. If it still carries field, object
-or class permissions, it was committed after a retrieve and never went through the cleaning. Check
+object of the org, its default app and record types, and on `Admin` its user permissions: those
+stay on purpose. If it still carries field, object or class permissions, it was committed after a retrieve and never went through the cleaning. Check
 that `minimizeProfiles` is still listed on the **Salesforce Project** tab of **Pipeline Settings**, then
 **Save / Publish** again. Do not shorten the file by hand.
 
