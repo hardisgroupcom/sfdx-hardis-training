@@ -9,7 +9,7 @@ import fs from "fs";
 import path from "path";
 import {
   ROOT, c, title, info, ok, warn, abort, run, runStreamed, git, gitOut,
-  select, confirm, universe, repoSlug, ensureGh, connectedOrgs, openPullRequest, parseJsonOutput
+  select, confirm, universe, repoSlug, ensureGh, connectedOrgs, openPullRequest
 } from "../lib/util.mjs";
 import { withProtectionLifted } from "../lib/protection.mjs";
 import { waitForPullRequestChecks, mergeUpdatePullRequest } from "../lib/course-updates.mjs";
@@ -425,16 +425,16 @@ async function ownEarlierDeploymentActions(args) {
   // A Pull Request left open by a reset that stopped halfway carries the state
   // integration had then: closed, and made again from integration as it is now
   const open = run("gh", ["pr", "list", "--repo", slug, "--head", ACTIONS_BRANCH, "--state", "open", "--json", "number"], { capture: true, quiet: true });
-  for (const pr of parseJsonOutput(open.stdout) || []) {
+  for (const pr of jsonArray(open.stdout)) {
     run("gh", ["pr", "close", String(pr.number), "--repo", slug], { capture: true, quiet: true });
   }
 
   // The file is named after the Pull Request, whose number GitHub only gives when
   // it is opened: guessed from the newest one, and renamed when the guess was wrong
-  const newest = parseJsonOutput(
+  const newest = jsonArray(
     run("gh", ["api", `repos/${slug}/pulls?state=all&per_page=1&sort=created&direction=desc`], { capture: true, quiet: true }).stdout
   );
-  let number = (Array.isArray(newest) && newest[0]?.number ? newest[0].number : 0) + 1;
+  let number = (newest[0]?.number || 0) + 1;
 
   if (run("git", ["switch", "--no-track", "-C", ACTIONS_BRANCH, base], { capture: true, quiet: true }).code !== 0) {
     warn(`The branch ${ACTIONS_BRANCH} could not be made from integration.`);
@@ -518,6 +518,16 @@ async function ownEarlierDeploymentActions(args) {
   ok(`Merged into integration: the deployment actions of the earlier levels now belong to Pull Request #${number}`);
   info(c.dim("  The deployment job of integration runs them now, and every promotion carries them on."));
   return true;
+}
+
+/** The JSON array gh printed, or an empty one. */
+function jsonArray(text) {
+  try {
+    const value = JSON.parse((text || "").trim() || "[]");
+    return Array.isArray(value) ? value : [];
+  } catch {
+    return [];
+  }
 }
 
 function startBranch(level) {
