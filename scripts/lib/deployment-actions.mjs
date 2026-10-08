@@ -50,12 +50,14 @@ export function actionFileOf(pr) {
 export function mergeActionFiles(sources, header = []) {
   const lists = Object.fromEntries(ACTION_LISTS.map((name) => [name, []]));
   for (const { name, content } of sources) {
+    const own = Object.fromEntries(ACTION_LISTS.map((list) => [list, []]));
     let current = null;
-    for (const line of content.replace(/\r\n/g, "\n").split("\n")) {
+    // A file saved by a Windows editor can start with a byte order mark
+    for (const line of content.replace(/^﻿/, "").replace(/\r\n/g, "\n").split("\n")) {
       // A blank line inside a block of text belongs to it, so it is kept
       if (line.trim() === "") {
         if (current) {
-          lists[current].push("");
+          own[current].push("");
         }
         continue;
       }
@@ -70,16 +72,22 @@ export function mergeActionFiles(sources, header = []) {
         current = key[1];
         continue;
       }
-      if (!current || !/^\s/.test(line)) {
+      // YAML also takes the items of a list at the column of its key
+      if (!current || !/^(\s|- )/.test(line)) {
         throw new Error(`${name} has a line this cannot read: ${line.trim()}`);
       }
-      lists[current].push(line);
+      own[current].push(line);
     }
-    // The blank lines that end a file end its lists, not a block of text
-    for (const lines of Object.values(lists)) {
+    for (const list of ACTION_LISTS) {
+      const lines = own[list];
+      // The blank lines that end a file end its lists, not a block of text
       while (lines.length > 0 && lines[lines.length - 1] === "") {
         lines.pop();
       }
+      // The items of one list share a column: each file is brought to two spaces,
+      // whatever its own indent, or the merged file is not YAML any more
+      const indent = Math.min(...lines.filter((line) => line !== "").map((line) => line.match(/^ */)[0].length));
+      lists[list].push(...lines.map((line) => (line === "" ? "" : `  ${line.slice(indent)}`)));
     }
   }
   const ids = ACTION_LISTS.flatMap((name) => lists[name])
@@ -99,6 +107,19 @@ export function mergeActionFiles(sources, header = []) {
   return `${out.join("\n")}\n`;
 }
 
+/** True when a file written by mergeActionFiles holds a manual step to do before the deployment. */
+export function hasPreDeployManualAction(merged) {
+  let current = null;
+  for (const line of merged.split("\n")) {
+    current = line.match(/^([A-Za-z][\w-]*):\s*$/)?.[1] || current;
+    // An item's own keys sit four spaces in, two past its dash
+    if (current === "commandsPreDeploy" && /^ {2}(?:- | {2})type:\s*manual\s*$/.test(line)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 /**
  * Ticks, in every comment of a Pull Request, the boxes of the pre-deployment
  * manual actions of one org branch: what a person does by clicking the box on
@@ -111,7 +132,7 @@ export function tickPreDeployManualActions(run, slug, prNumber, orgBranch) {
   const escaped = orgBranch.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   // The marker reads: <!-- sfdx-hardis-manual-action id:<id> org:<branch> pr:<n> when:pre-deploy -->
   const box = new RegExp(`- \\[ \\] (<!-- sfdx-hardis-manual-action [^>]*\\borg:${escaped} [^>]*\\bwhen:pre-deploy\\b[^>]*-->)`, "g");
-  const listed = run("gh", ["api", `repos/${slug}/issues/${prNumber}/comments`, "--paginate"], { quiet: true, capture: true });
+  const listed = run("gh", ["api", `repos/${slug}/issues/${prNumber}/comments?per_page=100`, "--paginate"], { quiet: true, capture: true });
   if (listed.code !== 0) {
     return [];
   }

@@ -13,7 +13,9 @@ import {
 } from "../lib/util.mjs";
 import { withProtectionLifted } from "../lib/protection.mjs";
 import { waitForPullRequestChecks, mergeUpdatePullRequest } from "../lib/course-updates.mjs";
-import { numberedActionFiles, actionFileOf, mergeActionFiles, tickPreDeployManualActions } from "../lib/deployment-actions.mjs";
+import {
+  numberedActionFiles, actionFileOf, mergeActionFiles, hasPreDeployManualAction, tickPreDeployManualActions
+} from "../lib/deployment-actions.mjs";
 
 const ACTIONS_BRANCH = "course/earlier-deployment-actions";
 const ACTIONS_TITLE = "Deployment actions of the earlier levels";
@@ -144,8 +146,9 @@ export default async function reset(args) {
   }
   if (!actionsOwned) {
     info("");
-    info(c.dim("  The deployment actions of the earlier levels have no Pull Request of your fork, so no promotion"));
-    info(c.dim("  runs them. Run Reset this level again once the lines above are solved."));
+    info(c.dim("  The deployment actions of the earlier levels have no Pull Request merged into integration, so no"));
+    info(c.dim("  promotion runs them. If the Pull Request above is open, merge it once its checks are green, as Lab 3.5"));
+    info(c.dim("  says under If it goes wrong. Otherwise run Reset this level again once the lines above are solved."));
   }
   if (orgsLeft.length > 0) {
     info("");
@@ -405,6 +408,14 @@ async function ownEarlierDeploymentActions(args) {
     info("  They are left as they are.");
     return false;
   }
+  // The move is undone with git reset --hard on its own branch: a change left in
+  // integration, like a branch configuration git could not commit in step 2,
+  // would follow the switch there and be thrown away
+  if (gitOut(["status", "--porcelain", "--untracked-files=no"])) {
+    warn("You have uncommitted changes in integration, so the deployment actions were left as they are.");
+    info(c.dim("    Commit them or discard them in the Source Control panel, then run Reset this level again."));
+    return false;
+  }
   const slug = repoSlug();
 
   let content;
@@ -447,11 +458,16 @@ async function ownEarlierDeploymentActions(args) {
   };
   let committed = false;
   try {
-    git(["rm", "--quiet", "--", ...files.map(({ file }) => file)], { quiet: true });
+    // A file git could not remove would leave its actions twice in integration
+    if (run("git", ["rm", "--quiet", "--", ...files.map(({ file }) => file)], { capture: true, quiet: true }).code !== 0) {
+      throw new Error("git could not remove the files of the earlier levels");
+    }
     // git rm takes the folder away with its last file
     fs.mkdirSync(path.join(ROOT, path.dirname(actionFileOf(number))), { recursive: true });
     fs.writeFileSync(path.join(ROOT, actionFileOf(number)), content, "utf8");
-    git(["add", "--", actionFileOf(number)], { quiet: true });
+    if (run("git", ["add", "--", actionFileOf(number)], { capture: true, quiet: true }).code !== 0) {
+      throw new Error(`git could not add ${actionFileOf(number)}`);
+    }
     committed = run("git", ["commit", "-m", ACTIONS_TITLE], { capture: true, quiet: true }).code === 0;
   } catch (error) {
     backToIntegration();
@@ -485,9 +501,11 @@ async function ownEarlierDeploymentActions(args) {
     return false;
   }
   if (opened !== number) {
-    git(["mv", actionFileOf(number), actionFileOf(opened)], { quiet: true });
+    // Checked: an amend with nothing renamed still succeeds, and would merge a
+    // file named after another number
+    const moved = run("git", ["mv", actionFileOf(number), actionFileOf(opened)], { capture: true, quiet: true }).code === 0;
     number = opened;
-    const amended = run("git", ["commit", "--amend", "--no-edit"], { capture: true, quiet: true }).code === 0;
+    const amended = moved && run("git", ["commit", "--amend", "--no-edit"], { capture: true, quiet: true }).code === 0;
     if (!amended || run("git", ["push", "--force", "origin", ACTIONS_BRANCH], { capture: true, quiet: true }).code !== 0) {
       backToIntegration();
       warn(`The file could not be renamed after Pull Request #${number}: ${url}`);
@@ -509,6 +527,11 @@ async function ownEarlierDeploymentActions(args) {
   const ticked = tickPreDeployManualActions(run, slug, number, "integration");
   if (ticked.length > 0) {
     ok(`Ticked for integration: the ${ticked.length === 1 ? "manual step" : `${ticked.length} manual steps`} Level 2 did there`);
+  } else if (hasPreDeployManualAction(content)) {
+    // Merged all the same: integration then lists the step as to do by hand,
+    // which is a line of a comment, not a stop
+    warn("Its check posted no box to tick for integration, so the manual step Level 2 did there is not recorded as done.");
+    info(c.dim(`    Tick its box In integration in the comments of ${url} once they show it.`));
   }
   run("gh", ["pr", "ready", url, "--repo", slug], { capture: true, quiet: true });
   let merged = { ok: false, message: "" };
