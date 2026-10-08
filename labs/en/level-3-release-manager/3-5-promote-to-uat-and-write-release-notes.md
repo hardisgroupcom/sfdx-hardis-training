@@ -367,13 +367,17 @@ Command documentation: [hardis:doc:release-notes](https://sfdx-hardis.cloudity.c
 ## If it goes wrong
 
 **The check of the promotion is green at once, with no deliverability step to do.**
-You started Level 3 with **Reset this level**. It puts the Level 2 stories in `integration` as one
-commit that no Pull Request of your fork made, and sfdx-hardis collects deployment actions from the
-Pull Requests a promotion carries. The actions of Level 2, the deliverability step, the crew capacity
-data and its nightly job, the crew size backfill and the handover templates, travel with none of
-them, so no promotion runs them in `uat` or after it. Steps 4, 5 and 7 then show fewer actions than
-this lab describes, and nothing is wrong with your pipeline. The path that shows all of them is
-Level 2 walked straight into Level 3.
+The actions of Level 2 travel with no Pull Request of this promotion. sfdx-hardis collects deployment
+actions from the Pull Requests a promotion carries, and **Reset this level** puts the Level 2 stories
+in `integration` as one commit that no Pull Request of your fork made. Its last step gives their
+actions a Pull Request of your fork, **Deployment actions of the earlier levels**, and merges it once
+its checks pass. Look for it in the **Pull requests** tab of your fork:
+
+- **Open with green checks**: merge it with **Merge pull request**. The promotion Pull Request
+  takes the new commit of `integration`, and its check runs again, red this time, as step 4 says
+- **Missing**: your reset ran without that step, the case for a fork whose scripts date from before
+  2026-10-08. Nothing is wrong with your pipeline: go on, and steps 4, 5 and 7 show fewer actions
+  than this lab describes. Before your next reset, run **Update my course**
 
 **The deployment job to uat is red on "Put the delivery managers in the Crew Leads group".**
 Your fork dates from before 2026-10-05, when Mariia's fix in [Lab 3.3](3-3-deploy-to-integration-and-read-the-log.md) did not ship the Crew Leads public group
