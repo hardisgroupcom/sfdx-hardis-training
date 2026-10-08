@@ -16,7 +16,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 - Lab 3.1: Save / Publish does not ask the target branch, New User Story already recorded it.
 - Lab 3.2: the Metadata row counts the layout as one more component updated, not as the only one.
 - Lab 3.4: US-019 is in the Level 3 start, so Simulate my teammates answers "Nothing to commit" whatever the route.
-- Lab 3.5: what a promotion carries after Reset this level, which leaves the Level 2 deployment actions behind.
+- Reset this level gives the Level 2 deployment actions a Pull Request of your fork, so the promotions of Level 3 run them again.
 - Lab 3.7: step 3 shows the files of the hotfix Pull Request, not those of Lab 3.2.
 - Lab 3.10: the conflict comment is quoted as it prints, and the uat window also lists the retrofit and the configuration, left unticked.
 
