@@ -5,7 +5,7 @@ description: "Protégez ce que l'UAT garde pour elle avec package-no-overwrite, 
 level: 3
 lab: 5
 lang: fr
-source_rev: "ee3029d22ba45d5b0cbdb2c50c30d3e3aa93a291"
+source_rev: "3dd227f4916bb7c9147520286f09bec246abf391"
 screenshots:
   - annotated/vscode/devops-pipeline-level3--create-promotion
   - annotated/vscode/pipeline-branch-modal-level3--what-it-carries
@@ -387,14 +387,20 @@ Documentation de la commande : [hardis:doc:release-notes](https://sfdx-hardis.cl
 ## En cas de problème
 
 **Le check de la promotion est vert tout de suite, sans étape de délivrabilité à faire.**
-Vous avez commencé le Niveau 3 avec **Reset this level**. Il met les stories du Niveau 2 dans
-`integration` en un seul commit qu'aucune Pull Request de votre fork n'a fait, et sfdx-hardis
-collecte les deployment actions dans les Pull Requests qu'une promotion transporte. Les actions du
-Niveau 2, l'étape de délivrabilité, les données de capacité des équipes et leur job de nuit, le
-remplissage de la taille d'équipe et les modèles de passation, ne voyagent avec aucune d'elles :
-aucune promotion ne les lance donc dans `uat` ni après. Les étapes 4, 5 et 7 montrent alors moins
-d'actions que ce lab ne le décrit, et votre pipeline n'a rien de faux. Le chemin qui les montre
-toutes est le Niveau 2 enchaîné directement avec le Niveau 3.
+Les actions du Niveau 2 ne voyagent avec aucune Pull Request de cette promotion. sfdx-hardis
+collecte les deployment actions dans les Pull Requests qu'une promotion transporte, et **Reset this
+level** met les stories du Niveau 2 dans `integration` en un seul commit qu'aucune Pull Request de
+votre fork n'a fait. Sa dernière étape donne à leurs actions une Pull Request de votre fork,
+**Deployment actions of the earlier levels**, et la merge une fois ses checks passés. Cherchez-la
+dans l'onglet **Pull requests** de votre fork :
+
+- **Ouverte avec des checks verts** : mergez-la avec **Merge pull request**. La Pull Request de
+  promotion reçoit le nouveau commit d'`integration`, et son check repart, rouge cette fois, comme le
+  dit l'étape 4
+- **Absente** : votre reset a tourné sans cette étape, le cas d'un fork dont les scripts datent
+  d'avant le 2026-10-08. Votre pipeline n'a rien de faux : continuez, et les étapes 4, 5 et 7
+  montrent moins d'actions que ce lab ne le décrit. Avant votre prochain reset, lancez **Update my
+  course**
 
 **Le job de déploiement vers uat est rouge sur « Put the delivery managers in the Crew Leads group ».**
 Votre fork date d'avant le 2026-10-05, quand le correctif de Mariia au [Lab 3.3](3-3-deploy-to-integration-and-read-the-log.md) ne livrait pas encore le
