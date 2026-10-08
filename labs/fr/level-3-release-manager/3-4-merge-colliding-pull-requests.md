@@ -5,7 +5,7 @@ description: "Décidez de l'ordre dans lequel trois Pull Requests sont mergées 
 level: 3
 lab: 4
 lang: fr
-source_rev: "a56a9431039c47aac2bd6723d7f35dca0eb38c67"
+source_rev: "5004bd9b727a032b01a8e13fa1eefb935db726e7"
 screenshots:
   - annotated/vscode/welcome-custom-menu-3
   - annotated/vscode/pipeline-config--cleaning-overwrite

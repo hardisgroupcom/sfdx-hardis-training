@@ -5,7 +5,7 @@ description: "Un déploiement vert n'est pas une fonctionnalité qui marche. Liv
 level: 2
 lab: 4
 lang: fr
-source_rev: "ee3029d22ba45d5b0cbdb2c50c30d3e3aa93a291"
+source_rev: "e675a673ecb5326e65bfc6e0687d17187d034ea5"
 screenshots:
   - annotated/vscode/sidebar-commands-custom-menu-2--lab-records
   - annotated/salesforce/crew-capacity-records

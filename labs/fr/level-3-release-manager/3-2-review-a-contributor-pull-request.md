@@ -5,7 +5,7 @@ description: "Relisez la Pull Request Salesforce d'une collègue en release mana
 level: 3
 lab: 2
 lang: fr
-source_rev: "ee3029d22ba45d5b0cbdb2c50c30d3e3aa93a291"
+source_rev: "5004bd9b727a032b01a8e13fa1eefb935db726e7"
 screenshots:
   - annotated/web/github-pr-files
   - annotated/vscode/welcome-custom-menu-3

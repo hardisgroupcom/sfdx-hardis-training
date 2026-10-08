@@ -19,6 +19,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 - Reset this level gives the Level 2 deployment actions a Pull Request of your fork, so the promotions of Level 3 run them again.
 - Lab 3.7: step 3 shows the files of the hotfix Pull Request, not those of Lab 3.2.
 - Lab 3.10: the conflict comment is quoted as it prints, and the uat window also lists the retrofit and the configuration, left unticked.
+- The French labs follow every English change of the day.
 
 ## 2026-10-07
 
