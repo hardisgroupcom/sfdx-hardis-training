@@ -442,6 +442,8 @@ async function ownEarlierDeploymentActions(args) {
   }
   const backToIntegration = () => run("git", ["switch", "integration"], { capture: true, quiet: true });
   git(["rm", "--quiet", "--", ...files.map(({ file }) => file)], { quiet: true });
+  // git rm takes the folder away with its last file
+  fs.mkdirSync(path.join(ROOT, path.dirname(actionFileOf(number))), { recursive: true });
   fs.writeFileSync(path.join(ROOT, actionFileOf(number)), content, "utf8");
   git(["add", "--", actionFileOf(number)], { quiet: true });
   if (run("git", ["commit", "-m", ACTIONS_TITLE], { capture: true, quiet: true }).code !== 0) {
