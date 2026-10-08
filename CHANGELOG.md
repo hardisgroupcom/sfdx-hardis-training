@@ -12,6 +12,13 @@ a day, newest first, and a change goes under the date of the day it is made.
 - Lab 2.2: the Add Element menu of Flow Builder gained two rows, and the pill is back on Update Triggering Record.
 - Lab 2.4: Create my lab records picks the lab and the org on its own, and the lab no longer asks you to pick them.
 - Capstones: the Star screenshots show the button again, now on the right of the repository name.
+- Level 3 GitHub and Salesforce screenshots taken from a real walk with the new Pull Request comments: branch rules and secrets of Lab 3.1, the files of Lab 3.2, the Deployment Actions comments of Lab 3.3, the promotion of Lab 3.5, the validation rule of Lab 3.7, the Run workflow menu of Lab 3.8, the promotion description and conflict comment of Lab 3.10.
+- Lab 3.1: Save / Publish does not ask the target branch, New User Story already recorded it.
+- Lab 3.2: the Metadata row counts the layout as one more component updated, not as the only one.
+- Lab 3.4: US-019 is in the Level 3 start, so Simulate my teammates answers "Nothing to commit" whatever the route.
+- Lab 3.5: what a promotion carries after Reset this level, which leaves the Level 2 deployment actions behind.
+- Lab 3.7: step 3 shows the files of the hotfix Pull Request, not those of Lab 3.2.
+- Lab 3.10: the conflict comment is quoted as it prints, and the uat window also lists the retrofit and the configuration, left unticked.
 
 ## 2026-10-07
 
