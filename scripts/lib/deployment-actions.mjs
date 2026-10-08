@@ -105,7 +105,7 @@ export function mergeActionFiles(sources, header = []) {
  * GitHub, where the markdown of the comment changes from [ ] to [x]. sfdx-hardis
  * reads the tick and records the action as done in that org branch.
  *
- * Takes the run function of util.mjs, and returns the number of boxes ticked.
+ * Takes the run function of util.mjs, and returns the ids of the actions ticked.
  */
 export function tickPreDeployManualActions(run, slug, prNumber, orgBranch) {
   const escaped = orgBranch.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -113,15 +113,15 @@ export function tickPreDeployManualActions(run, slug, prNumber, orgBranch) {
   const box = new RegExp(`- \\[ \\] (<!-- sfdx-hardis-manual-action [^>]*\\borg:${escaped} [^>]*\\bwhen:pre-deploy\\b[^>]*-->)`, "g");
   const listed = run("gh", ["api", `repos/${slug}/issues/${prNumber}/comments`, "--paginate"], { quiet: true, capture: true });
   if (listed.code !== 0) {
-    return 0;
+    return [];
   }
   let comments = [];
   try {
     comments = JSON.parse(listed.stdout || "[]");
   } catch {
-    return 0;
+    return [];
   }
-  let ticked = 0;
+  const ticked = new Set();
   for (const comment of comments) {
     const matches = (comment.body || "").match(box) || [];
     if (matches.length === 0) {
@@ -135,8 +135,8 @@ export function tickPreDeployManualActions(run, slug, prNumber, orgBranch) {
       input: body
     });
     if (patched.code === 0) {
-      ticked += matches.length;
+      matches.forEach((match) => ticked.add(match.match(/\bid:(\S+)/)?.[1]));
     }
   }
-  return ticked;
+  return [...ticked];
 }

@@ -507,8 +507,8 @@ async function ownEarlierDeploymentActions(args) {
     return false;
   }
   const ticked = tickPreDeployManualActions(run, slug, number, "integration");
-  if (ticked > 0) {
-    ok(`Ticked for integration: the manual step${ticked === 1 ? "" : "s"} Level 2 did there`);
+  if (ticked.length > 0) {
+    ok(`Ticked for integration: the ${ticked.length === 1 ? "manual step" : `${ticked.length} manual steps`} Level 2 did there`);
   }
   run("gh", ["pr", "ready", url, "--repo", slug], { capture: true, quiet: true });
   let merged = { ok: false, message: "" };
