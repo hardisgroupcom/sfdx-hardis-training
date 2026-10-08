@@ -440,13 +440,25 @@ async function ownEarlierDeploymentActions(args) {
     warn(`The branch ${ACTIONS_BRANCH} could not be made from integration.`);
     return false;
   }
-  const backToIntegration = () => run("git", ["switch", "integration"], { capture: true, quiet: true });
-  git(["rm", "--quiet", "--", ...files.map(({ file }) => file)], { quiet: true });
-  // git rm takes the folder away with its last file
-  fs.mkdirSync(path.join(ROOT, path.dirname(actionFileOf(number))), { recursive: true });
-  fs.writeFileSync(path.join(ROOT, actionFileOf(number)), content, "utf8");
-  git(["add", "--", actionFileOf(number)], { quiet: true });
-  if (run("git", ["commit", "-m", ACTIONS_TITLE], { capture: true, quiet: true }).code !== 0) {
+  // A move left half done on this branch must not follow the switch to integration
+  const backToIntegration = () => {
+    run("git", ["reset", "--hard", "--quiet"], { capture: true, quiet: true });
+    run("git", ["switch", "integration"], { capture: true, quiet: true });
+  };
+  let committed = false;
+  try {
+    git(["rm", "--quiet", "--", ...files.map(({ file }) => file)], { quiet: true });
+    // git rm takes the folder away with its last file
+    fs.mkdirSync(path.join(ROOT, path.dirname(actionFileOf(number))), { recursive: true });
+    fs.writeFileSync(path.join(ROOT, actionFileOf(number)), content, "utf8");
+    git(["add", "--", actionFileOf(number)], { quiet: true });
+    committed = run("git", ["commit", "-m", ACTIONS_TITLE], { capture: true, quiet: true }).code === 0;
+  } catch (error) {
+    backToIntegration();
+    warn(`The action file could not be written: ${error.message}`);
+    return false;
+  }
+  if (!committed) {
     backToIntegration();
     warn("The move could not be committed. Git needs a name and an email: commit once in the Source Control panel.");
     return false;
