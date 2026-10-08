@@ -5,7 +5,7 @@ description: "Protégez ce que l'UAT garde pour elle avec package-no-overwrite, 
 level: 3
 lab: 5
 lang: fr
-source_rev: "3dd227f4916bb7c9147520286f09bec246abf391"
+source_rev: "00fdcbbcf343b840d9cbbdfcc9c18e4ee5aecf07"
 screenshots:
   - annotated/vscode/devops-pipeline-level3--create-promotion
   - annotated/vscode/pipeline-branch-modal-level3--what-it-carries
@@ -394,9 +394,11 @@ votre fork n'a fait. Sa dernière étape donne à leurs actions une Pull Request
 **Deployment actions of the earlier levels**, et la merge une fois ses checks passés. Cherchez-la
 dans l'onglet **Pull requests** de votre fork :
 
-- **Ouverte avec des checks verts** : mergez-la avec **Merge pull request**. La Pull Request de
-  promotion reçoit le nouveau commit d'`integration`, et son check repart, rouge cette fois, comme le
-  dit l'étape 4
+- **Ouverte avec des checks verts** : si GitHub la montre encore comme un brouillon (draft), cochez
+  la case de **Set Email Deliverability to All Email** dans son commentaire de check, celle
+  d'`integration` que vous avez faite au [Lab 2.4](../level-2-contributor-advanced/2-4-ship-reference-data-and-a-batch-with-deployment-actions.md), puis cliquez sur **Ready for review**. Mergez-la
+  avec **Merge pull request**. La Pull Request de promotion reçoit le nouveau commit
+  d'`integration`, et son check repart, rouge cette fois, comme le dit l'étape 4
 - **Absente** : votre reset a tourné sans cette étape, le cas d'un fork dont les scripts datent
   d'avant le 2026-10-08. Votre pipeline n'a rien de faux : continuez, et les étapes 4, 5 et 7
   montrent moins d'actions que ce lab ne le décrit. Avant votre prochain reset, lancez **Update my
