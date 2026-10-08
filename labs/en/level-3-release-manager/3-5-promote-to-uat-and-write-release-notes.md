@@ -373,7 +373,9 @@ in `integration` as one commit that no Pull Request of your fork made. Its last 
 actions a Pull Request of your fork, **Deployment actions of the earlier levels**, and merges it once
 its checks pass. Look for it in the **Pull requests** tab of your fork:
 
-- **Open with green checks**: merge it with **Merge pull request**. The promotion Pull Request
+- **Open with green checks**: if GitHub still shows it as a draft, tick the box of **Set Email
+  Deliverability to All Email** in its check comment, the one of `integration` you did in [Lab 2.4](../level-2-contributor-advanced/2-4-ship-reference-data-and-a-batch-with-deployment-actions.md),
+  then click **Ready for review**. Merge it with **Merge pull request**. The promotion Pull Request
   takes the new commit of `integration`, and its check runs again, red this time, as step 4 says
 - **Missing**: your reset ran without that step, the case for a fork whose scripts date from before
   2026-10-08. Nothing is wrong with your pipeline: go on, and steps 4, 5 and 7 show fewer actions
