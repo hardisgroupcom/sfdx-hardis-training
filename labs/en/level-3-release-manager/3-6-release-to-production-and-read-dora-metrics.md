@@ -64,11 +64,20 @@ The same way you created the promotion in [Lab 3.5](3-5-promote-to-uat-and-write
 `preprod`.
 
 Its check job is the first one to log into `helios-preprod`, and it does so with the key and the
-secrets of [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md): a green check here is your `preprod` JWT set-up working.
+secrets of [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md). This is the first JWT login of the course, so look at it once: open the check
+from **Checks**, expand **Login & Simulate deployment**, and look for `sf org login jwt`. That line,
+and the job carrying on past it, are your `preprod` key working, even on the first run, which stops
+red further down for another reason.
 
 Title it plainly:
 
 > Promotion 2026-09 to preprod
+
+Its first check stops **red**, on purpose, the way the promotion to `uat` did in
+[Lab 3.5 step 4](3-5-promote-to-uat-and-write-release-notes.md): the deliverability step of US-026 runs before the deployment, and nobody has done
+it in `helios-preprod`. Do the click there, tick its box in the sfdx-hardis comment (or **Mark as
+done in preprod** in the VS Code **Deployment Actions** tab), then **Re-run all jobs** on the check.
+It goes green.
 
 Read the check, merge, and watch the **Process Deployment (sfdx-hardis)** run on `preprod`. Then
 open `helios-preprod` and do the checks of step 6 there first.
@@ -80,9 +89,14 @@ release that fails here has cost you nothing.
 ### 3. Create the production Pull Request
 
 The **+ PR** chip on the arrow from `preprod` to `main`, from `preprod` into `main`. Its check job is
-the first JWT login into `helios-prod`. Title it plainly:
+the first JWT login into `helios-prod`, with `sf org login jwt` in its log as in step 2. Title it
+plainly:
 
 > Release 2026-09 to production
+
+Its first check stops red for the same reason as in step 2, in the last org where nobody has done
+the deliverability step: `helios-prod`. Do the click in production, tick the box, **Re-run all
+jobs**, and read the green check that follows.
 
 ### 4. Read the check like it matters
 

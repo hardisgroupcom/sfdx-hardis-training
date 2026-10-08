@@ -1,7 +1,7 @@
 ---
 # Badge claim audit.
 #
-# FIVE RULES. Read them before changing anything in this file.
+# SIX RULES. Read them before changing anything in this file.
 #
 #  1. NEVER execute anything from the learner's clone. No npm install, no npm run,
 #     no build, no script of theirs. The audit only reads files and git history,
@@ -14,9 +14,10 @@
 #     repository cannot exhaust the runner.
 #  5. Serialise with a concurrency group. Two claims landing together both commit
 #     to main, and without serialisation the second push is rejected.
-#  6. Ask for the site build after committing a badge. A push made with
-#     GITHUB_TOKEN never triggers a workflow, so nothing else will, and the badge
-#     page this workflow links to would not exist.
+#  6. Ask for the site build and the reset branches after committing a badge. A
+#     push made with GITHUB_TOKEN never triggers a workflow, so nothing else will:
+#     the badge page this workflow links to would not exist, and the reset
+#     branches would lag main by every badge commit.
 #
 # The learner's code is never checked out into the workspace: it is cloned into a
 # temporary directory and read. That is what keeps this simple, and it is why the
@@ -36,21 +37,31 @@ on:
 
 permissions: read-all
 
-concurrency:
-  group: badge-claims
-  cancel-in-progress: false
-
 jobs:
   audit:
     name: Clone, audit, answer
-    if: contains(github.event.issue.labels.*.name, 'badge-claim')
+    # A claim filed through the form fires `opened` AND `labeled`, one second
+    # apart, and both carry the label: the audit ran twice and answered twice.
+    # The `labeled` of the form is sent by the author of the issue, so that one
+    # is skipped. A label added by hand comes from a maintainer, and still runs.
+    if: >-
+      contains(github.event.issue.labels.*.name, 'badge-claim') &&
+      (github.event.action != 'labeled' ||
+      (github.event.label.name == 'badge-claim' &&
+      github.event.sender.login != github.event.issue.user.login))
+    # Rule 5. On the job, not on the workflow: a group keeps one pending run and
+    # cancels the one it replaces, so a skipped `labeled` run queued at workflow
+    # level would cancel the `opened` run waiting behind another claim.
+    concurrency:
+      group: badge-claims
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
       contents: write
       issues: write
-      # To start the site build below. A push made with GITHUB_TOKEN never
-      # triggers a workflow, so the badge has to ask for the build explicitly.
+      # To start the site build and the reset branches below. A push made with
+      # GITHUB_TOKEN never triggers a workflow, so the badge has to ask for both.
       actions: write
     steps:
       - name: Checkout the training repository
@@ -191,6 +202,15 @@ jobs:
               echo "The badge could not be pushed after 5 attempts: the issue stays open."
               exit 1
             fi
+            # Rule 6: the push above starts no workflow, so ask for the reset
+            # branches. They are built from main, and without this they lag
+            # every badge commit: a learner's retrofit (Labs 3.7 and 3.10) then
+            # carries the badge files main has and integration does not, and
+            # start-branches.mjs --check reports them stale. Only after a push:
+            # a re-run with nothing to commit has nothing to publish.
+            if ! gh workflow run "Publish the reset branches" --ref "${GITHUB_REF_NAME}"; then
+              echo "The reset branches could not be republished: the next push to main does it."
+            fi
           fi
           # GitHub does not start a workflow from a push made with GITHUB_TOKEN,
           # so the commit above never reached the site build and the badge page
@@ -203,10 +223,10 @@ jobs:
             cat /tmp/report.md
             echo
             # Keyed by the Trailblazer username, not the GitHub handle
-            echo "Your badge page: https://hardisgroupcom.github.io/sfdx-hardis-training/badges/$TRAILBLAZER/"
+            echo "Your badge page: https://sfdx-hardis-training.github.io/badges/$TRAILBLAZER/"
             echo
             echo "It is also readable as JSON, which is what lets other sites show this badge:"
-            echo "https://hardisgroupcom.github.io/sfdx-hardis-training/badges/$TRAILBLAZER.json"
+            echo "https://sfdx-hardis-training.github.io/badges/$TRAILBLAZER.json"
           } > /tmp/comment.md
           gh issue comment "$ISSUE" --body-file /tmp/comment.md
           gh issue edit "$ISSUE" --remove-label needs-work || true

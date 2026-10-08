@@ -5,7 +5,7 @@ description: "Protégez ce que l'UAT garde pour elle avec package-no-overwrite, 
 level: 3
 lab: 5
 lang: fr
-source_rev: "dd66f0b0d98198e8a0e40fd57b516f4abcce664b"
+source_rev: "cdca81033f1a34ba8248bf6df218a9d3e533c141"
 screenshots:
   - annotated/vscode/devops-pipeline-level3--create-promotion
   - annotated/vscode/pipeline-branch-modal-level3--what-it-carries
@@ -17,9 +17,9 @@ screenshots:
 depends_on:
   commands: [hardis:doc:release-notes, hardis:project:deploy:smart]
   flags: []
-  config: [mergeTargets, availableTargetBranches, packageNoOverwritePath]
+  config: [mergeTargets, availableTargetBranches, packageNoOverwritePath, failValidationOnPendingManualActions]
   panels: [pipeline, deploymentAction]
-  docs: [salesforce-devops-deploy-major-branches, hardis/doc/salesforce-devops-release-notes]
+  docs: [salesforce-devops-deploy-major-branches, hardis/doc/salesforce-devops-release-notes, salesforce-devops-config-overwrite]
 ---
 
 # Lab 3.5 - Promouvoir en UAT et écrire les notes de version
@@ -46,7 +46,7 @@ tôt par des personnes différentes, et l'org dans laquelle elle déploie contie
 
 - [ ] [Lab 3.4](3-4-merge-colliding-pull-requests.md) terminé : US-018 et US-019 mergées dans `integration`
 - [ ] `helios-uat` connectée : la scratch org créée au Niveau 1, configurée comme org de `uat` depuis
-- [ ] Authentification JWT fonctionnelle pour `uat` ([Lab 3.1](3-1-configure-the-pipeline-up-to-production.md))
+- [ ] `SFDX_AUTH_URL_UAT` toujours dans votre fork : `uat` continue de se connecter avec, comme l'explique le [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md)
 
 ## Les étapes
 
@@ -202,6 +202,12 @@ La liste de cases est l'exception, et ce n'est pas de la décoration. **Cochez u
 vous avez fait la chose dans l'org**, et le job sfdx-hardis suivant relit la case et note l'action
 comme faite. Laissez-la décochée et la promotion suivante vous la redemandera.
 
+Une étape **avant** retient aussi le merge : tant que l'étape de délivrabilité de US-026 n'est pas
+marquée comme faite dans `uat`, le contrôle de la promotion s'arrête en rouge, juste après ses
+actions de pré-déploiement. Faites le clic dans `helios-uat`, cochez sa case (ou **Mark as done in
+uat** dans l'onglet **Deployment Actions** de VS Code), puis **Re-run all jobs** sur le contrôle :
+il enregistre l'étape et passe au vert.
+
 ### 5. Merger et regarder le déploiement
 
 Mergez la promotion. L'exécution **Process Deployment (sfdx-hardis)** démarre, cette fois sur `uat`.
@@ -210,10 +216,8 @@ C'est le premier déploiement vers cette org par la pipeline : il sera donc plus
 integration, l'UAT est en retard de tout ce que l'équipe a fait. Comptez plusieurs minutes.
 
 L'étape de délivrabilité est une étape **pre-deploy** : sa place est avant le merge, comme le dit
-l'étape 4. Si vous l'avez faite dans `helios-uat` et avez coché sa case, le log de ce job le dit :
-*Manual action Set Email Deliverability to All Email has been confirmed as done in org branch uat*.
-Sinon, faites-la maintenant et cochez la case : le prochain job qui porte cette Pull Request
-l'enregistre.
+l'étape 4, et le contrôle n'est pas passé au vert avant que vous ne l'ayez cochée. Ce job la saute :
+*Skipping Set Email Deliverability to All Email ...: already run in uat*.
 
 Puis lisez le log à la recherche du gestionnaire d'écrasement, au-dessus du déploiement, parmi les
 lignes qui commencent par `[NoOverwrite]` :
@@ -224,6 +228,13 @@ Type RemoteSiteSetting: 1 item(s) skipped because they already exist in the targ
 
 `helios-uat` a déjà `Helios_Warehouse`, la promotion l'a donc laissé hors du package, et le
 **Final package.xml to deploy** affiché juste après a un élément de moins.
+
+La Pull Request le dit aussi, sans le log : le commentaire du contrôle, et celui qu'écrit ce
+déploiement, portent une section **Protected metadata (package-no-overwrite.xml)**. Ouvrez son
+tableau, **Protected components per metadata type** : il compte **1** dans la colonne **Not
+overwritten** de la ligne **RemoteSiteSetting**. Lisez-la sur le
+contrôle, avant de merger : un composant que vous pensiez déployer et qui apparaît là est un
+composant que la liste protège par erreur.
 
 ### 6. Vérifier avec des yeux de testeur
 
@@ -248,7 +259,7 @@ Ouvrez le panneau **DevOps Pipeline** et cliquez sur le nœud `uat`, comme vous 
 `integration` à l'étape 1. Dans le pied de page de cette fenêtre, le bouton de gauche affiche
 maintenant **Generate Promotion Notes for uat**. Cliquez dessus.
 
-Cette fenêtre a la colonne de cases à cocher et le bouton **Create promotion from uat (Beta)** dont
+Cette fenêtre a les cases à cocher et le bouton **Create promotion from uat (Beta)** dont
 parlait la note ci-dessus, parce qu'`uat` est la source de la seule étape de promotion que ce projet
 autorise. Ignorez les deux jusqu'au [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md).
 
@@ -279,16 +290,23 @@ Sur cette promotion, les notes générées s'ouvrent ainsi :
 
 | Metric           | Value |
 |------------------|-------|
-| Pull Requests    | 19    |
-| Tickets          | 15    |
+| Pull Requests    | 22    |
+| Tickets          | 17    |
 | Contributors     | 1     |
-| Added / Modified | 33    |
+| Added / Modified | 38    |
 ```
+
+Il y a plus de Pull Requests que de tickets : la Pull Request de configuration de l'étape 2 et la
+promotion elle-même ne portent aucune story, et certaines stories ont pris deux Pull Requests, comme
+US-062 et son correctif au [Lab 3.3](3-3-deploy-to-integration-and-read-the-log.md). La configuration du [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) a son propre ticket, US-050,
+parce qu'elle est passée par sa propre story. Le vôtre dépend de votre parcours : un peu plus de 20 après les
+Niveaux 1 et 2, beaucoup moins après **Reset this level**, qui démarre le Niveau 3 sans leurs Pull
+Requests.
 
 Viennent ensuite un tableau des tickets, un des Pull Requests avec leurs auteurs et dates de merge,
 les métadonnées modifiées par type, et les deployment actions avec leur statut dans `uat` : l'étape
-manuelle de délivrabilité **success** si vous avez coché sa case avant le merge et **manual**
-sinon, les imports et la planification **success**.
+manuelle de délivrabilité **success**, cochée avant le merge, les imports et la planification
+**success**.
 
 Lisez-les puis améliorez-les. Des notes générées sont une liste complète, et une note de version que
 le métier lit a besoin de deux choses que le générateur ne peut pas connaître :
@@ -363,9 +381,20 @@ Documentation de la commande : [hardis:doc:release-notes](https://sfdx-hardis.cl
 
 ## En cas de problème
 
+**Le job de déploiement vers uat est rouge sur « Put the delivery managers in the Crew Leads group ».**
+Votre fork date d'avant le 2026-10-05, quand le correctif de Mariia au [Lab 3.3](3-3-deploy-to-integration-and-read-the-log.md) ne livrait pas encore le
+groupe public Crew Leads : `helios-uat` n'en a pas, et sa première action le cherche. Les
+métadonnées sont déployées, donc ne redéployez pas. Rattrapez-le comme le [Lab 3.3](3-3-deploy-to-integration-and-read-the-log.md) l'a montré : créez
+le groupe dans `helios-uat` (**Setup** > **Public Groups** > **New**, nom de groupe
+`Helios_Crew_Leads`), puis dans le panneau **DevOps Pipeline** cliquez sur `uat`, onglet
+**Deployment Actions**, **Retry** sur l'action en échec, et répondez **Run all the next
+actions**. Créez le même groupe dans `helios-preprod` et `helios-prod` avant leurs promotions du
+[Lab 3.6](3-6-release-to-production-and-read-dora-metrics.md).
+
 **Le contrôle échoue avec des erreurs d'authentification pour uat.**
-[Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) pour la branche `uat` : les secrets, et la pré-autorisation de l'External Client App dans
-`helios-uat`.
+`SFDX_AUTH_URL_UAT` manque ou n'est plus à jour, souvent parce que `helios-uat` a expiré et a été
+reconstruite. **Training: Level 3 > Set up my training environment** reconstruit ce qui a expiré et
+réécrit le secret. Puis **Re-run all jobs** sur le contrôle.
 
 **Le déploiement échoue sur quelque chose qui marchait en integration.**
 Les orgs diffèrent. En général il manque en UAT une fonctionnalité, une licence, ou un composant que

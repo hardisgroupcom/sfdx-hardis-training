@@ -40,7 +40,7 @@ import os from "os";
 import path from "path";
 import {
   ROOT, c, title, info, ok, warn, abort, run, runAsync, runJson, parseJsonOutput, git, gitOut,
-  select, confirm, connectedOrgs, orgChoices, universe, ensureGh, repoSlug, openUrl
+  select, confirm, connectedOrgs, orgChoices, universe, ensureGh, repoSlug, openUrl, removeTempDir
 } from "../lib/util.mjs";
 import { deployAppToAll, grantManager, loadData, recordSeeded, alreadySeeded } from "./seed.mjs";
 import { REQUIRED_CHECKS, protectBranches, withProtectionLifted } from "../lib/protection.mjs";
@@ -196,7 +196,7 @@ export async function ensureDevHub(alias) {
     ["project", "deploy", "start", "--metadata-dir", dir, "--target-org", alias, "--wait", "10", "--json"],
     { quiet: true, capture: true }
   );
-  fs.rmSync(dir, { recursive: true, force: true });
+  removeTempDir(dir);
   if (res.code !== 0) {
     const json = parseJsonOutput(res.stdout);
     warn(json?.message || (res.stderr || res.stdout).trim().split("\n").slice(-5).join("\n"));
@@ -428,16 +428,30 @@ async function ensureFork(handle) {
     // No --default-branch-only: this course needs every branch, and that option
     // is the single most common way a learner ends up with a fork that cannot
     // work. The web form calls it "Copy the main branch only".
-    const res = run("gh", ["repo", "fork", UPSTREAM, "--clone=false", "--remote=false"]);
+    // No --remote either: gh refuses that flag (any value) once a repository is
+    // named, before it contacts GitHub. Named, it adds no remote anyway, and the
+    // remotes are set below.
+    // Captured, because the panel only shows what goes through info() and warn():
+    // what gh prints itself lands in an output channel nobody has open.
+    const res = run("gh", ["repo", "fork", UPSTREAM, "--clone=false"], { capture: true });
     if (res.code !== 0) {
       // Three lines and a link beat "fork it by hand": the web form has one box
       // that has to be unticked, and a learner who misses it gets a fork the
       // course cannot work in.
       warn("The fork could not be created from here.");
+      // gh's own words first: a local error must not read as "GitHub refused it"
+      const said = (res.stderr || res.stdout).trim();
+      if (said) {
+        info("");
+        info("  The GitHub CLI said:");
+        for (const line of said.split(/\r?\n/)) {
+          info(`    ${line}`);
+        }
+      }
       info("");
-      info("  GitHub refused it. The usual reasons are a repository of that name already");
-      info("  in your account, an organisation that does not allow forks, or a sign-in");
-      info("  without permission to create repositories.");
+      info("  When GitHub refuses it, the usual reasons are a repository of that name");
+      info("  already in your account, an organisation that does not allow forks, or a");
+      info("  sign-in without permission to create repositories.");
       info("");
       info("  Make it yourself, it is one screen:");
       info(`    1. Open ${c.cyan(`https://github.com/${UPSTREAM}/fork`)}`);
@@ -447,6 +461,7 @@ async function ensureFork(handle) {
       info("");
       abort("The fork could not be created.", "Make it as described above, then run this again.");
     }
+    ok(`Your fork is ${c.bold(fork)}.`);
   }
 
   // The clone was made from the shared repository, so origin still points there
@@ -770,7 +785,7 @@ export function setSecrets(slug, pipeline) {
     ok(`${secret} is set on ${c.bold(slug)}.`);
   }
   info(c.dim("    Each holds a long-lived refresh token for a throwaway scratch org."));
-  info(c.dim("    Lab 3.1 replaces them with JWT certificates and deletes them."));
+  info(c.dim("    Lab 3.1 uses JWT certificates for preprod and main, and leaves these two as they are."));
 }
 
 // --------------------------------------------------------------------- main
@@ -828,8 +843,10 @@ export default async function init(args) {
   // job of integration straight away: written after, the job runs with no
   // credential and the learner's pipeline is red before Lab 1.3.
   step(6, "The credentials the CI jobs use");
-  // Once Lab 3.1 moved the pipeline to JWT and deleted the auth URL secrets, running
-  // this again, to rebuild an expired scratch org, must not bring the shortcut back
+  // Lab 3.1 moves only preprod and main to JWT, and integration and uat keep these
+  // secrets: running this again, to rebuild an expired scratch org, writes them
+  // again. A fork that walked the earlier Lab 3.1 moved all four branches to JWT
+  // (encryptedCert) and deleted the secrets, and must not get the shortcut back.
   const projectConfig = gitOut(["show", `origin/${pipeline[0].branch}:config/.sfdx-hardis.yml`]);
   if (/^orgAuthenticationMode:[ \t]*["']?encryptedCert/m.test(projectConfig)) {
     ok("The pipeline logs in with JWT keys since Lab 3.1: no auth URL secret is written.");

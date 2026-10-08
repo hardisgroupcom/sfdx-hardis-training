@@ -107,8 +107,8 @@ Open the **Checks** tab **(1)**. Two of them matter here, and both start on thei
 
 | Check                                         | What it does                                                                                |
 |-----------------------------------------------|---------------------------------------------------------------------------------------------|
-| **Simulate Deployment (sfdx-hardis)** **(3)** | Deploys your metadata into `helios-integration` in validation mode, and runs the Apex tests |
-| **Mega-Linter** **(2)**                       | Runs the code quality linters over the repository                                           |
+| **Simulate Deployment (sfdx-hardis)** **(2)** | Deploys your metadata into `helios-integration` in validation mode, and runs the Apex tests |
+| **Mega-Linter** **(3)**                       | Runs the code quality linters over the repository                                           |
 
 ![The Checks tab of a Pull Request, listing the jobs that ran](../../_assets/annotated/web/github-pr-checks.png)
 
@@ -138,11 +138,13 @@ the most useful thing on the page.
 ![The sfdx-hardis comment on a Pull Request](../../_assets/annotated/web/github-pr-comment.png)
 
 1. **The banner** **(1)** says whether the simulated deployment succeeded
-2. **What would change** **(2)**. Not a list of your files: sfdx-hardis sends the whole package,
-   `manifest/package.xml`, and Salesforce answers how much of it differs: `34 sent to the org, 5
-   would change (1 created, 4 updated, 0 deleted, 29 unchanged)`. The one created is your field, and the
-   updated ones include the layout and the two permission sets you changed
-3. **Apex coverage** **(3)**, against the target this project sets
+2. **Apex coverage** **(2)**, right under it, against the target this project sets
+3. **What would change** **(3)**. Not a list of your files: sfdx-hardis sends the whole package,
+   `manifest/package.xml`, and Salesforce answers how much of it differs: `Simulated deployment: 36
+   components validated against the org, 7 would change (1 created, 6 updated, 0 deleted, 29
+   unchanged)`. The one created is your field, and the updated ones include the layout and the two
+   permission sets you changed. Click the line under it to open a table of those changes, per type
+   of component: the field is the **CustomField** row
 4. **Tickets** **(4)**, the stories it recognised in your branch name and commit messages, each
    with its title and a link to its page in the backlog
 
@@ -226,6 +228,10 @@ org yet" without leaving the editor.
 
 ![The DevOps Pipeline panel, with the deployment status on the arrow to the org](../../_assets/annotated/vscode/devops-pipeline--deployment-status.png)
 
+The picture was taken later in the course, with teammates' branches on the left of `integration`.
+Yours shows only `integration` and `uat`: the pill **(1)** on the arrow to the org is the part to look
+at.
+
 The pill is also a link: click it and GitHub opens on the log of that run, **Process Deployment
 (sfdx-hardis)**, which takes about three minutes. You do not need to read it today. It is there for
 the day something fails, and [Lab 3.3](../level-3-release-manager/3-3-deploy-to-integration-and-read-the-log.md) is the lab that reads one line by line.
@@ -235,8 +241,8 @@ When the deployment finishes, it writes a second comment on the Pull Request you
 ![The comment sfdx-hardis writes after the merge deployment](../../_assets/annotated/web/github-pr-deployed.png)
 
 1. **Deployment successful** **(1)**, and this time the org really changed
-2. **What changed** **(2)**, in the same shape as the check said it would: `5 changed` where the
-   check said `5 would change`
+2. **What changed** **(2)**, in the same shape as the check said it would: `7 changed` where the
+   check said `7 would change`
 3. **Quick Deploy** **(3)**. The merge job did not start from nothing. It released the validation
    the Pull Request check had already done, which is why it did not run the Apex tests a second
    time and why it took two minutes rather than five
@@ -315,7 +321,7 @@ without the field. Redo [Lab 1.5 step 3](1-5-retrieve-commit-and-publish-your-ch
 
 **The check is stuck as "Expected".**
 The workflow is waiting for a job that will never run, usually because the base of the Pull Request
-is the original repository and not your fork (`github.com/my-username/sfdx-hardis-training`). Close it and open it again with the right base.
+is the original repository and not your fork. Close it and open it again with the right base.
 
 **The merge box says Merging is blocked, and the button is grey.**
 A required check is still running, or it failed. Wait for it, or open it from the **Checks** tab,
@@ -329,8 +335,8 @@ blocked. **Pull** in the **Source Control** panel to bring the robot's commit to
 run **Training: Level 1 > Trigger my workflows**: a push of yours is what starts the checks again.
 
 **The deployment succeeds but the field is not in the org.**
-Look at the deployed components list in the comment. If the field is not there, it is not in
-`manifest/package.xml`, and [Lab 1.5 step 6](1-5-retrieve-commit-and-publish-your-changes.md#6-read-the-package-before-you-push) is where you read it.
+Open the table of changes in the comment, under the counts line. If it has no **CustomField** row,
+the field is not in `manifest/package.xml`, and [Lab 1.5 step 6](1-5-retrieve-commit-and-publish-your-changes.md#6-read-the-package-before-you-push) is where you read it.
 
 ## Check your work
 

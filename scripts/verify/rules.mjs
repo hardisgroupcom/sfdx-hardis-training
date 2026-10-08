@@ -290,6 +290,7 @@ function branchesNameTheirOrgs(ctx) {
 
 /** The dev org alias, as the universe names it. */
 const DEV_ORG = "helios-dev";
+const INTEGRATION_ORG = "helios-integration";
 
 // --------------------------------------------------------------- the rules
 export const RULES = [
@@ -770,7 +771,7 @@ export const RULES = [
   // ------------------------------------------------------------- level 3
   {
     id: "3.1", level: 3, lab: 1,
-    title: "The pipeline reaches production, and every org authenticates with JWT",
+    title: "The pipeline reaches production, and preprod and production authenticate with JWT",
     check: (ctx) => {
       const missingBranches = ["uat", "preprod", "main"].filter((b) => !ctx.hasBranch(b));
       if (missingBranches.length > 0) {
@@ -785,13 +786,13 @@ export const RULES = [
       if (!/availableTargetBranches:[\s\S]{0,200}preprod/.test(project)) {
         return miss(
           "preprod is not listed under availableTargetBranches, so nobody can start a hotfix",
-          "config/.sfdx-hardis.yml"
+          "config/.sfdx-hardis.yml. Lab 3.1 step 9, Let contributors start a hotfix"
         );
       }
       const configs = ctx.listOn("main", "config/branches/").concat(ctx.listOn(DEV, "config/branches/"));
       const missing = ["preprod", "main"].filter((b) => !configs.some((f) => f.endsWith(`.sfdx-hardis.${b}.yml`)));
       if (missing.length > 0) {
-        return miss(`missing branch configuration: ${missing.join(", ")}`, "config/branches/. Add/Configure Org writes it, Lab 3.1 steps 4 to 7");
+        return miss(`missing branch configuration: ${missing.join(", ")}`, "config/branches/. Add/Configure Org writes it, Lab 3.1 step 5 for preprod and step 8 for main");
       }
       const branches = ["integration", "uat", "preprod", "main"];
       const notConfigured = [];
@@ -811,34 +812,47 @@ export const RULES = [
       if (notConfigured.length > 0) {
         return miss(
           `targetUsername or instanceUrl is missing for: ${notConfigured.join(", ")}`,
-          "config/branches/. sf hardis:project:configure:auth writes both"
+          "config/branches/. Set up my training environment writes integration and uat, Add/Configure Org writes preprod (Lab 3.1 step 5) and main (step 8)"
         );
       }
-      // The encrypted key files are published with the rest of the pipeline configuration
+      // Lab 3.1 moves preprod and main to JWT, and only those two: integration
+      // and uat keep the SFDX_AUTH_URL_* secrets of Level 1 on purpose, so no key
+      // and no orgAuthenticationMode is asked of them. A fork that walked the
+      // earlier Lab 3.1, four keys, encryptedCert and the auth URLs deleted,
+      // passes the same checks. The key files are published with the rest of the
+      // pipeline configuration.
+      const jwtBranches = ["preprod", "main"];
       const keys = ctx.listOn(DEV, "config/branches/.jwt/").concat(ctx.listOn("main", "config/branches/.jwt/"));
-      const noKey = branches.filter((b) => !keys.some((f) => f.endsWith(`/${b}.key`)));
+      const noKey = jwtBranches.filter((b) => !keys.some((f) => f.endsWith(`/${b}.key`)));
       if (noKey.length > 0) {
         return miss(
           `no encrypted key file for: ${noKey.join(", ")}`,
-          "config/branches/.jwt/ on integration. Add/Configure Org writes them, and Publish my pipeline configuration puts them there"
-        );
-      }
-      const devProject = ctx.readOn(DEV, "config/.sfdx-hardis.yml") || "";
-      if (!/orgAuthenticationMode:\s*["']?encryptedCert/.test(devProject)) {
-        return miss(
-          "orgAuthenticationMode still says the pipeline has no certificates",
-          `config/.sfdx-hardis.yml on branch ${DEV}, expected orgAuthenticationMode: encryptedCert (Lab 3.1 step 9)`
+          "config/branches/.jwt/ on integration. Add/Configure Org writes them (Lab 3.1 steps 5 and 8), and the Pull Request of Lab 3.1 step 11 puts them there"
         );
       }
       // The secrets of the fork are only visible from the learner's machine, through gh
       const secrets = ctx.local ? forkSecretNames(ctx) : null;
-      const shortcuts = (secrets || []).filter((name) => /^SFDX_AUTH_URL_/.test(name));
-      return shortcuts.length === 0
-        ? pass("The four orgs authenticate with JWT, and the Level 1 shortcut is gone")
-        : miss(
-          `the Level 1 shortcut is still there: ${shortcuts.join(", ")}`,
-          "your fork, Settings > Secrets and variables > Actions. Lab 3.1 step 10 deletes them"
-        );
+      if (secrets) {
+        const shortcuts = jwtBranches
+          .map((b) => `SFDX_AUTH_URL_${b.toUpperCase()}`)
+          .filter((name) => secrets.includes(name));
+        if (shortcuts.length > 0) {
+          return miss(
+            `${shortcuts.join(" and ")} would log in instead of JWT: preprod and production use the External Client App`,
+            "your fork, Settings > Secrets and variables > Actions. Delete it, then check the secrets of Lab 3.1 step 6"
+          );
+        }
+        const missingSecrets = jwtBranches
+          .flatMap((b) => [`SFDX_CLIENT_ID_${b.toUpperCase()}`, `SFDX_CLIENT_KEY_${b.toUpperCase()}`])
+          .filter((name) => !secrets.includes(name));
+        if (missingSecrets.length > 0) {
+          return miss(
+            `these secrets are missing: ${missingSecrets.join(", ")}`,
+            "your fork, Settings > Secrets and variables > Actions: the two values Add/Configure Org prints, Lab 3.1 step 6 (step 8 for main)"
+          );
+        }
+      }
+      return pass("The pipeline reaches production, and preprod and production authenticate with JWT");
     }
   },
   {
@@ -868,7 +882,35 @@ export const RULES = [
   },
   {
     id: "3.3", level: 3, lab: 3,
-    title: "Romain's US-056 deploys, and .forceignore hides nothing it should not",
+    title: "Romain's US-056 deploys, .forceignore hides nothing it should not, and Mariia's failed action was fixed",
+    // Right after the lab, the org says whether the actions really did their work: the group
+    // exists and holds the delivery managers and the learner, whichever way each action was recovered
+    now: (ctx) => {
+      const repository = ruleCheck("3.3")(ctx);
+      if (!repository.ok) {
+        return repository;
+      }
+      if (!ctx.sfQuery) {
+        return repository;
+      }
+      const members = ctx.sfQuery(
+        INTEGRATION_ORG,
+        "SELECT UserOrGroupId FROM GroupMember WHERE Group.DeveloperName = 'Helios_Crew_Leads'"
+      );
+      if (members === null) {
+        return miss(
+          "helios-integration could not be queried, or it has no Crew Leads group",
+          `${INTEGRATION_ORG}. Lab 3.3 step 11 creates the group in Setup, with the group name Helios_Crew_Leads`
+        );
+      }
+      if (members.length === 0) {
+        return miss(
+          "the Crew Leads group of helios-integration has no member",
+          `${INTEGRATION_ORG}, Setup > Public Groups > Crew Leads. Lab 3.3 step 11 retries the action that fills it`
+        );
+      }
+      return pass("Crew Leads has its members in helios-integration, and the crew capacity action runs from Mariia's fix");
+    },
     check: (ctx) => {
       const forceignore = ctx.readOn(DEV, ".forceignore") || "";
       if (/Crew_W\*/.test(forceignore)) {
@@ -877,12 +919,31 @@ export const RULES = [
           `.forceignore on branch ${DEV}. Lab 3.3 step 8 sends it back to Romain`
         );
       }
-      return ctx.readOn(DEV, FIELD("Installation__c", "Crew_Workload__c"))
-        ? pass("US-056 is merged, and its field deploys")
-        : miss(
+      if (!ctx.readOn(DEV, FIELD("Installation__c", "Crew_Workload__c"))) {
+        return miss(
           "Romain's US-056 is not merged into integration yet",
           `${FIELD("Installation__c", "Crew_Workload__c")} on branch ${DEV}`
         );
+      }
+      // The crew capacity action of US-062 lives in exactly one actions file, with the right class
+      // and the Pull Request it was moved from: Mariia's fix is merged
+      const crewCapacityAction = "7d1e4b90-3c2a-4f5e-8a6b-062000000002";
+      const carrying = ctx.listOn(DEV, "scripts/actions/")
+        .map((file) => ctx.readOn(DEV, file) || "")
+        .filter((content) => content.includes(crewCapacityAction));
+      if (carrying.length === 0) {
+        return miss(
+          "Mariia's US-062 is not merged into integration yet",
+          `scripts/actions/ on branch ${DEV}. Lab 3.3 step 9 merges it`
+        );
+      }
+      if (carrying.length > 1 || !carrying[0].includes("className: CrewCapacityBatch") || !/movedFrom: \d+/.test(carrying[0])) {
+        return miss(
+          "the crew capacity action of US-062 still names CrewCapacityBach, or was not moved to Mariia's fix",
+          `scripts/actions/ on branch ${DEV}. Lab 3.3 step 12 merges her fix Pull Request`
+        );
+      }
+      return pass("US-056 is merged and its field deploys, and the crew capacity action of US-062 was moved and fixed");
     }
   },
   {

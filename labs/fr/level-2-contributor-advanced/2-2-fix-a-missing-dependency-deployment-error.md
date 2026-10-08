@@ -5,7 +5,7 @@ description: "Modifiez un flow Salesforce existant, puis lisez correctement un c
 level: 2
 lab: 2
 lang: fr
-source_rev: "ecec979441416a4d9c6a3f833bbb555facb88aa6"
+source_rev: "d0a3a04d32929b6ab52a1f9590ff383010fc3ea1"
 screenshots:
   - annotated/vscode/package-xml-filtered
   - annotated/vscode/editor-field-file
@@ -97,7 +97,9 @@ Trois modifications, et l'image ci-dessus montre où chacune commence :
 
 1. Élément **Start** : cliquez sur **Edit** **(1)** dessus. Sous **Set Entry Conditions**, le flow
    tourne déjà quand `Crew Size` n'est pas nul **(1)**. Cliquez sur **Add Condition** **(2)** et
-   ajoutez la seconde, `Panels Required`, **Is Null**, `False`, puis **Done** en bas du panneau
+   ajoutez la seconde, `Panels Required`, **Is Null**, `False`. Ce panneau n'a pas de bouton
+   **Done** : la condition est gardée au fil de la saisie, et le **X** **(3)** en haut à droite
+   ferme le panneau
 
     ![Les conditions d'entrée de l'élément Start](../../_assets/annotated/salesforce/flow-builder-start-conditions.png)
 

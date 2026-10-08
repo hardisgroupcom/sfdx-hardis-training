@@ -19,7 +19,7 @@ screenshots:
 depends_on:
   commands: [hardis:org:data:import, hardis:work:save]
   flags: []
-  config: [dataPackages, commandsPostDeploy]
+  config: [dataPackages, commandsPostDeploy, failValidationOnPendingManualActions]
   panels: [dataWorkbench, deploymentAction, pipeline]
   docs: [salesforce-devops-agent-data-workspaces, salesforce-devops-work-on-user-story-deployment-actions]
 ---
@@ -74,15 +74,24 @@ In `helios-dev`, create:
   - `Crew_Type__c`, Picklist: `Roof`, `Ground`, `Electrical`
   - `Roof_Type__c`, Picklist: `Tile`, `Slate`, `Flat`, `Metal`
   - `Panels_Per_Day__c`, Number 3,0
+- A tab for it, so the records can be found in the app: **Setup > Tabs**, **New** under **Custom
+  Object Tabs**, object **Crew Capacity**, any tab style. Keep the profile visibility the wizard
+  offers. On the last screen, **Add to Custom Apps**, untick **Include Tab** at the top of the list,
+  then tick **Helios Delivery** alone: the other apps have no use for it
 - An Apex class `CrewCapacityBatch` that recalculates `Total_Capacity_kW__c` on planned
   installations and that Salesforce can run on a schedule, plus its test class
-  `CrewCapacityBatchTest`. **You do not have to write these.** Copy them from
-  `scripts/apex/samples/` in the repository: what they compute matters far less here than the fact
-  that somebody has to schedule them in every org, which is the whole point of the lab
+  `CrewCapacityBatchTest`. **You do not have to write these**, and they are the one thing in this
+  list you do not create in the org. From `scripts/apex/samples/` in the repository, copy
+  `CrewCapacityBatch.cls`, `CrewCapacityBatchTest.cls` and their two `.cls-meta.xml` files into
+  `force-app/main/default/classes/`, in the Explorer, with copy and paste, as in [Lab 2.3](2-3-fix-broken-records-with-an-apex-deployment-action.md). What they
+  compute matters far less here than the fact that somebody has to schedule them in every org,
+  which is the whole point of the lab
 - The access, on **Helios Delivery Manager**: **Read**, **Create** and **Edit** on Crew Capacity,
-  and **Read** and **Edit** on its four fields. Planners maintain these numbers, and it is also the
-  permission set the pipeline's own user holds in every org: without it the data load of step 4
-  would find fields it is not allowed to write
+  **Read** and **Edit** on its four fields, and under **Tab Settings** on the same page, **Available**
+  and **Visible**. Planners maintain these numbers, and it is also the permission set the pipeline's
+  own user holds in every org: without it the data load of step 4 would find fields it is not
+  allowed to write. The tab setting is what shows the tab in the other orgs, where the profile
+  visibility you kept in the wizard never travels
 
 Then the records. Helios supports 12 combinations, three crew types by four roof types, and each
 one needs a Crew Capacity record saying how many panels a day that crew lays on that roof. Typing
@@ -93,8 +102,9 @@ Capacity records**, then **helios-dev**, and answer **Yes** to **Create them?**.
 ![The Level 2 Training menu, with Create my lab records](../../_assets/annotated/vscode/sidebar-commands-custom-menu-2--lab-records.png)
 
 The panel first checks that your object and its four fields are in the org, then creates the
-records, lists them, and ends with a **See them in the org** link. Open it: the **All** list of
-Crew Capacity reads **12 items** **(1)**, from `CAP-ROOF-TILE` to `CAP-ELECTRICAL-METAL`. If the
+records, lists them, and ends with a **See them in the org** link. Open it, or open the **Crew
+Capacity** tab of the Helios Delivery app and pick the **All** list view: it reads **12 items**
+**(1)**, from `CAP-ROOF-TILE` to `CAP-ELECTRICAL-METAL`. If the
 panel says a field is missing, finish the object first, then run it again: it updates the same
 twelve records rather than creating more.
 
@@ -116,13 +126,14 @@ is the problem the rest of this lab solves.
 
 ### 2. Publish and watch nothing fail
 
-Retrieve the object, its fields, the two Apex classes and `Helios_Delivery_Manager` with **Commit
-changes**, commit them, then **Save / Publish**, push, Pull Request. The check is green. Merge. The
-deployment is green.
+Retrieve the object, its fields, its tab, the `Helios_Delivery` app and `Helios_Delivery_Manager`
+with **Commit changes**. The two Apex classes are not retrieved: they are already files of the
+project, and Source Control lists the four you copied next to what you retrieved. Commit all of it,
+then **Save / Publish**, push, Pull Request. The check is green. Merge. The deployment is green.
 
 Now open `helios-integration` and look:
 
-- `Crew_Capacity__c` exists, **with zero records**
+- The **Crew Capacity** tab is in the Helios Delivery app, **with zero records**
 - `CrewCapacityBatch` exists, **scheduled nowhere**
 - Nobody checked that the org is allowed to send the batch's summary email
 
@@ -146,6 +157,9 @@ It is run by [SFDMU](https://github.com/forcedotcom/SFDX-Data-Move-Utility), the
 sfdx-hardis uses, and nothing in it is specific to one org.
 
 ![The Data Import/Export Workbench, where SFDMU workspaces are created and run](../../_assets/annotated/vscode/data-workbench.png)
+
+The picture was taken at the end of this step, so it already lists `HeliosCrewRefData` under
+`HeliosBaseline`. Yours lists `HeliosBaseline` alone until you create it.
 
 Create a new workspace:
 
@@ -223,8 +237,14 @@ its path. **Target orgs** **(3)** on **All target orgs** means every org the pip
 | Run Only Once By Org          | yes                                                |
 
 **Schedule Batch** **(1)** replaces the script field with two of its own: **Apex Class Name**
-**(2)**, a dropdown of the schedulable classes in the project, and **Cron Expression** **(3)**,
-which the dialog explains with examples under the field.
+**(2)**, a dropdown of the classes Salesforce can run on a schedule, read from your default org and
+from the project, and **Cron Expression** **(3)**, which the dialog explains with examples under the
+field.
+
+In your list the class reads **CrewCapacityBatch (in the project, not in the default org yet)**.
+That is expected, and it is the right one to pick: the class went from the repository to
+`helios-integration` through the pipeline and never to `helios-dev`, where you did not need it. The
+action runs in the orgs the pipeline deploys to, and the class is there before it runs.
 
 **Three: the one nobody can automate.**
 
@@ -273,39 +293,65 @@ on the screen, and what the page shows when it is done, like the four lines abov
 manager does it in an org you have never opened, often on release day. If they have to guess what
 you meant, they will guess, and a wrong guess in production is worse than no step at all.
 
+**Then update the Pull Request, or none of the three exists for the pipeline.**
+
+So far the actions are only on your machine. Each **Save** wrote the action into a file under
+`scripts/actions/`, named after the number of your Pull Request: `.sfdx-hardis.12.yml` for Pull
+Request 12. VS Code said so each time, in a notification at the bottom right: **Deployment action
+saved for Pull Request #12. Don't forget to commit and push**, followed by the path of the file. Its
+**Open Git** button opens **Source Control**, where the file waits.
+
+Commit it, then **Save / Publish**. The Pull Request check and the deployment read the actions from
+that file in the branch of the Pull Request, not from the panel: an action that was never pushed
+does not run, and nothing fails to tell you.
+
 ### 5. Read the Pull Request comment
 
-The editor wrote the three actions into `scripts/actions/`, in a file named after your Pull Request.
-Commit it, **Save / Publish**.
-
-When the check finishes, sfdx-hardis posts a **Deployment Actions** comment on the Pull Request:
+The check starts again on the commit you just published. This time it turns **red**, and on purpose. The deliverability step runs **before** the
+deployment, so it has to be done before the merge, and sfdx-hardis stops the check until somebody
+says it is. Its log names the step and the three ways to mark it, and sfdx-hardis posts a
+**Deployment Actions** comment on the Pull Request:
 
 ![The Deployment Actions comment of the US-026 Pull Request](../../_assets/annotated/web/github-pr-deployment-actions.png)
 
-- **Pending manual actions** **(1)**: your deliverability step, with a checkbox, for `integration`.
-  Do the click in the org, then tick the box: the next job records it as done
+- **Pending manual actions** **(1)**: your deliverability step, with a checkbox, for `integration`
 - **Status by org branch** **(2)**: one row per action, with its moment. The deliverability step,
-  **pre-deploy**, waits for somebody; the import and the schedule, **post-deploy**, are marked
-  **skipped**, because a check changes nothing
+  **pre-deploy**, waits for somebody; the import and the schedule, **post-deploy**, read **not run
+  in this org branch yet**, because the check stopped before them, and a check runs neither anyway
+
+Do the click in `helios-integration` (it already reads **All email** on your scratch orgs, so it is
+a ten-second check), then tick the box **(1)**. In VS Code, **Mark as done in integration** on the
+step, in the **Deployment Actions** tab of your Pull Request, does the same.
+
+Then run the check again: on the Pull Request, open **Checks** and click **Re-run all jobs**. It
+reads your tick, records the step as done in `integration`, skips it, and goes green.
 
 Merge, and watch the deployment job: the data import runs, the batch gets scheduled, and the manual
-step stays pending until a person says it is done.
+step is skipped, because it is done in `integration` already.
+
+<details markdown="1"><summary>Under the hood: why the check stopped</summary>
+
+A manual action declared **Before Metadata Deployment** has to be performed before the merge. The
+validation job stops right after its pre-deployment actions while one of them is not marked as
+performed in the target org branch. A draft Pull Request (or one with `draft` in its title) is not
+stopped, so you can keep checking a story in progress. sfdx-hardis only lists the step by default:
+the Helios project turns the stop on with `failValidationOnPendingManualActions: true` in
+`config/.sfdx-hardis.yml`.
+
+</details>
 
 ### 6. Verify in the integration org
 
 Do not take the green tick for it. **Open the org and look:**
 
-- **Crew Capacity** has 12 records
+- The **Crew Capacity** tab of the Helios Delivery app, on its **All** list view, has 12 records
 - **Setup > Scheduled Jobs** lists `Helios crew capacity nightly`
-- The manual step is listed as still to do, because you have not done it
+- The manual step reads **done** for `integration` under **Status by org branch**, with the date
+  of your tick
 
-Do the manual step by hand in `helios-integration`, then tick its box under **Pending manual
-actions** in the comment on your Pull Request. A job reads the boxes of the Pull Requests it
-deploys, so this tick is recorded by the next job that carries US-026: the promotion to `uat` in
-[Lab 3.5](../level-3-release-manager/3-5-promote-to-uat-and-write-release-notes.md). Until then its row under **Status by org branch** still reads waiting, and
-that is expected. On a real release the person merging does the click and ticks the box before
-merging, and the deployment job records it at once. That is the point: you did it **because the
-pipeline told you to**, not because you remembered.
+You did the click before the merge, which is what a real release needs: the person merging does it
+and ticks the box, and the pipeline does not let the merge through until they have. That is the
+point: you did it **because the pipeline told you to**, not because you remembered.
 
 !!! warning "If the records are not there and the job was green"
     Read the deployment log for the line **Listing Post-deployment actions**. When it is followed by
@@ -347,7 +393,7 @@ evidence of nothing else.** The org is the only thing that tells you an action r
 All three are entries in the same YAML file under `scripts/actions/`:
 
     commandsPreDeploy:
-      - id: email-deliverability
+      - id: 5b2e8c71-0a3d-4f6e-9c1b-026000000003
         label: Set Email Deliverability to All Email
         type: manual
         parameters:
@@ -355,13 +401,13 @@ All three are entries in the same YAML file under `scripts/actions/`:
             1. Open **Setup**, type `Deliverability` in the Quick Find box, and open it.
             ...
     commandsPostDeploy:
-      - id: load-crew-capacity
+      - id: 5b2e8c71-0a3d-4f6e-9c1b-026000000001
         label: Load crew capacity reference data
         type: data
         parameters:
           sfdmuProject: HeliosCrewRefData
         context: process-deployment-only
-      - id: schedule-crew-capacity
+      - id: 5b2e8c71-0a3d-4f6e-9c1b-026000000002
         label: Schedule the nightly crew capacity recalculation
         type: schedule-batch
         parameters:
@@ -370,6 +416,8 @@ All three are entries in the same YAML file under `scripts/actions/`:
           jobName: Helios crew capacity nightly
         context: process-deployment-only
         runOnlyOnceByOrg: true
+
+The editor generated each `id` when it created the action, so yours are different.
 
 The data import runs SFDMU through `sf hardis:org:data:import`, the same command the Training menu
 uses to seed your org. The schedule action runs anonymous Apex that calls `System.schedule`. The
@@ -393,6 +441,11 @@ Command documentation: [hardis:org:data:import](https://sfdx-hardis.cloudity.com
 - The manual step listed in the deployment report, ticked off by you
 
 ## If it goes wrong
+
+**The Crew Capacity tab is missing from the app in `helios-integration`.**
+Either the tab or the `Helios_Delivery` app was not in your Pull Request, or the tab is not
+**Visible** under **Tab Settings** of `Helios_Delivery_Manager`. The profile visibility you set in
+the wizard stays in `helios-dev`. Fix it there, retrieve the missing piece, and publish again.
 
 **The data import fails on field level security.**
 The CI user cannot write the fields: the grant of step 1 is missing from `Helios_Delivery_Manager`,

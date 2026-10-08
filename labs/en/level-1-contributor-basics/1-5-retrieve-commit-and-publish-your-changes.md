@@ -16,6 +16,7 @@ screenshots:
   - annotated/vscode/work-save-package-xml
   - annotated/vscode/pipeline-packages-menu--package-xml
   - annotated/vscode/package-xml--custom-field
+  - annotated/vscode/work-save-package-xml--cleaning
 depends_on:
   commands: [hardis:work:save]
   flags: []
@@ -262,8 +263,14 @@ full deployment is slower and never forgets anything, which is the right trade f
 
 ### 7. Read what the command did to your files
 
-Scroll back up the command's own panel. Between your answers it printed a few lines about cleaning:
-references to deleted components, and the pixel positions inside Flows. That is the project's
+Go back to the tab of the command. Save / Publish runs in a tab of its own, named
+**hardis:work:save** **(1)**, and it is still open next to the package viewer, waiting for your
+answer.
+
+![The Save / Publish command tab, with the two cleaning lines above the question](../../_assets/annotated/vscode/work-save-package-xml--cleaning.png)
+
+Between your answers it printed two lines about cleaning **(2)**: references to deleted components,
+and the pixel positions inside Flows. That is the project's
 automated cleaning, and it runs on every publish, on everybody's work, so that nobody has to
 remember the house rules.
 
@@ -302,7 +309,7 @@ which performed, in order:
 4. **Committed what it changed**, as `chore(sfdx-hardis): update package content` and
    `chore(sfdx-hardis): clean sfdx project`. Those commits are the tool's, not yours: yours is the
    one you wrote at step 4
-5. **Pushed** the branch to your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`)
+5. **Pushed** the branch to your fork
 
 Every one of those steps is configuration, not magic. Everything it did is in
 `config/.sfdx-hardis.yml`, and a project that wants different behaviour changes that file.
@@ -355,14 +362,14 @@ cleaning rules in the Under the hood block above. Nothing is lost in your org: c
 is committed, never what is in Salesforce.
 
 **Push is rejected.**
-Your fork (`github.com/my-username/sfdx-hardis-training`) moved, usually because you reset a level. Pull first: Source Control panel, **...** menu,
+Your fork moved, usually because you reset a level. Pull first: Source Control panel, **...** menu,
 **Pull**.
 
 ## Check your work
 
 Welcome page > **Training: Level 1** > **Check my work**, then pick **Lab 1.5**.
 
-It reads the copy of your branch in your fork (`github.com/my-username/sfdx-hardis-training`), the one Save / Publish pushed: the field, the
+It reads the copy of your branch in your fork, the one Save / Publish pushed: the field, the
 permission set granting it, and the layout carrying it. A commit that stayed on your machine does
 not count, because nobody else can see it.
 

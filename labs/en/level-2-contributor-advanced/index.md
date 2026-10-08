@@ -50,16 +50,16 @@ over the page:
 
 Eight of them, and the labs call them by these names:
 
-| Command                            | What it does                                                                                          |
-|------------------------------------|-------------------------------------------------------------------------------------------------------|
-| **Set up my training environment** | Rebuilds a scratch org that expired, and points the pipeline at it                                    |
-| **Where am I?**                    | Says which level and lab you reached, and what to do next                                             |
-| **Simulate my teammates**          | Creates the teammate branches and Pull Requests a lab needs                                           |
-| **Set up one of my training orgs** | Deploys the Helios app and its data into an org you choose                                            |
-| **Check my work**                  | Verifies the lab you just finished                                                                    |
-| **Claim my badge**                 | Checks the whole level, then opens your badge claim filled in                                         |
-| **Update my course**               | Brings the changes the course received since you forked it, through a Pull Request into `integration` |
-| **Reset this level**               | Puts your repository back to the start of Level 2                                                     |
+| Command                            | What it does                                                                                                                                   |
+|------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Set up my training environment** | Rebuilds a scratch org that expired, and points the pipeline at it                                                                             |
+| **Where am I?**                    | Says which level and lab you reached, and what to do next                                                                                      |
+| **Simulate my teammates**          | Creates the teammate branches and Pull Requests a lab needs                                                                                    |
+| **Set up one of my training orgs** | Deploys the Helios app and its data into an org you choose                                                                                     |
+| **Check my work**                  | Verifies the lab you just finished                                                                                                             |
+| **Claim my badge**                 | Checks the whole level, then opens your badge claim filled in                                                                                  |
+| **Update my course**               | Brings the changes the course received since you forked it, through a Pull Request into `integration`                                          |
+| **Reset this level**               | Starts Level 2 again: `integration`, and if you want the lab branches and the orgs ([Start the course over](../help.md#start-the-course-over)) |
 
 There is one menu per level, and each holds only what that level needs, so nothing in front of you is
 for a lab you have not reached.
@@ -86,7 +86,7 @@ as **Connected**, it expired: Welcome page > **Training: Level 2** > **Set up my
 environment**. It creates a new one with the Helios app, points the pipeline at it, and leaves the
 others alone.
 
-A new `helios-dev` starts from the app as it ships, without the stories you already merged. Lab 2.1
-is precisely how you bring them in.
+A new `helios-dev` gets the app from the branch you have checked out when it is created. Lab 2.1,
+step 1c, says how to check that it holds your Level 1 stories, and how to put them there.
 
 [Start with Lab 2.1](2-1-backpromote-your-teammates-work.md){ .md-button .md-button--primary }

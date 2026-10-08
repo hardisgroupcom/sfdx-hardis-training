@@ -112,6 +112,15 @@ Back in VS Code, on the Welcome page, click **Orgs Manager**.
 
 The picture was taken at the end of this lab. For now your table is empty.
 
+!!! info "Connected org, default org"
+    An org is **connected** when the Salesforce CLI on your machine holds a token for it: VS Code
+    can open it and work in it without asking you for a password. You can have several connected
+    orgs at once, and this table lists them all.
+
+    The **default org** is the one of them a command works on when nobody tells it which org to
+    use. There is only one at a time, the Status section of the sfdx-hardis panel names it, and
+    this panel is where you change it.
+
 1. Click **Add Org** **(1)**. If it asks **Do you want to set the selected org as your default
    org?**, answer **Yes**: that is what points the rest of the course at this org without asking
    again
@@ -216,6 +225,16 @@ Those branch files are empty of your details until step 5 fills them in.
 
 ### 4. Install the GitHub CLI
 
+!!! tip "In Agentforce Vibes, skip this step"
+    `gh` is already installed in the tab. Go straight to step 5: the first command that needs it
+    signs you in, and nothing here is missing.
+
+    `gh` is not only for this step, which is why it is worth knowing it is there. The commands
+    behind **Publish my work**, **Simulate my teammates**, **Check my work** and **Claim my badge**
+    all call it: it opens your Pull Requests, plays your teammates' merges, reads the secrets of
+    your fork to check a level, and looks at your star and your repository's visibility when you
+    claim.
+
 One tool first, and only for this. The command in step 5 uses the
 [GitHub CLI](https://cli.github.com/), called `gh`, to make your copy of the repository and set its
 automation up. On its home page, open the install list **(1)** and take the download for your
@@ -228,16 +247,6 @@ defaults.
     The installer adds `gh` to the **PATH**, and a VS Code that was already open does not see the
     change until it starts again. Close VS Code completely, windows and all, and open it again on
     the project. Skip this and step 5 stops at once, saying the GitHub CLI is not installed.
-
-!!! tip "In Agentforce Vibes, skip this step"
-    `gh` is already installed in the tab. Go straight to step 5: the first command that needs it
-    signs you in, and nothing here is missing.
-
-    `gh` is not only for this step, which is why it is worth knowing it is there. The commands
-    behind **Publish my work**, **Simulate my teammates**, **Check my work** and **Claim my badge**
-    all call it: it opens your Pull Requests, plays your teammates' merges, reads the secrets of
-    your fork to check a level, and looks at your star and your repository's visibility when you
-    claim.
 
 You never have to run `gh` yourself. The command in step 5 uses it and signs you in through your
 browser the first time it needs to.
@@ -421,9 +430,9 @@ Seven things, each of them real work on a real project, and none of them yours t
 | `helios-uat`         | User acceptance, where the business tests what integration has collected |
 
 - **Which org each branch deploys to**, written into the project's one configuration file per
-  branch, in `config/branches/`, committed on `integration` and pushed to your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`). The repository
+  branch, in `config/branches/`, committed on `integration` and pushed to your fork. The repository
   could not know that: your orgs did not exist when it was written. It is pushed because the badge
-  check clones your fork (`github.com/my-username/sfdx-hardis-training`) and reads what is actually in it. `uat` receives the same files with its
+  check clones your fork and reads what is actually in it. `uat` receives the same files with its
   first promotion, in [Lab 3.5](../level-3-release-manager/3-5-promote-to-uat-and-write-release-notes.md), the way every change reaches it
 - **`integration` and `uat` protected.** A Pull Request into either one can only be merged once
   every check GitHub runs on it has finished green, and that rule holds for you too, the owner of
@@ -452,8 +461,9 @@ Seven things, each of them real work on a real project, and none of them yours t
     holding fictional solar installations, in a repository you own, for a course. The trade is: a
     beginner reaches a working pipeline in their first hour instead of their second day.
 
-    **Lab 3.1 sets up JWT properly for all four orgs, and deletes these secrets.** If you only
-    ever do Levels 1 and 2, delete the secrets when you are done: the scratch orgs delete themselves.
+    **Lab 3.1 sets up JWT properly for `preprod` and production**, and explains why every org of a
+    real project needs it. These two secrets stay for the rest of the course: delete them when you
+    are done with it, whatever level you stop at. The scratch orgs delete themselves.
 
 ### 7. Let the extension talk to GitHub
 
@@ -504,7 +514,7 @@ Your own `helios-dev` is not in the diagram either, and that is correct: the dia
 is deployed, and nothing is ever deployed into the org you build in.
 
 !!! note "`preprod` and `main` are missing on purpose"
-    Your fork (`github.com/my-username/sfdx-hardis-training`) has a `main` branch, and no
+    Your fork has a `main` branch, and no
     `preprod` yet, and the diagram shows neither: a branch becomes part of the pipeline only once
     somebody says which org it deploys to, and nobody has.
 
@@ -530,9 +540,10 @@ again, and click the card again. If it still says so, install it from
 there, so reload the browser tab instead of restarting VS Code.
 
 **It says the fork could not be created.**
-GitHub refused it, and the usual reasons are a repository of that name already in your account, an
-organisation account that does not allow forks, or a sign-in that has not been given permission to
-create repositories. Make the fork yourself, which takes one screen:
+Read what the GitHub CLI said, just above: it names the reason. When GitHub refused the fork, the
+usual reasons are a repository of that name already in your account, an organisation account that
+does not allow forks, or a sign-in that has not been given permission to create repositories.
+Whatever the reason, make the fork yourself, which takes one screen:
 
 1. Open [github.com/hardisgroupcom/sfdx-hardis-training/fork](https://github.com/hardisgroupcom/sfdx-hardis-training/fork)
 2. Leave the owner on your own account and the name on `sfdx-hardis-training`
@@ -561,7 +572,7 @@ create, and click the card again.
 You created and deleted scratch orgs several times today. The allowance comes back within 24
 hours: click the card again tomorrow, and everything already done is kept. Deleting a scratch org
 does not give its allowance back, so resist the urge to delete and recreate: **Reset this level**
-puts the branches back without touching the orgs, and **Clean up a training org** empties one
+puts the branches back and never deletes an org, and **Clean up a training org** empties one
 without deleting it.
 
 **A command fails with `TotalRequests Limit exceeded`.**

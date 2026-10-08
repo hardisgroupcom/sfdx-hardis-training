@@ -9,7 +9,7 @@ source_rev: ""
 screenshots:
   - annotated/vscode/pipeline-cards--my-pull-request
   - annotated/vscode/pipeline-cards--new-user-story
-  - annotated/vscode/pipeline-pr-actions-empty
+  - annotated/vscode/pipeline-workflow-cards
   - annotated/vscode/pipeline-edit-action-apex
   - annotated/vscode/pipeline-pr-actions-list
 depends_on:
@@ -171,7 +171,7 @@ In the diagram: turn on **Show feature branches** at the top right, which is off
 it, and your own branch appears beside the major ones. Your feature branch **(1)**, and on the arrow
 leaving it the numbered badge **(2)**. Click the badge.
 
-![The DevOps Pipeline panel, with the feature branch and the badge of its Pull Request](../../_assets/annotated/vscode/pipeline-pr-actions-empty.png)
+![The DevOps Pipeline panel, with the feature branch and the badge of its Pull Request](../../_assets/annotated/vscode/pipeline-workflow-cards.png)
 
 Or scroll to **Project Contribution Workflow** and click the **My Pull Request** card **(1)**, which
 always points at the Pull Request of the branch you are standing on.
@@ -205,7 +205,7 @@ it coming.
 
 **Save**. The action joins the list on the **Deployment Actions** tab, whose counter **(1)** goes up
 by one. **Add New Action** **(2)** stays there for the next one, and your row **(3)** carries a
-**Post-Deploy** chip in the **WHEN** column.
+**Post-Deploy** chip under its label.
 
 ![The Deployment Actions tab of the Pull Request, listing the actions it carries](../../_assets/annotated/vscode/pipeline-pr-actions-list.png)
 
@@ -254,13 +254,15 @@ of the Pull Requests it brings down, this one included.
 The editor wrote a YAML file named after your Pull Request, under `scripts/actions/`:
 
     commandsPostDeploy:
-      - id: backfill-crew-size
+      - id: 3f6d0a52-24b1-4c1a-9a0e-5b7f02400001
         label: Backfill Crew Size on existing installations
         type: apex
         parameters:
           apexScript: scripts/apex/backfill-crew-size.apex
         context: process-deployment-only
         runOnlyOnceByOrg: true
+
+The `id` is the one the editor generated when it created the action, so yours is different. Never change it: it is how sfdx-hardis knows in which orgs the action already ran.
 
 `sf hardis:project:deploy:smart` reads it, and around the Salesforce deployment it:
 

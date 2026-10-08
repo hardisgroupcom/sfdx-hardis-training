@@ -122,7 +122,7 @@ writeJson(path.join(OUT, "universe.json"), {
   // first, third and fourth stories from the top (US-061, US-059, US-057).
   promotionBranch: "promotion/uat/preprod/2026-09-24-0930",
   promotionNode: "1073,389",
-  promotionRows: "512,374;512,472;512,522",
+  promotionRows: "531,353;531,513;531,593",
   // The file the conflict editor shot opens: the Panel Batch layout as
   // hardis:project:promotion:create committed it, markers included. The files
   // of that state are generated under promotion-conflict/ next to this file.
@@ -141,7 +141,7 @@ writeJson(path.join(OUT, "universe.json"), {
   labFieldFile: "force-app/main/default/objects/Installation__c/fields/Crew_Warning_Sent__c.field-meta.xml",
   labCsvFile: "scripts/data/HeliosCrewRefData/Crew_Capacity__c.csv",
   retrieverSortClicks: "1680,413;1680,413",
-  retrieverRows: "459,510,561,611",
+  retrieverRows: "454,494,534,574",
   // The files the Source Control shot shows after that retrieve: the four
   // components of US-014, the planners' permission set included
   retrievedFiles: [
@@ -274,17 +274,25 @@ const overlay = {
         description: usernameFor(o.alias)
       })),
     // What Add/Configure Org (hardis:project:configure:auth) is answered with in
-    // Lab 3.1: the integration branch and its scratch org, among the four major
-    // branches a Level 3 fork has
+    // Lab 3.1: the preprod branch and its Developer Edition org, among the four
+    // major branches a Level 3 fork has. integration and uat keep their auth URL
+    // secrets in the lab, so preprod is the first org it walks through
     authConfig: {
-      branchName: "integration",
-      orgAlias: "helios-integration",
+      branchName: "preprod",
+      orgAlias: "helios-preprod",
       remoteBranches: ["integration", "main", "preprod", "uat"],
-      mergeTargets: ["uat"],
-      contactEmail: "release.manager@heliostraining.invalid"
+      mergeTargets: ["main"],
+      contactEmail: "release.manager@heliostraining.invalid",
+      // helios-preprod is connected in Level 3 only, so the org lists of the
+      // other screens do not carry it: the configured org comes with the scenario
+      org: orgFor(u.orgs.find((o) => o.alias === "helios-preprod"), u.orgs.length)
     },
-    // Where this project records the manual steps a deployment needs. The base
-    // fixture points at a SharePoint file that means nothing to a learner.
+    // Where this project records the manual steps a deployment needs: as
+    // deployment actions (manualActionsMode: sfdxHardis in the project
+    // configuration), so Save / Publish names the DevOps Pipeline panel and
+    // shows no button for an external file. Read from the configuration, so the
+    // picture cannot say something the project does not.
+    manualActionsMode: (projectConfigText.match(/^manualActionsMode:\s*(\S+)/m) || [])[1] || "externalFile",
     manualActionsUrl: `${u.course.site}/en/level-2-contributor-advanced/2-4-ship-reference-data-and-a-batch-with-deployment-actions/`,
     // The delta package.xml the Save / Publish command shows for that story
     packageXmlTypes: [
@@ -318,11 +326,10 @@ const overlay = {
     ["ApexClass", "InstallationScheduler", "You", "created", "2026-09-15T09:12:00.000+0000"],
     ["PermissionSet", "Helios_Delivery_Manager", "You", "modified", "2026-09-17T14:48:00.000+0000"]
   ],
+  // What helios-dev holds. CrewCapacityBatch is left out on purpose: in Lab 2.4 it
+  // reaches helios-integration through the pipeline and never helios-dev, so the
+  // editor finds it in the project alone and labels it, which is what the lab shows.
   apexClasses: [
-    {
-      Name: "CrewCapacityBatch",
-      Body: "global class CrewCapacityBatch implements Database.Batchable<SObject>, Schedulable {"
-    },
     {
       Name: "InstallationReminderBatch",
       Body: "global class InstallationReminderBatch implements Schedulable {"
@@ -846,6 +853,13 @@ STAGES.forEach((stage, index) => {
   );
 });
 write(path.join(PROJECT, "force-app", "main", "default", "classes", ".gitkeep"), "");
+// The batch Lab 2.4 schedules, as the learner's project holds it once the story is merged
+for (const file of ["CrewCapacityBatch.cls", "CrewCapacityBatch.cls-meta.xml"]) {
+  write(
+    path.join(PROJECT, "force-app", "main", "default", "classes", file),
+    fs.readFileSync(path.join(ROOT, "scripts", "apex", "samples", file), "utf8")
+  );
+}
 // The field Lab 2.2 retrieves, for the shot that shows where it lands
 write(
   path.join(PROJECT, "force-app", "main", "default", "objects", "Installation__c", "fields", "Crew_Warning_Sent__c.field-meta.xml"),
@@ -1015,6 +1029,95 @@ write(
     ""
   ].join("\n")
 );
+
+// ------------------------------------- git-provider-mock-action-recovery
+// Overlay applied on top of git-provider-mock.json when the run asks for the
+// action recovery variant (SFDX_HARDIS_DOC_SCREENSHOTS_ACTION_RECOVERY, see
+// runUiTest.ts in the extension). It is the state Lab 3.3 part 3 walks:
+// Mariia's US-062 merged into integration with its first post-deployment
+// action failed and the two others stopped, and her fix Pull Request open,
+// carrying the crew capacity action moved from US-062.
+const RECOVERY_PR_NUMBER = 71;
+const RECOVERY_FIX_PR_NUMBER = 72;
+const recoveryStory = u.userStories.find((s) => s.id === "US-062");
+const recoveryScenario = (id) => path.join(ROOT, "scripts", "simulate", id, "files", "scripts", "actions", ".sfdx-hardis.{{PR}}.yml");
+const fillRecovery = (file, prNumber) =>
+  fs.readFileSync(file, "utf8").replaceAll("__MOVED_FROM__", String(RECOVERY_PR_NUMBER)).replace(/\r\n/g, "\n");
+const recoveryActionIds = [1, 2, 3].map((n) => `7d1e4b90-3c2a-4f5e-8a6b-06200000000${n}`);
+const recoveryJobUrl = `${WEB}/actions/runs/4301`;
+writeJson(path.join(OUT, "git-provider-mock-action-recovery.json"), {
+  _comment:
+    "Overlay applied on top of git-provider-mock.json when SFDX_HARDIS_DOC_SCREENSHOTS_ACTION_RECOVERY is set: Lab 3.3 part 3, US-062 merged with a failed post-deployment action and two stopped ones, and the fix Pull Request moving the crew capacity action. Generated by scripts/build/mocks.mjs in the sfdx-hardis-training repository: do not edit by hand.",
+  branches: [recoveryStory.branch, "training/mate-us-062-crew-leads-fix"],
+  fixBranch: "training/mate-us-062-crew-leads-fix",
+  addOpenPullRequests: [
+    {
+      id: RECOVERY_FIX_PR_NUMBER,
+      number: RECOVERY_FIX_PR_NUMBER,
+      title: "US-062 Fix the crew capacity action",
+      description: "The crew capacity action of US-062 named a class that does not exist. Moved to this Pull Request and fixed.",
+      sourceBranch: "training/mate-us-062-crew-leads-fix",
+      targetBranch: "integration",
+      author: { name: person("mariia").name, username: login("mariia") },
+      authorLabel: person("mariia").name,
+      state: "open",
+      createdAt: iso(20, 9),
+      updatedAt: iso(20, 10),
+      webUrl: `${WEB}/pull/${RECOVERY_FIX_PR_NUMBER}`,
+      jobs: [
+        { name: "Check deployment to integration", status: "success", webUrl: `${WEB}/actions/runs/4302`, updatedAt: iso(20, 10) }
+      ],
+      jobsStatus: "success",
+      relatedTickets: ticketsOf(recoveryStory)
+    }
+  ],
+  addMergedPullRequestsByBranch: {
+    integration: [
+      {
+        id: RECOVERY_PR_NUMBER,
+        number: RECOVERY_PR_NUMBER,
+        title: `${recoveryStory.id} ${recoveryStory.title}`,
+        sourceBranch: recoveryStory.branch,
+        targetBranch: "integration",
+        author: { name: person("mariia").name, username: login("mariia") },
+        authorLabel: person("mariia").name,
+        state: "merged",
+        mergeDate: iso(19, 16),
+        createdAt: iso(19, 9),
+        webUrl: `${WEB}/pull/${RECOVERY_PR_NUMBER}`,
+        jobsStatus: "failed",
+        relatedTickets: ticketsOf(recoveryStory)
+      }
+    ]
+  },
+  // Written into the workspace of the run, where the extension reads the actions
+  actionFiles: {
+    [`scripts/actions/.sfdx-hardis.${RECOVERY_PR_NUMBER}.yml`]: fillRecovery(recoveryScenario("us-062-crew-leads"), RECOVERY_PR_NUMBER),
+    [`scripts/actions/.sfdx-hardis.${RECOVERY_FIX_PR_NUMBER}.yml`]: fillRecovery(recoveryScenario("us-062-crew-leads-fix"), RECOVERY_FIX_PR_NUMBER)
+  },
+  // What sf hardis:project:action:list --with-status answers: the first action
+  // failed in integration, the two others were stopped by it
+  actionStatuses: {
+    [String(RECOVERY_PR_NUMBER)]: [
+      { actionId: recoveryActionIds[0], actionLabel: "Put the delivery managers in the Crew Leads group", orgBranch: "integration", when: "post-deploy", status: "failed", date: iso(19, 16), jobUrl: recoveryJobUrl, note: "", movedTo: null, blockedBy: null, stoppedActions: [{ pr: RECOVERY_PR_NUMBER, actionId: recoveryActionIds[1] }, { pr: RECOVERY_PR_NUMBER, actionId: recoveryActionIds[2] }] },
+      { actionId: recoveryActionIds[1], actionLabel: "Recalculate the crew capacity once", orgBranch: "integration", when: "post-deploy", status: "not-run", date: iso(19, 16), jobUrl: recoveryJobUrl, note: "", movedTo: null, blockedBy: { pr: RECOVERY_PR_NUMBER, actionId: recoveryActionIds[0] }, stoppedActions: [] },
+      { actionId: recoveryActionIds[2], actionLabel: "Add the deployment user to the Crew Leads group", orgBranch: "integration", when: "post-deploy", status: "not-run", date: iso(19, 16), jobUrl: recoveryJobUrl, note: "", movedTo: null, blockedBy: { pr: RECOVERY_PR_NUMBER, actionId: recoveryActionIds[0] }, stoppedActions: [] }
+    ]
+  },
+  // What the command panel replays for Retry and Mark as done
+  scenario: {
+    prNumber: RECOVERY_PR_NUMBER,
+    orgBranch: "integration",
+    username: "helios.deploy+helios-integration@heliostraining.invalid",
+    gitUser: "You",
+    retryActionId: recoveryActionIds[0],
+    retryActionLabel: "Put the delivery managers in the Crew Leads group",
+    nextActionLabel: "Recalculate the crew capacity once",
+    nextActionError: "Apex class CrewCapacityBach not found in the org",
+    closeActionId: recoveryActionIds[2],
+    closeActionLabel: "Add the deployment user to the Crew Leads group"
+  }
+});
 
 console.log(`Helios fixtures written into ${path.relative(ROOT, EXT)}:`);
 written.forEach((f) => console.log(`  ${f}`));

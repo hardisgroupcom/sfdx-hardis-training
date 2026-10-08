@@ -24,6 +24,15 @@
  *               such a story without the one under it, which is what makes its
  *               cherry-pick conflict for real. The check says which story to
  *               merge first instead of failing on a line it cannot find.
+ *   movedFrom   the id of the scenario whose merged Pull Request this one moves
+ *               deployment actions from, to fix their definition after they
+ *               failed (Lab 3.3): the actions listed in moveActions leave the
+ *               actions file of that Pull Request, and __MOVED_FROM__ in a file
+ *               of this one is its number
+ *   files whose path holds {{PR}}
+ *               a deployment actions file is named after the Pull Request that
+ *               carries it, and its number is only known once it is opened: such
+ *               a file is written and pushed in a second commit, right after
  *   offerMergeLevels
  *               the levels where merging the Pull Request is not what the lab
  *               teaches: run from their Training menu, the learner is offered to
@@ -212,14 +221,36 @@ export default async function simulate(args) {
   ok(`On ${scenario.branch}`);
 
   title("2 of 4  Applying the teammate changes");
+  // The Pull Request the actions are moved from has to be merged: its number names its file
+  let movedFromPr = null;
+  if (scenario.movedFrom) {
+    const source = all.find((s) => s.id === scenario.movedFrom);
+    const mergedSource = source ? pullRequestOf(slug, source.branch, "merged") : null;
+    movedFromPr = mergedSource ? mergedSource.number : null;
+    if (!movedFromPr) {
+      restore();
+      abort(
+        `${scenario.title} fixes the actions of ${source ? source.title : scenario.movedFrom}, whose Pull Request is not merged in your fork.`,
+        `Simulate and merge ${source ? source.title.split(" ")[0] : scenario.movedFrom} first. ${scenario.usedBy} gives the order.`
+      );
+    }
+  }
   const planned = planPatches(scenario);
-  const applied = [...applyFiles(scenario), ...writePlanned(planned)];
+  const applied = [...applyFiles(scenario), ...writePlanned(planned), ...removeMovedActions(scenario, movedFromPr)];
   applied.forEach((f) => info(c.dim(`    ${f}`)));
   ok(`${applied.length} file(s) written`);
 
   title("3 of 4  Committing as your teammate");
-  run("git", ["add", "-A"]);
-  const hasChanges = gitOut(["status", "--porcelain"]) !== "";
+  // Only the files the scenario wrote or deleted, never the whole working tree.
+  // The Salesforce extensions write files of their own while this runs, like
+  // .vscode/settings.json and lwc/jsconfig.json: "add everything" put them in
+  // the teammate commit, MegaLinter reformatted jsconfig.json and pushed a fix
+  // on top, the Pull Request moved past the commit pushed here, and the merge
+  // further down refused it. Asked of the index rather than of the working tree
+  // for the same reason: a file somebody else wrote is not a change of the
+  // teammate's.
+  stageOnly(applied);
+  const hasChanges = run("git", ["diff", "--cached", "--quiet"], { quiet: true }).code !== 0;
   if (hasChanges) {
     // The message goes through a file: on Windows the shell stops an argument at
     // its first line break, and the body would be lost
@@ -327,6 +358,32 @@ export default async function simulate(args) {
     }
   }
 
+  // Files named after the Pull Request number, known only now: second commit, same author
+  const prNumber = Number((prUrl || "").match(/\/pull\/(\d+)/)?.[1] || 0);
+  if (numberedFiles(scenario).length > 0) {
+    if (!prNumber) {
+      warn("The Pull Request number is unknown, so its deployment actions file was not added.");
+    } else {
+      const numbered = writeNumberedFiles(scenario, prNumber, movedFromPr);
+      numbered.forEach((f) => info(c.dim(`    ${f}`)));
+      // The same rule as the first commit: the files of the scenario, nothing else
+      stageOnly(numbered);
+      const messageFile = path.join(ROOT, ".training-commit-message.txt");
+      fs.writeFileSync(messageFile, `${scenario.prTitle}: deployment actions of #${prNumber}`, "utf8");
+      const commit = run("git", [
+        "-c", `user.name=${scenario.author.name}`,
+        "-c", `user.email=${scenario.author.email}`,
+        "commit", "-F", messageFile
+      ]);
+      fs.rmSync(messageFile, { force: true });
+      if (commit.code !== 0 || run("git", ["push", "origin", scenario.branch]).code !== 0) {
+        warn(`The deployment actions file of #${prNumber} could not be committed and pushed.`);
+      } else {
+        ok(`Deployment actions file of #${prNumber} added to the Pull Request`);
+      }
+    }
+  }
+
   // The commit the Pull Request has to carry before its checks mean anything, read
   // while the teammate branch is still checked out
   const pushed = gitOut(["rev-parse", "HEAD"]);
@@ -353,6 +410,28 @@ export default async function simulate(args) {
 
   title("Done");
   info(`  ${merged && scenario.nextStepMerged ? scenario.nextStepMerged : scenario.nextStep}`);
+}
+
+/**
+ * Stages the files a scenario reported, and nothing else.
+ *
+ * applyFiles and writePlanned label what they did, "(patched)" or "(deleted)",
+ * for the lines printed to the learner; the path is what comes before. Every
+ * path is relative to the root of the repository, with forward slashes, which
+ * is what git takes as a pathspec. A deleted file is staged as a deletion by
+ * the same "add -A" when it was tracked. A path that is neither on disk nor
+ * tracked, an untracked file the scenario deleted, is left out: git refuses the
+ * whole command on a pathspec that matches nothing, and nothing would be staged.
+ * Nothing is run on an empty list either: "git add -A --" with no path at all
+ * stages the whole working tree, which is the very thing this exists to avoid.
+ */
+function stageOnly(reported) {
+  const paths = [...new Set(reported.map((line) => line.replace(/ \((patched|deleted)\)$/, "")))].filter(
+    (p) => fs.existsSync(path.join(ROOT, p)) || gitOut(["ls-files", "--", p]) !== ""
+  );
+  if (paths.length > 0) {
+    run("git", ["add", "-A", "--", ...paths]);
+  }
 }
 
 /**
@@ -408,7 +487,39 @@ async function mergeWhenGreen(slug, prUrl, pushed) {
   }
 
   ok("All checks passed");
-  const merge = run("gh", ["pr", "merge", prUrl, "--repo", slug, "--squash", "--match-head-commit", pushed], { capture: true, quiet: true });
+  // MegaLinter commits its own formatting fixes onto the branch of a Pull
+  // Request, and the head then moves past the commit pushed here. Merging with
+  // --match-head-commit is what stops anything somebody else pushed from being
+  // merged unseen, so the new head is taken only when every commit on top is
+  // that fix, committed by the GitHub Actions bot. Its checks are waited for again, once:
+  // a head that moves a second time is refused like anything else.
+  let head = pushed;
+  const fixedHead = linterFixHead(slug, prUrl, pushed);
+  if (fixedHead) {
+    info("  MegaLinter pushed a formatting fix onto the Pull Request, and the checks run again on it.");
+    for (let attempt = 0; attempt < 12 && view().headRefOid !== fixedHead; attempt++) {
+      await wait(5000);
+    }
+    const again = await waitForPullRequestChecks(slug, prUrl, { timeoutMs: 20 * 60 * 1000 });
+    if (view().state === "MERGED") {
+      return merged();
+    }
+    // No check on the fix means nothing proved it: never merge a commit no check ran on
+    if (again.none) {
+      warn("No check ran on the fix of MegaLinter, so the Pull Request was not merged.");
+      info(`  Merge it yourself on GitHub once its checks are green: ${c.cyan(prUrl)}`);
+      return false;
+    }
+    if (!again.ok) {
+      const what = again.timedOut ? "did not finish within 20 minutes" : "failed";
+      warn(`${again.failed.map((check) => check.name).join(" and ")} ${what} on the fix of MegaLinter, so the Pull Request was not merged.`);
+      info(`  Open it to read why: ${c.cyan(prUrl)}`);
+      return false;
+    }
+    ok("All checks passed on the fix of MegaLinter");
+    head = fixedHead;
+  }
+  const merge = run("gh", ["pr", "merge", prUrl, "--repo", slug, "--squash", "--match-head-commit", head], { capture: true, quiet: true });
   if (merge.code === 0) {
     return merged();
   }
@@ -429,6 +540,48 @@ async function mergeWhenGreen(slug, prUrl, pushed) {
   }
   info(`  ${c.cyan(prUrl)}`);
   return false;
+}
+
+/** The headline of the commit MegaLinter pushes, commit_message in .github/workflows/megalinter.yml. */
+const LINTER_FIX_HEADLINE = "chore(megalinter): apply linters fixes";
+
+/**
+ * The new head of the Pull Request when everything after `pushed` is the
+ * formatting fix MegaLinter commits as the GitHub Actions bot, or null: when the
+ * head did not move, when `pushed` is not in the commits of the Pull Request any
+ * more (a force push), or when any newer commit is somebody else's.
+ */
+function linterFixHead(slug, prUrl, pushed) {
+  // The REST list of the Pull Request commits, because it carries the committer: the
+  // auto-commit action of the MegaLinter workflow commits as github-actions[bot] but
+  // keeps the learner who triggered the run as the author. Measured on a learner fork.
+  const number = (prUrl.match(/\/pull\/(\d+)/) || [])[1];
+  if (!number) {
+    return null;
+  }
+  const res = run("gh", ["api", `repos/${slug}/pulls/${number}/commits?per_page=100`], { capture: true, quiet: true });
+  let commits = [];
+  try {
+    commits = JSON.parse(res.stdout || "[]");
+  } catch {
+    return null;
+  }
+  if (!Array.isArray(commits) || commits.length === 0) {
+    return null;
+  }
+  const head = commits[commits.length - 1].sha;
+  if (head === pushed) {
+    return null;
+  }
+  const at = commits.findIndex((commit) => commit.sha === pushed);
+  const newer = at < 0 ? [] : commits.slice(at + 1);
+  const committedByTheBot = (commit) =>
+    /^github-actions(\[bot\])?$/i.test(commit.committer?.login || "") ||
+    /^github-actions(\[bot\])?$/i.test(commit.commit?.committer?.name || "");
+  const headline = (commit) => (commit.commit?.message || "").split(/\r?\n/)[0];
+  const onlyFixes =
+    newer.length > 0 && newer.every((commit) => headline(commit) === LINTER_FIX_HEADLINE && committedByTheBot(commit));
+  return onlyFixes ? head : null;
 }
 
 /**
@@ -683,6 +836,9 @@ export function applyFiles(scenario, root = ROOT) {
       const relPath = rel ? `${rel}/${entry.name}` : entry.name;
       if (entry.isDirectory()) {
         walk(from, relPath);
+      } else if (relPath.includes("{{PR}}")) {
+        // Written once the Pull Request number is known: writeNumberedFiles
+        continue;
       } else {
         const to = path.join(root, relPath);
         fs.mkdirSync(path.dirname(to), { recursive: true });
@@ -700,4 +856,73 @@ export function applyFiles(scenario, root = ROOT) {
     }
   }
   return written;
+}
+
+/**
+ * The files of a scenario named after its own Pull Request number ({{PR}} in the path).
+ */
+export function numberedFiles(scenario) {
+  const filesDir = path.join(scenario.dir, "files");
+  if (!fs.existsSync(filesDir)) {
+    return [];
+  }
+  const found = [];
+  const walk = (dir, rel) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const relPath = rel ? `${rel}/${entry.name}` : entry.name;
+      if (entry.isDirectory()) {
+        walk(path.join(dir, entry.name), relPath);
+      } else if (relPath.includes("{{PR}}")) {
+        found.push(relPath);
+      }
+    }
+  };
+  walk(filesDir, "");
+  return found;
+}
+
+/**
+ * Write the files named after the Pull Request number, with {{PR}} and __MOVED_FROM__ replaced (a token Prettier leaves alone in YAML)
+ * in their path and their content.
+ */
+export function writeNumberedFiles(scenario, prNumber, movedFromPr, root = ROOT) {
+  const fill = (text) => text.replaceAll("{{PR}}", String(prNumber)).replaceAll("__MOVED_FROM__", String(movedFromPr || ""));
+  return numberedFiles(scenario).map((relPath) => {
+    const to = path.join(root, fill(relPath));
+    fs.mkdirSync(path.dirname(to), { recursive: true });
+    fs.writeFileSync(to, fill(fs.readFileSync(path.join(scenario.dir, "files", relPath), "utf8")), "utf8");
+    return fill(relPath);
+  });
+}
+
+/**
+ * Take the actions listed in moveActions out of the actions file of the Pull Request they are
+ * moved from. The file is written by a scenario, one "  - id: <id>" block per action, so a block
+ * runs from its id line to the next one, or to the next top-level key.
+ */
+export function removeMovedActions(scenario, movedFromPr, root = ROOT) {
+  if (!movedFromPr || !(scenario.moveActions || []).length) {
+    return [];
+  }
+  const relPath = `scripts/actions/.sfdx-hardis.${movedFromPr}.yml`;
+  const file = path.join(root, relPath);
+  if (!fs.existsSync(file)) {
+    return [];
+  }
+  const lines = fs.readFileSync(file, "utf8").split("\n");
+  const kept = [];
+  let skipping = false;
+  for (const line of lines) {
+    const idMatch = line.match(/^\s*- id: (\S+)\s*$/);
+    if (idMatch) {
+      skipping = scenario.moveActions.includes(idMatch[1]);
+    } else if (/^\S/.test(line)) {
+      skipping = false;
+    }
+    if (!skipping) {
+      kept.push(line);
+    }
+  }
+  fs.writeFileSync(file, kept.join("\n"), "utf8");
+  return [relPath];
 }

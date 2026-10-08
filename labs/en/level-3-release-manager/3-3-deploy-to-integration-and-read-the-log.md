@@ -1,7 +1,7 @@
 ---
 id: lab-3-3
 title: "Lab 3.3 - Read the deployment log, and what .forceignore hides from it"
-description: "Read an sfdx-hardis deployment log properly, then review a Pull Request whose .forceignore wildcard keeps its own field out of every deployment."
+description: "Read an sfdx-hardis deployment log, find what a .forceignore wildcard hides, and recover post-deployment actions that failed after the merge."
 level: 3
 lab: 3
 lang: en
@@ -10,22 +10,28 @@ screenshots:
   - annotated/vscode/pipeline-config-deployment--delta
   - annotated/vscode/orgs-manager
   - annotated/vscode/devops-pipeline--deployment-status
+  - annotated/web/github-pr-deployment-actions-failed
+  - annotated/vscode/pipeline-branch-modal-actions-failed
+  - annotated/vscode/action-run-prompts
+  - annotated/vscode/pipeline-edit-action-moved
+  - annotated/web/github-pr-deployment-actions-moved
 depends_on:
-  commands: [hardis:project:deploy:smart]
-  flags: []
-  config: [useDeltaDeployment, enableDeltaDeploymentBetweenMajorBranches, testLevel]
-  panels: [pipeline]
-  docs: [salesforce-devops-deploy-major-branches, salesforce-devops-smart-deployment]
+  commands: [hardis:project:deploy:smart, hardis:project:action:run, hardis:project:action:set-status, hardis:project:action:update]
+  flags: [--move-to-pr, --org-branch]
+  config: [useDeltaDeployment, enableDeltaDeploymentBetweenMajorBranches, testLevel, commandsPostDeploy, movedFrom]
+  panels: [pipeline, deploymentAction]
+  docs: [salesforce-devops-deploy-major-branches, salesforce-devops-smart-deployment, salesforce-devops-work-on-user-story-deployment-actions]
 ---
 
 # Lab 3.3 - Read the deployment log, and what .forceignore hides from it
 
 **Level**: 3 Release Manager
 
-**Time**: ~25 min
+**Time**: ~45 min
 
-**You will**: read a deployment log properly, then review a Pull Request whose check fails on a field
-that is right there in its diff, and find the file that hides it.
+**You will**: read a deployment log properly, review a Pull Request whose check fails on a field
+that is right there in its diff and find the file that hides it, then recover post-deployment
+actions that failed after a merge, without deploying again.
 
 ## The situation
 
@@ -56,8 +62,9 @@ colour means. Click the marker to open the run.
 
 An sfdx-hardis deployment log has the same shape every time:
 
-**One: authentication.** Which org, which mechanism. After [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) this says JWT. If it ever says
-something else, something changed that you did not change.
+**One: authentication.** Which org, which mechanism. On `integration` it says auth URL: the
+shortcut of Level 1, which [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) left in place. On `preprod` and `main` it says JWT. If it ever
+says something else, something changed that you did not change.
 
 **Two: what to deploy.** The package it computed, and where from. This is the interesting part and
 step 3 is about it.
@@ -94,7 +101,7 @@ org has to genuinely be at the commit the pipeline thinks it is at.
     **Pipeline Settings**, scope **Global Settings** **(1)**, **Deployment** tab **(2)**.
     **Use Delta Deployment** **(3)** shows **Disabled**.
 
-    The Helios app is about fifty components, so a full deployment costs a minute and delta would save
+    The Helios app is about sixty components by now, so a full deployment costs a minute and delta would save
     nothing while adding a way for the course to fail confusingly on a missing dependency. Turn it
     on when a deployment starts costing you real time, which on a real project is soon. There is a
     second key for promotions between major branches,
@@ -102,7 +109,7 @@ org has to genuinely be at the commit the pipeline thinks it is at.
     default for the same reason: a promotion carries more, and is the riskiest place to send less.
 
 Find the line `Components: N deployed` in the log, under *Deployment summary*. On a standard run of
-this course it is a little over fifty. Compare it with the one file of your Pull Request. The gap
+this course it is about sixty. Compare it with the one file of your Pull Request. The gap
 is the cost of having delta off, and it is the argument for turning it on.
 
 ### 4. Know what Smart Deploy is, and what it is not
@@ -122,7 +129,7 @@ Two things are often assumed to be part of it and are not:
 - **Cleaning is not a deployment filter.** It ran on a contributor's machine, at commit time. Step 3
   of the under the hood section below is about that
 
-So the honest answer to "why did it deploy fifty components to change one" is: because nothing was
+So the honest answer to "why did it deploy sixty components to change one" is: because nothing was
 configured to stop it. That is a decision this project made, not a thing the tool does for you.
 
 ### 5. Verify in the org, not in the log
@@ -207,8 +214,9 @@ and the package it sent was built like this:
    package. `enableDeltaDeploymentBetweenMajorBranches` controls whether the same applies to a
    major-to-major deployment, and is off by default because a promotion to production is the worst
    possible place to discover that the org drifted
-3. **The overwrite manager**, when `manifest/package-no-overwrite.xml` lists something: the org is queried, and
-   any component **listed in that file** that the org already has is taken out. It is scoped to its
+3. **The overwrite manager**, when the package holds something `manifest/package-no-overwrite.xml` lists:
+   the org is queried, and any component **listed in that file** that the org already has is taken out.
+   When nothing in the package matches the list, the org is not queried at all, and the log says so. It is scoped to its
    own list and nothing else, and a component it protects is still created in an org that does not
    have it yet
 4. **Deploy-on-change**, if `manifest/packageDeployOnChange.xml` exists: those components, and only
@@ -237,6 +245,196 @@ Command documentation: [hardis:project:deploy:smart](https://sfdx-hardis.cloudit
 
 </details>
 
+## Part 3: when a post-deployment action fails
+
+### 9. Merge a Pull Request whose actions fail after the merge
+
+Mariia has a story made of deployment actions and no metadata. **Training: Level 3** > **Simulate
+my teammates**, and pick **US-062 Put the delivery managers in a Crew Leads group**. It opens her
+Pull Request into `integration`, with three post-deployment actions in its actions file:
+
+1. **Put the delivery managers in the Crew Leads group**, an Apex script
+2. **Recalculate the crew capacity once**, a Run Batch action
+3. **Add the deployment user to the Crew Leads group**, an Apex script
+
+Its check goes green. That proves less than it looks: the three actions run during the deployment
+job only, after the merge, so the check skipped them. Merge it.
+
+The deployment job goes red. The metadata deployed, then the first action failed, and sfdx-hardis
+stopped there: the two others never ran.
+
+### 10. Read what failed, and what did not run
+
+**The job log** names the failure. The Apex script asked the org for a public group named
+`Helios_Crew_Leads`, and the org has none:
+
+```
+System.QueryException: List has no rows for assignment to SObject
+```
+
+Mariia created the group by hand in her own org, in Setup, the way most people create one: nothing
+in her Pull Request creates it.
+
+**The Deployment Actions comment** of her Pull Request lists the three actions under **Failed
+actions (1)**: ❌ for the one that failed, ⏸️ for the two it stopped, each with a checkbox. The
+**Status by org branch** table **(2)** says the same in the `integration` column.
+
+![The Deployment Actions comment with one failed action and two stopped ones](../../_assets/annotated/web/github-pr-deployment-actions-failed.png)
+
+**The DevOps Pipeline**: click `integration`, then the **Deployment Actions** tab. The actions are
+grouped by Pull Request, numbered in the order they run. The **Status** column **(1)** gives each
+action its state in the org of `integration`, and the failed one carries **Retry** and **Mark as
+done in integration** buttons **(2)**. The menu at the end of each row holds the rest, **Move to my Pull Request**
+included.
+
+![The Deployment Actions tab of integration, with the status of each action and the menu of a failed one](../../_assets/annotated/vscode/pipeline-branch-modal-actions-failed.png)
+
+None of them runs the deployment job again: the metadata is in the org already, and a second
+deployment would only redo what worked. The right way out depends on why each action failed:
+
+| Why it failed                                    | Way out                       |
+|--------------------------------------------------|-------------------------------|
+| The org was missing something, and now it has it | **Retry**                     |
+| The action itself is wrong                       | Move it to a fix Pull Request |
+| Somebody already did it by hand                  | **Mark as done**              |
+
+### 11. Fix the org, then retry
+
+The first action is right: the org is missing its group. Create it in `helios-integration`:
+
+1. Open `helios-integration` from **Orgs Manager**, then **Setup**, type `Public Groups` in the
+   Quick Find box, and click **New**
+2. **Label** `Crew Leads`, **Group Name** `Helios_Crew_Leads`, then **Save**
+
+The action definition is read from the branch you have checked out. Check out `integration` and
+pull it, from the branch name in the status bar and the Source Control panel, so Mariia's actions
+file is there.
+
+Back in the **Deployment Actions** tab, click **Retry** on the row of **Put the delivery managers in
+the Crew Leads group**. The command runs in VS Code, against `helios-integration`:
+
+- the action runs and goes green, and the command asks what to do with the two actions its failure
+  stopped **(1)**
+- answer **Run the next action only** **(2)**
+- the crew capacity action runs, and fails **(3)**: the class `CrewCapacityBach` does not exist
+
+![The command runner retrying the action, asking about the stopped actions, then the next one failing](../../_assets/annotated/vscode/action-run-prompts.png)
+
+The Pull Request comment now reads ✅ for the first action, with a note saying you ran it from your
+computer, ❌ for the crew capacity action, and ⏸️ for the last one.
+
+<details markdown="1"><summary>Under the hood: what Retry ran</summary>
+
+The button ran:
+
+    sf hardis:project:action:run --pr <number of US-062> --action-id <id> --org-branch integration
+
+- **No deployment.** It runs the one action, with the code a deployment job uses for each action:
+  target branch filters, references to the outputs of other actions, validity checks
+- **The org comes from the branch.** `integration` names `helios-integration` through the
+  `targetUsername` of `config/branches/.sfdx-hardis.integration.yml`, and the command uses that
+  org as you connected it in Orgs Manager. The `sf` commands the action starts target it for this run
+  only: your default org does not change
+- **The result goes to the Pull Request comment**, with your git user name and your Salesforce
+  username in the note, through the git provider token VS Code holds. Without one, the command
+  refuses to run, because the next deployment would not know the action was done
+- **The stopped actions are remembered.** When the deployment job stopped, it recorded the two
+  others as `not-run`, linked to the failed one: that is how the command knew what to offer next
+- An action with a `customUsername` runs as that user. When your computer is not connected with
+  it, the command asks you to log in with it, and checks you did
+
+<!-- command-links:start -->
+Command documentation: [hardis:project:action:run](https://sfdx-hardis.cloudity.com/hardis/project/action/run/)
+<!-- command-links:end -->
+
+</details>
+
+### 12. A wrong definition goes back to its author
+
+Retrying the crew capacity action will fail every time: its class name has a typo, in a file of a
+Pull Request that is merged. Editing that file on `integration` would not help either: a deployment
+only reads the actions of the Pull Requests it deploys.
+
+Send it back. Comment on Mariia's merged Pull Request:
+
+> The crew capacity action names `CrewCapacityBach`, which does not exist: it should be
+> `CrewCapacityBatch`. Can you move it to a fix Pull Request?
+
+She fixes it the way the product offers: from her new branch, **Move to my Pull Request** in the
+menu of the failed row moves the action into the actions file of her own Pull Request, with the
+same id, and she corrects the class name there.
+
+**Simulate my teammates** > **US-062 Mariia fixes the crew capacity action**. Review her Pull
+Request:
+
+- **Files changed**: the action left the actions file of US-062 and arrived in the file of the new
+  Pull Request, with `className: CrewCapacityBatch` and `movedFrom` set to the number of US-062
+- still in **Files changed**: a new file, `groups/Helios_Crew_Leads.group-meta.xml`, and one more
+  block in `manifest/package.xml`. A public group is metadata like any other, and Mariia put hers in
+  the sources. In `integration` the deployment finds the group you created in step 11 and keeps
+  it, under the label `Crew Leads`. In `uat`, `preprod` and production, where nobody created anything, the deployment
+  creates it before the actions run. Without that file, the first action would fail in each of
+  them the way it failed here
+- the **Deployment Actions** tab of her Pull Request: open the action, and the editor shows where
+  it comes from, under **Moved from (1)**
+
+![The deployment action editor showing the Pull Request the action was moved from](../../_assets/annotated/vscode/pipeline-edit-action-moved.png)
+
+Merge it. Its deployment job runs the action, from the new Pull Request, and goes green. Open the
+Deployment Actions comment of US-062 again: the crew capacity action reads ↪️ **moved to** the fix
+Pull Request **(1)**, with a link, instead of a red cell nobody could clear.
+
+![The Deployment Actions comment of US-062, with the action moved to the fix Pull Request](../../_assets/annotated/web/github-pr-deployment-actions-moved.png)
+
+When both Pull Requests go to `uat` together, in [Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md), US-062 no longer carries the action, and it
+runs once, from the fix.
+
+### 13. Mark as done what was done by hand
+
+The last action adds the deployment user to Crew Leads. Retrying it would work, but doing it takes
+twenty seconds, so do it by hand, the way a release manager does when a release cannot wait:
+
+1. In `helios-integration`, **Setup** > **Public Groups** > **Crew Leads** > **Edit**
+2. Add your user to **Selected Members**, then **Save**
+
+Then, in the **Deployment Actions** tab, open the menu of **Add the deployment user to the Crew
+Leads group** and click **Mark as done in integration**. Nothing opens: sfdx-hardis records it in the background
+as done in `integration`, with a note naming you, and ticks its checkbox in the Pull Request
+comments. The button reads **Marking as done...** until the action shows **Done** in the tab.
+
+The next deployment to `integration` skips it. In `uat` and beyond it still runs, because nobody
+did it there.
+
+Ticking its checkbox in the **Failed actions** list of the Pull Request comment does the same,
+recorded by the next sfdx-hardis job: use it when you are on GitHub rather than in VS Code.
+
+<details markdown="1"><summary>Under the hood: what the three ways out leave behind</summary>
+
+- **Retry** ran `sf hardis:project:action:run`, as in step 11
+- **Move to my Pull Request** ran, on Mariia's side:
+
+        sf hardis:project:action:update --scope pr --pr-id <US-062> --when post-deploy --action-id <id> --move-to-pr <her Pull Request>
+
+  It removes the action from `scripts/actions/.sfdx-hardis.<US-062>.yml`, adds it to the file of her
+  Pull Request with `movedFrom: <US-062>`, and keeps its id. When a deployment carries both, the
+  original copy is dropped, and the run of the copy writes ↪️ in the comment of US-062
+- **Mark as done** ran:
+
+        sf hardis:project:action:set-status --pr <US-062> --action-id <id> --org-branch integration --status success
+
+  The status becomes `success`, which is what makes later deployments skip it, and the note keeps
+  the truth: *Not run in CI, then closed by hand by you (your username) on the date*
+
+Everything lives in the "Deployment Actions" comment of the Pull Request that owns the action: no
+Salesforce object, nothing to install. That comment is also where a release manager looks before a
+promotion, to see what is still red.
+
+<!-- command-links:start -->
+Command documentation: [hardis:project:action:run](https://sfdx-hardis.cloudity.com/hardis/project/action/run/), [hardis:project:action:update](https://sfdx-hardis.cloudity.com/hardis/project/action/update/), [hardis:project:action:set-status](https://sfdx-hardis.cloudity.com/hardis/project/action/set-status/)
+<!-- command-links:end -->
+
+</details>
+
 ## What you should see
 
 - A green **Process Deployment (sfdx-hardis)** run on `integration`
@@ -244,6 +442,12 @@ Command documentation: [hardis:project:deploy:smart](https://sfdx-hardis.cloudit
 - The change present in `helios-integration`
 - Romain's US-056 merged, `Crew_Workload__c` in `helios-integration`, and no wildcard left in
   `.forceignore`
+- Mariia's US-062 and its fix merged, and in its Deployment Actions comment: ✅ for the first
+  action with a note saying you ran it, ↪️ for the crew capacity action, ✅ for the last one with a
+  note saying you closed it by hand
+- In `helios-integration`, a **Crew Leads** public group holding the delivery managers and you
+- `force-app/main/default/groups/Helios_Crew_Leads.group-meta.xml` on `integration`, so the next
+  orgs get the group from the deployment
 
 ## If it goes wrong
 
@@ -265,6 +469,25 @@ The check ran on the merge of his branch with `integration` as it was when he pu
 changed `.forceignore` on `integration` in the meantime, click **Update branch** on his Pull
 Request: GitHub merges `integration` into it, and the check runs again.
 
+**The Deployment Actions tab has no Status column, or no Retry in the menu.**
+The status comes from sfdx-hardis, which needs a recent version and your GitHub connection: update
+it from the **Dependencies** panel, and check the git provider icon of the DevOps Pipeline is
+connected. A row offers Retry only when its action failed or was stopped, after the deployment.
+
+**Retry says no org of helios-integration is connected.**
+Connect `helios-integration` in **Orgs Manager**, then click **Retry** again.
+
+**Retry says it cannot find the action.**
+The definition is read from your checked out branch: check out `integration` and pull it, so
+Mariia's actions file is there.
+
+**The first action fails again after you created the group.**
+Check the **Group Name**: it must be `Helios_Crew_Leads` exactly. The label can be anything.
+
+**Mariia's fix stops with "not merged in your fork".**
+Her fix moves an action out of the actions file of US-062, named after its Pull Request number:
+merge US-062 first.
+
 ## Check your work
 
 Welcome page > **Training: Level 3** > **Check my work**, then pick **Lab 3.3**.
@@ -273,5 +496,6 @@ Welcome page > **Training: Level 3** > **Check my work**, then pick **Lab 3.3**.
 
 - [Deploy to major orgs](https://sfdx-hardis.cloudity.com/salesforce-devops-deploy-major-branches/)
 - [Smart Deploy internals](https://sfdx-hardis.cloudity.com/salesforce-devops-smart-deployment/)
+- [Recover a failed deployment action](https://sfdx-hardis.cloudity.com/salesforce-devops-work-on-user-story-deployment-actions/#recover-a-failed-action)
 
 [Next: Lab 3.4 - Three Pull Requests collide: choose the merge order](3-4-merge-colliding-pull-requests.md){ .md-button .md-button--primary }
