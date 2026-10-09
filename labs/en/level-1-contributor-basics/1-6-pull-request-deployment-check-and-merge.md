@@ -218,6 +218,10 @@ in a commit. Click **Files** again later and nothing is downloaded twice, unless
 GitHub does not keep artifacts forever. Once they are gone, the files you already downloaded stay,
 and a job you never opened says its files have expired.
 
+<!-- command-links:start -->
+Command documentation: [hardis:git:artifacts:download](https://sfdx-hardis.cloudity.com/hardis/git/artifacts/download/)
+<!-- command-links:end -->
+
 </details>
 
 !!! note "No Files button?"
