@@ -5,17 +5,20 @@ description: "Ouvrez une Pull Request GitHub, lisez le contrôle de déploiement
 level: 1
 lab: 6
 lang: fr
-source_rev: "ee3029d22ba45d5b0cbdb2c50c30d3e3aa93a291"
+source_rev: "81b7c4883b4004ebc6f32f7fb50187d2b0b716af"
 screenshots:
   - annotated/web/github-pr-checks
   - annotated/web/github-pr-comment
+  - annotated/vscode/pipeline-cards-first-pr--my-pull-request
+  - annotated/vscode/pipeline-pr-window-validation
+  - annotated/vscode/pipeline-pr-window-files
   - annotated/web/github-pr-merge
   - annotated/vscode/devops-pipeline--deployment-status
   - annotated/web/github-pr-deployed
   - annotated/vscode/work-save-completed
   - annotated/web/github-pr-merge-squash
 depends_on:
-  commands: [hardis:project:deploy:smart]
+  commands: [hardis:project:deploy:smart, hardis:git:artifacts:download]
   flags: [--check]
   config: [testLevel, apexTestsMinCoverageOrgWide, genericTicketingProviderRegex, genericTicketingProviderUrlBuilder, genericTicketingProviderDetailsUrlBuilder]
   panels: [pipeline]
@@ -185,6 +188,58 @@ Azure Boards ou ServiceNow à la place.
     L'image est un vrai commentaire d'une vraie exécution de ce lab, gardé tel quel. Un composant que
     Salesforce range légèrement différemment dans votre org peut passer de inchangé à mis à jour, et
     ce n'est pas un problème : ce qui compte, c'est que votre champ soit celui qui est créé.
+
+**Le même commentaire, sans quitter VS Code.** Revenez dans VS Code et ouvrez le panneau **DevOps
+Pipeline**. Sous **Project Contribution Workflow**, la carte **My Pull Request** **(1)** porte
+maintenant le nom de votre Pull Request. Cliquez dessus.
+
+![La carte My Pull Request du panneau DevOps Pipeline, qui nomme la Pull Request de US-014](../../_assets/annotated/vscode/pipeline-cards-first-pr--my-pull-request.png)
+
+Une fenêtre s'ouvre sur votre Pull Request, et elle rassemble ce que GitHub répartit sur plusieurs
+pages :
+
+1. **Les onglets** **(1)** : **Validation** est le contrôle de déploiement, **Code Quality** est
+   Mega-Linter, et **Deployment** se remplit une fois le merge fait. **Tickets** contient la story
+   trouvée dans le nom de votre branche
+2. **Le job** **(2)** : son résultat, **Open job** pour son log sur GitHub, **Open comment** pour le
+   commentaire sur GitHub, et **Files**
+3. **Le commentaire** **(3)**, celui que vous venez de lire, mot pour mot
+
+![La fenêtre d'une Pull Request dans VS Code, sur son onglet Validation](../../_assets/annotated/vscode/pipeline-pr-window-validation.png)
+
+Votre numéro n'est pas `#46`, et votre commentaire commence par la bannière vue sur GitHub.
+
+Cliquez maintenant sur **Files** **(1)**. Le contrôle a gardé ses rapports, et sfdx-hardis les liste
+sous le job **(2)**. Cliquez sur l'un d'eux pour l'ouvrir dans VS Code : `deployment-components.csv`
+est la liste derrière **7 components would change**, une ligne par composant.
+
+![Le bouton Files du job de validation, ouvert sur les rapports que le job a gardés](../../_assets/annotated/vscode/pipeline-pr-window-files.png)
+
+Vous n'aurez pas besoin de ces fichiers aujourd'hui. Ils sont là pour le jour où un contrôle passe
+au rouge et où le commentaire ne suffit pas, et ils vous évitent un détour par GitHub.
+
+<details markdown="1"><summary>Sous le capot : d'où viennent les fichiers</summary>
+
+Le job de contrôle publie son dossier `hardis-report` sur GitHub, sous la forme d'un artifact nommé
+**sfdx-hardis reports**. **Files** lance `sf hardis:git:artifacts:download` avec l'adresse du job :
+la commande demande à GitHub les artifacts de cette exécution, les télécharge et les décompresse
+dans `hardis-report/job-artifacts/` de votre projet. Git ignore ce dossier, donc les copies ne
+finissent jamais dans un commit. Recliquez sur **Files** plus tard et rien n'est téléchargé deux
+fois, sauf si le job a tourné de nouveau.
+
+GitHub ne garde pas les artifacts indéfiniment. Une fois disparus, les fichiers déjà téléchargés
+restent, et un job que vous n'avez jamais ouvert indique que ses fichiers ont expiré.
+
+<!-- command-links:start -->
+Documentation de la commande : [hardis:git:artifacts:download](https://sfdx-hardis.cloudity.com/hardis/git/artifacts/download/)
+<!-- command-links:end -->
+
+</details>
+
+!!! note "Pas de bouton Files ?"
+    Il demande un sfdx-hardis récent. Ouvrez le panneau **Setup** du [Lab 1.1](1-1-install-vs-code-and-sfdx-hardis.md) :
+    quand la carte `sfdx-hardis` affiche **Upgrade**, cliquez dessus, puis rouvrez la fenêtre. **Open job**
+    mène aux mêmes fichiers en attendant : le **Summary** de l'exécution, puis **Artifacts**.
 
 ### 4. Merger
 
