@@ -161,5 +161,8 @@
   "vscode/pipeline-workflow-cards.png": "69328fca6fc3f6d1",
   "vscode/work-save-package-xml.png#cleaning": "d9f17ae23af5c143",
   "web/github-secret-new--key.png": "9bea4cabc645ba24",
-  "web/github-pr-files-hotfix.png": "f18f18f7c44228a7"
+  "web/github-pr-files-hotfix.png": "f18f18f7c44228a7",
+  "vscode/pipeline-cards-first-pr.png#my-pull-request": "61b2c9ee0ad936e1",
+  "vscode/pipeline-pr-window-validation.png": "34c0483f6a87cd92",
+  "vscode/pipeline-pr-window-files.png": "f1b41d0809a6dcd8"
 }
