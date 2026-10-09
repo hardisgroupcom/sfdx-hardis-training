@@ -131,6 +131,26 @@
         "SFDX_HARDIS_DOC_SCREENSHOTS_PR": "46"
       }
     },
+    "pipeline-review-pr": {
+      "_comment": "Lab 3.2: the Level 3 pipeline with Mariia's Pull Request for US-052 next to its branch.",
+      "gate": "pipeline-pr-files",
+      "file": "pipeline-pr-files-pipeline",
+      "state": "level3",
+      "env": {
+        "SFDX_HARDIS_DOC_SCREENSHOTS_EXTRA_PRS": "git-provider-mock-review-pr.json",
+        "SFDX_HARDIS_DOC_SCREENSHOTS_PR": "64"
+      }
+    },
+    "pipeline-pr-window-review-files": {
+      "_comment": "Lab 3.2: the window of that Pull Request with the Files button opened, on the reports of a real run of the lab.",
+      "gate": "pipeline-pr-files",
+      "file": "pipeline-pr-files-list",
+      "state": "level3",
+      "env": {
+        "SFDX_HARDIS_DOC_SCREENSHOTS_EXTRA_PRS": "git-provider-mock-review-pr.json",
+        "SFDX_HARDIS_DOC_SCREENSHOTS_PR": "64"
+      }
+    },
     "pipeline-packages-menu": {
       "_comment": "Only Lab 1.5 shows it, so it is taken in the Level 1 state.",
       "gate": "pipeline-menus",

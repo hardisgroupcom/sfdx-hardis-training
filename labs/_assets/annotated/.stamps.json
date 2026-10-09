@@ -164,5 +164,7 @@
   "web/github-pr-files-hotfix.png": "f18f18f7c44228a7",
   "vscode/pipeline-cards-first-pr.png#my-pull-request": "61b2c9ee0ad936e1",
   "vscode/pipeline-pr-window-validation.png": "34c0483f6a87cd92",
-  "vscode/pipeline-pr-window-files.png": "f1b41d0809a6dcd8"
+  "vscode/pipeline-pr-window-files.png": "f1b41d0809a6dcd8",
+  "vscode/pipeline-review-pr.png": "443533d130cda6c7",
+  "vscode/pipeline-pr-window-review-files.png": "f9137123c5757880"
 }

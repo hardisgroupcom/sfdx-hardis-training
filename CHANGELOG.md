@@ -6,6 +6,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 ## 2026-10-09
 
 - Lab 1.6: after the comment on GitHub, the lab opens the Pull Request window of VS Code, with the same comment and the Files button that lists the reports of the check.
+- Lab 3.2: the list of the components of a Pull Request is opened from its window in VS Code, with the Files button, instead of from the job page on GitHub.
 
 ## 2026-10-08
 
