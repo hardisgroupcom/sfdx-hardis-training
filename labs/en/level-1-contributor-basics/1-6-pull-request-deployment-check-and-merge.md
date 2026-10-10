@@ -11,6 +11,7 @@ screenshots:
   - annotated/web/github-pr-comment
   - annotated/vscode/pipeline-cards-first-pr--my-pull-request
   - annotated/vscode/pipeline-pr-window-validation
+  - annotated/vscode/pipeline-pr-window-running
   - annotated/vscode/pipeline-pr-window-files
   - annotated/web/github-pr-merge
   - annotated/vscode/devops-pipeline--deployment-status
@@ -190,13 +191,28 @@ A window opens on your Pull Request, and it gathers what GitHub spreads over sev
 1. **The tabs** **(1)**: **Validation** is the deployment check, **Code Quality** is Mega-Linter,
    and **Deployment** fills in once you have merged. **Tickets** holds the story found in your
    branch name
-2. **The job** **(2)**: its result, **Open job** for its log on GitHub, **Open comment** for the
-   comment on GitHub, and **Files**
+2. **The job** **(2)**: its result, how long it ran, **Open job** for its log on GitHub,
+   **Open comment** for the comment on GitHub, and **Files**
 3. **The comment** **(3)**, the one you have just read, word for word
 
 ![The window of a Pull Request in VS Code, on its Validation tab](../../_assets/annotated/vscode/pipeline-pr-window-validation.png)
 
 Your number is not `#46`, and your comment opens with the banner you saw on GitHub.
+
+**Opened it while a check was still running?** Then the window says so, and you do not need
+GitHub to know where the check stands:
+
+1. **The tab** **(1)** carries a spinner for as long as its job runs, **Code Quality** included,
+   and the **Validation** step above the tabs moves
+2. **The running job** **(2)** comes first: when it started, for how long it has been going on,
+   counted every second, and **Open job** for its log on GitHub
+3. **Under it** **(3)**, what the previous run left. On a first Pull Request there is nothing
+   there yet: the comment arrives when the job ends
+
+![The window of a Pull Request in VS Code while its deployment check is running](../../_assets/annotated/vscode/pipeline-pr-window-running.png)
+
+Nothing to click: the window asks GitHub again every twenty seconds. When the job ends, its row
+leaves and the comment takes its place, with the time the job took.
 
 Now click **Files** **(1)**. The check kept its reports, and sfdx-hardis lists them under the job
 **(2)**. Click one to open it in VS Code: `deployment-components.csv` is the list behind

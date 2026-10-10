@@ -131,6 +131,16 @@
         "SFDX_HARDIS_DOC_SCREENSHOTS_PR": "46"
       }
     },
+    "pipeline-pr-window-running": {
+      "_comment": "Lab 1.6: the same window while the deployment check is still running.",
+      "gate": "pipeline-pr-running",
+      "file": "pipeline-pr-running-validation",
+      "state": "fresh-pr",
+      "env": {
+        "SFDX_HARDIS_DOC_SCREENSHOTS_BRANCH": "features/US-014-panels-required",
+        "SFDX_HARDIS_DOC_SCREENSHOTS_PR": "46"
+      }
+    },
     "pipeline-review-pr": {
       "_comment": "Lab 3.2: the Level 3 pipeline with Mariia's Pull Request for US-052 next to its branch.",
       "gate": "pipeline-pr-files",
