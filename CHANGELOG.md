@@ -3,6 +3,10 @@
 What changed in the course, for learners and trainers. The course has no versions: each section is
 a day, newest first, and a change goes under the date of the day it is made.
 
+## 2026-10-10
+
+- Lab 1.6: the Pull Request window of VS Code is also shown while the check is still running, with the time the job has been going on, and a finished job says how long it took.
+
 ## 2026-10-09
 
 - Lab 1.6: after the comment on GitHub, the lab opens the Pull Request window of VS Code, with the same comment and the Files button that lists the reports of the check.

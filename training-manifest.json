@@ -239,6 +239,7 @@
         "annotated/web/github-pr-comment",
         "annotated/vscode/pipeline-cards-first-pr--my-pull-request",
         "annotated/vscode/pipeline-pr-window-validation",
+        "annotated/vscode/pipeline-pr-window-running",
         "annotated/vscode/pipeline-pr-window-files",
         "annotated/web/github-pr-merge",
         "annotated/vscode/devops-pipeline--deployment-status",

@@ -5,12 +5,13 @@ description: "Ouvrez une Pull Request GitHub, lisez le contrôle de déploiement
 level: 1
 lab: 6
 lang: fr
-source_rev: "81b7c4883b4004ebc6f32f7fb50187d2b0b716af"
+source_rev: "9ef428b3794f458225aedfbd5d985bd4894c9c97"
 screenshots:
   - annotated/web/github-pr-checks
   - annotated/web/github-pr-comment
   - annotated/vscode/pipeline-cards-first-pr--my-pull-request
   - annotated/vscode/pipeline-pr-window-validation
+  - annotated/vscode/pipeline-pr-window-running
   - annotated/vscode/pipeline-pr-window-files
   - annotated/web/github-pr-merge
   - annotated/vscode/devops-pipeline--deployment-status
@@ -201,13 +202,28 @@ pages :
 1. **Les onglets** **(1)** : **Validation** est le contrôle de déploiement, **Code Quality** est
    Mega-Linter, et **Deployment** se remplit une fois le merge fait. **Tickets** contient la story
    trouvée dans le nom de votre branche
-2. **Le job** **(2)** : son résultat, **Open job** pour son log sur GitHub, **Open comment** pour le
-   commentaire sur GitHub, et **Files**
+2. **Le job** **(2)** : son résultat, sa durée, **Open job** pour son log sur GitHub,
+   **Open comment** pour le commentaire sur GitHub, et **Files**
 3. **Le commentaire** **(3)**, celui que vous venez de lire, mot pour mot
 
 ![La fenêtre d'une Pull Request dans VS Code, sur son onglet Validation](../../_assets/annotated/vscode/pipeline-pr-window-validation.png)
 
 Votre numéro n'est pas `#46`, et votre commentaire commence par la bannière vue sur GitHub.
+
+**Vous l'avez ouverte pendant qu'un contrôle tournait encore ?** La fenêtre le dit, et vous n'avez
+pas besoin de GitHub pour savoir où en est le contrôle :
+
+1. **L'onglet** **(1)** porte un spinner tant que son job tourne, **Code Quality** compris, et
+   l'étape **Validation** au-dessus des onglets bouge
+2. **Le job en cours** **(2)** vient en premier : quand il a démarré, depuis combien de temps il
+   tourne, compté chaque seconde, et **Open job** pour son log sur GitHub
+3. **En dessous** **(3)**, ce que l'exécution précédente a laissé. Sur une première Pull Request
+   il n'y a encore rien : le commentaire arrive quand le job se termine
+
+![La fenêtre d'une Pull Request dans VS Code pendant que son contrôle de déploiement tourne](../../_assets/annotated/vscode/pipeline-pr-window-running.png)
+
+Rien à cliquer : la fenêtre interroge GitHub toutes les vingt secondes. Quand le job se termine,
+sa ligne disparaît et le commentaire prend sa place, avec la durée du job.
 
 Cliquez maintenant sur **Files** **(1)**. Le contrôle a gardé ses rapports, et sfdx-hardis les liste
 sous le job **(2)**. Cliquez sur l'un d'eux pour l'ouvrir dans VS Code : `deployment-components.csv`
