@@ -212,7 +212,8 @@
       "file": "labs/en/level-1-contributor-basics/1-6-pull-request-deployment-check-and-merge.md",
       "url": "https://sfdx-hardis-training.github.io/en/level-1-contributor-basics/1-6-pull-request-deployment-check-and-merge/",
       "commands": [
-        "hardis:project:deploy:smart"
+        "hardis:project:deploy:smart",
+        "hardis:git:artifacts:download"
       ],
       "flags": [
         "--check"
@@ -236,6 +237,10 @@
       "screenshots": [
         "annotated/web/github-pr-checks",
         "annotated/web/github-pr-comment",
+        "annotated/vscode/pipeline-cards-first-pr--my-pull-request",
+        "annotated/vscode/pipeline-pr-window-validation",
+        "annotated/vscode/pipeline-pr-window-running",
+        "annotated/vscode/pipeline-pr-window-files",
         "annotated/web/github-pr-merge",
         "annotated/vscode/devops-pipeline--deployment-status",
         "annotated/web/github-pr-deployed",
@@ -707,7 +712,8 @@
       "file": "labs/en/level-3-release-manager/3-2-review-a-contributor-pull-request.md",
       "url": "https://sfdx-hardis-training.github.io/en/level-3-release-manager/3-2-review-a-contributor-pull-request/",
       "commands": [
-        "hardis:project:deploy:smart"
+        "hardis:project:deploy:smart",
+        "hardis:git:artifacts:download"
       ],
       "flags": [
         "--check"
@@ -722,6 +728,8 @@
       ],
       "screenshots": [
         "annotated/web/github-pr-files",
+        "annotated/vscode/pipeline-review-pr",
+        "annotated/vscode/pipeline-pr-window-review-files",
         "annotated/vscode/welcome-custom-menu-3"
       ],
       "translations": {
@@ -1391,6 +1399,10 @@
         "lab-3-7",
         "lab-3-10",
         "lab-3-11"
+      ],
+      "hardis:git:artifacts:download": [
+        "lab-1-6",
+        "lab-3-2"
       ],
       "hardis:work:backpromote": [
         "lab-2-1"
