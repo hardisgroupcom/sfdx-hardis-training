@@ -65,7 +65,11 @@ function run() {
     .map((entry) => entry.name);
 
   const changed = [];
-  const pending = [];
+  // A run before this one may be waiting for its stamp. What it noted about a
+  // translation is what counts: by now that page has been rewritten once, and
+  // comparing it again would say nothing about how it stood before.
+  const waiting = !CHECK && fs.existsSync(PENDING) ? JSON.parse(fs.readFileSync(PENDING, "utf8")) : [];
+  const pending = [...waiting];
   for (const locale of locales) {
     const describe = observedIn(locale);
     for (const rel of pagesOf(universe)) {
@@ -82,7 +86,7 @@ function run() {
       if (CHECK) {
         continue;
       }
-      if (locale !== REFERENCE) {
+      if (locale !== REFERENCE && !waiting.some((one) => one.file === `labs/${locale}/${rel}`)) {
         const english = `labs/${REFERENCE}/${rel}`;
         const rev = (before.match(/^source_rev:\s*"?([0-9a-f]+)"?\s*$/m) || [])[1];
         pending.push({ file: `labs/${locale}/${rel}`, english, wasCurrent: Boolean(rev) && rev === lastCommit(english) });
