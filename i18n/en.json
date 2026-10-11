@@ -70,13 +70,7 @@
         "Fastest",
         "Learners"
       ],
-      "labColumns": [
-        "Labs",
-        "First estimate",
-        "Median",
-        "Fastest",
-        "Learners"
-      ],
+      "labColumns": ["Labs", "First estimate", "Median", "Fastest", "Learners"],
       "byLab": {
         "heading": "Lab by lab",
         "intro": [
