@@ -31,7 +31,7 @@ depends_on:
 
 **Niveau** : 2 Contributeur avancé
 
-**Durée** : ~25 min
+**Durée** : ~30 min<!-- observed --> (Labs 2.1 et 2.2 observés ensemble : de 28 min à 4 h 36, médiane 55 min, 14 participants)<!-- /observed -->
 
 **Vous allez** : modifier un flow qui tourne déjà en production, rencontrer votre premier contrôle de
 déploiement en échec, lire l'erreur correctement, et trouver ce que votre package a oublié.

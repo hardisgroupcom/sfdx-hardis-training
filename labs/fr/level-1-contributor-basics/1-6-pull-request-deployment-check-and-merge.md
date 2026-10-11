@@ -30,7 +30,7 @@ depends_on:
 
 **Niveau** : 1 Contributeur, les bases
 
-**Durée** : ~20 min
+**Durée** : ~25 min<!-- observed --> (observé : de 4 min à 1 h 24, médiane 28 min, 8 participants)<!-- /observed -->
 
 **Vous allez** : faire contrôler votre travail par un robot avant qu'un humain le fasse, lire ce
 qu'il dit, et mettre US-014 dans l'org d'intégration partagée.

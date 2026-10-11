@@ -20,7 +20,7 @@ depends_on:
 
 **Niveau** : 1 Contributeur, les bases
 
-**Durée** : ~25 min
+**Durée** : ~30 min<!-- observed --> (observé : de 11 min à 1 h 23, médiane 31 min, 10 participants)<!-- /observed -->
 
 **Vous allez** : refaire toute la boucle sans pas-à-pas, la seule façon de savoir si vous l'avez
 apprise.

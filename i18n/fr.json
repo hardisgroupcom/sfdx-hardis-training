@@ -96,7 +96,7 @@
         "",
         "Les labs qui partagent une Pull Request sont mesurés ensemble.",
         "",
-        "Le temps qu'annonce la page d'un lab est cette médiane, arrondie aux cinq minutes inférieures, et le temps d'un niveau est arrondi au quart d'heure inférieur. Un lab mesuré avec d'autres prend sa part de leur temps, et un lab avec trop peu de participants garde son estimation. Les pages suivent les chiffres à chaque construction du site."
+        "Le temps qu'annonce la page d'un lab est cette médiane, arrondie aux cinq minutes inférieures, et le temps d'un niveau est arrondi au quart d'heure inférieur. Un lab mesuré avec d'autres prend sa part de leur temps, et un lab avec trop peu de participants garde son estimation. Les pages sont réécrites d'après les chiffres chaque semaine."
       ]
     }
   },

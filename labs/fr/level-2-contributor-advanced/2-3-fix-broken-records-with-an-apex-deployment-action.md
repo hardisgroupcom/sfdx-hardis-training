@@ -24,7 +24,7 @@ depends_on:
 
 **Niveau** : 2 Contributeur avancé
 
-**Durée** : ~30 min
+**Durée** : ~55 min<!-- observed --> (observé : de 16 min à 3 h 28, médiane 56 min, 11 participants)<!-- /observed -->
 
 **Vous allez** : rencontrer un échec qu'aucune correction de métadonnée ne résout, et découvrir
 l'outil qui existe pour cela : une deployment action.

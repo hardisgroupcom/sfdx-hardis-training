@@ -5,7 +5,7 @@ description: "Vous avez publié bien plus que votre story. Voyez ce que cela fai
 level: 2
 lab: 8
 lang: fr
-source_rev: "2365603247c4b6fd5987135bf8e939265c72d49b"
+source_rev: "40c2017ecd00caf98a1f244990d0385d92d8df7b"
 screenshots:
   - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/metadata-retriever-recent-changes--select-all
@@ -23,7 +23,7 @@ depends_on:
 
 **Niveau** : 2 Contributeur avancé
 
-**Durée** : ~20 min
+**Durée** : ~25 min<!-- observed --> (observé : de 15 min à 1 h 59, médiane 27 min, 5 participants)<!-- /observed -->
 
 **Vous allez** : sur-sélectionner exprès au moment de publier, voir ce que cela fait à une Pull
 Request, et apprendre les deux chemins de récupération.
