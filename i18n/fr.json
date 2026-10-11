@@ -40,10 +40,12 @@
     "labsPair": "Labs {first} et {last}",
     "percent": "{value} %",
     "notEnough": "pas encore assez de données",
-    "observed": "(observé : médiane {median}, {sample} participants{fastest})",
+    "observed": "(observé : médiane {median}, {learners}{fastest})",
+    "learnerOne": "1 participant",
+    "learnerMany": "{sample} participants",
     "fastest": ", le plus rapide {time}",
-    "observedTogether": "({labs} observés ensemble : médiane {median}, {sample} participants{fastest})",
-    "observedLevel": "Observé sur les {labs} : médiane {median}, {sample} participants{fastest}.",
+    "observedTogether": "({labs} observés ensemble : médiane {median}, {learners}{fastest})",
+    "observedLevel": "Observé sur les {labs} : médiane {median}, {learners}{fastest}.",
     "empty": "Pas encore de chiffres. Ils sont lus une fois par semaine, et la première lecture n'a pas eu lieu.",
     "funnel": {
       "heading": "Commencés et terminés",
@@ -61,7 +63,7 @@
     "time": {
       "heading": "Temps passé",
       "intro": [
-        "Le temps médian des personnes qui sont allées au bout, à côté de l'estimation avec laquelle chaque lab a été écrit. Un chiffre apparaît quand {minSample} personnes sont derrière lui, et c'est alors le temps que la page du lab annonce."
+        "Le temps médian des personnes qui sont allées au bout, à côté de l'estimation avec laquelle chaque lab a été écrit. C'est le temps que la page du lab annonce dès qu'une personne est allée au bout, et la dernière colonne dit combien elles étaient : avec une ou deux, c'est l'après-midi de quelqu'un plus qu'une statistique."
       ],
       "levelColumns": [
         "Niveau",
@@ -97,7 +99,7 @@
         "",
         "Le plus rapide est le temps le plus court dans lequel quelqu'un a pu faire le lab. Un chiffre de moins de cinq minutes, ou de moins d'un quart de la médiane, correspond à deux labs vérifiés à la suite et est écarté. Le plus lent n'est pas affiché : c'est quelqu'un qui a été interrompu.",
         "",
-        "Le temps qu'annonce la page d'un lab est cette médiane, arrondie aux cinq minutes inférieures, et le temps d'un niveau est arrondi au quart d'heure inférieur. Un lab mesuré avec d'autres prend sa part de leur temps, et un lab avec trop peu de participants garde son estimation. Les pages sont réécrites d'après les chiffres chaque semaine."
+        "Le temps qu'annonce la page d'un lab est cette médiane, arrondie aux cinq minutes inférieures, et le temps d'un niveau est arrondi au quart d'heure inférieur. Un lab mesuré avec d'autres prend sa part de leur temps, et un lab que personne n'a encore terminé garde son estimation. Les pages sont réécrites d'après les chiffres chaque semaine."
       ]
     }
   },
@@ -467,5 +469,5 @@
       }
     }
   },
-  "source_rev": "9426c8e05eb9a9fa84c6b2848c577247d131bd11"
+  "source_rev": "a7077537822f51243e0bee59e663fe612fa4044e"
 }

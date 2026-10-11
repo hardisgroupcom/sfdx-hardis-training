@@ -27,7 +27,7 @@ depends_on:
 
 **Niveau** : 3 Release Manager
 
-**Durée** : ~45 min
+**Durée** : ~2 h 55<!-- observed --> (observé : médiane 2 h 58, 1 participant)<!-- /observed -->
 
 **Vous allez** : lire correctement un log de déploiement, relire une Pull Request dont le contrôle
 échoue sur un champ qui est pourtant dans son diff et trouver le fichier qui le cache, puis
