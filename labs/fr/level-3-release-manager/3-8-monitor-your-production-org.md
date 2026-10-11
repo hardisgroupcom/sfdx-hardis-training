@@ -5,7 +5,7 @@ description: "Mettez en place le monitoring nocturne sfdx-hardis sur votre org S
 level: 3
 lab: 8
 lang: fr
-source_rev: "50e27eb696648034155381ef45718b07ff21813f"
+source_rev: "3219bbc355f39836e8b85079b90658946e978f2f"
 screenshots:
   - annotated/vscode/org-monitoring--not-a-monitoring-repo
   - annotated/vscode/monitoring-config--what-it-watches
@@ -42,11 +42,18 @@ Le monitoring est la part du métier de release manager qui se joue quand rien n
 
 Ce qu'il vous donne, chaque nuit, tient en trois choses, et aucune n'est un fichier de log à fouiller :
 
-| Quoi                | Où vous le lisez                                                                                                                        |
-|---------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| **Une sauvegarde**  | L'historique git du repository de monitoring : chaque changement fait en production, daté                                               |
-| **Des indicateurs** | Un par contrôle : un nombre et une sévérité, avec un fichier de rapport derrière. Utilisateurs inactifs, limites, tests en échec        |
-| **Des alertes**     | Les indicateurs qui ont dépassé une sévérité que vous avez choisie, envoyés chez vous : un message dans un canal d'équipe, ou un e-mail |
+| Quoi                               | Où vous le lisez                                                                                                                        |
+|------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| **Une sauvegarde des métadonnées** | L'historique git du repository de monitoring : chaque changement fait au paramétrage de la production, daté                             |
+| **Des indicateurs**                | Un par contrôle : un nombre et une sévérité, avec un fichier de rapport derrière. Utilisateurs inactifs, limites, tests en échec        |
+| **Des alertes**                    | Les indicateurs qui ont dépassé une sévérité que vous avez choisie, envoyés chez vous : un message dans un canal d'équipe, ou un e-mail |
+
+La sauvegarde est une sauvegarde des **métadonnées** : objets, champs, flows, Apex, permission sets,
+mises en page, la façon dont l'org est construite. Ce n'est **pas une sauvegarde des données**. Aucun
+compte, aucun contact, aucun enregistrement d'installation ne s'y trouve, et elle n'en restaurera
+jamais un. Perdre des enregistrements est un autre risque, couvert par un outil de sauvegarde de
+données, et une équipe qui entend "la production est sauvegardée toutes les nuits" doit savoir de
+laquelle des deux on parle.
 
 Les alertes sont la façon dont le monitoring se lit au quotidien : personne n'ouvre un rapport tous
 les matins, et un message qui arrive est lu. Sur un vrai projet elles partent vers **Slack,
@@ -210,7 +217,7 @@ N'attendez pas cette nuit. Le workflow, **Org Monitoring sfdx-hardis**, est plan
 L'exécution apparaît dans la liste quelques secondes plus tard : cliquez dessus pour la suivre.
 
 Elle prend un moment, l'essentiel étant la sauvegarde de l'org. Quand elle se termine, le repository
-contient une sauvegarde complète des sources de la production et un jeu de rapports.
+contient une sauvegarde complète des sources de la production, ses métadonnées et aucun de ses enregistrements et un jeu de rapports.
 
 ### 5. Lire le premier rapport
 
@@ -394,7 +401,7 @@ Documentation des commandes : [hardis:org:configure:monitoring](https://sfdx-har
 - Un second repository, créé par vous, avec une exécution du workflow **Org Monitoring sfdx-hardis** : la
   sauvegarde, les tests Apex, MegaLinter et le job Monitoring tous au vert
 - La limite `ActiveScratchOrgs` à 100 % dans le rapport, ce que l'exécution verte ne vous a pas dit
-- Une sauvegarde complète des sources de `helios-prod` commitée dedans
+- Une sauvegarde complète des métadonnées de `helios-prod` commitée dedans : ses sources, pas ses enregistrements
 - Un premier rapport que vous avez lu et trié, aussi court soit-il
 - Un e-mail de la première exécution dans votre boîte, dont l'objet commence par `[sfdx-hardis]`,
   avec le rapport des limites de l'org en pièce jointe

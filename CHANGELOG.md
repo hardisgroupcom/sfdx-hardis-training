@@ -5,7 +5,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 
 ## 2026-10-12
 
-- Lab 3.8 says what monitoring gives you (a backup, indicators, alerts) and where each one is read. You now receive a real alert by email from the first run, and the lab says that a real project sends them to Slack, Microsoft Teams or Google Chat.
+- Lab 3.8 says what monitoring gives you (a metadata backup, which is not a data backup, indicators and alerts) and where each one is read. You now receive a real alert by email from the first run, and the lab says that a real project sends them to Slack, Microsoft Teams or Google Chat.
 - Lab 3.8: new troubleshooting entry for an email that does not arrive.
 
 ## 2026-10-11
