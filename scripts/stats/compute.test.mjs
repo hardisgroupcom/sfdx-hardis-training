@@ -215,7 +215,7 @@ test("a median under the minimum sample is not published", () => {
 test("a page announces the observed time, and the estimate where nobody was observed", () => {
   const estimates = { "1.1": 15, "1.2": 30, "1.3": 10, "1.4": 15, "2.1": 15, "2.2": 25, "2.3": 30, "2.9": 30, "3.1": 50, "3.2": 25 };
   const stats = {
-    labs: [{ lab: "1.3", medianMinutes: 14 }, { lab: "1.4", medianMinutes: null }],
+    labs: [{ lab: "1.3", medianMinutes: 14, sample: 6 }, { lab: "1.4", medianMinutes: null }, { lab: "2.3", medianMinutes: 115, sample: 1 }],
     segments: [
       { labs: ["1.3", "1.4"], medianMinutes: 40 },
       { labs: ["2.1", "2.2"], medianMinutes: 55, fastestMinutes: 28, sample: 14 },
@@ -242,7 +242,7 @@ test("a page announces the observed time, and the estimate where nobody was obse
   assert.deepEqual(times.labs["1.4"], { minutes: 20, observed: true }, "its share of the segment: 40 x 15 / 25 is 24");
   assert.deepEqual(times.labs["2.1"], { minutes: 20, observed: true });
   assert.deepEqual(times.labs["2.2"], { minutes: 30, observed: true }, "34 is announced as 30, never 35");
-  assert.deepEqual(times.labs["2.3"], { minutes: 55, observed: true }, "the median of a segment that is this lab alone");
+  assert.deepEqual(times.labs["2.3"], { minutes: 55, observed: true }, "the median of eleven learners, not the 115 minutes of the one who has receipts");
   assert.deepEqual(times.labs["2.9"], { minutes: 30, observed: false }, "too few learners: the estimate");
   assert.deepEqual(times.labs["1.1"], { minutes: 15, observed: false }, "never measured: the estimate");
   // 15 + 30 + 14 + 24 is 83, and 55 + 56 + 30 is 141: a level is rounded down to a quarter of an hour

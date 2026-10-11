@@ -40,10 +40,12 @@
     "labsPair": "Labs {first} and {last}",
     "percent": "{value}%",
     "notEnough": "not enough data yet",
-    "observed": "(observed: median {median}, {sample} learners{fastest})",
+    "observed": "(observed: median {median}, {learners}{fastest})",
+    "learnerOne": "1 learner",
+    "learnerMany": "{sample} learners",
     "fastest": ", fastest {time}",
-    "observedTogether": "({labs} observed together: median {median}, {sample} learners{fastest})",
-    "observedLevel": "Observed on {labs}: median {median}, {sample} learners{fastest}.",
+    "observedTogether": "({labs} observed together: median {median}, {learners}{fastest})",
+    "observedLevel": "Observed on {labs}: median {median}, {learners}{fastest}.",
     "empty": "No numbers yet. They are read once a week, and the first reading has not happened.",
     "funnel": {
       "heading": "Started and completed",
@@ -61,7 +63,7 @@
     "time": {
       "heading": "Time spent",
       "intro": [
-        "The median time of the learners who went through, next to the estimate each lab was written with. A figure appears once {minSample} learners are behind it, and from then on it is the time the lab page announces."
+        "The median time of the learners who went through, next to the estimate each lab was written with. It is the time the lab page announces as soon as one learner went through, and the last column says how many they were: with one or two, it is somebody's afternoon more than a statistic."
       ],
       "levelColumns": [
         "Level",
@@ -91,7 +93,7 @@
         "",
         "The fastest is the fastest time somebody could have done the lab in. A figure under five minutes, or under a quarter of the median, is two labs checked in a row and is set aside. The slowest is not shown: it is somebody who was interrupted.",
         "",
-        "The time a lab page announces is this median, rounded down to five minutes, and the time of a level is rounded down to a quarter of an hour. A lab measured with others takes its share of their time, and a lab with too few learners keeps its estimate. The pages are rewritten from the figures every week."
+        "The time a lab page announces is this median, rounded down to five minutes, and the time of a level is rounded down to a quarter of an hour. A lab measured with others takes its share of their time, and a lab nobody went through yet keeps its estimate. The pages are rewritten from the figures every week."
       ]
     }
   },

@@ -15,7 +15,7 @@
  * The figures are stats/course-stats.json, which scripts/stats/course-stats.mjs
  * writes once a week, and the rules are scripts/stats/lab-times.mjs: the median,
  * rounded down to five minutes for a lab and to a quarter of an hour for a
- * level. A lab too few learners went through takes the estimate
+ * level. A lab no learner went through yet takes the estimate
  * training-universe.json gives it, which is where the estimates live now that
  * the pages follow the learners.
  *
@@ -162,7 +162,7 @@ function observedIn(locale) {
       labs,
       fastest: observation.fastest === null ? "" : fill(w.fastest, { time: duration(observation.fastest) }),
       median: duration(observation.median),
-      sample: observation.sample
+      learners: observation.sample === 1 ? w.learnerOne : fill(w.learnerMany, { sample: observation.sample })
     };
     if (own.length > 1) {
       return fill(w.observedLevel, values);

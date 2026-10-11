@@ -13,8 +13,13 @@
 import { SEGMENTS, MEASURED, LEVEL_STARTED, LEVELS, segmentKey } from "./markers.mjs";
 
 export const IDLE_CUTOFF_MINUTES = 45;
-/** Under this many learners a median is one person's afternoon, and is not shown. */
-export const MIN_SAMPLE = 5;
+/**
+ * How many learners a figure needs. One: every learner who went through a lab
+ * counts, because the labs few people reach are the ones nobody would have a
+ * figure for otherwise. The page gives the number of learners next to each
+ * figure, which is what says how far to trust it.
+ */
+export const MIN_SAMPLE = 1;
 
 const MINUTE = 60 * 1000;
 const time = (iso) => (iso ? Date.parse(iso) : NaN);
@@ -289,10 +294,10 @@ export function plausibleFastest(values) {
  * still given, so the page can say how far from a figure it is.
  */
 export function aggregate(learners, announced, { generatedAt, cutoffMinutes = IDLE_CUTOFF_MINUTES, minSample = MIN_SAMPLE } = {}) {
-  // The median and the fastest learner, or neither while too few learners are
-  // behind them
+  // The median and the fastest learner, or neither while nobody is behind
+  // them. One learner has a time and no fastest: it would be the same figure.
   const shown = (values) => (values.length >= minSample
-    ? { medianMinutes: median(values), fastestMinutes: plausibleFastest(values) }
+    ? { medianMinutes: median(values), fastestMinutes: values.length > 1 ? plausibleFastest(values) : null }
     : { medianMinutes: null, fastestMinutes: null });
 
   const levels = LEVELS.map((level) => {

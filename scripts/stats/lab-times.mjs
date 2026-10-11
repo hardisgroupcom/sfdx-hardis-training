@@ -6,17 +6,18 @@
  * scripts/build/lab-times.mjs writes them into the markdown under labs/, in
  * every language, from stats/course-stats.json, and the weekly workflow commits
  * the result: nobody edits a time to follow the figures. The estimates stay in
- * training-universe.json, which is where a lab too few learners went through
+ * training-universe.json, which is where a lab no learner went through yet
  * takes its time from.
  *
  * For one lab, in this order:
- *   1. its own median, from the learners whose receipts time each lab
+ *   1. its own median, from the learners whose receipts time each lab, when
+ *      enough of them stand behind it (see OWN_MEDIAN_FROM)
  *   2. the median of its segment, when the segment is that lab alone
  *   3. its share of the median of a segment it is measured with, in proportion
  *      to the estimates of the labs of that segment
  *   4. its estimate
- * The first three need the minimum sample, which course-stats.mjs applies by
- * leaving a median out.
+ * The first three need a median, which course-stats.mjs gives as soon as one
+ * learner went through.
  *
  * An observed time is rounded down, never up: to five minutes for a lab and to
  * a quarter of an hour for a level. 38 minutes observed is announced as 35, and
@@ -40,6 +41,19 @@ const OBSERVED_START = "<!-- observed -->";
 const OBSERVED_END = "<!-- /observed -->";
 /** The sentence a previous run wrote after a time, when there is one. */
 const OBSERVED = `(?:${OBSERVED_START}.*?${OBSERVED_END})?`;
+
+/**
+ * A lab has two measures: its own median, from the few learners whose receipts
+ * time each lab, and the median of its segment, from everybody who merged the
+ * Pull Request that ends it. The lab's own is the finer one, and it wins from
+ * this many learners up, or when it has at least as many as the segment. Under
+ * that, one slow learner with receipts would overrule a figure fourteen others
+ * stand behind.
+ */
+const OWN_MEDIAN_FROM = 5;
+
+/** A time as a lab writes it, "25 min" or "2 h 10": a lab can take more than an hour. */
+const A_DURATION = "(?:\\d+ h(?: \\d+)?|\\d+ min)";
 
 const LAB_STEP = 5;
 const LEVEL_STEP = 15;
@@ -79,7 +93,8 @@ export function announcedTimes(stats, estimates) {
     const segment = segments.find((row) => row.labs.includes(lab));
     let observed = null;
     let observation = null;
-    if (own.has(lab)) {
+    const mine = own.get(lab);
+    if (mine && (mine.sample >= OWN_MEDIAN_FROM || !segment || mine.sample >= segment.sample)) {
       observed = own.get(lab).medianMinutes;
       observation = observationOf(own.get(lab), [lab]);
     } else if (segment && segment.labs.length === 1) {
@@ -151,11 +166,11 @@ export function withAnnouncedTimes(content, rel, times, universe, describe = () 
     let out = content;
     for (const lab of level.labs) {
       const id = `${level.level}.${lab.lab}`;
-      const row = new RegExp(`^(\\| \\[${id.replace(".", "\\.")}\\]\\(.*\\| )\\d+ min( *\\|)[ \\t]*$`, "m");
+      const row = new RegExp(`^(\\| \\[${id.replace(".", "\\.")}\\]\\(.*\\| )${A_DURATION}( *\\|)[ \\t]*$`, "m");
       if (!row.test(out)) {
         throw new Error(`${rel}: no row announcing the time of Lab ${id}`);
       }
-      out = out.replace(row, `$1${times.labs[id].minutes} min$2`);
+      out = out.replace(row, `$1${duration(times.labs[id].minutes)}$2`);
     }
     const total = new RegExp(`^(\\*\\*[^*\\n]+\\*\\* ?: [^\\d\\n]{0,12})\\d+ h(?: \\d+)?([^<\\n]*)${OBSERVED}(.*)$`, "m");
     if (!total.test(out)) {
@@ -171,10 +186,10 @@ export function withAnnouncedTimes(content, rel, times, universe, describe = () 
   if (!lab) {
     return content;
   }
-  const line = new RegExp(`^(\\*\\*[^*\\n]+\\*\\* ?: ~)\\d+( min[^<\\n]*)${OBSERVED}(.*)$`, "m");
+  const line = new RegExp(`^(\\*\\*[^*\\n]+\\*\\* ?: ~)${A_DURATION}([^<\\n]*)${OBSERVED}(.*)$`, "m");
   if (!line.test(content)) {
     throw new Error(`${rel}: no line announcing the time of the lab`);
   }
   const id = `${level.level}.${lab.lab}`;
-  return content.replace(line, (whole, before, after, rest) => `${before}${times.labs[id].minutes}${after}${said(times.labs[id].observation, [id])}${rest}`);
+  return content.replace(line, (whole, before, after, rest) => `${before}${duration(times.labs[id].minutes)}${after}${said(times.labs[id].observation, [id])}${rest}`);
 }
