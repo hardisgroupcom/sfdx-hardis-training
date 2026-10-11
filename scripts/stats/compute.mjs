@@ -56,11 +56,18 @@ const sumAnnounced = (labs, announced) =>
  * Every moment the repository shows its owner at work, sorted, from the day it
  * was created. Commits that came with the fork are older and are left out, and
  * so are the commits of the course that an update brings in later.
+ *
+ * moments are other times the learner was seen at work: the receipts of Check
+ * my work. They belong here whether or not they are used as the end of a lab.
+ * A lab timed from receipts and the segment it sits in are then measured over
+ * the same gaps, and the labs of a segment add up to it. Left out, a receipt
+ * in the middle of an hour without a commit made two countable half hours of a
+ * gap the segment counted for nothing.
  */
-export function timeline(repo) {
+export function timeline(repo, moments = []) {
   const from = time(repo.createdAt);
   const owner = String(repo.owner || "").toLowerCase();
-  const points = [from];
+  const points = [from, ...moments];
   for (const one of repo.commits || []) {
     if (String(one.author || "").toLowerCase() === owner) {
       points.push(time(one.date));
@@ -127,6 +134,9 @@ export function segmentEnds(repo) {
     if (mine.length === 0) {
       return null;
     }
+    if (segment.end.first) {
+      return mine[0];
+    }
     const next = all.slice(index + 1).find((times) => times.length > 0 && times[0] > mine[0]);
     const before = next ? mine.filter((at) => at < next[0]) : mine;
     return before.length > 0 ? before[before.length - 1] : mine[0];
@@ -172,7 +182,7 @@ const matchesAny = (patterns, names) => names.some((name) => patterns.some((patt
  * the lines of its claims, already parsed.
  */
 export function learnerStats(repo, { badgeLevels = [], receipts = {}, cutoffMinutes = IDLE_CUTOFF_MINUTES } = {}) {
-  const points = timeline(repo);
+  const points = timeline(repo, Object.values(receipts));
   const gitEnds = segmentEnds(repo);
   const names = [...(repo.branches || []), ...(repo.pullRequests || []).map((pr) => pr.head || "")];
 
@@ -230,9 +240,10 @@ function labMinutes(points, receipts, level, levelStart, cutoffMinutes, anchors)
     .sort((a, b) => Number(a.split(".")[1]) - Number(b.split(".")[1]));
   ids.forEach((id, index) => {
     const lab = Number(id.split(".")[1]);
-    const first = index === 0;
+    // Only the first lab of a level runs from where the level before ended
+    const first = index === 0 && lab === 1;
     // A lab with no receipt before it would be given the time of two
-    if (!first && Number(ids[index - 1].split(".")[1]) !== lab - 1) {
+    if (!first && (index === 0 || Number(ids[index - 1].split(".")[1]) !== lab - 1)) {
       return;
     }
     if (anchors.includes(id)) {

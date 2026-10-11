@@ -21,7 +21,7 @@ The median time of the learners who went through, next to the estimate each lab 
 
 | Level | First estimate | Median | Fastest | Learners |
 |---|---|---|---|---|
-| Level 1 - Contributor basics | 1 h 30 | 1 h 10 | 19 min | 21 |
+| Level 1 - Contributor basics | 1 h 30 | 1 h 14 | 19 min | 21 |
 | Level 2 - Contributor advanced | 4 h | not enough data yet |  | 3 |
 | Level 3 - Release Manager | 6 h 55 | not enough data yet |  | 0 |
 
@@ -29,20 +29,20 @@ The median time of the learners who went through, next to the estimate each lab 
 
 | Labs | First estimate | Median | Fastest | Learners |
 |---|---|---|---|---|
-| Labs 1.3 to 1.6 | 1 h 05 | 37 min | 11 min | 22 |
+| Labs 1.3 to 1.6 | 1 h 05 | 48 min | 21 min | 22 |
 | Lab 1.7 | 25 min | 26 min | 9 min | 23 |
 
 ### Level 2 - Contributor advanced
 
 | Labs | First estimate | Median | Fastest | Learners |
 |---|---|---|---|---|
-| Labs 2.1 and 2.2 | 40 min | 55 min | 28 min | 14 |
+| Labs 2.1 and 2.2 | 40 min | 57 min | 28 min | 14 |
 | Lab 2.3 | 30 min | 48 min | 16 min | 12 |
-| Lab 2.4 | 30 min | 47 min | 31 min | 8 |
-| Lab 2.5 | 30 min | 35 min | 20 min | 5 |
+| Lab 2.4 | 30 min | 45 min | 31 min | 9 |
+| Lab 2.5 | 30 min | 30 min | 9 min | 6 |
 | Lab 2.6 | 25 min | 35 min | 21 min | 5 |
 | Lab 2.7 | 35 min | 32 min | 13 min | 5 |
-| Lab 2.8 | 20 min | 27 min | 15 min | 5 |
+| Lab 2.8 | 20 min | 27 min | 16 min | 5 |
 | Lab 2.9 | 30 min | not enough data yet |  | 3 |
 
 ### Lab by lab

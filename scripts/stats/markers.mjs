@@ -23,6 +23,8 @@
 const head = (pattern) => ({ kind: "pullRequest", head: pattern });
 /** A merged Pull Request into this branch. */
 const into = (base, headPattern) => ({ kind: "pullRequest", base, head: headPattern || /./ });
+/** The first time a marker is met, when a later lab meets it again. */
+const first = (marker) => ({ ...marker, first: true });
 /** A commit of the learner on integration whose first line matches. */
 const commit = (pattern) => ({ kind: "commit", message: pattern });
 
@@ -48,7 +50,10 @@ export const SEGMENTS = [
   { level: 3, labs: ["3.3"], end: head(/^training\/mate-us-0(56|62)/i) },
   { level: 3, labs: ["3.4"], end: head(/^training\/mate-us-020/i) },
   { level: 3, labs: ["3.5"], end: into("uat", /^integration$/i) },
-  { level: 3, labs: ["3.6"], end: into("main") },
+  // The first release into main. Lab 3.7 releases into main again, for its
+  // hotfix, before the retrofit that ends it: taking the last one would give
+  // Lab 3.6 most of the time of Lab 3.7.
+  { level: 3, labs: ["3.6"], end: first(into("main")) },
   { level: 3, labs: ["3.7"], end: head(/^retrofit\//i) },
   // Monitoring and the project documentation live in other places than the
   // Pull Requests of this repository

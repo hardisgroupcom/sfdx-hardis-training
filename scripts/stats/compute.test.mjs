@@ -135,6 +135,53 @@ test("receipts taken lab after lab give each lab its time", () => {
   assert.deepEqual(stats.segments["1.3,1.4,1.5,1.6"], { minutes: 41, source: "receipts" });
 });
 
+test("the labs of a segment add up to the segment", () => {
+  // An hour without a commit, and a receipt in the middle of it: the receipt is
+  // a moment the learner was at work, for the segment as much as for the lab
+  const repo = levelOne();
+  repo.pullRequests[0] = merged(1, "features/US-014-panels-required", 1, "11:00", "11:05");
+  repo.pullRequests[1] = merged(2, "features/US-016-crew-notes", 1, "11:25", "11:30");
+  const receipts = parseReceipts([
+    "LAB 1.2 OK  handle=learner  commit=aaaaaaa  2026-10-01T09:06Z",
+    "LAB 1.3 OK  handle=learner  commit=aaaaaaa  2026-10-01T09:40Z",
+    "LAB 1.4 OK  handle=learner  commit=aaaaaaa  2026-10-01T10:10Z",
+    "LAB 1.5 OK  handle=learner  commit=aaaaaaa  2026-10-01T10:40Z",
+    "LAB 1.6 OK  handle=learner  commit=aaaaaaa  2026-10-01T11:06Z",
+    "LAB 1.7 OK  handle=learner  commit=aaaaaaa  2026-10-01T11:31Z"
+  ].join("\n"));
+  const stats = learnerStats(repo, { receipts });
+  const labs = stats.labs["1.3"] + stats.labs["1.4"] + stats.labs["1.5"] + stats.labs["1.6"];
+  assert.equal(labs, stats.segments["1.3,1.4,1.5,1.6"].minutes);
+  assert.equal(labs, 120);
+});
+
+test("a lab whose receipt before it is missing gets no time of its own", () => {
+  const receipts = parseReceipts([
+    "LAB 2.2 OK  handle=learner  commit=aaaaaaa  2026-10-01T11:00Z",
+    "LAB 2.3 OK  handle=learner  commit=aaaaaaa  2026-10-01T11:30Z"
+  ].join("\n"));
+  const repo = levelOne();
+  repo.pullRequests.push(
+    merged(3, "features/US-021-crew-size-warning", 1, "10:50", "10:55"),
+    merged(4, "features/US-024-crew-size-required", 1, "11:20", "11:25")
+  );
+  const stats = learnerStats(repo, { receipts });
+  assert.equal(stats.labs["2.2"], undefined, "it would carry the time of Lab 2.1 as well");
+});
+
+test("a marker met again by a later lab ends its own lab the first time", () => {
+  const repo = levelOne();
+  const toMain = (number, head, day, at) => ({ ...merged(number, head, day, at, at), base: "main" });
+  repo.pullRequests.push(
+    toMain(10, "preprod", 5, "10:00"),
+    toMain(11, "preprod", 6, "15:00"),
+    merged(12, "retrofit/US-046-needs-reinspection", 6, "16:00", "16:30")
+  );
+  const ends = segmentEnds(repo);
+  const index = SEGMENTS.findIndex((segment) => segment.labs.includes("3.6"));
+  assert.equal(ends[index], Date.parse(at(5, "10:00")), "the release, not the hotfix that follows it");
+});
+
 test("receipts that all carry the same minute fall back to git", () => {
   const receipts = parseReceipts(["1.2", "1.3", "1.4", "1.5", "1.6", "1.7"]
     .map((lab) => `LAB ${lab} OK  handle=learner  commit=aaaaaaa  2026-10-01T10:15Z`).join("\n"));

@@ -99,6 +99,7 @@ query ($owner: String!, $name: String!) {
     isFork
     refs(refPrefix: "refs/heads/", first: 100) { nodes { name } }
     pullRequests(first: 100, orderBy: { field: CREATED_AT, direction: ASC }) {
+      pageInfo { hasNextPage }
       nodes {
         number
         headRefName
@@ -113,6 +114,7 @@ query ($owner: String!, $name: String!) {
       target {
         ... on Commit {
           history(first: 100) {
+            pageInfo { hasNextPage endCursor }
             nodes { committedDate messageHeadline author { user { login } } }
           }
         }
@@ -121,20 +123,71 @@ query ($owner: String!, $name: String!) {
   }
 }`;
 
+const HISTORY_QUERY = `
+query ($owner: String!, $name: String!, $after: String!) {
+  repository(owner: $owner, name: $name) {
+    integration: ref(qualifiedName: "refs/heads/integration") {
+      target {
+        ... on Commit {
+          history(first: 100, after: $after) {
+            pageInfo { hasNextPage endCursor }
+            nodes { committedDate messageHeadline author { user { login } } }
+          }
+        }
+      }
+    }
+  }
+}`;
+
+/** The most pages of history read for one repository: 2,000 commits. */
+const MAX_HISTORY_PAGES = 20;
+
+/**
+ * A GraphQL call. GitHub answers 200 to a query it could not run, with the
+ * reason in "errors": a rate limit, a timeout. Only "not found" means the
+ * repository is gone, and anything else has to stop the run: counted as a
+ * missing repository, it would quietly take a learner out of every figure.
+ */
+async function graphql(token, query, variables) {
+  const answer = await request(token, `${API}/graphql`, { method: "POST", body: JSON.stringify({ query, variables }) });
+  const errors = answer.errors || [];
+  if (errors.some((error) => error.type !== "NOT_FOUND")) {
+    throw new Error(`GitHub could not read ${variables.owner}/${variables.name}: ${errors.map((error) => error.type || error.message).join(", ")}`);
+  }
+  return answer.data || {};
+}
+
 /**
  * One learner repository, in the shape compute.mjs reads. Null when it is
  * gone or went private: the learner keeps their badge, and leaves the figures.
  */
 export async function readRepository(token, { owner, name }) {
-  const answer = await request(token, `${API}/graphql`, {
-    method: "POST",
-    body: JSON.stringify({ query: REPOSITORY_QUERY, variables: { owner, name } })
-  });
-  const repository = answer.data && answer.data.repository;
+  const { repository } = await graphql(token, REPOSITORY_QUERY, { owner, name });
   if (!repository) {
     return null;
   }
+  if (repository.pullRequests.pageInfo.hasNextPage) {
+    console.warn(`${owner}/${name} has more than 100 Pull Requests: the later ones are not read.`);
+  }
   const history = repository.integration && repository.integration.target && repository.integration.target.history;
+  // The commit that starts the clock is one of the first of the fork, and a
+  // fork that took an update of the course has hundreds of commits above it.
+  // So the history is read back to the day the repository was created.
+  const createdAt = Date.parse(repository.createdAt);
+  let page = history;
+  for (let pages = 1; page && page.pageInfo.hasNextPage && pages < MAX_HISTORY_PAGES; pages++) {
+    const oldest = page.nodes[page.nodes.length - 1];
+    if (!oldest || Date.parse(oldest.committedDate) < createdAt) {
+      break;
+    }
+    const more = await graphql(token, HISTORY_QUERY, { owner, name, after: page.pageInfo.endCursor });
+    page = more.repository && more.repository.integration && more.repository.integration.target
+      ? more.repository.integration.target.history
+      : null;
+    if (page) {
+      history.nodes.push(...page.nodes);
+    }
+  }
   return {
     owner,
     name,
