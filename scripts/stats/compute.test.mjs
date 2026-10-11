@@ -239,12 +239,19 @@ test("the observed times are written into a lab, a level page and the home page,
     levelObservations: { 2: { labs: ["2.1", "2.2"], fastest: 40, slowest: 120, median: 80, sample: 5 } }
   };
   const describe = (observation, own) => `[${observation.labs.join("+")} for ${own.length}: ${observation.fastest}-${observation.slowest}]`;
-  assert.equal(
-    withAnnouncedTimes("**Time**: ~15 min, most of it waiting\n", "level-2/2-1-first.md", observed, universe, describe),
-    "**Time**: ~20 min, most of it waiting [2.1 for 1: 10-50]\n"
-  );
+  const once = withAnnouncedTimes("**Time**: ~15 min, most of it waiting\n", "level-2/2-1-first.md", observed, universe, describe);
+  assert.equal(once, "**Time**: ~20 min, most of it waiting<!-- observed --> [2.1 for 1: 10-50]<!-- /observed -->\n");
+  // The page is committed, so the next run reads what this one wrote: it has to
+  // replace its own sentence, and to take it away when the figures go
+  assert.equal(withAnnouncedTimes(once, "level-2/2-1-first.md", observed, universe, describe), once);
+  assert.equal(withAnnouncedTimes(once, "level-2/2-1-first.md", times, universe, describe), "**Time**: ~20 min, most of it waiting\n");
   assert.equal(withAnnouncedTimes("**Time**: ~30 min\n", "level-2/2-2-second.md", observed, universe, describe), "**Time**: ~55 min\n");
-  assert.ok(withAnnouncedTimes(index, "level-2/index.md", observed, universe, describe).startsWith("**Durée** : environ 1 h 15, en une fois. [2.1+2.2 for 2: 40-120]\n"));
+
+  const levelOnce = withAnnouncedTimes(index, "level-2/index.md", observed, universe, describe);
+  assert.ok(levelOnce.startsWith("**Durée** : environ 1 h 15, en une fois.<!-- observed --> [2.1+2.2 for 2: 40-120]<!-- /observed -->\n"));
+  assert.equal(withAnnouncedTimes(levelOnce, "level-2/index.md", observed, universe, describe), levelOnce);
+  // The blank line after a table is not part of its last row
+  assert.equal(withAnnouncedTimes(`${index}\n\nAfter the table.`, "level-2/index.md", times, universe).split("\n").slice(-2).join("|"), "|After the table.");
 
   assert.equal(withAnnouncedTimes("**Time**: whenever", "help.md", times, universe), "**Time**: whenever");
   assert.throws(() => withAnnouncedTimes("no time here", "level-2/2-1-first.md", times, universe), /no line announcing/);

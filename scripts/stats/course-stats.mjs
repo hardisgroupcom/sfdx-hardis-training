@@ -83,7 +83,7 @@ async function main() {
     learners.push({ ...stats, repo: read, claims: mine.length, needsWork: mine.filter((claim) => claim.needsWork).length });
   }
 
-  const stats = aggregate(learners, announcedByLab(u, announcedTime), { cutoffMinutes: IDLE_CUTOFF_MINUTES, minSample: MIN_SAMPLE });
+  const stats = aggregate(learners, announcedByLab(u), { cutoffMinutes: IDLE_CUTOFF_MINUTES, minSample: MIN_SAMPLE });
   const problems = validate(stats);
   if (problems.length > 0) {
     console.error(`The statistics are not publishable:\n  ${problems.join("\n  ")}`);
@@ -173,16 +173,6 @@ function check() {
     process.exit(1);
   }
   console.log("stats/course-stats.json has the shape the site reads and names nobody, and STATS.md says the same.");
-}
-
-/**
- * The time a lab announces: the Time line of its English page, which is what a
- * learner reads before starting, and the universe when the page has none.
- */
-function announcedTime(level, lab) {
-  const file = path.join(ROOT, "labs", "en", level.slug, `${lab.slug}.md`);
-  const line = fs.existsSync(file) ? fs.readFileSync(file, "utf8").match(/^\*\*Time\*\*:\s*(.+)$/m) : null;
-  return line ? line[1] : lab.time;
 }
 
 /** Who is left out: the maintainers and the accounts the end to end tests use. */

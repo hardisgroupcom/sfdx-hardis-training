@@ -173,17 +173,21 @@ workflow: never edit it by hand, and re-render it when the words of the page cha
 end to end tests run under. `scripts/stats/markers.mjs` says which Pull Request ends which lab: a
 lab whose User Story or branch changes has to change there too.
 
-The times the site announces come from the same file. The `**Time**` line of a lab, the table and
-the total of a level page and the table of the home page keep an estimate in the markdown, and
-`scripts/build/site.mjs` writes the observed time over it at every build, in every language: the
-median, rounded down to five minutes for a lab and to a quarter of an hour for a level, followed by
-the fastest and the slowest learner. So nobody edits a time to follow the figures, and the markdown
-under `labs/` only says what a lab was first expected to take. A lab fewer than five learners went
-through shows that estimate. `scripts/stats/lab-times.mjs` holds the rules.
+The times the pages announce come from the same file. `scripts/build/lab-times.mjs` writes them
+into the markdown under `labs/`, in every language, and the weekly workflow commits the result, so
+a change of time is a diff anybody can read: the `**Time**` line of a lab, the rows and the total of
+a level page, the table of the home page. It is the median, rounded down to five minutes for a lab
+and to a quarter of an hour for a level, followed by the fastest and the slowest learner between
+two `<!-- observed -->` comments. Never edit a time by hand to follow the figures: the next run
+overwrites it. The estimate a lab was written with lives in `training-universe.json` (`time`), and
+is what a lab fewer than five learners went through announces. `scripts/stats/lab-times.mjs` holds
+the rules.
 
 ```bash
 node scripts/stats/course-stats.mjs            # read GitHub, write stats/course-stats.json and STATS.md
 node scripts/stats/course-stats.mjs --render   # no network: rewrite STATS.md after changing its words
+node scripts/build/lab-times.mjs               # no network: write the observed times into the lab pages
+node scripts/build/lab-times.mjs --stamp       # after committing labs/en: stamp the translations it rewrote
 node scripts/stats/course-stats.mjs --details  # and one row per learner, in hardis-report/course-stats/
 node --test scripts/stats/compute.test.mjs     # the arithmetic, on made-up repositories
 ```

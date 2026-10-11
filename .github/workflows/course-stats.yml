@@ -6,6 +6,10 @@
 # the median time of the labs. The site build makes the Statistics page from it,
 # and STATS.md is the same page for a reader of the repository.
 #
+# Then writes the observed times into the markdown of the labs, in every
+# language, so the pages announce what learners take and the change is a diff
+# anybody can read.
+#
 # THREE RULES. Read them before changing anything in this file.
 #
 #  1. Only what is public is read, with the token of this workflow and nothing
@@ -62,18 +66,28 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: node scripts/stats/course-stats.mjs
 
+      - name: Write the observed times into the pages
+        run: node scripts/build/lab-times.mjs
+
       - name: Commit the figures
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add stats/course-stats.json STATS.md
+          git add stats/course-stats.json STATS.md labs
           if git diff --cached --quiet; then
             echo "The figures did not change."
             exit 0
           fi
           git commit -m "stats: course statistics of $(date -u +%Y-%m-%d)"
+          # The translations this run rewrote still say what their English page
+          # says: they are stamped with the commit above, which is why it comes first
+          node scripts/build/lab-times.mjs --stamp
+          git add labs
+          if ! git diff --cached --quiet; then
+            git commit -m "stats: translations stamped with their English page"
+          fi
           # A badge claim may have committed while this ran
           pushed=false
           for attempt in 1 2 3 4 5; do

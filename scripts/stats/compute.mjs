@@ -34,8 +34,9 @@ export function parseAnnounced(text) {
 /**
  * The announced minutes of each lab, keyed "1.3".
  *
- * timeOf gives the text a lab announces its time with. The one that counts is
- * the Time line of the lab page, which is what a learner reads before starting.
+ * These are the estimates: what a lab was expected to take when it was
+ * written. training-universe.json keeps them, because the page of a lab
+ * announces what learners were observed to take, once enough of them did.
  */
 export function announcedByLab(universe, timeOf = (level, lab) => lab.time) {
   const out = {};

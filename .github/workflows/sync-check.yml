@@ -62,3 +62,4 @@ jobs:
         run: |
           node --test scripts/stats/compute.test.mjs
           node scripts/stats/course-stats.mjs --check
+          node scripts/build/lab-times.mjs --check

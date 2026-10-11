@@ -25,7 +25,7 @@ depends_on:
 
 **Level**: 1 Contributor basics
 
-**Time**: ~10 min
+**Time**: ~10 min<!-- observed --> (observed: 0 min to 1 h 17, median 11 min, 10 learners)<!-- /observed -->
 
 **You will**: pick up your first ticket and land on a clean branch, pointed at your dev org.
 

@@ -23,8 +23,6 @@ import { fileURLToPath } from "url";
 import { PILL_PALETTE } from "./annotate.mjs";
 import { strings, universeText, fill } from "../lib/strings.mjs";
 import { backlogPage, storyPage, badgesPage, badgePage, statsPage } from "../lib/pages.mjs";
-import { announcedByLab } from "../stats/compute.mjs";
-import { announcedTimes, withAnnouncedTimes, duration } from "../stats/lab-times.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..", "..");
@@ -43,15 +41,10 @@ const courseStats = (() => {
   try {
     return JSON.parse(fs.readFileSync(file, "utf8"));
   } catch (error) {
-    console.warn(`stats/course-stats.json could not be read, the pages keep their estimates: ${error.message}`);
+    console.warn(`stats/course-stats.json could not be read, the Statistics page says there are no numbers: ${error.message}`);
     return null;
   }
 })();
-
-// The time each page announces: what learners were observed to take, where
-// enough of them went through, and the estimate of the lab everywhere else.
-// The markdown under labs/ keeps the estimate; the site follows the learners.
-const labTimes = announcedTimes(courseStats, announcedByLab(universe));
 
 // The language the site leads with: its home page is the home page of the site,
 // and its backlog, stories and badges keep the URLs the outside world holds.
@@ -225,35 +218,6 @@ function foldTroubleshooting(content, heading) {
   });
 }
 
-/**
- * What was observed behind a time, as a sentence of this language: the fastest
- * learner, the slowest, the median and how many they were. A lab timed alone
- * says so in a parenthesis, a lab timed with its neighbours names them, and a
- * level names the labs its figure covers.
- */
-function observedIn(locale) {
-  const w = strings(locale).stats;
-  return (observation, own) => {
-    if (observation.fastest === null || observation.slowest === null) {
-      return "";
-    }
-    const labs = observation.labs.length === 1
-      ? fill(w.lab, { lab: observation.labs[0] })
-      : fill(observation.labs.length === 2 ? w.labsPair : w.labs, { first: observation.labs[0], last: observation.labs[observation.labs.length - 1] });
-    const values = {
-      labs,
-      fastest: duration(observation.fastest),
-      slowest: duration(observation.slowest),
-      median: duration(observation.median),
-      sample: observation.sample
-    };
-    if (own.length > 1) {
-      return fill(w.observedLevel, values);
-    }
-    return fill(observation.labs.length === 1 ? w.observed : w.observedTogether, values);
-  };
-}
-
 function prepareLab(locale) {
   const heading = TROUBLESHOOTING[locale];
   if (!heading) {
@@ -262,12 +226,8 @@ function prepareLab(locale) {
       '"If it goes wrong" sections cannot be folded. Add the translated heading there.'
     );
   }
-  const root = path.join(ROOT, "labs", locale);
-  return (content, source, target) => {
-    const rel = path.relative(root, source).split(path.sep).join("/");
-    const timed = withAnnouncedTimes(content.replace(/\r\n/g, "\n"), rel, labTimes, universe, observedIn(locale));
-    return colorPillReferences(foldTroubleshooting(rewriteEscapingLinks(timed, source, target), heading));
-  };
+  return (content, source, target) =>
+    colorPillReferences(foldTroubleshooting(rewriteEscapingLinks(content, source, target), heading));
 }
 
 fs.rmSync(OUT, { recursive: true, force: true });

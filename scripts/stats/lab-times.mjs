@@ -3,11 +3,11 @@
  * take, wherever enough of them went through, and the estimate the lab was
  * written with everywhere else.
  *
- * The markdown under labs/ keeps the estimate, and nobody edits it to follow
- * the figures. scripts/build/site.mjs writes the observed time over it on the
- * way into the site, in every language, from stats/course-stats.json: the pages
- * follow the learners at every build, and a week with new figures needs no
- * commit to any lab.
+ * scripts/build/lab-times.mjs writes them into the markdown under labs/, in
+ * every language, from stats/course-stats.json, and the weekly workflow commits
+ * the result: nobody edits a time to follow the figures. The estimates stay in
+ * training-universe.json, which is where a lab too few learners went through
+ * takes its time from.
  *
  * For one lab, in this order:
  *   1. its own median, from the learners whose receipts time each lab
@@ -31,6 +31,11 @@
  * timed together with its neighbours says so rather than inventing its share
  * of their extremes.
  */
+
+const OBSERVED_START = "<!-- observed -->";
+const OBSERVED_END = "<!-- /observed -->";
+/** The sentence a previous run wrote after a time, when there is one. */
+const OBSERVED = `(?:${OBSERVED_START}.*?${OBSERVED_END})?`;
 
 const LAB_STEP = 5;
 const LEVEL_STEP = 15;
@@ -113,9 +118,11 @@ export function announcedTimes(stats, estimates) {
 export function withAnnouncedTimes(content, rel, times, universe, describe = () => "") {
   const levelOf = (slug) => universe.levels.find((level) => level.slug === slug);
   const [folder, file] = rel.split("/");
+  // What was observed sits between two comments nobody sees on the page, so
+  // the next run finds the sentence it wrote and replaces it
   const said = (observation, own) => {
     const text = observation ? describe(observation, own) : "";
-    return text ? ` ${text}` : "";
+    return text ? `${OBSERVED_START} ${text}${OBSERVED_END}` : "";
   };
 
   // The home page: one row per level, with the time of the level
@@ -141,19 +148,19 @@ export function withAnnouncedTimes(content, rel, times, universe, describe = () 
     let out = content;
     for (const lab of level.labs) {
       const id = `${level.level}.${lab.lab}`;
-      const row = new RegExp(`^(\\| \\[${id.replace(".", "\\.")}\\]\\(.*\\| )\\d+ min( *\\|)\\s*$`, "m");
+      const row = new RegExp(`^(\\| \\[${id.replace(".", "\\.")}\\]\\(.*\\| )\\d+ min( *\\|)[ \\t]*$`, "m");
       if (!row.test(out)) {
         throw new Error(`${rel}: no row announcing the time of Lab ${id}`);
       }
       out = out.replace(row, `$1${times.labs[id].minutes} min$2`);
     }
-    const total = /^(\*\*[^*\n]+\*\* ?: [^\d\n]{0,12})\d+ h(?: \d+)?(.*)$/m;
+    const total = new RegExp(`^(\\*\\*[^*\\n]+\\*\\* ?: [^\\d\\n]{0,12})\\d+ h(?: \\d+)?([^<\\n]*)${OBSERVED}(.*)$`, "m");
     if (!total.test(out)) {
       throw new Error(`${rel}: no line announcing the time of the level`);
     }
     const all = level.labs.map((lab) => `${level.level}.${lab.lab}`);
     const observed = said((times.levelObservations || {})[level.level], all);
-    return out.replace(total, (whole, before, after) => `${before}${duration(times.levels[level.level])}${after}${observed}`);
+    return out.replace(total, (whole, before, after, rest) => `${before}${duration(times.levels[level.level])}${after}${observed}${rest}`);
   }
 
   // A lab
@@ -161,10 +168,10 @@ export function withAnnouncedTimes(content, rel, times, universe, describe = () 
   if (!lab) {
     return content;
   }
-  const line = /^(\*\*[^*\n]+\*\* ?: ~)\d+( min.*)$/m;
+  const line = new RegExp(`^(\\*\\*[^*\\n]+\\*\\* ?: ~)\\d+( min[^<\\n]*)${OBSERVED}(.*)$`, "m");
   if (!line.test(content)) {
     throw new Error(`${rel}: no line announcing the time of the lab`);
   }
   const id = `${level.level}.${lab.lab}`;
-  return content.replace(line, (whole, before, after) => `${before}${times.labs[id].minutes}${after}${said(times.labs[id].observation, [id])}`);
+  return content.replace(line, (whole, before, after, rest) => `${before}${times.labs[id].minutes}${after}${said(times.labs[id].observation, [id])}${rest}`);
 }

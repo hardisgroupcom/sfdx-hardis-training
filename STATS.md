@@ -67,6 +67,6 @@ Labs 1.1 and 1.2 install the tools and create the orgs before the repository exi
 
 Labs that share one Pull Request are measured together.
 
-The time a lab page announces is this median, rounded down to five minutes, and the time of a level is rounded down to a quarter of an hour. A lab measured with others takes its share of their time, and a lab with too few learners keeps its estimate. The pages follow the figures every time the site is built.
+The time a lab page announces is this median, rounded down to five minutes, and the time of a level is rounded down to a quarter of an hour. A lab measured with others takes its share of their time, and a lab with too few learners keeps its estimate. The pages are rewritten from the figures every week.
 
 The same page on the course site: <https://sfdx-hardis-training.github.io/stats/>
