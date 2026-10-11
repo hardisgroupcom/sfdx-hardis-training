@@ -23,7 +23,7 @@ depends_on:
 
 **Niveau** : 3 Release Manager
 
-**Durée** : ~15 min<!-- observed --> (observé : médiane 18 min, 1 participant)<!-- /observed -->
+**Durée** : ~25 min
 
 **Vous allez** : relire le travail de quelqu'un d'autre, trouver ce que le robot n'a pas vu, demander
 une correction, et merger.

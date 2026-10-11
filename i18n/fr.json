@@ -63,7 +63,7 @@
     "time": {
       "heading": "Temps passé",
       "intro": [
-        "Le temps médian des personnes qui sont allées au bout, à côté de l'estimation avec laquelle chaque lab a été écrit. C'est le temps que la page du lab annonce dès qu'une personne est allée au bout, et la dernière colonne dit combien elles étaient : avec une ou deux, c'est l'après-midi de quelqu'un plus qu'une statistique."
+        "Le temps médian des personnes qui sont allées au bout, à côté de l'estimation avec laquelle chaque lab a été écrit. Un chiffre apparaît quand {minSample} personnes sont derrière lui, et c'est alors le temps que la page du lab annonce. En dessous, le lab garde son estimation."
       ],
       "levelColumns": [
         "Niveau",
@@ -99,7 +99,7 @@
         "",
         "Le plus rapide est le temps le plus court dans lequel quelqu'un a pu faire le lab. Un chiffre de moins de cinq minutes, ou de moins d'un quart de la médiane, correspond à deux labs vérifiés à la suite et est écarté. Le plus lent n'est pas affiché : c'est quelqu'un qui a été interrompu.",
         "",
-        "Le temps qu'annonce la page d'un lab est cette médiane, arrondie aux cinq minutes inférieures, et le temps d'un niveau est arrondi au quart d'heure inférieur. Un lab mesuré avec d'autres prend sa part de leur temps, et un lab que personne n'a encore terminé garde son estimation. Les pages sont réécrites d'après les chiffres chaque semaine."
+        "Le temps qu'annonce la page d'un lab est cette médiane, arrondie aux cinq minutes inférieures, et le temps d'un niveau est arrondi au quart d'heure inférieur. Un lab mesuré avec d'autres prend sa part de leur temps, et un lab que moins de {minSample} personnes ont terminé garde son estimation. Les pages sont réécrites d'après les chiffres chaque semaine."
       ]
     }
   },
@@ -469,5 +469,5 @@
       }
     }
   },
-  "source_rev": "a7077537822f51243e0bee59e663fe612fa4044e"
+  "source_rev": "d808912a1ea08b30dc62161257240c1a35a9e849"
 }

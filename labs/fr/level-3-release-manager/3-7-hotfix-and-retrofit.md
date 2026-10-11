@@ -31,7 +31,7 @@ depends_on:
 
 **Niveau** : 3 Release Manager
 
-**Durée** : ~3 h 30<!-- observed --> (observé : médiane 3 h 33, 1 participant)<!-- /observed -->
+**Durée** : ~35 min
 
 **Vous allez** : mener une formule cassée de la production jusqu'à un correctif en ligne, puis
 ramener ce correctif dans la pipeline pour que rien ne le défasse.

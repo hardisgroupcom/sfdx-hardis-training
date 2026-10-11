@@ -24,7 +24,7 @@ depends_on:
 
 **Niveau** : 3 Release Manager
 
-**Durée** : ~25 min<!-- observed --> (observé : médiane 26 min, 1 participant)<!-- /observed -->
+**Durée** : ~35 min
 
 **Vous allez** : livrer en production, puis mesurer si votre pipeline vaut quelque chose.
 
