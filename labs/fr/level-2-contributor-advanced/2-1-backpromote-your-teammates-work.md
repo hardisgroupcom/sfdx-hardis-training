@@ -5,7 +5,7 @@ description: "Votre org de développement est en retard sur integration. Faites-
 level: 2
 lab: 1
 lang: fr
-source_rev: "40c2017ecd00caf98a1f244990d0385d92d8df7b"
+source_rev: "9426c8e05eb9a9fa84c6b2848c577247d131bd11"
 screenshots:
   - annotated/vscode/sidebar-commands-custom-menu-2--training-menu
   - annotated/web/github-pr-files

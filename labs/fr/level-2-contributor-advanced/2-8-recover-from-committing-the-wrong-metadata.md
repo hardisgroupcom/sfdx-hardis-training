@@ -5,7 +5,7 @@ description: "Vous avez publié bien plus que votre story. Voyez ce que cela fai
 level: 2
 lab: 8
 lang: fr
-source_rev: "40c2017ecd00caf98a1f244990d0385d92d8df7b"
+source_rev: "9426c8e05eb9a9fa84c6b2848c577247d131bd11"
 screenshots:
   - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/metadata-retriever-recent-changes--select-all
