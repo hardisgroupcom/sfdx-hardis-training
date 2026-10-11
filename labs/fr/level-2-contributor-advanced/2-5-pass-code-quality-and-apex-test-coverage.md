@@ -21,7 +21,7 @@ depends_on:
 
 **Niveau** : 2 Contributeur avancé
 
-**Durée** : ~35 min<!-- observed --> (observé : médiane 35 min, 5 participants, le plus rapide 20 min)<!-- /observed -->
+**Durée** : ~30 min<!-- observed --> (observé : médiane 30 min, 6 participants, le plus rapide 9 min)<!-- /observed -->
 
 **Vous allez** : être bloqué deux fois par des robots, corriger les deux correctement plutôt que de
 les contourner, et apprendre à lancer les contrôles avant de pousser.
