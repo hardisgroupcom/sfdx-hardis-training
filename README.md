@@ -173,6 +173,14 @@ workflow: never edit it by hand, and re-render it when the words of the page cha
 end to end tests run under. `scripts/stats/markers.mjs` says which Pull Request ends which lab: a
 lab whose User Story or branch changes has to change there too.
 
+The times the site announces come from the same file. The `**Time**` line of a lab, the table and
+the total of a level page and the table of the home page keep an estimate in the markdown, and
+`scripts/build/site.mjs` writes the observed time over it at every build, in every language: the
+median, rounded down to five minutes for a lab and to a quarter of an hour for a level, followed by
+the fastest and the slowest learner. So nobody edits a time to follow the figures, and the markdown
+under `labs/` only says what a lab was first expected to take. A lab fewer than five learners went
+through shows that estimate. `scripts/stats/lab-times.mjs` holds the rules.
+
 ```bash
 node scripts/stats/course-stats.mjs            # read GitHub, write stats/course-stats.json and STATS.md
 node scripts/stats/course-stats.mjs --render   # no network: rewrite STATS.md after changing its words

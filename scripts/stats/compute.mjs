@@ -262,7 +262,11 @@ export function median(values) {
  * still given, so the page can say how far from a figure it is.
  */
 export function aggregate(learners, announced, { generatedAt, cutoffMinutes = IDLE_CUTOFF_MINUTES, minSample = MIN_SAMPLE } = {}) {
-  const shown = (values) => (values.length >= minSample ? median(values) : null);
+  // The fastest learner, the slowest and the median, or nothing of the three
+  // while too few learners are behind them
+  const shown = (values) => (values.length >= minSample
+    ? { medianMinutes: median(values), minMinutes: Math.min(...values), maxMinutes: Math.max(...values) }
+    : { medianMinutes: null, minMinutes: null, maxMinutes: null });
 
   const levels = LEVELS.map((level) => {
     const started = learners.filter((one) => one.levels[level].started);
@@ -274,7 +278,7 @@ export function aggregate(learners, announced, { generatedAt, cutoffMinutes = ID
       started: started.length,
       completed: completed.length,
       announcedMinutes: sumAnnounced(labs, announced),
-      medianMinutes: shown(minutes),
+      ...shown(minutes),
       sample: minutes.length
     };
   });
@@ -286,7 +290,7 @@ export function aggregate(learners, announced, { generatedAt, cutoffMinutes = ID
       level: segment.level,
       labs: segment.labs,
       announcedMinutes: sumAnnounced(segment.labs, announced),
-      medianMinutes: shown(minutes),
+      ...shown(minutes),
       sample: minutes.length
     };
   });
@@ -295,7 +299,7 @@ export function aggregate(learners, announced, { generatedAt, cutoffMinutes = ID
   const labs = Object.keys(announced)
     .map((lab) => {
       const minutes = learners.map((one) => (one.labs || {})[lab]).filter((value) => typeof value === "number");
-      return { level: Number(lab.split(".")[0]), lab, announcedMinutes: announced[lab], medianMinutes: shown(minutes), sample: minutes.length };
+      return { level: Number(lab.split(".")[0]), lab, announcedMinutes: announced[lab], ...shown(minutes), sample: minutes.length };
     })
     .filter((row) => row.sample > 0);
 
@@ -337,7 +341,8 @@ export function validate(stats) {
       if (!LEVELS.includes(row.level)) {
         problems.push(`${where}.level is not a level`);
       }
-      if (!isCount(row.sample) || !isMinutes(row.medianMinutes) || !isMinutes(row.announcedMinutes)) {
+      const figures = [row.medianMinutes, row.announcedMinutes, row.minMinutes ?? null, row.maxMinutes ?? null];
+      if (!isCount(row.sample) || !figures.every(isMinutes)) {
         problems.push(`${where} has a figure that is not a count`);
       }
       if (name === "levels" && (!isCount(row.started) || !isCount(row.completed) || row.completed > row.started)) {

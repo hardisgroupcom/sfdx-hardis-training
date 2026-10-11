@@ -13,6 +13,7 @@
  * is published.
  */
 import { fill } from "./strings.mjs";
+import { duration } from "../stats/lab-times.mjs";
 
 const separator = (columns) => `|${columns.map(() => "---").join("|")}|`;
 const row = (cells) => `| ${cells.join(" | ")} |`;
@@ -149,15 +150,6 @@ export function badgesPage({ s, holders, totals, badgeHref, badgeImage, claimUrl
   ].join("\n");
 }
 
-/** 25 as "25 min", 130 as "2 h 10": the way the labs write a duration. */
-function duration(minutes) {
-  if (minutes < 60) {
-    return `${minutes} min`;
-  }
-  const rest = minutes % 60;
-  return `${Math.floor(minutes / 60)} h${rest ? ` ${String(rest).padStart(2, "0")}` : ""}`;
-}
-
 /**
  * The statistics of the course: who starts and finishes each level, and how
  * long the labs take next to what they announce.
@@ -178,9 +170,11 @@ export function statsPage({ s, text, universe, stats }) {
   const share = (part, whole) => (whole > 0 ? fill(w.percent, { value: Math.round((part / whole) * 100) }) : "");
   const announced = (row) => (typeof row.announcedMinutes === "number" ? duration(row.announcedMinutes) : "");
   const measured = (row) => (typeof row.medianMinutes === "number" ? duration(row.medianMinutes) : w.notEnough);
+  const extreme = (value) => (typeof value === "number" ? duration(value) : "");
+  const figures = (one) => [announced(one), extreme(one.minMinutes), measured(one), extreme(one.maxMinutes), one.sample];
   const labs = (list) => (list.length === 1
     ? fill(w.lab, { lab: list[0] })
-    : fill(w.labs, { first: list[0], last: list[list.length - 1] }));
+    : fill(list.length === 2 ? w.labsPair : w.labs, { first: list[0], last: list[list.length - 1] }));
 
   const lines = [
     `# ${w.heading}`,
@@ -207,7 +201,7 @@ export function statsPage({ s, text, universe, stats }) {
     "",
     row(w.time.levelColumns),
     separator(w.time.levelColumns),
-    ...stats.levels.map((level) => row([levelName(level.level), announced(level), measured(level), level.sample])),
+    ...stats.levels.map((level) => row([levelName(level.level), ...figures(level)])),
     ""
   ];
   for (const level of stats.levels) {
@@ -218,7 +212,7 @@ export function statsPage({ s, text, universe, stats }) {
     }
     lines.push(`### ${levelName(level.level)}`, "", row(w.time.labColumns), separator(w.time.labColumns));
     for (const segment of segments) {
-      lines.push(row([labs(segment.labs), announced(segment), measured(segment), segment.sample]));
+      lines.push(row([labs(segment.labs), ...figures(segment)]));
     }
     lines.push("");
   }
@@ -227,7 +221,7 @@ export function statsPage({ s, text, universe, stats }) {
   if (byLab.length > 0) {
     lines.push(`### ${w.time.byLab.heading}`, "", ...w.time.byLab.intro, "", row(w.time.labColumns), separator(w.time.labColumns));
     for (const lab of byLab) {
-      lines.push(row([fill(w.lab, { lab: lab.lab }), announced(lab), measured(lab), lab.sample]));
+      lines.push(row([fill(w.lab, { lab: lab.lab }), ...figures(lab)]));
     }
     lines.push("");
   }

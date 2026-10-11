@@ -37,8 +37,12 @@
     "level": "Level {level} - {name}",
     "lab": "Lab {lab}",
     "labs": "Labs {first} to {last}",
+    "labsPair": "Labs {first} and {last}",
     "percent": "{value}%",
     "notEnough": "not enough data yet",
+    "observed": "(observed: {fastest} to {slowest}, median {median}, {sample} learners)",
+    "observedTogether": "({labs} observed together: {fastest} to {slowest}, median {median}, {sample} learners)",
+    "observedLevel": "Observed on {labs}: {fastest} to {slowest}, median {median}, {sample} learners.",
     "empty": "No numbers yet. They are read once a week, and the first reading has not happened.",
     "funnel": {
       "heading": "Started and completed",
@@ -56,10 +60,10 @@
     "time": {
       "heading": "Time spent",
       "intro": [
-        "The median time of the learners who went through, next to the time the labs announce. A figure appears once {minSample} learners are behind it."
+        "The median time of the learners who went through, next to the estimate each lab was written with. A figure appears once {minSample} learners are behind it, and from then on it is the time the lab page announces."
       ],
-      "levelColumns": ["Level", "Announced", "Median measured", "Learners"],
-      "labColumns": ["Labs", "Announced", "Median measured", "Learners"],
+      "levelColumns": ["Level", "First estimate", "Fastest", "Median", "Slowest", "Learners"],
+      "labColumns": ["Labs", "First estimate", "Fastest", "Median", "Slowest", "Learners"],
       "byLab": {
         "heading": "Lab by lab",
         "intro": [
@@ -76,7 +80,9 @@
         "",
         "Labs 1.1 and 1.2 install the tools and create the orgs before the repository exists. They are not measured, and Level 1 is counted from Lab 1.3.",
         "",
-        "Labs that share one Pull Request are measured together."
+        "Labs that share one Pull Request are measured together.",
+        "",
+        "The time a lab page announces is this median, rounded down to five minutes, and the time of a level is rounded down to a quarter of an hour. A lab measured with others takes its share of their time, and a lab with too few learners keeps its estimate. The pages follow the figures every time the site is built."
       ]
     }
   },

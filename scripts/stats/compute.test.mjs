@@ -11,6 +11,7 @@ import {
   parseAnnounced, announcedByLab, timeline, activeMinutes, segmentEnds, parseReceipts, learnerStats, median, aggregate, validate
 } from "./compute.mjs";
 import { SEGMENTS } from "./markers.mjs";
+import { announcedTimes, withAnnouncedTimes } from "./lab-times.mjs";
 
 const at = (day, clock) => `2026-10-${String(day).padStart(2, "0")}T${clock}:00Z`;
 const merged = (number, head, day, opened, mergedAt, extra = {}) => ({
@@ -158,9 +159,95 @@ test("a median under the minimum sample is not published", () => {
   assert.equal(few.levels[0].sample, 2);
 
   const enough = aggregate([one, one, one], announcedByLab(UNIVERSE), { minSample: 3 });
-  assert.deepEqual(enough.levels[0], { level: 1, started: 3, completed: 3, announcedMinutes: 90, medianMinutes: 65, sample: 3 });
+  assert.deepEqual(enough.levels[0], { level: 1, started: 3, completed: 3, announcedMinutes: 90, medianMinutes: 65, minMinutes: 65, maxMinutes: 65, sample: 3 });
+  assert.equal(few.levels[0].minMinutes, null, "the fastest and the slowest wait for the sample too");
   assert.equal(enough.segments[0].announcedMinutes, 65);
   assert.deepEqual(validate(enough), []);
+});
+
+test("a page announces the observed time, and the estimate where nobody was observed", () => {
+  const estimates = { "1.1": 15, "1.2": 30, "1.3": 10, "1.4": 15, "2.1": 15, "2.2": 25, "2.3": 30, "2.9": 30, "3.1": 50, "3.2": 25 };
+  const stats = {
+    labs: [{ lab: "1.3", medianMinutes: 14 }, { lab: "1.4", medianMinutes: null }],
+    segments: [
+      { labs: ["1.3", "1.4"], medianMinutes: 40 },
+      { labs: ["2.1", "2.2"], medianMinutes: 55, minMinutes: 28, maxMinutes: 120, sample: 14 },
+      { labs: ["2.3"], medianMinutes: 56 },
+      { labs: ["2.9"], medianMinutes: null }
+    ]
+  };
+  const times = announcedTimes(stats, estimates);
+  // What was observed is said for the labs it was measured on: 2.1 was timed with 2.2
+  assert.deepEqual(times.labs["2.1"].observation, { labs: ["2.1", "2.2"], fastest: 28, slowest: 120, median: 55, sample: 14 });
+  assert.deepEqual(times.labs["2.3"].observation.labs, ["2.3"]);
+  assert.equal(times.labs["2.9"].observation, null);
+  for (const one of Object.values(times.labs)) {
+    delete one.observation;
+  }
+  assert.deepEqual(times.labs["1.3"], { minutes: 10, observed: true }, "its own median, rounded down to five minutes");
+  assert.deepEqual(times.labs["1.4"], { minutes: 20, observed: true }, "its share of the segment: 40 x 15 / 25 is 24");
+  assert.deepEqual(times.labs["2.1"], { minutes: 20, observed: true });
+  assert.deepEqual(times.labs["2.2"], { minutes: 30, observed: true }, "34 is announced as 30, never 35");
+  assert.deepEqual(times.labs["2.3"], { minutes: 55, observed: true }, "the median of a segment that is this lab alone");
+  assert.deepEqual(times.labs["2.9"], { minutes: 30, observed: false }, "too few learners: the estimate");
+  assert.deepEqual(times.labs["1.1"], { minutes: 15, observed: false }, "never measured: the estimate");
+  // 15 + 30 + 14 + 24 is 83, and 55 + 56 + 30 is 141: a level is rounded down to a quarter of an hour
+  assert.equal(times.levels[1], 75);
+  assert.equal(times.levels[2], 135);
+  assert.equal(times.levels[3], 75, "a level nobody was observed in keeps the sum of its estimates");
+  assert.deepEqual(announcedTimes(null, estimates).labs["2.3"], { minutes: 30, observed: false, observation: null }, "no figures yet");
+});
+
+test("the observed times are written into a lab, a level page and the home page, in any language", () => {
+  const universe = {
+    levels: [{ level: 2, slug: "level-2", labs: [{ lab: 1, slug: "2-1-first" }, { lab: 2, slug: "2-2-second" }] }]
+  };
+  const times = { labs: { "2.1": { minutes: 20 }, "2.2": { minutes: 55 } }, levels: { 2: 75 } };
+
+  assert.equal(
+    withAnnouncedTimes("# Lab\n\n**Time**: ~15 min, most of it waiting\n\n~15 min later", "level-2/2-1-first.md", times, universe),
+    "# Lab\n\n**Time**: ~20 min, most of it waiting\n\n~15 min later"
+  );
+  assert.equal(
+    withAnnouncedTimes("**Durée** : ~30 min\n", "level-2/2-2-second.md", times, universe),
+    "**Durée** : ~55 min\n"
+  );
+
+  const index = [
+    "**Durée** : environ 1 h, en une fois.",
+    "",
+    "| [2.1](2-1-first.md)  | Le premier | 15 min |",
+    "| [2.2](2-2-second.md) | Le second  | 30 min |"
+  ].join("\n");
+  assert.equal(withAnnouncedTimes(index, "level-2/index.md", times, universe), [
+    "**Durée** : environ 1 h 15, en une fois.",
+    "",
+    "| [2.1](2-1-first.md)  | Le premier | 20 min |",
+    "| [2.2](2-2-second.md) | Le second  | 55 min |"
+  ].join("\n"));
+
+  const home = "| [**2 - Advanced**](level-2/index.md) | The same people | 4 h  | Level 1 |\n| other | 4 h | row |";
+  assert.equal(
+    withAnnouncedTimes(home, "index.md", times, universe),
+    "| [**2 - Advanced**](level-2/index.md) | The same people | 1 h 15  | Level 1 |\n| other | 4 h | row |"
+  );
+
+  // What was observed follows the time, in the words the caller gives
+  const observed = {
+    labs: { "2.1": { minutes: 20, observation: { labs: ["2.1"], fastest: 10, slowest: 50, median: 22, sample: 6 } }, "2.2": { minutes: 55, observation: null } },
+    levels: { 2: 75 },
+    levelObservations: { 2: { labs: ["2.1", "2.2"], fastest: 40, slowest: 120, median: 80, sample: 5 } }
+  };
+  const describe = (observation, own) => `[${observation.labs.join("+")} for ${own.length}: ${observation.fastest}-${observation.slowest}]`;
+  assert.equal(
+    withAnnouncedTimes("**Time**: ~15 min, most of it waiting\n", "level-2/2-1-first.md", observed, universe, describe),
+    "**Time**: ~20 min, most of it waiting [2.1 for 1: 10-50]\n"
+  );
+  assert.equal(withAnnouncedTimes("**Time**: ~30 min\n", "level-2/2-2-second.md", observed, universe, describe), "**Time**: ~55 min\n");
+  assert.ok(withAnnouncedTimes(index, "level-2/index.md", observed, universe, describe).startsWith("**Durée** : environ 1 h 15, en une fois. [2.1+2.2 for 2: 40-120]\n"));
+
+  assert.equal(withAnnouncedTimes("**Time**: whenever", "help.md", times, universe), "**Time**: whenever");
+  assert.throws(() => withAnnouncedTimes("no time here", "level-2/2-1-first.md", times, universe), /no line announcing/);
 });
 
 test("a file that names a learner is refused", () => {

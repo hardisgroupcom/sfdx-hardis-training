@@ -17,45 +17,45 @@ A level is started when its first branch exists in the learner's repository, and
 
 ## Time spent
 
-The median time of the learners who went through, next to the time the labs announce. A figure appears once 5 learners are behind it.
+The median time of the learners who went through, next to the estimate each lab was written with. A figure appears once 5 learners are behind it, and from then on it is the time the lab page announces.
 
-| Level | Announced | Median measured | Learners |
-|---|---|---|---|
-| Level 1 - Contributor basics | 1 h 30 | 1 h 10 | 21 |
-| Level 2 - Contributor advanced | 4 h | not enough data yet | 3 |
-| Level 3 - Release Manager | 6 h 55 | not enough data yet | 0 |
+| Level | First estimate | Fastest | Median | Slowest | Learners |
+|---|---|---|---|---|---|
+| Level 1 - Contributor basics | 1 h 30 | 19 min | 1 h 10 | 2 h 56 | 21 |
+| Level 2 - Contributor advanced | 4 h |  | not enough data yet |  | 3 |
+| Level 3 - Release Manager | 6 h 55 |  | not enough data yet |  | 0 |
 
 ### Level 1 - Contributor basics
 
-| Labs | Announced | Median measured | Learners |
-|---|---|---|---|
-| Labs 1.3 to 1.6 | 1 h 05 | 37 min | 22 |
-| Lab 1.7 | 25 min | 26 min | 23 |
+| Labs | First estimate | Fastest | Median | Slowest | Learners |
+|---|---|---|---|---|---|
+| Labs 1.3 to 1.6 | 1 h 05 | 6 min | 37 min | 1 h 33 | 22 |
+| Lab 1.7 | 25 min | 9 min | 26 min | 5 h 17 | 23 |
 
 ### Level 2 - Contributor advanced
 
-| Labs | Announced | Median measured | Learners |
-|---|---|---|---|
-| Labs 2.1 to 2.2 | 40 min | 55 min | 14 |
-| Lab 2.3 | 30 min | 56 min | 11 |
-| Lab 2.4 | 30 min | 47 min | 8 |
-| Lab 2.5 | 30 min | 35 min | 5 |
-| Lab 2.6 | 25 min | 35 min | 5 |
-| Lab 2.7 | 35 min | 32 min | 5 |
-| Lab 2.8 | 20 min | 27 min | 5 |
-| Lab 2.9 | 30 min | not enough data yet | 3 |
+| Labs | First estimate | Fastest | Median | Slowest | Learners |
+|---|---|---|---|---|---|
+| Labs 2.1 and 2.2 | 40 min | 28 min | 55 min | 4 h 36 | 14 |
+| Lab 2.3 | 30 min | 16 min | 56 min | 3 h 28 | 11 |
+| Lab 2.4 | 30 min | 7 min | 47 min | 55 min | 8 |
+| Lab 2.5 | 30 min | 20 min | 35 min | 1 h 25 | 5 |
+| Lab 2.6 | 25 min | 21 min | 35 min | 1 h 09 | 5 |
+| Lab 2.7 | 35 min | 13 min | 32 min | 1 h 19 | 5 |
+| Lab 2.8 | 20 min | 15 min | 27 min | 1 h 59 | 5 |
+| Lab 2.9 | 30 min |  | not enough data yet |  | 3 |
 
 ### Lab by lab
 
 From the learners who ran **Check my work** at the end of each lab: their receipts say when each one passed.
 
-| Labs | Announced | Median measured | Learners |
-|---|---|---|---|
-| Lab 1.3 | 10 min | 11 min | 10 |
-| Lab 1.4 | 15 min | 13 min | 9 |
-| Lab 1.5 | 20 min | 25 min | 10 |
-| Lab 1.6 | 20 min | 28 min | 8 |
-| Lab 1.7 | 25 min | 31 min | 10 |
+| Labs | First estimate | Fastest | Median | Slowest | Learners |
+|---|---|---|---|---|---|
+| Lab 1.3 | 10 min | 0 min | 11 min | 1 h 17 | 10 |
+| Lab 1.4 | 15 min | 0 min | 13 min | 18 min | 9 |
+| Lab 1.5 | 20 min | 3 min | 25 min | 1 h 16 | 10 |
+| Lab 1.6 | 20 min | 4 min | 28 min | 1 h 24 | 8 |
+| Lab 1.7 | 25 min | 11 min | 31 min | 1 h 23 | 10 |
 
 ## How the time is measured
 
@@ -66,5 +66,7 @@ A break longer than 45 minutes is not counted, so a learner who stops for the ni
 Labs 1.1 and 1.2 install the tools and create the orgs before the repository exists. They are not measured, and Level 1 is counted from Lab 1.3.
 
 Labs that share one Pull Request are measured together.
+
+The time a lab page announces is this median, rounded down to five minutes, and the time of a level is rounded down to a quarter of an hour. A lab measured with others takes its share of their time, and a lab with too few learners keeps its estimate. The pages follow the figures every time the site is built.
 
 The same page on the course site: <https://sfdx-hardis-training.github.io/stats/>
