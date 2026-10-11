@@ -165,6 +165,12 @@ node scripts/i18n/check-structure.mjs    # a translation that lost an image or a
 node scripts/i18n/align-tables.mjs       # re-pad the tables of a translated lab
 ```
 
+A learner's Pull Request sometimes lands here instead of in their fork, because GitHub offers the
+original repository as the base of a Pull Request opened from a fork. `fork-pull-requests.yml`
+closes it with a comment saying where it belongs, when its head is a branch of the course
+(`integration`, `features/US-...`, `training/...`). Any other Pull Request from a fork is a
+contribution and is left open, and one closed by mistake stays open once reopened.
+
 The Statistics page of the site is built from `stats/course-stats.json`, which a workflow commits
 every Monday: how many learners start and finish each level, and the median time of the labs next to
 the time they announce. It is read from the forks of the course and the badge claims, and it names

@@ -5,6 +5,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 
 ## 2026-10-12
 
+- A Pull Request opened on the course repository by mistake, instead of in your fork, is now closed at once with a comment saying where it belongs and how to open it there.
 - Lab 1.6: what to do when the My Pull Request card still says the Pull Request does not exist, and a warning about the yellow GitHub banner that opens a Pull Request on the original repository instead of your fork.
 - Lab 3.8 says what monitoring gives you (a metadata backup, which is not a data backup, indicators and alerts) and where each one is read. You now receive a real alert by email from the first run, and the lab says that a real project sends them to Slack, Microsoft Teams or Google Chat.
 - Lab 3.8: new troubleshooting entry for an email that does not arrive.
