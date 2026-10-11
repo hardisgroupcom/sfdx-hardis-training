@@ -63,7 +63,7 @@
     "time": {
       "heading": "Time spent",
       "intro": [
-        "The median time of the learners who went through, next to the estimate each lab was written with. It is the time the lab page announces as soon as one learner went through, and the last column says how many they were: with one or two, it is somebody's afternoon more than a statistic."
+        "The median time of the learners who went through, next to the estimate each lab was written with. A figure appears once {minSample} learners are behind it, and from then on it is the time the lab page announces. Under that, the lab keeps its estimate."
       ],
       "levelColumns": [
         "Level",
@@ -93,7 +93,7 @@
         "",
         "The fastest is the fastest time somebody could have done the lab in. A figure under five minutes, or under a quarter of the median, is two labs checked in a row and is set aside. The slowest is not shown: it is somebody who was interrupted.",
         "",
-        "The time a lab page announces is this median, rounded down to five minutes, and the time of a level is rounded down to a quarter of an hour. A lab measured with others takes its share of their time, and a lab nobody went through yet keeps its estimate. The pages are rewritten from the figures every week."
+        "The time a lab page announces is this median, rounded down to five minutes, and the time of a level is rounded down to a quarter of an hour. A lab measured with others takes its share of their time, and a lab fewer than {minSample} learners went through keeps its estimate. The pages are rewritten from the figures every week."
       ]
     }
   },

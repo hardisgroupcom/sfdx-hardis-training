@@ -15,7 +15,7 @@
  * The figures are stats/course-stats.json, which scripts/stats/course-stats.mjs
  * writes once a week, and the rules are scripts/stats/lab-times.mjs: the median,
  * rounded down to five minutes for a lab and to a quarter of an hour for a
- * level. A lab no learner went through yet takes the estimate
+ * level. A lab fewer than three learners went through takes the estimate
  * training-universe.json gives it, which is where the estimates live now that
  * the pages follow the learners.
  *

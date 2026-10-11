@@ -6,7 +6,7 @@
  * scripts/build/lab-times.mjs writes them into the markdown under labs/, in
  * every language, from stats/course-stats.json, and the weekly workflow commits
  * the result: nobody edits a time to follow the figures. The estimates stay in
- * training-universe.json, which is where a lab no learner went through yet
+ * training-universe.json, which is where a lab too few learners went through
  * takes its time from.
  *
  * For one lab, in this order:
@@ -16,8 +16,8 @@
  *   3. its share of the median of a segment it is measured with, in proportion
  *      to the estimates of the labs of that segment
  *   4. its estimate
- * The first three need a median, which course-stats.mjs gives as soon as one
- * learner went through.
+ * The first three need the minimum sample, which course-stats.mjs applies by
+ * leaving a median out: three learners.
  *
  * An observed time is rounded down, never up: to five minutes for a lab and to
  * a quarter of an hour for a level. 38 minutes observed is announced as 35, and

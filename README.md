@@ -186,7 +186,7 @@ a level page, the table of the home page. It is the median, rounded down to five
 and to a quarter of an hour for a level, followed by the median and the fastest plausible time
 between two `<!-- observed -->` comments. Never edit a time by hand to follow the figures: the next run
 overwrites it. The estimate a lab was written with lives in `training-universe.json` (`time`), and
-is what a lab no learner went through yet announces. `scripts/stats/lab-times.mjs` holds
+is what a lab fewer than three learners went through announces. `scripts/stats/lab-times.mjs` holds
 the rules.
 
 ```bash

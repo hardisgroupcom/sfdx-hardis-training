@@ -37,7 +37,7 @@ depends_on:
 
 **Level**: 3 Release Manager
 
-**Time**: ~15 min<!-- observed --> (observed: median 17 min, 1 learner)<!-- /observed -->
+**Time**: ~50 min
 
 **You will**: turn a two-stage pipeline into a four-stage one that reaches production, give the two
 new stages their org and a credential a real project can live with, and publish all of it the way

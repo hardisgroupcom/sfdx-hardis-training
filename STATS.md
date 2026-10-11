@@ -17,7 +17,7 @@ A level is started when its first branch exists in the learner's repository, and
 
 ## Time spent
 
-The median time of the learners who went through, next to the estimate each lab was written with. It is the time the lab page announces as soon as one learner went through, and the last column says how many they were: with one or two, it is somebody's afternoon more than a statistic.
+The median time of the learners who went through, next to the estimate each lab was written with. A figure appears once 3 learners are behind it, and from then on it is the time the lab page announces. Under that, the lab keeps its estimate.
 
 | Level | First estimate | Median | Fastest | Learners |
 |---|---|---|---|---|
@@ -40,24 +40,10 @@ The median time of the learners who went through, next to the estimate each lab 
 | Lab 2.3 | 30 min | 48 min | 16 min | 12 |
 | Lab 2.4 | 30 min | 45 min | 31 min | 9 |
 | Lab 2.5 | 30 min | 30 min | 9 min | 6 |
-| Lab 2.6 | 25 min | 30 min | 21 min | 6 |
+| Lab 2.6 | 25 min | 30 min | 17 min | 6 |
 | Lab 2.7 | 35 min | 32 min | 13 min | 5 |
 | Lab 2.8 | 20 min | 27 min | 16 min | 5 |
 | Lab 2.9 | 30 min | 1 h 44 | 1 h 16 | 3 |
-
-### Level 3 - Release Manager
-
-| Labs | First estimate | Median | Fastest | Learners |
-|---|---|---|---|---|
-| Lab 3.1 | 50 min | 17 min |  | 1 |
-| Lab 3.2 | 25 min | 18 min |  | 1 |
-| Lab 3.3 | 45 min | 2 h 58 |  | 1 |
-| Lab 3.4 | 35 min | not enough data yet |  | 0 |
-| Lab 3.5 | 35 min | not enough data yet |  | 0 |
-| Lab 3.6 | 35 min | 26 min |  | 1 |
-| Lab 3.7 | 35 min | 3 h 33 |  | 1 |
-| Labs 3.8 to 3.10 | 1 h 50 | not enough data yet |  | 0 |
-| Lab 3.11 | 45 min | not enough data yet |  | 0 |
 
 ### Lab by lab
 
@@ -70,15 +56,6 @@ From the learners who ran **Check my work** at the end of each lab: their receip
 | Lab 1.5 | 20 min | 25 min | 10 min | 10 |
 | Lab 1.6 | 20 min | 28 min | 12 min | 8 |
 | Lab 1.7 | 25 min | 31 min | 11 min | 10 |
-| Lab 2.1 | 15 min | 2 h 41 |  | 1 |
-| Lab 2.2 | 25 min | 2 h 04 |  | 1 |
-| Lab 2.3 | 30 min | 1 h 59 |  | 1 |
-| Lab 2.4 | 30 min | 31 min |  | 1 |
-| Lab 2.5 | 30 min | 1 h 25 |  | 1 |
-| Lab 2.6 | 25 min | 1 h 09 |  | 1 |
-| Lab 2.7 | 35 min | 1 h 08 |  | 1 |
-| Lab 2.8 | 20 min | 1 h 08 |  | 1 |
-| Lab 2.9 | 30 min | 1 h 44 |  | 1 |
 
 ## How the time is measured
 
@@ -92,6 +69,6 @@ Labs that share one Pull Request are measured together.
 
 The fastest is the fastest time somebody could have done the lab in. A figure under five minutes, or under a quarter of the median, is two labs checked in a row and is set aside. The slowest is not shown: it is somebody who was interrupted.
 
-The time a lab page announces is this median, rounded down to five minutes, and the time of a level is rounded down to a quarter of an hour. A lab measured with others takes its share of their time, and a lab nobody went through yet keeps its estimate. The pages are rewritten from the figures every week.
+The time a lab page announces is this median, rounded down to five minutes, and the time of a level is rounded down to a quarter of an hour. A lab measured with others takes its share of their time, and a lab fewer than 3 learners went through keeps its estimate. The pages are rewritten from the figures every week.
 
 The same page on the course site: <https://sfdx-hardis-training.github.io/stats/>
