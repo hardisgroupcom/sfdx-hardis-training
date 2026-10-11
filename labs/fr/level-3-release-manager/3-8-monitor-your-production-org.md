@@ -217,7 +217,8 @@ N'attendez pas cette nuit. Le workflow, **Org Monitoring sfdx-hardis**, est plan
 L'exécution apparaît dans la liste quelques secondes plus tard : cliquez dessus pour la suivre.
 
 Elle prend un moment, l'essentiel étant la sauvegarde de l'org. Quand elle se termine, le repository
-contient une sauvegarde complète des sources de la production, ses métadonnées et aucun de ses enregistrements et un jeu de rapports.
+contient une sauvegarde complète des sources de la production, ses métadonnées et aucun de ses
+enregistrements, et un jeu de rapports.
 
 ### 5. Lire le premier rapport
 
