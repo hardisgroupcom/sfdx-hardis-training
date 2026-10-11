@@ -45,7 +45,13 @@
       "intro": [
         "A level is started when its first branch exists in the learner's repository, and completed when its badge was awarded."
       ],
-      "columns": ["Level", "Started", "Share of learners", "Completed", "Share of started"]
+      "columns": [
+        "Level",
+        "Started",
+        "Share of learners",
+        "Completed",
+        "Share of started"
+      ]
     },
     "time": {
       "heading": "Time spent",

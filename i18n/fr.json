@@ -45,7 +45,13 @@
       "intro": [
         "Un niveau est commencé quand sa première branche existe dans le repository de la personne, et terminé quand son badge a été décerné."
       ],
-      "columns": ["Niveau", "Commencé", "Part des participants", "Terminé", "Part des commencés"]
+      "columns": [
+        "Niveau",
+        "Commencé",
+        "Part des participants",
+        "Terminé",
+        "Part des commencés"
+      ]
     },
     "time": {
       "heading": "Temps passé",
