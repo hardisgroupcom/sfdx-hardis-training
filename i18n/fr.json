@@ -62,8 +62,22 @@
       "intro": [
         "Le temps médian des personnes qui sont allées au bout, à côté de l'estimation avec laquelle chaque lab a été écrit. Un chiffre apparaît quand {minSample} personnes sont derrière lui, et c'est alors le temps que la page du lab annonce."
       ],
-      "levelColumns": ["Niveau", "Estimation initiale", "Le plus rapide", "Médiane", "Le plus lent", "Participants"],
-      "labColumns": ["Labs", "Estimation initiale", "Le plus rapide", "Médiane", "Le plus lent", "Participants"],
+      "levelColumns": [
+        "Niveau",
+        "Estimation initiale",
+        "Le plus rapide",
+        "Médiane",
+        "Le plus lent",
+        "Participants"
+      ],
+      "labColumns": [
+        "Labs",
+        "Estimation initiale",
+        "Le plus rapide",
+        "Médiane",
+        "Le plus lent",
+        "Participants"
+      ],
       "byLab": {
         "heading": "Lab par lab",
         "intro": [

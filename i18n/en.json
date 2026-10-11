@@ -62,8 +62,22 @@
       "intro": [
         "The median time of the learners who went through, next to the estimate each lab was written with. A figure appears once {minSample} learners are behind it, and from then on it is the time the lab page announces."
       ],
-      "levelColumns": ["Level", "First estimate", "Fastest", "Median", "Slowest", "Learners"],
-      "labColumns": ["Labs", "First estimate", "Fastest", "Median", "Slowest", "Learners"],
+      "levelColumns": [
+        "Level",
+        "First estimate",
+        "Fastest",
+        "Median",
+        "Slowest",
+        "Learners"
+      ],
+      "labColumns": [
+        "Labs",
+        "First estimate",
+        "Fastest",
+        "Median",
+        "Slowest",
+        "Learners"
+      ],
       "byLab": {
         "heading": "Lab by lab",
         "intro": [
