@@ -257,17 +257,32 @@ export function median(values) {
 }
 
 /**
+ * The fastest time somebody could have done the lab in, or null.
+ *
+ * The smallest figure is often not one. A learner who runs Check my work for
+ * two labs in a row is read as having done the second in three minutes. So the
+ * fastest is the first figure, from the smallest up, that is at least five
+ * minutes and at least a quarter of the median. The slowest is never kept: it
+ * is somebody who was interrupted, and says nothing about the lab.
+ */
+export function plausibleFastest(values) {
+  const middle = median(values);
+  const plausible = values.filter((value) => typeof value === "number" && value >= 5 && value >= middle / 4);
+  return plausible.length > 0 ? Math.min(...plausible) : null;
+}
+
+/**
  * What is published: counts and medians, and nobody's name.
  *
  * A median over fewer than minSample learners is left out, and its sample is
  * still given, so the page can say how far from a figure it is.
  */
 export function aggregate(learners, announced, { generatedAt, cutoffMinutes = IDLE_CUTOFF_MINUTES, minSample = MIN_SAMPLE } = {}) {
-  // The fastest learner, the slowest and the median, or nothing of the three
-  // while too few learners are behind them
+  // The median and the fastest learner, or neither while too few learners are
+  // behind them
   const shown = (values) => (values.length >= minSample
-    ? { medianMinutes: median(values), minMinutes: Math.min(...values), maxMinutes: Math.max(...values) }
-    : { medianMinutes: null, minMinutes: null, maxMinutes: null });
+    ? { medianMinutes: median(values), fastestMinutes: plausibleFastest(values) }
+    : { medianMinutes: null, fastestMinutes: null });
 
   const levels = LEVELS.map((level) => {
     const started = learners.filter((one) => one.levels[level].started);
@@ -342,7 +357,7 @@ export function validate(stats) {
       if (!LEVELS.includes(row.level)) {
         problems.push(`${where}.level is not a level`);
       }
-      const figures = [row.medianMinutes, row.announcedMinutes, row.minMinutes ?? null, row.maxMinutes ?? null];
+      const figures = [row.medianMinutes, row.announcedMinutes, row.fastestMinutes ?? null];
       if (!isCount(row.sample) || !figures.every(isMinutes)) {
         problems.push(`${where} has a figure that is not a count`);
       }

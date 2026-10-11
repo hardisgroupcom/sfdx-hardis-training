@@ -30,7 +30,7 @@ depends_on:
 
 **Level**: 1 Contributor basics
 
-**Time**: ~25 min<!-- observed --> (observed: 4 min to 1 h 24, median 28 min, 8 learners)<!-- /observed -->
+**Time**: ~25 min<!-- observed --> (observed: median 28 min, 8 learners, fastest 12 min)<!-- /observed -->
 
 **You will**: have a robot check your work before a human does, read what it says, and put US-014
 into the shared integration org.

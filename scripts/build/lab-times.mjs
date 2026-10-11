@@ -8,7 +8,7 @@
  *
  * Three kinds of page announce a time, in every locale:
  *
- *   a lab          **Time**: ~55 min (observed: 16 min to 3 h 28, median 56 min, 11 learners)
+ *   a lab          **Time**: ~55 min (observed: median 56 min, 11 learners, fastest 16 min)
  *   a level page   one row per lab, and the time of the whole level
  *   the home page  one row per level
  *
@@ -140,24 +140,20 @@ function shape(text) {
 }
 
 /**
- * What was observed behind a time, as a sentence of this language: the fastest
- * learner, the slowest, the median and how many they were. A lab timed alone
+ * What was observed behind a time, as a sentence of this language: the median,
+ * how many learners they were, and the fastest of them when it is worth saying. A lab timed alone
  * says so in a parenthesis, a lab timed with its neighbours names them, and a
  * level names the labs its figure covers.
  */
 function observedIn(locale) {
   const w = strings(locale).stats;
   return (observation, own) => {
-    if (observation.fastest === null || observation.slowest === null) {
-      return "";
-    }
     const labs = observation.labs.length === 1
       ? fill(w.lab, { lab: observation.labs[0] })
       : fill(observation.labs.length === 2 ? w.labsPair : w.labs, { first: observation.labs[0], last: observation.labs[observation.labs.length - 1] });
     const values = {
       labs,
-      fastest: duration(observation.fastest),
-      slowest: duration(observation.slowest),
+      fastest: observation.fastest === null ? "" : fill(w.fastest, { time: duration(observation.fastest) }),
       median: duration(observation.median),
       sample: observation.sample
     };

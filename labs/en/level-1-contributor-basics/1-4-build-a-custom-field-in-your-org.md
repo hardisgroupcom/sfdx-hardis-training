@@ -23,7 +23,7 @@ depends_on:
 
 **Level**: 1 Contributor basics
 
-**Time**: ~10 min<!-- observed --> (observed: 0 min to 18 min, median 13 min, 9 learners)<!-- /observed -->
+**Time**: ~10 min<!-- observed --> (observed: median 13 min, 9 learners, fastest 9 min)<!-- /observed -->
 
 **You will**: build US-014 the way an admin builds anything, by clicking in Salesforce Setup, and
 check it against real records.

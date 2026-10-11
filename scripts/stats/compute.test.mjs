@@ -8,7 +8,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
-  parseAnnounced, announcedByLab, timeline, activeMinutes, segmentEnds, parseReceipts, learnerStats, median, aggregate, validate
+  parseAnnounced, announcedByLab, plausibleFastest, timeline, activeMinutes, segmentEnds, parseReceipts, learnerStats, median, aggregate, validate
 } from "./compute.mjs";
 import { SEGMENTS } from "./markers.mjs";
 import { announcedTimes, withAnnouncedTimes } from "./lab-times.mjs";
@@ -159,8 +159,8 @@ test("a median under the minimum sample is not published", () => {
   assert.equal(few.levels[0].sample, 2);
 
   const enough = aggregate([one, one, one], announcedByLab(UNIVERSE), { minSample: 3 });
-  assert.deepEqual(enough.levels[0], { level: 1, started: 3, completed: 3, announcedMinutes: 90, medianMinutes: 65, minMinutes: 65, maxMinutes: 65, sample: 3 });
-  assert.equal(few.levels[0].minMinutes, null, "the fastest and the slowest wait for the sample too");
+  assert.deepEqual(enough.levels[0], { level: 1, started: 3, completed: 3, announcedMinutes: 90, medianMinutes: 65, fastestMinutes: 65, sample: 3 });
+  assert.equal(few.levels[0].fastestMinutes, null, "the fastest waits for the sample too");
   assert.equal(enough.segments[0].announcedMinutes, 65);
   assert.deepEqual(validate(enough), []);
 });
@@ -171,15 +171,22 @@ test("a page announces the observed time, and the estimate where nobody was obse
     labs: [{ lab: "1.3", medianMinutes: 14 }, { lab: "1.4", medianMinutes: null }],
     segments: [
       { labs: ["1.3", "1.4"], medianMinutes: 40 },
-      { labs: ["2.1", "2.2"], medianMinutes: 55, minMinutes: 28, maxMinutes: 120, sample: 14 },
-      { labs: ["2.3"], medianMinutes: 56 },
+      { labs: ["2.1", "2.2"], medianMinutes: 55, fastestMinutes: 28, sample: 14 },
+      { labs: ["2.3"], medianMinutes: 56, fastestMinutes: null, sample: 11 },
       { labs: ["2.9"], medianMinutes: null }
     ]
   };
   const times = announcedTimes(stats, estimates);
   // What was observed is said for the labs it was measured on: 2.1 was timed with 2.2
-  assert.deepEqual(times.labs["2.1"].observation, { labs: ["2.1", "2.2"], fastest: 28, slowest: 120, median: 55, sample: 14 });
+  assert.deepEqual(times.labs["2.1"].observation, { labs: ["2.1", "2.2"], fastest: 28, median: 55, sample: 14 });
   assert.deepEqual(times.labs["2.3"].observation.labs, ["2.3"]);
+  assert.equal(times.labs["2.3"].observation.fastest, null);
+  // Three minutes is two labs checked in a row, not a lab done in three minutes:
+  // the fastest is the first figure somebody could have done the lab in
+  assert.equal(plausibleFastest([3, 6, 16, 50, 56, 60, 200]), 16, "3 and 6 are under a quarter of the median, 50");
+  assert.equal(plausibleFastest([16, 50, 56]), 16);
+  assert.equal(plausibleFastest([2, 3, 4, 4, 4]), null, "nothing reaches five minutes");
+  assert.equal(plausibleFastest([4, 6, 8, 10, 12]), 6, "4 is under five minutes");
   assert.equal(times.labs["2.9"].observation, null);
   for (const one of Object.values(times.labs)) {
     delete one.observation;
@@ -234,13 +241,13 @@ test("the observed times are written into a lab, a level page and the home page,
 
   // What was observed follows the time, in the words the caller gives
   const observed = {
-    labs: { "2.1": { minutes: 20, observation: { labs: ["2.1"], fastest: 10, slowest: 50, median: 22, sample: 6 } }, "2.2": { minutes: 55, observation: null } },
+    labs: { "2.1": { minutes: 20, observation: { labs: ["2.1"], fastest: 10, median: 22, sample: 6 } }, "2.2": { minutes: 55, observation: null } },
     levels: { 2: 75 },
-    levelObservations: { 2: { labs: ["2.1", "2.2"], fastest: 40, slowest: 120, median: 80, sample: 5 } }
+    levelObservations: { 2: { labs: ["2.1", "2.2"], fastest: null, median: 80, sample: 5 } }
   };
-  const describe = (observation, own) => `[${observation.labs.join("+")} for ${own.length}: ${observation.fastest}-${observation.slowest}]`;
+  const describe = (observation, own) => `[${observation.labs.join("+")} for ${own.length}: ${observation.median}, fastest ${observation.fastest}]`;
   const once = withAnnouncedTimes("**Time**: ~15 min, most of it waiting\n", "level-2/2-1-first.md", observed, universe, describe);
-  assert.equal(once, "**Time**: ~20 min, most of it waiting<!-- observed --> [2.1 for 1: 10-50]<!-- /observed -->\n");
+  assert.equal(once, "**Time**: ~20 min, most of it waiting<!-- observed --> [2.1 for 1: 22, fastest 10]<!-- /observed -->\n");
   // The page is committed, so the next run reads what this one wrote: it has to
   // replace its own sentence, and to take it away when the figures go
   assert.equal(withAnnouncedTimes(once, "level-2/2-1-first.md", observed, universe, describe), once);
@@ -248,7 +255,7 @@ test("the observed times are written into a lab, a level page and the home page,
   assert.equal(withAnnouncedTimes("**Time**: ~30 min\n", "level-2/2-2-second.md", observed, universe, describe), "**Time**: ~55 min\n");
 
   const levelOnce = withAnnouncedTimes(index, "level-2/index.md", observed, universe, describe);
-  assert.ok(levelOnce.startsWith("**Durée** : environ 1 h 15, en une fois.<!-- observed --> [2.1+2.2 for 2: 40-120]<!-- /observed -->\n"));
+  assert.ok(levelOnce.startsWith("**Durée** : environ 1 h 15, en une fois.<!-- observed --> [2.1+2.2 for 2: 80, fastest null]<!-- /observed -->\n"));
   assert.equal(withAnnouncedTimes(levelOnce, "level-2/index.md", observed, universe, describe), levelOnce);
   // The blank line after a table is not part of its last row
   assert.equal(withAnnouncedTimes(`${index}\n\nAfter the table.`, "level-2/index.md", times, universe).split("\n").slice(-2).join("|"), "|After the table.");

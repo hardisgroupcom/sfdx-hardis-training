@@ -23,7 +23,7 @@ depends_on:
 
 **Level**: 2 Contributor advanced
 
-**Time**: ~25 min<!-- observed --> (observed: 15 min to 1 h 59, median 27 min, 5 learners)<!-- /observed -->
+**Time**: ~25 min<!-- observed --> (observed: median 27 min, 5 learners, fastest 15 min)<!-- /observed -->
 
 **You will**: deliberately over-select at publish time, see what that does to a Pull Request, and
 learn the two recovery paths.

@@ -40,9 +40,10 @@
     "labsPair": "Labs {first} and {last}",
     "percent": "{value}%",
     "notEnough": "not enough data yet",
-    "observed": "(observed: {fastest} to {slowest}, median {median}, {sample} learners)",
-    "observedTogether": "({labs} observed together: {fastest} to {slowest}, median {median}, {sample} learners)",
-    "observedLevel": "Observed on {labs}: {fastest} to {slowest}, median {median}, {sample} learners.",
+    "observed": "(observed: median {median}, {sample} learners{fastest})",
+    "fastest": ", fastest {time}",
+    "observedTogether": "({labs} observed together: median {median}, {sample} learners{fastest})",
+    "observedLevel": "Observed on {labs}: median {median}, {sample} learners{fastest}.",
     "empty": "No numbers yet. They are read once a week, and the first reading has not happened.",
     "funnel": {
       "heading": "Started and completed",
@@ -65,17 +66,15 @@
       "levelColumns": [
         "Level",
         "First estimate",
-        "Fastest",
         "Median",
-        "Slowest",
+        "Fastest",
         "Learners"
       ],
       "labColumns": [
         "Labs",
         "First estimate",
-        "Fastest",
         "Median",
-        "Slowest",
+        "Fastest",
         "Learners"
       ],
       "byLab": {
@@ -95,6 +94,8 @@
         "Labs 1.1 and 1.2 install the tools and create the orgs before the repository exists. They are not measured, and Level 1 is counted from Lab 1.3.",
         "",
         "Labs that share one Pull Request are measured together.",
+        "",
+        "The fastest is the fastest time somebody could have done the lab in. A figure under five minutes, or under a quarter of the median, is two labs checked in a row and is set aside. The slowest is not shown: it is somebody who was interrupted.",
         "",
         "The time a lab page announces is this median, rounded down to five minutes, and the time of a level is rounded down to a quarter of an hour. A lab measured with others takes its share of their time, and a lab with too few learners keeps its estimate. The pages are rewritten from the figures every week."
       ]

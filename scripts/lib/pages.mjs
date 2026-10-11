@@ -170,8 +170,9 @@ export function statsPage({ s, text, universe, stats }) {
   const share = (part, whole) => (whole > 0 ? fill(w.percent, { value: Math.round((part / whole) * 100) }) : "");
   const announced = (row) => (typeof row.announcedMinutes === "number" ? duration(row.announcedMinutes) : "");
   const measured = (row) => (typeof row.medianMinutes === "number" ? duration(row.medianMinutes) : w.notEnough);
-  const extreme = (value) => (typeof value === "number" ? duration(value) : "");
-  const figures = (one) => [announced(one), extreme(one.minMinutes), measured(one), extreme(one.maxMinutes), one.sample];
+  // The fastest time the lab could be done in, which the figures already sorted out
+  const fastest = (one) => (typeof one.fastestMinutes === "number" ? duration(one.fastestMinutes) : "");
+  const figures = (one) => [announced(one), measured(one), fastest(one), one.sample];
   const labs = (list) => (list.length === 1
     ? fill(w.lab, { lab: list[0] })
     : fill(list.length === 2 ? w.labsPair : w.labs, { first: list[0], last: list[list.length - 1] }));

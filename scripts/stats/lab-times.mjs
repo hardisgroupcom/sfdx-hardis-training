@@ -25,11 +25,15 @@
  * not add up in it. A level nobody was observed in keeps the sum of its
  * estimates, as it is written.
  *
- * Next to the time it announces, a page says what was observed: the fastest
- * learner, the slowest, the median and how many they were. Those are the
- * figures as they were measured, and for the labs they were measured on: a lab
- * timed together with its neighbours says so rather than inventing its share
- * of their extremes.
+ * Next to the time it announces, a page says what was observed: the median,
+ * how many learners are behind it, and the fastest of them when that figure
+ * means something. Those are the figures as they were measured, and for the
+ * labs they were measured on: a lab timed together with its neighbours says so
+ * rather than inventing its share.
+ *
+ * The fastest is the fastest time somebody could have done the lab in, which
+ * course-stats.mjs works out (plausibleFastest in compute.mjs): the smallest
+ * figure is often two labs checked in a row. The slowest is never shown.
  */
 
 const OBSERVED_START = "<!-- observed -->";
@@ -54,8 +58,7 @@ const hasMedian = (row) => typeof row.medianMinutes === "number";
 /** What was observed on a row of the figures, for the labs it was measured on. */
 const observationOf = (row, labs) => ({
   labs,
-  fastest: typeof row.minMinutes === "number" ? row.minMinutes : null,
-  slowest: typeof row.maxMinutes === "number" ? row.maxMinutes : null,
+  fastest: typeof row.fastestMinutes === "number" ? row.fastestMinutes : null,
   median: row.medianMinutes,
   sample: row.sample
 });

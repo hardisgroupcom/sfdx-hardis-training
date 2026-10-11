@@ -8,7 +8,7 @@ lang: en
 
 # Level 1 - Salesforce DevOps contributor basics
 
-**Time**: about 2 h 30, in one sitting or seven.<!-- observed --> Observed on Labs 1.3 to 1.7: 19 min to 2 h 56, median 1 h 10, 21 learners.<!-- /observed -->
+**Time**: about 2 h 30, in one sitting or seven.<!-- observed --> Observed on Labs 1.3 to 1.7: median 1 h 10, 21 learners, fastest 19 min.<!-- /observed -->
 
 **Before you start**: nothing. This is the first level.
 
