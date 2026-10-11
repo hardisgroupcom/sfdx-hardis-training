@@ -3,6 +3,11 @@
 What changed in the course, for learners and trainers. The course has no versions: each section is
 a day, newest first, and a change goes under the date of the day it is made.
 
+## 2026-10-12
+
+- Lab 3.8 says what monitoring gives you (a backup, indicators, alerts) and where each one is read. You now receive a real alert by email from the first run, and the lab says that a real project sends them to Slack, Microsoft Teams or Google Chat.
+- Lab 3.8: new troubleshooting entry for an email that does not arrive.
+
 ## 2026-10-11
 
 - New Statistics page on the site: how many learners start and finish each level, and the median time the labs really take next to the time they announce. Updated every week, and also readable in `STATS.md` of the repository.
