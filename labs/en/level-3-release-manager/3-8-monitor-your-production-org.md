@@ -41,11 +41,17 @@ Monitoring is the part of the release manager job that happens when nothing is b
 
 What it gives you, every night, is three things, and none of them is a log file to dig through:
 
-| What           | Where you read it                                                                                          |
-|----------------|------------------------------------------------------------------------------------------------------------|
-| **A backup**   | The git history of the monitoring repository: every change made in production, dated                       |
-| **Indicators** | One per check: a count and a severity, with a report file behind it. Inactive users, limits, failing tests |
-| **Alerts**     | The indicators that crossed a severity you chose, sent to you: a message in a team channel, or an email    |
+| What                  | Where you read it                                                                                          |
+|-----------------------|------------------------------------------------------------------------------------------------------------|
+| **A metadata backup** | The git history of the monitoring repository: every change made to the setup of production, dated          |
+| **Indicators**        | One per check: a count and a severity, with a report file behind it. Inactive users, limits, failing tests |
+| **Alerts**            | The indicators that crossed a severity you chose, sent to you: a message in a team channel, or an email    |
+
+The backup is a backup of **metadata**: objects, fields, flows, Apex, permission sets, layouts, the
+way the org is built. It is **not a backup of data**. No account, no contact, no installation
+record is in it, and it will never restore one. Losing records is a different risk, covered by a
+data backup tool, and a team that hears "production is backed up every night" has to know which of
+the two was meant.
 
 The alerts are how monitoring is read day to day: nobody opens a report every morning, and a
 message that arrives gets read. On a real project they go to **Slack, Microsoft Teams or Google
@@ -199,7 +205,7 @@ the branch on `main` **(3)** and click the green **Run workflow** **(4)**.
 The run appears in the list a few seconds later: click it to follow it.
 
 It takes a while, most of it the org backup. When it finishes, the repository holds a full source
-backup of production and a set of reports.
+backup of production, its metadata and none of its records, and a set of reports.
 
 ### 5. Read the first report
 
@@ -373,7 +379,7 @@ Command documentation: [hardis:org:configure:monitoring](https://sfdx-hardis.clo
 - A second repository, created by you, with an **Org Monitoring sfdx-hardis** workflow run: the
   backup, the Apex tests, MegaLinter and the Monitoring job all green
 - The `ActiveScratchOrgs` limit at 100% in the report, which the green run did not tell you
-- A full source backup of `helios-prod` committed in it
+- A full metadata backup of `helios-prod` committed in it: its sources, not its records
 - A first report you have read and triaged, however short it is
 - An email from the first run in your mailbox, subject starting with `[sfdx-hardis]`, with the org
   limits report attached
