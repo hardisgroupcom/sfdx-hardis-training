@@ -177,8 +177,8 @@ The times the pages announce come from the same file. `scripts/build/lab-times.m
 into the markdown under `labs/`, in every language, and the weekly workflow commits the result, so
 a change of time is a diff anybody can read: the `**Time**` line of a lab, the rows and the total of
 a level page, the table of the home page. It is the median, rounded down to five minutes for a lab
-and to a quarter of an hour for a level, followed by the fastest and the slowest learner between
-two `<!-- observed -->` comments. Never edit a time by hand to follow the figures: the next run
+and to a quarter of an hour for a level, followed by the median and the fastest plausible time
+between two `<!-- observed -->` comments. Never edit a time by hand to follow the figures: the next run
 overwrites it. The estimate a lab was written with lives in `training-universe.json` (`time`), and
 is what a lab fewer than five learners went through announces. `scripts/stats/lab-times.mjs` holds
 the rules.
@@ -188,6 +188,12 @@ node scripts/stats/course-stats.mjs            # read GitHub, write stats/course
 node scripts/stats/course-stats.mjs --render   # no network: rewrite STATS.md after changing its words
 node scripts/build/lab-times.mjs               # no network: write the observed times into the lab pages
 node scripts/build/lab-times.mjs --stamp       # after committing labs/en: stamp the translations it rewrote
+```
+
+Stamp only once the English commit has its final name: a rebase renames it, and a stamp written
+before names a commit that no longer exists.
+
+```bash
 node scripts/stats/course-stats.mjs --details  # and one row per learner, in hardis-report/course-stats/
 node --test scripts/stats/compute.test.mjs     # the arithmetic, on made-up repositories
 ```

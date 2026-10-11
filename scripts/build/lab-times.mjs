@@ -28,6 +28,9 @@
  * to date before the run are stamped with the new commit: they still say what
  * the English page says. A translation that was already behind is left alone,
  * because this run did not catch it up.
+ *
+ * Stamp once the English commit has its final name. A rebase renames it, and a
+ * stamp written before would name a commit that no longer exists.
  */
 import fs from "fs";
 import path from "path";
