@@ -106,6 +106,7 @@ scripts/data/         the SFDMU workspaces that seed the orgs
 scripts/training.mjs  the single entry point behind the Training menu
 scripts/verify/       the per-lab checks, used by "Check my work" and by the badge audit
 scripts/build/        generators: the backlog, the site, the screenshot fixtures
+scripts/stats/        the course statistics: who starts and finishes a level, and how long the labs take
 labs/en/              the lab content, plain markdown, and the reference every locale follows
 labs/fr/              the French translation, same file names, same structure
 labs/_assets/         the screenshots, produced by the extension harness with Helios fixtures
@@ -163,6 +164,21 @@ node scripts/i18n/stamp-source-rev.mjs fr  # stamp source_rev from git, after co
 node scripts/i18n/check-structure.mjs    # a translation that lost an image or a block, reported not enforced
 node scripts/i18n/align-tables.mjs       # re-pad the tables of a translated lab
 ```
+
+The Statistics page of the site is built from `stats/course-stats.json`, which a workflow commits
+every Monday: how many learners start and finish each level, and the median time of the labs next to
+the time they announce. It is read from the forks of the course and the badge claims, and it names
+nobody. `scripts/stats/ignore.json` lists the accounts left out, the maintainers and the ones the
+end to end tests run under. `scripts/stats/markers.mjs` says which Pull Request ends which lab: a
+lab whose User Story or branch changes has to change there too.
+
+```bash
+node scripts/stats/course-stats.mjs            # read GitHub, write stats/course-stats.json
+node scripts/stats/course-stats.mjs --details  # and one row per learner, in hardis-report/course-stats/
+node --test scripts/stats/compute.test.mjs     # the arithmetic, on made-up repositories
+```
+
+The `--details` report names people. It is git-ignored, and it stays on your machine.
 
 Screenshots are captured from the extension repository, which must be a sibling clone:
 

@@ -1,0 +1,171 @@
+/**
+ * node --test scripts/stats/compute.test.mjs
+ *
+ * The repositories below are made up, in the shape collect.mjs returns. What
+ * they hold is what real forks showed: a story merged twice after a reset, a
+ * night between two labs, receipts that all carry the same minute.
+ */
+import test from "node:test";
+import assert from "node:assert/strict";
+import {
+  parseAnnounced, announcedByLab, timeline, activeMinutes, segmentEnds, parseReceipts, learnerStats, median, aggregate, validate
+} from "./compute.mjs";
+import { SEGMENTS } from "./markers.mjs";
+
+const at = (day, clock) => `2026-10-${String(day).padStart(2, "0")}T${clock}:00Z`;
+const merged = (number, head, day, opened, mergedAt, extra = {}) => ({
+  number, head, base: "integration", createdAt: at(day, opened), mergedAt: at(day, mergedAt), commitDates: [], commentDates: [], ...extra
+});
+
+/** A learner who did Level 1 in one sitting. */
+const levelOne = () => ({
+  owner: "learner",
+  name: "sfdx-hardis-training",
+  createdAt: at(1, "09:00"),
+  branches: ["main", "integration", "uat", "features/US-014-panels-required", "features/US-016-crew-notes"],
+  commits: [
+    { date: at(1, "09:05"), message: "Point the pipeline at my training orgs", author: "learner" },
+    // Came with the fork, and with a later update of the course: not the learner's
+    { date: "2026-09-20T10:00:00Z", message: "docs: a lab", author: "maintainer" },
+    { date: at(1, "09:50"), message: "badge: level 1 for somebody", author: "github-actions[bot]" }
+  ],
+  pullRequests: [
+    merged(1, "features/US-014-panels-required", 1, "09:40", "09:45", { commitDates: [at(1, "09:20"), at(1, "09:35")] }),
+    merged(2, "features/US-016-crew-notes", 1, "10:05", "10:10", { commentDates: [at(1, "10:07")] })
+  ]
+});
+
+const UNIVERSE = {
+  levels: [
+    { level: 1, labs: [1, 2, 3, 4, 5, 6, 7].map((lab) => ({ lab, time: ["15 min", "30 min", "10 min", "15 min", "20 min", "20 min", "25 min"][lab - 1] })) },
+    { level: 2, labs: [1, 2, 3, 4, 5, 6, 7, 8, 9].map((lab) => ({ lab, time: "30 min" })) },
+    { level: 3, labs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((lab) => ({ lab, time: "40 min" })) }
+  ]
+};
+
+test("announced times are read as minutes", () => {
+  assert.equal(parseAnnounced("15 min"), 15);
+  assert.equal(parseAnnounced("~30 min, most of it waiting"), 30);
+  assert.equal(parseAnnounced("about 2 h"), 120);
+  assert.equal(parseAnnounced("about 7 h 20"), 440);
+  assert.equal(parseAnnounced("a while"), null);
+  assert.equal(announcedByLab(UNIVERSE)["1.7"], 25);
+  assert.equal(announcedByLab(UNIVERSE, () => "**Time**: ~50 min")["3.1"], 50);
+});
+
+test("the timeline keeps the learner's own moments, from the day of the fork", () => {
+  const points = timeline(levelOne());
+  assert.equal(points[0], Date.parse(at(1, "09:00")));
+  assert.ok(!points.includes(Date.parse("2026-09-20T10:00:00Z")), "a commit older than the fork is left out");
+  assert.ok(!points.includes(Date.parse(at(1, "09:50"))), "a commit of somebody else is left out");
+  assert.ok(points.includes(Date.parse(at(1, "10:07"))), "a Pull Request comment is a moment");
+});
+
+test("a gap longer than the cutoff counts for nothing", () => {
+  const points = [0, 10, 20, 200, 210].map((minutes) => minutes * 60000);
+  assert.equal(activeMinutes(points, 0, 210 * 60000, 45), 30);
+  assert.equal(activeMinutes(points, 0, 210 * 60000, 240), 210);
+  assert.equal(activeMinutes(points, 20 * 60000, 20 * 60000, 45), null, "no time between a moment and itself");
+});
+
+test("Level 1 in one sitting", () => {
+  const stats = learnerStats(levelOne(), { badgeLevels: [1] });
+  // From the anchor at 09:05 to the US-014 merge at 09:45, with no gap over the cutoff
+  assert.deepEqual(stats.segments["1.3,1.4,1.5,1.6"], { minutes: 40, source: "git" });
+  assert.deepEqual(stats.segments["1.7"], { minutes: 25, source: "git" });
+  assert.equal(stats.segments["1.2"], undefined, "the anchor is where the clock starts, not a figure");
+  assert.deepEqual(stats.levels[1], { started: true, completed: true, minutes: 65 });
+  assert.deepEqual(stats.levels[2], { started: false, completed: false, minutes: null });
+});
+
+test("a night between two labs is not time spent", () => {
+  const repo = levelOne();
+  repo.pullRequests[1] = merged(2, "features/US-016-crew-notes", 2, "08:00", "08:20");
+  const stats = learnerStats(repo);
+  assert.equal(stats.segments["1.7"].minutes, 20);
+});
+
+test("a story done again after a reset does not stretch its first pass", () => {
+  const repo = levelOne();
+  repo.pullRequests.push(merged(3, "features/US-014-panels-required-again", 9, "14:00", "14:30"));
+  const ends = segmentEnds(repo);
+  const index = SEGMENTS.findIndex((segment) => segment.labs.includes("1.6"));
+  assert.equal(ends[index], Date.parse(at(1, "09:45")));
+});
+
+test("a story in two Pull Requests ends with the second", () => {
+  const repo = levelOne();
+  repo.pullRequests.push(
+    merged(3, "features/US-021-crew-size-warning", 1, "10:30", "10:40"),
+    merged(4, "features/US-024-crew-size-required", 1, "11:00", "11:05"),
+    merged(5, "features/US-026-crew-capacity-data", 1, "11:20", "11:25"),
+    merged(6, "features/US-026-crew-capacity-actions", 1, "11:40", "11:50"),
+    merged(7, "features/US-027-schedule-by-availability", 1, "12:10", "12:20")
+  );
+  const stats = learnerStats(repo);
+  assert.equal(stats.segments["2.4"].minutes, 45);
+  assert.equal(stats.levels[2].started, true);
+  assert.equal(stats.levels[2].minutes, null, "a level with a segment missing has no total");
+});
+
+test("a level whose start is unknown is not measured", () => {
+  const repo = levelOne();
+  repo.commits = [];
+  const stats = learnerStats(repo);
+  assert.equal(stats.segments["1.3,1.4,1.5,1.6"], undefined);
+  assert.deepEqual(stats.segments["1.7"], { minutes: 25, source: "git" });
+  assert.equal(stats.levels[1].minutes, null);
+  assert.equal(stats.levels[1].started, true);
+});
+
+test("receipts taken lab after lab give each lab its time", () => {
+  const receipts = parseReceipts([
+    "LAB 1.2 OK  handle=learner  commit=aaaaaaa  2026-10-01T09:06Z",
+    "LAB 1.3 OK  handle=learner  commit=aaaaaaa  2026-10-01T09:15Z",
+    "LAB 1.4 OK  handle=learner  commit=aaaaaaa  2026-10-01T09:25Z",
+    "LAB 1.5 OK  handle=learner  commit=aaaaaaa  2026-10-01T09:38Z",
+    "LAB 1.6 OK  handle=learner  commit=aaaaaaa  2026-10-01T09:47Z",
+    "LAB 1.7 OK  handle=learner  commit=aaaaaaa  2026-10-01T10:12Z"
+  ].join("\n"));
+  const stats = learnerStats(levelOne(), { receipts });
+  assert.equal(stats.labs["1.2"], undefined);
+  assert.equal(stats.labs["1.3"], 9);
+  assert.equal(stats.labs["1.6"], 9);
+  assert.deepEqual(stats.segments["1.3,1.4,1.5,1.6"], { minutes: 41, source: "receipts" });
+});
+
+test("receipts that all carry the same minute fall back to git", () => {
+  const receipts = parseReceipts(["1.2", "1.3", "1.4", "1.5", "1.6", "1.7"]
+    .map((lab) => `LAB ${lab} OK  handle=learner  commit=aaaaaaa  2026-10-01T10:15Z`).join("\n"));
+  const stats = learnerStats(levelOne(), { receipts });
+  assert.deepEqual(stats.labs, {});
+  assert.equal(stats.segments["1.7"].source, "git");
+});
+
+test("the earliest receipt of a lab wins", () => {
+  const receipts = parseReceipts("LAB 1.3 OK  handle=a  commit=b  2026-10-02T09:00Z\nLAB 1.3 OK  handle=a  commit=b  2026-10-01T09:00Z");
+  assert.equal(receipts["1.3"], Date.parse("2026-10-01T09:00:00Z"));
+});
+
+test("a median under the minimum sample is not published", () => {
+  assert.equal(median([30, 10, 20]), 20);
+  assert.equal(median([10, 20, 31, 40]), 26);
+  assert.equal(median([]), null);
+
+  const one = learnerStats(levelOne(), { badgeLevels: [1] });
+  const few = aggregate([one, one], announcedByLab(UNIVERSE), { minSample: 3 });
+  assert.equal(few.levels[0].medianMinutes, null);
+  assert.equal(few.levels[0].sample, 2);
+
+  const enough = aggregate([one, one, one], announcedByLab(UNIVERSE), { minSample: 3 });
+  assert.deepEqual(enough.levels[0], { level: 1, started: 3, completed: 3, announcedMinutes: 90, medianMinutes: 65, sample: 3 });
+  assert.equal(enough.segments[0].announcedMinutes, 65);
+  assert.deepEqual(validate(enough), []);
+});
+
+test("a file that names a learner is refused", () => {
+  const stats = aggregate([learnerStats(levelOne())], announcedByLab(UNIVERSE));
+  assert.deepEqual(validate(stats), []);
+  assert.ok(validate({ ...stats, repository: "https://github.com/learner/sfdx-hardis-training" }).length > 0);
+  assert.ok(validate({ ...stats, levels: [{ ...stats.levels[0], started: 1, completed: 2 }] }).length > 0);
+});
