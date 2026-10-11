@@ -5,7 +5,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 
 ## 2026-10-11
 
-- New Statistics page on the site: how many learners start and finish each level, and the median time the labs really take next to the time they announce. Updated every week.
+- New Statistics page on the site: how many learners start and finish each level, and the median time the labs really take next to the time they announce. Updated every week, and also readable in `STATS.md` of the repository.
 - The Badges page says how many of each badge were awarded.
 - Check my work: the receipt of a lab keeps the time it first passed, instead of the time of the last check.
 - Lab 3.8: step 8 says that Publish my pipeline configuration opens its Pull Request itself, and a new troubleshooting entry covers the files a backup run from your computer leaves in the monitoring repository.

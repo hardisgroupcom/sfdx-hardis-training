@@ -168,12 +168,14 @@ node scripts/i18n/align-tables.mjs       # re-pad the tables of a translated lab
 The Statistics page of the site is built from `stats/course-stats.json`, which a workflow commits
 every Monday: how many learners start and finish each level, and the median time of the labs next to
 the time they announce. It is read from the forks of the course and the badge claims, and it names
-nobody. `scripts/stats/ignore.json` lists the accounts left out, the maintainers and the ones the
+nobody. [STATS.md](STATS.md) is the same page in this repository, written from that file by the same
+workflow: never edit it by hand, and re-render it when the words of the page change in `i18n/en.json`. `scripts/stats/ignore.json` lists the accounts left out, the maintainers and the ones the
 end to end tests run under. `scripts/stats/markers.mjs` says which Pull Request ends which lab: a
 lab whose User Story or branch changes has to change there too.
 
 ```bash
-node scripts/stats/course-stats.mjs            # read GitHub, write stats/course-stats.json
+node scripts/stats/course-stats.mjs            # read GitHub, write stats/course-stats.json and STATS.md
+node scripts/stats/course-stats.mjs --render   # no network: rewrite STATS.md after changing its words
 node scripts/stats/course-stats.mjs --details  # and one row per learner, in hardis-report/course-stats/
 node --test scripts/stats/compute.test.mjs     # the arithmetic, on made-up repositories
 ```
