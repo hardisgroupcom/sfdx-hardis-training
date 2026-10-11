@@ -25,7 +25,7 @@ depends_on:
 
 **Niveau** : 1 Contributeur, les bases
 
-**Durée** : ~10 min<!-- observed --> (observé : de 0 min à 1 h 17, médiane 11 min, 10 participants)<!-- /observed -->
+**Durée** : ~10 min<!-- observed --> (observé : médiane 11 min, 10 participants, le plus rapide 6 min)<!-- /observed -->
 
 **Vous allez** : prendre votre premier ticket et atterrir sur une branche propre, pointée vers votre
 org de dev.

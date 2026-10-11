@@ -28,7 +28,7 @@ depends_on:
 
 **Niveau** : 2 Contributeur avancé
 
-**Durée** : ~45 min<!-- observed --> (observé : de 7 min à 55 min, médiane 47 min, 8 participants)<!-- /observed -->
+**Durée** : ~45 min<!-- observed --> (observé : médiane 47 min, 8 participants, le plus rapide 31 min)<!-- /observed -->
 
 **Vous allez** : rencontrer la pire espèce d'échec, celle où rien n'échoue, et la corriger avec trois
 deployment actions de trois types différents.

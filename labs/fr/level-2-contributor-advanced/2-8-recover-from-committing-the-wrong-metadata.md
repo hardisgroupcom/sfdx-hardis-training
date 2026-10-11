@@ -23,7 +23,7 @@ depends_on:
 
 **Niveau** : 2 Contributeur avancé
 
-**Durée** : ~25 min<!-- observed --> (observé : de 15 min à 1 h 59, médiane 27 min, 5 participants)<!-- /observed -->
+**Durée** : ~25 min<!-- observed --> (observé : médiane 27 min, 5 participants, le plus rapide 15 min)<!-- /observed -->
 
 **Vous allez** : sur-sélectionner exprès au moment de publier, voir ce que cela fait à une Pull
 Request, et apprendre les deux chemins de récupération.

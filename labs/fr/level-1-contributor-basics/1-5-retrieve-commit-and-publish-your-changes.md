@@ -29,7 +29,7 @@ depends_on:
 
 **Niveau** : 1 Contributeur, les bases
 
-**Durée** : ~25 min<!-- observed --> (observé : de 3 min à 1 h 16, médiane 25 min, 10 participants)<!-- /observed -->
+**Durée** : ~25 min<!-- observed --> (observé : médiane 25 min, 10 participants, le plus rapide 10 min)<!-- /observed -->
 
 **Vous allez** : rapatrier vos modifications d'org dans le repository, décider lesquelles appartiennent
 à votre story, et pousser une branche prête à être relue.

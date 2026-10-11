@@ -30,7 +30,7 @@ depends_on:
 
 **Niveau** : 2 Contributeur avancé
 
-**Durée** : ~30 min<!-- observed --> (observé : de 13 min à 1 h 19, médiane 32 min, 5 participants)<!-- /observed -->
+**Durée** : ~30 min<!-- observed --> (observé : médiane 32 min, 5 participants, le plus rapide 13 min)<!-- /observed -->
 
 **Vous allez** : affronter un vrai conflit de merge sur deux fichiers qui entrent en conflit de façon
 très différente, et résoudre les deux sans perdre le travail de personne.

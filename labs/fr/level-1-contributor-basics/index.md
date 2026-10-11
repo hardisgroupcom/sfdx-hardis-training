@@ -9,7 +9,7 @@ source_rev: "40c2017ecd00caf98a1f244990d0385d92d8df7b"
 
 # Niveau 1 - Contributeur Salesforce DevOps, les bases
 
-**Durée** : environ 2 h 30, en une fois ou en sept.<!-- observed --> Observé sur les Labs 1.3 à 1.7 : de 19 min à 2 h 56, médiane 1 h 10, 21 participants.<!-- /observed -->
+**Durée** : environ 2 h 30, en une fois ou en sept.<!-- observed --> Observé sur les Labs 1.3 à 1.7 : médiane 1 h 10, 21 participants, le plus rapide 19 min.<!-- /observed -->
 
 **Prérequis** : aucun. C'est le premier niveau.
 

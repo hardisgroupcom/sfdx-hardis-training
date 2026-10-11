@@ -40,9 +40,10 @@
     "labsPair": "Labs {first} et {last}",
     "percent": "{value} %",
     "notEnough": "pas encore assez de données",
-    "observed": "(observé : de {fastest} à {slowest}, médiane {median}, {sample} participants)",
-    "observedTogether": "({labs} observés ensemble : de {fastest} à {slowest}, médiane {median}, {sample} participants)",
-    "observedLevel": "Observé sur les {labs} : de {fastest} à {slowest}, médiane {median}, {sample} participants.",
+    "observed": "(observé : médiane {median}, {sample} participants{fastest})",
+    "fastest": ", le plus rapide {time}",
+    "observedTogether": "({labs} observés ensemble : médiane {median}, {sample} participants{fastest})",
+    "observedLevel": "Observé sur les {labs} : médiane {median}, {sample} participants{fastest}.",
     "empty": "Pas encore de chiffres. Ils sont lus une fois par semaine, et la première lecture n'a pas eu lieu.",
     "funnel": {
       "heading": "Commencés et terminés",
@@ -65,17 +66,15 @@
       "levelColumns": [
         "Niveau",
         "Estimation initiale",
-        "Le plus rapide",
         "Médiane",
-        "Le plus lent",
+        "Le plus rapide",
         "Participants"
       ],
       "labColumns": [
         "Labs",
         "Estimation initiale",
-        "Le plus rapide",
         "Médiane",
-        "Le plus lent",
+        "Le plus rapide",
         "Participants"
       ],
       "byLab": {
@@ -95,6 +94,8 @@
         "Les Labs 1.1 et 1.2 installent les outils et créent les orgs avant que le repository existe. Ils ne sont pas mesurés, et le Niveau 1 est compté à partir du Lab 1.3.",
         "",
         "Les labs qui partagent une Pull Request sont mesurés ensemble.",
+        "",
+        "Le plus rapide est le temps le plus court dans lequel quelqu'un a pu faire le lab. Un chiffre de moins de cinq minutes, ou de moins d'un quart de la médiane, correspond à deux labs vérifiés à la suite et est écarté. Le plus lent n'est pas affiché : c'est quelqu'un qui a été interrompu.",
         "",
         "Le temps qu'annonce la page d'un lab est cette médiane, arrondie aux cinq minutes inférieures, et le temps d'un niveau est arrondi au quart d'heure inférieur. Un lab mesuré avec d'autres prend sa part de leur temps, et un lab avec trop peu de participants garde son estimation. Les pages sont réécrites d'après les chiffres chaque semaine."
       ]
@@ -466,5 +467,5 @@
       }
     }
   },
-  "source_rev": "49867d0ab53fa391f400568c0766825218f86b28"
+  "source_rev": "9426c8e05eb9a9fa84c6b2848c577247d131bd11"
 }

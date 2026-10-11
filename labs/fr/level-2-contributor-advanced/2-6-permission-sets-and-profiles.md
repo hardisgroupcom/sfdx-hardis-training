@@ -21,7 +21,7 @@ depends_on:
 
 **Niveau** : 2 Contributeur avancé
 
-**Durée** : ~35 min<!-- observed --> (observé : de 21 min à 1 h 09, médiane 35 min, 5 participants)<!-- /observed -->
+**Durée** : ~35 min<!-- observed --> (observé : médiane 35 min, 5 participants, le plus rapide 21 min)<!-- /observed -->
 
 **Vous allez** : courir après une permission qui s'évapore entre un déploiement vert et l'org cible,
 et découvrir qu'elle a été retirée exprès.
