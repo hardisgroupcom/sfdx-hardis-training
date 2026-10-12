@@ -505,8 +505,7 @@
       "config": [
         "autoCleanTypes",
         "minimizeProfiles",
-        "autoRemoveUserPermissions",
-        "cleanXmlPatterns"
+        "autoRemoveUserPermissions"
       ],
       "docs": [
         "salesforce-devops-work-on-user-story-profiles"
@@ -1563,9 +1562,6 @@
         "lab-2-5"
       ],
       "minimizeProfiles": [
-        "lab-2-6"
-      ],
-      "cleanXmlPatterns": [
         "lab-2-6"
       ],
       "availableTargetBranchesLabels": [

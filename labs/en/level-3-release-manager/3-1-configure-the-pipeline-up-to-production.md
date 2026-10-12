@@ -693,7 +693,7 @@ run it again.
 The Profile you published in [Lab 2.6](../level-2-contributor-advanced/2-6-permission-sets-and-profiles.md)
 names a page layout or a tab your scratch org has and this Developer Edition org does not. It is the
 first time that Profile meets an org of another kind, which is why it shows here and not earlier.
-The **If it goes wrong** section of Lab 2.6 walks through finding which of the two orgs is the odd
+The **If it goes wrong** section of [Lab 2.6](../level-2-contributor-advanced/2-6-permission-sets-and-profiles.md) walks through finding which of the two orgs is the odd
 one, and what to change. Once the fix is merged into `integration`, switch back to it, **Pull**,
 and run **Set up one of my training orgs** again.
 

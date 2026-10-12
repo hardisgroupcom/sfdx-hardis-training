@@ -729,7 +729,7 @@ alias, et relancez.
 Le profil que vous avez publié au [Lab 2.6](../level-2-contributor-advanced/2-6-permission-sets-and-profiles.md)
 nomme une présentation de page ou un onglet que votre scratch org a et que cette org Developer
 Edition n'a pas. C'est la première fois que ce profil rencontre une org d'un autre genre, d'où
-l'erreur ici et pas plus tôt. La section **En cas de problème** du Lab 2.6 explique comment trouver
+l'erreur ici et pas plus tôt. La section **En cas de problème** du [Lab 2.6](../level-2-contributor-advanced/2-6-permission-sets-and-profiles.md) explique comment trouver
 laquelle des deux orgs fait exception, et quoi changer. Une fois le correctif mergé dans
 `integration`, revenez dessus, **Pull**, et relancez **Set up one of my training orgs**.
 
