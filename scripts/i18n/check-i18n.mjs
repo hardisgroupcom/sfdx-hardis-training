@@ -127,8 +127,14 @@ for (const locale of locales) {
   const latest = git(["hash-object", "--", "i18n/en.json"]);
   if (STAMP) {
     if (latest) {
-      const stamped = { ...translated, source_rev: latest };
-      fs.writeFileSync(file, `${JSON.stringify(stamped, null, 2)}\n`, "utf8");
+      // Only the stamp changes: rewriting the whole file with JSON.stringify expands the short
+      // arrays Prettier keeps on one line, and MegaLinter then reformats them in a commit of its own
+      const raw = fs.readFileSync(file, "utf8");
+      const line = /^(\s*"source_rev":\s*)"[^"]*"/m;
+      const text = line.test(raw)
+        ? raw.replace(line, `$1"${latest}"`)
+        : `${JSON.stringify({ ...translated, source_rev: latest }, null, 2)}\n`;
+      fs.writeFileSync(file, text, "utf8");
       console.log(`  stamped source_rev ${latest.slice(0, 8)}`);
     }
     continue;
