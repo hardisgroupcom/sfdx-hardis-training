@@ -88,7 +88,10 @@ one, and finishing the pipeline waits until the day somebody needs to release pr
       [developer.salesforce.com/signup](https://developer.salesforce.com/signup) exactly like the
       first one, and connected in **Orgs Manager** with the alias `helios-preprod`
 - [ ] Both seeded: Welcome page > **Training: Level 3** > **Set up one of my training orgs**, once
-      for `helios-preprod` and once for `helios-prod`
+      for `helios-preprod` and once for `helios-prod`. It first sets the language of your user to
+      English in that org, if it is not already: every org of a pipeline is worked in one language,
+      because Salesforce names the page layouts it creates in the language of the user at work, and a
+      Profile assigns a page layout by its name
 - [ ] `SFDX_AUTH_URL_INTEGRATION` and `SFDX_AUTH_URL_UAT` still in your fork, as since Level 1: this
       lab leaves them alone
 - [ ] On `integration` in VS Code, with nothing waiting in the **Source Control** panel
@@ -680,16 +683,14 @@ there, then run **Set up my training environment** again. On a scratch org it is
 The usual cause is an expired connection: reconnect it in **Orgs Manager** under the same alias, and
 run it again.
 
-**Set up one of my training orgs fails on `Profile Helios Crew`, with `no Layout named ...`.**
-The Profile you published in Lab 2.6 still lists the page layout and the tab of every object of
-your scratch org, and a Developer Edition org does not have them all. The course removes those
-lines when you publish, since a rule it received after you forked it. Bring the rule, then let it
-clean the file: **Training: Level 3 > Update my course**; then **New User Story**, target
-`integration`, **Fix**, `US-033-crew-profile-for-every-org`, and the last answer, no org; then
-**Save / Publish** straight away, answering that your commit is ready. Its
-`chore(sfdx-hardis): clean sfdx project` commit takes about a thousand lines out of the Profile.
-Open the Pull Request, merge it with **Squash and merge** when it is green, switch back to
-`integration`, **Pull**, and run **Set up one of my training orgs** again.
+**Set up one of my training orgs fails on `Profile Helios Crew`, with `no Layout named ...` or
+`no CustomTab named ...`.**
+The Profile you published in [Lab 2.6](../level-2-contributor-advanced/2-6-permission-sets-and-profiles.md)
+names a page layout or a tab your scratch org has and this Developer Edition org does not. It is the
+first time that Profile meets an org of another kind, which is why it shows here and not earlier.
+The **If it goes wrong** section of Lab 2.6 walks through finding which of the two orgs is the odd
+one, and what to change. Once the fix is merged into `integration`, switch back to it, **Pull**,
+and run **Set up one of my training orgs** again.
 
 ## Check your work
 

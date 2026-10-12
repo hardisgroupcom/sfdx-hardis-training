@@ -373,6 +373,18 @@ deployed as metadata. Each scratch org is:
     sf org create scratch --definition-file config/project-scratch-def.json \
       --alias helios-dev --target-dev-hub helios-prod --duration-days 30
 
+The definition file is short, and two of its lines are there for Level 3. A scratch org comes with
+Salesforce features a Developer Edition org does not have, Field Service and the Thanks badges, and
+with them dozens of standard objects. The file switches both off, so that the orgs of your pipeline
+hold the same objects: a deployment that names an object one org lacks is refused there.
+
+For the same reason the command sets the language of your user in `helios-prod` to English, when
+it is not already, and tells you so. Scratch orgs are created in English, and Salesforce names
+what it creates in the language of the user at work: the page layout of a new object is
+`Crew Capacity Layout` for one user and `Présentation Crew Capacity` for another. The labs name
+every Salesforce screen in English too. A real project has the same rule: whoever configures and
+deploys works in one language, in every org of the pipeline.
+
 and each of them is then seeded:
 
     sf project deploy start --source-dir force-app --target-org helios-dev
