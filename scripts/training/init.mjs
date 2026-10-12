@@ -313,13 +313,15 @@ export async function ensureScratchOrgs(devHub, aliases) {
       warn(`${alias} could not be created: ${json?.message || (res.stderr || res.stdout).trim().split("\n").pop()}`);
     }
   }
+  // Before the stop below: an org this run created has the features of the definition, and the
+  // next run, which keeps it, must not take it for an older one
+  rememberShape(Object.values(usernames).filter((username) => !kept.includes(username)));
   if (failures.length > 0) {
     abort(
       `${failures.length} scratch org(s) could not be created.`,
       "Click Set up my training environment again: the orgs that were created are kept, and only the missing ones are retried."
     );
   }
-  rememberShape(Object.values(usernames).filter((username) => !kept.includes(username)));
   return usernames;
 }
 
@@ -920,6 +922,7 @@ export default async function init(args) {
   }
   const devHub = await findDevHub(orgs, args.org);
 
+  info(c.dim(`    Your user in ${devHub} will work in English from now on, like the scratch orgs and the labs.`));
   if (!args.yes && !(await confirm(`Build your training environment from ${devHub}?`, true))) {
     info("Nothing was changed.");
     return;

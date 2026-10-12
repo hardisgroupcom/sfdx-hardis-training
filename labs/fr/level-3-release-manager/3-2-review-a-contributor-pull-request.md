@@ -252,9 +252,10 @@ Actions est désactivé, ou `SFDX_AUTH_URL_INTEGRATION`, le secret avec lequel `
 connecte toujours, manque. **Training: Level 3 > Set up my training environment** le réécrit.
 
 **Vous avez mergé avant la correction.**
-Alors `Total_Capacity_kW__c` n'est plus sur la présentation de page dans `integration`. Lancez le
-scénario de correction quand même : il ouvre la correction comme une nouvelle Pull Request depuis
-une branche du même nom, qu'il recrée, et vous relisez et mergez celle-là.
+Alors `Total_Capacity_kW__c` n'est plus sur la présentation de page dans `integration`, et le
+merge a supprimé la branche de Mariia, d'où part sa correction. Cliquez sur **Restore branch** en
+bas de la Pull Request mergée, puis lancez le scénario de correction : il ouvre la correction comme
+une nouvelle Pull Request depuis la même branche, et vous relisez et mergez celle-là.
 
 ## Vérifiez votre travail
 

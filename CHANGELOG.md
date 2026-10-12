@@ -17,7 +17,6 @@ a day, newest first, and a change goes under the date of the day it is made.
 - Check my work no longer counts Lab 2.8 as done before you start it: it now looks for the layout change of the story in `integration`, and the lab tells you to open, then merge, its Pull Request.
 - Lab 2.1 no longer says Signed Off By sits under Crew Notes on the record, a field you cannot see yourself.
 - Lab 2.2 says how to clear the Visible column before ticking System Administrator.
-- Lab 2.4 says the Crew Capacity tab of `helios-integration` opens on Recently Viewed, and why it has no All list view.
 - Lab 2.5 says where to paste each block of Apex, and that the fixed method replaces the first one.
 - Lab 2.6: the Setup path of step 5 was cut in two on the site.
 - Lab 2.7 mentions the two files of your teammate that wait under Staged Changes during the merge.

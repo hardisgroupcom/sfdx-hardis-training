@@ -156,6 +156,10 @@ Depuis le [Lab 1.2](../level-1-contributor-basics/1-2-create-your-dev-hub-scratc
 les a protégées. `preprod` et `main` sont à vous de protéger, et un release manager le fait le jour
 où les branches rejoignent la pipeline, pas après le premier mauvais merge.
 
+Votre fork vous donne une deuxième raison. Il supprime une branche une fois sa Pull Request mergée,
+et une release est une Pull Request dont la source est `preprod`. Seule une branche protégée est
+conservée : sans sa règle, `preprod` partirait avec votre première release.
+
 Dans votre fork (`github.com/my-username/sfdx-hardis-training`), cliquez sur **Settings** **(1)**,
 puis **Branches** **(2)** dans le menu de gauche. Les deux règles **(4)** sont celles que la mise en
 place de votre environnement a créées au [Lab 1.2](../level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md). Cliquez sur **Add rule** **(3)**.

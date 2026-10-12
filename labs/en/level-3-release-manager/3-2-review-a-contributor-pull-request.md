@@ -239,9 +239,10 @@ Actions are disabled, or `SFDX_AUTH_URL_INTEGRATION`, the secret `integration` s
 missing. **Training: Level 3 > Set up my training environment** writes it again.
 
 **You merged before the fix.**
-Then `Total_Capacity_kW__c` is off the layout in `integration`. Run the fix scenario anyway: it
-opens the fix as a new Pull Request from a branch of the same name, which it creates again, and you
-review and merge that one.
+Then `Total_Capacity_kW__c` is off the layout in `integration`, and the merge deleted Mariia's
+branch, which her fix starts from. Click **Restore branch** at the bottom of the merged Pull
+Request, then run the fix scenario: it opens the fix as a new Pull Request from the same branch, and
+you review and merge that one.
 
 ## Check your work
 

@@ -300,7 +300,9 @@ avant chaque merge.
 Vous n'avez pas à supprimer la branche : votre fork le fait au merge, et GitHub le dit sous la
 zone de merge. Une branche mergée qui traîne est une chose de plus dans la liste de tout le monde,
 sans aucun bénéfice, et un vrai projet active donc le même réglage (**Settings > General >
-Automatically delete head branches**).
+Automatically delete head branches**). Si la branche est toujours là, votre fork a été mis en place
+avant que le cours n'active ce réglage : cliquez sur **Delete branch**, et cochez-le dans votre
+fork.
 
 !!! note "À quoi sert le linter, et pourquoi son commentaire peut afficher un avertissement"
     MegaLinter lit tout le repository, pas seulement votre modification, et signale tout ce qui enfreint

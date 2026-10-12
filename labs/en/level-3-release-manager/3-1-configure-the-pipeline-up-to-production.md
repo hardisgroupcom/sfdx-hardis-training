@@ -148,6 +148,10 @@ work that way: setting up the environment protected them. `preprod` and `main` a
 protect, and a release manager does it the day the branches join the pipeline, not after the first
 bad merge.
 
+Your fork gives you a second reason. It deletes a branch once its Pull Request is merged, and a
+release is a Pull Request whose source is `preprod`. Only a protected branch is kept: without its
+rule, `preprod` would go with your first release.
+
 In your fork (`github.com/my-username/sfdx-hardis-training`), click **Settings** **(1)**, then
 **Branches** **(2)** in the left menu. The two rules **(4)** are the ones setting up your environment
 created in [Lab 1.2](../level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md). Click **Add rule** **(3)**.

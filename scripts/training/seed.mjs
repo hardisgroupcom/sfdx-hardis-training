@@ -96,7 +96,8 @@ export function workInEnglish(target) {
   if (!user) {
     return false;
   }
-  if (user.LanguageLocaleKey === ENGLISH) {
+  // en_GB and the others name what Salesforce creates like en_US does
+  if (/^en(_|$)/.test(user.LanguageLocaleKey || "")) {
     return true;
   }
   const res = run("sf", [

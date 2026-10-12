@@ -434,7 +434,7 @@ Command documentation: [hardis:org:data:import](https://sfdx-hardis.cloudity.com
 
 ### 6. What it just did
 
-Seven things, each of them real work on a real project, and none of them yours to repeat:
+Eight things, each of them real work on a real project, and none of them yours to repeat:
 
 - **Your own copy of the repository**, its *fork*, under your GitHub account. Your clone pushes
   there now, and still pulls from the team's repository. The fork carries the two branches the

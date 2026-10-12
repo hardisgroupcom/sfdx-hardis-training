@@ -456,7 +456,7 @@ Documentation de la commande : [hardis:org:data:import](https://sfdx-hardis.clou
 
 ### 6. Ce qu'elle vient de faire
 
-Sept choses, chacune du vrai travail sur un vrai projet, et aucune à refaire vous-même :
+Huit choses, chacune du vrai travail sur un vrai projet, et aucune à refaire vous-même :
 
 - **Votre propre copie du repository**, son *fork*, sous votre compte GitHub. Votre clone pousse là-bas
   désormais, et continue de tirer depuis le repository de l'équipe. Le fork porte les deux branches

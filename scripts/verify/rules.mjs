@@ -967,8 +967,8 @@ export const RULES = [
     id: "3.4", level: 3, lab: 4,
     title: "The colliding Pull Requests were ordered, and both grants survived",
     check: (ctx) => {
-      // US-020 is deliberately NOT checked here: Lab 3.4 sends it back to its author
-      // and no lab ever merges it. Requiring it would make this check unpassable.
+      // US-020 is never merged: Lab 3.4 sends it back to its author. Its fields are therefore
+      // not looked for in integration, and only its branch is, at the end of this check.
       const missing = [
         ["US-018", FIELD("Installation__c", "Crew_Capacity_Cap__c")],
         ["US-019", FIELD("Panel_Batch__c", "Quote_Pdf_Url__c")]
