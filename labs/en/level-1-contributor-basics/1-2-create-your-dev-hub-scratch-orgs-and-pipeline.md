@@ -150,8 +150,8 @@ course, and giving it its final name now means nothing gets renamed later.
 
 That name is called an **alias**, and it is what you will see and click from now on: in this panel,
 in the pipeline diagram, everywhere the course names an org. The three orgs step 5 creates get
-theirs automatically, and they appear in this table under those names **(2)**, each with a green
-**Connected** **(3)**. **This panel is how you connect to an org for the rest of the course**, and
+theirs automatically, and they appear in the Orgs Manager table under those names, each with a
+green **Connected**: **(2)** and **(3)** in the first picture of this step. **This panel is how you connect to an org for the rest of the course**, and
 also how you check which org you are pointed at, which saves more confusion than anything else in
 this training.
 
