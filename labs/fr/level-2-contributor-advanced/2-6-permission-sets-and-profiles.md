@@ -5,7 +5,7 @@ description: "Une permission accordée sur un profil s'évapore après un déplo
 level: 2
 lab: 6
 lang: fr
-source_rev: "559614f6da677a5d67fb3fc284e92d791a546bad"
+source_rev: "76888f588045820e6f9c15552923b1a3d1af0333"
 screenshots:
   - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/pipeline-config

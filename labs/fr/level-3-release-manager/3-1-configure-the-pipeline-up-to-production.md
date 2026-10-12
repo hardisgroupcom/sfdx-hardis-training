@@ -5,7 +5,7 @@ description: "Étendez une pipeline Salesforce à deux étages jusqu'à la produ
 level: 3
 lab: 1
 lang: fr
-source_rev: "a3ec841208c72cf766d6d9f964cb360bef1b7353"
+source_rev: "7a10109ece32f76a8425c11a2448fd4e2f4bca4c"
 screenshots:
   - annotated/vscode/devops-pipeline--one-column
   - annotated/web/github-new-branch
