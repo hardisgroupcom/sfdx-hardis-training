@@ -122,6 +122,8 @@ const readAnywhere = (ctx, file) => ctx.readOn(DEV, file) || ctx.readOn(ctx.curr
 const inAnyVersion = (ctx, file, holds) =>
   [ctx.readOn(DEV, file), ctx.readOn(ctx.currentBranch(), file)].some((content) => content && holds(content));
 const FIELD = (obj, field) => `force-app/main/default/objects/${obj}/fields/${field}.field-meta.xml`;
+// The teammate branch of Lab 3.4, as scripts/simulate/us-020-apex-refactor/scenario.json names it.
+const US_020_BRANCH = "training/mate-us-020-apex-refactor";
 const PERMSET = (name) => `force-app/main/default/permissionsets/${name}.permissionset-meta.xml`;
 
 const pass = (detail) => ({ ok: true, detail });
@@ -979,12 +981,22 @@ export const RULES = [
         return miss("Helios_Delivery_Manager still contains conflict markers", `${PERMSET("Helios_Delivery_Manager")} on branch ${DEV}`);
       }
       const lostGrants = ["Crew_Capacity_Cap__c", "Quote_Pdf_Url__c"].filter((f) => !manager.includes(f));
-      return lostGrants.length === 0
-        ? pass("Both stories are merged and Helios_Delivery_Manager carries both grants")
-        : miss(
+      if (lostGrants.length > 0) {
+        return miss(
           `Helios_Delivery_Manager lost these grants: ${lostGrants.join(", ")}`,
           `${PERMSET("Helios_Delivery_Manager")} on branch ${DEV}`
         );
+      }
+      // Both stories and both grants are in integration before the lab starts: the Level 2
+      // capstone merges US-019, and so does the Level 3 start state. What only this lab
+      // produces is the third Pull Request, received and sent back to its author.
+      if (!ctx.hasBranch(US_020_BRANCH)) {
+        return miss(
+          "the Pull Request of US-020 was never received: Training: Level 3 > Simulate my teammates, US-020 Refactor InstallationScheduler, then review it and leave it open",
+          `branch ${US_020_BRANCH} of your fork`
+        );
+      }
+      return pass("US-018 and US-019 are merged with both grants, and the Pull Request of US-020 was received");
     }
   },
   {

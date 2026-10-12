@@ -664,6 +664,11 @@ the new branch starts from where you are, with your commit and any file not comm
 **Save / Publish** again. If instead a configuration file you changed was also changed on GitHub,
 pull in the **Source Control** panel, then publish again.
 
+**GitHub shows a Confirm access page when you click Create, or Add secret.**
+GitHub asks who you are again before a sensitive change, when you have not confirmed it for a few
+hours. Confirm with the method it offers, GitHub Mobile, a passkey or a code by email. Then look at
+the list: if the rule or the secret is not in it, fill the form again.
+
 **The check you want to require is not suggested.**
 GitHub only lists checks that reported on this repository in the last seven days. Open a Pull
 Request into `integration`, let its checks run, and come back to the rule.

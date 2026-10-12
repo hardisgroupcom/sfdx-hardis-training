@@ -401,7 +401,9 @@ The last action adds the deployment user to Crew Leads. Retrying it would work, 
 twenty seconds, so do it by hand, the way a release manager does when a release cannot wait:
 
 1. In `helios-integration`, **Setup** > **Public Groups** > **Crew Leads** > **Edit**
-2. Add your user to **Selected Members**, then **Save**
+2. Add your user to **Selected Members**, then **Save**. In this course your user is already
+   there: the first action put every delivery manager in the group, and you are one. On a real
+   project the deployment user is a technical user, and it would not be
 
 Then, in the **Deployment Actions** tab, open the menu of **Add the deployment user to the Crew
 Leads group** and click **Mark as done in integration**. Nothing opens: sfdx-hardis records it in the background
