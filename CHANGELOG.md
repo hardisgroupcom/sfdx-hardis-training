@@ -23,7 +23,11 @@ a day, newest first, and a change goes under the date of the day it is made.
 - Lab 2.7 mentions the two files of your teammate that wait under Staged Changes during the merge.
 - Lab 2.9 mentions the Trailblazer username that Claim my badge asks for.
 - Lab 2.8: the first pill of the command list picture no longer covers the row above it.
-- Level 3 could not start for a learner coming from Level 2: the Helios Crew profile published in Lab 2.6 listed the page layout and the tab of every object of the scratch org, and could not be deployed to the two Developer Edition orgs. Save / Publish now keeps the layouts and tabs of the project only, Lab 2.6 explains the rule, and Lab 3.1 says how to repair a profile published before it.
+- Level 3 could not start for a learner coming from Level 2: the Helios Crew profile published in Lab 2.6 named page layouts and tabs that the two Developer Edition orgs do not have. New scratch orgs no longer have Field Service and the Thanks badges, and Set up my training environment switches both off in the scratch orgs you already have.
+- Set up my training environment and Set up one of my training orgs set the language of your user to English in the Developer Edition orgs, so Salesforce names page layouts the same way in every org.
+- Lab 2.6: new troubleshooting entry for a Profile refused with `no Layout named` or `no CustomTab named`: how to find which org differs, and what to change.
+- Your fork now deletes a branch once its Pull Request is merged, so Labs 1.6 and 3.2 no longer ask you to. The major branches stay: a protected branch cannot be deleted.
+- Lab 2.4 retrieves the All list view of Crew Capacity with the object, so the tab lists the 12 records in every org.
 - Check my work no longer counts Lab 3.4 as done before Level 3 starts: it now also looks for the Pull Request of US-020 in your fork.
 - Lab 3.1: new troubleshooting entry for the Confirm access page GitHub shows before saving a branch rule or a secret.
 - Lab 3.3 says your user is already in the Crew Leads group when you come to add it.

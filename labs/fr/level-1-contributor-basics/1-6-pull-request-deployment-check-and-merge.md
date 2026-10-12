@@ -5,7 +5,7 @@ description: "Ouvrez une Pull Request GitHub, lisez le contrôle de déploiement
 level: 1
 lab: 6
 lang: fr
-source_rev: "9ef428b3794f458225aedfbd5d985bd4894c9c97"
+source_rev: "a321cf29a6c3e8f005f7fe29f92ba0d8b46b7528"
 screenshots:
   - annotated/web/github-pr-checks
   - annotated/web/github-pr-comment
@@ -297,8 +297,10 @@ lit le release manager quand il promeut.
 GitHub retient la méthode que vous avez choisie la dernière fois, vérifiez donc l'étiquette du bouton
 avant chaque merge.
 
-Supprimez ensuite la branche. GitHub propose un bouton pour cela. Une branche mergée qui traîne est
-une chose de plus dans la liste de tout le monde, sans aucun bénéfice.
+Vous n'avez pas à supprimer la branche : votre fork le fait au merge, et GitHub le dit sous la
+zone de merge. Une branche mergée qui traîne est une chose de plus dans la liste de tout le monde,
+sans aucun bénéfice, et un vrai projet active donc le même réglage (**Settings > General >
+Automatically delete head branches**).
 
 !!! note "À quoi sert le linter, et pourquoi son commentaire peut afficher un avertissement"
     MegaLinter lit tout le repository, pas seulement votre modification, et signale tout ce qui enfreint

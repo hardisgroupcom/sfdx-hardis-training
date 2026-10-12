@@ -5,7 +5,7 @@ description: "Inscrivez-vous à une org Salesforce Developer Edition gratuite, p
 level: 1
 lab: 2
 lang: fr
-source_rev: "0f2e7b4f3157c57a15acde50d64299658b542eed"
+source_rev: "a321cf29a6c3e8f005f7fe29f92ba0d8b46b7528"
 screenshots:
   - annotated/web/sf-signup
   - annotated/web/gh-cli-download
@@ -362,6 +362,7 @@ OK  integration now names the org of every branch, and is pushed.
 8 of 8  Changes through a Pull Request, merged once green
 OK  integration now takes changes through a Pull Request only, merged once its checks are green.
 OK  uat now takes changes through a Pull Request only, merged once its checks are green.
+OK  A branch is now deleted once its Pull Request is merged. integration and uat stay: a protected branch cannot be deleted.
 ```
 
 Comptez quinze à vingt minutes, presque entièrement sur les étapes 4 et 5, quand Salesforce crée les
@@ -389,6 +390,19 @@ paramètre, déployé comme de la métadonnée. Chaque scratch org, c'est :
 
     sf org create scratch --definition-file config/project-scratch-def.json \
       --alias helios-dev --target-dev-hub helios-prod --duration-days 30
+
+Le fichier de définition est court, et deux de ses lignes sont là pour le Niveau 3. Une scratch org
+arrive avec des fonctionnalités Salesforce qu'une org Developer Edition n'a pas, Field Service et
+les badges Thanks, et avec elles des dizaines d'objets standard. Le fichier désactive les deux, pour
+que les orgs de votre pipeline contiennent les mêmes objets : un déploiement qui nomme un objet
+absent d'une org y est refusé.
+
+Pour la même raison, la commande passe votre utilisateur de `helios-prod` en anglais, s'il ne
+l'est pas déjà, et vous le dit. Les scratch orgs sont créées en anglais, et Salesforce nomme ce
+qu'il crée dans la langue de l'utilisateur au travail : la présentation de page d'un nouvel objet
+s'appelle `Crew Capacity Layout` pour l'un et `Présentation Crew Capacity` pour l'autre. Les labs
+nomment aussi chaque écran Salesforce en anglais. Un vrai projet suit la même règle : ceux qui
+configurent et déploient travaillent dans une seule langue, dans toutes les orgs du pipeline.
 
 et chacune est ensuite alimentée :
 
@@ -424,6 +438,15 @@ poserez la même règle sur `preprod` et `main` au [Lab 3.1](../level-3-release-
 pourrait encore merger sur du rouge. La mise en place de l'environnement et la réinitialisation d'un
 niveau lèvent cette protection le temps du seul push qu'elles font elles-mêmes sur ces branches, et
 la remettent juste après.
+
+Enfin, elle a demandé à GitHub de supprimer une branche une fois sa Pull Request mergée, ce qui
+correspond à la case **Automatically delete head branches** des paramètres du repository :
+
+    gh api -X PATCH repos/<your-handle>/sfdx-hardis-training -F delete_branch_on_merge=true
+
+Le réglage vaut pour tout le repository, donc aussi pour une Pull Request dont la source est
+`integration` ou `uat`. Ces deux-là restent, parce qu'une branche protégée ne peut pas être
+supprimée : c'est pour cela que la protection passe en premier.
 
 <!-- command-links:start -->
 Documentation de la commande : [hardis:org:data:import](https://sfdx-hardis.cloudity.com/hardis/org/data/import/)
@@ -463,6 +486,9 @@ Sept choses, chacune du vrai travail sur un vrai projet, et aucune à refaire vo
   vaut aussi pour vous, propriétaire du fork. Sur un vrai projet, quelqu'un a mis cela en place dès
   le premier jour : un merge sur un contrôle rouge ne déploie rien, ou la moitié de quelque chose, et
   c'est la personne suivante qui s'en aperçoit
+- **Les branches mergées supprimées par GitHub.** Une fois une Pull Request mergée, la branche
+  dont elle vient n'a plus rien à dire, et votre fork la supprime. `integration` et `uat` ne sont
+  jamais supprimées : elles sont protégées
 - **Un identifiant par job de CI.** Les jobs de CI sont les jobs automatisés que GitHub lance pour
   vous, sur ses machines plutôt que sur les vôtres, et ces machines ne peuvent pas atteindre une org
   Salesforce sans identifiant. Ils sont gardés comme secrets du repository, nommés

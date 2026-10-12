@@ -93,7 +93,11 @@ a besoin de livrer correctement.
       [developer.salesforce.com/signup](https://developer.salesforce.com/signup) exactement comme la
       première, et connectée dans **Orgs Manager** avec l'alias `helios-preprod`
 - [ ] Les deux alimentées : Welcome page > **Training: Level 3** > **Set up one of my training
-      orgs**, une fois pour `helios-preprod` et une fois pour `helios-prod`
+      orgs**, une fois pour `helios-preprod` et une fois pour `helios-prod`. La commande commence
+      par passer votre utilisateur en anglais dans cette org, s'il ne l'est pas déjà : on travaille
+      dans une seule langue dans toutes les orgs d'un pipeline, parce que Salesforce nomme les
+      présentations de page qu'il crée dans la langue de l'utilisateur au travail, et qu'un profil
+      attribue une présentation de page par son nom
 - [ ] `SFDX_AUTH_URL_INTEGRATION` et `SFDX_AUTH_URL_UAT` toujours dans votre fork, comme depuis le
       Niveau 1 : ce lab n'y touche pas
 - [ ] Sur `integration` dans VS Code, avec rien en attente dans le panneau **Source Control**
@@ -720,16 +724,14 @@ laisser **Set up my training environment** en construire un nouveau.
 La cause habituelle est une connexion expirée : reconnectez-la dans **Orgs Manager** sous le même
 alias, et relancez.
 
-**Set up one of my training orgs échoue sur `Profile Helios Crew`, avec `no Layout named ...`.**
-Le profil que vous avez publié au [Lab 2.6](../level-2-contributor-advanced/2-6-permission-sets-and-profiles.md) liste encore la présentation de page et l'onglet de chaque
-objet de votre scratch org, et une org Developer Edition ne les a pas tous. Le cours retire ces
-lignes à la publication, depuis une règle qu'il a reçue après votre fork. Récupérez la règle, puis
-laissez-la nettoyer le fichier : **Training: Level 3 > Update my course** ; puis **New User
-Story**, cible `integration`, **Fix**, `US-033-crew-profile-for-every-org`, et la dernière réponse,
-sans org ; puis **Save / Publish** tout de suite, en répondant que votre commit est prêt. Son commit
-`chore(sfdx-hardis): clean sfdx project` retire environ mille lignes du profil. Ouvrez la Pull
-Request, mergez-la avec **Squash and merge** quand elle est verte, revenez sur `integration`,
-**Pull**, et relancez **Set up one of my training orgs**.
+**Set up one of my training orgs échoue sur `Profile Helios Crew`, avec `no Layout named ...` ou
+`no CustomTab named ...`.**
+Le profil que vous avez publié au [Lab 2.6](../level-2-contributor-advanced/2-6-permission-sets-and-profiles.md)
+nomme une présentation de page ou un onglet que votre scratch org a et que cette org Developer
+Edition n'a pas. C'est la première fois que ce profil rencontre une org d'un autre genre, d'où
+l'erreur ici et pas plus tôt. La section **En cas de problème** du Lab 2.6 explique comment trouver
+laquelle des deux orgs fait exception, et quoi changer. Une fois le correctif mergé dans
+`integration`, revenez dessus, **Pull**, et relancez **Set up one of my training orgs**.
 
 ## Vérifiez votre travail
 

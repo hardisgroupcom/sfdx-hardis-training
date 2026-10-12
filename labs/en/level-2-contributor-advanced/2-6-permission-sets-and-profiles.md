@@ -12,7 +12,7 @@ screenshots:
 depends_on:
   commands: [hardis:mdapi:read, hardis:work:save]
   flags: [--active-only]
-  config: [autoCleanTypes, minimizeProfiles, autoRemoveUserPermissions, cleanXmlPatterns]
+  config: [autoCleanTypes, minimizeProfiles, autoRemoveUserPermissions]
   panels: [metadataRetriever, pipelineConfig, packageXml]
   docs: [salesforce-devops-work-on-user-story-profiles]
 ---
@@ -90,10 +90,6 @@ That is a project setting called **minimizeProfiles**, one of the cleaning rules
 switched on, and you can see it in the **Pipeline Settings** panel on the **Salesforce Project**
 tab.
 
-The same commit removes hundreds of other lines: the tab setting and the page layout of every
-object of `helios-dev`, which a Profile retrieved whole lists one by one. A second rule of this
-project does that, and the note of step 4 says why.
-
 ### 4. Understand why a project would ever do that
 
 Profiles are the single worst metadata type to version, for three reasons that all bite at once:
@@ -128,14 +124,15 @@ delete somebody else's.
     except on `Admin`. A Profile retrieved whole lists hundreds of user permissions, and Salesforce
     adds and removes some at every release, three times a year: a full Profile committed in spring
     can fail to deploy in autumn on a permission that no longer exists. `minimizeProfiles` takes
-    those permissions out every time somebody publishes a Profile.
+    those permissions out every time somebody publishes a Profile. What stays can still be long,
+    because a Profile retrieved whole lists the tab setting and the page layout of every object of
+    the org: those are exactly what only a Profile can hold.
 
-    A Profile retrieved whole also lists the tab setting and the page layout of every object of
-    the org it came from, standard objects included, and no two orgs hold the same ones: your
-    scratch orgs have standard objects that the production org of Level 3 does not, and a Profile
-    naming a layout or a tab an org does not have is refused there. So this project keeps in a
-    Profile the layouts and the tabs of its own components only, the ones the repository carries,
-    and the same cleaning commit removes the rest.
+    Those lines are also where a Profile stays tied to the org it came from. It names each page
+    layout and each tab, standard objects included, and an org that does not have one of them
+    refuses the whole Profile. It deploys everywhere in this course because your orgs are built to
+    hold the same objects, under the same names. **If it goes wrong**, below, shows how to find out
+    which org differs when they do not.
 
 ### 5. Do it the way the project expects
 
@@ -195,24 +192,8 @@ express:
 | `applicationVisibilities` | only the default app, and apps explicitly hidden (`visible` false)               |
 | `userPermissions`         | only permissions explicitly turned **off**, plus everything on the Admin profile |
 
-And some sections are never touched by `minimizeProfiles`, because nothing else can hold them:
-`loginHours`, `loginIpRanges`, `layoutAssignments`, `tabVisibilities`, `custom`, `userLicense`.
-
-Two of them are thinned by another setting of this project, `cleanXmlPatterns`, a list of XML
-elements **Save / Publish** removes from the files a pattern names:
-
-```yaml
-cleanXmlPatterns:
-  - globPattern: /**/*.profile-meta.xml
-    xpaths:
-      - "//ns:layoutAssignments//ns:layout[not(starts-with(text(),'Installation__c-')) and not(starts-with(text(),'Panel_Batch__c-'))]"
-      - "//ns:tabVisibilities//ns:tab[not(contains(text(),'__c'))]"
-```
-
-The first line keeps the page layout assignments of the two layouts the repository carries, the
-second the tab settings of custom tabs. Everything else a whole Profile lists belongs to the org it
-was retrieved from: a layout Salesforce created on its own, a standard object one org has and the
-next does not. On your own project, the list to keep is the layouts and tabs your repository holds.
+And some sections are never touched, because nothing else can hold them: `loginHours`,
+`loginIpRanges`, `layoutAssignments`, `tabVisibilities`, `custom`, `userLicense`.
 
 So a Profile still does a job in this pipeline. It is just a much smaller one.
 
@@ -246,14 +227,46 @@ The field is not in the permission set's object settings until the object is gra
 The CI user cannot grant a permission it does not have itself. Assign **Helios Delivery Manager** to
 the integration org user, which **Training: Level 2 > Set up one of my training orgs** does.
 
-**The Profile is still a thousand lines long after Save / Publish.**
-After the cleaning, `Helios Crew` is about thirty lines: its default app, the page layouts and the
-tabs of the project's own objects. If it still carries field, object or class permissions, it was
-committed after a retrieve and never went through the cleaning: check that `minimizeProfiles` is
-still listed on the **Salesforce Project** tab of **Pipeline Settings**, then **Save / Publish**
-again. If it still lists a page layout and a tab for every standard object, your fork was made
-before the course cleaned them: **Training: Level 2 > Update my course** brings the rule, then
+**The Profile comes back a thousand lines long.**
+A Profile retrieved whole keeps, after the cleaning, the tab settings and the page layout of every
+object of the org, its default app and record types, and on `Admin` its user permissions: those
+stay on purpose. If it still carries field, object or class permissions, it was committed after a retrieve and never went through the cleaning. Check
+that `minimizeProfiles` is still listed on the **Salesforce Project** tab of **Pipeline Settings**, then
 **Save / Publish** again. Do not shorten the file by hand.
+
+**A deployment refuses the Profile with `no Layout named ...` or `no CustomTab named ...`.**
+It can happen on this Pull Request, or much later, the first time the Profile reaches an org of
+Level 3. The Profile assigns a page layout, or shows a tab, that the target org does not have. The
+message names it, as `Object-Layout name`: start there.
+
+1. **Is it yours?** Search the repository for the layout name (`Ctrl+Shift+F`). If a file holds
+   it, the layout only misses from `manifest/package.xml`, which is the error of
+   [Lab 2.2](2-2-fix-a-missing-dependency-deployment-error.md). If no file holds it, Salesforce
+   created it in the org the Profile was retrieved from, and nobody decided it
+2. **Why does one org have it and not the other?** Open **Setup > Object Manager** in both orgs and
+   look for the object, then for its **Page Layouts**. There are three usual answers:
+
+    | What you find in the target org                       | The cause                                                                                                                    |
+    |-------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|
+    | The object is not there                               | A Salesforce feature is on in one org and off in the other. `ServiceAppointment` and its neighbours come with Field Service  |
+    | The object is there, its layout has a translated name | The layout was created by a user working in another language: `Présentation Crew Capacity` instead of `Crew Capacity Layout` |
+    | The object is there, with no layout or another one    | The two orgs were not created at the same time, or somebody renamed or deleted the layout by hand                            |
+
+3. **Fix the cause, not the message.** A feature: make the orgs agree, by switching it on in the
+   target org before the deployment, which is a manual action for the release manager, or off in
+   the org you build in, and retrieve the Profile again. A language: set your user to English in
+   the target org, **your picture > Settings > Language & Time Zone**, and rename the layout
+   there. Anything else, on an object your project does not use: the line has no business in the
+   repository. In a **Fix** User Story, open the Profile file, delete the `<layoutAssignments>`
+   block that names the layout, or the `<tabVisibilities>` block that names the tab, and publish
+
+Salesforce reports one missing name per deployment, so a second one can hide behind the first.
+
+If the list has dozens of names, all standard objects, your scratch orgs were created before this
+course switched Field Service and the Thanks badges off in them. **Training: Level 2 > Update my
+course**, then **Training: Level 1 > Set up my training environment** again: it switches both off
+in the scratch orgs you have, and deletes nothing. Then a **Fix** User Story from `helios-dev`,
+retrieve `Helios Crew` again as in step 3, and **Save / Publish**.
 
 ## Check your work
 
