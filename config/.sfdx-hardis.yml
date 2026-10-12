@@ -73,6 +73,18 @@ autoCleanTypes:
   - flowPositions
   - minimizeProfiles
 
+# A Profile keeps the page layouts and the tab settings of this project's own
+# components only. The Metadata Retriever brings a Profile whole (Lab 2.6), with
+# one line per object and per tab of the org it was retrieved from, and the
+# scratch orgs of this course hold standard objects a Developer Edition org
+# does not: left in, those lines make the Profile impossible to deploy to
+# preprod and to production (Level 3).
+cleanXmlPatterns:
+  - globPattern: /**/*.profile-meta.xml
+    xpaths:
+      - "//ns:layoutAssignments//ns:layout[not(starts-with(text(),'Installation__c-')) and not(starts-with(text(),'Panel_Batch__c-'))]"
+      - "//ns:tabVisibilities//ns:tab[not(contains(text(),'__c'))]"
+
 # Permissions that must never travel through a Profile on this project.
 # This is what makes the Lab 2.6 failure happen, and it is deliberate.
 autoRemoveUserPermissions:

@@ -12,7 +12,7 @@ screenshots:
 depends_on:
   commands: [hardis:mdapi:read, hardis:work:save]
   flags: [--active-only]
-  config: [autoCleanTypes, minimizeProfiles, autoRemoveUserPermissions]
+  config: [autoCleanTypes, minimizeProfiles, autoRemoveUserPermissions, cleanXmlPatterns]
   panels: [metadataRetriever, pipelineConfig, packageXml]
   docs: [salesforce-devops-work-on-user-story-profiles]
 ---
@@ -90,6 +90,10 @@ That is a project setting called **minimizeProfiles**, one of the cleaning rules
 switched on, and you can see it in the **Pipeline Settings** panel on the **Salesforce Project**
 tab.
 
+The same commit removes hundreds of other lines: the tab setting and the page layout of every
+object of `helios-dev`, which a Profile retrieved whole lists one by one. A second rule of this
+project does that, and the note of step 4 says why.
+
 ### 4. Understand why a project would ever do that
 
 Profiles are the single worst metadata type to version, for three reasons that all bite at once:
@@ -124,9 +128,14 @@ delete somebody else's.
     except on `Admin`. A Profile retrieved whole lists hundreds of user permissions, and Salesforce
     adds and removes some at every release, three times a year: a full Profile committed in spring
     can fail to deploy in autumn on a permission that no longer exists. `minimizeProfiles` takes
-    those permissions out every time somebody publishes a Profile. What stays can still be long,
-    because a Profile retrieved whole lists the tab setting and the page layout of every object of
-    the org: those are exactly what only a Profile can hold.
+    those permissions out every time somebody publishes a Profile.
+
+    A Profile retrieved whole also lists the tab setting and the page layout of every object of
+    the org it came from, standard objects included, and no two orgs hold the same ones: your
+    scratch orgs have standard objects that the production org of Level 3 does not, and a Profile
+    naming a layout or a tab an org does not have is refused there. So this project keeps in a
+    Profile the layouts and the tabs of its own components only, the ones the repository carries,
+    and the same cleaning commit removes the rest.
 
 ### 5. Do it the way the project expects
 
@@ -186,8 +195,24 @@ express:
 | `applicationVisibilities` | only the default app, and apps explicitly hidden (`visible` false)               |
 | `userPermissions`         | only permissions explicitly turned **off**, plus everything on the Admin profile |
 
-And some sections are never touched, because nothing else can hold them: `loginHours`,
-`loginIpRanges`, `layoutAssignments`, `tabVisibilities`, `custom`, `userLicense`.
+And some sections are never touched by `minimizeProfiles`, because nothing else can hold them:
+`loginHours`, `loginIpRanges`, `layoutAssignments`, `tabVisibilities`, `custom`, `userLicense`.
+
+Two of them are thinned by another setting of this project, `cleanXmlPatterns`, a list of XML
+elements **Save / Publish** removes from the files a pattern names:
+
+```yaml
+cleanXmlPatterns:
+  - globPattern: /**/*.profile-meta.xml
+    xpaths:
+      - "//ns:layoutAssignments//ns:layout[not(starts-with(text(),'Installation__c-')) and not(starts-with(text(),'Panel_Batch__c-'))]"
+      - "//ns:tabVisibilities//ns:tab[not(contains(text(),'__c'))]"
+```
+
+The first line keeps the page layout assignments of the two layouts the repository carries, the
+second the tab settings of custom tabs. Everything else a whole Profile lists belongs to the org it
+was retrieved from: a layout Salesforce created on its own, a standard object one org has and the
+next does not. On your own project, the list to keep is the layouts and tabs your repository holds.
 
 So a Profile still does a job in this pipeline. It is just a much smaller one.
 
@@ -221,11 +246,13 @@ The field is not in the permission set's object settings until the object is gra
 The CI user cannot grant a permission it does not have itself. Assign **Helios Delivery Manager** to
 the integration org user, which **Training: Level 2 > Set up one of my training orgs** does.
 
-**The Profile comes back a thousand lines long.**
-A Profile retrieved whole keeps, after the cleaning, the tab settings and the page layout of every
-object of the org, its default app and record types, and on `Admin` its user permissions: those
-stay on purpose. If it still carries field, object or class permissions, it was committed after a retrieve and never went through the cleaning. Check
-that `minimizeProfiles` is still listed on the **Salesforce Project** tab of **Pipeline Settings**, then
+**The Profile is still a thousand lines long after Save / Publish.**
+After the cleaning, `Helios Crew` is about thirty lines: its default app, the page layouts and the
+tabs of the project's own objects. If it still carries field, object or class permissions, it was
+committed after a retrieve and never went through the cleaning: check that `minimizeProfiles` is
+still listed on the **Salesforce Project** tab of **Pipeline Settings**, then **Save / Publish**
+again. If it still lists a page layout and a tab for every standard object, your fork was made
+before the course cleaned them: **Training: Level 2 > Update my course** brings the rule, then
 **Save / Publish** again. Do not shorten the file by hand.
 
 ## Check your work

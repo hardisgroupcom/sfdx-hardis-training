@@ -680,6 +680,17 @@ there, then run **Set up my training environment** again. On a scratch org it is
 The usual cause is an expired connection: reconnect it in **Orgs Manager** under the same alias, and
 run it again.
 
+**Set up one of my training orgs fails on `Profile Helios Crew`, with `no Layout named ...`.**
+The Profile you published in Lab 2.6 still lists the page layout and the tab of every object of
+your scratch org, and a Developer Edition org does not have them all. The course removes those
+lines when you publish, since a rule it received after you forked it. Bring the rule, then let it
+clean the file: **Training: Level 3 > Update my course**; then **New User Story**, target
+`integration`, **Fix**, `US-033-crew-profile-for-every-org`, and the last answer, no org; then
+**Save / Publish** straight away, answering that your commit is ready. Its
+`chore(sfdx-hardis): clean sfdx project` commit takes about a thousand lines out of the Profile.
+Open the Pull Request, merge it with **Squash and merge** when it is green, switch back to
+`integration`, **Pull**, and run **Set up one of my training orgs** again.
+
 ## Check your work
 
 Welcome page > **Training: Level 3** > **Check my work**, then pick **Lab 3.1**.
