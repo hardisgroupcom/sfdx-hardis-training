@@ -5,7 +5,7 @@ description: "Livrez une User Story Salesforce de bout en bout sans pas-à-pas :
 level: 1
 lab: 7
 lang: fr
-source_rev: "cfe1dcea647583a742b1ae3fdbd4c161e30eb765"
+source_rev: "0f2e7b4f3157c57a15acde50d64299658b542eed"
 screenshots:
   - annotated/web/github-star-sfdx-hardis
 depends_on:
@@ -115,8 +115,11 @@ Vous avez terminé le Niveau 1.
 Welcome page > **Training: Level 1** > **Claim my badge**.
 
 Il recontrôle d'abord le niveau entier et refuse de demander quoi que ce soit qui ne passe pas : une
-demande qui serait rejetée est une demande qui ne vaut pas la peine d'être ouverte. Puis il ouvre le
-formulaire de demande du repository de formation dans votre navigateur, avec le niveau, votre nom
+demande qui serait rejetée est une demande qui ne vaut pas la peine d'être ouverte. Il pose ensuite
+une question, votre nom d'utilisateur Trailblazer, car votre page de badge renvoie vers votre profil
+Trailhead : c'est la dernière partie de l'adresse de ce profil, et la commande dit où le trouver.
+Puis il ouvre le
+formulaire de demande du repository de formation dans votre navigateur, avec le niveau, ce nom
 d'utilisateur, votre fork (votre copie personnelle du repository du cours sur GitHub, par exemple
 `github.com/my-username/sfdx-hardis-training`) et vos reçus déjà remplis. Un champ reste vide :
 choisissez votre niveau dans la liste **Level**, car GitHub ne pré-remplit pas une liste déroulante

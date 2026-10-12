@@ -5,7 +5,7 @@ description: "Inscrivez-vous à une org Salesforce Developer Edition gratuite, p
 level: 1
 lab: 2
 lang: fr
-source_rev: "b7f5e0686a2d5a83a1ce183f8f4c30a684e0a129"
+source_rev: "0f2e7b4f3157c57a15acde50d64299658b542eed"
 screenshots:
   - annotated/web/sf-signup
   - annotated/web/gh-cli-download
@@ -159,8 +159,8 @@ tard.
 
 Ce nom s'appelle un **alias**, et c'est lui que vous verrez et cliquerez désormais : dans ce panneau,
 dans le diagramme de la pipeline, partout où le cours nomme une org. Les trois orgs créées à l'étape 5
-reçoivent le leur automatiquement, et elles apparaissent dans ce tableau sous ces noms **(2)**,
-chacune avec un **Connected** vert **(3)**. **C'est par ce panneau que vous vous connectez à une org
+reçoivent le leur automatiquement, et elles apparaissent dans le tableau d'Orgs Manager sous ces noms,
+chacune avec un **Connected** vert : **(2)** et **(3)** sur la première image de cette étape. **C'est par ce panneau que vous vous connectez à une org
 pour tout le reste du cours**, et c'est aussi là que vous vérifiez sur quelle org vous êtes pointé,
 ce qui évite plus de confusions que n'importe quoi d'autre dans cette formation.
 

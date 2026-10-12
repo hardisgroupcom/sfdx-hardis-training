@@ -10,6 +10,10 @@ a day, newest first, and a change goes under the date of the day it is made.
 - Lab 1.6: what to do when the My Pull Request card still says the Pull Request does not exist, and a warning about the yellow GitHub banner that opens a Pull Request on the original repository instead of your fork.
 - Lab 3.8 says what monitoring gives you (a metadata backup, which is not a data backup, indicators and alerts) and where each one is read. You now receive a real alert by email from the first run, and the lab says that a real project sends them to Slack, Microsoft Teams or Google Chat.
 - Lab 3.8: new troubleshooting entry for an email that does not arrive.
+- Labs 1.3 and 1.4 no longer tell you to look for `helios-dev` in the Status section, which shows a username and never an alias: compare it with the `helios-dev` row of Orgs Manager.
+- Lab 1.5 says Save / Publish adds one commit of its own on this story, not two.
+- Lab 1.7 mentions the Trailblazer username that Claim my badge asks for.
+- The VS Code pictures were taken again on sfdx-hardis 8.17.0.
 
 ## 2026-10-11
 
