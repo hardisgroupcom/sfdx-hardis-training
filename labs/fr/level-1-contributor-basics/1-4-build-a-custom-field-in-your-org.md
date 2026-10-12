@@ -5,7 +5,7 @@ description: "Créez un champ personnalisé, accordez-le par un permission set e
 level: 1
 lab: 4
 lang: fr
-source_rev: "0f2e7b4f3157c57a15acde50d64299658b542eed"
+source_rev: "ddbc597339a4710123bd29f47579dc4e93764d76"
 screenshots:
   - annotated/vscode/orgs-manager-actions
   - annotated/salesforce/object-manager-fields

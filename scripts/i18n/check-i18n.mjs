@@ -3,7 +3,7 @@
  * Checks the translations of the generated pages, `i18n/<locale>.json`.
  *
  *   node scripts/i18n/check-i18n.mjs
- *   node scripts/i18n/check-i18n.mjs --stamp     (write source_rev from git)
+ *   node scripts/i18n/check-i18n.mjs --stamp     (write source_rev, the content hash of i18n/en.json)
  *
  * The labs have `source_rev` and `check-translations.mjs`; these files had
  * nothing. They are the backlog, the story pages and the badge pages, and
@@ -16,7 +16,7 @@
  *   - a key of `i18n/en.json` that a locale does not answer, or a story, level
  *     or cast member of `training-universe.json` it never translated, **fails**.
  *     It is mechanical, and it is exactly the silent hole described above
- *   - a locale whose `source_rev` is behind the last commit of `i18n/en.json` is
+ *   - a locale whose `source_rev` is not the content hash of `i18n/en.json` is
  *     **reported**. English is the reference and a translation is allowed to
  *     lag: the list is what to re-read, like the labs
  */
@@ -123,7 +123,8 @@ for (const locale of locales) {
   console.log(`  ${found.size} value(s), ${missing.length} missing against i18n/en.json`);
 
   // 3. Staleness, reported like the labs
-  const latest = git(["log", "-1", "--format=%H", "--", "i18n/en.json"]);
+  // The content hash of the file, not a commit: a commit SHA does not survive a squash merge
+  const latest = git(["hash-object", "--", "i18n/en.json"]);
   if (STAMP) {
     if (latest) {
       const stamped = { ...translated, source_rev: latest };
@@ -134,10 +135,10 @@ for (const locale of locales) {
   }
   const rev = translated.source_rev;
   if (!rev) {
-    console.log("  NO REV    set source_rev to the commit of i18n/en.json this was translated from");
+    console.log("  NO REV    set source_rev to the content hash of the i18n/en.json this was translated from");
     console.log("            node scripts/i18n/check-i18n.mjs --stamp");
   } else if (latest && rev !== latest) {
-    console.log(`  BEHIND    i18n/en.json has moved to ${latest.slice(0, 8)}, this says ${rev.slice(0, 8)}`);
+    console.log(`  BEHIND    i18n/en.json changed since this was stamped (${rev.slice(0, 8)})`);
     behind++;
   }
 }

@@ -5,7 +5,7 @@ description: "Livrez via preprod vers votre org de production, vérifiez-la, pui
 level: 3
 lab: 6
 lang: fr
-source_rev: "a4187be711857a6c380a0ab6c818bf0f81e2dc5b"
+source_rev: "2b0dc62840da13a2613c3860700434b06ed77975"
 screenshots:
   - annotated/vscode/orgs-manager
   - annotated/vscode/pipeline-settings-menu-level3--dora

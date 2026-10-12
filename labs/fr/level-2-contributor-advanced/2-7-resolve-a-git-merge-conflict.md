@@ -5,7 +5,7 @@ description: "Une collègue a mergé en premier sur le même flow et le même pe
 level: 2
 lab: 7
 lang: fr
-source_rev: "cd3530a089b38fb7167ca3e97839bce01591b743"
+source_rev: "1f4e1a5e5e8192311f290f6ed5bcdb20de2af639"
 screenshots:
   - annotated/salesforce/flow-builder-assign-crew
   - annotated/salesforce/flow-builder-assign-crew-full

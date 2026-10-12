@@ -5,7 +5,7 @@ description: "Menez une semaine entière de release manager Salesforce sans pas-
 level: 3
 lab: 11
 lang: fr
-source_rev: "a3ec841208c72cf766d6d9f964cb360bef1b7353"
+source_rev: "fa62e59bc61bab8334d6c17735028eaf2276960c"
 screenshots:
   - annotated/web/github-star-vscode-sfdx-hardis
   - annotated/vscode/welcome-custom-menu-3

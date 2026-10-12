@@ -5,7 +5,7 @@ description: "Rapatriez vos modifications d'org dans Git avec le Metadata Retrie
 level: 1
 lab: 5
 lang: fr
-source_rev: "0f2e7b4f3157c57a15acde50d64299658b542eed"
+source_rev: "07a0f9a86252bda3850e9e2b6c93950c77d0482b"
 screenshots:
   - annotated/vscode/pipeline-cards-level1--commit-changes
   - annotated/vscode/metadata-retriever-recent-changes--find
