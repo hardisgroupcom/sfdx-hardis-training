@@ -686,7 +686,7 @@ The usual cause is an expired connection: reconnect it in **Orgs Manager** under
 run it again.
 
 **Set up one of my training orgs fails on `Profile Helios Crew`, with `no Layout named ...`.**
-The Profile you published in Lab 2.6 still lists the page layout and the tab of every object of
+The Profile you published in [Lab 2.6](../level-2-contributor-advanced/2-6-permission-sets-and-profiles.md) still lists the page layout and the tab of every object of
 your scratch org, and a Developer Edition org does not have them all. The course removes those
 lines when you publish, since a rule it received after you forked it. Bring the rule, then let it
 clean the file: **Training: Level 3 > Update my course**; then **New User Story**, target

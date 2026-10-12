@@ -109,7 +109,7 @@ and nobody needs to make it on the way into an integration org that is rebuilt f
 anyway. `sf hardis:project:promotion:create` refuses to run at all while the list is missing,
 rather than guessing that every major branch may promote into every other one.
 
-<details markdown="1"><summary>Under the hood: why a switch published in [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) matters now</summary>
+<details markdown="1"><summary>Under the hood: why a switch published in Lab 3.1 matters now</summary>
 
 Both settings are project level, in `config/.sfdx-hardis.yml`:
 

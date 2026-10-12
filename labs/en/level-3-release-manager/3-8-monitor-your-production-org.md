@@ -324,7 +324,7 @@ Level 3** > **Publish my pipeline configuration**: it is pipeline configuration,
 That command does the whole trip on its own, as in [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md): it creates a branch, commits the
 configuration, pushes it and opens the Pull Request. You have nothing to commit and no Pull
 Request to create: wait for its checks, merge it with **Squash and merge**, as its **How to merge**
-line says and as in Lab 3.5, then **Pull** in the
+line says and as in [Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md), then **Pull** in the
 **Source Control** panel.
 
 From then on, the **Org Monitoring Workbench** opened from the source repository offers **Open
