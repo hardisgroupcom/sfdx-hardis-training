@@ -268,6 +268,10 @@ Developer Edition elle est ouverte à tout utilisateur capable de se connecter. 
 production, c'est la première trouvaille à porter à l'équipe sécurité : un admin peut la restreindre
 aux utilisateurs approuvés, et la CLI continue de fonctionner pour eux.
 
+Le même rapport peut en lister une deuxième, `orgfarm_app_1`. Elle n'est pas à vous : elle
+appartient au service Salesforce qui a créé votre org Developer Edition, et une org de production
+ne l'a pas.
+
 Ce que vous lisez, c'est la **forme** de chaque trouvaille, pour la reconnaître sur une vraie org :
 
 | Trouvaille sur une vraie org                  | Ce que cela veut dire vraiment                                                                        |
@@ -343,7 +347,8 @@ pipeline, comme le reste.
 
 Cette commande fait tout le trajet seule, comme au [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) : elle crée une branche, committe la
 configuration, la pousse et ouvre la Pull Request. Vous n'avez rien à committer et aucune Pull
-Request à créer : attendez ses checks, mergez-la avec **Merge pull request**, puis **Pull** dans le
+Request à créer : attendez ses checks, mergez-la avec **Squash and merge**, comme le dit sa ligne
+**How to merge** et comme au Lab 3.5, puis **Pull** dans le
 panneau **Source Control**.
 
 À partir de là, l'**Org Monitoring Workbench** ouvert depuis le repository de sources propose

@@ -45,6 +45,8 @@ est exactement celle qui mérite le temps d'une personne.
 
 ### 1. Ouvrir le Documentation Workbench
 
+Depuis la Welcome page, cliquez sur la carte **Documentation Workbench**.
+
 ![Le Documentation Workbench, avec les parties à inclure, le bouton Generate et les cibles de publication](../../_assets/annotated/vscode/documentation-workbench--generate-and-deploy.png)
 
 Tout dans ce lab se passe sur cet unique écran. Trois parties comptent :
@@ -213,9 +215,10 @@ rencontrez un.
 **Les pages d'objets sont presque vides.**
 Les sources sont là mais les descriptions non. C'est l'org, pas l'outil.
 
-**Le dossier docs est énorme et la Pull Request impossible à relire.**
-Attendu la première fois. Dites-le dans la description de la Pull Request. Les régénérations
-suivantes produisent de petits diffs.
+**Source Control liste des centaines de nouveaux fichiers sous `docs/`.**
+Il ne devrait en lister aucun : ce cours garde `docs/` et `mkdocs.yml` hors de git. Vérifiez que
+`.gitignore` les liste toujours, et ne les commitez pas. Un projet qui commite sa documentation a
+une première Pull Request énorme, et des petites ensuite.
 
 ## Vérifiez votre travail
 
