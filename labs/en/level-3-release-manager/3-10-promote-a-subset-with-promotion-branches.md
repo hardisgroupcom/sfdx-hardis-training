@@ -343,7 +343,7 @@ Tickets: US-057, US-059, US-061
 
 ## Committed with conflict markers
 
-- #63 US-059 Record the supplier of a panel batch
+- US-059 Record the supplier of a panel batch (#63)
   - `force-app/main/default/layouts/Panel_Batch__c-Panel Batch Layout.layout-meta.xml`
   - `force-app/main/default/permissionsets/Helios_Delivery_Manager.permissionset-meta.xml`
 
@@ -382,7 +382,7 @@ check out, the story and its origin commit, the two files, and the rules of a Sa
 merge. The same text sits in `hardis-report/promotion-conflicts-prompt-<date>.md`, the report file
 the command panel offered you. Step 6 uses one or the other.
 
-Now look at the **Checks** of the Pull Request. The **Check deployment** run is red, and the
+Now look at the **Checks** of the Pull Request. The **Simulate Deployment to Major Org** check is red, and the
 sfdx-hardis comment says why: its verdict reads **❌ Cannot merge into `preprod`: Git conflict
 markers in the promotion branch**, and one paragraph under it names the files:
 
