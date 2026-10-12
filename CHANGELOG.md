@@ -5,6 +5,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 
 ## 2026-10-12
 
+- The comment that awards a badge now says to wait a few minutes before opening the badge page, the time for the site to be published again.
 - Set up one of my training orgs now shows the errors of a failed deployment in its panel, and points to Lab 2.6 when the Helios Crew Profile is the cause instead of blaming the connection.
 - Lab 3.5: the title of the promotion Pull Request comes before the click on Create pull request, and the lab says the release note is a short text you write from the generated notes, not a paste of them.
 - Lab 3.7: Check your work names the lab to pick.
