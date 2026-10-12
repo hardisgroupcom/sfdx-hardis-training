@@ -24,6 +24,15 @@ a day, newest first, and a change goes under the date of the day it is made.
 - Lab 2.9 mentions the Trailblazer username that Claim my badge asks for.
 - Lab 2.8: the first pill of the command list picture no longer covers the row above it.
 - Level 3 could not start for a learner coming from Level 2: the Helios Crew profile published in Lab 2.6 listed the page layout and the tab of every object of the scratch org, and could not be deployed to the two Developer Edition orgs. Save / Publish now keeps the layouts and tabs of the project only, Lab 2.6 explains the rule, and Lab 3.1 says how to repair a profile published before it.
+- Check my work no longer counts Lab 3.4 as done before Level 3 starts: it now also looks for the Pull Request of US-020 in your fork.
+- Lab 3.1: new troubleshooting entry for the Confirm access page GitHub shows before saving a branch rule or a secret.
+- Lab 3.3 says your user is already in the Crew Leads group when you come to add it.
+- Lab 3.6 says the Pipeline flow figures it quotes are those of the picture, not yours.
+- Lab 3.8 says to squash the Pull Request of the monitoring repository setting, as its check comment asks, and names the second unsecured app a Developer Edition org lists.
+- Lab 3.9 says where the Documentation Workbench opens from, and no longer speaks of a Pull Request this course never opens.
+- Lab 3.10: the title of a folded block no longer shows a raw link, the red check is called by the name GitHub gives it, and the conflict question picture shows its four answers again.
+- Lab 3.11 mentions the Trailblazer username that Claim my badge asks for.
+- Pictures: the Deployment Actions comment of Lab 2.4 reads Retry, as the product does, and the promotion comment of Lab 3.5 shows the actions of a learner who walked Level 2.
 
 ## 2026-10-11
 
