@@ -14,6 +14,15 @@ a day, newest first, and a change goes under the date of the day it is made.
 - Lab 1.5 says Save / Publish adds one commit of its own on this story, not two.
 - Lab 1.7 mentions the Trailblazer username that Claim my badge asks for.
 - The VS Code pictures were taken again on sfdx-hardis 8.17.0.
+- Check my work no longer counts Lab 2.8 as done before you start it: it now looks for the layout change of the story in `integration`, and the lab tells you to open, then merge, its Pull Request.
+- Lab 2.1 no longer says Signed Off By sits under Crew Notes on the record, a field you cannot see yourself.
+- Lab 2.2 says how to clear the Visible column before ticking System Administrator.
+- Lab 2.4 says the Crew Capacity tab of `helios-integration` opens on Recently Viewed, and why it has no All list view.
+- Lab 2.5 says where to paste each block of Apex, and that the fixed method replaces the first one.
+- Lab 2.6: the Setup path of step 5 was cut in two on the site.
+- Lab 2.7 mentions the two files of your teammate that wait under Staged Changes during the merge.
+- Lab 2.9 mentions the Trailblazer username that Claim my badge asks for.
+- Lab 2.8: the first pill of the command list picture no longer covers the row above it.
 
 ## 2026-10-11
 

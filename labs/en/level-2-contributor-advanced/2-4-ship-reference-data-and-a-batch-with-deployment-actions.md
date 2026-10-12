@@ -358,7 +358,9 @@ the Helios project turns the stop on with `failValidationOnPendingManualActions:
 
 Do not take the green tick for it. **Open the org and look:**
 
-- The **Crew Capacity** tab of the Helios Delivery app, on its **All** list view, has 12 records
+- The **Crew Capacity** tab of the Helios Delivery app has 12 records. It opens on **Recently
+  Viewed** there: the **All** list view lives in `helios-dev` only, because a list view is metadata
+  too and it was not part of your Pull Request
 - **Setup > Scheduled Jobs** lists `Helios crew capacity nightly`
 - The manual step reads **done** for `integration` under **Status by org**, with the date
   of your tick
@@ -421,6 +423,7 @@ All three are entries in the same YAML file under `scripts/actions/`:
         parameters:
           sfdmuProject: HeliosCrewRefData
         context: process-deployment-only
+        runOnlyOnceByOrg: true
       - id: 5b2e8c71-0a3d-4f6e-9c1b-026000000002
         label: Schedule the nightly crew capacity recalculation
         type: schedule-batch

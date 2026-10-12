@@ -734,12 +734,27 @@ export const RULES = [
         !f.endsWith("/settings/Deployment.settings-meta.xml") &&
         !shipped(f)
       );
-      return stray.length === 0
-        ? pass("No over-committed metadata is left on integration")
-        : miss(
+      if (stray.length > 0) {
+        return miss(
           `${stray.length} file(s) that should never have been committed are on integration: ${stray.slice(0, 3).join(", ")}`,
           `branch ${DEV}. Lab 2.8 is about resetting a selection that went too wide`
         );
+      }
+      // A repository nobody over-committed into has no stray file either, and that
+      // is every repository before this lab: without the story's own change the rule
+      // passed on a brand new fork. The outcome of US-038 is one layout move, Crew
+      // Size above Install Date, and no later story of the course moves either field.
+      const layoutFile = "force-app/main/default/layouts/Installation__c-Installation Layout.layout-meta.xml";
+      const layout = ctx.readOn(DEV, layoutFile) || "";
+      const crewSize = layout.indexOf("<field>Crew_Size__c</field>");
+      const installDate = layout.indexOf("<field>Install_Date__c</field>");
+      if (crewSize === -1 || installDate === -1 || crewSize > installDate) {
+        return miss(
+          "the layout change of US-038 is not on integration: Crew Size is not above Install Date on the Installation layout. Publish the layout alone (step 5), then merge the Pull Request",
+          `${layoutFile} on branch ${DEV}`
+        );
+      }
+      return pass("The layout change of US-038 is on integration, and nothing else came with it");
     }
   },
   {

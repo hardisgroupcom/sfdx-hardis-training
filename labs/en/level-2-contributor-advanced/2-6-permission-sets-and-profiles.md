@@ -133,8 +133,8 @@ delete somebody else's.
 Redo the grant where it belongs. Your first Pull Request is merged, so this is a second one for the
 same story: **New User Story**, name `US-033-crew-permission-set`, org `helios-dev`.
 
-In `helios-dev`: **Setup > Permission Sets > Helios Delivery Crew > Object Settings > Panel Batches
-> Edit**, tick **Read Access** on `Cost`, **Save**.
+In `helios-dev`: **Setup > Permission Sets > Helios Delivery Crew > Object Settings > Panel
+Batches > Edit**, tick **Read Access** on `Cost`, **Save**.
 
 Retrieve the **Permission Set** this time, commit it, **Save / Publish**, and open the Pull
 Request. The **Git Delta package.xml** report
