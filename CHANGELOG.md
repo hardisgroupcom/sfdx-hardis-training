@@ -31,6 +31,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 - Check my work no longer counts Lab 3.4 as done before Level 3 starts: it now also looks for the Pull Request of US-020 in your fork.
 - Lab 3.1: new troubleshooting entry for the Confirm access page GitHub shows before saving a branch rule or a secret.
 - Lab 3.3 says your user is already in the Crew Leads group when you come to add it.
+- Lab 3.3 has you check out `integration`, pull it and click Refresh before you open the Deployment Actions tab, not after: the tab reads the actions from your branch.
 - Lab 3.6 says the Pipeline flow figures it quotes are those of the picture, not yours.
 - Lab 3.8 says to squash the Pull Request of the monitoring repository setting, as its check comment asks, and names the second unsecured app a Developer Edition org lists.
 - Lab 3.9 says where the Documentation Workbench opens from, and no longer speaks of a Pull Request this course never opens.
