@@ -357,7 +357,7 @@ Tickets: US-057, US-059, US-061
 
 ## Committed with conflict markers
 
-- #63 US-059 Record the supplier of a panel batch
+- US-059 Record the supplier of a panel batch (#63)
   - `force-app/main/default/layouts/Panel_Batch__c-Panel Batch Layout.layout-meta.xml`
   - `force-app/main/default/permissionsets/Helios_Delivery_Manager.permissionset-meta.xml`
 
@@ -399,7 +399,7 @@ métadonnées Salesforce. Le même texte se trouve dans
 `hardis-report/promotion-conflicts-prompt-<date>.md`, le fichier de rapport que le panneau de
 commande vous a proposé. L'étape 6 utilise l'un ou l'autre.
 
-Regardez maintenant les **Checks** de la Pull Request. L'exécution **Check deployment** est rouge,
+Regardez maintenant les **Checks** de la Pull Request. Le check **Simulate Deployment to Major Org** est rouge,
 et le commentaire sfdx-hardis dit pourquoi : son verdict indique **❌ Cannot merge into `preprod`: Git
 conflict markers in the promotion branch**, et un paragraphe en dessous nomme les fichiers :
 
