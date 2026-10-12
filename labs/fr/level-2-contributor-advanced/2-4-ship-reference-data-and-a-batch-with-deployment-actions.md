@@ -5,7 +5,7 @@ description: "Un déploiement vert n'est pas une fonctionnalité qui marche. Liv
 level: 2
 lab: 4
 lang: fr
-source_rev: "f35a02fc7be6e5ee84fd8352d9667770467392de"
+source_rev: "cd3530a089b38fb7167ca3e97839bce01591b743"
 screenshots:
   - annotated/vscode/sidebar-commands-custom-menu-2--lab-records
   - annotated/salesforce/crew-capacity-records
@@ -369,8 +369,9 @@ sfdx-hardis ne fait que lister l'étape : le projet Helios active l'arrêt avec
 
 Ne vous contentez pas de la coche verte. **Ouvrez l'org et regardez :**
 
-- L'onglet **Crew Capacity** de l'application Helios Delivery, sur sa vue de liste **All**, a 12
-  enregistrements
+- L'onglet **Crew Capacity** de l'application Helios Delivery a 12 enregistrements. Il s'y ouvre
+  sur **Recently Viewed** : la vue de liste **All** n'existe que dans `helios-dev`, parce qu'une vue
+  de liste est aussi une métadonnée et qu'elle ne faisait pas partie de votre Pull Request
 - **Setup > Scheduled Jobs** liste `Helios crew capacity nightly`
 - L'étape manuelle est **done** pour `integration` sous **Status by org**, avec la date de
   votre case
@@ -436,6 +437,7 @@ Les trois sont des entrées du même fichier YAML sous `scripts/actions/` :
         parameters:
           sfdmuProject: HeliosCrewRefData
         context: process-deployment-only
+        runOnlyOnceByOrg: true
       - id: 5b2e8c71-0a3d-4f6e-9c1b-026000000002
         label: Schedule the nightly crew capacity recalculation
         type: schedule-batch

@@ -333,8 +333,9 @@ produit.
 ### 8. Le rendre trouvable
 
 Le prochain release manager aura besoin du repository de monitoring dès son premier jour, et le seul
-endroit où il regardera est le projet. De retour dans le repository de sources : **DevOps Pipeline**
-> menu engrenage > **Pipeline Settings**, portée **Global Settings**, onglet **Salesforce Project**.
+endroit où il regardera est le projet. De retour dans le repository de sources : **DevOps
+Pipeline** > menu engrenage > **Pipeline Settings**, portée **Global Settings**, onglet **Salesforce
+Project**.
 **Monitoring repository** : **Edit**, collez l'adresse de votre repository de monitoring,
 `https://github.com/<votre-pseudo>/sfdx-hardis-training-monitoring`, et **Save**. Puis
 **Training: Level 3** > **Publish my pipeline configuration** : c'est de la configuration de
