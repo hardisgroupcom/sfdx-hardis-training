@@ -697,6 +697,12 @@ commit et tout fichier pas encore commité. Puis relancez **Save / Publish**. Si
 fichier de configuration que vous avez modifié a aussi été modifié sur GitHub, tirez dans le panneau
 **Source Control**, puis republiez.
 
+**GitHub affiche une page Confirm access quand vous cliquez sur Create, ou sur Add secret.**
+GitHub redemande qui vous êtes avant un changement sensible, quand vous ne l'avez pas confirmé
+depuis quelques heures. Confirmez avec la méthode proposée, GitHub Mobile, une passkey ou un code
+par e-mail. Regardez ensuite la liste : si la règle ou le secret n'y est pas, remplissez le
+formulaire à nouveau.
+
 **Le contrôle que vous voulez exiger n'est pas proposé.**
 GitHub ne liste que les contrôles qui ont rendu compte sur ce repository dans les sept derniers
 jours. Ouvrez une Pull Request vers `integration`, laissez ses contrôles tourner, et revenez à la

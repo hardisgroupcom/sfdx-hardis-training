@@ -427,7 +427,10 @@ faire prend vingt secondes : faites-la à la main, comme un release manager le f
 livraison ne peut pas attendre :
 
 1. Dans `helios-integration`, **Setup** > **Public Groups** > **Crew Leads** > **Edit**
-2. Ajoutez votre utilisateur dans **Selected Members**, puis **Save**
+2. Ajoutez votre utilisateur dans **Selected Members**, puis **Save**. Dans ce cours votre
+   utilisateur y est déjà : la première action a mis chaque delivery manager dans le groupe, et
+   vous en êtes un. Sur un vrai projet l'utilisateur de déploiement est un utilisateur technique,
+   et il n'y serait pas
 
 Ensuite, dans l'onglet **Deployment Actions**, ouvrez le menu de **Add the deployment user to the
 Crew Leads group** et cliquez sur **Mark as done in integration**. Rien ne s'ouvre : sfdx-hardis l'enregistre en
