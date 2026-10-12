@@ -118,7 +118,7 @@ dans une org d'intégration qui est reconstruite depuis la branche de toute faç
 `sf hardis:project:promotion:create` refuse purement et simplement de tourner tant que la liste est
 absente, plutôt que de deviner que chaque branche majeure peut promouvoir vers toutes les autres.
 
-<details markdown="1"><summary>Sous le capot : pourquoi un réglage publié au [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) compte maintenant</summary>
+<details markdown="1"><summary>Sous le capot : pourquoi un réglage publié au Lab 3.1 compte maintenant</summary>
 
 Les deux réglages sont au niveau projet, dans `config/.sfdx-hardis.yml` :
 

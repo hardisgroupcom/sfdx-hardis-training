@@ -721,7 +721,7 @@ La cause habituelle est une connexion expirée : reconnectez-la dans **Orgs Mana
 alias, et relancez.
 
 **Set up one of my training orgs échoue sur `Profile Helios Crew`, avec `no Layout named ...`.**
-Le profil que vous avez publié au Lab 2.6 liste encore la présentation de page et l'onglet de chaque
+Le profil que vous avez publié au [Lab 2.6](../level-2-contributor-advanced/2-6-permission-sets-and-profiles.md) liste encore la présentation de page et l'onglet de chaque
 objet de votre scratch org, et une org Developer Edition ne les a pas tous. Le cours retire ces
 lignes à la publication, depuis une règle qu'il a reçue après votre fork. Récupérez la règle, puis
 laissez-la nettoyer le fichier : **Training: Level 3 > Update my course** ; puis **New User

@@ -194,6 +194,11 @@ prérequis est imposé, parce qu'un Trailmix ne peut rien conditionner. La comma
 audits sur votre machine avant d'ouvrir quoi que ce soit : vous l'apprenez donc ici plutôt que sur
 l'issue.
 
+Ensuite, comme pour les deux autres niveaux : elle demande votre nom d'utilisateur Trailblazer, la
+dernière partie de l'adresse de votre profil Trailhead, et ouvre le formulaire de demande déjà
+rempli. Choisissez votre niveau dans la liste **Level**, qu'un lien ne peut pas pré-remplir, puis
+cochez les trois cases et soumettez.
+
 !!! tip "Si ce cours vous a servi"
     [hardisgroupcom/vscode-sfdx-hardis](https://github.com/hardisgroupcom/vscode-sfdx-hardis) est
     l'extension par laquelle est passé chaque clic de ce cours. Une étoile est ce qui permet à un

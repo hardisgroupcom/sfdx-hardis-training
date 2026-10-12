@@ -348,7 +348,7 @@ pipeline, comme le reste.
 Cette commande fait tout le trajet seule, comme au [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) : elle crée une branche, committe la
 configuration, la pousse et ouvre la Pull Request. Vous n'avez rien à committer et aucune Pull
 Request à créer : attendez ses checks, mergez-la avec **Squash and merge**, comme le dit sa ligne
-**How to merge** et comme au Lab 3.5, puis **Pull** dans le
+**How to merge** et comme au [Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md), puis **Pull** dans le
 panneau **Source Control**.
 
 À partir de là, l'**Org Monitoring Workbench** ouvert depuis le repository de sources propose
