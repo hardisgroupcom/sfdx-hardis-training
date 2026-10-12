@@ -23,6 +23,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 - Lab 2.7 mentions the two files of your teammate that wait under Staged Changes during the merge.
 - Lab 2.9 mentions the Trailblazer username that Claim my badge asks for.
 - Lab 2.8: the first pill of the command list picture no longer covers the row above it.
+- Level 3 could not start for a learner coming from Level 2: the Helios Crew profile published in Lab 2.6 listed the page layout and the tab of every object of the scratch org, and could not be deployed to the two Developer Edition orgs. Save / Publish now keeps the layouts and tabs of the project only, Lab 2.6 explains the rule, and Lab 3.1 says how to repair a profile published before it.
 
 ## 2026-10-11
 

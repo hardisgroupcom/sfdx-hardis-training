@@ -714,6 +714,17 @@ laisser **Set up my training environment** en construire un nouveau.
 La cause habituelle est une connexion expirée : reconnectez-la dans **Orgs Manager** sous le même
 alias, et relancez.
 
+**Set up one of my training orgs échoue sur `Profile Helios Crew`, avec `no Layout named ...`.**
+Le profil que vous avez publié au Lab 2.6 liste encore la présentation de page et l'onglet de chaque
+objet de votre scratch org, et une org Developer Edition ne les a pas tous. Le cours retire ces
+lignes à la publication, depuis une règle qu'il a reçue après votre fork. Récupérez la règle, puis
+laissez-la nettoyer le fichier : **Training: Level 3 > Update my course** ; puis **New User
+Story**, cible `integration`, **Fix**, `US-033-crew-profile-for-every-org`, et la dernière réponse,
+sans org ; puis **Save / Publish** tout de suite, en répondant que votre commit est prêt. Son commit
+`chore(sfdx-hardis): clean sfdx project` retire environ mille lignes du profil. Ouvrez la Pull
+Request, mergez-la avec **Squash and merge** quand elle est verte, revenez sur `integration`,
+**Pull**, et relancez **Set up one of my training orgs**.
+
 ## Vérifiez votre travail
 
 Welcome page > **Training: Level 3** > **Check my work**, puis choisissez le **Lab 3.1**.

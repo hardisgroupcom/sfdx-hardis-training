@@ -12,7 +12,7 @@ screenshots:
 depends_on:
   commands: [hardis:mdapi:read, hardis:work:save]
   flags: [--active-only]
-  config: [autoCleanTypes, minimizeProfiles, autoRemoveUserPermissions]
+  config: [autoCleanTypes, minimizeProfiles, autoRemoveUserPermissions, cleanXmlPatterns]
   panels: [metadataRetriever, pipelineConfig, packageXml]
   docs: [salesforce-devops-work-on-user-story-profiles]
 ---
@@ -94,6 +94,10 @@ C'est un réglage de projet appelé **minimizeProfiles**, l'une des règles de n
 activées, et vous pouvez le voir dans le panneau **Pipeline Settings**, onglet **Salesforce
 Project**.
 
+Le même commit retire des centaines d'autres lignes : le réglage d'onglet et la présentation de
+page de chaque objet de `helios-dev`, qu'un profil récupéré en entier liste un par un. C'est une
+deuxième règle de ce projet qui le fait, et la note de l'étape 4 dit pourquoi.
+
 ### 4. Comprendre pourquoi un projet ferait une chose pareille
 
 Les profils sont le pire type de métadonnée à versionner, pour trois raisons qui mordent toutes en
@@ -134,9 +138,14 @@ transporter finirait par supprimer celui de quelqu'un d'autre.
     permissions utilisateur, et Salesforce en ajoute et en retire à chaque release, trois fois par an :
     un profil complet commité au printemps peut échouer au déploiement à l'automne sur une permission
     qui n'existe plus. `minimizeProfiles` retire ces permissions à chaque fois que quelqu'un publie un
-    profil. Ce qui reste peut quand même être long, car un profil récupéré en entier liste le réglage
-    d'onglet et la présentation de page de chaque objet de l'org : c'est exactement ce que seul un
-    profil peut porter.
+    profil.
+
+    Un profil récupéré en entier liste aussi le réglage d'onglet et la présentation de page de
+    chaque objet de l'org d'où il vient, objets standard compris, et deux orgs n'ont jamais les
+    mêmes : vos scratch orgs ont des objets standard que l'org de production du Niveau 3 n'a pas,
+    et un profil qui nomme une présentation ou un onglet qu'une org n'a pas y est refusé. Ce projet
+    ne garde donc dans un profil que les présentations et les onglets de ses propres composants,
+    ceux que le repository transporte, et le même commit de nettoyage retire le reste.
 
 ### 5. Le faire comme le projet l'attend
 
@@ -197,8 +206,26 @@ set ne sait pas exprimer :
 | `applicationVisibilities` | seulement l'application par défaut, et les applications explicitement cachées (`visible` à false) |
 | `userPermissions`         | seulement les permissions explicitement **désactivées**, plus tout ce qui est sur le profil Admin |
 
-Et certaines sections ne sont jamais touchées, parce que rien d'autre ne peut les contenir :
-`loginHours`, `loginIpRanges`, `layoutAssignments`, `tabVisibilities`, `custom`, `userLicense`.
+Et certaines sections ne sont jamais touchées par `minimizeProfiles`, parce que rien d'autre ne
+peut les contenir : `loginHours`, `loginIpRanges`, `layoutAssignments`, `tabVisibilities`, `custom`,
+`userLicense`.
+
+Deux d'entre elles sont allégées par un autre réglage de ce projet, `cleanXmlPatterns`, une liste
+d'éléments XML que **Save / Publish** retire des fichiers qu'un motif désigne :
+
+```yaml
+cleanXmlPatterns:
+  - globPattern: /**/*.profile-meta.xml
+    xpaths:
+      - "//ns:layoutAssignments//ns:layout[not(starts-with(text(),'Installation__c-')) and not(starts-with(text(),'Panel_Batch__c-'))]"
+      - "//ns:tabVisibilities//ns:tab[not(contains(text(),'__c'))]"
+```
+
+La première ligne garde les affectations des deux présentations de page que le repository
+transporte, la seconde les réglages des onglets personnalisés. Tout le reste de ce qu'un profil
+entier liste appartient à l'org d'où il a été récupéré : une présentation que Salesforce a créée
+toute seule, un objet standard qu'une org a et que la suivante n'a pas. Sur votre propre projet, la
+liste à garder est celle des présentations et des onglets que votre repository contient.
 
 Un profil a donc toujours un rôle dans cette pipeline. Simplement beaucoup plus petit.
 
@@ -234,14 +261,15 @@ L'utilisateur de CI ne peut pas accorder une permission qu'il n'a pas lui-même.
 **Helios Delivery Manager** à l'utilisateur de l'org d'intégration, ce que fait
 **Training: Level 2 > Set up one of my training orgs**.
 
-**Le profil revient long de mille lignes.**
-Un profil récupéré en entier garde, après le nettoyage, les réglages d'onglets et la mise en page
-de chaque objet de l'org, son application et ses types d'enregistrement par défaut, et sur `Admin`
-ses permissions utilisateur : ils restent exprès. S'il porte encore des
-permissions de champ, d'objet ou de classe, il a été commité après une récupération et n'est
-jamais passé par le nettoyage. Vérifiez que
-`minimizeProfiles` est toujours listé dans l'onglet **Salesforce Project** de **Pipeline Settings**,
-puis refaites **Save / Publish**. Ne raccourcissez pas le fichier à la main.
+**Le profil fait encore mille lignes après Save / Publish.**
+Après le nettoyage, `Helios Crew` fait une trentaine de lignes : son application par défaut, les
+présentations de page et les onglets des objets du projet. S'il porte encore des permissions de
+champ, d'objet ou de classe, il a été commité après une récupération et n'est jamais passé par le
+nettoyage : vérifiez que `minimizeProfiles` est toujours listé dans l'onglet **Salesforce Project**
+de **Pipeline Settings**, puis refaites **Save / Publish**. S'il liste encore une présentation de
+page et un onglet pour chaque objet standard, votre fork a été créé avant que le cours ne les
+nettoie : **Training: Level 2 > Update my course** apporte la règle, puis refaites
+**Save / Publish**. Ne raccourcissez pas le fichier à la main.
 
 ## Vérifiez votre travail
 
