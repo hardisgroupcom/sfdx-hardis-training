@@ -241,7 +241,7 @@ export async function ensureScratchOrgs(devHub, aliases) {
   const orgs = connectedOrgs();
   const hubUsername = (orgs.find((o) => (o.aliases || []).includes(devHub) || o.username === devHub) || {}).username;
   const usernames = {};
-  const alive = [];
+  const kept = [];
   const missing = [];
   for (const alias of aliases) {
     const existing = orgs.find((o) => (o.aliases || []).includes(alias));
@@ -249,7 +249,7 @@ export async function ensureScratchOrgs(devHub, aliases) {
       (!existing.devHubUsername || !hubUsername || existing.devHubUsername === hubUsername);
     if (alive) {
       usernames[alias] = existing.username;
-      alive.push(existing.username);
+      kept.push(existing.username);
       ok(`${c.bold(alias)} already exists${existing.expirationDate ? `, until ${existing.expirationDate}` : ""}.`);
     } else {
       if (existing) {
@@ -319,7 +319,7 @@ export async function ensureScratchOrgs(devHub, aliases) {
       "Click Set up my training environment again: the orgs that were created are kept, and only the missing ones are retried."
     );
   }
-  rememberShape(Object.values(usernames).filter((username) => !alive.includes(username)));
+  rememberShape(Object.values(usernames).filter((username) => !kept.includes(username)));
   return usernames;
 }
 
