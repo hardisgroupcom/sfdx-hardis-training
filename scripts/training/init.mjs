@@ -43,7 +43,7 @@ import {
   select, confirm, connectedOrgs, orgChoices, universe, ensureGh, repoSlug, openUrl, removeTempDir
 } from "../lib/util.mjs";
 import { deployAppToAll, grantManager, loadData, recordSeeded, alreadySeeded } from "./seed.mjs";
-import { REQUIRED_CHECKS, protectBranches, withProtectionLifted } from "../lib/protection.mjs";
+import { REQUIRED_CHECKS, protectBranches, deleteMergedBranches, withProtectionLifted } from "../lib/protection.mjs";
 
 const UPSTREAM = "hardisgroupcom/sfdx-hardis-training";
 const SCRATCH_DEF = path.join("config", "project-scratch-def.json");
@@ -862,6 +862,11 @@ export default async function init(args) {
   step(8, "Changes through a Pull Request, merged once green");
   info(c.dim(`    A Pull Request into ${pipeline.map((s) => s.branch).join(" or ")} merges only once ${REQUIRED_CHECKS.join(" and ")} are green.`));
   const protectedBranches = protectBranches(slug, pipeline.map((s) => s.branch));
+  // Only once the major branches are protected: that is what keeps them when a
+  // promotion, whose source is a major branch, is merged.
+  if (protectedBranches) {
+    deleteMergedBranches(slug, pipeline.map((s) => s.branch));
+  }
 
   title("Done");
   info(`Your fork:               https://github.com/${slug}`);

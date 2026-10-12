@@ -193,9 +193,12 @@ Quand les contrôles sont verts, mergez avec **Squash and merge**, comme pour to
 feature ([Lab 1.6](../level-1-contributor-basics/1-6-pull-request-deployment-check-and-merge.md)) : les deux commits deviennent une ligne dans l'historique d'`integration`, titrée
 comme la Pull Request. Sur un vrai projet, c'est ici que vous cliquez d'abord sur **Approve**.
 
-### 7. Supprimer la branche
+### 7. Voir la branche disparaître
 
-GitHub propose le bouton. Prenez-le.
+La ligne sous le merge dit que la branche a été **supprimée** : votre fork le fait pour chaque
+Pull Request mergée, et votre vrai projet devrait en faire autant (**Settings > General >
+Automatically delete head branches**). Les branches majeures ne risquent rien, parce qu'une branche
+protégée ne peut pas être supprimée.
 
 <details markdown="1"><summary>Sous le capot : ce qui a produit le commentaire que vous venez de lire</summary>
 
@@ -250,9 +253,8 @@ connecte toujours, manque. **Training: Level 3 > Set up my training environment*
 
 **Vous avez mergé avant la correction.**
 Alors `Total_Capacity_kW__c` n'est plus sur la présentation de page dans `integration`. Lancez le
-scénario de correction quand même : il ouvre la correction comme une nouvelle Pull Request depuis la
-même branche, et vous relisez et mergez celle-là. Si vous avez déjà supprimé sa branche, cliquez
-d'abord sur **Restore branch** en bas de la Pull Request mergée.
+scénario de correction quand même : il ouvre la correction comme une nouvelle Pull Request depuis
+une branche du même nom, qu'il recrée, et vous relisez et mergez celle-là.
 
 ## Vérifiez votre travail
 

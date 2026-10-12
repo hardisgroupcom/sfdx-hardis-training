@@ -362,6 +362,7 @@ OK  integration now names the org of every branch, and is pushed.
 8 of 8  Changes through a Pull Request, merged once green
 OK  integration now takes changes through a Pull Request only, merged once its checks are green.
 OK  uat now takes changes through a Pull Request only, merged once its checks are green.
+OK  A branch is now deleted once its Pull Request is merged. integration and uat stay: a protected branch cannot be deleted.
 ```
 
 Comptez quinze à vingt minutes, presque entièrement sur les étapes 4 et 5, quand Salesforce crée les
@@ -425,6 +426,15 @@ pourrait encore merger sur du rouge. La mise en place de l'environnement et la r
 niveau lèvent cette protection le temps du seul push qu'elles font elles-mêmes sur ces branches, et
 la remettent juste après.
 
+Enfin, elle a demandé à GitHub de supprimer une branche une fois sa Pull Request mergée, ce qui
+correspond à la case **Automatically delete head branches** des paramètres du repository :
+
+    gh api -X PATCH repos/<your-handle>/sfdx-hardis-training -F delete_branch_on_merge=true
+
+Le réglage vaut pour tout le repository, donc aussi pour une Pull Request dont la source est
+`integration` ou `uat`. Ces deux-là restent, parce qu'une branche protégée ne peut pas être
+supprimée : c'est pour cela que la protection passe en premier.
+
 <!-- command-links:start -->
 Documentation de la commande : [hardis:org:data:import](https://sfdx-hardis.cloudity.com/hardis/org/data/import/)
 <!-- command-links:end -->
@@ -463,6 +473,9 @@ Sept choses, chacune du vrai travail sur un vrai projet, et aucune à refaire vo
   vaut aussi pour vous, propriétaire du fork. Sur un vrai projet, quelqu'un a mis cela en place dès
   le premier jour : un merge sur un contrôle rouge ne déploie rien, ou la moitié de quelque chose, et
   c'est la personne suivante qui s'en aperçoit
+- **Les branches mergées supprimées par GitHub.** Une fois une Pull Request mergée, la branche
+  dont elle vient n'a plus rien à dire, et votre fork la supprime. `integration` et `uat` ne sont
+  jamais supprimées : elles sont protégées
 - **Un identifiant par job de CI.** Les jobs de CI sont les jobs automatisés que GitHub lance pour
   vous, sur ses machines plutôt que sur les vôtres, et ces machines ne peuvent pas atteindre une org
   Salesforce sans identifiant. Ils sont gardés comme secrets du repository, nommés

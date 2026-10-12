@@ -24,6 +24,8 @@ a day, newest first, and a change goes under the date of the day it is made.
 - Lab 2.9 mentions the Trailblazer username that Claim my badge asks for.
 - Lab 2.8: the first pill of the command list picture no longer covers the row above it.
 - Level 3 could not start for a learner coming from Level 2: the Helios Crew profile published in Lab 2.6 listed the page layout and the tab of every object of the scratch org, and could not be deployed to the two Developer Edition orgs. Save / Publish now keeps the layouts and tabs of the project only, Lab 2.6 explains the rule, and Lab 3.1 says how to repair a profile published before it.
+- Your fork now deletes a branch once its Pull Request is merged, so Labs 1.6 and 3.2 no longer ask you to. The major branches stay: a protected branch cannot be deleted.
+- Lab 2.4 retrieves the All list view of Crew Capacity with the object, so the tab lists the 12 records in every org.
 
 ## 2026-10-11
 

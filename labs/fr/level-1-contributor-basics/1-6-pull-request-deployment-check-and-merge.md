@@ -297,8 +297,10 @@ lit le release manager quand il promeut.
 GitHub retient la méthode que vous avez choisie la dernière fois, vérifiez donc l'étiquette du bouton
 avant chaque merge.
 
-Supprimez ensuite la branche. GitHub propose un bouton pour cela. Une branche mergée qui traîne est
-une chose de plus dans la liste de tout le monde, sans aucun bénéfice.
+Vous n'avez pas à supprimer la branche : votre fork le fait au merge, et GitHub le dit sous la
+zone de merge. Une branche mergée qui traîne est une chose de plus dans la liste de tout le monde,
+sans aucun bénéfice, et un vrai projet active donc le même réglage (**Settings > General >
+Automatically delete head branches**).
 
 !!! note "À quoi sert le linter, et pourquoi son commentaire peut afficher un avertissement"
     MegaLinter lit tout le repository, pas seulement votre modification, et signale tout ce qui enfreint
