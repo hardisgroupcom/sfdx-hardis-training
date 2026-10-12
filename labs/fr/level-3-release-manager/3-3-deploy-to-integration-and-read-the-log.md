@@ -5,7 +5,7 @@ description: "Lisez un log de déploiement sfdx-hardis, trouvez ce qu'un joker .
 level: 3
 lab: 3
 lang: fr
-source_rev: "12edfda123fe9925520a1e462a3696f7b5b58485"
+source_rev: "28dbe9c7f604de938c06bf34e043cf63510e961a"
 screenshots:
   - annotated/vscode/pipeline-config-deployment--delta
   - annotated/vscode/orgs-manager
