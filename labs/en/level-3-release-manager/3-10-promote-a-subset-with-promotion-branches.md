@@ -410,8 +410,8 @@ pipeline, it is something moving between two of them, and it lives exactly as lo
 Request.
 
 The counter on the `uat` node **(2)** still reads seven, and that is right: nothing has moved yet.
-It counts Pull Requests, so the five stories, plus the retrofit of Lab 3.7 and the configuration of
-Lab 3.8 that sit under them in the window. A promotion that is open is a proposal. Merge it, come
+It counts Pull Requests, so the five stories, plus the retrofit of [Lab 3.7](3-7-hotfix-and-retrofit.md) and the configuration of
+[Lab 3.8](3-8-monitor-your-production-org.md) that sit under them in the window. A promotion that is open is a proposal. Merge it, come
 back, and the counter reads four, because **a Pull Request appears in one place only**: from then on
 US-057, US-059 and US-061 are listed in the window of `preprod`, the branch they reached, and no
 longer in the window of `uat`, the branch they left.
@@ -683,7 +683,7 @@ production too.
 - No `<<<<<<<` left in the two files on `preprod`
 - A merged retrofit Pull Request into `integration` with no changed file
 - The `uat` node of the diagram counting four Pull Requests still waiting: US-058, US-060, the
-  retrofit of Lab 3.7 and the configuration of Lab 3.8
+  retrofit of [Lab 3.7](3-7-hotfix-and-retrofit.md) and the configuration of [Lab 3.8](3-8-monitor-your-production-org.md)
 
 ## If it goes wrong
 

@@ -244,7 +244,7 @@ org. Open the folded **🛠️ Deployment actions of this job (1)** below it: th
 the deployment, with the reason **Runs after the merge only**.
 
 **Now merge the Pull Request.** On its GitHub page, choose **Squash and merge**, then click **Squash
-and merge** and **Confirm squash and merge**, as in Lab 1.6.
+and merge** and **Confirm squash and merge**, as in [Lab 1.6](../level-1-contributor-basics/1-6-pull-request-deployment-check-and-merge.md).
 
 The deployment job to `integration` runs it, for real, right **after** the deployment: open its log
 in the **Actions** tab and you find the deployment, then the action starting, then the
