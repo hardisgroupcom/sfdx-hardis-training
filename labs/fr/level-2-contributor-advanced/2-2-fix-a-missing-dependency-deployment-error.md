@@ -5,7 +5,7 @@ description: "Modifiez un flow Salesforce existant, puis lisez correctement un c
 level: 2
 lab: 2
 lang: fr
-source_rev: "4b54cba5c5b2ad541892fc9c9072f8bafef1cbad"
+source_rev: "3e610d859003d23adfb1e4934bf7836f8a169e48"
 screenshots:
   - annotated/vscode/package-xml-filtered
   - annotated/vscode/editor-field-file
@@ -143,8 +143,10 @@ nouvelle version.
     en avait déjà un, et votre nouvel élément le suit.
 
 Testez : ouvrez une installation, mettez `Panels Required` à 40 et `Crew Size` à 2, enregistrez. Une
-tâche apparaît dans son **Activity**. Enregistrez à nouveau : pas de deuxième tâche. C'est la story
-qui fonctionne, dans votre org. La case à cocher elle-même reste invisible : aucun permission set ne
+tâche apparaît à droite de l'enregistrement, dans le panneau d'activités sous la **Panel delivery
+timeline**, dans sa section **Upcoming & Overdue**. Cliquez sur **Refresh** dans ce panneau si elle
+tarde à s'afficher. Enregistrez à nouveau : pas de deuxième tâche. C'est la story qui fonctionne,
+dans votre org. La case à cocher elle-même reste invisible : aucun permission set ne
 l'accorde, parce que personne d'autre que le flow n'en a besoin, et la seule personne qui peut la lire
 est l'administrateur qui a construit le flow.
 
