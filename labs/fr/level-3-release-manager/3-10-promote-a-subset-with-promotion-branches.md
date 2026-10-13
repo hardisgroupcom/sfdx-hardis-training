@@ -537,7 +537,7 @@ sfdx-hardis : sa première ligne est celle d'une promotion ordinaire,
 
 suivie de ce que le job a rassemblé depuis elles. La section repliée **🎫** à côté liste les trois
 Pull Requests, celles de US-057, US-059 et US-061. Sur le fork du cours ce sont les #62, #63 et
-#65 ; les vôtres portent d'autres numéros.
+# 65 ; les vôtres portent d'autres numéros.
 
 Si cette ligne manque, ou si elle dit qu'aucune des Pull Requests déclarées n'a pu être utilisée,
 **arrêtez-vous et corrigez avant de merger**. Cela veut dire que le job n'a pas lu la déclaration, et

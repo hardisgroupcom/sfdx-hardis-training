@@ -514,7 +514,7 @@ comment: its first line is the one from an ordinary promotion,
 
 followed by what the job collected from them. The folded **🎫** section next to it lists the three
 Pull Requests, those of US-057, US-059 and US-061. On the course's own fork they are #62, #63 and
-#65; yours carry other numbers.
+# 65; yours carry other numbers.
 
 If that line is missing, or says none of the declared Pull Requests could be used, **stop and fix it
 before merging**. It means the job did not read the declaration, and the deployment about to run is
