@@ -16,6 +16,8 @@ a day, newest first, and a change goes under the date of the day it is made.
 - Lab 3.10: the `uat` counter reads seven, then four, as on your fork, and the screenshots show the seven Pull Requests.
 - The numbered marks of about thirty screenshots, in all three levels, are back on the button, field or line the step names, and no longer hide part of it.
 - The Level 1 training menu is shown with its seven commands, **Update my course** included.
+- Lab 2.8: the picture of the command list shows the whole **Reset selected list of items to merge** row.
+- Lab 2.4: the data action in the pictures carries the label the lab asks you to type.
 
 ## 2026-10-12
 

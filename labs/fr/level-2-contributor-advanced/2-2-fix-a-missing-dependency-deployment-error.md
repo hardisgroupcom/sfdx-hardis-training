@@ -5,7 +5,7 @@ description: "Modifiez un flow Salesforce existant, puis lisez correctement un c
 level: 2
 lab: 2
 lang: fr
-source_rev: "3e610d859003d23adfb1e4934bf7836f8a169e48"
+source_rev: "10f4d9bb699ccad4fc34747a074abf59526ed9d0"
 screenshots:
   - annotated/vscode/package-xml-filtered
   - annotated/vscode/editor-field-file
@@ -97,8 +97,9 @@ ouvre donc la version qui tourne : chaque modification que vous faites est enreg
 
 Trois modifications, et l'image ci-dessus montre où chacune commence :
 
-1. Élément **Start** : cliquez sur **Edit** **(1)** dessus. Sous **Set Entry Conditions**, le flow
-   tourne déjà quand `Crew Size` n'est pas nul **(1)**. Cliquez sur **Add Condition** **(2)** et
+1. Élément **Start** : cliquez sur **Edit** **(1)** dessus. Un panneau s'ouvre, celui de la capture
+   suivante, et ses numéros sont les siens : sous **Set Entry Conditions**, le flow tourne déjà
+   quand `Crew Size` n'est pas nul **(1)**. Cliquez sur **Add Condition** **(2)** et
    ajoutez la seconde, `Panels Required`, **Is Null**, `False`. Ce panneau n'a pas de bouton
    **Done** : la condition est gardée au fil de la saisie, et le **X** **(3)** en haut à droite
    ferme le panneau
@@ -208,7 +209,7 @@ puis **Package XML** **(2)**, comme au [Lab 1.5](../level-1-contributor-basics/1
 
 ![Le menu Deployment packages du panneau DevOps Pipeline, avec Package XML](../../_assets/annotated/vscode/pipeline-packages-menu--package-xml.png)
 
-Tapez `Crew_Warning` dans sa zone de filtre **(1)**. Il reste une ligne, **Flow** **(2)** : le
+Tapez `crew_warning` dans sa zone de filtre **(1)**. Il reste une ligne, **Flow** **(2)** : le
 package porte votre flow. Il n'y a aucune ligne **CustomField** : le package ne porte pas
 `Installation__c.Crew_Warning_Sent__c`.
 
