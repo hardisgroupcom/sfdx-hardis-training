@@ -7,7 +7,12 @@
       "title": "Salesforce DevOps",
       "titleLight": "avec sfdx-hardis",
       "subtitle": "De votre première Pull Request au pilotage de la pipeline",
-      "chips": ["{levels} niveaux", "{labs} labs", "{levels} badges", "100 % gratuit"],
+      "chips": [
+        "{levels} niveaux",
+        "{labs} labs",
+        "{levels} badges",
+        "100 % gratuit"
+      ],
       "offeredBy": "offert par"
     },
     "services": {
