@@ -3,6 +3,13 @@
 What changed in the course, for learners and trainers. The course has no versions: each section is
 a day, newest first, and a change goes under the date of the day it is made.
 
+## 2026-10-13
+
+- The home page opens on a banner of the course and a Start button, and shows the DevOps Pipeline panel in motion before the list of levels.
+- The home page, the Help page, the last lab of each level and every badge page say who offers the course: Cloudity, and what it does on real projects, from Agentforce and Revenue Cloud to Field Service, Managed Services and DevOps.
+- Every page ends with one line about Cloudity in its footer, and each menu has a link to the Cloudity site in its language.
+- In dark mode, the label of a purple button can be read again.
+
 ## 2026-10-12
 
 - The comment that awards a badge now says to wait a few minutes before opening the badge page, the time for the site to be published again.
