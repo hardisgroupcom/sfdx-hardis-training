@@ -1064,7 +1064,7 @@ const ACTIONS_YAML = `commandsPreDeploy:
     context: all
 commandsPostDeploy:
   - id: 7a1c3d2e-2d0b-4f1e-8e3b-024b00000002
-    label: Load the crew capacity reference data
+    label: Load crew capacity reference data
     type: data
     when: post-deploy
     parameters:
