@@ -6,6 +6,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 ## 2026-10-14
 
 - The three capstones and every badge page show the Cloudity services banner, as the home page and the Help page do.
+- Levels 2 and 3 no longer show the amber "This level is in QA" banner: the three levels are released.
 
 ## 2026-10-13
 
