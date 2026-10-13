@@ -14,6 +14,8 @@ a day, newest first, and a change goes under the date of the day it is made.
 - Lab 3.1: the step that configures `main` says to tick no merge target.
 - Lab 3.9: how to read a generated page as a page in VS Code.
 - Lab 3.10: the `uat` counter reads seven, then four, as on your fork, and the screenshots show the seven Pull Requests.
+- The numbered marks of about thirty screenshots, in all three levels, are back on the button, field or line the step names, and no longer hide part of it.
+- The Level 1 training menu is shown with its seven commands, **Update my course** included.
 
 ## 2026-10-12
 
