@@ -138,7 +138,9 @@ new version.
     that a fault path exists. The original flow already had one, and your new element follows it.
 
 Test it: open an installation, set `Panels Required` to 40 and `Crew Size` to 2, save. A task
-appears in its **Activity**. Save again: no second task. That is the story working, in your org.
+appears on the right of the record, in the activity panel under the **Panel delivery timeline**, in
+its **Upcoming & Overdue** section. Click **Refresh** in that panel if it is slow to show. Save
+again: no second task. That is the story working, in your org.
 The checkbox itself stays out of sight: no permission set grants it, because nobody but the flow
 needs it, and the only person who can read it is the administrator who built the flow.
 
