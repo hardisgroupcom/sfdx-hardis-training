@@ -1,9 +1,10 @@
 ---
-# The statistics of the course, every Monday and after every badge awarded.
+# The statistics of the course, once a week.
 #
-# The badge claim workflow starts this one with workflow_dispatch once it has
-# committed a badge: a level finished is a new figure, and the Statistics page
-# and the times of the labs should not wait for Monday to show it.
+# The badge claim workflow (claim.yml) also recalculates them, with the same two
+# scripts, and commits them with each badge it awards: a level finished is a new
+# figure, and the Statistics page should not wait for Monday to show it. This
+# run catches what changed without a badge: new forks, labs merged since.
 #
 # Reads the forks of the course and the badge claims, and commits
 # stats/course-stats.json: how many learners start and finish each level, and
@@ -35,10 +36,7 @@ on:
 permissions: read-all
 
 # Its own group, not the one of the badge claims: a group keeps a single
-# pending run, and a statistics run waiting there would cancel a learner's claim.
-# In its own group, that single pending run is what is wanted: five badges in
-# an hour queue one run behind the one in progress, not five, and the queued
-# run reads every badge committed before it starts.
+# pending run, and a weekly job waiting there would cancel a learner's claim.
 concurrency:
   group: course-stats
   cancel-in-progress: false
