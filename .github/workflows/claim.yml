@@ -14,10 +14,11 @@
 #     repository cannot exhaust the runner.
 #  5. Serialise with a concurrency group. Two claims landing together both commit
 #     to main, and without serialisation the second push is rejected.
-#  6. Ask for the site build and the reset branches after committing a badge. A
-#     push made with GITHUB_TOKEN never triggers a workflow, so nothing else will:
-#     the badge page this workflow links to would not exist, and the reset
-#     branches would lag main by every badge commit.
+#  6. Ask for the site build, the reset branches and the course statistics after
+#     committing a badge. A push made with GITHUB_TOKEN never triggers a
+#     workflow, so nothing else will: the badge page this workflow links to
+#     would not exist, the reset branches would lag main by every badge commit,
+#     and the Statistics page would wait for Monday to count the new badge.
 #
 # The learner's code is never checked out into the workspace: it is cloned into a
 # temporary directory and read. That is what keeps this simple, and it is why the
@@ -210,6 +211,13 @@ jobs:
             # a re-run with nothing to commit has nothing to publish.
             if ! gh workflow run "Publish the reset branches" --ref "${GITHUB_REF_NAME}"; then
               echo "The reset branches could not be republished: the next push to main does it."
+            fi
+            # Rule 6 again: a new badge is a new figure. The statistics run
+            # commits the figures and the lab times, and starts its own site
+            # build when they changed. It is not waited for: the learner's
+            # answer below does not depend on it.
+            if ! gh workflow run "Course statistics" --ref "${GITHUB_REF_NAME}"; then
+              echo "The statistics could not be started: next Monday's run counts this badge."
             fi
           fi
           # GitHub does not start a workflow from a push made with GITHUB_TOKEN,
