@@ -486,7 +486,9 @@ step 3 would refuse anything else.
 You publish them the way you published a User Story in Level 1, with the same buttons.
 
 **Commit them.** In the **Source Control** panel, stage the configuration files and commit them as
-`Configure the pipeline up to production`, exactly as you staged metadata in [Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publish-your-changes.md).
+`US-050 Configure the pipeline up to production`, exactly as you staged metadata in [Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publish-your-changes.md).
+Keep the story number at the start: GitHub titles the Pull Request with it, and it is what links
+this configuration to US-050 in the release notes of [Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md), long after the branch name is gone.
 
 **Publish.** In the **DevOps Pipeline** panel, click the **Save / Publish** card **(1)**, the one
 every story has gone through since [Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publish-your-changes.md). It does not ask for the target branch:

@@ -5,7 +5,7 @@ description: "Étendez une pipeline Salesforce à deux étages jusqu'à la produ
 level: 3
 lab: 1
 lang: fr
-source_rev: "a163d0ac1455f9d20edc39703d748f6ea6f4b701"
+source_rev: "e4915b33ef96b20fbdadc56aafce47ff396b28d9"
 screenshots:
   - annotated/vscode/devops-pipeline--one-column
   - annotated/web/github-new-branch
@@ -509,8 +509,10 @@ Request aux contrôles verts. La protection de l'étape 3 refuserait tout le res
 Vous les publiez comme vous avez publié une User Story au Niveau 1, avec les mêmes boutons.
 
 **Commitez-les.** Dans le panneau **Source Control**, stagez les fichiers de configuration et
-commitez-les sous `Configure the pipeline up to production`, exactement comme vous stagiez de la
+commitez-les sous `US-050 Configure the pipeline up to production`, exactement comme vous stagiez de la
 métadonnée au [Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publish-your-changes.md).
+Gardez le numéro de la story en tête : GitHub en titre la Pull Request, et c'est lui qui relie
+cette configuration à US-050 dans les release notes du [Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md), bien après la disparition du nom de branche.
 
 **Publiez.** Dans le panneau **DevOps Pipeline**, cliquez sur la carte **Save / Publish** **(1)**,
 celle par laquelle chaque story est passée depuis le [Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publish-your-changes.md). Elle ne demande pas la branche cible :
