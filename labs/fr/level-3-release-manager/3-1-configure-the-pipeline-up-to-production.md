@@ -5,7 +5,7 @@ description: "Étendez une pipeline Salesforce à deux étages jusqu'à la produ
 level: 3
 lab: 1
 lang: fr
-source_rev: "991128be45a89e9809c7727459e6576289f2f1ea"
+source_rev: "a163d0ac1455f9d20edc39703d748f6ea6f4b701"
 screenshots:
   - annotated/vscode/devops-pipeline--one-column
   - annotated/web/github-new-branch
@@ -368,8 +368,9 @@ la commande a déjà faite : l'External Client App qu'elle déploie porte
 Regardez-la une fois, pour savoir où elle est le jour où cela compte.
 
 Dans `helios-preprod` : **Setup > External Client App Manager**, ouvrez l'application, dont le
-nom par défaut était `sfdxhardispreprod`, puis **Policies**. Permitted Users affiche
-*Admin approved users are pre-authorized*, et le profil est listé.
+nom par défaut était `sfdxhardispreprod`. Au-dessus des onglets, **App Authorization** affiche
+*Admin approved users are pre-authorized*. Dans l'onglet **Policies**, sous **App Policies**,
+**Selected Profiles** liste le profil.
 
 Cela compte à cause du seul chemin où ce n'est **pas** fait pour vous : si le déploiement de
 l'application échoue et que la commande retombe sur l'affichage d'instructions manuelles, ces

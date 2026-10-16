@@ -351,8 +351,9 @@ the External Client App it deploys carries `Admin approved users are pre-authori
 you named at the last question. Look at it once, so you know where it is when it matters.
 
 In `helios-preprod`: **Setup > External Client App Manager**, open the app, whose name defaulted
-to `sfdxhardispreprod`, then **Policies**. Permitted Users reads *Admin approved users are
-pre-authorized*, and the profile is listed.
+to `sfdxhardispreprod`. Above the tabs, **App Authorization** reads *Admin approved users are
+pre-authorized*. On the **Policies** tab, under **App Policies**, **Selected Profiles** lists the
+profile.
 
 It matters because of the one path where it is **not** done for you: if the app deployment fails and
 the command falls back to printing manual instructions, those instructions stop at uploading the
