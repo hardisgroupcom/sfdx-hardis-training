@@ -5,7 +5,7 @@ description: "Transportez trois User Stories approuvées sur cinq de uat vers pr
 level: 3
 lab: 10
 lang: fr
-source_rev: "73875a7c2ed4b564cca87b9872d700f4240131c1"
+source_rev: "0f173b83a9ab49413e7f65df6dee1b969066dc25"
 screenshots:
   - annotated/vscode/welcome-custom-menu-3
   - annotated/vscode/pipeline-config-danger--promotion-branches
@@ -536,9 +536,8 @@ sfdx-hardis : sa première ligne est celle d'une promotion ordinaire,
 > declared in its description.
 
 suivie de ce que le job a rassemblé depuis elles. La section repliée **🎫** à côté liste les trois
-Pull Requests, celles de US-057, US-059 et US-061. Sur le fork du cours ce sont les #62, #63 et
-
-# 65 ; les vôtres portent d'autres numéros
+Pull Requests, celles de US-057, US-059 et US-061. Sur le fork du cours ce sont les #62, #63 et #65 ;
+les vôtres portent d'autres numéros.
 
 Si cette ligne manque, ou si elle dit qu'aucune des Pull Requests déclarées n'a pu être utilisée,
 **arrêtez-vous et corrigez avant de merger**. Cela veut dire que le job n'a pas lu la déclaration, et
