@@ -52,7 +52,7 @@ handle all three.
 
 1. **Take it.** Name `US-041-handover-checklist`, org `helios-dev`
 2. **Build the object**: `Handover_Item__c`, its **Record Name** an Auto Number `Handover Item
-   Number`, `HI-{00000}`, as Lab 2.4 did for Crew Capacity, with `External_Id__c` (Text 40, external
+   Number`, `HI-{00000}`, as [Lab 2.4](2-4-ship-reference-data-and-a-batch-with-deployment-actions.md) did for Crew Capacity, with `External_Id__c` (Text 40, external
    id, unique), `Installation__c` (Lookup to Installation), `Label__c` (Text 255), `Sequence__c`
    (Number 3, 0), `Is_Done__c` and `Is_Template__c` (Checkbox, unchecked). When you create it, tick **Launch New Custom Tab Wizard after saving this custom object**, pick any tab
    style and keep the other defaults of the wizard: the tab is how you reach the records in step 3
