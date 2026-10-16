@@ -617,8 +617,10 @@ Current** on the block, in both files, then **Complete Merge**. `integration` is
 and where it will be approved from, so its lines stay. Nothing else conflicts, because the three
 promoted stories are the same content on both sides.
 
-Both files land under **Staged Changes** with the message `Merge remote-tracking branch
-'origin/preprod'` already written. **Commit**, then **Save / Publish User Story** as in [Lab 3.7](3-7-hotfix-and-retrofit.md)
+Both files land under **Staged Changes** with the message
+`Merge remote-tracking branch 'origin/preprod' into retrofit/US-059-retrofit` already written, and
+the blue button under it reads **Continue** while a merge is in progress, as in
+[Lab 2.7](../level-2-contributor-advanced/2-7-resolve-a-git-merge-conflict.md). Click it, then **Save / Publish User Story** as in [Lab 3.7](3-7-hotfix-and-retrofit.md)
 step 9, and open the Pull Request into `integration`, titled `Retrofit: the promotion of US-057,
 US-059 and US-061 back down into integration`. Its **Files changed** tab is empty, and that is
 right: read the block below. Wait for its check, and merge it with **Merge pull request**, as the
