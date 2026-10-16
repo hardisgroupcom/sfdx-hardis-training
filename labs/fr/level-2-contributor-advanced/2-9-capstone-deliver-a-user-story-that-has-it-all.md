@@ -5,7 +5,7 @@ description: "Livrez une User Story Salesforce avec une dépendance à vérifier
 level: 2
 lab: 9
 lang: fr
-source_rev: "0c6cd18eaa860291d0a2e19e37d3368c9d223ce9"
+source_rev: "8457b9d912c1a56b592795702dde35ed55af4143"
 screenshots:
   - annotated/web/github-star-megalinter
 depends_on:
