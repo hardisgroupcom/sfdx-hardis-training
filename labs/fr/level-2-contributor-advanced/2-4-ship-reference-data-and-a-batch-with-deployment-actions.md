@@ -5,7 +5,7 @@ description: "Un déploiement vert n'est pas une fonctionnalité qui marche. Liv
 level: 2
 lab: 4
 lang: fr
-source_rev: "ef52190643bb56f18a86580be6ec54c993c9cd5b"
+source_rev: "bdc8d7907d4c45c95033bdef5a6d3884ad8037f4"
 screenshots:
   - annotated/vscode/sidebar-commands-custom-menu-2--lab-records
   - annotated/salesforce/crew-capacity-records
@@ -69,7 +69,10 @@ Pipeline. Nom `US-026-crew-capacity-data`, org `helios-dev`.
 
 Dans `helios-dev`, créez :
 
-- Un objet personnalisé **Crew Capacity** (`Crew_Capacity__c`), avec :
+- Un objet personnalisé **Crew Capacity** (`Crew_Capacity__c`). Sur sa page de création, mettez
+  **Record Name** à `Crew Capacity Number`, **Data Type** à **Auto Number**, **Display Format** à
+  `CAP-{00000}` et **Starting Number** à `0` : les enregistrements s'appellent alors CAP-00000 à
+  CAP-00011 plutôt que leur id. Puis ajoutez quatre champs :
   - `External_Id__c`, Text 40, **External Id**, **Unique**
   - `Crew_Type__c`, Picklist : `Roof`, `Ground`, `Electrical`
   - `Roof_Type__c`, Picklist : `Tile`, `Slate`, `Flat`, `Metal`

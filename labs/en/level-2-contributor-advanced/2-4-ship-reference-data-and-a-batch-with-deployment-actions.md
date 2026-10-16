@@ -69,7 +69,10 @@ panel. Name `US-026-crew-capacity-data`, org `helios-dev`.
 
 In `helios-dev`, create:
 
-- A custom object **Crew Capacity** (`Crew_Capacity__c`), with:
+- A custom object **Crew Capacity** (`Crew_Capacity__c`). On its creation page, set **Record
+  Name** to `Crew Capacity Number`, **Data Type** **Auto Number**, **Display Format** `CAP-{00000}`,
+  **Starting Number** `0`: the records then read CAP-00000 to CAP-00011 rather than their record id. Then
+  add four fields:
   - `External_Id__c`, Text 40, **External Id**, **Unique**
   - `Crew_Type__c`, Picklist: `Roof`, `Ground`, `Electrical`
   - `Roof_Type__c`, Picklist: `Tile`, `Slate`, `Flat`, `Metal`
