@@ -5,7 +5,7 @@ description: "Livrez une User Story Salesforce avec une dépendance à vérifier
 level: 2
 lab: 9
 lang: fr
-source_rev: "4d76d8275116ed31a2e9c25db8c5403790f51fcd"
+source_rev: "268297d4109e7598bcefa04f3b01bdacd2c963ea"
 screenshots:
   - annotated/web/github-star-megalinter
 depends_on:
@@ -51,8 +51,10 @@ savez déjà traiter les trois.
 ### La story
 
 1. **Prenez-la.** Nom `US-041-handover-checklist`, org `helios-dev`
-2. **Construisez l'objet** : `Handover_Item__c`, avec `External_Id__c` (Text 40, identifiant externe,
-   unique), `Installation__c` (lookup), `Label__c`, `Sequence__c`, `Is_Done__c`, `Is_Template__c`.
+2. **Construisez l'objet** : `Handover_Item__c`, son **Record Name** en Auto Number
+   `Handover Item Number`, `HI-{00000}`, comme le Lab 2.4 pour Crew Capacity, avec `External_Id__c`
+   (Text 40, identifiant externe, unique), `Installation__c` (Lookup vers Installation), `Label__c`
+   (Text 255), `Sequence__c` (Number 3, 0), `Is_Done__c` et `Is_Template__c` (Checkbox, décochée).
    En le créant, cochez **Launch New Custom Tab Wizard after saving this custom object**, choisissez
    n'importe quel style d'onglet et gardez les autres valeurs par défaut de l'assistant : l'onglet est
    ce qui vous mène aux enregistrements à l'étape 3
