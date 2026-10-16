@@ -108,7 +108,7 @@ here: answer **Yes** to **Create them?**.
 The panel first checks that your object and its four fields are in the org, then creates the
 records, lists them, and ends with a **See them in the org** link. Open it, or open the **Crew
 Capacity** tab of the Helios Delivery app and pick the **All** list view: it reads **12 items**
-**(1)**, from `CAP-ROOF-TILE` to `CAP-ELECTRICAL-METAL`. If the
+**(1)**, named `CAP-00000` to `CAP-00011`. If the
 panel says a field is missing, finish the object first, then run it again: it updates the same
 twelve records rather than creating more.
 

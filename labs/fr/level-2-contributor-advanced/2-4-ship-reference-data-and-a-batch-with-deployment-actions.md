@@ -5,7 +5,7 @@ description: "Un déploiement vert n'est pas une fonctionnalité qui marche. Liv
 level: 2
 lab: 4
 lang: fr
-source_rev: "bdc8d7907d4c45c95033bdef5a6d3884ad8037f4"
+source_rev: "e735b792d0e43091f012b1c8f2315c997d76f68a"
 screenshots:
   - annotated/vscode/sidebar-commands-custom-menu-2--lab-records
   - annotated/salesforce/crew-capacity-records
@@ -110,7 +110,7 @@ records** **(2)**. Le panneau prend de lui-même **Lab 2.4 - the 12 Crew Capacit
 Le panneau vérifie d'abord que votre objet et ses quatre champs sont dans l'org, puis crée les
 enregistrements, les liste, et termine par un lien **See them in the org**. Ouvrez-le, ou ouvrez
 l'onglet **Crew Capacity** de l'application Helios Delivery et choisissez la vue de liste **All** :
-elle indique **12 items** **(1)**, de `CAP-ROOF-TILE` à `CAP-ELECTRICAL-METAL`.
+elle indique **12 items** **(1)**, nommés `CAP-00000` à `CAP-00011`.
 Si le panneau dit qu'un champ manque, terminez d'abord l'objet, puis relancez-le : il met à jour les
 mêmes douze enregistrements au lieu d'en créer d'autres.
 

@@ -5,7 +5,7 @@ description: "Votre org de développement est en retard sur integration. Faites-
 level: 2
 lab: 1
 lang: fr
-source_rev: "25feaac8fd18b67d87bd491c34064a101db12ece"
+source_rev: "2dcedecd93e850090387ef6c49a1017adfe0838c"
 screenshots:
   - annotated/vscode/sidebar-commands-custom-menu-2--training-menu
   - annotated/web/github-pr-files
@@ -319,8 +319,8 @@ Et une chose qu'il fait et que personne n'attend la première fois :
 
     Une exception, et c'est le cas juste après le Niveau 1 : la branche sur laquelle vous revenez
     est une story dont la Pull Request est déjà mergée, comme `features/US-016-crew-notes`. Cette
-    branche est terminée : les versions récentes de l'extension ne posent plus la question, et si la
-    vôtre la pose, fermez-la au lieu de cliquer sur **Merge `<parent>`**. Le merge
+    branche est terminée : si VS Code pose la question, fermez-la au lieu de cliquer sur
+    **Merge `<parent>`**. Le merge
     s'arrêterait sur un conflit dans le layout d'Installation, parce qu'`integration` contient votre
     story en un seul commit squashé, avec le champ de Romain à côté.
     Le [Lab 2.2](2-2-fix-a-missing-dependency-deployment-error.md) démarre une nouvelle story depuis

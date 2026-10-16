@@ -487,7 +487,8 @@ You publish them the way you published a User Story in Level 1, with the same bu
 
 **Commit them.** In the **Source Control** panel, stage the configuration files and commit them as
 `US-050 Configure the pipeline up to production`, exactly as you staged metadata in [Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publish-your-changes.md).
-Keep the story number at the start: GitHub titles the Pull Request with it, and it is what links
+Keep the story number at the start, and check that the title of the Pull Request starts with it
+too, editing it if needed: that title becomes the commit of the squash, and it is what links
 this configuration to US-050 in the release notes of [Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md), long after the branch name is gone.
 
 **Publish.** In the **DevOps Pipeline** panel, click the **Save / Publish** card **(1)**, the one

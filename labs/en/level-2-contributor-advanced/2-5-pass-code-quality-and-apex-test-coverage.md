@@ -234,8 +234,8 @@ the pass, the fail and the percentage without pushing anything. Give it a few mi
 org queues its test runs, and the first one of the day can take ten.
 
 The percentage is the one of `helios-dev`, and it is not the one the check prints. The two batch
-classes of Labs 2.3 and 2.4 went to `helios-integration` through the pipeline and never to your
-org, so `helios-dev` counts fewer lines, and reads higher. What the card tells you for sure is
+classes of Labs 2.3 and 2.4 went to `helios-integration` through the pipeline, and reach your
+org only with a backpromote: until then `helios-dev` counts fewer lines, and reads higher. What the card tells you for sure is
 whether your tests pass, and whether your own class is covered.
 
 !!! note "The banner at the top is expected"
