@@ -300,7 +300,8 @@ And one thing it does that nobody expects the first time:
 
     One exception, and it is the case right after Level 1: the branch you come back to is a story
     whose Pull Request is already merged, such as `features/US-016-crew-notes`. That branch is
-    finished, so close the question instead of clicking **Merge `<parent>`**: the merge stops on a
+    finished: recent versions of the extension no longer ask, and if yours does, close the question
+    instead of clicking **Merge `<parent>`**. The merge would stop on a
     conflict in the Installation layout, because `integration` holds your story as one squashed
     commit with Romain's field next to it. [Lab 2.2](2-2-fix-a-missing-dependency-deployment-error.md)
     starts a new story from `integration`, and that one has everything.
