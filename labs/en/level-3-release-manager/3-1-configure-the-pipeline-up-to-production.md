@@ -25,12 +25,15 @@ screenshots:
   - annotated/vscode/pipeline-cards--save-publish
   - annotated/vscode/work-save-completed
   - annotated/vscode/devops-pipeline-level3--four-stages
+  - annotated/vscode/scratch-org-pool
+  - annotated/vscode/org-initialization
+  - annotated/vscode/replacement-rules
 depends_on:
   commands: [hardis:project:configure:auth, hardis:work:new]
   flags: []
-  config: [availableTargetBranches, availableTargetBranchesLabels, productionBranch, mergeTargets, targetUsername, instanceUrl, orgAuthenticationMode, enablePromotionBranches, allowedPromotionSteps]
-  panels: [pipeline, pipelineConfig, orgManager, commandExecution, promptInput]
-  docs: [salesforce-devops-setup-home, salesforce-devops-setup-auth, salesforce-devops-setup-auth-github, salesforce-devops-setup-existing-org]
+  config: [availableTargetBranches, availableTargetBranchesLabels, productionBranch, mergeTargets, targetUsername, instanceUrl, orgAuthenticationMode, enablePromotionBranches, allowedPromotionSteps, poolConfig, orgInitSteps, replacementRules]
+  panels: [pipeline, pipelineConfig, orgManager, commandExecution, promptInput, scratchOrgPool, orgInit, replacementRules]
+  docs: [salesforce-devops-setup-home, salesforce-devops-setup-auth, salesforce-devops-setup-auth-github, salesforce-devops-setup-existing-org, salesforce-devops-setup-scratch-org-pool, salesforce-devops-org-initialization, salesforce-devops-config-replacement-rules]
 ---
 
 # Lab 3.1 - Configure the CI/CD pipeline up to production
@@ -623,6 +626,37 @@ That diagram is now the truth about this project, and the thing you point at whe
 "so where is it". The **+ PR** buttons on the arrows are the promotion Pull Requests, and [Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md) is
 the first time you click one.
 
+## Three settings this course does not use
+
+Helios is a small project, so three settings stay off for the whole course. You will meet them on a
+real one. Each is set once, usually by the release manager or a tech lead, and its documentation page
+explains how. Nothing to do here: look at the pictures and know they exist.
+
+**Scratch org pool.** Creating a scratch org and loading the project into it can take twenty
+minutes. A pool keeps a few of them ready: a scheduled job creates and initializes them every night,
+and **New User Story** takes one in seconds. Helios creates its scratch orgs once, in **Set up my
+training environment**, so it has no pool. The panel is **Scratch Org Pool**, in the **Setup
+Configuration** commands. See
+[Set up a scratch org pool](https://sfdx-hardis.cloudity.com/salesforce-devops-setup-scratch-org-pool/).
+
+![The Scratch Org Pool panel, with four scratch orgs ready out of five](../../_assets/annotated/vscode/scratch-org-pool.png)
+
+**Org initialization (Beta).** It lists what every new scratch org or sandbox receives, in order:
+packages, project sources, permission sets, data, Apex scripts. The pool runs the same steps when it
+fills up. Gear menu of the DevOps Pipeline, **Configure Org Initialization**. See
+[Initialize scratch orgs and sandboxes](https://sfdx-hardis.cloudity.com/salesforce-devops-org-initialization/).
+
+![The Org Initialization panel, with the steps a new Helios scratch org would get](../../_assets/annotated/vscode/org-initialization.png)
+
+**Replacement rules (Beta).** Some metadata must differ from one org to the next: an endpoint URL, a
+password read from a CI secret, a permission production must not grant. A replacement rule changes
+the files just before each deployment, for the org it deploys to, and the repository keeps one
+version. Helios has a case: each org books its panel batches with its own warehouse system, and the
+`Helios_Warehouse` remote site holds one URL. Gear menu of the DevOps Pipeline, **Configure Replacement Rules**. See
+[Replacement rules](https://sfdx-hardis.cloudity.com/salesforce-devops-config-replacement-rules/).
+
+![The Replacement Rules panel, with the warehouse URL of each Helios org](../../_assets/annotated/vscode/replacement-rules.png)
+
 ## What you should see
 
 - Four branch protection rules in **Settings** > **Branches** of your fork, `integration`, `uat`,
@@ -738,5 +772,8 @@ Welcome page > **Training: Level 3** > **Check my work**, then pick **Lab 3.1**.
 - [Configure CI authentication](https://sfdx-hardis.cloudity.com/salesforce-devops-setup-auth/)
 - [GitHub Actions authentication](https://sfdx-hardis.cloudity.com/salesforce-devops-setup-auth-github/)
 - [Retrieve an existing org](https://sfdx-hardis.cloudity.com/salesforce-devops-setup-existing-org/)
+- [Set up a scratch org pool](https://sfdx-hardis.cloudity.com/salesforce-devops-setup-scratch-org-pool/)
+- [Initialize scratch orgs and sandboxes (Beta)](https://sfdx-hardis.cloudity.com/salesforce-devops-org-initialization/)
+- [Replacement rules (Beta)](https://sfdx-hardis.cloudity.com/salesforce-devops-config-replacement-rules/)
 
 [Next: Lab 3.2 - Review and merge a contributor Pull Request](3-2-review-a-contributor-pull-request.md){ .md-button .md-button--primary }

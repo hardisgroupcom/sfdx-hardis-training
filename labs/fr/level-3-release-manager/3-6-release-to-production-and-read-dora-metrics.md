@@ -5,7 +5,7 @@ description: "Livrez via preprod vers votre org de production, vérifiez-la, pui
 level: 3
 lab: 6
 lang: fr
-source_rev: "5b3115a62a37040cde0c3cba89b3a8a76ccfe99b"
+source_rev: "06a0ac8a2da3aa0b2b91d615aa755a4a49576ed5"
 screenshots:
   - annotated/vscode/orgs-manager
   - annotated/vscode/pipeline-settings-menu-level3--dora
@@ -156,9 +156,10 @@ mérite mieux qu'une impression.
 Ouvrez le panneau **DevOps Pipeline**, cliquez sur l'engrenage **(1)** en haut à droite, et
 choisissez **Generate DORA Metrics** **(2)**. Vous avez utilisé **Configure Pipeline Settings** et **Add or Reconnect a
 Major Org** du même menu au [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md).
-**Configure Org Initialization** sert aux projets dont les contributeurs reçoivent une nouvelle scratch org ou
-sandbox : il définit ce que reçoit chaque nouvelle org. Helios donne à ses contributeurs les scratch
-orgs créées par Set up my training environment, le cours ne l'utilise donc pas.
+**Configure Org Initialization** et **Configure Replacement Rules** sont deux réglages que ce cours
+laisse de côté : le
+[Lab 3.1](3-1-configure-the-pipeline-up-to-production.md#trois-reglages-que-ce-cours-laisse-de-cote) dit à
+quoi ils servent.
 
 ![Le menu engrenage du panneau DevOps Pipeline, ouvert sur Generate DORA Metrics](../../_assets/annotated/vscode/pipeline-settings-menu-level3--dora.png)
 
