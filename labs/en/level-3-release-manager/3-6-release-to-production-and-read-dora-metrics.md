@@ -80,8 +80,7 @@ Its first check stops **red**, on purpose, the way the promotion to `uat` did in
 [Lab 3.5 step 4](3-5-promote-to-uat-and-write-release-notes.md): the deliverability step of US-026 runs before the deployment, and nobody has done
 it in `helios-preprod`. Do the click there, tick its box in the sfdx-hardis comment (or **Mark as
 done in preprod** in the VS Code **Deployment Actions** tab), then **Re-run all jobs** on the check.
-It goes green. On a real project, open it as a draft and do the step first, as the tip of
-[Lab 3.5 step 4](3-5-promote-to-uat-and-write-release-notes.md) explains.
+It goes green.
 
 Read the check, merge, and watch the **Process Deployment (sfdx-hardis)** run on `preprod`. Then
 open `helios-preprod` and do the checks of step 6 there first.

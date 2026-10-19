@@ -217,13 +217,6 @@ done in `uat`, the check of the promotion stops red, right after its pre-deploym
 click in `helios-uat`, tick its box (or **Mark as done in uat** in the VS Code **Deployment
 Actions** tab), then **Re-run all jobs** on the check: it records the step and goes green.
 
-!!! tip "On a real project, open the promotion as a draft"
-    This lab lets the check go red so you see what holds the merge. A draft Pull Request does not
-    stop on a pending **before** step: its check reports it and carries on. So open the promotion
-    as a draft, read the steps it lists, do them in the org and tick their boxes, then click
-    **Ready for review**. Marking it ready does not run the check again: tick the boxes before you
-    merge.
-
 ### 5. Merge and watch the deployment
 
 Merge the promotion. The **Process Deployment (sfdx-hardis)** run starts, this time on `uat`.

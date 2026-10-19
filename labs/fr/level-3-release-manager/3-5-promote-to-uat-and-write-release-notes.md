@@ -5,7 +5,7 @@ description: "Protégez ce que l'UAT garde pour elle avec package-no-overwrite, 
 level: 3
 lab: 5
 lang: fr
-source_rev: "810a72f64996a1a70c5627e44d5a7fee2423802e"
+source_rev: "0bc58525d863e6f6592a0dddbd593a4f87f5b49b"
 screenshots:
   - annotated/vscode/devops-pipeline-level3--create-promotion
   - annotated/vscode/pipeline-branch-modal-level3--what-it-carries
@@ -230,13 +230,6 @@ marquée comme faite dans `uat`, le contrôle de la promotion s'arrête en rouge
 actions de pré-déploiement. Faites le clic dans `helios-uat`, cochez sa case (ou **Mark as done in
 uat** dans l'onglet **Deployment Actions** de VS Code), puis **Re-run all jobs** sur le contrôle :
 il enregistre l'étape et passe au vert.
-
-!!! tip "Sur un vrai projet, ouvrez la promotion en draft"
-    Ce lab laisse le contrôle passer au rouge pour que vous voyiez ce qui bloque le merge. Une
-    Pull Request en draft ne s'arrête pas sur une étape **before** en attente : son contrôle la
-    signale et continue. Ouvrez donc la promotion en draft, lisez les étapes qu'elle liste,
-    faites-les dans l'org et cochez leurs cases, puis cliquez sur **Ready for review**. La passer
-    en ready ne relance pas le contrôle : cochez les cases avant de merger.
 
 ### 5. Merger et regarder le déploiement
 

@@ -5,7 +5,7 @@ description: "Livrez via preprod vers votre org de production, vérifiez-la, pui
 level: 3
 lab: 6
 lang: fr
-source_rev: "272aab548307b2fb26581237d57660931a379fc9"
+source_rev: "b5ad31f6204faf116d74a25715a6f684dac3af3a"
 screenshots:
   - annotated/vscode/orgs-manager
   - annotated/vscode/pipeline-settings-menu-level3--dora
@@ -82,8 +82,7 @@ Son premier contrôle s'arrête en **rouge**, exprès, comme celui de la promoti
 [Lab 3.5 étape 4](3-5-promote-to-uat-and-write-release-notes.md) : l'étape de délivrabilité de US-026 s'exécute avant le déploiement, et
 personne ne l'a faite dans `helios-preprod`. Faites-y le clic, cochez sa case dans le commentaire
 sfdx-hardis (ou **Mark as done in preprod** dans l'onglet **Deployment Actions** de VS Code), puis
-**Re-run all jobs** sur le contrôle. Il passe au vert. Sur un vrai projet, ouvrez-la en draft et
-faites l'étape d'abord, comme l'explique l'astuce du [Lab 3.5 étape 4](3-5-promote-to-uat-and-write-release-notes.md).
+**Re-run all jobs** sur le contrôle. Il passe au vert.
 
 Lisez le contrôle, mergez, et regardez l'exécution **Process Deployment (sfdx-hardis)** sur
 `preprod`. Ouvrez ensuite `helios-preprod` et faites-y d'abord les vérifications de l'étape 6.

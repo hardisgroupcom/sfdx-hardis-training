@@ -6,7 +6,6 @@ a day, newest first, and a change goes under the date of the day it is made.
 ## 2026-10-20
 
 - Labs 3.5, 3.6, 3.7 and 3.10 name the GitHub option to pick for a promotion: Create a merge commit, under the arrow of the green button.
-- Labs 3.5 and 3.6 explain how to open a promotion as a draft on a real project, so its pre-deployment steps are done before the check runs red.
 - Lab 3.1 shows the DevOps Pipeline in the middle of step 8, and its two settings steps are numbered lists.
 - Lab 3.3 says why a failed action has no Retry button, and why re-running the job on GitHub is not the same thing.
 - Simulate my teammates ends with a button that opens the Pull Request it created.
