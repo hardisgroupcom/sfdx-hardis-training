@@ -171,7 +171,10 @@ two words apart and a list of Pull Requests reads like the history of what reach
 
 Now click **Create pull request**.
 
-Merge it with **Merge pull request**, never with a squash: a promotion carries every commit of the
+Merge it with a merge commit, never with a squash: click the arrow beside the green button, choose
+**Create a merge commit**, then click **Merge pull request**. GitHub remembers the method you used
+last, so after all the squashed feature Pull Requests the button may read **Squash and merge**
+until you switch it. A promotion carries every commit of the
 stories it promotes, and the next promotion, the retrofit and the release notes all need to find
 them one by one ([Lab 1.6](../level-1-contributor-basics/1-6-pull-request-deployment-check-and-merge.md)). The green check comment says the same on its **How to merge** line:
 **use a merge commit, never squash**.
@@ -213,6 +216,13 @@ A **before** step also holds the merge: while the deliverability step of US-026 
 done in `uat`, the check of the promotion stops red, right after its pre-deployment actions. Do the
 click in `helios-uat`, tick its box (or **Mark as done in uat** in the VS Code **Deployment
 Actions** tab), then **Re-run all jobs** on the check: it records the step and goes green.
+
+!!! tip "On a real project, open the promotion as a draft"
+    This lab lets the check go red so you see what holds the merge. A draft Pull Request does not
+    stop on a pending **before** step: its check reports it and carries on. So open the promotion
+    as a draft, read the steps it lists, do them in the org and tick their boxes, then click
+    **Ready for review**. Marking it ready does not run the check again: tick the boxes before you
+    merge.
 
 ### 5. Merge and watch the deployment
 

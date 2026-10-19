@@ -48,6 +48,7 @@ import {
   select, confirm, universe, hasGh, repoSlug
 } from "../lib/util.mjs";
 import { waitForPullRequestChecks } from "../lib/course-updates.mjs";
+import { report } from "../lib/panel.mjs";
 
 const SIMULATE_DIR = path.join(ROOT, "scripts", "simulate");
 
@@ -379,6 +380,11 @@ export default async function simulate(args) {
       prUrl = (pr.stdout || "").match(/https:\/\/\S+\/pull\/\d+/)?.[0] || `https://github.com/${slug}/pulls`;
       info(`  ${c.cyan(prUrl)}`);
     }
+  }
+
+  // A button at the bottom of the panel, so nobody copies the address by hand
+  if (prUrl && /\/pull\/\d+/.test(prUrl)) {
+    report(prUrl, "Open the Pull Request", "actionUrl");
   }
 
   // Files named after the Pull Request number, known only now: second commit, same author

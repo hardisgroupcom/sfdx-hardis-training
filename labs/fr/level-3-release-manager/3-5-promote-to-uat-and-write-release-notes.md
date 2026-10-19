@@ -5,7 +5,7 @@ description: "Protégez ce que l'UAT garde pour elle avec package-no-overwrite, 
 level: 3
 lab: 5
 lang: fr
-source_rev: "67bd5ed051b499371d44a8597671e4191d17414c"
+source_rev: "810a72f64996a1a70c5627e44d5a7fee2423802e"
 screenshots:
   - annotated/vscode/devops-pipeline-level3--create-promotion
   - annotated/vscode/pipeline-branch-modal-level3--what-it-carries
@@ -180,7 +180,11 @@ atteint la production.
 
 Cliquez maintenant sur **Create pull request**.
 
-Mergez-la avec **Merge pull request**, jamais avec un squash : une promotion transporte chaque commit
+Mergez-la avec un merge commit, jamais avec un squash : cliquez sur la flèche à côté du bouton vert,
+choisissez **Create a merge commit**, puis cliquez sur **Merge pull request**. GitHub retient la
+méthode utilisée en dernier, donc après toutes les Pull Requests de fonctionnalité mergées en
+squash, le bouton peut afficher **Squash and merge** tant que vous ne le changez pas. Une promotion
+transporte chaque commit
 des stories qu'elle promeut, et la promotion suivante, le retrofit et les notes de version ont tous
 besoin de les retrouver un par un ([Lab 1.6](../level-1-contributor-basics/1-6-pull-request-deployment-check-and-merge.md)). Le commentaire vert du contrôle dit la même chose sur sa ligne
 **How to merge** : **use a merge commit, never squash**.
@@ -226,6 +230,13 @@ marquée comme faite dans `uat`, le contrôle de la promotion s'arrête en rouge
 actions de pré-déploiement. Faites le clic dans `helios-uat`, cochez sa case (ou **Mark as done in
 uat** dans l'onglet **Deployment Actions** de VS Code), puis **Re-run all jobs** sur le contrôle :
 il enregistre l'étape et passe au vert.
+
+!!! tip "Sur un vrai projet, ouvrez la promotion en draft"
+    Ce lab laisse le contrôle passer au rouge pour que vous voyiez ce qui bloque le merge. Une
+    Pull Request en draft ne s'arrête pas sur une étape **before** en attente : son contrôle la
+    signale et continue. Ouvrez donc la promotion en draft, lisez les étapes qu'elle liste,
+    faites-les dans l'org et cochez leurs cases, puis cliquez sur **Ready for review**. La passer
+    en ready ne relance pas le contrôle : cochez les cases avant de merger.
 
 ### 5. Merger et regarder le déploiement
 

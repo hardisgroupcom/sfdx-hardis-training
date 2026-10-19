@@ -80,7 +80,8 @@ Its first check stops **red**, on purpose, the way the promotion to `uat` did in
 [Lab 3.5 step 4](3-5-promote-to-uat-and-write-release-notes.md): the deliverability step of US-026 runs before the deployment, and nobody has done
 it in `helios-preprod`. Do the click there, tick its box in the sfdx-hardis comment (or **Mark as
 done in preprod** in the VS Code **Deployment Actions** tab), then **Re-run all jobs** on the check.
-It goes green.
+It goes green. On a real project, open it as a draft and do the step first, as the tip of
+[Lab 3.5 step 4](3-5-promote-to-uat-and-write-release-notes.md) explains.
 
 Read the check, merge, and watch the **Process Deployment (sfdx-hardis)** run on `preprod`. Then
 open `helios-preprod` and do the checks of step 6 there first.
@@ -405,7 +406,8 @@ settings sit next to a line the course changed. Nothing is lost: `uat` holds the
    conflict, save, click **+** on its row, then **Commit**. Current is `uat`, which already has the
    course changes and your settings
 5. **Publish Branch**, then on GitHub open its Pull Request into `uat`, wait for the checks, and
-   merge it with **Merge pull request**, never a squash: a squash brings the conflict back
+   merge it with a merge commit (**Create a merge commit**, under the arrow of the green button),
+   never a squash: a squash brings the conflict back
 
 The Pull Request into `preprod` then has no conflict. Its check runs again and stops on the
 deliverability step, as step 2 says.

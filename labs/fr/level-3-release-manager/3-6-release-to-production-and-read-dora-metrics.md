@@ -5,7 +5,7 @@ description: "Livrez via preprod vers votre org de production, vérifiez-la, pui
 level: 3
 lab: 6
 lang: fr
-source_rev: "06a0ac8a2da3aa0b2b91d615aa755a4a49576ed5"
+source_rev: "272aab548307b2fb26581237d57660931a379fc9"
 screenshots:
   - annotated/vscode/orgs-manager
   - annotated/vscode/pipeline-settings-menu-level3--dora
@@ -82,7 +82,8 @@ Son premier contrôle s'arrête en **rouge**, exprès, comme celui de la promoti
 [Lab 3.5 étape 4](3-5-promote-to-uat-and-write-release-notes.md) : l'étape de délivrabilité de US-026 s'exécute avant le déploiement, et
 personne ne l'a faite dans `helios-preprod`. Faites-y le clic, cochez sa case dans le commentaire
 sfdx-hardis (ou **Mark as done in preprod** dans l'onglet **Deployment Actions** de VS Code), puis
-**Re-run all jobs** sur le contrôle. Il passe au vert.
+**Re-run all jobs** sur le contrôle. Il passe au vert. Sur un vrai projet, ouvrez-la en draft et
+faites l'étape d'abord, comme l'explique l'astuce du [Lab 3.5 étape 4](3-5-promote-to-uat-and-write-release-notes.md).
 
 Lisez le contrôle, mergez, et regardez l'exécution **Process Deployment (sfdx-hardis)** sur
 `preprod`. Ouvrez ensuite `helios-preprod` et faites-y d'abord les vérifications de l'étape 6.
@@ -433,7 +434,8 @@ depuis la **Command Palette** de VS Code :
    au-dessus de chaque conflit, enregistrez, cliquez **+** sur sa ligne, puis **Commit**. Current
    est `uat`, qui a déjà les changements du cours et vos réglages
 5. **Publish Branch**, puis sur GitHub ouvrez sa Pull Request vers `uat`, attendez les contrôles, et
-   mergez-la avec **Merge pull request**, jamais en squash : un squash fait revenir le conflit
+   mergez-la avec un merge commit (**Create a merge commit**, sous la flèche du bouton vert),
+   jamais en squash : un squash fait revenir le conflit
 
 La Pull Request vers `preprod` n'a alors plus de conflit. Son contrôle repart et s'arrête sur
 l'étape de délivrabilité, comme le dit l'étape 2.
