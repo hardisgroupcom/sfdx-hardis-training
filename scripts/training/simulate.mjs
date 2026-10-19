@@ -382,11 +382,6 @@ export default async function simulate(args) {
     }
   }
 
-  // A button at the bottom of the panel, so nobody copies the address by hand
-  if (prUrl && /\/pull\/\d+/.test(prUrl)) {
-    report(prUrl, "Open the Pull Request", "actionUrl");
-  }
-
   // Files named after the Pull Request number, known only now: second commit, same author
   const prNumber = Number((prUrl || "").match(/\/pull\/(\d+)/)?.[1] || 0);
   if (numberedFiles(scenario).length > 0) {
@@ -439,6 +434,10 @@ export default async function simulate(args) {
 
   title("Done");
   info(`  ${merged && scenario.nextStepMerged ? scenario.nextStepMerged : scenario.nextStep}`);
+  // A button at the bottom of the panel, so nobody copies the address by hand
+  if (prUrl && /\/pull\/\d+/.test(prUrl)) {
+    report(prUrl, "Open the Pull Request", "actionUrl");
+  }
 }
 
 /**

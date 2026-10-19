@@ -5,10 +5,10 @@ description: "Étendez une pipeline Salesforce à deux étages jusqu'à la produ
 level: 3
 lab: 1
 lang: fr
-source_rev: "58d4e0c502a27d0c74d386e4c0822b391e92979c"
+source_rev: "fd3a419fa3203c26da485c1d0aa36bd374d78acf"
 screenshots:
   - annotated/vscode/devops-pipeline--one-column
-  - annotated/vscode/devops-pipeline-level3-split--gap
+  - annotated/vscode/devops-pipeline-level3-split
   - annotated/web/github-new-branch
   - annotated/web/github-branch-rules
   - annotated/web/github-branch-rule
@@ -409,10 +409,10 @@ disponible dans ce lab. Et stockez les deux secrets, l'ID et la clé, comme à l
 Quatre secrets, deux External Client Apps, deux clés. Fastidieux une fois, puis plus jamais.
 
 Regardez maintenant le panneau **DevOps Pipeline**. Il dessine deux morceaux séparés,
-`integration` → `uat` et `preprod` → `main`, sans rien entre `uat` **(1)** et `preprod` **(2)**. Ce trou est
+`integration` → `uat` et `preprod` → `main`, sans rien entre `uat` et `preprod`. Ce trou est
 normal, et le paragraphe suivant le comble.
 
-![Le DevOps Pipeline au milieu de l'étape 8 : integration vers uat, et preprod vers main, sans flèche entre uat et preprod](../../_assets/annotated/vscode/devops-pipeline-level3-split--gap.png)
+![Le DevOps Pipeline au milieu de l'étape 8 : integration vers uat, et preprod vers main, sans flèche entre uat et preprod](../../_assets/annotated/vscode/devops-pipeline-level3-split.png)
 
 **Dites ensuite à `uat` où va son travail.** La commande a écrit que `preprod` se merge dans
 `main`. Rien n'a encore dit que `uat` se merge dans `preprod` : jusqu'ici `uat` était la fin du

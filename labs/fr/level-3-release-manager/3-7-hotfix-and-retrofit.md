@@ -5,7 +5,7 @@ description: "Livrez un hotfix Salesforce de preprod vers la production quand la
 level: 3
 lab: 7
 lang: fr
-source_rev: "9dd7d2f5e39ba30454b3bc43e96f7537e9b35c94"
+source_rev: "9ebdf1baaa426ee5abbc6a706ee07cb9f621bd8e"
 screenshots:
   - annotated/salesforce/validation-rule
   - annotated/vscode/welcome-custom-menu-3
@@ -317,11 +317,8 @@ vos fichiers quand vous faites un fetch.
 
 **Le merge n'a rien ramené.**
 Vous avez choisi `main` plutôt que `origin/main`. Relancez **Git: Merge...** et prenez l'entrée
-listée sous **remote branches**.
-
-**Vous avez déjà ouvert une Pull Request de retrofit, et elle ne porte que votre propre commit.**
-Le merge de l'étape 8 n'a pas eu lieu, ou a pris `main` au lieu de `origin/main`. Fermez cette Pull
-Request sur GitHub et supprimez sa branche, puis reprenez l'étape 7.
+listée sous **remote branches**. Si vous avez déjà ouvert la Pull Request de retrofit, relancez **Save / Publish User Story** :
+elle reçoit le merge, et son contrôle repart.
 
 **La Pull Request de retrofit montre des centaines de fichiers modifiés.**
 Votre branche a été tirée d'autre chose que la dernière `integration`. Supprimez-la et reprenez

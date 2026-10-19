@@ -2815,27 +2815,8 @@
         }
       ]
     },
-    "vscode/devops-pipeline-level3-split.png#gap": {
-      "pills": [
-        {
-          "n": 1,
-          "x": 66.2,
-          "y": 48.4,
-          "w": 4.8,
-          "h": 7.2,
-          "px": 68.6,
-          "py": 45.2
-        },
-        {
-          "n": 2,
-          "x": 51,
-          "y": 28.2,
-          "w": 6.8,
-          "h": 7.2,
-          "px": 54.4,
-          "py": 25
-        }
-      ]
+    "vscode/devops-pipeline-level3-split.png": {
+      "pills": []
     },
     "vscode/devops-pipeline-level3.png#four-stages": {
       "pills": [

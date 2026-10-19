@@ -5,7 +5,7 @@ description: "Lisez un log de déploiement sfdx-hardis, trouvez ce qu'un joker .
 level: 3
 lab: 3
 lang: fr
-source_rev: "a5e76f9113483dc764d10f7b83338108a156f44a"
+source_rev: "c4d307ed701a3a65a3dcd6ab39442c7f5a48a0e5"
 screenshots:
   - annotated/vscode/pipeline-config-deployment--delta
   - annotated/vscode/orgs-manager
@@ -343,8 +343,8 @@ l'étape 10 vous a fait récupérer `integration` et faire un pull. Si vous avez
 depuis, revenez-y.
 
 !!! warning "Pas de Retry sur la ligne, seulement Mark as done ?"
-    L'onglet affiche un bandeau qui commence par *Read from integration* : vous n'êtes pas sur
-    `integration`. Récupérez-la, faites un pull, et cliquez sur **Refresh**. Ne relancez pas le
+    VS Code n'est pas sur `integration`, donc la définition de l'action n'est pas dans votre
+    copie de travail. Récupérez `integration`, faites un pull, et cliquez sur **Refresh**. Ne relancez pas le
     job sur GitHub à la place : il redéploie tout, sans le Quick Deploy, et rejoue les actions
     depuis le début.
 
@@ -530,7 +530,7 @@ jour depuis le panneau **Dependencies**, et vérifiez que l'icône du fournisseu
 Pipeline est connectée. Une ligne ne propose Retry que si son action a échoué ou a été arrêtée,
 après le déploiement.
 
-**La ligne en échec n'a pas de Retry, seulement Mark as done, sous un bandeau *Read from integration*.**
+**La ligne en échec n'a pas de Retry, seulement Mark as done.**
 La branche que vous avez récupérée n'est pas `integration`. Récupérez-la, faites un pull, cliquez
 sur **Refresh**. Relancer le job de déploiement sur GitHub n'est pas la même chose : il redéploie
 tout, sans le Quick Deploy, et la première action échoue tant que le groupe n'existe pas.

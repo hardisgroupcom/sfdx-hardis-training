@@ -325,7 +325,7 @@ The action definition is read from the branch you have checked out, which is why
 check out `integration` and pull it. If you switched branch since, come back to it.
 
 !!! warning "No Retry on the row, only Mark as done?"
-    The tab shows a banner starting with *Read from integration*: you are not on `integration`.
+    VS Code is not on `integration`, so the action definition is not in your checkout.
     Check it out, pull it, and click **Refresh**. Do not re-run the job on GitHub instead: it
     deploys everything again, without the Quick Deploy, and runs the actions from the start.
 
@@ -496,7 +496,7 @@ The status comes from sfdx-hardis, which needs a recent version and your GitHub 
 it from the **Dependencies** panel, and check the git provider icon of the DevOps Pipeline is
 connected. A row offers Retry only when its action failed or was stopped, after the deployment.
 
-**The failed row has no Retry, only Mark as done, under a banner *Read from integration*.**
+**The failed row has no Retry, only Mark as done.**
 Your checked out branch is not `integration`. Check it out, pull it, click **Refresh**. Re-running
 the deployment job on GitHub is not the same thing: it deploys everything again, without the Quick
 Deploy, and the first action fails until the group exists.

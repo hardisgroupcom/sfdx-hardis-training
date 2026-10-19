@@ -5,7 +5,7 @@ description: "Revoyez l'ordre de merge de deux Pull Requests qui ont modifié le
 level: 3
 lab: 4
 lang: fr
-source_rev: "1ccf17769db59363175f2fe5a320915e17b62be6"
+source_rev: "aada58806e608b4a33e8294ef2eff8431b0a9705"
 screenshots:
   - annotated/vscode/welcome-custom-menu-3
   - annotated/vscode/pipeline-config--cleaning-overwrite
@@ -69,7 +69,7 @@ Pull Requests mergées, dans l'onglet **Pull Requests** de la fenêtre `integrat
 Pipeline, ou dans la liste **Closed** des Pull Requests de votre fork sur GitHub. Gardez-les
 ouvertes, les étapes suivantes les lisent.
 
-La commande ouvre pour vous la Pull Request de Romain vers `integration`, affiche son adresse, et
+La commande ouvre pour vous la Pull Request de Mariia vers `integration`, affiche son adresse, et
 se termine par un bouton **Open the Pull Request** en bas du panneau. Attendez les contrôles de
 US-020. Ils échoueront.
 

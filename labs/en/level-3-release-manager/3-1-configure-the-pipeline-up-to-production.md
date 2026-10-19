@@ -8,7 +8,7 @@ lang: en
 source_rev: ""
 screenshots:
   - annotated/vscode/devops-pipeline--one-column
-  - annotated/vscode/devops-pipeline-level3-split--gap
+  - annotated/vscode/devops-pipeline-level3-split
   - annotated/web/github-new-branch
   - annotated/web/github-branch-rules
   - annotated/web/github-branch-rule
@@ -391,10 +391,10 @@ available in this lab. And store both secrets, the ID and the key, as in step 6.
 Four secrets, two External Client Apps, two keys. Tedious once, then never again.
 
 Look at the **DevOps Pipeline** panel now. It draws two separate pieces, `integration` → `uat`
-and `preprod` → `main`, with nothing between `uat` **(1)** and `preprod` **(2)**. That gap is expected, and the
+and `preprod` → `main`, with nothing between `uat` and `preprod`. That gap is expected, and the
 next paragraph closes it.
 
-![The DevOps Pipeline in the middle of step 8: integration to uat, and preprod to main, with no arrow between uat and preprod](../../_assets/annotated/vscode/devops-pipeline-level3-split--gap.png)
+![The DevOps Pipeline in the middle of step 8: integration to uat, and preprod to main, with no arrow between uat and preprod](../../_assets/annotated/vscode/devops-pipeline-level3-split.png)
 
 **Then tell `uat` where its work goes next.** The command wrote that `preprod` merges into
 `main`. Nothing has said yet that `uat` merges into `preprod`: until now `uat` was the end of the

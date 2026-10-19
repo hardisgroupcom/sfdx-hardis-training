@@ -67,7 +67,7 @@ Requests instead, in the **Pull Requests** tab of the `integration` window of th
 panel, or in the **Closed** list of the Pull Requests of your fork on GitHub. Keep both open, the
 next steps read them.
 
-The command opens Romain's Pull Request into `integration` for you, prints its address, and ends
+The command opens Mariia's Pull Request into `integration` for you, prints its address, and ends
 with an **Open the Pull Request** button at the bottom of the panel. Wait for the checks of US-020.
 They will fail.
 

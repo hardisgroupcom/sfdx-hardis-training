@@ -307,11 +307,8 @@ changes when you fetch.
 
 **The merge brought nothing down.**
 You picked `main` rather than `origin/main`. Run **Git: Merge...** again and take the entry listed
-under **remote branches**.
-
-**You already opened a retrofit Pull Request, and it carries only your own commit.**
-The merge of step 8 did not happen, or took `main` instead of `origin/main`. Close that Pull
-Request on GitHub and delete its branch, then start step 7 again.
+under **remote branches**. If you already opened the retrofit Pull Request, run **Save / Publish User Story** again: it takes
+the merge, and its check runs again.
 
 **The retrofit Pull Request shows hundreds of changed files.**
 Your branch was cut from something other than the latest `integration`. Delete it and start step 7
