@@ -6,6 +6,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 ## 2026-10-21
 
 - The comments under each page show the newest first. The Oldest button above them still switches back.
+- Text on the site stops at about 80 characters per line, easier to follow on a wide screen. Screenshots keep the full width, and tables are as wide as what they hold.
 - The site uses more of a wide screen: the text column gets the extra room, the two menus keep their width. The Why blocks have a border all around. Proposed by [fkramer690](https://github.com/fkramer690) in [#218](https://github.com/hardisgroupcom/sfdx-hardis-training/discussions/218).
 - The notes that only some learners need are tip boxes again, as before the step template: Agentforce Vibes and the other editors in Labs 1.1 to 1.4, and the star and LinkedIn banner asides of the three capstones. Lab 1.4 no longer sends anyone to a terminal to open an org.
 
