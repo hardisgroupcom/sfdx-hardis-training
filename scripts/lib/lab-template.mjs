@@ -147,7 +147,7 @@ export function applyLabTemplate(content, locale) {
           item.html = item.html.replace(/\)\s*,\s*\[/g, ") [");
         }
         // markdown="span": the line keeps its code spans and its links to other labs
-        out.push(`<p class="step-head-line step-head-${item.kind}" markdown="span"><span class="step-head-key">${item.label}</span> ${item.html}</p>`, "");
+        out.push(`<p class="step-head-line step-head-${item.kind}" markdown="span"><span class="step-head-key">${item.label}</span> <span class="step-head-text">${item.html}</span></p>`, "");
       }
       out.push("</div>", "");
       head = [];

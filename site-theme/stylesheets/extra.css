@@ -576,20 +576,26 @@ html .md-footer-meta.md-typeset .md-footer-cloudity a:not(:focus, :hover) {
 }
 
 /* The header under a step heading */
+/* Two columns: the keys as wide as the longest one of the step, the text wrapping in its own column */
 .md-typeset .step-head {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: 0.8rem;
   margin: -0.4rem 0 1rem;
   padding-bottom: 0.6rem;
   border-bottom: 1px solid var(--md-default-fg-color--lightest);
 }
 
 .md-typeset .step-head-line {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: baseline;
   margin: 0.15rem 0;
   color: var(--md-default-fg-color--light);
 }
 
 .md-typeset .step-head-key {
-  display: inline-block;
-  min-width: 5.5rem;
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.06em;
