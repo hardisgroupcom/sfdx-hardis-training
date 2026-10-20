@@ -5,7 +5,7 @@ description: "Livrez un hotfix Salesforce de preprod vers la production quand la
 level: 3
 lab: 7
 lang: fr
-source_rev: "6559f84e31569368a2c564c97afadfef2876d178"
+source_rev: "25091872d11af981f71cff624e8dd2c8c6a8e490"
 screenshots:
   - annotated/salesforce/validation-rule
   - annotated/vscode/welcome-custom-menu-3
@@ -31,7 +31,7 @@ depends_on:
 
 **Niveau** : 3 Release Manager
 
-**Durée** : ~35 min<!-- observed --> (observé : médiane 38 min, 5 participants, le plus rapide 16 min)<!-- /observed -->
+**Durée** : ~35 min<!-- observed --> (observé : médiane 35 min, 6 participants, le plus rapide 16 min)<!-- /observed -->
 
 **Vous allez** : mener une formule cassée de la production jusqu'à un correctif en ligne, puis
 ramener ce correctif dans la pipeline pour que rien ne le défasse.
