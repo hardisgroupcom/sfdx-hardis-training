@@ -5,7 +5,7 @@ description: "Transportez trois User Stories approuvées sur cinq de uat vers pr
 level: 3
 lab: 10
 lang: fr
-source_rev: "b35f79a7ee809ed134f6d96913ce2032f8556343"
+source_rev: "47509df1044c4269d80fcd161a149f79db6d06e1"
 screenshots:
   - annotated/vscode/welcome-custom-menu-3
   - annotated/vscode/pipeline-config-danger--promotion-branches
