@@ -155,13 +155,13 @@ Nothing here is new, so it is written short.
    chip on the arrow, a title a human can read, then a merge commit (**Create a merge commit**,
    under the arrow of the green button)
 
-| #   | Story                                                 | Needs first             | Merged |
-|-----|-------------------------------------------------------|-------------------------|--------|
-| 1   | US-058 Record the warranty term on a panel batch      | -                       | [ ]    |
-| 2   | US-057 Park an installation that is waiting for parts | -                       | [ ]    |
-| 3   | US-059 Record the supplier of a panel batch           | US-058 in `integration` | [ ]    |
-| 4   | US-060 Flag an installation that needs scaffolding    | -                       | [ ]    |
-| 5   | US-061 Record the gate code of a site                 | -                       | [ ]    |
+| # | Story                                                 | Needs first             | Merged |
+|---|-------------------------------------------------------|-------------------------|--------|
+| 1 | US-058 Record the warranty term on a panel batch      | -                       | [ ]    |
+| 2 | US-057 Park an installation that is waiting for parts | -                       | [ ]    |
+| 3 | US-059 Record the supplier of a panel batch           | US-058 in `integration` | [ ]    |
+| 4 | US-060 Flag an installation that needs scaffolding    | -                       | [ ]    |
+| 5 | US-061 Record the gate code of a site                 | -                       | [ ]    |
 
 !!! warning "Careful"
     The feature Pull Requests use **Squash and merge**. The promotion of `integration` into `uat`

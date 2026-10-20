@@ -160,13 +160,13 @@ Rien de nouveau ici, c'est donc écrit court.
    sur la flèche, un titre lisible par un humain, puis un merge commit (**Create a merge commit**,
    sous la flèche du bouton vert)
 
-| #   | Story                                                 | Prérequis                 | Mergée |
-|-----|-------------------------------------------------------|---------------------------|--------|
-| 1   | US-058 Record the warranty term on a panel batch      | -                         | [ ]    |
-| 2   | US-057 Park an installation that is waiting for parts | -                         | [ ]    |
-| 3   | US-059 Record the supplier of a panel batch           | US-058 dans `integration` | [ ]    |
-| 4   | US-060 Flag an installation that needs scaffolding    | -                         | [ ]    |
-| 5   | US-061 Record the gate code of a site                 | -                         | [ ]    |
+| # | Story                                                 | Prérequis                 | Mergée |
+|---|-------------------------------------------------------|---------------------------|--------|
+| 1 | US-058 Record the warranty term on a panel batch      | -                         | [ ]    |
+| 2 | US-057 Park an installation that is waiting for parts | -                         | [ ]    |
+| 3 | US-059 Record the supplier of a panel batch           | US-058 dans `integration` | [ ]    |
+| 4 | US-060 Flag an installation that needs scaffolding    | -                         | [ ]    |
+| 5 | US-061 Record the gate code of a site                 | -                         | [ ]    |
 
 !!! warning "Attention"
     Les Pull Requests de fonctionnalité utilisent **Squash and merge**. La promotion d'`integration`
