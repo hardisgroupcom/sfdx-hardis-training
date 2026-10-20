@@ -65,6 +65,10 @@ but his work does: the training replays it in your own fork, as a Pull Request y
 
    ![The Level 2 Training menu of the sfdx-hardis command list](../../_assets/annotated/vscode/sidebar-commands-custom-menu-2--training-menu.png)
 
+  !!! tip "If VS Code asks how to allow it"
+      If VS Code first asks how to allow the Training command, choose **Always allow**, as in
+      [Lab 1.2](../level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md).
+
 2. A command panel opens and asks three questions. Answer them as the table below says
 3. Keep the address of the Pull Request the panel prints: you need it in step 1b
 4. With **Yes** to the last question, wait until the panel writes **Pull Request merged into its
@@ -75,10 +79,6 @@ but his work does: the training replays it in your own fork, as a Pull Request y
 | Which teammate work do you need?       | **US-017 Record who signed an installation off**        |
 | Create it?                             | **Yes**                                                 |
 | Merge it for you once its checks pass? | **Yes**, unless you want to merge it yourself (step 1b) |
-
-!!! tip "If VS Code asks how to allow it"
-    If VS Code first asks how to allow the Training command, choose **Always allow**, as in
-    [Lab 1.2](../level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md).
 
 !!! warning "If a check failed"
     If the panel says a check failed, or that it could not merge, go to step 1b: nothing is lost,
@@ -157,10 +157,10 @@ check that fails here is not your fault and not something to fix.
 1. In `helios-dev`, open **Setup** > **Object Manager** > **Installation** > **Fields &
    Relationships**, and check it lists **Panels Required** and **Crew Notes**
 
-!!! tip "If you joined at Level 2"
-    If they are not there, which is the case when you joined at Level 2, put them there before
-    step 2: with `integration` checked out (its name is in the bottom left corner of VS Code), run
-    **Training: Level 2** > **Set up one of my training orgs** on `helios-dev`.
+  !!! tip "If you joined at Level 2"
+      If they are not there, which is the case when you joined at Level 2, put them there before
+      step 2: with `integration` checked out (its name is in the bottom left corner of VS Code),
+      run **Training: Level 2** > **Set up one of my training orgs** on `helios-dev`.
 
 #### Why
 
@@ -262,16 +262,16 @@ Goal: Romain's story picked, and each item it brings checked before it comes dow
 
    ![The Backpromote panel, with the merged Pull Requests and the items they bring down](../../_assets/annotated/vscode/backpromote.png)
 
+  !!! tip "A file both sides changed"
+      For a file that both sides changed, the panel offers a third answer beside **Overwrite** and
+      **Keep org version**: **Merge**. Reach for it when both changes are real and you need both,
+      and pick between the two versions in the VS Code merge editor.
+
 | What you see                                         | What to do                                                    |
 |------------------------------------------------------|---------------------------------------------------------------|
 | Metadata from Romain's story                         | Take it. That is the whole point                              |
 | Something you are half way through building yourself | Leave it. A backpromote would overwrite your work in progress |
 | Something you do not recognise at all                | Take it. If it is on `integration`, it is the team's truth    |
-
-!!! tip "A file both sides changed"
-    For a file that both sides changed, the panel offers a third answer beside **Overwrite** and
-    **Keep org version**: **Merge**. Reach for it when both changes are real and you need both, and
-    pick between the two versions in the VS Code merge editor.
 
 #### Why
 

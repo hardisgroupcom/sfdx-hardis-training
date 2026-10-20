@@ -5,7 +5,7 @@ description: "Rapatriez vos modifications d'org dans Git avec le Metadata Retrie
 level: 1
 lab: 5
 lang: fr
-source_rev: "7bd20ebb9f909db183c275653fcb871d1407d056"
+source_rev: "8154248aff7c8f9bbe48e555d3a50bb01ba946b2"
 screenshots:
   - annotated/vscode/pipeline-cards-level1--commit-changes
   - annotated/vscode/metadata-retriever-recent-changes--find
@@ -126,16 +126,9 @@ Objectif : vos quatre composants, et eux seuls, écrits dans `force-app/` sous f
 
    ![Le Metadata Retriever avec les quatre composants de US-014 cochés](../../_assets/annotated/vscode/metadata-retriever-selected--us-014.png)
 
-!!! warning "Conflits de sources ?"
-    S'il dit que la récupération a échoué à cause de conflits de sources, **Failed to retrieve
-    metadata due to source conflicts**, prenez l'option qui écrase les fichiers locaux et relancez
-    la récupération.
-
-    Un conflit de sources veut dire que les fichiers de votre machine et les composants de l'org ont
-    changé tous les deux depuis leur dernier accord. Ici ce n'est pas un conflit, c'est le but :
-    vous avez modifié l'org exprès, et c'est l'org qui a raison. Cela compte sur un vrai projet, où
-    quelqu'un d'autre a pu écrire ces fichiers ; pas ici, où rien d'autre que votre propre org n'y a
-    touché.
+  !!! tip "Conflits de sources ?"
+      Si la récupération échoue avec **Failed to retrieve metadata due to source conflicts**,
+      prenez l'option qui écrase les fichiers locaux et relancez la récupération.
 
 #### Pourquoi
 
@@ -152,6 +145,11 @@ Deux règles prennent cette décision à votre place, et elles sont tout ce lab 
 
 Le retriever écrit ces quatre composants dans `force-app/` sous forme de fichiers. Il ne change rien
 dans Salesforce et rien sur votre branche pour l'instant.
+
+Un conflit de sources veut dire que les fichiers de votre machine et les composants de l'org ont
+changé tous les deux depuis leur dernier accord. Ici ce n'est pas un conflit, c'est le but : vous
+avez modifié l'org exprès, et c'est l'org qui a raison. Cela compte sur un vrai projet, où quelqu'un
+d'autre a pu écrire ces fichiers ; pas ici, où rien d'autre que votre propre org n'y a touché.
 
 #### Vous devriez voir
 
@@ -170,11 +168,22 @@ lire.
 
    ![Le panneau Source Control avec les quatre fichiers récupérés](../../_assets/annotated/vscode/source-control-retrieved--commit.png)
 
+  !!! tip "Chemins trop longs ?"
+      Ouvrez le menu **...** à droite de l'en-tête **Changes** et choisissez **View as Tree** :
+      les mêmes fichiers, repliés dans les dossiers où ils vivent. Réglez-le une fois et VS Code
+      s'en souvient.
+
 2. Cliquez sur chaque fichier. VS Code ouvre le *diff* du fichier, l'avant et l'après côte à côte,
    avec les lignes ajoutées en vert et les lignes supprimées en rouge. Lisez les quatre
 3. Mettez-les dans le commit un par un. Pointez un fichier : une rangée de petites icônes apparaît à
    droite de son nom. Cliquez sur le **+**, **Stage Changes**. Faites-le pour chacun des quatre, et
    lisez le nom au moment où vous cliquez
+
+  !!! tip "Un fichier que vous n'avez pas demandé ?"
+      Laissez-le hors du staging. Si vous savez ce que c'est et que vous savez que c'est sans
+      intérêt, faites un clic droit dessus et **Discard Changes**. Si vous ne savez pas ce que
+      c'est, laissez-le tranquille et demandez.
+
 4. Les quatre fichiers stagés, tapez un message **(3)** pour la personne qui relira demain, pas pour
    vous aujourd'hui. Première ligne courte, puis une ligne vide, puis le pourquoi :
 
@@ -186,26 +195,16 @@ lire.
 
 5. Cliquez sur **Commit** **(4)**
 
-!!! tip "Chemins trop longs ?"
-    Pour lire la liste en arborescence, ouvrez le menu **...** à droite de l'en-tête **Changes** et
-    choisissez **View as Tree** : les mêmes fichiers, repliés dans les dossiers où ils vivent.
-    Réglez-le une fois et VS Code s'en souvient. Par défaut le panneau affiche les chemins complets,
-    et un chemin Salesforce est assez long pour être illisible.
-
 !!! warning "N'utilisez jamais Stage All Changes"
     Le **+** sur l'en-tête du groupe **Changes** stage tout ce que le panneau voit, y compris des
     fichiers que vous n'avez jamais regardés : un log qui traîne, quelque chose qu'un installeur a
     laissé, un fichier écrit par une autre commande pendant que vous travailliez. Le panneau
     ci-dessus n'affiche que vos quatre fichiers, et les vôtres ne seront pas toujours aussi rangés.
 
-!!! tip "Un fichier que vous n'avez pas demandé ?"
-    Laissez-le hors du staging : il reste hors de votre commit, ce qui suffit pour l'instant. Si
-    vous savez ce que c'est et que vous savez que c'est sans intérêt, faites un clic droit dessus et
-    **Discard Changes**. Si vous ne savez pas ce que c'est, laissez-le tranquille et demandez. Un
-    fichier que vous ne savez pas expliquer est un fichier qui n'a rien à faire dans votre story, et
-    le supprimer à l'aveugle ne vaut pas mieux que le commiter à l'aveugle.
-
 #### Pourquoi
+
+Par défaut le panneau affiche les chemins complets, et un chemin Salesforce est assez long pour être
+illisible.
 
 Lire les quatre diffs prend une minute, et c'est le dernier moment où une erreur est gratuite.
 
@@ -213,6 +212,10 @@ Le **+** déplace ce fichier-là dans un groupe appelé **Staged Changes** juste
 est le seul moment où vous décidez de ce que contient votre story. Le faire fichier par fichier prend
 dix secondes et c'est la différence entre une Pull Request qu'un relecteur peut lire et une qu'il
 faut démêler. Sur un vrai projet, c'est l'habitude que les gens remarquent.
+
+Un fichier laissé hors du staging reste hors de votre commit, ce qui suffit pour l'instant. Un
+fichier que vous ne savez pas expliquer est un fichier qui n'a rien à faire dans votre story, et le
+supprimer à l'aveugle ne vaut pas mieux que le commiter à l'aveugle.
 
 Le bouton **Commit** commite ce qui est stagé et laisse tout le reste tranquille. Le message suit
 votre branche partout : c'est ce que le relecteur voit dans la Pull Request, et c'est ce que trouvera
@@ -426,8 +429,8 @@ Objectif : votre branche sur votre fork, sur GitHub.
 1. Répondez **Yes** à la question que la commande pose avant de pousser, celle marquée **(1)** sur
    l'image de l'étape 6
 
-!!! tip "Si vous avez répondu No"
-    Ouvrez le panneau **Source Control** et cliquez sur **Publish Branch**.
+  !!! tip "Si vous avez répondu No"
+      Ouvrez le panneau **Source Control** et cliquez sur **Publish Branch**.
 
 #### Vous devriez voir
 

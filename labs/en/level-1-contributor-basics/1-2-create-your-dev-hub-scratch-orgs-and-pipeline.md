@@ -220,13 +220,14 @@ it. Take the team's copy for now: it is read-only, and step 5 turns it into your
    such place yet, make one: `C:\git` on Windows, `~/git` on macOS and Linux. Short path, no
    spaces, not inside OneDrive or any folder that syncs, because a sync client and a git repository
    fight over the same files
+
+  !!! tip "In Agentforce Vibes"
+      Keep the folder the dialog suggests rather than typing a path.
+
 4. When it asks, click **Open** to work in the clone
 
-!!! tip "If GitHub asks you to sign in"
-    Let VS Code handle it: **Sign in with your browser** is enough.
-
-!!! tip "In Agentforce Vibes"
-    When the dialog asks for a folder, keep the one it suggests rather than typing a path.
+  !!! tip "If GitHub asks you to sign in"
+      Let VS Code handle it: **Sign in with your browser** is enough.
 
 #### Why
 
@@ -264,14 +265,14 @@ One tool first, and only for this. The command in step 5 uses the
 [GitHub CLI](https://cli.github.com/), called `gh`, to make your copy of the repository and set its
 automation up.
 
-!!! tip "In Agentforce Vibes"
-    Skip this step: `gh` is already installed in the tab. Go straight to step 5.
-
 #### Do
 
 1. On the home page of the [GitHub CLI](https://cli.github.com/), open the install list **(1)** and
    take the download for your machine: **Windows - Download MSI** **(2)**, or **macOS - Download
    binary**
+
+  !!! tip "In Agentforce Vibes"
+      Skip this step: `gh` is already installed in the tab. Go straight to step 5.
 
    ![The GitHub CLI home page, with the install list open on the Windows MSI](../../_assets/annotated/web/gh-cli-download.png)
 

@@ -72,6 +72,13 @@ Refresher: [Lab 1.5](1-5-retrieve-commit-and-publish-your-changes.md)
 
    ![The end of the Save / Publish command, with its actions bar](../../_assets/annotated/vscode/work-save-completed.png)
 
+  !!! tip "Closed the panel?"
+      Nothing is lost, and there are two ways back. Run **Save / Publish my User Story** again:
+      every step checks before it acts, there is nothing left to commit or push, and it finishes
+      on the same actions bar. Or open your fork (`github.com/my-username/sfdx-hardis-training`)
+      on GitHub, which shows a banner offering to open a Pull Request for the branch you just
+      pushed.
+
 2. Check two things before clicking, every single time:
 
    1. **base** is `integration`, in your fork
@@ -85,12 +92,6 @@ Refresher: [Lab 1.5](1-5-retrieve-commit-and-publish-your-changes.md)
    should look
 5. Delete the comment lines and any heading you have nothing to put under
 6. Click **Create pull request**
-
-!!! tip "Closed the panel?"
-    Nothing is lost, and there are two ways back. Run **Save / Publish my User Story** again: every
-    step checks before it acts, there is nothing left to commit or push, and it finishes on the
-    same actions bar. Or open your fork (`github.com/my-username/sfdx-hardis-training`) on GitHub,
-    which shows a banner offering to open a Pull Request for the branch you just pushed.
 
 !!! warning "Check the base repository"
     GitHub defaults the base of a fork's Pull Request to the original repository. If the base
@@ -222,6 +223,10 @@ ServiceNow connector instead.
 
    ![The My Pull Request card of the DevOps Pipeline panel, naming the Pull Request of US-014](../../_assets/annotated/vscode/pipeline-cards-first-pr--my-pull-request.png)
 
+  !!! tip "Card not updated?"
+      If the card still reads *Pull Request not created yet*, click **Refresh** in its top bar,
+      and the card catches up.
+
 3. Read the window that opens on your Pull Request:
 
    1. The tabs **(1)**: **Validation** is the deployment check, **Code Quality** is Mega-Linter,
@@ -233,45 +238,44 @@ ServiceNow connector instead.
 
    ![The window of a Pull Request in VS Code, on its Validation tab](../../_assets/annotated/vscode/pipeline-pr-window-validation.png)
 
-!!! tip "Card not updated?"
-    If the card still reads *Pull Request not created yet*, click **Refresh** in its top bar, and
-    the card catches up. The panel is showing what it knew before you created the Pull Request. It
-    also catches up by itself within a minute.
+  !!! tip "Opened it while a check was running?"
+      The window says so, and you do not need GitHub to know where the check stands:
 
-!!! tip "Opened it while a check was running?"
-    The window says so, and you do not need GitHub to know where the check stands:
+      1. The tab **(1)** carries a spinner for as long as its job runs, **Code Quality**
+         included, and the **Validation** step above the tabs moves
+      2. The running job **(2)** comes first: when it started, for how long it has been going
+         on, counted every second, and **Open job** for its log on GitHub
+      3. Under it **(3)**, what the previous run left. On a first Pull Request there is nothing
+         there yet: the comment arrives when the job ends
 
-    1. The tab **(1)** carries a spinner for as long as its job runs, **Code Quality** included,
-       and the **Validation** step above the tabs moves
-    2. The running job **(2)** comes first: when it started, for how long it has been going on,
-       counted every second, and **Open job** for its log on GitHub
-    3. Under it **(3)**, what the previous run left. On a first Pull Request there is nothing
-       there yet: the comment arrives when the job ends
-
-    ![The window of a Pull Request in VS Code while its deployment check is running](../../_assets/annotated/vscode/pipeline-pr-window-running.png)
-
-    There is nothing to click: the window asks GitHub again every twenty seconds. When the job
-    ends, its row leaves and the comment takes its place, with the time the job took.
+      ![The window of a Pull Request in VS Code while its deployment check is running](../../_assets/annotated/vscode/pipeline-pr-window-running.png)
 
 #### Why
 
+If the card still reads *Pull Request not created yet*, the panel is showing what it knew before
+you created it. It also catches up by itself within a minute.
+
 The window gathers what GitHub spreads over several pages. Your number is not `#46`, and your
 comment opens with the banner you saw on GitHub.
+
+While a check runs, there is nothing to click: the window asks GitHub again every twenty seconds.
+When the job ends, its row leaves and the comment takes its place, with the time the job took.
 
 #### Do: open the files the check kept
 
 1. Click **Files** **(1)**. The check kept its reports, and sfdx-hardis lists them under the job
    **(2)**
+
+  !!! tip "No Files button?"
+      Your sfdx-hardis is too old for it. Open the **Setup** panel of
+      [Lab 1.1](1-1-install-vs-code-and-sfdx-hardis.md): when the `sfdx-hardis` card reads
+      **Upgrade**, click it, then reopen the window. **Open job** leads to the same files in the
+      meantime: the **Summary** of the run, then **Artifacts**.
+
 2. Click one to open it in VS Code: `deployment-components.csv` is the list behind
    **7 components would change**, one row per component
 
    ![The Files button of the validation job, opened on the reports the job kept](../../_assets/annotated/vscode/pipeline-pr-window-files.png)
-
-!!! tip "No Files button?"
-    Your sfdx-hardis is too old for it. Open the **Setup** panel of
-    [Lab 1.1](1-1-install-vs-code-and-sfdx-hardis.md): when the `sfdx-hardis` card reads **Upgrade**, click it, then reopen the window.
-    **Open job** leads to the same files in the meantime: the **Summary** of the run, then
-    **Artifacts**.
 
 #### Why
 
@@ -320,10 +324,9 @@ Goal: US-014 merged into `integration`, as one commit.
 
 4. Check the button label, then click **Squash and merge** and **Confirm squash and merge**
 
-!!! tip "Branch still there?"
-    If the branch is still there after the merge, click **Delete branch**, and tick **Settings >
-    General > Automatically delete head branches** in your fork. Your fork was set up before the
-    course turned that setting on.
+  !!! tip "Branch still there?"
+      Click **Delete branch**, and tick **Settings > General > Automatically delete head
+      branches** in your fork.
 
 !!! warning "Squash is for feature Pull Requests, and for nothing else"
     **Squash and merge** is right in exactly one case: a Pull Request from a feature branch, a
@@ -357,7 +360,8 @@ label before every merge.
 
 You do not have to delete the branch: your fork does it at the merge, and GitHub says so under
 the merge box. A merged branch that stays around is one more thing in everyone's list for no
-benefit, so a real project turns the same setting on.
+benefit, so a real project turns the same setting on. If the branch is still there, your fork was
+set up before the course turned it on.
 
 #### Why the linter's comment can show a warning
 

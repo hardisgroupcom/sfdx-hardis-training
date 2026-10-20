@@ -5,7 +5,7 @@ description: "Relisez la Pull Request Salesforce d'une collègue en release mana
 level: 3
 lab: 2
 lang: fr
-source_rev: "8f4097429142adf6623c571eeebf824a8b3c011d"
+source_rev: "d0c1d1cc17d5fb60034fadbeb69363c8db9d53a8"
 screenshots:
   - annotated/web/github-pr-files
   - annotated/vscode/pipeline-review-pr
@@ -123,10 +123,10 @@ l'étape 3.
 
    ![Le bouton Files du job de validation de la Pull Request de Mariia, ouvert sur ses rapports](../../_assets/annotated/vscode/pipeline-pr-window-review-files.png)
 
-!!! tip "Pas de bouton Files ?"
-    Votre sfdx-hardis est plus ancien que la fonctionnalité : **Open job** mène aux
-    mêmes fichiers sur GitHub, dans le **Summary** de l'exécution, sous **Artifacts**,
-    **sfdx-hardis reports**.
+  !!! tip "Pas de bouton Files ?"
+      Votre sfdx-hardis est plus ancien que la fonctionnalité : **Open job** mène aux
+      mêmes fichiers sur GitHub, dans le **Summary** de l'exécution, sous **Artifacts**,
+      **sfdx-hardis reports**.
 
 #### Pourquoi la liste
 

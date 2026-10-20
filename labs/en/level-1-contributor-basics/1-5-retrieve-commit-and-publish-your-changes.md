@@ -121,14 +121,9 @@ Goal: your four components, and only them, written into `force-app/` as files.
 
    ![The Metadata Retriever with the four components of US-014 ticked](../../_assets/annotated/vscode/metadata-retriever-selected--us-014.png)
 
-!!! warning "Source conflicts?"
-    If it says the retrieve failed because of source conflicts, **Failed to retrieve metadata due to
-    source conflicts**, take the option that overwrites the local files and retrieve again.
-
-    A source conflict means the files on your machine and the components in the org both changed
-    since the last time they agreed. Here that is not a conflict, it is the point: you changed the
-    org on purpose and the org is right. It matters on a real project, where somebody else may have
-    written those files; it does not here, where nothing but your own org has touched them.
+  !!! tip "Source conflicts?"
+      If the retrieve fails with **Failed to retrieve metadata due to source conflicts**, take the
+      option that overwrites the local files and retrieve again.
 
 #### Why
 
@@ -145,6 +140,11 @@ Two rules make that decision for you, and they are the whole of this lab:
 The retriever writes those four components into `force-app/` as files. It changes nothing in
 Salesforce and nothing on your branch yet.
 
+A source conflict means the files on your machine and the components in the org both changed since
+the last time they agreed. Here that is not a conflict, it is the point: you changed the org on
+purpose and the org is right. It matters on a real project, where somebody else may have written
+those files; it does not here, where nothing but your own org has touched them.
+
 #### You should now see
 
 - The retrieve finished, and your four components written into `force-app/` as files
@@ -160,11 +160,20 @@ Goal: your four files committed on your branch, with a message the reviewer can 
 
    ![The Source Control panel with the four retrieved files](../../_assets/annotated/vscode/source-control-retrieved--commit.png)
 
+  !!! tip "Long paths?"
+      Open the **...** menu at the right of the **Changes** header and pick **View as Tree**: the
+      same files, folded into the folders they live in. Set it once and VS Code remembers it.
+
 2. Click each file. VS Code opens the file's *diff*, the before and the after side by side, with the
    added lines in green and the removed ones in red. Read the four
 3. Put them in the commit one at a time. Point at a file: a row of small icons appears at the right
    of its name. Click the **+**, **Stage Changes**. Do it for each of the four, and read the name as
    you click
+
+  !!! tip "A file you did not ask for?"
+      Leave it unstaged. If you know what it is and you know it is rubbish, right-click it and
+      **Discard Changes**. If you do not know what it is, leave it alone and ask.
+
 4. With the four files staged, type a message **(3)** for the person reviewing tomorrow, not for
    yourself today. First line short, then a blank line, then why:
 
@@ -176,25 +185,15 @@ Goal: your four files committed on your branch, with a message the reviewer can 
 
 5. Click **Commit** **(4)**
 
-!!! tip "Long paths?"
-    To read the list as a tree, open the **...** menu at the right of the **Changes** header and
-    pick **View as Tree**: the same files, folded into the folders they live in. Set it once and
-    VS Code remembers it. By default the panel lists full paths, and a Salesforce path is long
-    enough to be unreadable.
-
 !!! warning "Never use Stage All Changes"
     The **+** on the **Changes** group header stages everything the panel can see, including files
     you have never looked at: a stray log, something an installer left behind, a file another
     command wrote while you were working. The panel above shows only your four files, and yours
     will not always be that tidy.
 
-!!! tip "A file you did not ask for?"
-    Leave it unstaged: it stays out of your commit, which is enough for now. If you know what it is
-    and you know it is rubbish, right-click it and **Discard Changes**. If you do not know what it
-    is, leave it alone and ask. A file you cannot explain is a file that does not belong in your
-    story, and deleting it blindly is not better than committing it blindly.
-
 #### Why
+
+By default the panel lists full paths, and a Salesforce path is long enough to be unreadable.
 
 Reading the four diffs takes a minute, and it is the last moment where a mistake is free.
 
@@ -202,6 +201,10 @@ The **+** moves that one file into a group called **Staged Changes** just above.
 only moment where you decide what your story contains. Doing it file by file takes ten seconds and
 it is the difference between a Pull Request a reviewer can read and one that has to be untangled.
 On a real project this is the habit people notice.
+
+A file left unstaged stays out of your commit, which is enough for now. A file you cannot explain
+is a file that does not belong in your story, and deleting it blindly is not better than committing
+it blindly.
 
 The **Commit** button commits what is staged and leaves everything else alone. The message follows
 your branch everywhere: it is what the reviewer sees in the Pull Request, and it is what anybody
@@ -406,8 +409,8 @@ Goal: your branch on your fork on GitHub.
 1. Answer **Yes** to the question the command asks before it pushes, the one marked **(1)** in the
    picture at step 6
 
-!!! tip "If you answered No"
-    Open the **Source Control** panel and click **Publish Branch**.
+  !!! tip "If you answered No"
+      Open the **Source Control** panel and click **Publish Branch**.
 
 #### You should now see
 

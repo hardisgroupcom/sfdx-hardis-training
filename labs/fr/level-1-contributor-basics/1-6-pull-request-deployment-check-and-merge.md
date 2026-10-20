@@ -5,7 +5,7 @@ description: "Ouvrez une Pull Request GitHub, lisez le contrôle de déploiement
 level: 1
 lab: 6
 lang: fr
-source_rev: "3a9258eeb0f795935d9bcfae74b9c77cbfd7a8c8"
+source_rev: "0dd17c287d826e99e428fa5251742115b0c35921"
 screenshots:
   - annotated/web/github-pr-checks
   - annotated/web/github-pr-comment
@@ -74,6 +74,13 @@ Rappel : [Lab 1.5](1-5-retrieve-commit-and-publish-your-changes.md)
 
    ![La fin de la commande Save / Publish, avec sa barre d'actions](../../_assets/annotated/vscode/work-save-completed.png)
 
+  !!! tip "Panneau fermé ?"
+      Rien n'est perdu, et il y a deux chemins de retour. Relancez **Save / Publish my User
+      Story** : chaque étape vérifie avant d'agir, il n'y a plus rien à commiter ni à pousser, et
+      elle se termine sur la même barre d'actions. Ou ouvrez votre fork
+      (`github.com/my-username/sfdx-hardis-training`) sur GitHub : il affiche une bannière qui
+      propose d'ouvrir une Pull Request pour la branche que vous venez de pousser.
+
 2. Vérifiez deux choses avant de cliquer, à chaque fois sans exception :
 
    1. **base** est `integration`, dans votre fork
@@ -87,13 +94,6 @@ Rappel : [Lab 1.5](1-5-retrieve-commit-and-publish-your-changes.md)
    l'identifiant de la story ; et dites où le relecteur doit regarder
 5. Supprimez les lignes de commentaire et tout titre sous lequel vous n'avez rien à mettre
 6. Cliquez sur **Create pull request**
-
-!!! tip "Panneau fermé ?"
-    Rien n'est perdu, et il y a deux chemins de retour. Relancez **Save / Publish my User Story** :
-    chaque étape vérifie avant d'agir, il n'y a plus rien à commiter ni à pousser, et elle se
-    termine sur la même barre d'actions. Ou ouvrez votre fork
-    (`github.com/my-username/sfdx-hardis-training`) sur GitHub : il affiche une bannière qui
-    propose d'ouvrir une Pull Request pour la branche que vous venez de pousser.
 
 !!! warning "Vérifiez le repository de base"
     GitHub met par défaut comme base d'une Pull Request de fork le repository d'origine. Si la base
@@ -230,6 +230,10 @@ Azure Boards ou ServiceNow à la place.
 
    ![La carte My Pull Request du panneau DevOps Pipeline, qui nomme la Pull Request de US-014](../../_assets/annotated/vscode/pipeline-cards-first-pr--my-pull-request.png)
 
+  !!! tip "Carte pas à jour ?"
+      Si la carte affiche encore *Pull Request not created yet*, cliquez sur **Refresh** dans sa
+      barre du haut, et la carte se met à jour.
+
 3. Lisez la fenêtre qui s'ouvre sur votre Pull Request :
 
    1. Les onglets **(1)** : **Validation** est le contrôle de déploiement, **Code Quality** est
@@ -241,45 +245,45 @@ Azure Boards ou ServiceNow à la place.
 
    ![La fenêtre d'une Pull Request dans VS Code, sur son onglet Validation](../../_assets/annotated/vscode/pipeline-pr-window-validation.png)
 
-!!! tip "Carte pas à jour ?"
-    Si la carte affiche encore *Pull Request not created yet*, cliquez sur **Refresh** dans sa barre
-    du haut, et la carte se met à jour. Le panneau montre ce qu'il savait avant que vous créiez la
-    Pull Request. Elle se met aussi à jour toute seule en moins d'une minute.
+  !!! tip "Ouverte pendant qu'un contrôle tournait ?"
+      La fenêtre le dit, et vous n'avez pas besoin de GitHub pour savoir où en est le contrôle :
 
-!!! tip "Ouverte pendant qu'un contrôle tournait ?"
-    La fenêtre le dit, et vous n'avez pas besoin de GitHub pour savoir où en est le contrôle :
+      1. L'onglet **(1)** porte un spinner tant que son job tourne, **Code Quality** compris, et
+         l'étape **Validation** au-dessus des onglets bouge
+      2. Le job en cours **(2)** vient en premier : quand il a démarré, depuis combien de temps
+         il tourne, compté chaque seconde, et **Open job** pour son log sur GitHub
+      3. En dessous **(3)**, ce que l'exécution précédente a laissé. Sur une première Pull
+         Request il n'y a encore rien : le commentaire arrive quand le job se termine
 
-    1. L'onglet **(1)** porte un spinner tant que son job tourne, **Code Quality** compris, et
-       l'étape **Validation** au-dessus des onglets bouge
-    2. Le job en cours **(2)** vient en premier : quand il a démarré, depuis combien de temps il
-       tourne, compté chaque seconde, et **Open job** pour son log sur GitHub
-    3. En dessous **(3)**, ce que l'exécution précédente a laissé. Sur une première Pull Request
-       il n'y a encore rien : le commentaire arrive quand le job se termine
-
-    ![La fenêtre d'une Pull Request dans VS Code pendant que son contrôle de déploiement tourne](../../_assets/annotated/vscode/pipeline-pr-window-running.png)
-
-    Rien à cliquer : la fenêtre interroge GitHub toutes les vingt secondes. Quand le job se
-    termine, sa ligne disparaît et le commentaire prend sa place, avec la durée du job.
+      ![La fenêtre d'une Pull Request dans VS Code pendant que son contrôle de déploiement tourne](../../_assets/annotated/vscode/pipeline-pr-window-running.png)
 
 #### Pourquoi
 
+Si la carte affiche encore *Pull Request not created yet*, le panneau montre ce qu'il savait avant
+que vous la créiez. Elle se met aussi à jour toute seule en moins d'une minute.
+
 La fenêtre rassemble ce que GitHub répartit sur plusieurs pages. Votre numéro n'est pas `#46`, et
 votre commentaire commence par la bannière vue sur GitHub.
+
+Pendant qu'un contrôle tourne, rien à cliquer : la fenêtre interroge GitHub toutes les vingt
+secondes. Quand le job se termine, sa ligne disparaît et le commentaire prend sa place, avec la
+durée du job.
 
 #### À faire : ouvrir les fichiers gardés par le contrôle
 
 1. Cliquez sur **Files** **(1)**. Le contrôle a gardé ses rapports, et sfdx-hardis les liste sous le
    job **(2)**
+
+  !!! tip "Pas de bouton Files ?"
+      Votre sfdx-hardis est trop ancien. Ouvrez le panneau **Setup** du
+      [Lab 1.1](1-1-install-vs-code-and-sfdx-hardis.md) : quand la carte `sfdx-hardis` affiche
+      **Upgrade**, cliquez dessus, puis rouvrez la fenêtre. **Open job** mène aux mêmes fichiers
+      en attendant : le **Summary** de l'exécution, puis **Artifacts**.
+
 2. Cliquez sur l'un d'eux pour l'ouvrir dans VS Code : `deployment-components.csv` est la liste
    derrière **7 components would change**, une ligne par composant
 
    ![Le bouton Files du job de validation, ouvert sur les rapports que le job a gardés](../../_assets/annotated/vscode/pipeline-pr-window-files.png)
-
-!!! tip "Pas de bouton Files ?"
-    Votre sfdx-hardis est trop ancien. Ouvrez le panneau
-    **Setup** du [Lab 1.1](1-1-install-vs-code-and-sfdx-hardis.md) : quand la carte `sfdx-hardis` affiche **Upgrade**, cliquez dessus, puis
-    rouvrez la fenêtre. **Open job** mène aux mêmes fichiers en attendant : le **Summary** de
-    l'exécution, puis **Artifacts**.
 
 #### Pourquoi
 
@@ -330,10 +334,9 @@ Objectif : US-014 mergée dans `integration`, en un seul commit.
 4. Vérifiez l'étiquette du bouton, puis cliquez sur **Squash and merge** et **Confirm squash and
    merge**
 
-!!! tip "La branche est toujours là ?"
-    Si la branche est toujours là après le merge, cliquez sur **Delete branch**, et cochez
-    **Settings > General > Automatically delete head branches** dans votre fork. Votre fork a été
-    mis en place avant que le cours n'active ce réglage.
+  !!! tip "La branche est toujours là ?"
+      Cliquez sur **Delete branch**, et cochez **Settings > General > Automatically delete head
+      branches** dans votre fork.
 
 !!! warning "Le squash est pour les Pull Requests de feature, et pour rien d'autre"
     **Squash and merge** est juste dans exactement un cas : une Pull Request venant d'une branche
@@ -368,7 +371,8 @@ fois, c'est pourquoi vous vérifiez l'étiquette du bouton avant chaque merge.
 
 Vous n'avez pas à supprimer la branche : votre fork le fait au merge, et GitHub le dit sous la
 zone de merge. Une branche mergée qui traîne est une chose de plus dans la liste de tout le monde,
-sans aucun bénéfice, et un vrai projet active donc le même réglage.
+sans aucun bénéfice, et un vrai projet active donc le même réglage. Si la branche est toujours là,
+votre fork a été mis en place avant que le cours n'active ce réglage.
 
 #### Pourquoi le commentaire du linter peut afficher un avertissement
 

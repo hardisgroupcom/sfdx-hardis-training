@@ -5,7 +5,7 @@ description: "Installez Git, Node.js, VS Code et l'extension sfdx-hardis, puis l
 level: 1
 lab: 1
 lang: fr
-source_rev: "e26335433dd25c9bb9ff26c6ff7557dc4c46358e"
+source_rev: "5f5201a0e4d597ac17185340417d3bafe7b26599"
 screenshots:
   - annotated/web/git-download
   - annotated/web/vscode-download
@@ -77,16 +77,16 @@ que vous y voyez.
 Objectif : Git, VS Code, Node.js et le pack d'extensions sfdx-hardis sur votre machine, et l'onglet
 Welcome ouvert.
 
-!!! tip "Dans Agentforce Vibes"
-    Commencez aux extensions : passez les trois téléchargements ci-dessous et allez directement à
-    [l'installation du pack d'extensions](#install-the-extension-pack), vers la fin de cette étape.
-    Partout où ce lab dit de redémarrer VS Code, rechargez l'onglet du navigateur.
-
 #### À faire : installer Git
 
 1. Ouvrez la page de téléchargement de [Git](https://git-scm.com/downloads). Elle propose votre
    système d'exploitation en haut : sous Windows, prenez **Click here to download** **(1)**,
    l'installeur autonome 64 bits
+
+  !!! tip "Dans Agentforce Vibes"
+      Commencez aux extensions : passez les trois téléchargements ci-dessous et allez directement
+      à [l'installation du pack d'extensions](#install-the-extension-pack), vers la fin de cette
+      étape. Partout où ce lab dit de redémarrer VS Code, rechargez l'onglet du navigateur.
 
    ![La page de téléchargement de Git pour Windows](../../_assets/annotated/web/git-download.png)
 

@@ -5,7 +5,7 @@ description: "Livrez un hotfix Salesforce de preprod vers la production quand la
 level: 3
 lab: 7
 lang: fr
-source_rev: "03a27ab2658c3e769aa31c3f94f4539fa47b6a06"
+source_rev: "7017ae975fe10fb4f118756c6a0c3e2d7257836c"
 screenshots:
   - annotated/salesforce/validation-rule
   - annotated/vscode/welcome-custom-menu-3
@@ -318,9 +318,9 @@ Rappel : [Lab 2.7](../level-2-contributor-advanced/2-7-resolve-a-git-merge-confl
 
    ![Le sélecteur de branche, avec origin main](../../_assets/annotated/vscode/git-retrofit-pick--origin-main.png)
 
-!!! tip "Si le merge est en conflit"
-    Ouvrez chaque fichier sous **Merge Changes**, **Resolve in Merge Editor**, et gardez les deux
-    intentions, l'exception du hotfix et ce qu'`integration` a ajouté.
+  !!! tip "Si le merge est en conflit"
+      Ouvrez chaque fichier sous **Merge Changes**, **Resolve in Merge Editor**, et gardez les
+      deux intentions, l'exception du hotfix et ce qu'`integration` a ajouté.
 
 !!! warning "origin/main, pas main"
     `main` toute seule est la copie de votre machine, que vous n'avez pas mise à jour depuis avant le
@@ -331,8 +331,8 @@ Rappel : [Lab 2.7](../level-2-contributor-advanced/2-7-resolve-a-git-merge-confl
 
 Ce soir, cela merge tout seul : personne d'autre n'a touché à cette règle de validation cette
 semaine. Quand il y a conflit, c'est que quelqu'un a modifié les mêmes lignes dans `integration`, et
-la réponse est celle du [Lab 2.7](../level-2-contributor-advanced/2-7-resolve-a-git-merge-conflict.md), comme le dit l'encadré **Si le merge est en conflit** ci-dessus. Aucun des deux côtés ne perd
-son travail.
+la réponse est celle du [Lab 2.7](../level-2-contributor-advanced/2-7-resolve-a-git-merge-conflict.md) :
+gardez les deux intentions. Aucun des deux côtés ne perd son travail.
 
 #### Vous devriez voir
 

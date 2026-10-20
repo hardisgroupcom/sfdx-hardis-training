@@ -59,12 +59,12 @@ Refresher: [Lab 3.2](3-2-review-a-contributor-pull-request.md)
    example `github.com/my-username/sfdx-hardis-training`), and the **Process Deployment
    (sfdx-hardis)** run that started when you merged
 
-!!! tip "Another way in"
-    From VS Code: the **DevOps Pipeline** panel puts the job on the arrow between `integration` and
-    its org **(1)**, coloured with its status, and the legend under the diagram **(2)** says what
-    each colour means. Click the marker to open the run.
+  !!! tip "Another way in"
+      From VS Code: the **DevOps Pipeline** panel puts the job on the arrow between
+      `integration` and its org **(1)**, coloured with its status, and the legend under the
+      diagram **(2)** says what each colour means. Click the marker to open the run.
 
-    ![The DevOps Pipeline panel, with the deployment status on the arrow to the org](../../_assets/annotated/vscode/devops-pipeline--deployment-status.png)
+      ![The DevOps Pipeline panel, with the deployment status on the arrow to the org](../../_assets/annotated/vscode/devops-pipeline--deployment-status.png)
 
 #### You should now see
 
@@ -434,16 +434,13 @@ The first action is right: the org is missing its group.
    Quick Find box, and click **New**
 2. **Label** `Crew Leads`, **Group Name** `Helios_Crew_Leads`, then **Save**
 
-!!! tip "Switched branch since step 10?"
-    Come back to `integration` first: the action definition is read from the branch you have
-    checked out, which is why step 10 had you check out `integration` and pull it.
-
 #### Do: retry the action
 
-1. Back in the **Deployment Actions** tab, click **Retry** on the row of **Put the delivery managers
-   in the Crew Leads group**. The command runs in VS Code, against `helios-integration`: the action
-   runs and goes green, and the command asks what to do with the two actions its failure stopped
-   **(1)**
+1. Check that the bottom left corner of VS Code still reads `integration`: the action definition is
+   read from the branch you have checked out. Then, back in the **Deployment Actions** tab, click
+   **Retry** on the row of **Put the delivery managers in the Crew Leads group**. The command runs
+   in VS Code, against `helios-integration`: the action runs and goes green, and the command asks
+   what to do with the two actions its failure stopped **(1)**
 2. Answer **Run the next action only** **(2)**. The crew capacity action runs, and fails **(3)**:
    the class `CrewCapacityBach` does not exist
 

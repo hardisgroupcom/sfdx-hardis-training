@@ -5,7 +5,7 @@ description: "Créez un champ personnalisé, accordez-le par un permission set e
 level: 1
 lab: 4
 lang: fr
-source_rev: "43a5e0dd820c395519ef4e9a7327858651a129d6"
+source_rev: "bf9c7b836c7d1a3a8580e4a44ae1a434ed87b425"
 screenshots:
   - annotated/vscode/orgs-manager-actions
   - annotated/salesforce/object-manager-fields
@@ -56,10 +56,10 @@ Rappel : [Lab 1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md)
 
    ![Le menu d'actions de l'org de développement dans Orgs Manager](../../_assets/annotated/vscode/orgs-manager-actions.png)
 
-!!! tip "Dans Agentforce Vibes"
-    L'org s'ouvre dans un nouvel onglet du même navigateur. VS Code peut d'abord demander s'il peut
-    ouvrir le site externe : répondez **Open**. Si aucun onglet n'apparaît du tout, mettez
-    l'extension à jour.
+  !!! tip "Dans Agentforce Vibes"
+      L'org s'ouvre dans un nouvel onglet du même navigateur. VS Code peut d'abord demander s'il
+      peut ouvrir le site externe : répondez **Open**. Si aucun onglet n'apparaît du tout, mettez
+      l'extension à jour.
 
 #### Pourquoi
 

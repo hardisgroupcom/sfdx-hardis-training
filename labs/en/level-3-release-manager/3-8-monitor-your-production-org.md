@@ -297,17 +297,17 @@ That is where monitoring finds you from now on. That email is one indicator, on 
 produces one like it, and the **Email** and **Messaging** columns of step 3 decide which of them are
 worth interrupting somebody for.
 
-!!! warning "Org Monitoring Not Present?"
-    Check the banner at the top of the panel first **(1)**, in the picture below. **Org Monitoring
-    Not Present (CI/CD Repo)** means you opened the wrong folder: this panel reads the monitoring
-    repository, not the one you have been working in all course. Open the monitoring repository and
-    the banner goes.
-
 #### Do: then the whole picture
 
 1. Open the **Org Monitoring Workbench** panel in VS Code, pointed at the monitoring repository
 
    ![The Org Monitoring Workbench, opened on the CI/CD repository instead of the monitoring one](../../_assets/annotated/vscode/org-monitoring--first-report.png)
+
+  !!! tip "Org Monitoring Not Present?"
+      Check the banner at the top of the panel first **(1)**. **Org Monitoring Not Present
+      (CI/CD Repo)** means you opened the wrong folder: this panel reads the monitoring
+      repository, not the one you have been working in all course. Open the monitoring
+      repository and the banner goes.
 
 2. Under the monitored org, the panel shows the **Deployment repository** you gave the command in
    step 2: click it to open your fork in a new VS Code window. Had you left that question empty, the
@@ -375,10 +375,10 @@ This is the step that decides whether monitoring survives six months.
    | Track                  | Put it in the backlog as a story                            | The old API version                     |
    | Silence, with a reason | Turn it off in the configuration, with a comment saying why | A check that does not apply to this org |
 
-2. On `helios-prod`, put `ActiveScratchOrgs` in Track
+  !!! tip "Silencing a check?"
+      Write the reason in the configuration file.
 
-!!! tip "Silencing a check?"
-    Write the reason in the configuration file.
+2. On `helios-prod`, put `ActiveScratchOrgs` in Track
 
 #### Why
 

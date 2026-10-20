@@ -73,15 +73,15 @@ Open VSX listing. Whichever one you use, the rest of this lab is written for wha
 Goal: Git, VS Code, Node.js and the sfdx-hardis extension pack on your machine, and the Welcome tab
 open.
 
-!!! tip "In Agentforce Vibes"
-    Start at the extensions: skip the three downloads below and go straight to
-    [installing the extension pack](#install-the-extension-pack), near the end of this step.
-    Wherever this lab says to restart VS Code, reload the browser tab instead.
-
 #### Do: install Git
 
 1. Open the [Git](https://git-scm.com/downloads) download page. It offers your operating system at
    the top: on Windows take **Click here to download** **(1)**, the 64-bit standalone installer
+
+  !!! tip "In Agentforce Vibes"
+      Start at the extensions: skip the three downloads below and go straight to
+      [installing the extension pack](#install-the-extension-pack), near the end of this step.
+      Wherever this lab says to restart VS Code, reload the browser tab instead.
 
    ![The Git download page for Windows](../../_assets/annotated/web/git-download.png)
 

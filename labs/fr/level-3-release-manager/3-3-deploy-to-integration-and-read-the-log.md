@@ -5,7 +5,7 @@ description: "Lisez un log de déploiement sfdx-hardis, trouvez ce qu'un joker .
 level: 3
 lab: 3
 lang: fr
-source_rev: "22b298978f3e4e578ef75e22547afb6ac83811e7"
+source_rev: "c3fbf69cf87716b57f4b9122d85a0dd30372125a"
 screenshots:
   - annotated/vscode/pipeline-config-deployment--delta
   - annotated/vscode/orgs-manager
@@ -60,12 +60,13 @@ Rappel : [Lab 3.2](3-2-review-a-contributor-pull-request.md)
    GitHub, par exemple `github.com/my-username/sfdx-hardis-training`), et l'exécution **Process
    Deployment (sfdx-hardis)** qui a démarré quand vous avez mergé
 
-!!! tip "Un autre chemin"
-    Depuis VS Code : le panneau **DevOps Pipeline** pose le job sur la flèche entre `integration` et
-    son org **(1)**, coloré selon son statut, et la légende sous le diagramme **(2)** dit ce que
-    signifie chaque couleur. Cliquez sur le marqueur pour ouvrir l'exécution.
+  !!! tip "Un autre chemin"
+      Depuis VS Code : le panneau **DevOps Pipeline** pose le job sur la flèche entre
+      `integration` et son org **(1)**, coloré selon son statut, et la légende sous le
+      diagramme **(2)** dit ce que signifie chaque couleur. Cliquez sur le marqueur pour ouvrir
+      l'exécution.
 
-    ![Le panneau DevOps Pipeline, avec le statut du déploiement sur la flèche vers l'org](../../_assets/annotated/vscode/devops-pipeline--deployment-status.png)
+      ![Le panneau DevOps Pipeline, avec le statut du déploiement sur la flèche vers l'org](../../_assets/annotated/vscode/devops-pipeline--deployment-status.png)
 
 #### Vous devriez voir
 
@@ -452,17 +453,14 @@ La première action est juste : c'est l'org à qui il manque son groupe.
    la boîte Quick Find, et cliquez sur **New**
 2. **Label** `Crew Leads`, **Group Name** `Helios_Crew_Leads`, puis **Save**
 
-!!! tip "Changé de branche depuis l'étape 10 ?"
-    Revenez d'abord sur `integration` : la définition de l'action est lue dans la branche que vous
-    avez récupérée, et c'est pourquoi l'étape 10 vous a fait récupérer `integration` et faire un
-    pull.
-
 #### À faire : relancer l'action
 
-1. De retour dans l'onglet **Deployment Actions**, cliquez sur **Retry** sur la ligne de **Put the
-   delivery managers in the Crew Leads group**. La commande tourne dans VS Code, sur
-   `helios-integration` : l'action tourne et passe au vert, et la commande demande quoi faire des
-   deux actions que son échec a arrêtées **(1)**
+1. Vérifiez que le coin inférieur gauche de VS Code indique toujours `integration` : la définition
+   de l'action est lue dans la branche que vous avez récupérée. Puis, de retour dans l'onglet
+   **Deployment Actions**, cliquez sur **Retry** sur la ligne de **Put the delivery managers in the
+   Crew Leads group**. La commande tourne dans VS Code, sur `helios-integration` : l'action tourne
+   et passe au vert, et la commande demande quoi faire des deux actions que son échec a arrêtées
+   **(1)**
 2. Répondez **Run the next action only** **(2)**. L'action de capacité des équipes tourne, et échoue
    **(3)** : la classe `CrewCapacityBach` n'existe pas
 

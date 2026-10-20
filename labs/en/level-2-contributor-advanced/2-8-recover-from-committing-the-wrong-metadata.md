@@ -69,14 +69,14 @@ Refresher: [Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publi
 
    ![The Metadata Retriever, sorted newest first, with the tick boxes and the search in results](../../_assets/annotated/vscode/metadata-retriever-recent-changes--pick-rows.png)
 
+  !!! tip "If a row is a GenOpAgentConfig"
+      If one of your rows is a `GenOpAgentConfig`, named after one of your flows, untick it before
+      you retrieve.
+
 6. Then retrieve them. The Profile comes whole, so it takes a little longer than the retrieves of
    the earlier labs
 7. Commit them all from **Source Control**, publish, push, and open the Pull Request into
    `integration`, as for any story
-
-!!! tip "If a row is a GenOpAgentConfig"
-    If one of your rows is a `GenOpAgentConfig`, named after one of your flows, untick it before
-    you retrieve.
 
 !!! warning "Careful"
     Do not merge it.

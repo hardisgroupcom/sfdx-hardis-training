@@ -5,7 +5,7 @@ description: "Votre org de développement est en retard sur integration. Faites-
 level: 2
 lab: 1
 lang: fr
-source_rev: "5865460bf27b6383cada40b3da4f677bda9ed334"
+source_rev: "84a07318efd31e0ff8781467d8b3b55da097376d"
 screenshots:
   - annotated/vscode/sidebar-commands-custom-menu-2--training-menu
   - annotated/web/github-pr-files
@@ -68,6 +68,11 @@ Pull Request que vous mergez.
 
    ![Le menu Training du Niveau 2 dans la liste des commandes sfdx-hardis](../../_assets/annotated/vscode/sidebar-commands-custom-menu-2--training-menu.png)
 
+  !!! tip "Si VS Code demande comment l'autoriser"
+      Si VS Code demande d'abord comment autoriser la commande Training, choisissez
+      **Always allow**, comme dans
+      [Lab 1.2](../level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md).
+
 2. Un panneau de commande s'ouvre et pose trois questions. Répondez comme le dit le tableau
    ci-dessous
 3. Gardez l'adresse de la Pull Request que le panneau affiche : elle sert à l'étape 1b
@@ -80,10 +85,6 @@ Pull Request que vous mergez.
 | Which teammate work do you need?       | **US-017 Record who signed an installation off**            |
 | Create it?                             | **Yes**                                                     |
 | Merge it for you once its checks pass? | **Yes**, sauf si vous voulez la merger vous-même (étape 1b) |
-
-!!! tip "Si VS Code demande comment l'autoriser"
-    Si VS Code demande d'abord comment autoriser la commande Training, choisissez **Always allow**,
-    comme dans [Lab 1.2](../level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md).
 
 !!! warning "Si un check a échoué"
     Si le panneau dit qu'un check a échoué, ou qu'il n'a pas pu merger, passez à l'étape 1b : rien
@@ -165,11 +166,11 @@ check qui échoue ici n'est pas de votre faute et n'est pas à corriger.
 1. Dans `helios-dev`, ouvrez **Setup** > **Object Manager** > **Installation** > **Fields &
    Relationships**, et vérifiez que la liste contient **Panels Required** et **Crew Notes**
 
-!!! tip "Si vous avez rejoint la formation au Niveau 2"
-    S'ils n'y sont pas, ce qui est le cas quand vous avez rejoint la formation au Niveau 2,
-    mettez-les-y avant l'étape 2 : avec `integration` en checkout (son nom est dans le coin en bas
-    à gauche de VS Code), lancez **Training: Level 2** > **Set up one of my training orgs** sur
-    `helios-dev`.
+  !!! tip "Si vous avez rejoint la formation au Niveau 2"
+      S'ils n'y sont pas, ce qui est le cas quand vous avez rejoint la formation au Niveau 2,
+      mettez-les-y avant l'étape 2 : avec `integration` en checkout (son nom est dans le coin en
+      bas à gauche de VS Code), lancez **Training: Level 2** > **Set up one of my training orgs**
+      sur `helios-dev`.
 
 #### Pourquoi
 
@@ -279,17 +280,17 @@ rapatrié.
 
    ![Le panneau Backpromote, avec les Pull Requests mergées et ce qu'elles rapatrient](../../_assets/annotated/vscode/backpromote.png)
 
+  !!! tip "Un fichier modifié des deux côtés"
+      Pour un fichier que les deux côtés ont modifié, le panneau propose une troisième réponse à
+      côté de **Overwrite** et **Keep org version** : **Merge**. Servez-vous-en quand les deux
+      modifications sont réelles et qu'il vous faut les deux, et choisissez entre les deux
+      versions dans l'éditeur de merge de VS Code.
+
 | Ce que vous voyez                                  | Ce qu'il faut faire                                                |
 |----------------------------------------------------|--------------------------------------------------------------------|
 | De la métadonnée de la story de Romain             | Prenez-la. C'est tout l'objet de la manœuvre                       |
 | Quelque chose que vous êtes en train de construire | Laissez-le. Un backpromote écraserait votre travail en cours       |
 | Quelque chose que vous ne reconnaissez pas du tout | Prenez-le. Si c'est sur `integration`, c'est la vérité de l'équipe |
-
-!!! tip "Un fichier modifié des deux côtés"
-    Pour un fichier que les deux côtés ont modifié, le panneau propose une troisième réponse à côté
-    de **Overwrite** et **Keep org version** : **Merge**. Servez-vous-en quand les deux
-    modifications sont réelles et qu'il vous faut les deux, et choisissez entre les deux versions
-    dans l'éditeur de merge de VS Code.
 
 #### Pourquoi
 

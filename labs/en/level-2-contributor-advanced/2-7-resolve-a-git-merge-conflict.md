@@ -112,10 +112,10 @@ can genuinely review and merge it.
    and writes **Pull Request merged into its base branch**. If you merge it on GitHub while the
    panel is still waiting, it notices and stops
 
-!!! tip "If you answered No"
-    With **No**, open the address it printed, have a look at **Files changed**, and merge it with
-    **Squash and merge** once the checks are green: the same clicks as
-    [Lab 2.1](2-1-backpromote-your-teammates-work.md), step 1b, where each one has its screenshot.
+  !!! tip "If you answered No"
+      With **No**, open the address it printed, have a look at **Files changed**, and merge it
+      with **Squash and merge** once the checks are green: the same clicks as
+      [Lab 2.1](2-1-backpromote-your-teammates-work.md), step 1b, where each one has its screenshot.
 
 #### Why after your change
 

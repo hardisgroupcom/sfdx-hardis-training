@@ -5,7 +5,7 @@ description: "Mettez en place le monitoring nocturne sfdx-hardis sur votre org S
 level: 3
 lab: 8
 lang: fr
-source_rev: "0456f307a87b13cc6c489fd113980c69434b95a6"
+source_rev: "fd0e61aa9efa28057416dba92c51e460209ee91e"
 screenshots:
   - annotated/vscode/org-monitoring--not-a-monitoring-repo
   - annotated/vscode/monitoring-config--what-it-watches
@@ -310,18 +310,18 @@ C'est là que le monitoring vous trouve désormais. Cet e-mail est un indicateur
 Chaque contrôle en produit un semblable, et les colonnes **Email** et **Messaging** de l'étape 3
 décident lesquels méritent de déranger quelqu'un.
 
-!!! warning "Org Monitoring Not Present ?"
-    Vérifiez d'abord la bannière en haut du panneau **(1)**, sur l'image ci-dessous. **Org
-    Monitoring Not Present (CI/CD Repo)** veut dire que vous avez ouvert le mauvais dossier : ce
-    panneau lit le repository de monitoring, pas celui où vous travaillez depuis le début du cours.
-    Ouvrez le repository de monitoring et la bannière disparaît.
-
 #### À faire : puis la vue d'ensemble
 
 1. Ouvrez le panneau **Org Monitoring Workbench** dans VS Code, pointé sur le repository de
    monitoring
 
    ![L'Org Monitoring Workbench, ouvert sur le repository CI/CD au lieu du repository de monitoring](../../_assets/annotated/vscode/org-monitoring--first-report.png)
+
+  !!! tip "Org Monitoring Not Present ?"
+      Vérifiez d'abord la bannière en haut du panneau **(1)**. **Org Monitoring Not Present
+      (CI/CD Repo)** veut dire que vous avez ouvert le mauvais dossier : ce panneau lit le
+      repository de monitoring, pas celui où vous travaillez depuis le début du cours. Ouvrez le
+      repository de monitoring et la bannière disparaît.
 
 2. Sous l'org monitorée, le panneau affiche le **Deployment repository** donné à la commande à
    l'étape 2 : cliquez dessus pour ouvrir votre fork dans une nouvelle fenêtre VS Code. Si vous aviez
@@ -393,10 +393,10 @@ C'est l'étape qui décide si le monitoring survit six mois.
    | Suivre                       | Mettez-la au backlog comme une story                                     | La vieille version d'API                      |
    | Faire taire, avec une raison | Désactivez-la dans la configuration, avec un commentaire disant pourquoi | Un contrôle qui ne s'applique pas à cette org |
 
-2. Sur `helios-prod`, mettez `ActiveScratchOrgs` dans Suivre
+  !!! tip "Vous faites taire un contrôle ?"
+      Écrivez la raison dans le fichier de configuration.
 
-!!! tip "Vous faites taire un contrôle ?"
-    Écrivez la raison dans le fichier de configuration.
+2. Sur `helios-prod`, mettez `ActiveScratchOrgs` dans Suivre
 
 #### Pourquoi
 
