@@ -5,7 +5,7 @@ description: "Un déploiement vert n'est pas une fonctionnalité qui marche. Liv
 level: 2
 lab: 4
 lang: fr
-source_rev: "b7227658fe46acdc268e319f4d07b293eb9807a4"
+source_rev: "07fcfffe674cb88731d33a9bdfb6b1b443c0aa1b"
 screenshots:
   - annotated/vscode/sidebar-commands-custom-menu-2--lab-records
   - annotated/salesforce/crew-capacity-records
@@ -122,10 +122,12 @@ ne voyage jamais.
 
 2. Le panneau prend de lui-même **Lab 2.4 - the 12 Crew Capacity records** et **helios-dev**, le
    seul lab et la seule org qu'il propose ici : répondez **Yes** à **Create them?**
-3. Si le panneau dit qu'un champ manque, terminez d'abord l'objet, puis relancez-le : il met à jour
-   les mêmes douze enregistrements au lieu d'en créer d'autres
-4. Ouvrez le lien **See them in the org** par lequel le panneau termine, ou ouvrez l'onglet **Crew
+3. Ouvrez le lien **See them in the org** par lequel le panneau termine, ou ouvrez l'onglet **Crew
    Capacity** de l'application Helios Delivery et choisissez la vue de liste **All**
+
+!!! warning "Si un champ manque"
+    Si le panneau dit qu'un champ manque, terminez d'abord l'objet, puis relancez-le : il met à jour
+    les mêmes douze enregistrements au lieu d'en créer d'autres.
 
 #### Pourquoi le menu les crée
 
@@ -340,9 +342,6 @@ déploie, et la classe y est avant qu'elle ne tourne.
 
    ![La boîte Edit Deployment Action, avec le type Manual sélectionné](../../_assets/annotated/vscode/pipeline-edit-action-manual.png)
 
-2. Si votre fenêtre liste encore trois contextes sous **Execution Contexts**, votre extension est
-   plus ancienne : choisissez **Validation and Deployment jobs**
-
 | Champ              | Valeur                                  |
 |--------------------|-----------------------------------------|
 | Type               | **Manual**                              |
@@ -358,6 +357,10 @@ déploie, et la classe y est avant qu'elle ne tourne.
 3. Click **Save**.
 4. Check: the page reads **All email**. If it already did, there is nothing to do.
 ```
+
+!!! tip "Avec une extension plus ancienne"
+    Si votre fenêtre liste encore trois contextes sous **Execution Contexts**, votre extension est
+    plus ancienne : choisissez **Validation and Deployment jobs**.
 
 #### Pourquoi
 

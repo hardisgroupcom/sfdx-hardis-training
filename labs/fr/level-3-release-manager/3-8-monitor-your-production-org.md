@@ -5,7 +5,7 @@ description: "Mettez en place le monitoring nocturne sfdx-hardis sur votre org S
 level: 3
 lab: 8
 lang: fr
-source_rev: "b84a3e398f756baa857c1e32155df3cec3c5de30"
+source_rev: "0456f307a87b13cc6c489fd113980c69434b95a6"
 screenshots:
   - annotated/vscode/org-monitoring--not-a-monitoring-repo
   - annotated/vscode/monitoring-config--what-it-watches
@@ -310,6 +310,12 @@ C'est là que le monitoring vous trouve désormais. Cet e-mail est un indicateur
 Chaque contrôle en produit un semblable, et les colonnes **Email** et **Messaging** de l'étape 3
 décident lesquels méritent de déranger quelqu'un.
 
+!!! warning "Org Monitoring Not Present ?"
+    Vérifiez d'abord la bannière en haut du panneau **(1)**, sur l'image ci-dessous. **Org
+    Monitoring Not Present (CI/CD Repo)** veut dire que vous avez ouvert le mauvais dossier : ce
+    panneau lit le repository de monitoring, pas celui où vous travaillez depuis le début du cours.
+    Ouvrez le repository de monitoring et la bannière disparaît.
+
 #### À faire : puis la vue d'ensemble
 
 1. Ouvrez le panneau **Org Monitoring Workbench** dans VS Code, pointé sur le repository de
@@ -317,17 +323,13 @@ décident lesquels méritent de déranger quelqu'un.
 
    ![L'Org Monitoring Workbench, ouvert sur le repository CI/CD au lieu du repository de monitoring](../../_assets/annotated/vscode/org-monitoring--first-report.png)
 
-2. Vérifiez d'abord la bannière **(1)**. **Org Monitoring Not Present (CI/CD Repo)** veut dire que
-   vous avez ouvert le mauvais dossier : ce panneau lit le repository de monitoring, pas celui où
-   vous travaillez depuis le début du cours. Ouvrez le repository de monitoring et la bannière
-   disparaît
-3. Sous l'org monitorée, le panneau affiche le **Deployment repository** donné à la commande à
+2. Sous l'org monitorée, le panneau affiche le **Deployment repository** donné à la commande à
    l'étape 2 : cliquez dessus pour ouvrir votre fork dans une nouvelle fenêtre VS Code. Si vous aviez
    laissé cette question vide, le panneau proposerait **Set deployment repository** à la place. C'est
    optionnel dans les deux cas
-4. Chaque contrôle est une carte. Ouvrez les deux à ouvrir en premier : **Detect calls to deprecated
+3. Chaque contrôle est une carte. Ouvrez les deux à ouvrir en premier : **Detect calls to deprecated
    API versions** **(2)** et **Detect unsecured Connected Apps in an org** **(3)**
-5. Lisez aussi **Detect if org limits are close to be reached**
+4. Lisez aussi **Detect if org limits are close to be reached**
 
 #### Pourquoi il est presque propre
 
@@ -392,7 +394,9 @@ C'est l'étape qui décide si le monitoring survit six mois.
    | Faire taire, avec une raison | Désactivez-la dans la configuration, avec un commentaire disant pourquoi | Un contrôle qui ne s'applique pas à cette org |
 
 2. Sur `helios-prod`, mettez `ActiveScratchOrgs` dans Suivre
-3. Pour tout ce que vous faites taire, écrivez la raison dans le fichier de configuration
+
+!!! tip "Vous faites taire un contrôle ?"
+    Écrivez la raison dans le fichier de configuration.
 
 #### Pourquoi
 
