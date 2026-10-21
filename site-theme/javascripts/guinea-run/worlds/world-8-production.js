@@ -1,5 +1,5 @@
 /*
- * World 8, Release to the production org: the last world, a musical run.
+ * World 8, Release to the production org: a musical run, the last stop of the pipeline before world 9 guards it.
  * The guinea pig runs to the music and the player only jumps.
  *
  * The run follows the steps of a release: the three checks worth checking,
