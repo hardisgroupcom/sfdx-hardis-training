@@ -372,9 +372,9 @@ export function createGuineaPig(THREE, options) {
 // above the floor or a half width, rounded off near the two ends
 const S_RUMP = -0.84;
 const S_NOSE = 0.86;
-const CENTRE = [[-0.84, 0.44], [-0.4, 0.45], [0, 0.46], [0.4, 0.48], [0.7, 0.47], [0.86, 0.46]];
+const CENTRE = [[-0.84, 0.44], [-0.4, 0.45], [0, 0.46], [0.4, 0.48], [0.7, 0.48], [0.86, 0.5]];
 const UP = [[-0.84, 0.5], [-0.5, 0.54], [-0.2, 0.56], [0.1, 0.53], [0.35, 0.475], [0.55, 0.45], [0.86, 0.42]];
-const DOWN = [[-0.84, 0.5], [-0.6, 0.47], [-0.3, 0.43], [0, 0.43], [0.3, 0.45], [0.5, 0.44], [0.7, 0.4], [0.86, 0.36]];
+const DOWN = [[-0.84, 0.5], [-0.6, 0.47], [-0.3, 0.43], [0, 0.43], [0.3, 0.45], [0.5, 0.44], [0.7, 0.42], [0.86, 0.42]];
 const WIDE = [[-0.84, 0.61], [-0.5, 0.6], [-0.2, 0.59], [0.1, 0.57], [0.35, 0.52], [0.55, 0.46], [0.72, 0.38], [0.86, 0.3]];
 
 /** Catmull-Rom through [s, value] points, flat beyond the first and the last. */
@@ -404,8 +404,8 @@ function curve(points, s) {
  */
 function shapePoint(s, dx, dy, out) {
   const z = ((s - S_RUMP) / (S_NOSE - S_RUMP)) * 2 - 1;
-  // Blunt ends: a round rump, a blunt face
-  const n = 2.6 - 0.15 * smooth(0.1, -0.3, z);
+  // A round rump, and a flat face: the front of the head is almost a wall
+  const n = 3.4 - 0.95 * smooth(0.1, -0.3, z);
   const rho = Math.max(0, 1 - Math.abs(z) ** n) ** (1 / n);
   // A loaf, not a tube: squarer than a circle under the flanks; the head stays round
   const loaf = 1 - smooth(0.3, 0.75, s);
