@@ -72,7 +72,7 @@ export function createGuineaPig(THREE, options) {
   const eyeGeometry = keep(new THREE.SphereGeometry(0.052, 20, 14));
   for (const side of [-1, 1]) {
     const eye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-    const at = surfacePoint(THREE, 0.62, side, 0.32);
+    const at = surfacePoint(THREE, 0.66, side, 0.35);
     eye.position.set(at.x * 0.93, at.y, at.z);
     eye.scale.set(0.8, 1, 1.1);
     body.add(eye);
@@ -98,11 +98,11 @@ export function createGuineaPig(THREE, options) {
 
   // The nose, split lip and whiskers
   const nose = new THREE.Mesh(keep(new THREE.SphereGeometry(0.03, 12, 8)), keep(new THREE.MeshStandardMaterial({ color: 0xa8646f, roughness: 0.5 })));
-  nose.position.set(0, curve(CENTRE, S_NOSE) - BODY_Y + 0.02, -S_NOSE - 0.01);
+  nose.position.set(0, middle(S_NOSE) - BODY_Y + 0.02, -S_NOSE - 0.005);
   nose.scale.set(1.5, 0.8, 0.6);
   body.add(nose);
   const lip = new THREE.Mesh(keep(new THREE.BoxGeometry(0.008, 0.05, 0.01)), keep(new THREE.MeshBasicMaterial({ color: 0x5a3a36 })));
-  lip.position.set(0, curve(CENTRE, S_NOSE) - BODY_Y - 0.03, -S_NOSE + 0.005);
+  lip.position.set(0, middle(S_NOSE) - BODY_Y - 0.035, -S_NOSE + 0.01);
   body.add(lip);
   body.add(whiskers(THREE, keep));
 
@@ -369,13 +369,14 @@ export function createGuineaPig(THREE, options) {
 
 // The shape of the Blender model (scripts/blender/guinea-pig.py), measured on
 // photos: s runs from the rump to the nose; each curve gives, at s, a height
-// above the floor or a half width, rounded off near the two ends
+// above the floor or a half width; cap() rounds off the two ends
 const S_RUMP = -0.84;
-const S_NOSE = 0.86;
-const CENTRE = [[-0.84, 0.44], [-0.4, 0.45], [0, 0.46], [0.4, 0.48], [0.7, 0.48], [0.86, 0.5]];
-const UP = [[-0.84, 0.5], [-0.5, 0.54], [-0.2, 0.56], [0.1, 0.53], [0.35, 0.475], [0.55, 0.45], [0.86, 0.42]];
-const DOWN = [[-0.84, 0.5], [-0.6, 0.47], [-0.3, 0.43], [0, 0.43], [0.3, 0.45], [0.5, 0.44], [0.7, 0.42], [0.86, 0.42]];
-const WIDE = [[-0.84, 0.61], [-0.5, 0.6], [-0.2, 0.59], [0.1, 0.57], [0.35, 0.52], [0.55, 0.46], [0.72, 0.38], [0.86, 0.3]];
+const S_NOSE = 0.94;
+const RUMP_CAP = 0.42;
+const NOSE_CAP = 0.09;
+const TOP = [[-0.84, 0.97], [-0.6, 1.0], [-0.3, 1.01], [0, 0.99], [0.25, 0.95], [0.44, 0.9], [0.6, 0.81], [0.75, 0.72], [0.88, 0.63], [0.94, 0.58]];
+const BOTTOM = [[-0.84, 0.12], [-0.62, 0.04], [-0.3, 0.03], [0.2, 0.03], [0.42, 0.05], [0.56, 0.1], [0.68, 0.18], [0.8, 0.29], [0.9, 0.38], [0.94, 0.42]];
+const HALF = [[-0.84, 0.62], [-0.5, 0.61], [-0.2, 0.6], [0.1, 0.57], [0.35, 0.5], [0.5, 0.45], [0.66, 0.38], [0.8, 0.28], [0.9, 0.19], [0.94, 0.15]];
 
 /** Catmull-Rom through [s, value] points, flat beyond the first and the last. */
 function curve(points, s) {
@@ -398,25 +399,36 @@ function curve(points, s) {
   return 0.5 * (2 * p1 + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t + (-p0 + 3 * p1 - 3 * p2 + p3) * t * t * t);
 }
 
+/** The height where the cross-section is widest: low on the body, halfway up the head. */
+function middle(s) {
+  const bottom = curve(BOTTOM, s);
+  return bottom + (0.42 + 0.08 * smooth(0.3, 0.7, s)) * (curve(TOP, s) - bottom);
+}
+
+/** 1 along the body, falling to 0 at the two ends: a round rump, a rounded nose. */
+function cap(s) {
+  const rump = Math.min(Math.max((s - S_RUMP) / RUMP_CAP, 0), 1);
+  const nose = Math.min(Math.max((S_NOSE - s) / NOSE_CAP, 0), 1);
+  return Math.sqrt(1 - (1 - rump) ** 2) * Math.sqrt(1 - (1 - nose) ** 2);
+}
+
 /**
  * The point of the body at s, in the direction (dx, dy) of its cross-section,
  * written into out: x across, y the height above the floor, z = -s.
  */
 function shapePoint(s, dx, dy, out) {
-  const z = ((s - S_RUMP) / (S_NOSE - S_RUMP)) * 2 - 1;
-  // A round rump, and a flat face: the front of the head is almost a wall
-  const n = 3.4 - 0.95 * smooth(0.1, -0.3, z);
-  const rho = Math.max(0, 1 - Math.abs(z) ** n) ** (1 / n);
+  const rho = cap(s);
   // A loaf, not a tube: squarer than a circle under the flanks; the head stays round
   const loaf = 1 - smooth(0.3, 0.75, s);
   const e = 2 / (2 + (dy < 0 ? 0.8 : 0.35) * loaf);
   const sx = Math.sign(dx) * Math.abs(dx) ** e;
   const sy = Math.sign(dy) * Math.abs(dy) ** e;
-  let x = sx * rho * curve(WIDE, s);
+  let x = sx * rho * curve(HALF, s);
   // Full flanks that bulge before they turn under the belly, and full cheeks
   x *= 1 + 0.04 * (1 - smooth(0, 0.65, Math.abs(sy + 0.2))) * loaf;
   x *= 1 + 0.08 * smooth(0.35, 0.5, s) * (1 - smooth(0.62, 0.78, s));
-  const y = curve(CENTRE, s) + sy * rho * (sy > 0 ? curve(UP, s) : curve(DOWN, s));
+  const mid = middle(s);
+  const y = mid + sy * rho * (sy > 0 ? curve(TOP, s) - mid : mid - curve(BOTTOM, s));
   return out.set(x, y, -s);
 }
 
@@ -597,7 +609,7 @@ function whiskers(THREE, keep) {
   const points = [];
   for (const side of [-1, 1]) {
     for (let i = 0; i < 5; i++) {
-      const start = new THREE.Vector3(side * 0.1, 0.06 + i * 0.012, -0.82);
+      const start = new THREE.Vector3(side * 0.12, 0.1 + i * 0.012, -0.86);
       const end = start.clone().add(new THREE.Vector3(side * (0.26 + Math.random() * 0.1), (i - 2) * 0.05, 0.08 + i * 0.03));
       points.push(start, end);
     }

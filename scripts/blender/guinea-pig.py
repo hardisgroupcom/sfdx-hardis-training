@@ -64,23 +64,24 @@ def material(name, color, roughness=0.6, metallic=0.0, vertex_colors=False, clea
     return mat
 
 
-# The guinea pig of the photos, measured from the side: a long loaf, highest
-# over the hips, a big round rump that drops to the floor, a flat belly, and a
-# blunt head about as wide as it is tall, which flows into the body with no
-# neck. s runs along the body from the rump (S_RUMP) to the nose (S_NOSE). Each
-# curve gives, at s, a height above the floor or a half width; near the two
-# ends a superellipse rounds them all off, so the rump and the face are domes.
-S_RUMP, S_NOSE = -0.84, 0.86
+# The guinea pig of the photos, measured from the side on short-haired ones: a
+# long loaf, highest over the hips, a big round rump that drops to the floor, a
+# flat belly, and a head with no neck whose forehead runs in a long, almost
+# straight slope from the crown behind the ears down to a broad, rounded nose
+# well ahead of the eyes, the chin tucked under it. s runs along the body from
+# the rump (S_RUMP) to the tip of the nose (S_NOSE). Each curve gives, at s, a
+# height above the floor or a half width; the two ends are then rounded off: a
+# long round cap on the rump, a short one on the nose.
+S_RUMP, S_NOSE = -0.84, 0.94
+RUMP_CAP, NOSE_CAP = 0.42, 0.09
 AXIS = 0.38  # the height of the flanks, for the coat shading and the rig
 
-# The middle of the cross-section: the nose sits halfway up the head
-CENTRE = [(-0.84, 0.44), (-0.4, 0.45), (0.0, 0.46), (0.4, 0.48), (0.7, 0.48), (0.86, 0.5)]
-# How far the back rises above it: a round back, highest over the middle, the head a little lower
-UP = [(-0.84, 0.5), (-0.5, 0.54), (-0.2, 0.56), (0.1, 0.53), (0.35, 0.475), (0.55, 0.45), (0.86, 0.42)]
-# How far the belly goes below it: deeper near the rump, so the belly stays flat
-DOWN = [(-0.84, 0.5), (-0.6, 0.47), (-0.3, 0.43), (0.0, 0.43), (0.3, 0.45), (0.5, 0.44), (0.7, 0.42), (0.86, 0.42)]
-# The half width: broad hips, full cheeks, then a narrower, rounded muzzle
-WIDE = [(-0.84, 0.61), (-0.5, 0.6), (-0.2, 0.59), (0.1, 0.57), (0.35, 0.52), (0.55, 0.46), (0.72, 0.38), (0.86, 0.3)]
+# The top line: a round back, then the flat forehead sloping to the nose
+TOP = [(-0.84, 0.97), (-0.6, 1.0), (-0.3, 1.01), (0.0, 0.99), (0.25, 0.95), (0.44, 0.9), (0.6, 0.81), (0.75, 0.72), (0.88, 0.63), (0.94, 0.58)]
+# The bottom line: a flat belly, then the throat and the chin rising to the nose
+BOTTOM = [(-0.84, 0.12), (-0.62, 0.04), (-0.3, 0.03), (0.2, 0.03), (0.42, 0.05), (0.56, 0.1), (0.68, 0.18), (0.8, 0.29), (0.9, 0.38), (0.94, 0.42)]
+# The half width: broad hips, full cheeks, then a muzzle that narrows to the nose
+HALF = [(-0.84, 0.62), (-0.5, 0.61), (-0.2, 0.6), (0.1, 0.57), (0.35, 0.5), (0.5, 0.45), (0.66, 0.38), (0.8, 0.28), (0.9, 0.19), (0.94, 0.15)]
 
 
 def curve(points, s):
@@ -105,23 +106,33 @@ def smooth(edge0, edge1, x):
     return t * t * (3 - 2 * t)
 
 
+def middle(s):
+    """The height where the cross-section is widest: low on the body, halfway up the head."""
+    bottom = curve(BOTTOM, s)
+    return bottom + (0.42 + 0.08 * smooth(0.3, 0.7, s)) * (curve(TOP, s) - bottom)
+
+
+def cap(s):
+    """1 along the body, falling to 0 at the two ends: a round rump, a rounded nose."""
+    rump = min(max((s - S_RUMP) / RUMP_CAP, 0.0), 1.0)
+    nose = min(max((S_NOSE - s) / NOSE_CAP, 0.0), 1.0)
+    return math.sqrt(1 - (1 - rump) ** 2) * math.sqrt(1 - (1 - nose) ** 2)
+
+
 def shape(s, dx, dy):
     """The point of the body at s, in the direction (dx, dy) of its cross-section."""
-    z = (s - S_RUMP) / (S_NOSE - S_RUMP) * 2 - 1
-    # A round rump, and a flat face: the front of the head is almost a wall,
-    # with the nose on it, not a rounded snout
-    n = 3.4 - 0.95 * smooth(0.1, -0.3, z)
-    rho = max(0.0, 1 - abs(z) ** n) ** (1 / n)
+    rho = cap(s)
     # A loaf, not a tube: the body's cross-section is squarer than a circle,
     # most of all under the flanks; the head stays round
     loaf = 1 - smooth(0.3, 0.75, s)
     e = 2 / (2 + (0.8 if dy < 0 else 0.35) * loaf)
     sx, sy = math.copysign(abs(dx) ** e, dx), math.copysign(abs(dy) ** e, dy)
-    X = sx * rho * curve(WIDE, s)
+    X = sx * rho * curve(HALF, s)
     # Full flanks that bulge before they turn under the belly, and full cheeks
     X *= 1 + 0.04 * (1 - smooth(0.0, 0.65, abs(sy + 0.2))) * loaf
     X *= 1 + 0.08 * smooth(0.35, 0.5, s) * (1 - smooth(0.62, 0.78, s))
-    Z = curve(CENTRE, s) + sy * rho * (curve(UP, s) if sy > 0 else curve(DOWN, s))
+    mid = middle(s)
+    Z = mid + sy * rho * ((curve(TOP, s) - mid) if sy > 0 else (mid - curve(BOTTOM, s)))
     return Vector((X, -s, Z))
 
 
@@ -239,8 +250,8 @@ def coat_material(body):
     muzzle = node("ShaderNodeVectorMath")
     muzzle.operation = "DISTANCE"
     links.new(coords.outputs["Object"], muzzle.inputs[0])
-    muzzle.inputs[1].default_value = (0.0, -S_NOSE, curve(CENTRE, S_NOSE) - 0.04)
-    coat = mix(coat, (0.66, 0.54, 0.41), remap(muzzle.outputs["Value"], 0.24, 0.12))
+    muzzle.inputs[1].default_value = (0.0, -S_NOSE, middle(S_NOSE) - 0.04)
+    coat = mix(coat, (0.66, 0.54, 0.41), remap(muzzle.outputs["Value"], 0.26, 0.13))
     # The warm tan ring round each eye
     # Mirrored on X only: both eyes, and nothing on the rump
     side = node("ShaderNodeMath")
@@ -338,7 +349,7 @@ def details(mats):
     parts = []
     # Eyes: big, round, glossy dark brown, with a large and a small highlight
     for side in (1, -1):
-        p = surface(0.62, side, 0.32)
+        p = surface(0.66, side, 0.35)
         tag = "R" if side > 0 else "L"
         parts.append(add("uv_sphere", "Eye" + tag, (p.x * 0.93, p.y, p.z), (0.055, 0.068, 0.068), mat=mats["eye"], segments=24, ring_count=14))
         parts.append(add("uv_sphere", "Eye" + tag + "Shine", (p.x * 1.03, p.y - 0.025, p.z + 0.028), (0.016, 0.016, 0.016), mat=mats["shine"], segments=12, ring_count=8))
@@ -377,7 +388,7 @@ def details(mats):
             parts.append(add("uv_sphere", name + "Claw", (x + dx, -s - 0.094, 0.016), (0.007, 0.012, 0.006), mat=mats["claw"], segments=6, ring_count=4))
     # Whiskers: long, fine, four a side, from the muzzle outwards
     for side in (1, -1):
-        root = surface(0.8, side, -0.15)
+        root = surface(0.86, side, -0.15)
         for i in range(4):
             angle = math.radians(-18 + i * 12)
             length = 0.3
@@ -591,7 +602,7 @@ def main():
         "whisker": material("Whisker", (0.85, 0.83, 0.8), 0.5),
     }
     body = body_mesh()
-    EYE.xyz = surface(0.62, 1, 0.32)
+    EYE.xyz = surface(0.66, 1, 0.35)
     parts = details(mats)
     coat_material(body)
     rig = armature()
