@@ -1,7 +1,7 @@
 /*
  * What Guinea Run shows over the 3D view, in plain HTML so it stays sharp at
  * any resolution, styled after the Lightning Design System:
- * - the map of the nine worlds, with their stars, best scores and lab links
+ * - the map of the worlds, with their stars, best scores and lab links
  * - the card of a world before it starts, and its result after
  * - the top bar (world, score, attempts, badges), sound, pause and close
  * - toasts, the chat of the cast, Victor's notes, the log ticker
@@ -304,7 +304,9 @@ export function createHud(t, options) {
         "map",
         t("mapTitle"),
         (body, footer) => {
-          element("p", "gr-muted gr-map-hint", body, progress.finished ? t("allDone") : t("mapHint"));
+          // A world added after a player finished the game is not done yet
+          const allDone = progress.finished && progress.world(WORLDS[WORLDS.length - 1].id).stars > 0;
+          element("p", "gr-muted gr-map-hint", body, allDone ? t("allDone") : t("mapHint"));
           const grid = element("ol", "gr-map", body);
           let focus = null;
           for (const world of WORLDS) {
@@ -336,7 +338,7 @@ export function createHud(t, options) {
           }
           const meta = element("div", "gr-map-meta", body);
           badgesRow(meta, progress.badges);
-          element("p", "gr-muted", meta, t("notesFound", { n: progress.notesFound() }));
+          element("p", "gr-muted", meta, t("notesFound", { n: progress.notesFound(), total: WORLDS.length }));
           const reset = element("button", "gr-link", meta, t("resetProgress"));
           reset.type = "button";
           reset.addEventListener("click", () => {
@@ -425,18 +427,28 @@ export function createHud(t, options) {
       });
     },
 
-    /** The end of the game, after world 8. */
-    credits(earned, missed) {
+    /** The end of the game, after the last world. */
+    credits(earned, result) {
       screen("credits", t("creditsTitle"), (body, footer) => {
         element("div", "gr-logo gr-logo--happy", body).innerHTML = GUINEA_ART;
-        element("p", "", body, t("creditsText"));
-        badgesRow(body, earned);
-        if (missed) {
+        // The result of the last world first, as any world shows it
+        element("p", "gr-result-stars", body, starsText(result.stars));
+        element("p", "gr-score", body, t("score") + ": " + result.score);
+        element("p", "gr-muted", body, result.newBest ? t("newBest") : t("best") + ": " + result.best);
+        if (result.missed) {
           const box = element("div", "gr-rule gr-rule--info", body);
           element("strong", "", box, t("goodToKnow"));
-          element("span", "", box, missed);
+          element("span", "", box, result.missed);
         }
+        const rule = element("div", "gr-rule", body);
+        element("strong", "", rule, t("theRule"));
+        element("span", "", rule, t("w" + result.world.id + "_rule"));
+        element("p", "gr-small-title", body, t("labs"));
+        labLinks(body, result.world.labs);
+        element("p", "", body, t("creditsText"));
+        badgesRow(body, earned);
         element("p", "gr-teaser", body, t("teaser"));
+        button(footer, "start", t("replay"));
         button(footer, "map", t("backToMap"), "gr-primary");
       });
     },

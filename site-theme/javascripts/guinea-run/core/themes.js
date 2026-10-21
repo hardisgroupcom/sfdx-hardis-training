@@ -225,5 +225,30 @@ export const THEMES = {
       ["break", 4],
       ["chorus", 8]
     ]
+  },
+
+  // 9 Monitor production: an arcade march at night, a bass stomping down the chords under a square lead
+  9: {
+    bpm: 120,
+    root: 57,
+    scale: MINOR,
+    progression: [0, 6, 5, 4],
+    volume: 0.15,
+    lead: {
+      a: melody("0...0.2.4...4... 6...6.4.3....... 5...5.3.2...2... 4...4.6.7.......")
+    },
+    sections: {
+      intro: { kick: FOUR, bass: "x...x...x...x..." },
+      verse: { kick: FOUR, hat: OFFBEATS, bass: "x...x...x...x...", stab: OFFBEATS },
+      chorus: { kick: FOUR, clap: BACKBEAT, hat: EIGHTHS, bass: "x.o.x.o.x.o.x.o.", stab: OFFBEATS, lead: "a" },
+      break: { pad: true, arp: true, bass: "x.......x......." }
+    },
+    form: [
+      ["intro", 2],
+      ["verse", 4],
+      ["chorus", 8],
+      ["break", 4],
+      ["chorus", 8]
+    ]
   }
 };

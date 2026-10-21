@@ -12,8 +12,8 @@
  *   English page; typed on WASD it opens it in French on a French page; typed
  *   in a text field it does not
  * - from the map, the keyboard alone opens world 0, starts it and plays it
- * - each of the nine worlds opens, starts, takes its controls, ends, and gives
- *   back what it drew when the player returns to the map
+ * - each world opens, starts, takes its controls, ends, and gives back what
+ *   it drew when the player returns to the map; the last one ends on the credits
  * - finishing a world opens the next one, and the browser remembers it
  * - a deployment action declared in the wrong place in world 3 comes back as
  *   a failing gate in world 6
@@ -176,7 +176,8 @@ const WORLD_PROBES = {
   5: { keys: [], attr: "round", expect: "1" },
   6: { keys: ["ArrowUp"], attr: "jumps", changes: true },
   7: { keys: ["ArrowLeft"], attr: "lane", expect: "0" },
-  8: { keys: ["ArrowUp"], attr: "jumps", changes: true }
+  8: { keys: ["ArrowUp"], attr: "jumps", changes: true },
+  9: { keys: ["ArrowUp"], attr: "shots", changes: true }
 };
 
 try {
@@ -188,8 +189,8 @@ try {
     expect(await waitState(page, "map"), "the Konami code with arrows opens the map on an English page");
     const title = await page.textContent(".guinea-run .gr-panel");
     expect(/The pipeline of US-014/.test(title || ""), "the game speaks English on an English page");
-    expect((await page.locator(".guinea-run .gr-card").count()) === 9, "the map shows the nine worlds");
-    expect((await page.locator(".guinea-run .gr-card.is-locked").count()) === 8, "a new player has only world 0 open");
+    expect((await page.locator(".guinea-run .gr-card").count()) === WORLDS.length, `the map shows the ${WORLDS.length} worlds`);
+    expect((await page.locator(".guinea-run .gr-card.is-locked").count()) === WORLDS.length - 1, "a new player has only world 0 open");
     expect(
       await page.evaluate(() => (window.dataLayer || []).some((entry) => entry[0] === "event" && entry[1] === "easter_egg_found")),
       "finding the egg is sent to Google Analytics"
@@ -272,11 +273,17 @@ try {
     const playing = await state(page);
     expect(playing === "playing" || playing === "failed", `world ${world.id} keeps running for a few seconds (state ${playing})`);
     await page.evaluate(() => window.__guineaRun.finish());
-    const end = world.badge ? (world.id === WORLDS.length - 1 ? ["celebrating", "credits"] : ["celebrating", "done"]) : ["done"];
-    expect(await waitState(page, end), `world ${world.id} ends on its result${world.badge ? ", with its badge" : ""}`);
+    // The last world ends on the credits, the others on their result
+    const last = world.id === WORLDS.length - 1;
+    const endState = last ? "credits" : "done";
+    const end = world.badge ? ["celebrating", endState] : [endState];
+    expect(await waitState(page, end), `world ${world.id} ends on ${last ? "the credits" : "its result"}${world.badge ? ", with its badge" : ""}`);
     if (world.badge) {
       await page.keyboard.press("Enter");
-      expect(await waitState(page, world.id === WORLDS.length - 1 ? "credits" : "done"), `world ${world.id} goes from its badge to ${world.id === WORLDS.length - 1 ? "the credits" : "its result"}`);
+      expect(await waitState(page, endState), `world ${world.id} goes from its badge to ${last ? "the credits" : "its result"}`);
+    }
+    if (!last) {
+      expect((await page.locator('.guinea-run [data-action="next"]').count()) === 1, `world ${world.id} offers the next world`);
     }
     const geometriesInWorld = await page.evaluate(() => window.__guineaRun.geometries());
     await page.click('.guinea-run [data-action="map"]');

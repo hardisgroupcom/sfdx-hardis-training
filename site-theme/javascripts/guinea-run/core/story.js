@@ -1,7 +1,8 @@
 /*
  * The worlds of Guinea Run, in the order the change of US-014 travels: from a
- * laptop with nothing installed to production. Each world is a module of
- * ../worlds/, loaded only when it is played.
+ * laptop with nothing installed to production, then the watch over
+ * production once it is there. Each world is a module of ../worlds/, loaded
+ * only when it is played. The last one ends on the credits.
  *
  * The names, rules and pitches shown on the map live in ../texts.js. What each
  * world quotes from the labs lives in its own module (QUOTES), and
@@ -18,7 +19,8 @@ export const WORLDS = [
   { id: 5, module: "world-5-conflict.js", style: "merge", glyph: "fork", labs: ["2.7", "3.4"], badge: 2 },
   { id: 6, module: "world-6-integration.js", style: "musical", glyph: "bolt", labs: ["3.3"] },
   { id: 7, module: "world-7-promotion.js", style: "runner", glyph: "delta", labs: ["3.5", "3.10"] },
-  { id: 8, module: "world-8-production.js", style: "musical", glyph: "star", labs: ["3.6"], badge: 3 }
+  { id: 8, module: "world-8-production.js", style: "musical", glyph: "star", labs: ["3.6"], badge: 3 },
+  { id: 9, module: "world-9-monitoring.js", style: "shooter", glyph: "eye", labs: ["3.8"] }
 ];
 
 /** The deployment actions of Labs 2.3 and 2.4, and where each belongs. */

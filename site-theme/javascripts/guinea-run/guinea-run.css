@@ -981,6 +981,47 @@ html.guinea-run-open body {
   color: #ffffff;
 }
 
+/* Ten worlds: two rows of five on a wide screen; on three columns the last
+   world, the watch over production, takes the whole last row */
+@media (min-width: 1100px) {
+  .guinea-run .gr-map {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .guinea-run .gr-card {
+    padding: 10px;
+  }
+
+  .guinea-run .gr-card-head {
+    gap: 8px;
+  }
+
+  .guinea-run .gr-card-number {
+    flex-basis: 28px;
+    width: 28px;
+    height: 28px;
+    font-size: 15px;
+  }
+
+  .guinea-run .gr-card-titles strong {
+    font-size: 14px;
+  }
+
+  .guinea-run .gr-card-style {
+    font-size: 11px;
+  }
+
+  .guinea-run .gr-card-pitch {
+    font-size: 12.5px !important;
+  }
+}
+
+@media (min-width: 861px) and (max-width: 1099px) {
+  .guinea-run .gr-card:last-child:nth-child(3n + 1) {
+    grid-column: 1 / -1;
+  }
+}
+
 @media (max-width: 860px) {
   .guinea-run .gr-map {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1374,6 +1415,7 @@ html.guinea-run-open body {
 .guinea-run .gr-card[data-world="6"] { --gr-card: #dd7a01; }
 .guinea-run .gr-card[data-world="7"] { --gr-card: #3a49da; }
 .guinea-run .gr-card[data-world="8"] { --gr-card: #032d60; }
+.guinea-run .gr-card[data-world="9"] { --gr-card: #c23934; }
 
 .guinea-run .gr-card {
   border: 2px solid color-mix(in srgb, var(--gr-card, #0176d3) 22%, #ffffff);

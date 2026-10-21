@@ -1,6 +1,7 @@
 /*
  * Guinea Run: the change of US-014 travels the pipeline, from a laptop with
- * nothing installed to production, through nine worlds of the course.
+ * nothing installed to production, through the worlds of the course, and
+ * the last one keeps watch over production.
  *
  * Loaded by ../easter-egg.js the first time a reader finds the easter egg.
  * Three.js comes from jsDelivr at a fixed version, only then: a reader who never
@@ -73,6 +74,12 @@ function createGame(options) {
 
   const shellT = translator(lang);
   const progress = createProgress({ volatile: unlockAll, unlockAll });
+  // A world added after the last one opens for whoever already finished the one before it
+  for (const world of WORLDS) {
+    if (world.id > progress.unlocked && world.id > 0 && progress.world(world.id - 1).stars > 0) {
+      progress.complete(world.id - 1, 0, 0, world.id);
+    }
+  }
   const sound = createSound();
   const previousFocus = document.activeElement;
   const cleanups = [];
@@ -587,7 +594,7 @@ function createGame(options) {
         progress.setFinished();
         track("easter_egg_finished", { score: run.score, trigger: options.trigger });
         state = "credits";
-        hud.credits(progress.badges, result.missed);
+        hud.credits(progress.badges, result);
       } else {
         state = "done";
         hud.result(result);
