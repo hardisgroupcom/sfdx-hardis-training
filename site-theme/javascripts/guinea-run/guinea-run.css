@@ -360,6 +360,10 @@ html.guinea-run-open body {
   line-height: 1.45;
 }
 
+.guinea-run .gr-drawing {
+  font-size: 13px !important;
+}
+
 .guinea-run .gr-muted {
   color: var(--gr-weak);
 }

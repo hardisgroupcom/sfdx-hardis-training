@@ -81,6 +81,7 @@ export async function createEngine(THREE, canvas, overlay, onFrame, options) {
   let last = performance.now();
   let lastRender = 0;
   let time = 0;
+  let fps = 0;
   let lastSize = { width: 0, height: 0 };
   let resizeListener = null;
 
@@ -137,13 +138,18 @@ export async function createEngine(THREE, canvas, overlay, onFrame, options) {
     if (!active && now - lastRender < IDLE_FRAME_MS) {
       return;
     }
-    const dt = Math.min((now - last) / 1000, MAX_DT);
+    const elapsedMs = now - last;
+    const dt = Math.min(elapsedMs / 1000, MAX_DT);
     last = now;
     lastRender = now;
     time += dt;
     resize(false);
     if (active) {
       quality.frame(dt * 1000);
+      // The frame rate the player gets, smoothed, for the pause screen
+      if (elapsedMs > 0 && elapsedMs < 250) {
+        fps = fps ? fps * 0.95 + (1000 / elapsedMs) * 0.05 : 1000 / elapsedMs;
+      }
     }
     onFrame(dt, time);
     if (post) {
@@ -165,6 +171,10 @@ export async function createEngine(THREE, canvas, overlay, onFrame, options) {
     motion,
     get tier() {
       return tier;
+    },
+    /** The frames per second while a world is played, smoothed. */
+    get fps() {
+      return fps;
     },
     get settings() {
       return settings();

@@ -386,9 +386,13 @@ export function createHud(t, options) {
       });
     },
 
-    paused() {
+    /** The pause card; drawing = { renderer, fps, tier } says how the game is drawn here. */
+    paused(drawing) {
       screen("paused", t("paused"), (body, footer) => {
         keysHelp(body);
+        if (drawing) {
+          element("p", "gr-muted gr-drawing", body, t("drawnWith", { renderer: drawing.renderer, fps: drawing.fps, tier: t("tier" + drawing.tier) }));
+        }
         button(footer, "map", t("backToMap"));
         button(footer, "resume", t("resume"), "gr-primary");
       });

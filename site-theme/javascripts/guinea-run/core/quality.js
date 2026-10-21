@@ -1,9 +1,9 @@
 /*
  * How much the game draws, so a small phone stays smooth.
  *
- * The first tier is a guess from the device. Then the frame time is measured
- * every two seconds, and the game drops one tier when frames are slow, at most
- * twice. It never climbs back: a tier that flips back and forth looks worse
+ * The first tier is a guess from the device. Then, past the first seconds of a
+ * world, the frame time is measured every two seconds, and the game drops one
+ * tier when two samples in a row are slow, at most twice. It never climbs back: a tier that flips back and forth looks worse
  * than one that stays a little lower.
  */
 
@@ -17,8 +17,13 @@ export const TIERS = [
 ];
 
 const SAMPLE_MS = 2000;
-const SLOW_FRAME_MS = 22;
+// The first seconds of a world compile its shaders and load its models: not a slow device
+const WARMUP_MS = 3000;
+// One slow sample can be a hiccup: two in a row are the device
+// About 52 frames per second: below it a desktop feels slow, even when it never stutters
+const SLOW_FRAME_MS = 19;
 const MAX_DROPS = 2;
+const SLOW_SAMPLES = 2;
 
 /** The tier to start with, from what the browser says about the device. */
 export function initialTier() {
@@ -41,6 +46,8 @@ export function createQualityMonitor(tier, onDrop) {
   let drops = 0;
   let elapsed = 0;
   let frames = 0;
+  let warmup = WARMUP_MS;
+  let slow = 0;
   return {
     get tier() {
       return current;
@@ -48,6 +55,10 @@ export function createQualityMonitor(tier, onDrop) {
     frame(deltaMs) {
       // A long pause (tab hidden, debugger) is not a slow device
       if (deltaMs > 250) {
+        return;
+      }
+      if (warmup > 0) {
+        warmup -= deltaMs;
         return;
       }
       elapsed += deltaMs;
@@ -58,7 +69,9 @@ export function createQualityMonitor(tier, onDrop) {
       const average = elapsed / frames;
       elapsed = 0;
       frames = 0;
-      if (average > SLOW_FRAME_MS && current > 0 && drops < MAX_DROPS) {
+      slow = average > SLOW_FRAME_MS ? slow + 1 : 0;
+      if (slow >= SLOW_SAMPLES && current > 0 && drops < MAX_DROPS) {
+        slow = 0;
         current -= 1;
         drops += 1;
         onDrop(current);
@@ -67,6 +80,8 @@ export function createQualityMonitor(tier, onDrop) {
     reset() {
       elapsed = 0;
       frames = 0;
+      warmup = WARMUP_MS;
+      slow = 0;
     }
   };
 }

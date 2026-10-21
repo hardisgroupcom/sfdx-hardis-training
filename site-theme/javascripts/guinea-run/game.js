@@ -211,7 +211,7 @@ function createGame(options) {
     if (state === "playing") {
       state = "paused";
       engine.setActive(false);
-      hud.paused();
+      hud.paused({ renderer: engine.backend === "webgpu" ? "WebGPU" : "WebGL 2", fps: Math.round(engine.fps), tier: engine.tier });
     }
   }
 
