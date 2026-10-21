@@ -29,7 +29,7 @@ export const BADGE_NAMES = {
 const CAST = {
   // face: a cartoon portrait in theme/images, set by guinea-run.css
   mariia: { name: "Mariia Pyvovarchuk", initials: "MP", color: "#9050E9", face: true },
-  romain: { name: "Romain Panda", initials: "RP", color: "#06A59A" },
+  romain: { name: "Romain Panda", initials: "RP", color: "#06A59A", face: true },
   victor: { name: "Victor Squeeker", initials: "VS", color: "#DD7A01" },
   you: { name: "You", initials: "US", color: "#0176D3" }
 };

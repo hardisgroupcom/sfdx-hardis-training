@@ -746,11 +746,16 @@ html.guinea-run-open body {
 }
 
 /* A member of the cast with a cartoon face instead of initials */
-.guinea-run .gr-avatar--mariia {
+.guinea-run .gr-avatar--mariia,
+.guinea-run .gr-avatar--romain {
   flex-basis: 38px;
   width: 38px;
   height: 38px;
   background: url("../../images/mariia.svg") center / cover no-repeat;
+}
+
+.guinea-run .gr-avatar--romain {
+  background-image: url("../../images/romain.svg");
 }
 
 /* Victor's note */

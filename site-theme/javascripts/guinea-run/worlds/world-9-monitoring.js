@@ -20,9 +20,9 @@
  * shows on the floor before it falls, and, once he is angry, admins called to
  * help. Beaten, he gives up in one line and the world ends.
  *
- * Each admin wears one of nine cartoon faces (images/bosses/boss-N.svg), the
- * boss his own (final-boss.svg): one atlas texture, one instanced disc per
- * face. A face that does not load is drawn plain, the world never waits.
+ * Each admin wears one of twenty cartoon faces (images/bosses/boss-N.svg),
+ * never the same twice in a wave, the boss his own (final-boss.svg): one atlas
+ * texture, one instanced disc per face. A face that does not load is drawn plain, the world never waits.
  *
  * Victor's note crosses the top of the field once in wave 2 and once in wave
  * 3, behind the formation: a vegetable thrown through a gap finds it.
@@ -65,7 +65,10 @@ const TOP_Z = -14.4;
 
 // The admins: a big face over a small body holding a laptop
 const MAX_ADMINS = 26;
-const FACES = 9;
+const FACES = 20;
+// The faces atlas: tiles of 256 px, five a row
+const ATLAS_COLS = 5;
+const ATLAS_ROWS = Math.ceil(FACES / ATLAS_COLS);
 const FACE_SIZE = 1.42;
 const FACE_Y = 1.2;
 const COL_GAP = 1.58;
@@ -426,12 +429,12 @@ export function createWorld(ctx) {
     }
   }
 
-  /* ---------- The faces: one atlas, nine tiles ---------- */
+  /* ---------- The faces: one atlas, one tile each ---------- */
 
   const TILE = 256;
   const atlas = document.createElement("canvas");
-  atlas.width = TILE * 3;
-  atlas.height = TILE * 3;
+  atlas.width = TILE * ATLAS_COLS;
+  atlas.height = TILE * ATLAS_ROWS;
   const atlasContext = atlas.getContext("2d");
   const faceTexture = new THREE.CanvasTexture(atlas);
   faceTexture.colorSpace = THREE.SRGBColorSpace;
@@ -441,10 +444,10 @@ export function createWorld(ctx) {
   owned.push(faceMaterial);
   let disposed = false;
   for (let i = 0; i < FACES; i++) {
-    drawPlainFace(atlasContext, (i % 3) * TILE, Math.floor(i / 3) * TILE, TILE, i);
+    drawPlainFace(atlasContext, (i % ATLAS_COLS) * TILE, Math.floor(i / ATLAS_COLS) * TILE, TILE, i);
     loadFace("boss-" + (i + 1) + ".svg", (image) => {
-      const x = (i % 3) * TILE;
-      const y = Math.floor(i / 3) * TILE;
+      const x = (i % ATLAS_COLS) * TILE;
+      const y = Math.floor(i / ATLAS_COLS) * TILE;
       atlasContext.clearRect(x, y, TILE, TILE);
       drawFace(atlasContext, image, x, y, TILE);
       faceTexture.needsUpdate = true;
@@ -471,14 +474,22 @@ export function createWorld(ctx) {
     const geometry = paint.geometry("w9-face-" + i, () => {
       const disc = new THREE.CircleGeometry(FACE_SIZE / 2, 40);
       const uv = disc.attributes.uv;
-      const col = i % 3;
-      const row = Math.floor(i / 3);
+      const col = i % ATLAS_COLS;
+      const row = Math.floor(i / ATLAS_COLS);
       for (let k = 0; k < uv.count; k++) {
-        uv.setXY(k, (col + uv.getX(k)) / 3, 1 - (row + 1 - uv.getY(k)) / 3);
+        uv.setXY(k, (col + uv.getX(k)) / ATLAS_COLS, 1 - (row + 1 - uv.getY(k)) / ATLAS_ROWS);
       }
       return disc;
     });
     faceMeshes.push({ mesh: instanced(geometry, faceMaterial, MAX_ADMINS), n: 0 });
+  }
+
+  // How often each face came: the least seen come first, so a wave never shows
+  // one face twice and the next wave brings the ones not seen yet
+  const faceSeen = new Array(FACES).fill(0);
+
+  function nextFaces() {
+    return shuffle([...Array(FACES).keys()]).sort((a, b) => faceSeen[a] - faceSeen[b]);
   }
 
   /* ---------- The admins ---------- */
@@ -865,13 +876,13 @@ export function createWorld(ctx) {
     formation.z = n === 0 ? FORMATION_Z : FORMATION_Z - 7;
     formation.enter = n === 0 ? 0.8 : ENTER_S;
     formation.pause = 0;
-    // Every face comes in every wave: the nine in a shuffled order, then again
-    const faces = shuffle([...Array(FACES).keys()]);
+    const faces = nextFaces();
     let k = 0;
     for (let row = 0; row < spec.rows; row++) {
       for (let col = 0; col < spec.cols; col++) {
         const a = admins[k];
         Object.assign(a, { alive: true, dying: 0, col, row, helper: false, face: faces[k % FACES], say: 0, vx: 0 });
+        faceSeen[a.face] += 1;
         bodyMesh.setColorAt(k, color.setHex(ROW_COLORS[row + (4 - spec.rows)]));
         k += 1;
       }
@@ -1449,7 +1460,7 @@ export function createWorld(ctx) {
   function callHelpers() {
     fight.called += 1;
     coach("coachHelpers", 2200);
-    const faces = shuffle([...Array(FACES).keys()]);
+    const faces = nextFaces();
     const lanes = shuffle([0, 1, 2, 3]);
     let placed = 0;
     for (let i = 0; i < MAX_ADMINS && placed < 4; i++) {
@@ -1459,6 +1470,7 @@ export function createWorld(ctx) {
       }
       // Spread across the field, one per lane, so none hides behind another
       Object.assign(a, { alive: true, dying: 0, helper: true, call: fight.called, face: faces[placed], x: HELPER_X[lanes[placed]], z: fight.z + 1.2, say: 0, dropAt: -9 + random() * 3 });
+      faceSeen[a.face] += 1;
       bodyMesh.setColorAt(i, color.setHex(ROW_COLORS[(placed + 1) % ROW_COLORS.length]));
       used = Math.max(used, i + 1);
       placed += 1;
