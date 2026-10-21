@@ -22,7 +22,7 @@ const FUR_LENGTH = 0.05;
 const BODY_Y = 0.375;
 // The shadow under it, as wide as its tummy
 const SHADOW_X = 1.15;
-const SHADOW_Z = 1.25;
+const SHADOW_Z = 1.5;
 
 export function createGuineaPig(THREE, options) {
   const shells = options && options.furShells !== undefined ? options.furShells : 8;
@@ -69,10 +69,11 @@ export function createGuineaPig(THREE, options) {
 
   // Eyes on the sides of the head, black, round and glossy
   const eyeMaterial = keep(new THREE.MeshPhysicalMaterial({ color: 0x080608, roughness: 0.05, clearcoat: 1, clearcoatRoughness: 0.03 }));
-  const eyeGeometry = keep(new THREE.SphereGeometry(0.05, 20, 14));
+  const eyeGeometry = keep(new THREE.SphereGeometry(0.052, 20, 14));
   for (const side of [-1, 1]) {
     const eye = new THREE.Mesh(eyeGeometry, eyeMaterial);
-    eye.position.set(side * 0.325, 0.085, -0.55);
+    const at = surfacePoint(THREE, 0.62, side, 0.32);
+    eye.position.set(at.x * 0.93, at.y, at.z);
     eye.scale.set(0.8, 1, 1.1);
     body.add(eye);
   }
@@ -82,13 +83,14 @@ export function createGuineaPig(THREE, options) {
   const earMaterial = keep(new THREE.MeshStandardMaterial({ color: 0xc08e7c, roughness: 0.75, side: THREE.DoubleSide }));
   const ears = [-1, 1].map((side) => {
     const pivot = new THREE.Group();
-    pivot.position.set(side * 0.23, 0.28, -0.42);
+    // On the top corner of the head, folding over its edge and hanging down
+    pivot.position.copy(surfacePoint(THREE, 0.44, side, 0.7));
     const ear = new THREE.Mesh(earGeometry, earMaterial);
-    ear.scale.set(0.12, 0.09, 0.022);
-    ear.position.set(side * 0.08, 0.02, 0);
+    ear.scale.set(0.12, 0.014, 0.085);
+    ear.position.set(side * 0.11, 0.01, 0);
     ear.castShadow = true;
     pivot.add(ear);
-    pivot.rotation.set(0.15, side * 0.35, side * -0.75);
+    pivot.rotation.set(0.15, side * 0.25, side * -0.95);
     pivot.userData.side = side;
     body.add(pivot);
     return pivot;
@@ -96,11 +98,11 @@ export function createGuineaPig(THREE, options) {
 
   // The nose, split lip and whiskers
   const nose = new THREE.Mesh(keep(new THREE.SphereGeometry(0.03, 12, 8)), keep(new THREE.MeshStandardMaterial({ color: 0xa8646f, roughness: 0.5 })));
-  nose.position.set(0, -0.075, -0.775);
+  nose.position.set(0, curve(CENTRE, S_NOSE) - BODY_Y + 0.02, -S_NOSE - 0.01);
   nose.scale.set(1.5, 0.8, 0.6);
   body.add(nose);
   const lip = new THREE.Mesh(keep(new THREE.BoxGeometry(0.008, 0.05, 0.01)), keep(new THREE.MeshBasicMaterial({ color: 0x5a3a36 })));
-  lip.position.set(0, -0.115, -0.765);
+  lip.position.set(0, curve(CENTRE, S_NOSE) - BODY_Y - 0.03, -S_NOSE + 0.005);
   body.add(lip);
   body.add(whiskers(THREE, keep));
 
@@ -110,8 +112,8 @@ export function createGuineaPig(THREE, options) {
   const feet = [
     [0.18, -0.4],
     [-0.18, -0.4],
-    [0.23, 0.26],
-    [-0.23, 0.26]
+    [0.24, 0.5],
+    [-0.24, 0.5]
   ].map(([x, z], i) => {
     const foot = new THREE.Mesh(footGeometry, footMaterial);
     foot.scale.set(0.065, 0.035, i < 2 ? 0.075 : 0.1);
@@ -328,7 +330,7 @@ export function createGuineaPig(THREE, options) {
       for (const ear of ears) {
         const side = ear.userData.side;
         const flop = state.airborne ? Math.sin(air * 18) * 0.3 : gallop * 0.12;
-        ear.rotation.z = side * (-0.75 - flop);
+        ear.rotation.z = side * (-0.95 - flop);
       }
       feet.forEach((foot, i) => {
         const front = i < 2;
@@ -365,61 +367,87 @@ export function createGuineaPig(THREE, options) {
   return pig;
 }
 
+// The shape of the Blender model (scripts/blender/guinea-pig.py), measured on
+// photos: s runs from the rump to the nose; each curve gives, at s, a height
+// above the floor or a half width, rounded off near the two ends
+const S_RUMP = -0.84;
+const S_NOSE = 0.86;
+const CENTRE = [[-0.84, 0.44], [-0.4, 0.45], [0, 0.46], [0.4, 0.48], [0.7, 0.47], [0.86, 0.46]];
+const UP = [[-0.84, 0.53], [-0.4, 0.52], [0, 0.47], [0.3, 0.45], [0.55, 0.47], [0.86, 0.42]];
+const DOWN = [[-0.84, 0.5], [-0.6, 0.47], [-0.3, 0.43], [0, 0.43], [0.3, 0.45], [0.5, 0.44], [0.7, 0.4], [0.86, 0.36]];
+const WIDE = [[-0.84, 0.61], [-0.5, 0.6], [-0.2, 0.59], [0.1, 0.57], [0.35, 0.52], [0.55, 0.46], [0.72, 0.38], [0.86, 0.3]];
+
+/** Catmull-Rom through [s, value] points, flat beyond the first and the last. */
+function curve(points, s) {
+  if (s <= points[0][0]) {
+    return points[0][1];
+  }
+  const last = points.length - 1;
+  if (s >= points[last][0]) {
+    return points[last][1];
+  }
+  let i = 0;
+  while (s > points[i + 1][0]) {
+    i += 1;
+  }
+  const p0 = points[Math.max(i - 1, 0)][1];
+  const p1 = points[i][1];
+  const p2 = points[i + 1][1];
+  const p3 = points[Math.min(i + 2, last)][1];
+  const t = (s - points[i][0]) / (points[i + 1][0] - points[i][0]);
+  return 0.5 * (2 * p1 + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t + (-p0 + 3 * p1 - 3 * p2 + p3) * t * t * t);
+}
+
 /**
- * The silhouette, rump to nose along -Z, as one closed lathe: the same well-fed
- * shape as the Blender model, a short loaf with a big round rump and no neck.
+ * The point of the body at s, in the direction (dx, dy) of its cross-section,
+ * written into out: x across, y the height above the floor, z = -s.
  */
+function shapePoint(s, dx, dy, out) {
+  const z = ((s - S_RUMP) / (S_NOSE - S_RUMP)) * 2 - 1;
+  // Blunt ends: a blunter rump than face
+  const n = 2.6 + 0.4 * smooth(0.1, -0.3, z);
+  const rho = Math.max(0, 1 - Math.abs(z) ** n) ** (1 / n);
+  // A loaf, not a tube: squarer than a circle under the flanks; the head stays round
+  const loaf = 1 - smooth(0.3, 0.75, s);
+  const e = 2 / (2 + (dy < 0 ? 0.8 : 0.35) * loaf);
+  const sx = Math.sign(dx) * Math.abs(dx) ** e;
+  const sy = Math.sign(dy) * Math.abs(dy) ** e;
+  let x = sx * rho * curve(WIDE, s);
+  // Full flanks that bulge before they turn under the belly, and full cheeks
+  x *= 1 + 0.04 * (1 - smooth(0, 0.65, Math.abs(sy + 0.2))) * loaf;
+  x *= 1 + 0.08 * smooth(0.35, 0.5, s) * (1 - smooth(0.62, 0.78, s));
+  const y = curve(CENTRE, s) + sy * rho * (sy > 0 ? curve(UP, s) : curve(DOWN, s));
+  return out.set(x, y, -s);
+}
+
+/** A point on the body at s, on one side, t from -1 (under it) to 1 (on top), around the body group. */
+function surfacePoint(THREE, s, side, t) {
+  const p = shapePoint(s, side * Math.sqrt(Math.max(1 - t * t, 0)), t, new THREE.Vector3());
+  p.y -= BODY_Y;
+  return p;
+}
+
+/** The body and the head as one closed surface, nose forward along -Z. */
 function bodyGeometry(THREE) {
-  // radius along the axis, from the rump (y < 0) to the nose (y > 0)
-  const profile = [
-    [0, -0.57],
-    [0.19, -0.555],
-    [0.35, -0.5],
-    [0.46, -0.4],
-    [0.515, -0.26],
-    [0.525, -0.08],
-    [0.51, 0.1],
-    [0.475, 0.26],
-    [0.405, 0.42],
-    [0.335, 0.54],
-    [0.262, 0.64],
-    [0.178, 0.72],
-    [0.086, 0.77],
-    [0, 0.785]
-  ].map(([r, y]) => new THREE.Vector2(r, y));
-  const curve = new THREE.SplineCurve(profile).getPoints(48);
-  curve[0].x = 0;
-  curve[curve.length - 1].x = 0;
-  const geometry = new THREE.LatheGeometry(curve, 48);
+  // A lathe only for its rings and its UVs (u around, v from the rump to the
+  // nose, as the coat texture expects); every vertex is then put on the shape
+  const rings = [];
+  for (let i = 0; i <= 48; i++) {
+    const z = -Math.cos((i / 48) * Math.PI);
+    rings.push(new THREE.Vector2(i === 0 || i === 48 ? 0 : 0.5, S_RUMP + ((z + 1) / 2) * (S_NOSE - S_RUMP)));
+  }
+  const geometry = new THREE.LatheGeometry(rings, 48);
   // The lathe turns around Y: lay it along Z, nose forward
   geometry.rotateX(-Math.PI / 2);
   const position = geometry.attributes.position;
   const v = new THREE.Vector3();
   for (let i = 0; i < position.count; i++) {
     v.fromBufferAttribute(position, i);
-    // Along the axis: s < 0 at the rump, s > 0 at the nose
-    const s = -v.z;
-    // A loaf, not a tube: the cross-section is squarer than a circle, most
-    // of all under the flanks; the head stays round
     const ring = Math.hypot(v.x, v.y);
-    if (ring > 1e-6) {
-      const loaf = 1 - smooth(0.3, 0.75, s);
-      const e = 2 / (2 + (v.y < 0 ? 0.8 : 0.35) * loaf);
-      const dx = v.x / ring;
-      const dy = v.y / ring;
-      v.x = Math.sign(dx) * Math.abs(dx) ** e * ring;
-      v.y = Math.sign(dy) * Math.abs(dy) ** e * ring;
-      // Full flanks, bulging out before they turn under the belly
-      v.x *= 1 + 0.04 * (1 - smooth(0, 0.65, Math.abs(dy + 0.2))) * loaf;
-    }
-    // A flat belly and a slightly narrower back
-    v.y *= v.y < 0 ? 0.62 : 0.9;
-    // A broad body and rump, full cheeks
-    v.x *= 1.1 * (1 + 0.1 * (1 - smooth(0.1, 0.75, s))) * (1 + 0.05 * smooth(0.05, -0.35, s));
-    // The rump sits a little higher, the nose dips
-    v.y += 0.05 * smooth(0, 0.6, v.z);
-    v.y -= 0.09 * smooth(0.45, 0.8, -v.z);
-    position.setXYZ(i, v.x, v.y, v.z);
+    const dx = ring > 1e-6 ? v.x / ring : 0;
+    const dy = ring > 1e-6 ? v.y / ring : 0;
+    shapePoint(-v.z, dx, dy, v);
+    position.setXYZ(i, v.x, v.y - BODY_Y, v.z);
   }
   geometry.computeVertexNormals();
   return geometry;
@@ -569,7 +597,7 @@ function whiskers(THREE, keep) {
   const points = [];
   for (const side of [-1, 1]) {
     for (let i = 0; i < 5; i++) {
-      const start = new THREE.Vector3(side * 0.07, -0.1 + i * 0.012, -0.72);
+      const start = new THREE.Vector3(side * 0.1, 0.06 + i * 0.012, -0.82);
       const end = start.clone().add(new THREE.Vector3(side * (0.26 + Math.random() * 0.1), (i - 2) * 0.05, 0.08 + i * 0.03));
       points.push(start, end);
     }

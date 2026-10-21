@@ -5,20 +5,23 @@ and exported as one glTF binary the game loads.
     blender --background --factory-startup --python scripts/blender/guinea-pig.py -- \
         site-theme/javascripts/guinea-run/models/guinea-pig.glb [preview.png]
 
-Nothing here needs a texture: the coat is painted into vertex colours (ginger,
-a white band and blaze, a black patch on the rump), the rest is
-flat materials. The model faces -Y in Blender, which the glTF exporter turns
-into -Z, the way the game's guinea pig has always looked down its track.
+The shape is measured on photos of real guinea pigs (see shape()). The agouti
+coat is drawn by a procedural shader and baked into a colour map and a hair
+normal map; the rest is flat materials. The model faces -Y in Blender, which
+the glTF exporter turns into -Z, the way the game's guinea pig has always
+looked down its track. GUINEA_CAMERA="x,y,z" moves the preview camera, to
+compare a side or a front view with a photo.
 
 Bones: root, body, head, ear.L, ear.R, leg.FL, leg.FR, leg.BL, leg.BR.
 Actions (glTF animations): idle, run, jump, sit, happy, hit.
 """
 
 import math
+import os
 import sys
 
 import bpy
-from mathutils import Vector
+from mathutils import Euler, Vector
 
 ARGS = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 OUT = ARGS[0] if ARGS else "guinea-pig.glb"
@@ -61,31 +64,40 @@ def material(name, color, roughness=0.6, metallic=0.0, vertex_colors=False, clea
     return mat
 
 
-# The side profile, rump (s < 0) to nose (s > 0): (s, radius). A well-fed
-# guinea pig: a short loaf with a big round rump, full up to the cheeks, so the
-# head flows into the body with no neck. The face (s > 0.5) keeps its size.
-PROFILE = [
-    (-0.57, 0.0), (-0.555, 0.19), (-0.5, 0.35), (-0.4, 0.46), (-0.26, 0.515), (-0.08, 0.525),
-    (0.1, 0.51), (0.26, 0.475), (0.42, 0.405), (0.54, 0.335), (0.64, 0.262), (0.72, 0.178),
-    (0.77, 0.086), (0.785, 0.0),
-]
-AXIS = 0.38  # height of the body's axis above the floor: the belly almost on it
+# The guinea pig of the photos, measured from the side: a long loaf, highest
+# over the hips, a big round rump that drops to the floor, a flat belly, and a
+# blunt head about as wide as it is tall, which flows into the body with no
+# neck. s runs along the body from the rump (S_RUMP) to the nose (S_NOSE). Each
+# curve gives, at s, a height above the floor or a half width; near the two
+# ends a superellipse rounds them all off, so the rump and the face are domes.
+S_RUMP, S_NOSE = -0.84, 0.86
+AXIS = 0.38  # the height of the flanks, for the coat shading and the rig
+
+# The middle of the cross-section: the nose sits halfway up the head
+CENTRE = [(-0.84, 0.44), (-0.4, 0.45), (0.0, 0.46), (0.4, 0.48), (0.7, 0.47), (0.86, 0.46)]
+# How far the back rises above it: highest over the hips, the head almost as high
+UP = [(-0.84, 0.53), (-0.4, 0.52), (0.0, 0.47), (0.3, 0.45), (0.55, 0.47), (0.86, 0.42)]
+# How far the belly goes below it: deeper near the rump, so the belly stays flat
+DOWN = [(-0.84, 0.5), (-0.6, 0.47), (-0.3, 0.43), (0.0, 0.43), (0.3, 0.45), (0.5, 0.44), (0.7, 0.4), (0.86, 0.36)]
+# The half width: broad hips, full cheeks, then a narrower, rounded muzzle
+WIDE = [(-0.84, 0.61), (-0.5, 0.6), (-0.2, 0.59), (0.1, 0.57), (0.35, 0.52), (0.55, 0.46), (0.72, 0.38), (0.86, 0.3)]
 
 
-def profile(s):
-    """Catmull-Rom through PROFILE, so the outline has no corners."""
-    pts = PROFILE
-    if s <= pts[0][0] or s >= pts[-1][0]:
-        return 0.0
-    for i in range(len(pts) - 1):
-        if pts[i][0] <= s <= pts[i + 1][0]:
-            p0 = pts[max(i - 1, 0)][1]
-            p1 = pts[i][1]
-            p2 = pts[i + 1][1]
-            p3 = pts[min(i + 2, len(pts) - 1)][1]
-            t = (s - pts[i][0]) / (pts[i + 1][0] - pts[i][0])
-            return max(0.0, 0.5 * ((2 * p1) + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t + (-p0 + 3 * p1 - 3 * p2 + p3) * t ** 3))
-    return 0.0
+def curve(points, s):
+    """Catmull-Rom through (s, value) points, flat beyond the first and the last."""
+    if s <= points[0][0]:
+        return points[0][1]
+    if s >= points[-1][0]:
+        return points[-1][1]
+    for i in range(len(points) - 1):
+        if points[i][0] <= s <= points[i + 1][0]:
+            p0 = points[max(i - 1, 0)][1]
+            p1 = points[i][1]
+            p2 = points[i + 1][1]
+            p3 = points[min(i + 2, len(points) - 1)][1]
+            t = (s - points[i][0]) / (points[i + 1][0] - points[i][0])
+            return 0.5 * ((2 * p1) + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t + (-p0 + 3 * p1 - 3 * p2 + p3) * t ** 3)
+    return points[-1][1]
 
 
 def smooth(edge0, edge1, x):
@@ -93,39 +105,36 @@ def smooth(edge0, edge1, x):
     return t * t * (3 - 2 * t)
 
 
-def width(s):
-    """How much wider than round the body is at s: a broad body and rump, full cheeks."""
-    return 1.1 * (1 + 0.1 * (1 - smooth(0.1, 0.75, s))) * (1 + 0.05 * smooth(0.05, -0.35, s))
+def shape(s, dx, dy):
+    """The point of the body at s, in the direction (dx, dy) of its cross-section."""
+    z = (s - S_RUMP) / (S_NOSE - S_RUMP) * 2 - 1
+    # Blunt ends: a blunter rump than face
+    n = 2.6 + 0.4 * smooth(0.1, -0.3, z)
+    rho = max(0.0, 1 - abs(z) ** n) ** (1 / n)
+    # A loaf, not a tube: the body's cross-section is squarer than a circle,
+    # most of all under the flanks; the head stays round
+    loaf = 1 - smooth(0.3, 0.75, s)
+    e = 2 / (2 + (0.8 if dy < 0 else 0.35) * loaf)
+    sx, sy = math.copysign(abs(dx) ** e, dx), math.copysign(abs(dy) ** e, dy)
+    X = sx * rho * curve(WIDE, s)
+    # Full flanks that bulge before they turn under the belly, and full cheeks
+    X *= 1 + 0.04 * (1 - smooth(0.0, 0.65, abs(sy + 0.2))) * loaf
+    X *= 1 + 0.08 * smooth(0.35, 0.5, s) * (1 - smooth(0.62, 0.78, s))
+    Z = curve(CENTRE, s) + sy * rho * (curve(UP, s) if sy > 0 else curve(DOWN, s))
+    return Vector((X, -s, Z))
 
 
 def body_mesh():
-    """A dense sphere wrapped onto the profile: round rump, tapered head, flat belly."""
+    """A dense sphere wrapped onto the shape: z along the body, x and y around it."""
     bpy.ops.mesh.primitive_uv_sphere_add(segments=64, ring_count=48, radius=1)
     mesh = bpy.context.view_layer.objects.active
     mesh.name = "Body"
     for v in mesh.data.vertices:
         x, y, z = v.co
-        # z from -1 (rump pole) to 1 (nose pole) becomes the axial position s
-        s = PROFILE[0][0] + (z + 1) / 2 * (PROFILE[-1][0] - PROFILE[0][0])
+        s = S_RUMP + (z + 1) / 2 * (S_NOSE - S_RUMP)
         ring = math.hypot(x, y)
         dx, dy = (x / ring, y / ring) if ring > 1e-6 else (0.0, 0.0)
-        # A loaf, not a tube: the body's cross-section is squarer than a
-        # circle, most of all under the flanks; the head stays round
-        loaf = 1 - smooth(0.3, 0.75, s)
-        e = 2 / (2 + (0.8 if dy < 0 else 0.35) * loaf)
-        dx, dy = math.copysign(abs(dx) ** e, dx), math.copysign(abs(dy) ** e, dy)
-        r = profile(s)
-        X = dx * r * width(s)
-        up = dy * r
-        # A flat belly and a slightly narrower back
-        up *= 0.62 if up < 0 else 0.9
-        # Full flanks: the lower sides bulge out before they turn under the belly
-        X *= 1 + 0.04 * (1 - smooth(0.0, 0.65, abs(dy + 0.2))) * loaf
-        # The rump sits a little higher, the nose dips; cheeks fill the head
-        up += 0.05 * smooth(0, 0.6, -s)
-        up -= 0.09 * smooth(0.45, 0.8, s)
-        X *= 1 + 0.1 * smooth(0.35, 0.55, s) * (1 - smooth(0.62, 0.76, s))
-        v.co = (X, -s, AXIS + up)
+        v.co = shape(s, dx, dy)
     bpy.ops.object.shade_smooth()
     return mesh
 
@@ -225,6 +234,12 @@ def coat_material(body):
     links.new(remap(xyz.outputs["Y"], -0.6, -0.74), chin.inputs[0])
     links.new(remap(xyz.outputs["Z"], AXIS + 0.02, AXIS - 0.1), chin.inputs[1])
     coat = mix(coat, (0.74, 0.63, 0.5), chin.outputs["Value"])
+    # A lighter, warmer muzzle round the nose, as on the photos
+    muzzle = node("ShaderNodeVectorMath")
+    muzzle.operation = "DISTANCE"
+    links.new(coords.outputs["Object"], muzzle.inputs[0])
+    muzzle.inputs[1].default_value = (0.0, -S_NOSE, curve(CENTRE, S_NOSE) - 0.04)
+    coat = mix(coat, (0.66, 0.54, 0.41), remap(muzzle.outputs["Value"], 0.24, 0.12))
     # The warm tan ring round each eye
     # Mirrored on X only: both eyes, and nothing on the rump
     side = node("ShaderNodeMath")
@@ -238,7 +253,7 @@ def coat_material(body):
     eye.operation = "DISTANCE"
     links.new(mirrored.outputs["Vector"], eye.inputs[0])
     eye.inputs[1].default_value = (EYE.x, EYE.y, EYE.z)
-    coat = mix(coat, (0.5, 0.33, 0.2), remap(eye.outputs["Value"], 0.105, 0.065))
+    coat = mix(coat, (0.52, 0.38, 0.26), remap(eye.outputs["Value"], 0.085, 0.055))
     links.new(coat, bsdf.inputs["Base Color"])
     # Hair grain, for the normal map
     hair = node("ShaderNodeTexNoise", Scale=320.0, Detail=3.0)
@@ -310,10 +325,9 @@ def add(primitive, name, location, scale=(1, 1, 1), rotation=(0, 0, 0), mat=None
     return obj
 
 
-def surface(s, side, lift):
-    """A point on the body at axial position s, on one side, lift above the axis."""
-    r = profile(s)
-    return Vector((side * math.sqrt(max(r * r - lift * lift, 0)) * width(s), -s, AXIS + lift - 0.09 * smooth(0.45, 0.8, s)))
+def surface(s, side, t):
+    """A point on the body at s, on one side, t from -1 (under it) to 1 (on top)."""
+    return shape(s, side * math.sqrt(max(1 - t * t, 0)), t)
 
 
 EYE = Vector((0.0, 0.0, 0.0))
@@ -323,22 +337,29 @@ def details(mats):
     parts = []
     # Eyes: big, round, glossy dark brown, with a large and a small highlight
     for side in (1, -1):
-        p = surface(0.52, side, 0.1)
+        p = surface(0.62, side, 0.32)
         tag = "R" if side > 0 else "L"
-        parts.append(add("uv_sphere", "Eye" + tag, (p.x * 0.95, p.y, p.z), (0.075, 0.085, 0.085), mat=mats["eye"], segments=24, ring_count=14))
-        parts.append(add("uv_sphere", "Eye" + tag + "Shine", (p.x * 1.05, p.y - 0.035, p.z + 0.04), (0.022, 0.022, 0.022), mat=mats["shine"], segments=12, ring_count=8))
-        parts.append(add("uv_sphere", "Eye" + tag + "Glint", (p.x * 1.06, p.y + 0.03, p.z - 0.03), (0.01, 0.01, 0.01), mat=mats["shine"], segments=8, ring_count=6))
-    # Ears: soft grey-pink petals drooping on each side of the head
+        parts.append(add("uv_sphere", "Eye" + tag, (p.x * 0.93, p.y, p.z), (0.055, 0.068, 0.068), mat=mats["eye"], segments=24, ring_count=14))
+        parts.append(add("uv_sphere", "Eye" + tag + "Shine", (p.x * 1.03, p.y - 0.025, p.z + 0.028), (0.016, 0.016, 0.016), mat=mats["shine"], segments=12, ring_count=8))
+        parts.append(add("uv_sphere", "Eye" + tag + "Glint", (p.x * 1.035, p.y + 0.02, p.z - 0.02), (0.008, 0.008, 0.008), mat=mats["shine"], segments=8, ring_count=6))
+    # Ears: soft grey-pink petals that lie on the top corners of the head and
+    # fold over its edge, hanging down the sides, their tips a little back
     for side in (1, -1):
-        p = surface(0.38, side, 0.22)
-        tilt = (math.radians(-12), math.radians(-30 * side), math.radians(38 * side))
-        tag = "R" if side > 0 else "L"
-        parts.append(add("uv_sphere", "Ear" + tag, (p.x * 1.02, p.y + 0.03, p.z + 0.06), (0.018, 0.11, 0.095), tilt, mat=mats["earOuter"], segments=20, ring_count=12))
-        parts.append(add("uv_sphere", "Ear" + tag + "In", (p.x * 1.02 + side * 0.012, p.y + 0.03, p.z + 0.06), (0.008, 0.088, 0.075), tilt, mat=mats["ear"], segments=16, ring_count=10))
+        root = surface(0.44, side, 0.7)
+        tilt = Euler((math.radians(-8), math.radians(54 * side), math.radians(-14 * side)))
+        turn = tilt.to_matrix()
+        out = turn @ Vector((side, 0, 0))
+        normal = turn @ Vector((0, 0, 1))
+        # The guinea pig faces -Y: its left ear is on +X, like the ear.L bone
+        tag = "L" if side > 0 else "R"
+        at = root + out * 0.115 + normal * 0.012
+        parts.append(add("uv_sphere", "Ear" + tag, tuple(at), (0.12, 0.085, 0.013), tuple(tilt), mat=mats["earOuter"], segments=20, ring_count=12))
+        inner = at - normal * 0.007
+        parts.append(add("uv_sphere", "Ear" + tag + "In", tuple(inner), (0.098, 0.066, 0.008), tuple(tilt), mat=mats["ear"], segments=16, ring_count=10))
     # Nose: a soft dark pad with two nostrils, and the split lip under it
-    tip = surface(0.77, 1, 0.0)
-    nose_at = (0, tip.y + 0.004, tip.z + 0.03)
-    parts.append(add("uv_sphere", "Nose", nose_at, (0.045, 0.028, 0.03), mat=mats["nose"], segments=14, ring_count=8))
+    tip = surface(S_NOSE, 1, 0.0)
+    nose_at = (0, tip.y + 0.012, tip.z + 0.02)
+    parts.append(add("uv_sphere", "Nose", nose_at, (0.055, 0.03, 0.04), mat=mats["nose"], segments=14, ring_count=8))
     for side in (1, -1):
         parts.append(add("uv_sphere", "Nostril", (side * 0.018, nose_at[1] - 0.022, nose_at[2] + 0.004), (0.009, 0.006, 0.006), mat=mats["mouth"], segments=8, ring_count=6))
     parts.append(add("cylinder", "Mouth", (0, nose_at[1] + 0.004, nose_at[2] - 0.04), (0.0035, 0.0035, 0.022), mat=mats["mouth"], vertices=6))
@@ -346,7 +367,7 @@ def details(mats):
         lip = add("cylinder", "Mouth", (side * 0.014, nose_at[1] + 0.008, nose_at[2] - 0.062), (0.003, 0.003, 0.016), (0, math.radians(55 * side), 0), mat=mats["mouth"], vertices=6)
         parts.append(lip)
     # Feet: grey-pink pads with small toes and dark claws
-    for name, (x, s) in {"FootFL": (0.19, 0.36), "FootFR": (-0.19, 0.36), "FootBL": (0.24, -0.36), "FootBR": (-0.24, -0.36)}.items():
+    for name, (x, s) in {"FootFL": (0.2, 0.42), "FootFR": (-0.2, 0.42), "FootBL": (0.25, -0.5), "FootBR": (-0.25, -0.5)}.items():
         parts.append(add("uv_sphere", name, (x, -s, 0.032), (0.06, 0.085, 0.034), mat=mats["foot"], segments=14, ring_count=8))
         toes = 4 if s > 0 else 3
         for i in range(toes):
@@ -355,7 +376,7 @@ def details(mats):
             parts.append(add("uv_sphere", name + "Claw", (x + dx, -s - 0.094, 0.016), (0.007, 0.012, 0.006), mat=mats["claw"], segments=6, ring_count=4))
     # Whiskers: long, fine, four a side, from the muzzle outwards
     for side in (1, -1):
-        root = surface(0.71, side, -0.03)
+        root = surface(0.8, side, -0.15)
         for i in range(4):
             angle = math.radians(-18 + i * 12)
             length = 0.3
@@ -385,14 +406,14 @@ def armature():
         bones[name] = b
 
     bone("root", (0, 0, 0), (0, 0, 0.12))
-    bone("body", (0, 0.45, AXIS), (0, -0.3, AXIS), "root")
+    bone("body", (0, 0.62, AXIS), (0, -0.3, AXIS), "root")
     bone("head", (0, -0.3, AXIS), (0, -0.8, AXIS - 0.05), "body")
-    bone("ear.L", (0.17, -0.36, AXIS + 0.22), (0.2, -0.32, AXIS + 0.34), "head")
-    bone("ear.R", (-0.17, -0.36, AXIS + 0.22), (-0.2, -0.32, AXIS + 0.34), "head")
-    bone("leg.FL", (0.19, -0.36, 0.22), (0.19, -0.36, 0.0), "body")
-    bone("leg.FR", (-0.19, -0.36, 0.22), (-0.19, -0.36, 0.0), "body")
-    bone("leg.BL", (0.24, 0.36, 0.22), (0.24, 0.36, 0.0), "body")
-    bone("leg.BR", (-0.24, 0.36, 0.22), (-0.24, 0.36, 0.0), "body")
+    bone("ear.L", (0.2, -0.42, 0.68), (0.23, -0.38, 0.8), "head")
+    bone("ear.R", (-0.2, -0.42, 0.68), (-0.23, -0.38, 0.8), "head")
+    bone("leg.FL", (0.2, -0.42, 0.22), (0.2, -0.42, 0.0), "body")
+    bone("leg.FR", (-0.2, -0.42, 0.22), (-0.2, -0.42, 0.0), "body")
+    bone("leg.BL", (0.25, 0.5, 0.22), (0.25, 0.5, 0.0), "body")
+    bone("leg.BR", (-0.25, 0.5, 0.22), (-0.25, 0.5, 0.0), "body")
     bpy.ops.object.mode_set(mode="OBJECT")
     return rig
 
@@ -512,8 +533,13 @@ def animations(rig):
 
 
 def preview(path):
-    """A quick studio render, to look at the model without the game."""
+    """A quick studio render, to look at the model without the game, at rest."""
     scene = bpy.context.scene
+    # Every action sits on the NLA and they would all play at once: mute them
+    for obj in scene.objects:
+        if obj.animation_data:
+            for track in obj.animation_data.nla_tracks:
+                track.mute = True
     scene.render.engine = "BLENDER_EEVEE_NEXT" if "BLENDER_EEVEE_NEXT" in [e.identifier for e in bpy.types.RenderSettings.bl_rna.properties["engine"].enum_items] else "BLENDER_EEVEE"
     scene.render.resolution_x, scene.render.resolution_y = 960, 640
     scene.render.film_transparent = False
@@ -528,7 +554,9 @@ def preview(path):
     bpy.ops.mesh.primitive_plane_add(size=8, location=(0, 0, 0))
     floor = bpy.context.view_layer.objects.active
     floor.data.materials.append(material("Floor", (0.8, 0.9, 0.95), 0.9))
-    bpy.ops.object.camera_add(location=(2.1, -2.3, 1.25))
+    # GUINEA_CAMERA="x,y,z" moves the camera, to compare a side or front view with a photo
+    eye = tuple(float(v) for v in os.environ.get("GUINEA_CAMERA", "2.1,-2.3,1.25").split(","))
+    bpy.ops.object.camera_add(location=eye)
     camera = bpy.context.view_layer.objects.active
     direction = Vector((0, -0.1, 0.36)) - camera.location
     camera.rotation_euler = direction.to_track_quat("-Z", "Y").to_euler()
@@ -544,7 +572,7 @@ def main():
         "eye": material("Eye", (0.07, 0.04, 0.03), 0.04, clearcoat=1.0),
         "shine": material("Shine", (1, 1, 1), 0.15),
         "ear": material("Ear", (0.84, 0.66, 0.66), 0.7),
-        "earOuter": material("EarOuter", (0.56, 0.47, 0.46), 0.8),
+        "earOuter": material("EarOuter", (0.42, 0.33, 0.27), 0.8),
         "nose": material("Nose", (0.5, 0.36, 0.34), 0.45),
         "mouth": material("Mouth", (0.2, 0.13, 0.12), 0.6),
         "foot": material("Foot", (0.64, 0.53, 0.5), 0.7),
@@ -552,7 +580,7 @@ def main():
         "whisker": material("Whisker", (0.85, 0.83, 0.8), 0.5),
     }
     body = body_mesh()
-    EYE.xyz = surface(0.52, 1, 0.1)
+    EYE.xyz = surface(0.62, 1, 0.32)
     parts = details(mats)
     coat_material(body)
     rig = armature()
