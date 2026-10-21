@@ -526,8 +526,8 @@ html .md-footer-meta.md-typeset .md-footer-cloudity a:not(:focus, :hover) {
    hops on each tap so a reader knows the tap counted. */
 .md-footer-cloudity .guinea-egg {
   display: inline-block;
-  width: 26px;
-  height: 18px;
+  width: 32px;
+  height: 17px;
   margin-left: 0.4rem;
   padding: 0;
   border: 0;
@@ -539,10 +539,13 @@ html .md-footer-meta.md-typeset .md-footer-cloudity a:not(:focus, :hover) {
   -webkit-tap-highlight-color: transparent;
 }
 
-.md-footer-cloudity .guinea-egg svg {
+.md-footer-cloudity .guinea-egg img {
   display: block;
   width: 100%;
   height: 100%;
+  object-fit: contain;
+  /* A brown guinea pig on a dark footer: a soft light rim so it shows */
+  filter: drop-shadow(0 0 1.5px rgba(255, 255, 255, 0.7));
 }
 
 .md-footer-cloudity .guinea-egg:hover,
