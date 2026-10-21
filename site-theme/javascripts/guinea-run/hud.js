@@ -14,19 +14,11 @@
  */
 import { WORLDS } from "./core/story.js";
 
-/** The guinea pig as a flat drawing, the same as the one in the footer. */
-export const GUINEA_SVG =
-  '<svg viewBox="0 0 64 40" aria-hidden="true" focusable="false">' +
-  '<ellipse cx="18" cy="37" rx="4" ry="2" fill="#e2ad9c"/><ellipse cx="42" cy="37" rx="4" ry="2" fill="#e2ad9c"/>' +
-  '<ellipse cx="29" cy="24" rx="24" ry="14" fill="#c27434"/>' +
-  '<ellipse cx="20" cy="23" rx="10" ry="13" fill="#f3ede3"/>' +
-  '<ellipse cx="9" cy="22" rx="7" ry="9" fill="#2b1e17"/>' +
-  '<ellipse cx="50" cy="25" rx="12" ry="10.5" fill="#c27434"/>' +
-  '<path d="M52 15 Q57 22 61 27 L58 30 Q53 24 50 16 Z" fill="#f3ede3"/>' +
-  '<ellipse cx="45" cy="15.5" rx="5" ry="3.2" fill="#c08e7c" transform="rotate(-25 45 15.5)"/>' +
-  '<circle cx="53" cy="22" r="2.3" fill="#080608"/><circle cx="53.7" cy="21.3" r="0.7" fill="#ffffff"/>' +
-  '<circle cx="61" cy="28" r="1.6" fill="#a8646f"/>' +
-  "</svg>";
+/**
+ * The guinea pig of the cards: a picture of the 3D model
+ * (scripts/blender/guinea-pig.py with GUINEA_PORTRAIT=1), set by guinea-run.css.
+ */
+const GUINEA_ART = '<span class="gr-pig" aria-hidden="true"></span>';
 
 export const BADGE_NAMES = {
   1: "sfdx-hardis Contributor Basics",
@@ -35,7 +27,8 @@ export const BADGE_NAMES = {
 };
 
 const CAST = {
-  mariia: { name: "Mariia Pyvovarchuk", initials: "MP", color: "#9050E9" },
+  // face: a cartoon portrait in theme/images, set by guinea-run.css
+  mariia: { name: "Mariia Pyvovarchuk", initials: "MP", color: "#9050E9", face: true },
   romain: { name: "Romain Panda", initials: "RP", color: "#06A59A" },
   victor: { name: "Victor Squeeker", initials: "VS", color: "#DD7A01" },
   you: { name: "You", initials: "US", color: "#0176D3" }
@@ -403,7 +396,7 @@ export function createHud(t, options) {
     result(result) {
       const world = result.world;
       screen(result.ok ? "done" : "failed", result.ok ? t("worldDone") : t("worldFailed"), (body, footer) => {
-        element("div", "gr-logo" + (result.ok ? " gr-logo--happy" : " gr-logo--sad"), body).innerHTML = GUINEA_SVG;
+        element("div", "gr-logo" + (result.ok ? " gr-logo--happy" : " gr-logo--sad"), body).innerHTML = GUINEA_ART;
         if (result.ok) {
           element("p", "gr-result-stars", body, starsText(result.stars));
           element("p", "gr-score", body, t("score") + ": " + result.score);
@@ -435,7 +428,7 @@ export function createHud(t, options) {
     /** The end of the game, after world 8. */
     credits(earned, missed) {
       screen("credits", t("creditsTitle"), (body, footer) => {
-        element("div", "gr-logo gr-logo--happy", body).innerHTML = GUINEA_SVG;
+        element("div", "gr-logo gr-logo--happy", body).innerHTML = GUINEA_ART;
         element("p", "", body, t("creditsText"));
         badgesRow(body, earned);
         if (missed) {
@@ -580,8 +573,11 @@ export function createHud(t, options) {
     chat(who, text, ms) {
       const person = CAST[who] || CAST.you;
       const bubble = element("div", "gr-bubble", chat);
-      const avatar = element("span", "gr-avatar", bubble, person.initials);
-      avatar.style.background = person.color;
+      const avatar = element("span", "gr-avatar", bubble, person.face ? "" : person.initials);
+      avatar.style.backgroundColor = person.color;
+      if (person.face) {
+        avatar.classList.add("gr-avatar--" + who);
+      }
       const content = element("div", "", bubble);
       element("strong", "", content, person === CAST.you ? t("castYou") : person.name);
       element("span", "", content, text);

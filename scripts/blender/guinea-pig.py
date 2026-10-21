@@ -541,8 +541,11 @@ def preview(path):
             for track in obj.animation_data.nla_tracks:
                 track.mute = True
     scene.render.engine = "BLENDER_EEVEE_NEXT" if "BLENDER_EEVEE_NEXT" in [e.identifier for e in bpy.types.RenderSettings.bl_rna.properties["engine"].enum_items] else "BLENDER_EEVEE"
-    scene.render.resolution_x, scene.render.resolution_y = 960, 640
-    scene.render.film_transparent = False
+    # GUINEA_PORTRAIT=1: the picture of the game's cards and the site footer,
+    # on a transparent background with no floor
+    portrait = os.environ.get("GUINEA_PORTRAIT") == "1"
+    scene.render.resolution_x, scene.render.resolution_y = (900, 600) if portrait else (960, 640)
+    scene.render.film_transparent = portrait
     world = bpy.data.worlds.new("World")
     world.use_nodes = True
     world.node_tree.nodes["Background"].inputs[0].default_value = (0.75, 0.88, 1, 1)
@@ -551,9 +554,16 @@ def preview(path):
     sun = bpy.context.view_layer.objects.active
     sun.data.energy = 4
     sun.rotation_euler = (math.radians(45), math.radians(10), math.radians(35))
-    bpy.ops.mesh.primitive_plane_add(size=8, location=(0, 0, 0))
-    floor = bpy.context.view_layer.objects.active
-    floor.data.materials.append(material("Floor", (0.8, 0.9, 0.95), 0.9))
+    if portrait:
+        # A soft key light from the camera's side, so the face is not in shadow
+        bpy.ops.object.light_add(type="SUN", location=(-3, -3, 4))
+        key = bpy.context.view_layer.objects.active
+        key.data.energy = 3
+        key.rotation_euler = (Vector((0, 0, 0.4)) - key.location).to_track_quat("-Z", "Y").to_euler()
+    else:
+        bpy.ops.mesh.primitive_plane_add(size=8, location=(0, 0, 0))
+        floor = bpy.context.view_layer.objects.active
+        floor.data.materials.append(material("Floor", (0.8, 0.9, 0.95), 0.9))
     # GUINEA_CAMERA="x,y,z" moves the camera, to compare a side or front view with a photo
     eye = tuple(float(v) for v in os.environ.get("GUINEA_CAMERA", "2.1,-2.3,1.25").split(","))
     bpy.ops.object.camera_add(location=eye)

@@ -381,18 +381,28 @@ html.guinea-run-open body {
   line-height: 1.1 !important;
 }
 
-.guinea-run .gr-logo svg {
-  width: 100px;
-  height: 63px;
+/* The guinea pig of the cards: a picture of the 3D model */
+.guinea-run .gr-logo .gr-pig {
+  display: block;
+  width: 132px;
+  height: 69px;
+  margin: 0 auto;
+  background: url("../../images/guinea-pig.webp") center / contain no-repeat;
 }
 
-.guinea-run .gr-logo--happy svg {
-  animation: gr-hop 0.6s ease-in-out infinite alternate;
+/* A world done: it popcorns like crazy, the way a happy guinea pig does */
+.guinea-run .gr-logo--happy {
+  padding-top: 34px;
 }
 
-.guinea-run .gr-logo--sad svg {
-  transform: rotate(-12deg);
-  filter: grayscale(0.4);
+.guinea-run .gr-logo--happy .gr-pig {
+  transform-origin: 50% 100%;
+  animation: gr-popcorn 1.5s cubic-bezier(0.3, 0, 0.35, 1) infinite;
+}
+
+.guinea-run .gr-logo--sad .gr-pig {
+  transform: rotate(-8deg);
+  filter: grayscale(0.5);
 }
 
 .guinea-run .gr-rule {
@@ -731,6 +741,14 @@ html.guinea-run-open body {
   font-weight: 800;
 }
 
+/* A member of the cast with a cartoon face instead of initials */
+.guinea-run .gr-avatar--mariia {
+  flex-basis: 38px;
+  width: 38px;
+  height: 38px;
+  background: url("../../images/mariia.svg") center / cover no-repeat;
+}
+
 /* Victor's note */
 .guinea-run .gr-note {
   position: absolute;
@@ -1042,13 +1060,58 @@ html.guinea-run-open body {
   }
 }
 
-@keyframes gr-hop {
-  from {
-    transform: translateY(0);
+@keyframes gr-popcorn {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg) scale(1, 1);
   }
 
-  to {
-    transform: translateY(-8px);
+  6% {
+    transform: translateY(0) rotate(0deg) scale(1.08, 0.88);
+  }
+
+  16% {
+    transform: translateY(-32px) rotate(-16deg) scale(1, 1);
+  }
+
+  24% {
+    transform: translateY(-34px) rotate(12deg) scale(-1, 1);
+  }
+
+  32% {
+    transform: translateY(0) rotate(0deg) scale(1, 1);
+  }
+
+  36% {
+    transform: translateY(0) rotate(0deg) scale(1.1, 0.86);
+  }
+
+  46% {
+    transform: translateY(-18px) rotate(10deg) scale(1, 1);
+  }
+
+  54% {
+    transform: translateY(0) rotate(0deg) scale(1, 1);
+  }
+
+  60% {
+    transform: translateY(0) rotate(0deg) scale(1.08, 0.88);
+  }
+
+  70% {
+    transform: translateY(-40px) rotate(-20deg) scale(-1, 1);
+  }
+
+  78% {
+    transform: translateY(-26px) rotate(18deg) scale(1, 1);
+  }
+
+  86% {
+    transform: translateY(0) rotate(0deg) scale(1, 1);
+  }
+
+  90% {
+    transform: translateY(0) rotate(0deg) scale(1.1, 0.86);
   }
 }
 
