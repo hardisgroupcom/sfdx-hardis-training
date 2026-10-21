@@ -3,19 +3,19 @@
        bubbles: long wavy honey hair with a side parting, brown eyes, a small
        smile, a sage green top. -->
   <defs>
-    <clipPath id="round">
+    <clipPath id="mariia-round">
       <circle cx="50" cy="50" r="50"/>
     </clipPath>
-    <linearGradient id="hair" x1="0" y1="0" x2="0" y2="1">
+    <linearGradient id="mariia-hair" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#bf7c4b"/>
       <stop offset="0.5" stop-color="#d39a62"/>
       <stop offset="1" stop-color="#e6b77f"/>
     </linearGradient>
   </defs>
-  <g clip-path="url(#round)">
+  <g clip-path="url(#mariia-round)">
     <rect width="100" height="100" fill="#e9dcfb"/>
     <!-- The hair behind the head and over the shoulders -->
-    <path d="M25 32 C17 46 23 58 16 70 C11 80 17 90 12 100 L88 100 C84 90 89 80 84 70 C78 60 84 48 76 32 C70 14 56 9 48 10 C36 11 28 19 25 32 Z" fill="url(#hair)"/>
+    <path d="M25 32 C17 46 23 58 16 70 C11 80 17 90 12 100 L88 100 C84 90 89 80 84 70 C78 60 84 48 76 32 C70 14 56 9 48 10 C36 11 28 19 25 32 Z" fill="url(#mariia-hair)"/>
     <!-- Neck and the sage green top -->
     <path d="M42 66 L58 66 L59 80 L41 80 Z" fill="#efc6ad"/>
     <path d="M16 100 C18 86 30 79 42 77 C46 82 54 82 58 77 C70 79 82 86 84 100 Z" fill="#a7b98b"/>
