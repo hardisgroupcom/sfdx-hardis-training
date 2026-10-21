@@ -75,8 +75,8 @@ AXIS = 0.38  # the height of the flanks, for the coat shading and the rig
 
 # The middle of the cross-section: the nose sits halfway up the head
 CENTRE = [(-0.84, 0.44), (-0.4, 0.45), (0.0, 0.46), (0.4, 0.48), (0.7, 0.47), (0.86, 0.46)]
-# How far the back rises above it: highest over the hips, the head almost as high
-UP = [(-0.84, 0.53), (-0.4, 0.52), (0.0, 0.47), (0.3, 0.45), (0.55, 0.47), (0.86, 0.42)]
+# How far the back rises above it: a round back, highest over the middle, the head a little lower
+UP = [(-0.84, 0.5), (-0.5, 0.54), (-0.2, 0.56), (0.1, 0.53), (0.35, 0.475), (0.55, 0.45), (0.86, 0.42)]
 # How far the belly goes below it: deeper near the rump, so the belly stays flat
 DOWN = [(-0.84, 0.5), (-0.6, 0.47), (-0.3, 0.43), (0.0, 0.43), (0.3, 0.45), (0.5, 0.44), (0.7, 0.4), (0.86, 0.36)]
 # The half width: broad hips, full cheeks, then a narrower, rounded muzzle
@@ -108,8 +108,8 @@ def smooth(edge0, edge1, x):
 def shape(s, dx, dy):
     """The point of the body at s, in the direction (dx, dy) of its cross-section."""
     z = (s - S_RUMP) / (S_NOSE - S_RUMP) * 2 - 1
-    # Blunt ends: a blunter rump than face
-    n = 2.6 + 0.4 * smooth(0.1, -0.3, z)
+    # Blunt ends: a round rump, a blunt face
+    n = 2.6 - 0.15 * smooth(0.1, -0.3, z)
     rho = max(0.0, 1 - abs(z) ** n) ** (1 / n)
     # A loaf, not a tube: the body's cross-section is squarer than a circle,
     # most of all under the flanks; the head stays round
