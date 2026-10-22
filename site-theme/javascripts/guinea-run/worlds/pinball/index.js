@@ -59,6 +59,7 @@ const DMD_WORDS = {
   pbBonusXUp: "dmdBonusX",
   pbHotfix: "dmdHotfix",
   pbQualityGate: "dmdQualityGate",
+  pbQuickDeploy: "dmdQuickDeploy",
   pbReplay: "dmdReplay",
   pbMatchWon: "dmdMatch",
   pbBackupRestored: "dmdBackup"
@@ -134,6 +135,34 @@ export const TEXTS = {
     pbReplay: "Replay! Extra ball",
     pbQualityGate: "Quality gate passed: bonus x{{n}} +{{points}}",
     dmdQualityGate: "Quality gate",
+    pbFieldTerminal: "sf hardis",
+    pbFieldValidate: "Validate",
+    pbCmdBackup: "Backup taken: ball save +{{points}}",
+    pbCmdSave: "Work saved: extra ball lit at the scoop +{{points}}",
+    pbCmdDeploy: "Smart deployment: lock lit +{{points}}",
+    pbCmdDoc: "Documentation generated: bonus x{{n}} +{{points}}",
+    pbCmdLicenses: "Unused licenses found, money saved +{{points}}",
+    pbCmdAudit: "Audit trail read: Victor's note lit +{{points}}",
+    pbCmdNew: "New User Story: a mission starts +{{points}}",
+    pbCmdMonitor: "Monitoring on: Rollback lit +{{points}}",
+    pbCmdClean: "References cleaned: Recent Changes reset +{{points}}",
+    pbCmdApi: "API versions checked +{{points}}",
+    pbCmdLegacy: "Legacy API calls found before they break +{{points}}",
+    pbRaid: "An admin is changing production by hand! Hit him before his change set lands.",
+    pbRaidCaught: "Caught by the monitoring backup +{{points}}",
+    pbRaidMissed: "A change in production that is not in git: the promotion is lost. Retrofit it at the Pull Request scoop.",
+    pbRetrofitDone: "Retrofitted through a Pull Request: the promotion is back +{{points}}",
+    pbFlowHit: "Monster Flow {{n}}/3 +{{points}}",
+    pbFlowRefactored: "The monster Flow is refactored into Apex +{{points}}",
+    pbValidating: "Validating the deployment...",
+    pbValidated: "Validated: Quick deploy on the production ramp!",
+    pbQuickDeploy: "Quick deploy! Everything scores double +{{points}}",
+    dmdRaid: "Change in prod!",
+    dmdCaught: "Caught!",
+    dmdRefactored: "Refactored",
+    dmdValidating: "Validating...",
+    dmdQuickLit: "Quick deploy lit",
+    dmdQuickDeploy: "Quick deploy x2",
     pbMatchWon: "Match! One more ball",
     dmdReplay: "Replay",
     dmdMatch: "Match",
@@ -326,6 +355,34 @@ export const TEXTS = {
     pbReplay: "Replay ! Bille en plus",
     pbQualityGate: "Quality gate passé : bonus x{{n}} +{{points}}",
     dmdQualityGate: "Quality gate",
+    pbFieldTerminal: "sf hardis",
+    pbFieldValidate: "Valider",
+    pbCmdBackup: "Backup fait : bille sauvée +{{points}}",
+    pbCmdSave: "Travail enregistré : bille en plus allumée au trou +{{points}}",
+    pbCmdDeploy: "Déploiement intelligent : verrou allumé +{{points}}",
+    pbCmdDoc: "Documentation générée : bonus x{{n}} +{{points}}",
+    pbCmdLicenses: "Licences inutilisées trouvées, de l'argent économisé +{{points}}",
+    pbCmdAudit: "Audit trail lu : note de Victor allumée +{{points}}",
+    pbCmdNew: "Nouvelle User Story : une mission commence +{{points}}",
+    pbCmdMonitor: "Monitoring en route : Rollback allumé +{{points}}",
+    pbCmdClean: "Références nettoyées : modifications récentes remises +{{points}}",
+    pbCmdApi: "Versions d'API vérifiées +{{points}}",
+    pbCmdLegacy: "Appels d'API obsolètes trouvés avant qu'ils ne cassent +{{points}}",
+    pbRaid: "Un admin modifie la production à la main ! Touchez-le avant que son change set n'arrive.",
+    pbRaidCaught: "Attrapé par le backup du monitoring +{{points}}",
+    pbRaidMissed: "Une modification en production qui n'est pas dans git : la promotion est perdue. Faites le retrofit au trou Pull Request.",
+    pbRetrofitDone: "Retrofit par une Pull Request : la promotion revient +{{points}}",
+    pbFlowHit: "Flow monstre {{n}}/3 +{{points}}",
+    pbFlowRefactored: "Le Flow monstre est refactoré en Apex +{{points}}",
+    pbValidating: "Validation du déploiement...",
+    pbValidated: "Validé : Quick deploy sur la rampe production !",
+    pbQuickDeploy: "Quick deploy ! Tout compte double +{{points}}",
+    dmdRaid: "Modif en prod !",
+    dmdCaught: "Attrapé !",
+    dmdRefactored: "Refactoré",
+    dmdValidating: "Validation...",
+    dmdQuickLit: "Quick deploy allumé",
+    dmdQuickDeploy: "Quick deploy x2",
     pbMatchWon: "Match ! Une bille de plus",
     dmdReplay: "Replay",
     dmdMatch: "Match",
@@ -543,6 +600,31 @@ export function createWorld(ctx) {
           return;
         case "quality":
           view.pushQuality(data);
+          return;
+        case "terminal":
+          // The command typed on the display, then what it did
+          view.terminal();
+          dmd.flash(data.cmd, "", 2.8, true);
+          return;
+        case "flow":
+          view.flow(data);
+          if (data === "apex") {
+            view.show(1.6);
+            dmd.flash(t("dmdRefactored"), "", 2);
+          }
+          return;
+        case "validate":
+          view.validate();
+          dmd.flash(t(data === "start" ? "dmdValidating" : "dmdQuickLit"), "", data === "start" ? 3 : 2.2);
+          return;
+        case "raid":
+          if (data === "start") {
+            view.show(0.8);
+            dmd.flash(t("dmdRaid"), "", 2.5);
+          } else if (data === "caught") {
+            dmd.flash(t("dmdCaught"), "", 2);
+            celebrate(50);
+          }
           return;
         case "spinner":
           view.spin(data);

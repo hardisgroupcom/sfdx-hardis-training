@@ -387,6 +387,62 @@ export function paintSign(THREE, text, color) {
   return texture(THREE, canvas, 2);
 }
 
+/** The monster Flow disc: a tangle of Flow arrows, or, once refactored, the Apex mark. */
+export function paintFlow(THREE, apex) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 256;
+  canvas.height = 256;
+  const c = canvas.getContext("2d");
+  const g = c.createRadialGradient(128, 128, 10, 128, 128, 128);
+  g.addColorStop(0, apex ? "#5ab0ff" : "#ffb347");
+  g.addColorStop(1, apex ? "#0176d3" : "#c2410c");
+  c.fillStyle = g;
+  c.beginPath();
+  c.arc(128, 128, 126, 0, Math.PI * 2);
+  c.fill();
+  if (apex) {
+    glyph(c, "apex", 128, 128, 120, "#ffffff");
+  } else {
+    // A spiral of Flow elements, the monster an admin built
+    c.strokeStyle = "rgba(255,255,255,0.85)";
+    c.lineWidth = 7;
+    c.beginPath();
+    for (let a = 0; a < Math.PI * 6; a += 0.1) {
+      const r = 10 + a * 6;
+      const x = 128 + Math.cos(a) * r;
+      const y = 128 + Math.sin(a) * r;
+      if (a === 0) {
+        c.moveTo(x, y);
+      } else {
+        c.lineTo(x, y);
+      }
+    }
+    c.stroke();
+    glyph(c, "flow", 128, 128, 70, "#ffffff");
+  }
+  return texture(THREE, canvas, 1);
+}
+
+/** The screen of the sf hardis terminal: a prompt waiting. */
+export function paintTerminal(THREE) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 256;
+  canvas.height = 160;
+  const c = canvas.getContext("2d");
+  rounded(c, 4, 4, 248, 152, 18);
+  c.fillStyle = "#0b1220";
+  c.fill();
+  c.lineWidth = 6;
+  c.strokeStyle = "#9aa7b5";
+  c.stroke();
+  c.fillStyle = "#45c65a";
+  c.font = "700 34px 'Courier New', monospace";
+  c.textBaseline = "middle";
+  c.fillText("$ sf hardis", 22, 62);
+  c.fillText(">_", 22, 112);
+  return texture(THREE, canvas, 1);
+}
+
 /** The cap of a pop bumper: the Apex trigger mark on a bright dome. */
 export function paintBumperCap(THREE, color) {
   const canvas = document.createElement("canvas");

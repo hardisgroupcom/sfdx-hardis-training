@@ -29,6 +29,29 @@ const NOTE_LIFE = 25;
 const REPLAYS = [5000000, 25000000, 75000000, 150000000, 300000000];
 // A rollover seen again within this is the same ball on the same switch
 const ROLLOVER_GAP = 0.35;
+// The sf hardis terminal: real commands, each with what it does to the table
+const COMMANDS = [
+  { cmd: "hardis:org:monitor:backup", key: "pbCmdBackup", effect: "save" },
+  { cmd: "hardis:work:save", key: "pbCmdSave", effect: "extra" },
+  { cmd: "hardis:project:deploy:smart", key: "pbCmdDeploy", effect: "lock" },
+  { cmd: "hardis:doc:project2markdown", key: "pbCmdDoc", effect: "bonusX" },
+  { cmd: "hardis:org:diagnose:unusedlicenses", key: "pbCmdLicenses", points: 250000 },
+  { cmd: "hardis:org:diagnose:audittrail", key: "pbCmdAudit", effect: "note" },
+  { cmd: "hardis:work:new", key: "pbCmdNew", effect: "mission" },
+  { cmd: "hardis:org:monitor:all", key: "pbCmdMonitor", effect: "kickback" },
+  { cmd: "hardis:project:clean:references", key: "pbCmdClean", effect: "drops" },
+  { cmd: "hardis:project:audit:apiversion", key: "pbCmdApi", points: 150000 },
+  { cmd: "hardis:org:diagnose:legacyapi", key: "pbCmdLegacy", points: 200000 }
+];
+const TERMINAL_HOLD = 2.8;
+// An admin in production: a raid now and then, and the time to catch him
+const RAID_FIRST = 45;
+const RAID_EVERY = 60;
+const RAID_TIME = 15;
+// Validate, then Quick deploy: the check runs, then the production ramp stays open this long
+const VALIDATE_S = 3;
+const QUICK_S = 12;
+const DOUBLE_S = 20;
 const MAJOR = ["integration", "uat", "preprod", "orbitRight", "production"];
 // The light modes: off, on, slow blink, fast blink
 export const OFF = 0;
@@ -76,6 +99,11 @@ export function newState() {
     tilted: false,
     smHits: 0,
     replayNext: 0,
+    flowHits: 0,
+    flowDone: false,
+    retrofit: false,
+    lostPromo: 0,
+    lastCommand: -1,
     smDownUntil: 0,
     over: false
   };
@@ -87,7 +115,25 @@ export function createRules(table, out, random) {
   let s = newState();
   // Kicks vary a little, as real coils do: no shot repeats itself forever
   physics.setJitter(() => (random() - 0.5) * 0.14);
-  const rt = { pending: [], scoop: null, release: null, hotfix: null, dropsResetAt: 0, nextBallAt: 0, ending: false, served: false, laneAt: [-1, -1, -1], matched: false, overAt: 0 };
+  const rt = {
+    pending: [],
+    scoop: null,
+    release: null,
+    hotfix: null,
+    terminal: null,
+    raid: null,
+    raidAt: RAID_FIRST,
+    validating: 0,
+    quickUntil: 0,
+    doubleUntil: 0,
+    dropsResetAt: 0,
+    nextBallAt: 0,
+    ending: false,
+    served: false,
+    laneAt: [-1, -1, -1],
+    matched: false,
+    overAt: 0
+  };
 
   // The lights the view draws: the state lights them, a mission lights over them
   const lights = table.lights.map((l) => ({ id: l.id, mode: OFF, color: l.color, base: l.color }));
@@ -144,7 +190,8 @@ export function createRules(table, out, random) {
   }
 
   function award(points, key, vars) {
-    const value = Math.round(points * levelMult());
+    // A Quick deploy doubles everything for a while
+    const value = Math.round(points * levelMult() * (s.clock < rt.doubleUntil ? 2 : 1));
     s.score += value;
     if (key) {
       out.say("toast", key, Object.assign({ points: value }, vars || {}));
@@ -216,6 +263,9 @@ export function createRules(table, out, random) {
 
   function endBall() {
     rt.ending = true;
+    endRaid(false);
+    rt.validating = 0;
+    rt.quickUntil = 0;
     if (s.mission) {
       endMission(false);
     }
@@ -251,6 +301,11 @@ export function createRules(table, out, random) {
     rt.ending = false;
     s.stats = { bumpers: 0, ramps: 0, targets: 0, missions: 0 };
     s.bonusX = 1;
+    // The monster Flow is back for the new ball
+    s.flowHits = 0;
+    s.flowDone = false;
+    parts.flow.enabled = true;
+    out.event("flow", "spin");
     s.tilt = 0;
     s.tilted = false;
     s.combo = 0;
@@ -468,6 +523,14 @@ export function createRules(table, out, random) {
   function scoopEnter(ball) {
     award(15000, "");
     shot("scoop");
+    // A change made by hand in production, retrofitted through a Pull Request
+    if (s.retrofit) {
+      s.retrofit = false;
+      s.promo = Math.max(s.promo, s.lostPromo);
+      s.lostPromo = 0;
+      award(100000, "pbRetrofitDone");
+      out.sound("pbSave");
+    }
     // Release day once the ten are done; otherwise a mission, picked with the flippers while the ball waits
     if (!s.mission && !s.mb && !rt.ending) {
       if (allDone()) {
@@ -523,9 +586,6 @@ export function createRules(table, out, random) {
         cross(tag, e);
         return;
       case "ramp":
-        if (tag === "production" && !s.productionForced && !(s.mb && s.mb.superLit)) {
-          s.promo = 0;
-        }
         return;
       case "rampDone":
         rampDone(tag, e);
@@ -535,6 +595,13 @@ export function createRules(table, out, random) {
       case "enter":
         if (tag === "scoop") {
           scoopEnter(e.ball);
+        } else if (tag === "terminal") {
+          award(20000, "");
+          shot("terminal");
+          rt.terminal = { ball: e.ball, until: s.clock + TERMINAL_HOLD };
+          runCommand();
+        } else if (tag === "flow") {
+          flowEnter();
         } else if (tag === "hotfix") {
           // A hotfix goes straight round the loop to the left inlane
           award(50000, "pbHotfix");
@@ -632,10 +699,24 @@ export function createRules(table, out, random) {
         }
         award(25000, "pbQualityGate", { n: s.bonusX });
       }
-    } else if (tag.startsWith("admin")) {
+    } else if (tag === "validate") {
       award(5000, "");
       out.sound("pbTarget");
-      shot("admin", Number(tag.slice(5)));
+      shot("validate");
+      // The check runs; once green, the production ramp waits for a Quick deploy
+      if (!rt.validating && s.clock >= rt.quickUntil) {
+        rt.validating = s.clock + VALIDATE_S;
+        out.event("validate", "start");
+        out.say("toast", "pbValidating", {}, "good");
+      }
+    } else if (tag.startsWith("admin")) {
+      const i = Number(tag.slice(5));
+      award(5000, "");
+      out.sound("pbTarget");
+      shot("admin", i);
+      if (rt.raid && rt.raid.i === i) {
+        endRaid(true);
+      }
     } else if (tag === "rabbit") {
       award(15000, "");
       out.sound("pbBumper");
@@ -774,6 +855,19 @@ export function createRules(table, out, random) {
       promotion(tag);
     } else if (tag === "production") {
       s.stats.ramps++;
+      // The promotion is spent once the ramp is made, never on the way up: a
+      // ball too slow for it rolls back through the gate, never in front of it
+      if (s.promo >= 3 && !s.productionForced && !(s.mb && s.mb.superLit) && s.clock >= rt.quickUntil) {
+        s.promo = 0;
+      }
+      if (s.clock < rt.quickUntil) {
+        // Validated, then deployed in no time: everything scores double for a while
+        rt.quickUntil = 0;
+        rt.doubleUntil = s.clock + DOUBLE_S;
+        award(200000, "pbQuickDeploy");
+        out.event("jackpot", false);
+        out.sound("pbJackpot");
+      }
       award(100000, "pbProduction");
       out.sound("pbRamp");
       shot("production");
@@ -828,6 +922,14 @@ export function createRules(table, out, random) {
     }
     setLight("kickback", s.kickback ? ON : OFF);
     setLight("shot-hotfix", BLINK);
+    setLight("shot-terminal", rt.terminal ? FAST : BLINK);
+    setLight("validate", rt.validating ? FAST : s.clock < rt.quickUntil ? ON : BLINK);
+    if (s.clock < rt.quickUntil) {
+      setLight("shot-production", FAST, 0x45c65a);
+    }
+    if (s.retrofit) {
+      setLight("shot-scoop", FAST, 0xea001e);
+    }
     // Shoot again: blinking while the ball is saved, lit while an extra ball waits
     setLight("ballSave", s.clock < s.saveUntil ? (s.saveUntil - s.clock < 2 ? FAST : BLINK) : s.extraBalls > 0 ? ON : OFF);
     setLight("extraBall", s.extraLit ? BLINK : OFF);
@@ -864,7 +966,130 @@ export function createRules(table, out, random) {
   }
 
   function productionOpen() {
-    return s.promo >= 3 || s.productionForced || Boolean(s.mb && s.mb.superLit);
+    return s.promo >= 3 || s.productionForced || Boolean(s.mb && s.mb.superLit) || s.clock < rt.quickUntil;
+  }
+
+  /** A ball on the production ramp or in the chute under it: the gate must not close on it. */
+  function ballInChute() {
+    const gate = parts.productionGate;
+    for (const b of physics.balls) {
+      if (!b.active) {
+        continue;
+      }
+      if (b.mode === "path" && b.path === parts.paths.production) {
+        return true;
+      }
+      if (b.mode === "table" && b.floor === 0 && Math.abs(b.x - (gate.ax + gate.bx) / 2) < 0.75 && b.y > gate.ay - 0.6 && b.y < gate.ay + 1.2) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /* ---------- The sf hardis terminal, the monster Flow, the admins in production ---------- */
+
+  function runCommand() {
+    let i = Math.floor(random() * COMMANDS.length);
+    if (i === s.lastCommand) {
+      i = (i + 1) % COMMANDS.length;
+    }
+    s.lastCommand = i;
+    const c = COMMANDS[i];
+    const vars = {};
+    switch (c.effect) {
+      case "save":
+        s.saveUntil = Math.max(s.saveUntil, s.clock + 15);
+        break;
+      case "extra":
+        s.extraLit = true;
+        break;
+      case "lock":
+        if (!s.mb && s.locks < 3) {
+          s.lockLit = true;
+        }
+        break;
+      case "bonusX":
+        s.bonusX = Math.min(10, s.bonusX + 1);
+        vars.n = s.bonusX;
+        break;
+      case "note":
+        if (!s.note) {
+          lightNote();
+        }
+        break;
+      case "mission":
+        if (!s.mission && !s.mb && !allDone()) {
+          s.select = nextMission(s.select);
+          startMission(s.select);
+        }
+        break;
+      case "kickback":
+        s.kickback = true;
+        break;
+      case "drops":
+        resetDrops();
+        break;
+      default:
+        break;
+    }
+    out.event("terminal", { cmd: "sf " + c.cmd, key: c.key });
+    award(c.points || 50000, c.key, vars);
+    out.sound("pbLock");
+  }
+
+  function flowEnter() {
+    if (s.flowDone || s.tilted) {
+      return;
+    }
+    s.flowHits++;
+    shot("flow");
+    out.event("flow", "hit");
+    if (s.flowHits >= 3) {
+      // Three times through it: the monster Flow is refactored into Apex, and stops
+      s.flowDone = true;
+      parts.flow.enabled = false;
+      award(300000, "pbFlowRefactored");
+      out.event("flow", "apex");
+      out.sound("pbJackpot");
+    } else {
+      award(10000, "pbFlowHit", { n: s.flowHits });
+    }
+  }
+
+  function startRaid() {
+    const i = Math.floor(random() * parts.admins.length);
+    parts.admins[i].enabled = true;
+    out.event("admin", { i, up: true });
+    rt.raid = { i, until: s.clock + RAID_TIME };
+    out.event("raid", "start");
+    out.say("chat", "pbRaid");
+    out.sound("pbTiltWarn");
+  }
+
+  function endRaid(caught) {
+    const raid = rt.raid;
+    if (!raid) {
+      return;
+    }
+    rt.raid = null;
+    parts.admins[raid.i].enabled = false;
+    out.event("admin", { i: raid.i, up: false });
+    rt.raidAt = s.clock + RAID_EVERY + random() * RAID_EVERY;
+    if (caught) {
+      award(300000, "pbRaidCaught");
+      out.event("raid", "caught");
+      out.sound("pbJackpot");
+      return;
+    }
+    if (rt.ending) {
+      return;
+    }
+    // A change in production that is not in git: the promotion is lost until it is retrofitted
+    s.lostPromo = Math.max(s.lostPromo, s.promo);
+    s.promo = 0;
+    s.retrofit = true;
+    out.event("raid", "missed");
+    out.say("tip", "pbRaidMissed");
   }
 
   /* ---------- The clock ---------- */
@@ -900,6 +1125,29 @@ export function createRules(table, out, random) {
         // An up-kicker: hard enough to climb the whole loop
         physics.sendOnPath(ball, parts.paths.hotfix, 42);
       }
+    }
+    if (rt.terminal && s.clock >= rt.terminal.until) {
+      const ball = rt.terminal.ball;
+      rt.terminal = null;
+      if (ball.active && ball.mode === "held") {
+        physics.release(ball, 1.6 + (random() - 0.5), -2.5);
+        out.sound("pbKick");
+      }
+    }
+    if (rt.validating && s.clock >= rt.validating) {
+      rt.validating = 0;
+      rt.quickUntil = s.clock + QUICK_S;
+      out.event("validate", "done");
+      out.say("coach", "pbValidated");
+      out.sound("pbGate");
+    }
+    // An admin walks in now and then, when nothing else is going on
+    const busy = rt.ending || s.mb || s.saveArmed || (s.mission && (s.mission.id === 9 || s.mission.id === "wizard"));
+    if (!rt.raid && !busy && s.clock >= rt.raidAt) {
+      startRaid();
+    }
+    if (rt.raid && s.clock >= rt.raid.until) {
+      endRaid(false);
     }
     if (rt.dropsResetAt && s.clock >= rt.dropsResetAt) {
       rt.dropsResetAt = 0;
@@ -939,7 +1187,7 @@ export function createRules(table, out, random) {
     r.ax = x;
     r.bx = x;
     parts.salesManager.enabled = s.clock >= s.smDownUntil;
-    parts.productionGate.enabled = !productionOpen();
+    parts.productionGate.enabled = !productionOpen() && !ballInChute();
     refreshLights();
   }
 
@@ -960,6 +1208,8 @@ export function createRules(table, out, random) {
       physics.setKicks(true);
       rt.matched = false;
       rt.overAt = 0;
+      rt.raidAt = RAID_FIRST;
+      parts.flow.enabled = true;
       serve();
     },
     /** The state to save, as plain data. */
@@ -977,6 +1227,7 @@ export function createRules(table, out, random) {
       for (const a of parts.admins) {
         a.enabled = false;
       }
+      parts.flow.enabled = !s.flowDone;
       // A resumed game is a fresh ball: never tilted
       s.tilted = false;
       s.tilt = 0;

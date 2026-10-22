@@ -43,6 +43,8 @@ export function createPhysics() {
   const shapes = [];
   const moving = [];
   const sensors = [];
+  // Spinning discs in the playfield: a ball rolling over one is swept round it
+  const fields = [];
   const paths = [];
   const flippers = [];
   const balls = [];
@@ -84,6 +86,8 @@ export function createPhysics() {
       // A sensor just left is not seen again for a moment (a ball sitting on a line)
       lastSensor: null,
       lastSensorAt: -1,
+      // The spinning disc the ball is on, if any
+      field: null,
       // The view rolls the guinea pig from these
       spinX: 0,
       spinY: 0,
@@ -182,6 +186,18 @@ export function createPhysics() {
     const sensor = { kind: "line", ax, ay, bx, by, nx: -dy / length, ny: dx / length, length, floor: o.floor || 0, tag: o.tag || "", path: o.path || null, enabled: o.enabled !== false };
     sensors.push(sensor);
     return sensor;
+  }
+
+  /**
+   * A spinning disc at (x, y): a ball rolling over it is swept round it,
+   * strength the speed it pushes to, and emits "enter" with its tag as it
+   * comes on. enabled: false stops it.
+   */
+  function disc(x, y, r, options) {
+    const o = options || {};
+    const field = { ax: x, ay: y, r, strength: o.strength || 14, floor: o.floor || 0, tag: o.tag || "", enabled: o.enabled !== false };
+    fields.push(field);
+    return field;
   }
 
   /** A round sensor: a ball whose centre enters it emits "enter"; with capture, it is held there. */
@@ -287,6 +303,9 @@ export function createPhysics() {
    * size, then stretches it; call build() after.
    */
   function transformY(fn) {
+    for (const f of fields) {
+      f.ay = fn(f.ay);
+    }
     for (const s of shapes) {
       s.ay = fn(s.ay);
       s.by = fn(s.by);
@@ -458,6 +477,30 @@ export function createPhysics() {
     ball.x += ball.vx * STEP;
     ball.y += ball.vy * STEP;
     ball.contact = Math.max(0, ball.contact - STEP);
+    for (let i = 0; i < fields.length; i++) {
+      const f = fields[i];
+      const dx = ball.x - f.ax;
+      const dy = ball.y - f.ay;
+      const d2 = dx * dx + dy * dy;
+      if (!f.enabled || f.floor !== ball.floor || d2 > f.r * f.r) {
+        if (ball.field === f) {
+          ball.field = null;
+        }
+        continue;
+      }
+      if (ball.field !== f) {
+        ball.field = f;
+        emit("enter", f.tag, Math.hypot(ball.vx, ball.vy), ball);
+      }
+      // Pulled along the turn of the disc, a little outwards
+      const d = Math.sqrt(d2) || 1;
+      const tx = -dy / d;
+      const ty = dx / d;
+      const along = ball.vx * tx + ball.vy * ty;
+      const k = Math.min(1, 9 * STEP);
+      ball.vx += tx * (f.strength - along) * k + (dx / d) * 6 * STEP;
+      ball.vy += ty * (f.strength - along) * k + (dy / d) * 6 * STEP;
+    }
     const cell = grid[cellY(ball.y) * GRID_W + cellX(ball.x)];
     for (let i = 0; i < cell.length; i++) {
       collide(ball, cell[i]);
@@ -727,6 +770,8 @@ export function createPhysics() {
     hole,
     path,
     flipper,
+    disc,
+    fields,
     setPlunger,
     transformY,
     build,

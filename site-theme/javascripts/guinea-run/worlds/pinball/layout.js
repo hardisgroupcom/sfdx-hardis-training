@@ -269,14 +269,22 @@ export function buildTable() {
   p.transformY(sy);
   // The admins who rise in the middle of the band
   admins[0].ay = admins[0].by = 10.4;
-  admins[1].ay = admins[1].by = 11.1;
+  admins[1].ay = admins[1].by = 10.0;
   admins[2].ay = admins[2].by = 10.4;
-  admins[0].ax = admins[0].bx = -1.45;
-  admins[2].ax = admins[2].bx = 1.45;
+  // Spaced so that the gap between two of them is wider than the ball: no ball rests between them
+  admins[0].ax = admins[0].bx = -1.5;
+  admins[1].ax = admins[1].bx = 0;
+  admins[2].ax = admins[2].bx = 1.5;
   // The Backups lane: three round targets on the left wall
   const backups = [9.95, 10.8, 11.65].map((y, i) => p.capsule(-4.84, y - 0.24, -4.84, y + 0.24, { r: 0.1, bounce: 0.45, tag: "backup" + i }));
   // Code quality: three round targets to push in on the right wall
   const quality = [9.95, 10.8, 11.65].map((y, i) => p.capsule(4.84, y - 0.24, 4.84, y + 0.24, { r: 0.1, bounce: 0.45, tag: "quality" + i }));
+  // The monster Flow: a disc in the middle of the band that spins the ball off its line
+  const flow = p.disc(0, 11.6, 0.75, { tag: "flow", strength: 16 });
+  // Validate: a target right of the production chute, the first half of a Quick deploy
+  const validate = p.capsule(1.0, 12.5, 1.55, 12.65, { r: 0.1, bounce: 0.4, tag: "validate" });
+  // The sf hardis terminal: a saucer high on the left, fed by the bumpers; it types a command
+  const terminal = p.hole(-1.6, 18.6, 0.36, { tag: "terminal", capture: true });
   // The Hotfix hole, by the Backups lane, and its wire loop over the left side to the left inlane
   const hotfix = p.hole(-3.3, 10.2, 0.3, { tag: "hotfix", capture: true });
   const hotfixPath = p.path(
@@ -311,6 +319,9 @@ export function buildTable() {
       backups,
       quality,
       hotfix,
+      flow,
+      validate,
+      terminal,
       paths: { integration: integrationPath, uat: uatPath, production: productionPath, down: downPath, release: releasePath, hotfix: hotfixPath }
     }
   };
@@ -403,5 +414,9 @@ function buildLights() {
   [9.95, 10.8, 11.65].forEach((y, i) => add("quality" + i, 4.3, y, { size: 0.16, color: 0xffb020 }));
   add("shot-hotfix", -2.65, 9.65, { shape: "delta", angle: 0.85, size: 0.3, color: 0xea001e, label: "pbFieldHotfix", labelAt: "below" });
   TABLE.hotfix = { x: -3.3, y: 10.2 };
+  TABLE.terminal = { x: -1.6, y: 18.6 };
+  TABLE.flow = { x: 0, y: 11.6, r: 0.75 };
+  add("shot-terminal", -1.6, 17.75, { shape: "delta", size: 0.3, color: 0x2e844a, label: "pbFieldTerminal", labelAt: "below" });
+  add("validate", 1.28, 12.15, { size: 0.15, color: 0x45c65a, label: "pbFieldValidate", labelAt: "below" });
   return lights;
 }

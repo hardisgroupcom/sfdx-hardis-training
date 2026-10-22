@@ -60,7 +60,11 @@ export function createDmd(parent) {
     c.textBaseline = "middle";
     if (flash) {
       // The big word, blinking, with its line under it
-      if (Math.floor(clock * 6) % 2 === 0 || clock - flash.at > 0.9) {
+      if (flash.typing) {
+        // A command typed at a terminal, one character after the other
+        const shown = flash.big.slice(0, Math.floor((clock - flash.at) * 22));
+        line(shown + (Math.floor(clock * 4) % 2 === 0 ? "_" : ""), 11, 12, "700");
+      } else if (Math.floor(clock * 6) % 2 === 0 || clock - flash.at > 0.9) {
         line(flash.big, flash.small ? 11 : 16, flash.small ? 17 : 22, "900");
       }
       if (flash.small) {
@@ -125,8 +129,8 @@ export function createDmd(parent) {
       screen.setAttribute("aria-label", flash ? flash.big + " " + (flash.small || "") : view.score + " " + view.status);
     },
     /** A big word for a moment, and an optional line under it. */
-    flash(big, small, seconds) {
-      flash = { big: String(big).toUpperCase(), small: small ? String(small).toUpperCase() : "", at: clock, until: clock + (seconds || 2) };
+    flash(big, small, seconds, typing) {
+      flash = { big: typing ? String(big) : String(big).toUpperCase(), small: small ? String(small).toUpperCase() : "", at: clock, until: clock + (seconds || 2), typing: Boolean(typing) };
       since = REDRAW_S;
     },
     dispose() {

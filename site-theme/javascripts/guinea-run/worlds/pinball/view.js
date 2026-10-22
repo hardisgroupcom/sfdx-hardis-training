@@ -10,7 +10,7 @@
 import { TABLE, sy } from "./layout.js";
 import { BALL_RADIUS } from "./physics.js";
 import { createBallMesh } from "./ball.js";
-import { paintField, paintUpper, paintApron, paintSign, paintBumperCap, shapePoints } from "./art.js";
+import { paintField, paintUpper, paintApron, paintSign, paintBumperCap, paintFlow, paintTerminal, shapePoints } from "./art.js";
 
 const LEAN = 0.11;
 const WALL_HEIGHT = { wall: 0.62, rubber: 0.42, rail: 0.36, post: 0.5, gate: 0.3, diverter: 0.42, sling: 0.44, upper: 0.5 };
@@ -272,6 +272,29 @@ export function createView(THREE, ctx, table, options) {
     return { mesh: m, material, base: q.ax - 0.02, push: 0 };
   });
 
+  // The monster Flow: a disc that spins in the playfield, until it is refactored into Apex
+  const flowTextures = { spin: keep(paintFlow(THREE, false)), apex: keep(paintFlow(THREE, true)) };
+  const flowMaterial = keep(new THREE.MeshStandardMaterial({ map: flowTextures.spin, roughness: 0.3, emissive: 0xfe9339, emissiveIntensity: 0.25 }));
+  const flowDisc = new THREE.Mesh(keep(new THREE.CylinderGeometry(TABLE.flow.r, TABLE.flow.r, 0.03, 40)), flowMaterial);
+  flowDisc.position.set(TABLE.flow.x, 0.02, -TABLE.flow.y);
+  group.add(flowDisc);
+  let flowFlash = 0;
+  // The sf hardis terminal: a small screen behind its saucer
+  const terminalScreen = new THREE.Mesh(keep(new THREE.PlaneGeometry(1.0, 0.62)), keep(new THREE.MeshBasicMaterial({ map: keep(paintTerminal(THREE)), toneMapped: false })));
+  terminalScreen.position.set(TABLE.terminal.x, 0.75, -(TABLE.terminal.y + 0.75));
+  terminalScreen.rotation.x = -0.35;
+  group.add(terminalScreen);
+  let terminalFlash = 0;
+  // Validate: a green target
+  const validateShape = table.parts.validate;
+  const validateMaterial = keep(new THREE.MeshStandardMaterial({ color: 0x2e844a, roughness: 0.35, emissive: 0x45c65a, emissiveIntensity: 0.3 }));
+  const validateMesh = new THREE.Mesh(box, validateMaterial);
+  validateMesh.scale.set(Math.hypot(validateShape.bx - validateShape.ax, validateShape.by - validateShape.ay) + 0.2, 0.42, 0.18);
+  validateMesh.position.set((validateShape.ax + validateShape.bx) / 2, 0.21, -(validateShape.ay + validateShape.by) / 2);
+  validateMesh.rotation.y = Math.atan2(validateShape.by - validateShape.ay, validateShape.bx - validateShape.ax);
+  group.add(validateMesh);
+  let validateFlash = 0;
+
   /* ---------- The admins who rise, with their faces ---------- */
 
   const faceLoader = new THREE.TextureLoader();
@@ -307,7 +330,8 @@ export function createView(THREE, ctx, table, options) {
   for (const [x, y, floor] of [
     [TABLE.scoop.x, TABLE.scoop.y, 0],
     [TABLE.release.x, TABLE.release.y, 1],
-    [TABLE.hotfix.x, TABLE.hotfix.y, 0]
+    [TABLE.hotfix.x, TABLE.hotfix.y, 0],
+    [TABLE.terminal.x, TABLE.terminal.y, 0]
   ]) {
     const h = new THREE.Mesh(keep(new THREE.CircleGeometry(0.42, 24)), holeMaterial);
     h.rotation.x = -Math.PI / 2;
@@ -712,6 +736,16 @@ export function createView(THREE, ctx, table, options) {
     } else {
       spinner.rotation.x += (Math.round(spinner.rotation.x / Math.PI) * Math.PI - spinner.rotation.x) * Math.min(1, dt * 6);
     }
+    // The monster Flow spins while it is on
+    if (table.parts.flow.enabled) {
+      flowDisc.rotation.y += dt * 4.5;
+    }
+    flowFlash = Math.max(0, flowFlash - dt * 3);
+    flowMaterial.emissiveIntensity = 0.25 + flowFlash;
+    terminalFlash = Math.max(0, terminalFlash - dt * 0.8);
+    terminalScreen.material.color.setScalar(1 + terminalFlash);
+    validateFlash = Math.max(0, validateFlash - dt * 2);
+    validateMaterial.emissiveIntensity = 0.3 + validateFlash * 1.4;
     for (const q of quality) {
       q.push = Math.max(0, q.push - dt * 5);
       q.mesh.position.x = q.base + q.push * 0.1;
@@ -788,6 +822,23 @@ export function createView(THREE, ctx, table, options) {
     show(seconds) {
       showTime = Math.max(showTime, seconds || 1.8);
       giFlash = 1;
+    },
+    /** state: "hit" (a ball through it), "apex" (refactored, it stops), "spin" (back for a new ball). */
+    flow(state) {
+      if (state === "hit") {
+        flowFlash = 1;
+      } else {
+        flowMaterial.map = state === "apex" ? flowTextures.apex : flowTextures.spin;
+        flowMaterial.emissive.setHex(state === "apex" ? 0x1b96ff : 0xfe9339);
+        flowMaterial.needsUpdate = true;
+        flowFlash = 1;
+      }
+    },
+    terminal() {
+      terminalFlash = 1.5;
+    },
+    validate() {
+      validateFlash = 1;
     },
     pushQuality(i) {
       if (quality[i]) {
