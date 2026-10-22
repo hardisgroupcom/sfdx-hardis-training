@@ -21,16 +21,46 @@ import { createMusic } from "../../core/music.js";
 import { THEMES } from "../../core/themes.js";
 import { pickAdmins, adminFaceUrl } from "../../core/faces.js";
 import { readingMs } from "../../hud.js";
+import { createDmd } from "./dmd.js";
 
 export const KIND = "bonus";
 export const PADS = "flippers";
 // The table plays its own theme, to count the beat of mission 6
 export const MUSIC = false;
-export const MODELS = ["salesforce", "data-cloud"];
+export const MODELS = ["salesforce", "data-cloud", "vegetables"];
 export const PHONE_MESSAGES = "top";
 export const QUOTES = [{ lab: "2.7", text: "Accept Current" }];
 
 const SAVE_EVERY_S = 5;
+// The moments the dot-matrix display shouts, and those it says instead of a toast
+const DMD_WORDS = {
+  pbJackpot: "dmdJackpot",
+  pbReleaseJackpot: "dmdJackpot",
+  pbSuperJackpot: "dmdSuperJackpot",
+  pbMultiball: "dmdMultiball",
+  pbSkillShot: "dmdSkillShot",
+  pbSuperSkill: "dmdSuperSkill",
+  pbExtraBall: "dmdExtraBall",
+  pbBallSaved: "dmdBallSaved",
+  pbTilt: "dmdTilt",
+  pbTiltWarning: "dmdDanger",
+  pbMissionDone: "dmdMissionDone",
+  pbReleased: "dmdReleased",
+  pbLocked: "dmdLocked",
+  pbCombo: "dmdCombo",
+  pbProductionOpen: "dmdProductionOpen",
+  pbNoteFound: "dmdNote",
+  pbShootAgain: "dmdShootAgain",
+  pbBallN: "dmdBall",
+  pbKickback: "dmdRollback",
+  pbLockLit: "dmdLockLit",
+  pbNextLevel: "dmdLevelUp",
+  pbReleaseDay: "dmdReleaseDay",
+  pbBonusXUp: "dmdBonusX"
+};
+const DMD_ONLY = new Set(["pbJackpot", "pbReleaseJackpot", "pbSuperJackpot", "pbSkillShot", "pbSuperSkill", "pbCombo", "pbBallSaved", "pbKickback", "pbBonusXUp", "pbLocked", "pbBallN", "pbShootAgain", "pbTilt", "pbTiltWarning", "pbExtraBall", "pbMultiball"]);
+// What a mission counts to, for its line on the display
+const GOAL_TOTALS = { pbGoal0: 4, pbGoal1_0: 8, pbGoal1_1: 2, pbGoal2: 3, pbGoal3: 3, pbGoal4: 75, pbGoal5: 4, pbGoal6: 8, pbGoal7: 3, pbGoal8: 5, pbGoal9: 6, pbGoalWizard: 6, pbGoalWizardBoss: 3 };
 const PULL_S = 0.9;
 const WHEEK_GAP_S = 1.5;
 const NUDGE_SPEED = 4.5;
@@ -43,6 +73,41 @@ export const TEXTS = {
     how3: "Up or W nudges the table, a swipe up on a phone. Three nudges too close together: tilt",
     note: "A pinball is a pipeline you can feel: every shot that skips a branch comes back down. - V.",
     pbTitle: "Pipeline Pinball",
+    pbShort0: "Tools",
+    pbShort1: "US-014",
+    pbShort2: "Commit",
+    pbShort3: "Base branch",
+    pbShort4: "Coverage",
+    pbShort5: "Merge",
+    pbShort6: "On the beat",
+    pbShort7: "Promotion",
+    pbShort8: "Release",
+    pbShort9: "Monitoring",
+    pbApronPromote: "Promote in order: integration, uat, preprod. Then production opens.",
+    pbApronMissions: "Pull Request scoop: a mission per world. All ten: Release day.",
+    dmdGo: "GO!",
+    dmdJackpot: "Jackpot",
+    dmdSuperJackpot: "Super jackpot",
+    dmdMultiball: "Multiball",
+    dmdSkillShot: "Skill shot",
+    dmdSuperSkill: "Super skill",
+    dmdExtraBall: "Extra ball",
+    dmdBallSaved: "Ball saved",
+    dmdTilt: "Tilt",
+    dmdDanger: "Danger",
+    dmdMissionDone: "Mission done",
+    dmdReleased: "Released",
+    dmdLocked: "Ball locked",
+    dmdCombo: "Combo",
+    dmdProductionOpen: "Production open",
+    dmdNote: "Victor's note",
+    dmdShootAgain: "Shoot again",
+    dmdBall: "Ball",
+    dmdRollback: "Rollback",
+    dmdLockLit: "Lock is lit",
+    dmdLevelUp: "Level up",
+    dmdReleaseDay: "Release day",
+    dmdBonusX: "Bonus x",
     pbFieldIntegration: "integration",
     pbFieldUat: "uat",
     pbFieldPreprod: "preprod",
@@ -55,15 +120,10 @@ export const TEXTS = {
     pbFieldExtraBall: "Extra ball",
     pbFieldNote: "Victor's note",
     pbFieldDeploy: "Deploy to all orgs",
-    pbFieldBonus: "Bonus multiplier",
     pbFieldProductionOrg: "Production org",
     pbFieldRelease: "Release",
     pbBall: "Ball {{n}}",
-    pbExtraShort: "+{{n}}",
     pbLevel: "Level {{n}}",
-    pbBonusShort: "Bonus x{{n}}",
-    pbMissionTitle: "Mission",
-    pbTimeLeft: "{{s}} s",
     pbSelectTitle: "Pick a mission with the flippers",
     pbTool1: "VS Code",
     pbTool2: "Salesforce CLI",
@@ -191,6 +251,41 @@ export const TEXTS = {
     how3: "Haut ou Z secoue la table, un glisser vers le haut sur téléphone. Trois secousses trop rapprochées : tilt",
     note: "Un flipper, c'est un pipeline qu'on sent : chaque tir qui saute une branche redescend. - V.",
     pbTitle: "Pipeline Pinball",
+    pbShort0: "Outils",
+    pbShort1: "US-014",
+    pbShort2: "Commit",
+    pbShort3: "Branche de base",
+    pbShort4: "Couverture",
+    pbShort5: "Merge",
+    pbShort6: "En rythme",
+    pbShort7: "Promotion",
+    pbShort8: "Release",
+    pbShort9: "Monitoring",
+    pbApronPromote: "Promouvez dans l'ordre : integration, uat, preprod. Puis la production s'ouvre.",
+    pbApronMissions: "Trou Pull Request : une mission par monde. Les dix : jour de release.",
+    dmdGo: "GO !",
+    dmdJackpot: "Jackpot",
+    dmdSuperJackpot: "Super jackpot",
+    dmdMultiball: "Multibille",
+    dmdSkillShot: "Tir d'adresse",
+    dmdSuperSkill: "Super tir",
+    dmdExtraBall: "Bille en plus",
+    dmdBallSaved: "Bille sauvée",
+    dmdTilt: "Tilt",
+    dmdDanger: "Attention",
+    dmdMissionDone: "Mission réussie",
+    dmdReleased: "En production",
+    dmdLocked: "Bille verrouillée",
+    dmdCombo: "Combo",
+    dmdProductionOpen: "Production ouverte",
+    dmdNote: "Note de Victor",
+    dmdShootAgain: "Rejouez",
+    dmdBall: "Bille",
+    dmdRollback: "Rollback",
+    dmdLockLit: "Verrou allumé",
+    dmdLevelUp: "Niveau suivant",
+    dmdReleaseDay: "Jour de release",
+    dmdBonusX: "Bonus x",
     pbFieldIntegration: "integration",
     pbFieldUat: "uat",
     pbFieldPreprod: "preprod",
@@ -203,15 +298,10 @@ export const TEXTS = {
     pbFieldExtraBall: "Bille en plus",
     pbFieldNote: "Note de Victor",
     pbFieldDeploy: "Déployer partout",
-    pbFieldBonus: "Multiplicateur",
     pbFieldProductionOrg: "Org de production",
     pbFieldRelease: "Release",
     pbBall: "Bille {{n}}",
-    pbExtraShort: "+{{n}}",
     pbLevel: "Niveau {{n}}",
-    pbBonusShort: "Bonus x{{n}}",
-    pbMissionTitle: "Mission",
-    pbTimeLeft: "{{s}} s",
     pbSelectTitle: "Choisissez une mission avec les flippers",
     pbTool1: "VS Code",
     pbTool2: "Salesforce CLI",
@@ -335,6 +425,9 @@ export const TEXTS = {
 };
 
 export const CSS = `
+.gr-dmd { display: flex; justify-content: center; pointer-events: none; margin: 4px auto 0; width: min(520px, 94vw); }
+@media (min-aspect-ratio: 5/4) { .gr-dmd { position: fixed; left: 12px; top: 128px; width: min(380px, calc((100vw - 52vh) / 2 - 24px)); margin: 0; } }
+.gr-dmd-screen { width: 100%; height: auto; aspect-ratio: 4 / 1; background: #0b0502; border: 3px solid #2b2b33; border-radius: 6px; box-shadow: 0 0 0 2px #0b0b0f, 0 6px 18px rgba(0,0,0,0.5), inset 0 0 18px rgba(255,120,30,0.15); image-rendering: auto; }
 .gr-pb { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: center; pointer-events: none; }
 .gr-pb-pill { background: rgba(3,45,96,0.82); color: #fff; border-radius: 999px; padding: 3px 10px; font-size: 13px; font-weight: 700; white-space: nowrap; }
 .gr-pb-pill.is-hot { background: #dd7a01; }
@@ -384,6 +477,13 @@ export function createWorld(ctx) {
         values.points = fmt(values.points);
       }
       const text = t(key, values);
+      if (DMD_WORDS[key]) {
+        const small = values.points !== undefined ? "+" + values.points : values.n !== undefined ? String(values.n) : "";
+        dmd.flash(t(DMD_WORDS[key]), small, key === "pbTilt" ? 3 : 1.8);
+        if (DMD_ONLY.has(key)) {
+          return;
+        }
+      }
       if (kind === "toast") {
         hud.toast(text, tone || "good");
       } else if (kind === "coach") {
@@ -467,23 +567,8 @@ export function createWorld(ctx) {
 
   /* ---------- The HUD of the table ---------- */
 
-  const panel = document.createElement("div");
-  panel.className = "gr-pb";
-  const ballPill = pill();
-  const levelPill = pill();
-  const bonusPill = pill();
-  const missionRow = document.createElement("div");
-  missionRow.className = "gr-pb-mission";
-  const missionPill = pill(missionRow);
-  const bar = document.createElement("div");
-  bar.className = "gr-pb-bar";
-  const barFill = document.createElement("i");
-  bar.appendChild(barFill);
-  missionRow.appendChild(bar);
-  const stars = pill(missionRow);
-  stars.classList.add("gr-pb-stars");
-  panel.appendChild(missionRow);
-  hud.extra.appendChild(panel);
+  // The dot-matrix display, under the top bar
+  const dmd = createDmd(hud.extra);
   const select = document.createElement("div");
   select.className = "gr-pb-select";
   select.hidden = true;
@@ -493,39 +578,28 @@ export function createWorld(ctx) {
   eob.hidden = true;
   hud.layer.appendChild(eob);
   let eobTimer = 0;
-  let lastPanel = "";
+  let lastTop = "";
   let lastGoal = "";
 
-  function pill(parent) {
-    const node = document.createElement("span");
-    node.className = "gr-pb-pill";
-    (parent || panel).appendChild(node);
-    return node;
-  }
-
-  function drawPanel() {
+  function drawPanel(dt) {
     const h = rules.hud();
-    const missionName = h.mission === null ? "" : h.mission === "wizard" ? t("pbNameWizard") : t("pbName" + h.mission);
-    const doneStars = h.done.map((d) => (d ? "★" : "☆")).join("");
-    const key = [h.score, h.ballNo, h.extraBalls, h.level, h.bonusX, missionName, h.timeLeft, doneStars, h.multiball].join("|");
-    if (key !== lastPanel) {
-      lastPanel = key;
-      ballPill.textContent = t("pbBall", { n: h.ballNo }) + (h.extraBalls ? " " + t("pbExtraShort", { n: h.extraBalls }) : "");
-      levelPill.textContent = t("pbLevel", { n: h.level });
-      bonusPill.textContent = t("pbBonusShort", { n: h.bonusX });
-      bonusPill.classList.toggle("is-hot", h.bonusX > 1);
-      missionPill.textContent = missionName ? missionName + " · " + t("pbTimeLeft", { s: h.timeLeft }) : t("pbMissionTitle");
-      missionPill.classList.toggle("is-hot", Boolean(missionName));
-      const total = h.mission === null ? 1 : Math.max(1, rules.state.mission ? missionTotal(h.mission) : 1);
-      barFill.style.width = h.mission === null ? "0%" : Math.round(Math.min(1, h.timeLeft / total) * 100) + "%";
-      bar.hidden = h.mission === null;
-      stars.textContent = doneStars;
+    const top = h.score + "|" + h.ballNo;
+    if (top !== lastTop) {
+      lastTop = top;
       ctx.bonus.hud({ score: fmt(h.score), ball: t("pbBall", { n: h.ballNo }) });
     }
-    const goal = h.goal ? t(h.goal[0], h.goal[1]) : "";
-    if (goal !== lastGoal) {
-      lastGoal = goal;
-      hud.goal(goal);
+    const status = [t("pbBall", { n: h.ballNo }) + (h.extraBalls ? " +" + h.extraBalls : ""), t("pbLevel", { n: h.level }), h.bonusX > 1 ? "x" + h.bonusX : ""].filter(Boolean).join("  ");
+    const mission = h.mission === null ? "" : h.mission === "wizard" ? t("pbNameWizard") : t("pbShort" + h.mission);
+    let goal = "";
+    if (h.mission !== null && h.goal) {
+      const total = GOAL_TOTALS[h.goal[0]];
+      goal = total ? h.goal[1].n + " / " + total : t("dmdGo");
+    }
+    dmd.update(dt || 0, { score: fmt(h.score), status: status.toUpperCase(), mission: mission.toUpperCase(), time: h.timeLeft, goal });
+    const text = h.goal ? t(h.goal[0], h.goal[1]) : "";
+    if (text !== lastGoal) {
+      lastGoal = text;
+      hud.goal(text);
     }
   }
 
@@ -628,13 +702,13 @@ export function createWorld(ctx) {
     return { attract: s.saveArmed && Boolean(physics.ballOnPlunger()), tilted: s.tilted };
   }
 
-  /* ---------- The guinea pig cheers on the apron ---------- */
+  /* ---------- The guinea pig watches from its stand over the right side, as the arcade toys do ---------- */
 
   function placePig() {
-    view.worldPoint(-4.3, -0.5, 0, point);
-    ctx.pig.object.position.set(point.x, point.y - 0.25, point.z);
-    ctx.pig.object.rotation.set(0, Math.PI * 0.85, 0);
-    ctx.pig.object.scale.setScalar(0.75);
+    view.worldPoint(5.45, 12.6, 0, point);
+    ctx.pig.object.position.set(point.x, point.y + 0.7, point.z);
+    ctx.pig.object.rotation.set(0, Math.PI * 1.2, 0);
+    ctx.pig.object.scale.setScalar(0.65);
     ctx.pig.shadow.visible = false;
     ctx.pig.state = { running: false };
   }
@@ -822,7 +896,7 @@ export function createWorld(ctx) {
       music.update(dt);
       view.update(dt, rules.lights, mood());
       placePig();
-      drawPanel();
+      drawPanel(dt);
       if (clock >= saveAt) {
         saveAt = clock + SAVE_EVERY_S;
         saveNow();
@@ -877,7 +951,7 @@ export function createWorld(ctx) {
       window.clearTimeout(eobTimer);
       music.dispose();
       view.dispose();
-      panel.remove();
+      dmd.dispose();
       select.remove();
       eob.remove();
       ctx.pig.object.scale.setScalar(1);

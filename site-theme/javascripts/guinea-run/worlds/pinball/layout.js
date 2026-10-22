@@ -260,65 +260,81 @@ export function buildTable() {
 }
 
 /**
- * The inserts of the playfield the rules light: an arrow in front of each
- * shot, the drop targets, the lanes, the kickback, the ball save. Each one
- * { id, x, y, floor, size, shape ("arrow", "round", "star"), angle, color }.
+ * The inserts of the playfield the rules light, as on an arcade table: a
+ * delta in front of each shot, chevrons chasing towards it, the honeycomb of
+ * the ten missions over the flippers with Release day under it, the ladder of
+ * the missions done up the middle, round inserts for the targets, the locks
+ * and the lanes, warm bulbs. Each one { id, x, y, floor, size, shape ("round",
+ * "delta", "hex", "star", "chevron", "bulb"), angle, color, label (a text key
+ * painted under it) }. The playfield is painted with a bezel under each one.
  */
 function buildLights() {
   const lights = [];
   const add = (id, x, y, options) => {
-    lights.push(Object.assign({ id, x, y, floor: 0, size: 0.32, shape: "round", angle: 0, color: 0x0176d3 }, options));
+    lights.push(Object.assign({ id, x, y, floor: 0, size: 0.32, shape: "round", angle: 0, color: 0x0176d3, label: "" }, options));
   };
-  // The shots, from left to right
-  add("shot-preprod", -4.48, 8.7, { shape: "arrow", angle: 0, color: 0x9050e9, size: 0.4 });
-  add("shot-integration", -3.0, 9.9, { shape: "arrow", angle: 0, color: 0x0176d3, size: 0.42 });
-  add("shot-scoop", -1.55, 11.85, { shape: "arrow", angle: 0.2, color: 0xfe9339, size: 0.4 });
-  add("shot-production", 0, 11.6, { shape: "arrow", angle: 0, color: 0x2e844a, size: 0.44 });
-  add("shot-uat", 3.0, 9.9, { shape: "arrow", angle: 0, color: 0x06a59a, size: 0.42 });
-  add("shot-orbitRight", 4.48, 9.0, { shape: "arrow", angle: 0, color: 0x9050e9, size: 0.36 });
-  // The promotion ladder in front of the production ramp
-  ["integration", "uat", "preprod"].forEach((name, i) => add("promo-" + name, -0.5 + i * 0.5, 10.95, { size: 0.18, color: 0x2e844a }));
-  // The locks of Deploy to all orgs, on the integration ramp
-  [0, 1, 2].forEach((i) => add("lock" + i, -2.3, 8.2 + i * 0.45, { size: 0.2, color: 0xfe9339 }));
+  // The shots, from left to right: a big delta for each
+  add("shot-preprod", -4.45, 10.05, { shape: "delta", color: 0x9050e9, size: 0.4 });
+  add("shot-integration", -3.0, 9.95, { shape: "delta", color: 0x1b96ff, size: 0.52 });
+  add("shot-scoop", -1.55, 11.85, { shape: "delta", angle: 0.2, color: 0xfe9339, size: 0.44 });
+  add("shot-production", 0, 11.65, { shape: "delta", color: 0x45c65a, size: 0.5 });
+  add("shot-uat", 3.0, 9.95, { shape: "delta", color: 0x06a59a, size: 0.52 });
+  add("shot-orbitRight", 4.45, 10.05, { shape: "delta", color: 0x9050e9, size: 0.4 });
+  // The promotion steps in front of the production ramp
+  ["integration", "uat", "preprod"].forEach((name, i) => add("promo-" + name, -0.5 + i * 0.5, 10.95, { size: 0.17, color: 0x45c65a }));
+  // The locks of Deploy to all orgs, beside the integration ramp
+  [0, 1, 2].forEach((i) => add("lock" + i, -2.3, 8.2 + i * 0.45, { size: 0.19, color: 0xfe9339 }));
   // Chasing chevrons that lead to a lit shot
   for (const [shot, x, y] of [
-    ["integration", -3.0, 9.9],
-    ["uat", 3.0, 9.9],
+    ["integration", -3.0, 9.95],
+    ["uat", 3.0, 9.95],
     ["scoop", -1.55, 11.85]
   ]) {
     for (let k = 0; k < 3; k++) {
-      add("chev-" + shot + "-" + k, x, y - 0.55 - k * 0.42, { shape: "chevron", size: 0.26, color: 0xffb020 });
+      add("chev-" + shot + "-" + k, x, y - 0.62 - k * 0.42, { shape: "chevron", size: 0.26, color: 0xffb020 });
     }
   }
-  // The general illumination: warm bulbs round the top arc and along the apron
+  // The general illumination: warm bulbs round the top arc and along the bottom
   for (let i = 0; i < 11; i++) {
     const a = Math.PI * (0.06 + (0.88 * i) / 10);
     add("gi-" + i, TABLE.arc.x + Math.cos(a) * (TABLE.arc.r - 0.45), TABLE.arc.y + Math.sin(a) * (TABLE.arc.r - 0.45), { shape: "bulb", size: 0.12, color: 0xffd28a });
   }
-  for (let i = 0; i < 6; i++) {
-    add("gi-a" + i, -4.3 + i * 1.72, 1.15, { shape: "bulb", size: 0.12, color: 0xffd28a });
+  for (let i = 0; i < 4; i++) {
+    add("gi-a" + i, [-4.4, -3.4, 3.4, 4.4][i], 1.9, { shape: "bulb", size: 0.12, color: 0xffd28a });
   }
   DROPS.forEach((k, i) => {
     const [x, y] = bankPoint(k, 0.72, 1);
-    add("drop" + i, x, y, { size: 0.16, color: 0x0176d3 });
+    add("drop" + i, x, y, { size: 0.17, color: 0x1b96ff });
   });
   STANDUPS.forEach((k, i) => {
     const [x, y] = bankPoint(k, 0.72, -1);
-    add("check" + i, x, y, { size: 0.18, color: 0x2e844a });
+    add("check" + i, x, y, { size: 0.19, color: 0x45c65a });
   });
-  LANES.forEach((x, i) => add("lane" + i, x, 16.95, { size: 0.22, color: 0xfe9339 }));
-  add("kickback", -4.42, 2.5, { size: 0.26, color: 0xea001e });
-  add("ballSave", 0, 0.9, { size: 0.3, shape: "star", color: 0x06a59a });
-  add("extraBall", 0, 7.4, { size: 0.3, shape: "star", color: 0xfe9339 });
-  add("note", 0, 6.4, { size: 0.28, shape: "star", color: 0xdd7a01 });
-  // The ten missions, in a ring round the middle
-  for (let i = 0; i < 10; i++) {
-    const a = Math.PI * (0.15 + (0.7 * i) / 9);
-    add("mission" + i, Math.cos(Math.PI - a) * 2.1, 6.6 + Math.sin(a) * 1.15, { size: 0.17, color: 0x9050e9 });
+  LANES.forEach((x, i) => add("lane" + i, x, 16.95, { shape: "star", size: 0.24, color: 0xfe9339 }));
+  add("kickback", -4.42, 2.6, { size: 0.26, color: 0xea001e, label: "pbFieldRollback" });
+  add("ballSave", 0, 2.3, { size: 0.4, color: 0x06a59a, label: "pbFieldBallSave", labelAt: "inside" });
+  add("extraBall", -1.25, 6.3, { size: 0.24, shape: "star", color: 0xfe9339, label: "pbFieldExtraBall", labelAt: "above" });
+  add("note", 1.25, 6.3, { size: 0.24, shape: "star", color: 0xdd7a01, label: "pbFieldNote", labelAt: "above" });
+  // The honeycomb of the ten missions, over the flippers, Release day under it
+  const rows = [
+    [5.55, [-0.78, 0, 0.78]],
+    [4.87, [-1.17, -0.39, 0.39, 1.17]],
+    [4.19, [-0.78, 0, 0.78]]
+  ];
+  let mission = 0;
+  for (const [y, xs] of rows) {
+    for (const x of xs) {
+      add("mission" + mission, x, y, { shape: "hex", size: 0.38, color: 0x9050e9, label: "pbShort" + mission });
+      mission++;
+    }
   }
-  add("multiplier", 0, 5.15, { size: 0.22, shape: "star", color: 0x0176d3 });
+  add("missionWizard", 0, 3.51, { shape: "hex", size: 0.38, color: 0xffb020, label: "pbNameWizard" });
+  // The ladder up the middle: the missions done on this level
+  for (let i = 0; i < 6; i++) {
+    add("ladder" + i, 0, 6.85 + i * 0.47, { shape: "delta", size: 0.3, color: 0xea001e });
+  }
   // The Production floor
-  add("rabbit", 0, 25.4, { floor: 1, size: 0.3, color: 0x0176d3 });
-  add("release", -2.2, 25.7, { floor: 1, shape: "arrow", angle: 0.55, size: 0.34, color: 0x2e844a });
+  add("rabbit", 0, 25.4, { floor: 1, size: 0.3, color: 0x1b96ff });
+  add("release", -2.2, 25.7, { floor: 1, shape: "delta", angle: 0.55, size: 0.36, color: 0x45c65a });
   return lights;
 }

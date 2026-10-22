@@ -8,8 +8,8 @@
  * are instanced, one draw per kind; nothing is allocated per frame.
  */
 import { TABLE } from "./layout.js";
-import { SLDS, rounded, fitText, font, glyph } from "../../core/painter.js";
 import { createBallMesh } from "./ball.js";
+import { paintField, paintUpper, paintApron, paintSign, paintBumperCap, shapePoints } from "./art.js";
 
 const LEAN = 0.11;
 const WALL_HEIGHT = { wall: 0.62, rubber: 0.42, rail: 0.36, post: 0.5, gate: 0.3, diverter: 0.42, sling: 0.44, upper: 0.5 };
@@ -44,29 +44,40 @@ export function createView(THREE, ctx, table, options) {
   const fieldW = TABLE.right - TABLE.left + 0.4;
   const fieldY0 = -1.6;
   const fieldY1 = TABLE.top + 0.3;
-  const fieldTexture = keep(paintField(THREE, t, fieldW, fieldY1 - fieldY0, fieldY0, tier));
+  const fieldTexture = keep(paintField(THREE, t, table.lights, tier));
   const field = new THREE.Mesh(keep(new THREE.PlaneGeometry(fieldW, fieldY1 - fieldY0)), keep(new THREE.MeshStandardMaterial({ map: fieldTexture, roughness: 0.55, metalness: 0.05 })));
   field.rotation.x = -Math.PI / 2;
   field.position.set((TABLE.left + TABLE.right) / 2, 0, -(fieldY0 + fieldY1) / 2);
   field.receiveShadow = true;
   group.add(field);
 
-  const wood = keep(new THREE.MeshStandardMaterial({ color: 0x0b2a55, roughness: 0.5, metalness: 0.2 }));
-  const chrome = keep(new THREE.MeshStandardMaterial({ color: 0xdfe7ef, roughness: 0.25, metalness: 0.8 }));
+  const wood = keep(new THREE.MeshStandardMaterial({ color: 0x101016, roughness: 0.35, metalness: 0.3 }));
+  const chrome = keep(new THREE.MeshStandardMaterial({ color: 0xe6edf3, roughness: 0.18, metalness: 0.9 }));
+  const cabinetRed = keep(new THREE.MeshStandardMaterial({ color: 0xb3121b, roughness: 0.45, metalness: 0.2 }));
   const box = keep(new THREE.BoxGeometry(1, 1, 1));
-  // Side rails of the cabinet, and the apron that hides the drain
-  for (const [x0, x1, y0, y1, h] of [
-    [TABLE.left - 0.75, TABLE.left - 0.1, fieldY0, TABLE.arc.y + 4, 1.0],
-    [TABLE.right + 0.08, TABLE.right + 0.7, fieldY0, TABLE.arc.y + 4, 1.0],
-    [TABLE.left - 0.75, TABLE.right + 0.7, TABLE.arc.y + 4, TABLE.arc.y + 5.4, 1.0]
+  // The cabinet, as on the arcade: black side rails capped with chrome, red sides, a lockdown bar
+  const cabinetTop = TABLE.arc.y + 5.4;
+  for (const [x0, x1, y0, y1, h, material] of [
+    [TABLE.left - 0.75, TABLE.left - 0.1, fieldY0 - 0.6, cabinetTop, 1.0, wood],
+    [TABLE.right + 0.08, TABLE.right + 0.7, fieldY0 - 0.6, cabinetTop, 1.0, wood],
+    [TABLE.left - 0.75, TABLE.right + 0.7, TABLE.arc.y + 4, cabinetTop, 1.0, wood],
+    [TABLE.left - 1.15, TABLE.left - 0.75, fieldY0 - 0.6, cabinetTop, 1.25, cabinetRed],
+    [TABLE.right + 0.7, TABLE.right + 1.1, fieldY0 - 0.6, cabinetTop, 1.25, cabinetRed],
+    [TABLE.left - 0.75, TABLE.left - 0.45, fieldY0 - 0.6, cabinetTop, 1.06, chrome],
+    [TABLE.right + 0.4, TABLE.right + 0.7, fieldY0 - 0.6, cabinetTop, 1.06, chrome]
   ]) {
-    const m = new THREE.Mesh(box, wood);
+    const m = new THREE.Mesh(box, material);
     m.scale.set(x1 - x0, h, y1 - y0);
     m.position.set((x0 + x1) / 2, h / 2 - 0.15, -(y0 + y1) / 2);
     m.receiveShadow = true;
     group.add(m);
   }
+  const lockdown = new THREE.Mesh(box, chrome);
+  lockdown.scale.set(TABLE.right - TABLE.left + 2.2, 0.3, 0.6);
+  lockdown.position.set((TABLE.left + TABLE.right) / 2, 0.85, -(fieldY0 - 0.45));
+  group.add(lockdown);
   const apronTexture = keep(paintApron(THREE, t));
+  apronTexture.center.set(0.5, 0.5);
   const apron = new THREE.Mesh(box, [wood, wood, keep(new THREE.MeshStandardMaterial({ map: apronTexture, roughness: 0.6 })), wood, wood, wood]);
   apron.scale.set(TABLE.laneWall - TABLE.left - 0.1, 0.32, 1.9);
   apron.position.set((TABLE.left + TABLE.laneWall) / 2, 0.16, 0.65);
@@ -101,6 +112,29 @@ export function createView(THREE, ctx, table, options) {
 
   function floorY(floor) {
     return floor === 1 ? TABLE.upperHeight : 0;
+  }
+
+  // Black rubber rings round every post and lane guide end
+  const ringSpots = [];
+  for (const w of table.walls) {
+    const s = w.shape;
+    if (w.kind === "post") {
+      ringSpots.push([s.ax, s.ay, s.r, s.floor], [s.bx, s.by, s.rb, s.floor]);
+    } else if (w.kind === "rubber" && s.ax === s.bx && s.ay === s.by) {
+      ringSpots.push([s.ax, s.ay, s.r, s.floor]);
+    }
+  }
+  if (ringSpots.length) {
+    const rings = new THREE.InstancedMesh(keep(new THREE.TorusGeometry(1, 0.32, 8, 20)), keep(new THREE.MeshStandardMaterial({ color: 0x141418, roughness: 0.8 })), ringSpots.length);
+    ringSpots.forEach(([x, y, r, floor], i) => {
+      tmp.position.set(x, floorY(floor) + 0.28, -y);
+      tmp.rotation.set(Math.PI / 2, 0, 0);
+      tmp.scale.setScalar(r + 0.08);
+      tmp.updateMatrix();
+      rings.setMatrixAt(i, tmp.matrix);
+    });
+    rings.instanceMatrix.needsUpdate = true;
+    group.add(rings);
   }
 
   function placeWall(mesh, i, s, h) {
@@ -148,14 +182,15 @@ export function createView(THREE, ctx, table, options) {
 
   /* ---------- Pop bumpers: Apex triggers ---------- */
 
-  const capTexture = keep(paintBumperCap(THREE));
+  const capColors = [0xea001e, 0xffb020, 0x1b96ff];
   const bumperBody = keep(new THREE.MeshStandardMaterial({ color: 0xf3f6fa, roughness: 0.3 }));
-  const bumpers = table.parts.bumpers.map((b) => {
+  const bumpers = table.parts.bumpers.map((b, index) => {
+    const capTexture = keep(paintBumperCap(THREE, capColors[index % capColors.length]));
     const g = new THREE.Group();
     const base = new THREE.Mesh(keep(new THREE.CylinderGeometry(0.58, 0.62, 0.42, 24)), bumperBody);
     base.position.y = 0.21;
     base.castShadow = tier > 0;
-    const capMaterial = keep(new THREE.MeshStandardMaterial({ map: capTexture, emissive: 0x1b96ff, emissiveIntensity: 0.15, roughness: 0.35 }));
+    const capMaterial = keep(new THREE.MeshStandardMaterial({ map: capTexture, emissive: capColors[index % capColors.length], emissiveIntensity: 0.15, roughness: 0.25 }));
     const cap = new THREE.Mesh(keep(new THREE.CylinderGeometry(0.66, 0.66, 0.14, 24)), capMaterial);
     cap.position.y = 0.5;
     const ring = new THREE.Mesh(keep(new THREE.TorusGeometry(0.6, 0.05, 6, 24)), chrome);
@@ -286,38 +321,64 @@ export function createView(THREE, ctx, table, options) {
       pts.push(new THREE.Vector3(p.points[i], p.points[i + 2] + 0.42, -p.points[i + 1]));
     }
     const curve = new THREE.CatmullRomCurve3(pts, false, "centripetal");
-    const segments = Math.max(24, Math.round(p.total * 4));
-    // Two side rails at the ball's sides, one under it
-    for (const [side, drop] of [
-      [-0.46, 0],
-      [0.46, 0],
-      [0, -0.42]
-    ]) {
-      const offset = [];
-      for (let i = 0; i <= segments; i++) {
-        const u = i / segments;
-        const at = curve.getPointAt(u);
-        const tangent = curve.getTangentAt(u);
-        const sideV = new THREE.Vector3(-tangent.z, 0, tangent.x).normalize();
-        offset.push(at.clone().addScaledVector(sideV, side).add(new THREE.Vector3(0, drop, 0)));
+    // A ramp that climbs is plastic up to its crest (all the way for the
+    // production ramp, which lands on the Production floor); what comes down
+    // after it is a wire rail
+    let crest = 0;
+    if (plastic[name]) {
+      let top = -1;
+      for (let i = 0; i < p.points.length / 3; i++) {
+        if (p.points[i * 3 + 2] > top + 1e-6) {
+          top = p.points[i * 3 + 2];
+          crest = p.lengths[i] / p.total;
+        }
       }
-      const rail = new THREE.Mesh(keep(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(offset), segments, 0.045, 5, false)), rampMaterial);
-      rail.castShadow = tier > 1;
-      group.add(rail);
+      crest = name === "production" ? 1 : Math.min(1, crest + 0.06);
+      const ramp = new THREE.Mesh(keep(rampGeometry(THREE, curve, 0, crest, Math.max(20, Math.round(p.total * crest * 5)))), keep(new THREE.MeshStandardMaterial({ color: plastic[name], emissive: plastic[name], emissiveIntensity: 0.22, roughness: 0.15, metalness: 0.1, transparent: true, opacity: 0.62, side: THREE.DoubleSide, depthWrite: false })));
+      ramp.renderOrder = 2;
+      group.add(ramp);
+    }
+    if (crest < 1) {
+      const segments = Math.max(24, Math.round(p.total * (1 - crest) * 4));
+      // Two side rails at the ball's sides, one under it
+      for (const [side, drop] of [
+        [-0.46, 0],
+        [0.46, 0],
+        [0, -0.42]
+      ]) {
+        const offset = [];
+        for (let i = 0; i <= segments; i++) {
+          const u = crest + ((1 - crest) * i) / segments;
+          const at = curve.getPointAt(u);
+          const tangent = curve.getTangentAt(u);
+          const sideV = new THREE.Vector3(-tangent.z, 0, tangent.x).normalize();
+          offset.push(at.clone().addScaledVector(sideV, side).add(new THREE.Vector3(0, drop, 0)));
+        }
+        const rail = new THREE.Mesh(keep(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(offset), segments, 0.045, 5, false)), rampMaterial);
+        rail.castShadow = tier > 1;
+        group.add(rail);
+      }
     }
     if (plastic[name]) {
-      // A coloured plastic flap at the mouth, so the shot reads from the flippers
-      const flap = new THREE.Mesh(box, keep(new THREE.MeshStandardMaterial({ color: plastic[name], roughness: 0.2, transparent: true, opacity: 0.75, emissive: plastic[name], emissiveIntensity: 0.25 })));
-      flap.scale.set(1.36, 0.08, 1.6);
-      flap.position.set(p.points[3], p.points[5] + 0.62, -(p.points[1] + p.points[4]) / 2 - 0.2);
-      flap.rotation.x = Math.atan2(p.points[5] - p.points[2], p.points[4] - p.points[1]);
-      group.add(flap);
+      // A printed flag over the mouth of the ramp, high enough for the ball to pass under it
+      const flagTexture = keep(paintSign(THREE, t(name === "integration" ? "pbFieldIntegration" : name === "uat" ? "pbFieldUat" : "pbFieldProduction"), plastic[name]));
+      const flag = new THREE.Mesh(keep(new THREE.PlaneGeometry(1.35, 1.7)), keep(new THREE.MeshStandardMaterial({ map: flagTexture, transparent: true, roughness: 0.3, emissive: plastic[name], emissiveIntensity: 0.25, side: THREE.DoubleSide })));
+      flag.position.set(p.points[0], 2.25, -(p.points[1] + 1.2));
+      flag.rotation.x = -0.45;
+      group.add(flag);
+      // Its two chrome posts
+      for (const side of [-0.62, 0.62]) {
+        const leg = new THREE.Mesh(cylinder, chrome);
+        leg.scale.set(0.05, 2.2, 0.05);
+        leg.position.set(p.points[0] + side, 1.1, -(p.points[1] + 1.35));
+        group.add(leg);
+      }
     }
   }
 
   /* ---------- The Production floor ---------- */
 
-  const upperTexture = keep(paintUpper(THREE, t, tier));
+  const upperTexture = keep(paintUpper(THREE, t, table.lights, tier));
   const upperW = TABLE.upperRight - TABLE.upperLeft + 0.6;
   const upperL = TABLE.upperTop - TABLE.upperBottom;
   const deck = new THREE.Mesh(box, [wood, wood, keep(new THREE.MeshStandardMaterial({ map: upperTexture, roughness: 0.5 })), wood, wood, wood]);
@@ -368,23 +429,69 @@ export function createView(THREE, ctx, table, options) {
   group.add(salesManager);
   let smShake = 0;
 
+  /* ---------- Toys and dome lights ---------- */
+
+  const toys = [];
+  // The Salesforce rocket and the org cloud stand at the back of the Production floor
+  const rocket = ctx.models.get("rocket", { height: 2.8 });
+  if (rocket) {
+    rocket.position.set(2.75, TABLE.upperHeight, -(TABLE.upperTop - 1.2));
+    rocket.rotation.y = -0.5;
+    group.add(rocket);
+    toys.push({ object: rocket, spin: 0, bob: 0.05, base: rocket.position.y });
+  }
+  const cloud = ctx.models.get("org-cloud", { width: 2.4 });
+  if (cloud) {
+    cloud.position.set(-2.6, TABLE.upperHeight + 0.9, -(TABLE.upperTop - 1.0));
+    group.add(cloud);
+    toys.push({ object: cloud, spin: 0, bob: 0.15, base: cloud.position.y });
+  }
+  // Vegetables float over the orbits, as the asteroids of the arcade tables do
+  for (const [name, x, y, h] of [
+    ["carrot", -4.5, 16.2, 1.7],
+    ["bell-pepper", 4.55, 15.6, 1.8]
+  ]) {
+    const veg = ctx.models.get(name, { height: 1.0 });
+    if (veg) {
+      veg.position.set(x, h, -y);
+      group.add(veg);
+      toys.push({ object: veg, spin: 0.6, bob: 0.12, base: h });
+    }
+  }
+  // Dome lights on the side rails and over the slingshots
+  const domeGeometry = keep(new THREE.SphereGeometry(1, 16, 10, 0, Math.PI * 2, 0, Math.PI / 2));
+  const domes = [
+    [TABLE.left - 0.42, 17.2, 1.05, 0xea001e],
+    [TABLE.right + 0.4, 17.2, 1.05, 0xffb020],
+    [TABLE.left - 0.42, 9.0, 1.05, 0x1b96ff],
+    [TABLE.right + 0.4, 9.0, 1.05, 0xea001e],
+    [-2.6, 6.0, 0.48, 0xffb020],
+    [2.6, 6.0, 0.48, 0x1b96ff]
+  ].map(([x, y, h, hue], i) => {
+    const material = keep(new THREE.MeshStandardMaterial({ color: hue, emissive: hue, emissiveIntensity: 0.3, roughness: 0.15, transparent: true, opacity: 0.9 }));
+    const dome = new THREE.Mesh(domeGeometry, material);
+    dome.scale.setScalar(h > 1 ? 0.28 : 0.2);
+    dome.position.set(x, h, -y);
+    group.add(dome);
+    return { material, phase: i * 1.3 };
+  });
+
   /* ---------- Lights ---------- */
 
   const lightMeshes = {};
-  const lightGeometry = {
-    round: keep(new THREE.CircleGeometry(1, 20)),
-    arrow: keep(arrowGeometry(THREE)),
-    star: keep(starGeometry(THREE)),
-    chevron: keep(chevronGeometry(THREE)),
-    bulb: keep(new THREE.CircleGeometry(1, 12))
-  };
-  const lightMaterial = keep(new THREE.MeshBasicMaterial({ toneMapped: false }));
+  const lightGeometry = {};
+  for (const shape of ["round", "delta", "hex", "star", "chevron", "bulb"]) {
+    lightGeometry[shape] = keep(insertGeometry(THREE, shape));
+  }
+  // An insert adds its light to the print under it: dark, the print shows; lit, it glows
+  const lightMaterial = keep(new THREE.MeshBasicMaterial({ toneMapped: false, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
+  const bulbMaterial = keep(new THREE.MeshBasicMaterial({ toneMapped: false }));
   for (const shape of Object.keys(lightGeometry)) {
     const list = table.lights.map((l, i) => ({ l, i })).filter((x) => x.l.shape === shape);
     if (!list.length) {
       continue;
     }
-    const mesh = new THREE.InstancedMesh(lightGeometry[shape], lightMaterial, list.length);
+    const mesh = new THREE.InstancedMesh(lightGeometry[shape], shape === "bulb" ? bulbMaterial : lightMaterial, list.length);
     list.forEach(({ l }, k) => {
       tmp.position.set(l.x, floorY(l.floor) + 0.015, -l.y);
       tmp.rotation.set(-Math.PI / 2, 0, -l.angle);
@@ -586,6 +693,13 @@ export function createView(THREE, ctx, table, options) {
     } else {
       spinner.rotation.x += (Math.round(spinner.rotation.x / Math.PI) * Math.PI - spinner.rotation.x) * Math.min(1, dt * 6);
     }
+    for (const toy of toys) {
+      toy.object.rotation.y += dt * toy.spin;
+      toy.object.position.y = toy.base + Math.sin(time * 1.6 + toy.base) * toy.bob;
+    }
+    for (const dome of domes) {
+      dome.material.emissiveIntensity = tilted ? 0 : showTime > 0 ? (Math.sin(time * 24 + dome.phase) > 0 ? 2.4 : 0.2) : 0.35 + Math.max(0, Math.sin(time * 2.2 + dome.phase)) * 0.9 + giFlash;
+    }
     // The rabbit walks and hops, the Sales Manager shakes his head
     rabbit.position.x = rabbitShape.ax;
     rabbitHop = Math.max(0, rabbitHop - dt * 3);
@@ -619,6 +733,10 @@ export function createView(THREE, ctx, table, options) {
         }
         if (tilted && role.kind !== "gi") {
           level = 0.05;
+        }
+        // Dark inserts add almost nothing: their print shows
+        if (role.kind !== "gi" && level < 0.3) {
+          level *= 0.25;
         }
         color.setHex(l.color).multiplyScalar(level * (level > 0.5 ? 1.6 : 1));
         mesh.setColorAt(k, color);
@@ -709,191 +827,62 @@ function lightLevel(mode, time) {
   return 0.14;
 }
 
-function chevronGeometry(THREE) {
-  const shape = new THREE.Shape();
-  shape.moveTo(0, 0.9);
-  shape.lineTo(1, -0.2);
-  shape.lineTo(0.62, -0.55);
-  shape.lineTo(0, 0.12);
-  shape.lineTo(-0.62, -0.55);
-  shape.lineTo(-1, -0.2);
-  shape.closePath();
-  return new THREE.ShapeGeometry(shape);
-}
-
-function arrowGeometry(THREE) {
-  const shape = new THREE.Shape();
-  shape.moveTo(0, 1);
-  shape.lineTo(0.8, -0.2);
-  shape.lineTo(0.3, -0.2);
-  shape.lineTo(0.3, -0.9);
-  shape.lineTo(-0.3, -0.9);
-  shape.lineTo(-0.3, -0.2);
-  shape.lineTo(-0.8, -0.2);
-  shape.closePath();
-  return new THREE.ShapeGeometry(shape);
-}
-
-function starGeometry(THREE) {
-  const shape = new THREE.Shape();
-  for (let i = 0; i < 10; i++) {
-    const r = i % 2 === 0 ? 1 : 0.45;
-    const a = Math.PI / 2 + (i * Math.PI) / 5;
-    if (i === 0) {
-      shape.moveTo(Math.cos(a) * r, Math.sin(a) * r);
-    } else {
-      shape.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+/**
+ * A plastic ramp along a curve, from u0 to u1 of its length: a floor under the
+ * ball and a wall on each side, with a chrome-white lip along their tops.
+ */
+function rampGeometry(THREE, curve, u0, u1, segments) {
+  const HALF = 0.56;
+  const FLOOR = -0.44;
+  const WALL = 0.42;
+  const positions = [];
+  const at = new THREE.Vector3();
+  const tangent = new THREE.Vector3();
+  const side = new THREE.Vector3();
+  const rows = [];
+  for (let i = 0; i <= segments; i++) {
+    const u = u0 + ((u1 - u0) * i) / segments;
+    curve.getPointAt(u, at);
+    curve.getTangentAt(u, tangent);
+    side.set(-tangent.z, 0, tangent.x).normalize();
+    const floorY = at.y + FLOOR;
+    rows.push([
+      [at.x - side.x * HALF, floorY + WALL, at.z - side.z * HALF],
+      [at.x - side.x * HALF, floorY, at.z - side.z * HALF],
+      [at.x + side.x * HALF, floorY, at.z + side.z * HALF],
+      [at.x + side.x * HALF, floorY + WALL, at.z + side.z * HALF]
+    ]);
+  }
+  // Three strips: the left wall, the floor, the right wall
+  for (let i = 0; i < segments; i++) {
+    for (let k = 0; k < 3; k++) {
+      const a = rows[i][k];
+      const b = rows[i][k + 1];
+      const c = rows[i + 1][k];
+      const d = rows[i + 1][k + 1];
+      positions.push(...a, ...c, ...b, ...b, ...c, ...d);
     }
   }
-  shape.closePath();
-  return new THREE.ShapeGeometry(shape);
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.computeVertexNormals();
+  return geometry;
 }
 
-/* ---------- Pictures ---------- */
-
-function canvasTexture(THREE, canvas, tier) {
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.anisotropy = tier > 1 ? 8 : 2;
-  return texture;
-}
-
-/** The playfield, painted: the pipeline, the shot names, the mission ring, the inserts' labels. */
-function paintField(THREE, t, width, length, y0, tier) {
-  const scale = tier > 0 ? 96 : 64;
-  const canvas = document.createElement("canvas");
-  canvas.width = Math.round(width * scale);
-  canvas.height = Math.round(length * scale);
-  const c = canvas.getContext("2d");
-  const X = (x) => (x - (TABLE.left - 0.2)) * scale;
-  const Y = (y) => canvas.height - (y - y0) * scale;
-  const g = c.createLinearGradient(0, canvas.height, 0, 0);
-  g.addColorStop(0, "#021b3d");
-  g.addColorStop(0.45, SLDS.navy);
-  g.addColorStop(1, "#0b4f9c");
-  c.fillStyle = g;
-  c.fillRect(0, 0, canvas.width, canvas.height);
-  // A circuit of thin lines, the cloud behind the pipeline
-  c.strokeStyle = "rgba(27,150,255,0.14)";
-  c.lineWidth = scale * 0.03;
-  for (let y = 0; y < 21; y += 1.5) {
-    c.beginPath();
-    c.moveTo(X(-5), Y(y));
-    c.lineTo(X(5), Y(y + 0.6));
-    c.stroke();
+/** A flat insert of any shape of art.js, one unit across. */
+function insertGeometry(THREE, shape) {
+  const pts = shapePoints(shape);
+  if (!pts) {
+    return new THREE.CircleGeometry(1, shape === "bulb" ? 12 : 24);
   }
-  c.fillStyle = "rgba(255,255,255,0.06)";
-  for (const [x, y, r] of [
-    [-2, 16, 3.2],
-    [2.4, 12.5, 2.6],
-    [-1, 6.5, 3.6]
-  ]) {
-    c.beginPath();
-    c.arc(X(x), Y(y), r * scale, 0, Math.PI * 2);
-    c.fill();
+  const outline = new THREE.Shape();
+  for (let i = 0; i < pts.length; i += 2) {
+    if (i === 0) {
+      outline.moveTo(pts[i], pts[i + 1]);
+    } else {
+      outline.lineTo(pts[i], pts[i + 1]);
+    }
   }
-  // The pipeline road from the flippers up to production
-  c.strokeStyle = "rgba(255,255,255,0.18)";
-  c.lineWidth = scale * 0.5;
-  c.lineCap = "round";
-  c.beginPath();
-  c.moveTo(X(0), Y(2.2));
-  c.bezierCurveTo(X(-2.5), Y(7), X(2.5), Y(9), X(0), Y(12.3));
-  c.stroke();
-  c.textAlign = "center";
-  c.textBaseline = "middle";
-  const label = (text, x, y, size, colorName, angle) => {
-    c.save();
-    c.translate(X(x), Y(y));
-    c.rotate(angle || 0);
-    c.fillStyle = colorName;
-    fitText(c, text, 0, 0, scale * 2.6, size * scale, "800");
-    c.restore();
-  };
-  label(t("pbFieldIntegration"), -3.0, 9.3, 0.36, "#9fd4ff");
-  label(t("pbFieldUat"), 3.0, 9.3, 0.36, "#8ff0e4");
-  label(t("pbFieldPreprod"), -4.47, 8.1, 0.24, "#d8b8ff", -Math.PI / 2);
-  label(t("pbFieldProduction"), 0, 11.15, 0.32, "#a8f0b5");
-  label(t("pbFieldPullRequest"), -1.55, 12.15, 0.22, "#ffd0a8");
-  label(t("pbFieldRecentChanges"), -4.2, 8.35, 0.2, "#9fd4ff", -Math.PI / 2);
-  label(t("pbFieldChecks"), 4.25, 8.1, 0.2, "#a8f0b5", -Math.PI / 2);
-  label(t("pbFieldRollback"), -4.42, 3.2, 0.2, "#ffb3bd");
-  label(t("pbFieldBallSave"), 0, 0.45, 0.2, "#8ff0e4");
-  label(t("pbFieldExtraBall"), 0, 7.95, 0.2, "#ffd0a8");
-  label(t("pbFieldNote"), 0, 5.85, 0.18, "#ffd0a8");
-  label(t("pbFieldDeploy"), -3.0, 7.4, 0.17, "#ffd0a8");
-  label(t("pbFieldBonus"), 0, 4.7, 0.16, "#9fd4ff");
-  // The mission ring, numbered like the worlds
-  for (let i = 0; i < 10; i++) {
-    const a = Math.PI * (0.15 + (0.7 * i) / 9);
-    const x = Math.cos(Math.PI - a) * 2.1;
-    const y = 6.6 + Math.sin(a) * 1.15;
-    c.fillStyle = "rgba(255,255,255,0.8)";
-    font(c, Math.round(scale * 0.2), "800");
-    c.fillText(String(i), X(x * 1.18), Y(6.6 + (y - 6.6) * 1.35));
-  }
-  c.save();
-  c.translate(X(0), Y(3.4));
-  c.fillStyle = "rgba(255,255,255,0.85)";
-  fitText(c, t("pbTitle"), 0, 0, scale * 3.0, scale * 0.42, "800");
-  c.restore();
-  // The plunger lane
-  c.fillStyle = "rgba(0,0,0,0.35)";
-  c.fillRect(X(5.0), Y(14), X(6.1) - X(5.0), Y(-1.6) - Y(14));
-  return canvasTexture(THREE, canvas, tier);
-}
-
-function paintUpper(THREE, t, tier) {
-  const scale = tier > 0 ? 96 : 64;
-  const w = TABLE.upperRight - TABLE.upperLeft + 0.6;
-  const l = TABLE.upperTop - TABLE.upperBottom;
-  const canvas = document.createElement("canvas");
-  canvas.width = Math.round(w * scale);
-  canvas.height = Math.round(l * scale);
-  const c = canvas.getContext("2d");
-  const g = c.createLinearGradient(0, canvas.height, 0, 0);
-  g.addColorStop(0, "#0b3d1c");
-  g.addColorStop(1, "#2e844a");
-  c.fillStyle = g;
-  c.fillRect(0, 0, canvas.width, canvas.height);
-  c.textAlign = "center";
-  c.textBaseline = "middle";
-  c.fillStyle = "rgba(255,255,255,0.85)";
-  fitText(c, t("pbFieldProductionOrg"), canvas.width / 2, canvas.height * 0.62, canvas.width * 0.8, scale * 0.42, "800");
-  c.fillStyle = "rgba(255,255,255,0.6)";
-  fitText(c, t("pbFieldRelease"), canvas.width * 0.16, canvas.height * 0.2, canvas.width * 0.3, scale * 0.24, "800");
-  glyph(c, "cloud", canvas.width / 2, canvas.height * 0.4, scale * 0.9, "rgba(255,255,255,0.25)");
-  return canvasTexture(THREE, canvas, tier);
-}
-
-function paintApron(THREE, t) {
-  const canvas = document.createElement("canvas");
-  canvas.width = 1024;
-  canvas.height = 192;
-  const c = canvas.getContext("2d");
-  c.fillStyle = SLDS.brandDark;
-  c.fillRect(0, 0, canvas.width, canvas.height);
-  rounded(c, 24, 24, canvas.width - 48, canvas.height - 48, 28);
-  c.fillStyle = SLDS.navy;
-  c.fill();
-  c.fillStyle = "#ffffff";
-  c.textAlign = "center";
-  c.textBaseline = "middle";
-  fitText(c, "Cloudity · sfdx-hardis", canvas.width / 2, canvas.height / 2, canvas.width * 0.8, 64, "800");
-  void t;
-  return canvasTexture(THREE, canvas, 1);
-}
-
-function paintBumperCap(THREE) {
-  const canvas = document.createElement("canvas");
-  canvas.width = 256;
-  canvas.height = 256;
-  const c = canvas.getContext("2d");
-  const g = c.createRadialGradient(128, 128, 10, 128, 128, 128);
-  g.addColorStop(0, "#5ab0ff");
-  g.addColorStop(1, SLDS.brand);
-  c.fillStyle = g;
-  c.fillRect(0, 0, 256, 256);
-  glyph(c, "apex", 128, 128, 120, "#ffffff");
-  return canvasTexture(THREE, canvas, 1);
+  outline.closePath();
+  return new THREE.ShapeGeometry(outline);
 }

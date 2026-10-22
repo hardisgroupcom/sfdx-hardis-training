@@ -761,7 +761,12 @@ export function createRules(table, out, random) {
     for (let i = 0; i < MISSION_COUNT; i++) {
       setLight("mission" + i, s.done[i] ? ON : s.mission && s.mission.id === i ? FAST : rt.scoop && rt.scoop.start === "select" && s.select === i ? FAST : OFF);
     }
-    setLight("multiplier", s.bonusX > 1 ? ON : OFF);
+    // The ladder fills with the missions done on this level; Release day blinks once all ten are
+    const rungs = Math.floor((s.missionsThisLevel * 6) / MISSION_COUNT);
+    for (let i = 0; i < 6; i++) {
+      setLight("ladder" + i, i < rungs ? ON : i === rungs && !allDone() ? BLINK : OFF);
+    }
+    setLight("missionWizard", s.mission && s.mission.id === "wizard" ? FAST : allDone() ? BLINK : OFF);
     if (s.note) {
       setLight("note", FAST);
       setLight("shot-" + s.note.shot, FAST, 0xdd7a01);
