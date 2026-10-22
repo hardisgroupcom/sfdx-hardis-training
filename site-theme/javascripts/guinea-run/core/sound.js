@@ -306,6 +306,16 @@ export function createSound() {
       thump(0, 0.45);
       bell(pick(PENTATONIC), 0.01, 0.12, 0.18, 3);
     },
+    // World 3: the admin snatches a card out of the Pull Request, a paper swish and a low pluck
+    w3Grab() {
+      swish(0, 0.16, 3200, 700);
+      bell(196, 0.04, 0.1, 0.25, 2.5);
+    },
+    // His "manual step" timer in its last seconds: a dry clock tick
+    w3Tick() {
+      thump(0, 0.12);
+      bell(2637, 0, 0.05, 0.04, 2);
+    },
     // World 8's boss rises: a long swish up and three low bells climbing
     bossIn() {
       swish(0, 0.24, 200, 2400);

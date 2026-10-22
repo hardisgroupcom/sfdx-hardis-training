@@ -28,6 +28,9 @@
  * - the "git add ." admin at the end of world 2 throws everything onto the
  *   commit, a player who throws back all but the four files of US-014 beats
  *   him, and the commit cards follow to the end of the world
+ * - the "I'll do it by hand after" admin at the end of world 3 takes the
+ *   deployment actions out of the Pull Request and switches its base to main,
+ *   a player who puts each back in time beats him, and the check goes green
  * - a deployment action declared in the wrong place in world 3 comes back as
  *   a failing gate in world 6
  * - every lab a world card links to exists, in English and in French
@@ -443,6 +446,25 @@ try {
     const [dumped, back, staged] = await Promise.all(["dumped", "thrownback", "staged"].map((name) => data(page, name).then(Number)));
     expect(dumped > 0 && back > 0 && staged === 4, `he threw crates, the guinea pig threw the junk back and kept its 4 files (${dumped} thrown, ${back} back, ${staged} staged)`);
     expect(await waitState(page, "done"), `the commit cards follow and world 2 ends (${await data(page, "bosstime")} s of game time for the fight)`);
+    await page.context().close();
+  }
+
+  // 5e. World 3's admin, played by the world's own autoplay (each card he takes,
+  // and the base he switches to main, goes back a moment later): his bar runs
+  // out, the check goes green, and the world ends on its badge. A small window,
+  // so the software renderer plays the fight at about its real speed
+  {
+    const page = await newPage({ viewport: { width: 640, height: 430 } });
+    // guinea-at=4: straight to the admin, the deployment actions committed
+    expect(await openWorld(page, "en", 3, "&guinea-at=4"), "world 3 opens at its admin");
+    await page.click('.guinea-run [data-action="start"]');
+    await waitState(page, "playing");
+    await page.evaluate(() => window.__guineaRun.w3.autoplay(true));
+    expect(await settles(page, () => data(page, "boss"), "fight", 30000), 'the "I\'ll do it by hand after" admin comes at the end of world 3');
+    expect(await settles(page, () => data(page, "boss"), "beaten", 240000), "each action and the base put back takes all his health, and the check goes green");
+    const taken = Number(await data(page, "taken"));
+    expect(taken >= 8, `he took the deployment actions out and switched the base, and each went back (${taken} moves)`);
+    expect(await waitState(page, ["celebrating", "done"]), `world 3 ends on its badge after the admin (${await data(page, "bosstime")} s of game time for the fight)`);
     await page.context().close();
   }
 

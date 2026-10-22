@@ -5,15 +5,58 @@
  * 2. answer the deployment check: three real failures and their fixes
  * 3. declare the deployment actions the release needs, before or after the
  *    metadata deployment, in order, and leave out what is not an action
+ * 4. the "I'll do it by hand after" admin: he pulls the declared actions out
+ *    of the Pull Request and switches its base to main; the guinea pig puts
+ *    them back before his "manual step" timer runs out, until the check is green
  *
  * The plan is saved as it is committed, right or wrong: worlds 6 to 8 build
- * their gates from it, so a misplaced action comes back as a closed door.
+ * their gates from it, so a misplaced action comes back as a closed door. The
+ * admin only takes cards out for a moment: each goes back where it was
+ * declared, so the saved plan stays the one the player committed.
  */
 import { DEPLOYMENT_ACTIONS } from "../core/story.js";
 import { SLDS, fitText, glyph } from "../core/painter.js";
 
 // Everything here is touched or dragged: no pads (the keys still work)
 export const PADS = [];
+
+// The admin of the end wears one of the twenty faces of images/bosses, at random
+const BOSS_FACES = 20;
+// Each card or base put back takes this much of his bar
+const BOSS_HP = 8;
+// His "manual step" timer, in seconds: time for a thumb, a little less once he is angry
+const STEAL_TIME = 9;
+const STEAL_TIME_ANGRY = 7.5;
+// The card he goes for shakes this long before he takes it
+const WINDUP = 1.2;
+// A breath between two of his moves, a longer one after a lost heart
+const MOVE_GAP = 1.6;
+const MOVE_GAP_AFTER_LOSS = 3.2;
+// Each heart he takes gives every timer this much more, up to EASE_MAX
+const EASE_PER_LOSS = 2;
+const EASE_MAX = 4;
+// He walks in and says his line before his first move
+const ARRIVAL = 2.6;
+// A tip after a mistake at the admin shows this long (he waits meanwhile)
+const BOSS_TIP_MS = 6000;
+// After his last line, the world ends
+const LEAVING = 2.8;
+// The last seconds of a timer tick
+const TICK_FROM = 3;
+// His first moves, in order (the reference data is his line); then he picks at random
+const BOSS_SCRIPT = ["refdata", "deliverability", "base", "backfill", "schedule", "base", "refdata", "deliverability"];
+// The branches a Pull Request can target, in the order of the pipeline
+const BRANCHES = ["integration", "uat", "preprod", "main"];
+// A player out of hearts at the admin starts the next try at him, within this
+// long. Kept by the module, which outlives a world (each try is a fresh one)
+const BOSS_RETRY_MS = 15 * 60000;
+let bossRetry = null;
+// His face when its picture cannot load: a plain one, drawn here
+const PLAIN_FACE =
+  "data:image/svg+xml," +
+  encodeURIComponent(
+    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='#dfe9f5'/><circle cx='50' cy='56' r='30' fill='#f2c9a0'/><path d='M20 50 Q22 18 50 18 Q78 18 80 50 Q70 32 50 32 Q30 32 20 50Z' fill='#5b3a29'/><circle cx='39' cy='56' r='4' fill='#222'/><circle cx='61' cy='56' r='4' fill='#222'/><path d='M38 70 Q50 78 62 70' stroke='#222' stroke-width='3.5' fill='none' stroke-linecap='round'/></svg>"
+  );
 
 /** The Kenney office pack (desk, chair, plant, rug, bookcase); the Salesforce items always load. */
 export const MODELS = ["office"];
@@ -23,7 +66,7 @@ export const TEXTS = {
     intro: "US-014 is committed and published. Open its Pull Request and get it ready to merge.",
     how1: "Pick the right base branch for the Pull Request",
     how2: "The check is red: pick the fix for each error",
-    how3: "Sort the deployment actions: Before, After, or bin",
+    how3: "Sort the deployment actions, then keep an admin from taking them out",
     goal1: "Pick the base branch of your Pull Request",
     goal2: "The deployment check is red: pick the fix ({{n}} of 3)",
     goal3: "Sort the 5 cards: Before, After, or not an action",
@@ -96,13 +139,48 @@ export const TEXTS = {
     templateLine: "<!-- Victor: ...",
     mariiaPlan: "Deployment actions are defined with the Pull Request, and run during the deployment. Same file for everyone.",
     mariiaBase: "integration, then uat, then preprod, then main. A User Story always starts at the first one.",
-    selected: "Selected: {{label}}"
+    selected: "Selected: {{label}}",
+    bossName: "The \"I'll do it by hand after\" admin",
+    bossIn: "Deployment actions? Take them out, I'll do it all by hand after. It's faster!",
+    coachBoss: "He takes your actions out: put them back in time!",
+    coachBase: "He set the base to main: drag it back to integration!",
+    goalBoss: "Put back what he takes before his timer ends",
+    bossTray: "His list: by hand, after",
+    bossTrayEmpty: "Watch the card he reaches for",
+    bossKeys: "Drag it back to its column. Keys: up = Before, down = After, left / right pick a card, Enter = base back to integration.",
+    bossTouch: "Drag it back to its column, or tap it, then its column.",
+    manualIn: "Manual step in {{s}} s",
+    mergeIn: "Merged into main in {{s}} s",
+    baseLabel: "base:",
+    grab_refdata: "I'll load the data by hand after the deployment.",
+    grab_deliverability: "Email deliverability? I'll click it in Setup, if I remember.",
+    grab_backfill: "The backfill? I'll paste some Apex in the Developer Console.",
+    grab_schedule: "The nightly batch? I'll schedule it by hand, one day.",
+    grabBase: "Base main! Straight to production, it's faster.",
+    hit1: "Hey, I was going to do that!",
+    hit2: "Declared? Now everyone will see it...",
+    hit3: "Fine, but I know Setup by heart.",
+    hit4: "Who reads Pull Requests anyway?",
+    hitBase: "Integration first? So slow...",
+    bossAngry: "Fine. Two at once, then!",
+    bossDone: "Done. By hand. In one org.",
+    bossBeaten: "OK, OK... it's all in the Pull Request. I'll stop doing it by hand.",
+    bossLesson: "Declared in the Pull Request, the actions run in every org",
+    lostAction: "Done by hand: forgotten in the next org",
+    lostActionTip: "Done by hand in the integration org only: the uat, preprod and production orgs never get it. Declared in the Pull Request, an action runs in every org.",
+    lostBase: "Merged into main: production first!",
+    lostBaseTip: "Merged into main, US-014 skips integration, uat and preprod. The base branch is where the Pull Request is merged: a User Story starts in the integration branch.",
+    wrongColumn: "{{label}} goes back where you declared it: {{where}}.",
+    monitorBoss: "Undeclared step!",
+    monitorRunning: "Check running",
+    retryHint: "Try again starts at the admin.",
+    retryBoss: "Straight back to the admin: your actions are committed"
   },
   fr: {
     intro: "US-014 est commitée et publiée. Ouvrez sa Pull Request et préparez-la pour le merge.",
     how1: "Choisissez la bonne branch de base pour la Pull Request",
     how2: "Le contrôle est rouge : choisissez le correctif de chaque erreur",
-    how3: "Rangez les actions de déploiement : Avant, Après, ou poubelle",
+    how3: "Rangez les actions de déploiement, puis empêchez un admin de les retirer",
     goal1: "Choisissez la branch de base de votre Pull Request",
     goal2: "Le contrôle de déploiement est rouge : choisissez le correctif ({{n}} sur 3)",
     goal3: "Rangez les 5 cartes : Avant, Après, ou pas une action",
@@ -175,7 +253,42 @@ export const TEXTS = {
     templateLine: "<!-- Victor: ...",
     mariiaPlan: "Les actions de déploiement se définissent avec la Pull Request, et s'exécutent pendant le déploiement. Le même fichier pour tout le monde.",
     mariiaBase: "integration, puis uat, puis preprod, puis main. Une User Story commence toujours par la première.",
-    selected: "Sélectionnée : {{label}}"
+    selected: "Sélectionnée : {{label}}",
+    bossName: "L'admin « je le ferai à la main après »",
+    bossIn: "Des actions de déploiement ? Retirez-les, je ferai tout à la main après. C'est plus rapide !",
+    coachBoss: "Il retire vos actions : remettez-les à temps !",
+    coachBase: "Il a mis la base sur main : ramenez-la sur integration !",
+    goalBoss: "Remettez ce qu'il retire avant la fin de son minuteur",
+    bossTray: "Sa liste : à la main, après",
+    bossTrayEmpty: "Surveillez la carte qu'il vise",
+    bossKeys: "Glissez-la dans sa colonne. Clavier : haut = Before, bas = After, gauche / droite choisissent une carte, Entrée = base sur integration.",
+    bossTouch: "Glissez-la dans sa colonne, ou touchez-la, puis sa colonne.",
+    manualIn: "Étape manuelle dans {{s}} s",
+    mergeIn: "Mergée dans main dans {{s}} s",
+    baseLabel: "base :",
+    grab_refdata: "Je chargerai les données à la main après le déploiement.",
+    grab_deliverability: "La délivrabilité des emails ? Je cliquerai dans Setup, si j'y pense.",
+    grab_backfill: "Le backfill ? Je collerai un peu d'Apex dans la Developer Console.",
+    grab_schedule: "Le batch de nuit ? Je le planifierai à la main, un jour.",
+    grabBase: "Base main ! Direct en production, c'est plus rapide.",
+    hit1: "Hé, j'allais le faire !",
+    hit2: "Déclarée ? Maintenant tout le monde va la voir...",
+    hit3: "Bon, mais je connais Setup par cœur.",
+    hit4: "Qui lit les Pull Requests, de toute façon ?",
+    hitBase: "Integration d'abord ? Que c'est lent...",
+    bossAngry: "Très bien. Deux à la fois, alors !",
+    bossDone: "Fait. À la main. Dans une seule org.",
+    bossBeaten: "D'accord, d'accord... tout est dans la Pull Request. J'arrête de le faire à la main.",
+    bossLesson: "Déclarées dans la Pull Request, les actions s'exécutent dans chaque org",
+    lostAction: "Faite à la main : oubliée dans l'org suivante",
+    lostActionTip: "Faite à la main dans l'org d'integration seulement : les orgs uat, preprod et de production ne l'auront jamais. Déclarée dans la Pull Request, une action s'exécute dans chaque org.",
+    lostBase: "Mergée dans main : la production d'abord !",
+    lostBaseTip: "Mergée dans main, US-014 saute integration, uat et preprod. La branch de base, c'est là où la Pull Request est mergée : une User Story commence dans la branch integration.",
+    wrongColumn: "{{label}} retourne là où vous l'avez déclarée : {{where}}.",
+    monitorBoss: "Étape non déclarée !",
+    monitorRunning: "Contrôle en cours",
+    retryHint: "Réessayer reprend à l'admin.",
+    retryBoss: "Retour direct à l'admin : vos actions sont commitées"
   }
 };
 
@@ -249,6 +362,15 @@ export function createWorld(ctx) {
   let planTries = 0;
   let questionStart = 0;
   let elapsed = 0;
+  // The admin's face for this play: guinea-seed replays the same one
+  const faceUrl = new URL("../../../images/bosses/boss-" + (1 + Math.floor(ctx.random() * BOSS_FACES)) + ".svg", import.meta.url).href;
+  // A phone shows the Pull Request across the screen; from 1000 px the messages fit over the desk beside it
+  const narrow = window.matchMedia ? window.matchMedia("(max-width: 700px)") : { matches: false };
+  const roomy = window.matchMedia ? window.matchMedia("(min-width: 1000px)") : { matches: true };
+  // Textures and materials made here, freed by dispose (the painter frees its own)
+  const owned = [];
+  let disposed = false;
+  ctx.setData("pace", "1.00");
 
   /* ---------- The desk, in 3D ---------- */
 
@@ -332,7 +454,10 @@ export function createWorld(ctx) {
     wait: { color: SLDS.warningDark, glyph: "warning", key: "monitorWait" },
     fail: { color: SLDS.error, glyph: "error", key: "monitorFail" },
     green: { color: SLDS.success, glyph: "check", key: "monitorGreen" },
-    done: { color: SLDS.brand, glyph: "star", key: "monitorDone" }
+    done: { color: SLDS.brand, glyph: "star", key: "monitorDone" },
+    // The admin's fight: the check runs while everything is declared, warns while he holds something
+    running: { color: SLDS.brandDark, glyph: "loop", key: "monitorRunning" },
+    boss: { color: SLDS.warningDark, glyph: "warning", key: "monitorBoss" }
   };
   const screens = {};
   for (const [name, look] of Object.entries(MONITOR)) {
@@ -361,7 +486,7 @@ export function createWorld(ctx) {
   ]);
   const screenMaterial = monitor.material[4];
   // Above the monitor, the status of the check in 3D: it follows the screen
-  const STATUS = { wait: "check-warn", fail: "check-fail", green: "check-pass", done: "pull-request" };
+  const STATUS = { wait: "check-warn", fail: "check-fail", green: "check-pass", done: "pull-request", running: "check-warn", boss: "check-fail" };
   const statusItems = {};
   for (const [state, item] of Object.entries(STATUS)) {
     const thing = model(item, { height: 0.42, shadows: false }, 0.35, 1.98, -1.25);
@@ -408,6 +533,112 @@ export function createWorld(ctx) {
   pig.object.rotation.y = 0;
   pig.shadow.visible = false;
 
+  /* ---------- The admin of the end, in 3D: beside the desk, the card he took in his hand ---------- */
+
+  // Where he stands, behind the desk beside the monitor, and how big: a person next to a guinea pig.
+  // He comes in from the side of the plant, and leaves the same way
+  const ADMIN_HOME = { x: 0.75, z: -1.8 };
+  const ADMIN_OFF = 2.9;
+  const ADMIN_SCALE = 0.46;
+  const FACE_Y = 2.9;
+  const FACE_R = 0.8;
+
+  /** A plain face on the canvas, kept if the portrait cannot load. */
+  function drawPlainFace(c, size) {
+    const r = size / 2;
+    c.fillStyle = "#ffffff";
+    c.beginPath();
+    c.arc(r, r, r - 2, 0, Math.PI * 2);
+    c.fill();
+    c.fillStyle = "#f2c9a0";
+    c.beginPath();
+    c.arc(r, r * 1.08, r * 0.62, 0, Math.PI * 2);
+    c.fill();
+    c.fillStyle = "#5b3a29";
+    c.beginPath();
+    c.arc(r, r * 0.92, r * 0.64, Math.PI * 1.05, Math.PI * 1.95);
+    c.fill();
+    c.fillStyle = "#222222";
+    for (const dx of [-0.22, 0.22]) {
+      c.beginPath();
+      c.arc(r + dx * r, r * 1.08, r * 0.07, 0, Math.PI * 2);
+      c.fill();
+    }
+    c.strokeStyle = "#222222";
+    c.lineWidth = r * 0.07;
+    c.lineCap = "round";
+    c.beginPath();
+    c.arc(r, r * 1.2, r * 0.22, Math.PI * 0.2, Math.PI * 0.8);
+    c.stroke();
+  }
+
+  const faceTexture = paint.texture("w3-boss-face", 256, 256, (c, w) => drawPlainFace(c, w));
+  const faceMaterial = new THREE.MeshBasicMaterial({ map: faceTexture, alphaTest: 0.5, toneMapped: false });
+  owned.push(faceMaterial);
+  {
+    const image = new Image();
+    image.decoding = "async";
+    image.onload = () => {
+      if (disposed) {
+        return;
+      }
+      // A white ring around the face, as on the cards
+      const c = faceTexture.image.getContext("2d");
+      const size = faceTexture.image.width;
+      c.clearRect(0, 0, size, size);
+      c.fillStyle = "#ffffff";
+      c.beginPath();
+      c.arc(size / 2, size / 2, size / 2 - 2, 0, Math.PI * 2);
+      c.fill();
+      c.save();
+      c.beginPath();
+      c.arc(size / 2, size / 2, size / 2 - 14, 0, Math.PI * 2);
+      c.clip();
+      c.drawImage(image, 12, 12, size - 24, size - 24);
+      c.restore();
+      faceTexture.needsUpdate = true;
+    };
+    // A face that does not load keeps its plain drawing
+    image.onerror = () => {};
+    image.src = faceUrl;
+  }
+
+  const admin = (() => {
+    const group = new THREE.Group();
+    group.scale.setScalar(ADMIN_SCALE);
+    group.visible = false;
+    root.add(group);
+    const limb = paint.geometry("w3-admin-limb", () => new THREE.CapsuleGeometry(0.13, 0.62, 4, 10).translate(0, -0.42, 0));
+    const torso = paint.geometry("w3-admin-torso", () => new THREE.CapsuleGeometry(0.46, 0.55, 6, 14));
+    const disc = paint.geometry("w3-admin-face", () => new THREE.CircleGeometry(FACE_R, 40));
+    const paper = paint.geometry("w3-admin-paper", () => new THREE.BoxGeometry(0.62, 0.42, 0.04));
+    const trousers = paint.plain(0x22325a, { roughness: 0.7 });
+    const shirt = paint.plain(0xdd7a01, { roughness: 0.6 });
+    const part = (geometry, material, x, y, z, parent) => {
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.position.set(x, y, z);
+      (parent || group).add(mesh);
+      return mesh;
+    };
+    const legs = [-0.2, 0.2].map((x) => {
+      const leg = part(limb, trousers, x, 0.92, 0);
+      leg.scale.set(1.25, 1.1, 1.25);
+      return leg;
+    });
+    const body = part(torso, shirt, 0, 1.6, 0);
+    body.scale.set(1.1, 1, 0.75);
+    const left = part(limb, shirt, -0.6, 2.05, 0);
+    left.rotation.z = -0.25;
+    const right = part(limb, shirt, 0.6, 2.05, 0);
+    right.rotation.z = 0.25;
+    const face = part(disc, faceMaterial, 0, FACE_Y, 0.4);
+    face.renderOrder = 1;
+    // The card he took, in his hand, in the colour of its type
+    const held = part(paper, paint.plain(0xffffff), 0, -0.95, 0.18, right);
+    held.visible = false;
+    return { group, legs, left, right, face, held, x: ADMIN_OFF, reach: 0, flinch: 0, cheer: 0, heldType: "" };
+  })();
+
   /**
    * The desk seen from the side, the guinea pig in profile facing its monitor.
    * The view is shifted so the scene sits beside the Pull Request panel: on
@@ -436,11 +667,33 @@ export function createWorld(ctx) {
   /* ---------- The Pull Request page, in HTML ---------- */
 
   const page = el("div", "gr-w3 gr-scroll", hud.layer);
+  // The admin, once he comes: his face, his bar, what he says. It stays at the top while the panel scrolls
+  const bossNode = el("div", "gr-w3-boss", page);
+  bossNode.hidden = true;
+  const bossFace = el("img", "", bossNode);
+  bossFace.alt = "";
+  bossFace.decoding = "async";
+  bossFace.draggable = false;
+  bossFace.onerror = () => {
+    bossFace.onerror = null;
+    bossFace.src = PLAIN_FACE;
+  };
+  bossFace.src = faceUrl;
+  const bossMain = el("div", "gr-w3-boss-main", bossNode);
+  const bossTop = el("div", "gr-w3-boss-top", bossMain);
+  el("strong", "", bossTop, t("bossName"));
+  const bossFill = el("b", "", el("i", "", bossTop));
+  const bossSay = el("q", "", bossMain);
   const header = el("div", "gr-w3-head", page);
   el("span", "gr-w3-pr", header, "#14");
   el("strong", "", header, t("prTitle"));
   const steps = el("ol", "gr-w3-steps", page);
-  const stepNodes = ["step1", "step2", "step3"].map((key) => el("li", "", steps, t(key)));
+  const stepNodes = ["step1", "step2", "step3"].map((key, i) => {
+    const node = el("li", "", steps, t(key));
+    // A phone shows the step it is on; the others shrink to their number
+    node.setAttribute("data-n", String(i + 1));
+    return node;
+  });
   const body = el("div", "gr-w3-body", page);
   // Victor's note hides at the end of the Pull Request template
   const template = el("details", "gr-w3-template", page);
@@ -452,6 +705,51 @@ export function createWorld(ctx) {
       ctx.foundNote();
     }
   });
+
+  /*
+   * Below 1000 px the Pull Request takes the width of the screen, where the
+   * toast and the tip of the shell appear: while one shows over its top or its
+   * bottom, the panel makes room for it, so no card or column hides behind a
+   * message. From 1000 px the messages sit over the desk (see CSS).
+   */
+  const overlayNode = hud.layer.parentElement;
+  const messages = overlayNode ? [".gr-tipbar", ".gr-toast"].map((s) => overlayNode.querySelector(s)).filter(Boolean) : [];
+  let room = { top: 0, bottom: 0 };
+  function makeRoom() {
+    let top = 0;
+    let bottom = 0;
+    if (!roomy.matches && !disposed) {
+      const box = page.getBoundingClientRect();
+      const panelTop = box.top - room.top;
+      const panelBottom = box.bottom + room.bottom;
+      for (const node of messages) {
+        if (!node.classList.contains("is-shown") && !node.classList.contains("gr-toast--show")) {
+          continue;
+        }
+        const r = node.getBoundingClientRect();
+        if (!r.height || r.right < box.left || r.left > box.right) {
+          continue;
+        }
+        // Measured before its slide in ends: a few pixels more
+        if (r.top < panelTop + 160 && r.bottom > panelTop - 4) {
+          top = Math.max(top, r.bottom - panelTop + 18);
+        } else if (r.bottom > panelBottom - 160 && r.top < panelBottom + 4) {
+          bottom = Math.max(bottom, panelBottom - r.top + 18);
+        }
+      }
+    }
+    if (top !== room.top || bottom !== room.bottom) {
+      room = { top, bottom };
+      page.style.marginTop = top ? top + "px" : "";
+      page.style.marginBottom = bottom ? bottom + "px" : "";
+    }
+  }
+  const watcher = window.MutationObserver ? new MutationObserver(makeRoom) : null;
+  if (watcher) {
+    for (const node of messages) {
+      watcher.observe(node, { attributes: true, attributeFilter: ["class"] });
+    }
+  }
 
   let coached = -1;
   function setStep(index, n) {
@@ -585,10 +883,16 @@ export function createWorld(ctx) {
   let binned = [];
   let selected = 0;
 
+  // On a phone, Mariia's line sits in the board until the first card is placed: a chat bubble there would hide the cards
+  let mariiaInline = false;
+
   function showActions() {
     phase = "actions";
     setStep(2);
-    hud.chat("mariia", t("mariiaPlan"), 6000);
+    mariiaInline = narrow.matches;
+    if (!mariiaInline) {
+      hud.chat("mariia", t("mariiaPlan"), 6000);
+    }
     decoy.label = t("decoy");
     hand = DEPLOYMENT_ACTIONS.concat([decoy]).sort(() => ctx.random() - 0.5);
     before = [];
@@ -621,7 +925,10 @@ export function createWorld(ctx) {
       card.addEventListener("click", () => {
         selected = index;
         renderBoard();
-        hud.toast(t("selected", { label: action.label }), "power");
+        // A phone shows the choice on the card itself: a toast there would sit on the board
+        if (!narrow.matches) {
+          hud.toast(t("selected", { label: action.label }), "power");
+        }
       });
     } else {
       // A placed card goes back to the hand when tapped
@@ -642,6 +949,11 @@ export function createWorld(ctx) {
     el("p", "gr-w3-question", body, t("actionsTitle"));
     el("p", "gr-w3-hint", body, t("actionsHint"));
     el("p", "gr-w3-keys", body, t("actionsKeys"));
+    if (mariiaInline && hand.length === DEPLOYMENT_ACTIONS.length + 1) {
+      const line = el("div", "gr-w3-mariia", body);
+      el("span", "gr-avatar gr-avatar--mariia", line);
+      el("span", "", line, t("mariiaPlan"));
+    }
     const handRow = el("div", "gr-w3-hand", body);
     handRow.setAttribute("data-drop", "hand");
     hand.forEach((action, i) => cardNode(action, handRow, i, "hand"));
@@ -700,10 +1012,13 @@ export function createWorld(ctx) {
     return where === "before" ? before : where === "after" ? after : where === "bin" ? binned : hand;
   }
 
+  /** action: a card of the board, or "base" for the base branch the admin switched (his fight only). */
   function startDrag(event, action, card) {
     if (finished || event.button > 0) {
       return;
     }
+    // A drag left behind (a second finger, a lost pointer) ends here
+    finishDrag();
     drag = { action, card, x: event.clientX, y: event.clientY, id: event.pointerId, ghost: null, zone: null };
     card.setPointerCapture(event.pointerId);
     card.addEventListener("pointermove", moveDrag);
@@ -796,9 +1111,14 @@ export function createWorld(ctx) {
       return;
     }
     dragJustEnded = true;
+    // Long enough for the click a browser may send after the drop, on what is now under the finger
     window.setTimeout(() => {
       dragJustEnded = false;
-    }, 0);
+    }, 400);
+    if (phase === "boss") {
+      bossDrop(action, zone ? zone.getAttribute("data-drop") : "");
+      return;
+    }
     if (!zone) {
       renderBoard();
       return;
@@ -824,7 +1144,11 @@ export function createWorld(ctx) {
 
   function cancelDrag() {
     finishDrag();
-    renderBoard();
+    if (phase === "boss") {
+      renderBoss();
+    } else {
+      renderBoard();
+    }
   }
 
   function finishDrag() {
@@ -882,12 +1206,9 @@ export function createWorld(ctx) {
     }
     if (!mistakes.length) {
       happy();
-      hud.toast(t("planSaved"), "good");
       ctx.collect(300, t("planSaved"));
-      finished = true;
-      ctx.setData("phase", "done");
-      setMonitor("done");
-      ctx.finish(200);
+      // Committed: now the admin who does it all by hand comes for it
+      startBoss("", 200);
       return;
     }
     sad();
@@ -898,25 +1219,629 @@ export function createWorld(ctx) {
         node.classList.add("is-wrong");
       }
     }
-    hud.toast(t("planWrong"), "bad");
     planTries += 1;
     if (planTries >= 2) {
-      finished = true;
-      ctx.setData("phase", "done");
-      ctx.finish(0, t("planKept", { mistakes: mistakes.map((m) => m.action.label).join(", ") }));
+      hud.toast(t("planWrong"), "bad");
+      // Committed as it is: the admin fights over the plan the player declared
+      startBoss(t("planKept", { mistakes: mistakes.map((m) => m.action.label).join(", ") }), 0);
       return;
     }
-    ctx.loseAttempt(mistakes[0].text, mistakes[0].text);
+    // The toast says it is committed wrong, the tip says why
+    ctx.loseAttempt(t("planWrong"), mistakes[0].text);
+  }
+
+  /* ---------- Step 4: the "I'll do it by hand after" admin ---------- */
+
+  // stolen: the cards in his hands, each with its timer; baseTaken: the base he
+  // switched to main, with its timer; aim: the move he is about to make
+  const boss = { state: "away", hp: BOSS_HP, clock: 0, next: 0, script: 0, ease: 0, angry: false, taken: 0, leave: 0, info: "", bonus: 0, autoplay: false };
+  let stolen = [];
+  let baseTaken = null;
+  let aim = null;
+  let chosen = null;
+  let monitorState = "";
+  let baseTimerNode = null;
+  let baseTimerBar = null;
+  let baseTimerText = null;
+
+  // The check plays the admin by itself (window.__guineaRun only exists for checks)
+  if (window.__guineaRun) {
+    window.__guineaRun.w3 = {
+      autoplay(on) {
+        boss.autoplay = on !== false;
+      }
+    };
+  }
+
+  function startBoss(info, bonus) {
+    phase = "boss";
+    ctx.setData("phase", "boss");
+    Object.assign(boss, { state: "arriving", hp: BOSS_HP, clock: 0, next: 0.5, script: 0, ease: 0, angry: false, taken: 0, leave: 0, info: info || "", bonus: bonus || 0 });
+    stolen = [];
+    baseTaken = null;
+    aim = null;
+    chosen = null;
+    hand = [];
+    // A player who lost hearts on the way meets him with one back
+    if (ctx.attempts < 3) {
+      ctx.gainAttempt();
+    }
+    bossNode.hidden = false;
+    bossNode.classList.remove("is-angry", "is-beaten");
+    renderBossBar();
+    say(t("bossIn"));
+    // A phone keeps its top for the board: what to do is in the board itself
+    hud.goal(narrow.matches ? "" : t("goalBoss"));
+    if (roomy.matches) {
+      hud.coach(t("coachBoss"), 2600);
+    }
+    ctx.sound.play("bossIn");
+    ctx.setData("boss", "arriving");
+    ctx.setData("boss-hp", boss.hp);
+    ctx.setData("taken", 0);
+    ctx.setData("pace", "1.10");
+    admin.group.visible = true;
+    admin.x = ADMIN_OFF;
+    page.scrollTop = 0;
+    updateBossMonitor();
+    renderBoss();
+  }
+
+  /** The plan as committed, back on the board: a try that starts at the admin. */
+  function boardFromPlan() {
+    const plan = ctx.plan || { pre: ["deliverability"], post: ["backfill", "refdata", "schedule"] };
+    const byId = (id) => DEPLOYMENT_ACTIONS.find((a) => a.id === id);
+    decoy.label = t("decoy");
+    before = (plan.pre || []).map(byId).filter(Boolean);
+    after = (plan.post || []).map(byId).filter(Boolean);
+    binned = DEPLOYMENT_ACTIONS.filter((a) => !before.includes(a) && !after.includes(a)).concat([decoy]);
+    hand = [];
+  }
+
+  function renderBossBar() {
+    bossFill.style.width = Math.round((100 * boss.hp) / BOSS_HP) + "%";
+    ctx.setData("boss-hp", boss.hp);
+  }
+
+  /** What he says, in his strip: two lines kept for it, so nothing below moves. */
+  function say(text) {
+    bossSay.textContent = text;
+  }
+
+  function updateBossMonitor() {
+    const wanted = boss.state === "beaten" ? "green" : stolen.length || baseTaken ? "boss" : "running";
+    if (wanted !== monitorState) {
+      monitorState = wanted;
+      setMonitor(wanted);
+    }
+  }
+
+  /** Where a declared card sits: "before", "after", or "" (the bin, or the hand). */
+  function columnOf(action) {
+    return before.includes(action) ? "before" : after.includes(action) ? "after" : "";
+  }
+
+  function renderBoss() {
+    // A card under a moving finger is never redrawn (he holds still meanwhile); a press that has not moved yet is let go
+    if (drag && drag.ghost) {
+      return;
+    }
+    finishDrag();
+    body.replaceChildren();
+    baseTimerNode = baseTimerBar = baseTimerText = null;
+    if (boss.state === "beaten") {
+      const green = el("div", "gr-w3-green", body);
+      el("strong", "", green, t("checkGreen"));
+      el("span", "", green, t("bossLesson"));
+    }
+    // The base of the Pull Request, the branches in the order of the pipeline
+    const baseRow = el("div", "gr-w3-baserow", body);
+    el("span", "gr-w3-baselabel", baseRow, t("baseLabel"));
+    const chips = el("div", "gr-w3-branches", baseRow);
+    const base = baseTaken ? "main" : "integration";
+    for (const name of BRANCHES) {
+      const chip = el("button", "gr-w3-branch", chips, name);
+      chip.type = "button";
+      chip.setAttribute("data-drop", "base-" + name);
+      chip.classList.toggle("is-base", base === name);
+      if (baseTaken && name === "main") {
+        chip.classList.add("is-taken");
+        chip.addEventListener("pointerdown", (event) => startDrag(event, "base", chip));
+      }
+      if (baseTaken && name === "integration") {
+        chip.classList.add("is-home");
+      }
+      if (aim && aim.kind === "base" && name === "main") {
+        chip.classList.add("is-aimed");
+        grabber(chip);
+      }
+      chip.addEventListener("click", () => {
+        if (!dragJustEnded && name !== base) {
+          bossDrop("base", "base-" + name);
+        }
+      });
+    }
+    baseTimerNode = el("div", "gr-w3-basetimer", baseRow);
+    if (baseTaken) {
+      baseTimerNode.classList.add("is-on");
+      baseTimerBar = el("i", "", el("span", "gr-w3-timer", baseTimerNode));
+      baseTimerText = el("span", "gr-w3-timer-text", baseTimerNode);
+      baseTaken.shown = -1;
+    }
+    // His list: what he took, each with the time before he does it by hand (gone with him)
+    const tray = el("div", "gr-w3-tray", boss.state === "beaten" ? null : body);
+    el("p", "gr-w3-tray-head", tray, t("bossTray"));
+    const trayCards = el("div", "gr-w3-tray-cards", tray);
+    if (!stolen.length) {
+      el("p", "gr-w3-tray-empty", trayCards, t("bossTrayEmpty"));
+    }
+    for (const s of stolen) {
+      const card = el("button", "gr-w3-card gr-w3-stolen", trayCards);
+      card.type = "button";
+      card.style.setProperty("--gr-w3-type", TYPE_COLORS[s.action.type]);
+      card.classList.toggle("is-chosen", s === chosen && stolen.length > 1);
+      // His timer first, then what it is: the colour on its edge matches its hole in the column
+      s.text = el("span", "gr-w3-timer-text", card);
+      el("span", "gr-w3-label", card, s.action.label);
+      s.bar = el("i", "", el("span", "gr-w3-timer", card));
+      s.shown = -1;
+      card.addEventListener("pointerdown", (event) => startDrag(event, s.action, card));
+      card.addEventListener("click", () => {
+        if (dragJustEnded) {
+          return;
+        }
+        chosen = s;
+        renderBoss();
+      });
+    }
+    // The plan as declared: a dashed hole where he took a card
+    const board = el("div", "gr-w3-board gr-w3-board--boss", body);
+    for (const where of ["before", "after"]) {
+      const col = el("div", "gr-w3-col gr-w3-col--" + where, board);
+      col.setAttribute("data-drop", where);
+      el("div", "gr-w3-col-head", col, t(where));
+      col.addEventListener("click", () => {
+        if (!dragJustEnded && chosen) {
+          bossDrop(chosen.action, where);
+        }
+      });
+      listOf(where).forEach((action, i) => {
+        const row = el("div", "gr-w3-slot", col);
+        el("span", "gr-w3-order", row, String(i + 1));
+        const out = stolen.some((s) => s.action === action);
+        const card = el("div", out ? "gr-w3-card gr-w3-hole" : "gr-w3-card gr-w3-card--locked", row);
+        card.style.setProperty("--gr-w3-type", TYPE_COLORS[action.type]);
+        el("span", "gr-w3-type", card, action.type === "decoy" ? "?" : action.type);
+        el("span", "gr-w3-label", card, action.label);
+        if (aim && aim.action === action) {
+          card.classList.add("is-aimed");
+          grabber(card);
+        }
+      });
+    }
+    if (boss.state !== "beaten") {
+      el("p", "gr-w3-keys gr-w3-keys--boss", body, t(hud.touch ? "bossTouch" : "bossKeys"));
+    }
+    // A drag that scrolled the panel leaves the base under his strip: back to the top, where it all fits
+    if (page.scrollTop > 0 && baseRow.getBoundingClientRect().top < bossNode.getBoundingClientRect().bottom) {
+      page.scrollTop = 0;
+    }
+    tickBoss(0);
+    current = {
+      move(step) {
+        if (stolen.length > 1) {
+          chosen = stolen[(stolen.indexOf(chosen) + step + stolen.length) % stolen.length];
+          renderBoss();
+        }
+      },
+      confirm() {
+        if (baseTaken) {
+          bossDrop("base", "base-integration");
+        }
+      }
+    };
+  }
+
+  /** His small face on what he is about to take. */
+  function grabber(node) {
+    const face = el("img", "gr-w3-grabber", node);
+    face.alt = "";
+    face.draggable = false;
+    face.src = bossFace.src;
+  }
+
+  /** A card or the base, dropped (or tapped) somewhere during his fight. */
+  function bossDrop(item, where) {
+    if (boss.state !== "fight") {
+      renderBoss();
+      return;
+    }
+    if (item === "base") {
+      if (!baseTaken) {
+        renderBoss();
+      } else if (where === "base-integration") {
+        putBaseBack(true);
+      } else if (where === "base-uat" || where === "base-preprod") {
+        sad();
+        ctx.sound.play("wrong");
+        bossTip(t(where === "base-uat" ? "baseUatTip" : "basePreprodTip"));
+        renderBoss();
+      } else {
+        renderBoss();
+      }
+      return;
+    }
+    const s = stolen.find((x) => x.action === item);
+    if (!s) {
+      renderBoss();
+      return;
+    }
+    const from = columnOf(s.action);
+    if (where === from) {
+      putCardBack(s, true);
+    } else if (where === "before" || where === "after") {
+      // Not where it was declared: no heart lost, his timer keeps running
+      sad();
+      ctx.sound.play("wrong");
+      chosen = s;
+      bossTip(t("wrongColumn", { label: s.action.label, where: t(from) }));
+      renderBoss();
+    } else {
+      renderBoss();
+    }
+  }
+
+  function putCardBack(s, byPlayer) {
+    stolen.splice(stolen.indexOf(s), 1);
+    if (chosen === s || !stolen.includes(chosen)) {
+      chosen = stolen[0] || null;
+    }
+    if (byPlayer) {
+      hitBoss(s, t("hit" + (1 + Math.floor(ctx.random() * 4))));
+    }
+    ctx.setData("stolen", stolen.length + (baseTaken ? 1 : 0));
+    updateBossMonitor();
+    renderBoss();
+  }
+
+  function putBaseBack(byPlayer) {
+    const s = baseTaken;
+    baseTaken = null;
+    if (byPlayer) {
+      hitBoss(s, t("hitBase"));
+    }
+    ctx.setData("stolen", stolen.length);
+    updateBossMonitor();
+    renderBoss();
+  }
+
+  /** A move undone by the player: a bite out of his bar, more points the faster it was. */
+  function hitBoss(s, line) {
+    boss.hp = Math.max(0, boss.hp - 1);
+    happy();
+    ctx.collect(Math.round(80 + (120 * Math.max(0, s.left)) / s.total));
+    ctx.sound.play("bossHit");
+    admin.flinch = 0.45;
+    bossNode.classList.remove("is-hit");
+    void bossNode.offsetWidth;
+    bossNode.classList.add("is-hit");
+    say(line);
+    if (!boss.angry && boss.hp <= BOSS_HP / 2 && boss.hp > 0) {
+      boss.angry = true;
+      bossNode.classList.add("is-angry");
+      say(t("bossAngry"));
+      ctx.setData("pace", "1.22");
+    }
+    if (boss.hp <= 0) {
+      // Out of moves: what he still holds goes back, then the check runs green
+      aim = null;
+    }
+    renderBossBar();
+    boss.next = Math.max(boss.next, MOVE_GAP);
+  }
+
+  /** His next move: the script first, then at random, never what he already holds. */
+  function startMove() {
+    const free = before.concat(after).filter((a) => a.id !== "decoy" && !stolen.some((s) => s.action === a));
+    let move = boss.script < BOSS_SCRIPT.length ? BOSS_SCRIPT[boss.script] : ctx.random() < 0.25 ? "base" : "card";
+    boss.script += 1;
+    if (move === "base" && baseTaken) {
+      move = "card";
+    }
+    let action = null;
+    if (move !== "base") {
+      action = free.find((a) => a.id === move) || free[Math.floor(ctx.random() * free.length)] || null;
+      if (!action) {
+        if (baseTaken) {
+          // Nothing left to take: he tries again in a moment
+          boss.next = MOVE_GAP;
+          return;
+        }
+        move = "base";
+      }
+    }
+    aim = { kind: move === "base" ? "base" : "card", action, left: WINDUP };
+    ctx.sound.play("click");
+    renderBoss();
+  }
+
+  /** The move he aimed at: the card leaves its column for his list, or the base goes to main. */
+  function makeMove() {
+    const total = (boss.angry ? STEAL_TIME_ANGRY : STEAL_TIME) + boss.ease;
+    if (aim.kind === "base") {
+      baseTaken = { left: total, total, age: 0, shown: -1 };
+      say(t("grabBase"));
+      if (roomy.matches) {
+        hud.coach(t("coachBase"), 2200);
+      }
+    } else {
+      const s = { action: aim.action, left: total, total, age: 0, shown: -1 };
+      stolen.push(s);
+      if (!chosen) {
+        chosen = s;
+      }
+      say(t("grab_" + aim.action.id));
+    }
+    aim = null;
+    boss.taken += 1;
+    boss.next = MOVE_GAP;
+    admin.reach = 1;
+    ctx.sound.play("w3Grab");
+    ctx.setData("taken", boss.taken);
+    ctx.setData("stolen", stolen.length + (baseTaken ? 1 : 0));
+    updateBossMonitor();
+    renderBoss();
+  }
+
+  /** His timer ran out: he did it by hand, in one org. A heart, and it is declared again. */
+  function timeUp(s) {
+    if (s === baseTaken) {
+      baseTaken = null;
+      loseAtBoss(t("lostBase"), t("lostBaseTip"));
+    } else {
+      stolen.splice(stolen.indexOf(s), 1);
+      if (!stolen.includes(chosen)) {
+        chosen = stolen[0] || null;
+      }
+      loseAtBoss(t("lostAction"), t("lostActionTip"));
+    }
+    say(t("bossDone"));
+    sad();
+    boss.ease = Math.min(EASE_MAX, boss.ease + EASE_PER_LOSS);
+    boss.next = Math.max(boss.next, MOVE_GAP_AFTER_LOSS);
+    ctx.setData("stolen", stolen.length + (baseTaken ? 1 : 0));
+    updateBossMonitor();
+    renderBoss();
+  }
+
+  /** The last heart lost at the admin: the result card says the next try starts at him. */
+  function loseAtBoss(title, tip) {
+    const last = ctx.attempts <= 1;
+    ctx.loseAttempt(title, last ? tip + " " + t("retryHint") : tip);
+    if (!ctx.playing) {
+      bossRetry = { at: Date.now(), info: boss.info, bonus: boss.bonus };
+    } else {
+      // Long enough to read; he waits meanwhile (see updateBoss)
+      hud.tip(tip, BOSS_TIP_MS, title);
+    }
+  }
+
+  /** Why that was wrong, during his fight: he makes no new move while it shows. */
+  function bossTip(text) {
+    hud.tip(text, BOSS_TIP_MS, t("wrongShort"));
+  }
+
+  function tipShown() {
+    return Boolean(messages[0] && messages[0].classList.contains("is-shown"));
+  }
+
+  function beatBoss() {
+    boss.state = "beaten";
+    boss.leave = 0;
+    bossRetry = null;
+    ctx.setData("bosstime", Math.round(boss.clock));
+    ctx.setData("boss", "beaten");
+    ctx.setData("pace", "1.00");
+    bossNode.classList.remove("is-angry");
+    bossNode.classList.add("is-beaten");
+    say(t("bossBeaten"));
+    ctx.sound.play("bossDown");
+    ctx.collect(400, t("bossLesson"));
+    ctx.fx.burst(0, 1.8, -0.8, { count: 60, speed: 4, up: 5, life: 1.4 });
+    admin.cheer = 1;
+    updateBossMonitor();
+    hud.goal(narrow.matches ? "" : t("checkGreen"));
+    renderBoss();
+    page.scrollTop = 0;
+  }
+
+  /** His fight, each step of the frame. */
+  function updateBoss(dt) {
+    if (boss.state === "away") {
+      return;
+    }
+    boss.clock += dt;
+    if (boss.state === "arriving") {
+      if (boss.clock >= ARRIVAL) {
+        boss.state = "fight";
+        ctx.setData("boss", "fight");
+      }
+      return;
+    }
+    if (boss.state === "beaten") {
+      boss.leave += dt;
+      if (boss.leave >= LEAVING && !finished) {
+        finished = true;
+        ctx.setData("phase", "done");
+        setMonitor("done");
+        ctx.finish(boss.bonus, boss.info || undefined);
+      }
+      return;
+    }
+    // A card on its way under a finger holds him: nothing moves under it, nothing runs out
+    const holding = Boolean(drag && drag.ghost);
+    for (let i = 0; i < stolen.length; i++) {
+      if (runTimer(stolen[i], dt, holding)) {
+        return;
+      }
+    }
+    if (baseTaken && runTimer(baseTaken, dt, holding)) {
+      return;
+    }
+    // The check's autoplay puts each thing back a moment after he took it
+    if (boss.autoplay && !holding) {
+      if (baseTaken && baseTaken.age > 0.7) {
+        bossDrop("base", "base-integration");
+        return;
+      }
+      const s = stolen.find((x) => x.age > 0.7);
+      if (s) {
+        bossDrop(s.action, columnOf(s.action));
+        return;
+      }
+    }
+    if (aim) {
+      aim.left -= dt;
+      if (aim.left <= 0 && !holding) {
+        makeMove();
+      }
+    } else if (boss.hp > 0) {
+      // One thing at a time, two once he is angry
+      const pending = stolen.length + (baseTaken ? 1 : 0);
+      // While a tip says why, he waits: it is read, not raced
+      if (pending < (boss.angry ? 2 : 1) && !tipShown()) {
+        boss.next -= dt;
+        if (boss.next <= 0 && !holding) {
+          startMove();
+        }
+      }
+    } else if (!stolen.length && !baseTaken) {
+      beatBoss();
+      return;
+    }
+    tickBoss(dt);
+  }
+
+  /** One of his timers, a step on: true when it ran out (and the board changed). */
+  function runTimer(s, dt, holding) {
+    s.age += dt;
+    const whole = Math.ceil(s.left);
+    s.left -= dt;
+    if (s.left > 0 && s.left <= TICK_FROM && Math.ceil(s.left) < whole) {
+      ctx.sound.play("w3Tick");
+    }
+    if (s.left > 0) {
+      return false;
+    }
+    if (holding) {
+      s.left = 0.05;
+      return false;
+    }
+    timeUp(s);
+    return true;
+  }
+
+  /** The timers on screen: a bar and the seconds, the text only when a second goes. */
+  function tickBoss() {
+    for (const s of stolen) {
+      if (s.bar) {
+        s.bar.style.width = Math.max(0, (100 * s.left) / s.total).toFixed(1) + "%";
+        const n = Math.max(0, Math.ceil(s.left));
+        if (n !== s.shown) {
+          s.shown = n;
+          s.text.textContent = t("manualIn", { s: n });
+          s.text.parentElement.classList.toggle("is-late", n <= TICK_FROM);
+        }
+      }
+    }
+    if (baseTaken && baseTimerBar) {
+      baseTimerBar.style.width = Math.max(0, (100 * baseTaken.left) / baseTaken.total).toFixed(1) + "%";
+      const n = Math.max(0, Math.ceil(baseTaken.left));
+      if (n !== baseTaken.shown) {
+        baseTaken.shown = n;
+        baseTimerText.textContent = t("mergeIn", { s: n });
+        baseTimerNode.classList.toggle("is-late", n <= TICK_FROM);
+      }
+    }
+  }
+
+  /** The admin in 3D: he walks in, reaches for the desk when he takes something, slumps when hit, leaves when beaten. */
+  function updateAdmin(dt, time) {
+    const a = admin;
+    if (!a.group.visible) {
+      return;
+    }
+    const target = boss.state === "beaten" && boss.leave > 1.3 ? ADMIN_OFF + 0.6 : ADMIN_HOME.x;
+    const speed = boss.state === "beaten" ? 1.6 : 2.4;
+    const step = Math.max(-speed * dt, Math.min(speed * dt, target - a.x));
+    a.x += step;
+    const walking = Math.abs(step) > 1e-4;
+    const z = ADMIN_HOME.z;
+    a.group.position.set(a.x, walking ? Math.abs(Math.sin(time * 9)) * 0.03 : 0, z);
+    // He looks at the camera, and turns to the desk to reach for it
+    const camera = ctx.camera.position;
+    const toCamera = Math.atan2(camera.x - a.x, camera.z - z);
+    const toDesk = Math.atan2(-a.x, -0.9 - z);
+    const reaching = aim ? 1 : a.reach;
+    a.group.rotation.y = toCamera + (toDesk - toCamera) * 0.35 * reaching;
+    a.legs[0].rotation.x = walking ? Math.sin(time * 9) * 0.5 : 0;
+    a.legs[1].rotation.x = walking ? -Math.sin(time * 9) * 0.5 : 0;
+    a.reach = Math.max(0, a.reach - dt * 1.4);
+    a.flinch = Math.max(0, a.flinch - dt);
+    a.cheer = Math.max(0, a.cheer - dt * 0.4);
+    // Aiming: his hand hovers over the desk; holding: the card in his raised hand
+    const holdingCard = stolen.length > 0;
+    const shake = aim ? Math.sin(time * 16) * 0.12 : 0;
+    a.right.rotation.x = -(aim ? 1.3 + shake : holdingCard ? 0.9 : 0) - a.reach * 0.6;
+    a.right.rotation.z = 0.25 + (boss.state === "beaten" ? 2.4 * Math.min(1, boss.leave * 2) : 0);
+    a.left.rotation.z = -0.25 - (boss.state === "beaten" ? 2.4 * Math.min(1, boss.leave * 2) : 0);
+    a.held.visible = holdingCard;
+    if (holdingCard && a.heldType !== stolen[0].action.type) {
+      a.heldType = stolen[0].action.type;
+      a.held.material = paint.plain(TYPE_COLORS[a.heldType]);
+    }
+    const squash = a.flinch > 0 ? 1 - Math.sin((a.flinch / 0.45) * Math.PI) * 0.12 : 1;
+    a.group.scale.set(ADMIN_SCALE * (2 - squash), ADMIN_SCALE * squash, ADMIN_SCALE);
+    a.face.rotation.z = a.flinch > 0 ? Math.sin(time * 30) * 0.15 : boss.angry && boss.state === "fight" ? Math.sin(time * 6) * 0.06 : 0;
+    if (boss.state === "beaten" && a.x >= ADMIN_OFF + 0.55) {
+      a.group.visible = false;
+    }
   }
 
   showBase();
   placeCamera(0);
 
   return {
-    start() {},
+    start() {
+      // guinea-at (a check setting): 2 the deployment check, 3 the deployment actions, 4 the admin
+      const at = ctx.params.startAt;
+      const retry = !at && bossRetry && Date.now() - bossRetry.at < BOSS_RETRY_MS;
+      if (at === 2) {
+        showQuestion(0);
+      } else if (at === 3) {
+        showActions();
+      } else if (at >= 4 || retry) {
+        const { info, bonus } = retry ? bossRetry : { info: "", bonus: 200 };
+        bossRetry = null;
+        boardFromPlan();
+        ctx.setData("fixed", QUESTIONS.length);
+        phase = "actions";
+        // Steps 1 to 3 are behind: no coach line for them
+        coached = 2;
+        setStep(2);
+        startBoss(info, bonus);
+        if (retry) {
+          // A little easier too, as after any lost heart
+          boss.ease = EASE_PER_LOSS;
+          hud.toast(t("retryBoss"), "power");
+        }
+      }
+    },
     update(dt, time) {
       elapsed += dt;
       placeCamera(time);
+      updateBoss(dt);
+      updateAdmin(dt, time);
       bounce = Math.max(0, bounce - dt);
       wobble = Math.max(0, wobble - dt);
       pig.object.position.y = SEAT + Math.sin(bounce * Math.PI * 2) * 0.12 * (bounce > 0 ? 1 : 0);
@@ -952,6 +1877,17 @@ export function createWorld(ctx) {
         }
         return;
       }
+      if (phase === "boss") {
+        // Up and down put the chosen card back Before or After, Enter the base
+        if (name === "left" || name === "right") {
+          current.move(name === "left" ? -1 : 1);
+        } else if ((name === "jump" || name === "duck") && chosen) {
+          bossDrop(chosen.action, name === "jump" ? "before" : "after");
+        } else if (name === "confirm") {
+          current.confirm();
+        }
+        return;
+      }
       if (name === "jump" || name === "left") {
         current.move(-1);
       } else if (name === "duck" || name === "right") {
@@ -961,6 +1897,23 @@ export function createWorld(ctx) {
       }
     },
     dispose() {
+      disposed = true;
+      finishDrag();
+      if (watcher) {
+        watcher.disconnect();
+      }
+      for (const thing of owned) {
+        thing.dispose();
+      }
+      if (window.__guineaRun && window.__guineaRun.w3) {
+        delete window.__guineaRun.w3;
+      }
+      ctx.setData("pace", "1.00");
+      for (const name of ["boss", "boss-hp", "taken", "stolen", "bosstime"]) {
+        if (overlayNode) {
+          overlayNode.removeAttribute("data-" + name);
+        }
+      }
       page.remove();
       pig.setSitting(false);
       pig.shadow.visible = true;
@@ -1012,6 +1965,8 @@ export const CSS = `
   background: #ffffff;
   box-shadow: 0 2px 20px rgba(3, 45, 96, 0.35);
   touch-action: pan-y;
+  /* It makes room for a message of the shell below 1000 px (see makeRoom) */
+  transition: margin 0.15s ease-out;
 }
 .guinea-run[data-state="intro"] .gr-w3,
 .guinea-run[data-state="paused"] .gr-w3,
@@ -1192,7 +2147,10 @@ export const CSS = `
   background: #f3f3f3;
 }
 .guinea-run .gr-w3-col-head {
-  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
   padding: 4px 6px;
   border: 1px solid #0176d3;
   border-radius: 4px;
@@ -1201,6 +2159,7 @@ export const CSS = `
   font: inherit;
   font-size: 12px;
   font-weight: 800;
+  text-align: center;
   cursor: pointer;
   touch-action: manipulation;
 }
@@ -1240,14 +2199,19 @@ export const CSS = `
   justify-content: flex-end;
   margin-top: 10px;
 }
+.guinea-run .gr-w3 .gr-button {
+  min-height: 44px;
+}
 .guinea-run .gr-w3-template {
   margin: 0 14px 12px;
   color: #444444;
   font-size: 12px;
 }
 .guinea-run .gr-w3-template summary {
-  min-height: 32px;
-  padding: 6px 0;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
   cursor: pointer;
 }
 .guinea-run .gr-w3-template pre {
@@ -1257,6 +2221,369 @@ export const CSS = `
   font-family: "JetBrains Mono", consolas, monospace;
   white-space: pre-wrap;
 }
+
+/* Mariia's line inside the board, on a phone */
+.guinea-run .gr-w3-mariia {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0 0 6px;
+  padding: 6px 8px;
+  border: 1px solid #c9c9c9;
+  border-radius: 12px 12px 12px 2px;
+  background: #ffffff;
+  color: #181818;
+  font-size: 12px;
+  line-height: 1.3;
+}
+.guinea-run .gr-w3-mariia .gr-avatar {
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+}
+
+/* The admin of the end, at the top of the Pull Request: it stays there while the panel scrolls */
+.guinea-run .gr-w3-boss {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 10px;
+  border-bottom: 3px solid #dd7a01;
+  background: #032d60;
+  color: #ffffff;
+  animation: gr-w3-in 0.4s ease-out;
+}
+.guinea-run .gr-w3-boss[hidden] {
+  display: none;
+}
+.guinea-run .gr-w3-boss img {
+  flex: 0 0 56px;
+  width: 56px;
+  height: 56px;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  background: #ffffff;
+}
+.guinea-run .gr-w3-boss.is-hit img {
+  animation: gr-w3-flinch 0.45s ease-out;
+}
+.guinea-run .gr-w3-boss-main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.guinea-run .gr-w3-boss-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 8px;
+  align-items: center;
+}
+.guinea-run .gr-w3-boss strong {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.guinea-run .gr-w3-boss i {
+  display: block;
+  flex: 1 0 90px;
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+}
+.guinea-run .gr-w3-boss b {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ff5d2d, #ea001e);
+  transition: width 0.25s;
+}
+.guinea-run .gr-w3-boss.is-angry b {
+  background: linear-gradient(90deg, #ea001e, #ba0517);
+  animation: gr-w3-blink 0.6s infinite;
+}
+.guinea-run .gr-w3-boss q {
+  display: block;
+  box-sizing: border-box;
+  min-height: calc(2.6em + 6px);
+  padding: 3px 8px;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #032d60;
+  font-size: 12.5px;
+  line-height: 1.3;
+  quotes: none;
+}
+.guinea-run .gr-w3-boss.is-beaten {
+  border-bottom-color: #194e31;
+  background: #2e844a;
+}
+
+/* The base of the Pull Request during his fight: the branches in the order of the pipeline */
+.guinea-run .gr-w3-baserow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: center;
+  margin: 0 0 6px;
+}
+.guinea-run .gr-w3-baselabel {
+  color: #444444;
+  font-size: 13px;
+  font-weight: 800;
+}
+.guinea-run .gr-w3-branches {
+  display: flex;
+  flex: 1 1 240px;
+  gap: 4px;
+  min-width: 0;
+}
+.guinea-run .gr-w3-branch {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 4px 6px;
+  border: 1px solid #c9c9c9;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #444444;
+  font: inherit;
+  font-family: "JetBrains Mono", consolas, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.guinea-run .gr-w3-branch.is-base {
+  border-color: #2e844a;
+  background: #2e844a;
+  color: #ffffff;
+}
+.guinea-run .gr-w3 .gr-w3-branch.is-taken {
+  border-color: #ba0517;
+  background: #ea001e;
+  color: #ffffff;
+  cursor: grab;
+  touch-action: none !important;
+  -webkit-user-select: none;
+  user-select: none;
+  animation: gr-w3-throb 0.9s infinite;
+}
+.guinea-run .gr-w3-branch.is-home {
+  border: 2px dashed #2e844a;
+  background: #eef8f0;
+  color: #194e31;
+}
+.guinea-run .gr-w3-basetimer {
+  display: flex;
+  flex: 1 0 100%;
+  gap: 8px;
+  align-items: center;
+  min-height: 16px;
+}
+.guinea-run .gr-w3-basetimer .gr-w3-timer {
+  flex: 1 1 auto;
+  margin: 0;
+}
+
+/* His list: what he took, each with the time left before he does it by hand */
+.guinea-run .gr-w3-tray {
+  margin: 0 0 8px;
+  padding: 6px;
+  border: 2px dashed #dd7a01;
+  border-radius: 6px;
+  background: #fff4e5;
+}
+.guinea-run .gr-w3-tray-head {
+  margin: 0 0 4px;
+  color: #8c4b02;
+  font-size: 12px;
+  font-weight: 800;
+}
+.guinea-run .gr-w3-tray-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  min-height: 76px;
+}
+.guinea-run .gr-w3-tray-empty {
+  grid-column: 1 / -1;
+  align-self: center;
+  margin: 0;
+  color: #8c4b02;
+  font-size: 12.5px;
+  text-align: center;
+}
+.guinea-run .gr-w3-stolen {
+  box-shadow: 0 0 0 2px #ea001e;
+  animation: gr-w3-land 0.3s ease-out;
+}
+.guinea-run .gr-w3-stolen.is-chosen {
+  box-shadow: 0 0 0 3px #0176d3;
+}
+.guinea-run .gr-w3-timer {
+  display: block;
+  height: 6px;
+  margin-top: 4px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #fcd9d4;
+}
+.guinea-run .gr-w3-timer i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background: #dd7a01;
+}
+.guinea-run .gr-w3-timer-text {
+  color: #8c4b02;
+  font-size: 11.5px;
+  font-weight: 800;
+}
+.guinea-run .is-late .gr-w3-timer i {
+  background: #ea001e;
+}
+.guinea-run .is-late .gr-w3-timer-text {
+  color: #ba0517;
+}
+
+/* The plan during his fight: two columns, a dashed hole where he took a card */
+.guinea-run .gr-w3-board.gr-w3-board--boss {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.guinea-run .gr-w3-board--boss .gr-w3-col-head {
+  cursor: default;
+}
+.guinea-run .gr-w3 .gr-w3-card--locked,
+.guinea-run .gr-w3 .gr-w3-hole {
+  cursor: default;
+  /* Only what he took is dragged: a finger on the rest scrolls the panel */
+  touch-action: pan-y !important;
+}
+.guinea-run .gr-w3 .gr-w3-hole {
+  border: 2px dashed #ea001e;
+  background: #fef1ee;
+  cursor: default;
+}
+.guinea-run .gr-w3-hole > * {
+  opacity: 0.45;
+}
+.guinea-run .gr-w3-card.is-aimed,
+.guinea-run .gr-w3-branch.is-aimed {
+  position: relative;
+  box-shadow: 0 0 0 3px #ea001e;
+  animation: gr-w3-shake 0.18s infinite;
+}
+.guinea-run .gr-w3-grabber {
+  position: absolute;
+  top: -10px;
+  right: -6px;
+  width: 30px;
+  height: 30px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(3, 45, 96, 0.4);
+  pointer-events: none;
+}
+.guinea-run .gr-w3-green {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0 0 8px;
+  padding: 8px 10px;
+  border-left: 4px solid #2e844a;
+  background: #eef8f0;
+  color: #194e31;
+  font-size: 13px;
+}
+.guinea-run .gr-w3-green strong {
+  font-size: 14px;
+}
+.guinea-run .gr-w3-keys--boss {
+  margin: 8px 0 0;
+}
+
+@keyframes gr-w3-in {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+}
+@keyframes gr-w3-land {
+  from {
+    opacity: 0.4;
+    transform: translateY(-14px) scale(0.92);
+  }
+}
+@keyframes gr-w3-shake {
+  25% {
+    transform: translateX(-2px) rotate(-1deg);
+  }
+  75% {
+    transform: translateX(2px) rotate(1deg);
+  }
+}
+@keyframes gr-w3-throb {
+  50% {
+    transform: scale(1.06);
+  }
+}
+@keyframes gr-w3-flinch {
+  30% {
+    transform: rotate(-14deg) scale(0.9);
+  }
+  65% {
+    transform: rotate(8deg);
+  }
+}
+@keyframes gr-w3-blink {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* From 1000 px the messages of the shell sit over the desk, beside the Pull Request */
+@media (min-width: 1000px) {
+  .guinea-run[data-world="3"] .gr-toast,
+  .guinea-run[data-world="3"] .gr-tipbar,
+  .guinea-run[data-world="3"] .gr-coach {
+    left: calc((100% - 592px) / 2);
+    max-width: min(620px, calc(100% - 640px));
+  }
+  .guinea-run[data-world="3"] .gr-chat {
+    top: auto;
+    right: auto;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+    left: calc(env(safe-area-inset-left, 0px) + 16px);
+    width: min(320px, calc(100% - 640px));
+  }
+}
+
+/* Below 1000 px the toast and the tip take the width they need, not half the screen, so they stay short */
+@media (max-width: 999px) {
+  .guinea-run[data-world="3"] .gr-tipbar {
+    box-sizing: border-box;
+    width: calc(100vw - 24px);
+  }
+  .guinea-run[data-world="3"] .gr-toast {
+    width: max-content;
+    max-width: calc(100vw - 32px);
+  }
+}
+
 @media (max-width: 700px) {
   .guinea-run .gr-w3 {
     top: 42vh;
@@ -1265,9 +2592,6 @@ export const CSS = `
     width: auto;
     bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
   }
-  .guinea-run.gr-show-buttons .gr-w3 {
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 88px);
-  }
   .guinea-run .gr-w3-board {
     grid-template-columns: 1fr;
   }
@@ -1275,13 +2599,75 @@ export const CSS = `
     writing-mode: horizontal-tb;
     transform: none;
   }
+  /* A compact head: the title on one line, the steps other than this one as their number */
+  .guinea-run .gr-w3-head {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+  .guinea-run .gr-w3-head strong {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .guinea-run .gr-w3-steps {
+    padding: 6px 10px 0;
+  }
+  .guinea-run .gr-w3-steps li {
+    overflow: hidden;
+    padding: 4px 6px;
+    font-size: 11.5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .guinea-run .gr-w3-steps li:not(.is-current) {
+    flex: 0 0 30px;
+    font-size: 0;
+  }
+  .guinea-run .gr-w3-steps li:not(.is-current)::before {
+    content: attr(data-n);
+    font-size: 12px;
+  }
+  .guinea-run .gr-w3-steps li.is-done::before {
+    content: "\\2713";
+  }
+  .guinea-run .gr-w3-body {
+    padding: 8px 10px;
+  }
+  .guinea-run .gr-w3-question {
+    margin: 2px 0 6px;
+    font-size: 15px;
+  }
+  .guinea-run .gr-w3-error {
+    margin-bottom: 8px;
+    padding: 6px 8px;
+  }
+  .guinea-run .gr-w3-error code {
+    font-size: 11px;
+  }
+  .guinea-run .gr-w3-answers {
+    gap: 6px;
+  }
+  .guinea-run .gr-w3-answer {
+    padding: 6px 10px;
+    font-size: 13.5px;
+    line-height: 1.3;
+  }
+  .guinea-run .gr-w3-template {
+    margin: 0 10px 6px;
+  }
   /* The board takes the whole height: hand, Before | After, then the bin */
-  .guinea-run[data-phase="actions"] .gr-w3 {
+  .guinea-run[data-phase="actions"] .gr-w3,
+  .guinea-run[data-phase="boss"] .gr-w3 {
     top: calc(var(--gr-top-end, 120px) + 6px);
   }
   .guinea-run[data-phase="actions"] .gr-w3-hint,
   .guinea-run[data-phase="actions"] .gr-w3-keys {
     display: none;
+  }
+  .guinea-run[data-phase="actions"] .gr-w3-question {
+    margin: 0 0 4px;
+    font-size: 14px;
   }
   .guinea-run[data-phase="actions"] .gr-w3-board {
     grid-template-columns: 1fr 1fr;
@@ -1289,9 +2675,98 @@ export const CSS = `
   .guinea-run[data-phase="actions"] .gr-w3-deploy {
     display: none;
   }
-  .guinea-run[data-phase="actions"] .gr-w3-card {
+  /* Two cards a row in the hand, so the columns are in view */
+  .guinea-run[data-phase="actions"] .gr-w3-hand {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 4px 0 8px;
+    padding: 5px;
+  }
+  .guinea-run[data-phase="actions"] .gr-w3-card,
+  .guinea-run[data-phase="boss"] .gr-w3-card {
+    min-height: 48px;
+    padding: 5px 7px;
+  }
+  .guinea-run[data-phase="actions"] .gr-w3-type,
+  .guinea-run[data-phase="boss"] .gr-w3-type {
+    font-size: 10px;
+  }
+  .guinea-run[data-phase="actions"] .gr-w3-label,
+  .guinea-run[data-phase="boss"] .gr-w3-label {
+    font-size: 12px;
+    line-height: 1.25;
+  }
+  .guinea-run[data-phase="actions"] .gr-w3-order,
+  .guinea-run[data-phase="boss"] .gr-w3-order {
+    padding: 0 2px;
+    font-size: 12px;
+  }
+  .guinea-run[data-phase="actions"] .gr-w3-col,
+  .guinea-run[data-phase="boss"] .gr-w3-col {
+    padding: 4px;
+  }
+  .guinea-run .gr-w3-col-head {
+    font-size: 11.5px;
+  }
+  .guinea-run .gr-w3-buttons {
+    flex-wrap: nowrap;
+  }
+  .guinea-run .gr-w3-buttons .gr-button {
+    flex: 1 1 0;
     padding: 6px 8px;
     font-size: 13px;
+    line-height: 1.2;
+  }
+  /* His fight on a phone: the head and the steps of the Pull Request leave the room to the board */
+  .guinea-run[data-phase="boss"] .gr-w3-head,
+  .guinea-run[data-phase="boss"] .gr-w3-steps {
+    display: none;
+  }
+  .guinea-run .gr-w3-boss {
+    gap: 8px;
+    padding: 5px 8px;
+  }
+  .guinea-run .gr-w3-boss img {
+    flex-basis: 48px;
+    width: 48px;
+    height: 48px;
+  }
+  .guinea-run .gr-w3-boss q {
+    font-size: 12px;
+  }
+  .guinea-run .gr-w3-tray-cards {
+    min-height: 72px;
+  }
+  /* Under the mute, pause and close buttons, which the goal line no longer pushes down */
+  .guinea-run[data-phase="boss"] .gr-w3 {
+    top: max(calc(var(--gr-top-end, 120px) + 6px), calc(env(safe-area-inset-top, 0px) + 58px));
+  }
+  .guinea-run .gr-w3-branch {
+    padding: 4px;
+    font-family: inherit;
+    font-size: 12px;
+  }
+}
+
+/* A small phone: the panel starts higher, the desk still shows its monitor above it */
+@media (max-width: 700px) and (max-height: 760px) {
+  .guinea-run .gr-w3 {
+    top: 35vh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guinea-run .gr-w3-boss,
+  .guinea-run .gr-w3-boss.is-hit img,
+  .guinea-run .gr-w3-boss.is-angry b,
+  .guinea-run .gr-w3-stolen,
+  .guinea-run .gr-w3-card.is-aimed,
+  .guinea-run .gr-w3-branch.is-aimed,
+  .guinea-run .gr-w3 .gr-w3-branch.is-taken {
+    animation: none;
+  }
+  .guinea-run .gr-w3 {
+    transition: none;
   }
 }
 `;
