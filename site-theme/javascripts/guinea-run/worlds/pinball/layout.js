@@ -275,10 +275,8 @@ export function buildTable() {
   admins[2].ax = admins[2].bx = 1.45;
   // The Backups lane: three round targets on the left wall
   const backups = [9.95, 10.8, 11.65].map((y, i) => p.capsule(-4.84, y - 0.24, -4.84, y + 0.24, { r: 0.1, bounce: 0.45, tag: "backup" + i }));
-  // Code quality: three bumpers stacked on the right wall, things to bump on the side
-  for (const [i, y] of [9.95, 10.85, 11.75].entries()) {
-    bumpers.push(p.circle(4.5, y, 0.36, { bounce: 0.6, kick: 13, tag: "bumper" + (3 + i) }));
-  }
+  // Code quality: three round targets to push in on the right wall
+  const quality = [9.95, 10.8, 11.65].map((y, i) => p.capsule(4.84, y - 0.24, 4.84, y + 0.24, { r: 0.1, bounce: 0.45, tag: "quality" + i }));
   // The Hotfix hole, by the Backups lane, and its wire loop over the left side to the left inlane
   const hotfix = p.hole(-3.3, 10.2, 0.3, { tag: "hotfix", capture: true });
   const hotfixPath = p.path(
@@ -311,6 +309,7 @@ export function buildTable() {
       orbitRight,
       lanes,
       backups,
+      quality,
       hotfix,
       paths: { integration: integrationPath, uat: uatPath, production: productionPath, down: downPath, release: releasePath, hotfix: hotfixPath }
     }
@@ -368,7 +367,8 @@ function buildLights() {
     const [x, y] = bankPoint(k, 0.72, -1);
     add("check" + i, x, y, { size: 0.19, color: 0x45c65a });
   });
-  LANES.forEach((x, i) => add("lane" + i, x, 16.95, { shape: "star", size: 0.24, color: 0xfe9339 }));
+  // The stars of the top lanes, in the lanes themselves, over the bumpers
+  LANES.forEach((x, i) => add("lane" + i, x, 18.15, { shape: "star", size: 0.36, color: 0xffb020 }));
   add("kickback", -4.5, 2.6, { size: 0.24, color: 0xea001e, label: "pbFieldRollback" });
   add("ballSave", 0, 2.3, { size: 0.4, color: 0x06a59a, label: "pbFieldShootAgain", labelAt: "inside" });
   add("extraBall", -1.25, 6.3, { size: 0.24, shape: "star", color: 0xfe9339, label: "pbFieldExtraBall", labelAt: "above" });
@@ -400,6 +400,7 @@ function buildLights() {
   }
   // The band, placed as built
   [9.95, 10.8, 11.65].forEach((y, i) => add("backup" + i, -4.3, y, { size: 0.16, color: 0x06a59a }));
+  [9.95, 10.8, 11.65].forEach((y, i) => add("quality" + i, 4.3, y, { size: 0.16, color: 0xffb020 }));
   add("shot-hotfix", -2.65, 9.65, { shape: "delta", angle: 0.85, size: 0.3, color: 0xea001e, label: "pbFieldHotfix", labelAt: "below" });
   TABLE.hotfix = { x: -3.3, y: 10.2 };
   return lights;

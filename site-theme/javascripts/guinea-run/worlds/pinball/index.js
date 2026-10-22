@@ -58,6 +58,7 @@ const DMD_WORDS = {
   pbReleaseDay: "dmdReleaseDay",
   pbBonusXUp: "dmdBonusX",
   pbHotfix: "dmdHotfix",
+  pbQualityGate: "dmdQualityGate",
   pbReplay: "dmdReplay",
   pbMatchWon: "dmdMatch",
   pbBackupRestored: "dmdBackup"
@@ -131,6 +132,8 @@ export const TEXTS = {
     pbFieldCodeQuality: "Code quality",
     pbFieldShootAgain: "Shoot again",
     pbReplay: "Replay! Extra ball",
+    pbQualityGate: "Quality gate passed: bonus x{{n}} +{{points}}",
+    dmdQualityGate: "Quality gate",
     pbMatchWon: "Match! One more ball",
     dmdReplay: "Replay",
     dmdMatch: "Match",
@@ -321,6 +324,8 @@ export const TEXTS = {
     pbFieldCodeQuality: "Qualité du code",
     pbFieldShootAgain: "Rejouez",
     pbReplay: "Replay ! Bille en plus",
+    pbQualityGate: "Quality gate passé : bonus x{{n}} +{{points}}",
+    dmdQualityGate: "Quality gate",
     pbMatchWon: "Match ! Une bille de plus",
     dmdReplay: "Replay",
     dmdMatch: "Match",
@@ -534,6 +539,9 @@ export function createWorld(ctx) {
           return;
         case "sling":
           view.flashSling(data);
+          return;
+        case "quality":
+          view.pushQuality(data);
           return;
         case "spinner":
           view.spin(data);

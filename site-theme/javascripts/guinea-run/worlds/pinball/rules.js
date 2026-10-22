@@ -63,6 +63,7 @@ export function newState() {
     drops: [true, true, true, true, true],
     checks: [false, false, false],
     backups: [false, false, false],
+    quality: [false, false, false],
     lanes: [false, false, false],
     // Rollback is lit when the game starts
     kickback: true,
@@ -612,6 +613,22 @@ export function createRules(table, out, random) {
         award(30000, "pbBackupRestored");
         out.sound("pbSave");
       }
+    } else if (tag.startsWith("quality")) {
+      const i = Number(tag.slice(7));
+      s.quality[i] = true;
+      s.stats.targets++;
+      award(4000, "");
+      out.sound("pbTarget");
+      out.event("quality", i);
+      shot("quality", i);
+      if (s.quality.every(Boolean)) {
+        // The quality gate passed: one more step of the bonus multiplier
+        s.quality = [false, false, false];
+        if (s.bonusX < 10) {
+          s.bonusX++;
+        }
+        award(25000, "pbQualityGate", { n: s.bonusX });
+      }
     } else if (tag.startsWith("admin")) {
       award(5000, "");
       out.sound("pbTarget");
@@ -802,6 +819,7 @@ export function createRules(table, out, random) {
     }
     for (let i = 0; i < 3; i++) {
       setLight("backup" + i, s.backups[i] ? ON : OFF);
+      setLight("quality" + i, s.quality[i] ? ON : OFF);
       setLight("check" + i, s.checks[i] ? ON : OFF);
       setLight("lane" + i, s.lanes[i] ? ON : s.skill && !s.skill.done && s.skill.lane === i && rt.served ? FAST : OFF);
     }

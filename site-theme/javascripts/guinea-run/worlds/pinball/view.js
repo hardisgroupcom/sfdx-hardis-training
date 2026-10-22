@@ -261,6 +261,17 @@ export function createView(THREE, ctx, table, options) {
     group.add(m);
   }
 
+  // Code quality: three round targets on the right wall, that sink in when hit
+  const qualityFace = keep(new THREE.CylinderGeometry(0.26, 0.26, 0.12, 20));
+  const quality = table.parts.quality.map((q) => {
+    const material = keep(new THREE.MeshStandardMaterial({ color: 0xffb020, roughness: 0.3, emissive: 0xffb020, emissiveIntensity: 0.2 }));
+    const m = new THREE.Mesh(qualityFace, material);
+    m.rotation.z = Math.PI / 2;
+    m.position.set(q.ax - 0.02, 0.26, -(q.ay + q.by) / 2);
+    group.add(m);
+    return { mesh: m, material, base: q.ax - 0.02, push: 0 };
+  });
+
   /* ---------- The admins who rise, with their faces ---------- */
 
   const faceLoader = new THREE.TextureLoader();
@@ -701,6 +712,11 @@ export function createView(THREE, ctx, table, options) {
     } else {
       spinner.rotation.x += (Math.round(spinner.rotation.x / Math.PI) * Math.PI - spinner.rotation.x) * Math.min(1, dt * 6);
     }
+    for (const q of quality) {
+      q.push = Math.max(0, q.push - dt * 5);
+      q.mesh.position.x = q.base + q.push * 0.1;
+      q.material.emissiveIntensity = 0.2 + q.push * 1.5;
+    }
     for (const toy of toys) {
       toy.object.rotation.y += dt * toy.spin;
       toy.object.position.y = toy.base + Math.sin(time * 1.6 + toy.base) * toy.bob;
@@ -772,6 +788,11 @@ export function createView(THREE, ctx, table, options) {
     show(seconds) {
       showTime = Math.max(showTime, seconds || 1.8);
       giFlash = 1;
+    },
+    pushQuality(i) {
+      if (quality[i]) {
+        quality[i].push = 1;
+      }
     },
     flashSling(i) {
       if (slingFlash[i]) {
