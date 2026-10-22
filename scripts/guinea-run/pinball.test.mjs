@@ -126,7 +126,7 @@ test("a ramp shot fast enough makes it, a weak one rolls back", () => {
   const shoot = (speed) => {
     const table = buildTable();
     const p = table.physics;
-    p.addBall(-3.0, 9.6, 0, speed, 0);
+    p.addBall(-3.0, 12.1, 0, speed, 0);
     const seen = [];
     for (let t = 0; t < 3; t += 0.01) {
       p.advance(0.01);

@@ -147,9 +147,9 @@ export function paintField(THREE, t, lights, tier) {
       c.restore();
     }
   };
-  zone(-3.75, 7.5, -2.25, 13.4, "rgba(27,150,255,A)", t("pbFieldIntegration").toUpperCase());
-  zone(2.25, 7.5, 3.75, 13.4, "rgba(6,165,154,A)", t("pbFieldUat").toUpperCase());
-  zone(-0.85, 10.5, 0.85, 14.0, "rgba(69,198,90,A)", "");
+  zone(-3.75, 10.65, -2.25, 15.9, "rgba(27,150,255,A)", t("pbFieldIntegration").toUpperCase());
+  zone(2.25, 10.65, 3.75, 15.9, "rgba(6,165,154,A)", t("pbFieldUat").toUpperCase());
+  zone(-0.85, 13.0, 0.85, 16.5, "rgba(69,198,90,A)", "");
 
   // The pipeline road up the middle, from the flippers to production
   c.save();
@@ -158,14 +158,14 @@ export function paintField(THREE, t, lights, tier) {
   c.lineCap = "round";
   c.beginPath();
   c.moveTo(X(0), Y(3.0));
-  c.lineTo(X(0), Y(10.6));
+  c.lineTo(X(0), Y(13.1));
   c.stroke();
   c.setLineDash([U(0.3), U(0.3)]);
   c.strokeStyle = "rgba(255,210,122,0.45)";
   c.lineWidth = U(0.06);
   c.beginPath();
   c.moveTo(X(0), Y(6.4));
-  c.lineTo(X(0), Y(10.4));
+  c.lineTo(X(0), Y(12.9));
   c.stroke();
   c.restore();
   // The branches leave the road for the ramps
@@ -174,7 +174,7 @@ export function paintField(THREE, t, lights, tier) {
   for (const side of [-1, 1]) {
     c.beginPath();
     c.moveTo(X(0), Y(7.0));
-    c.bezierCurveTo(X(side * 1.2), Y(7.4), X(side * 2.6), Y(7.6), X(side * 3.0), Y(9.2));
+    c.bezierCurveTo(X(side * 1.2), Y(7.6), X(side * 2.6), Y(8.6), X(side * 3.0), Y(10.7));
     c.stroke();
   }
   // Constellations between the stars of the circuit
@@ -202,8 +202,8 @@ export function paintField(THREE, t, lights, tier) {
     c.beginPath();
     c.moveTo(X(side * 5), Y(-1.6));
     c.lineTo(X(side * 5), Y(7.1));
-    c.lineTo(X(side * 3.85), Y(6.7));
-    c.lineTo(X(side * 2.95), Y(2.75));
+    c.lineTo(X(side * 4.0), Y(6.5));
+    c.lineTo(X(side * 2.3), Y(2.4));
     c.lineTo(X(side * 0.6), Y(-1.6));
     c.closePath();
     c.fill();
@@ -211,10 +211,10 @@ export function paintField(THREE, t, lights, tier) {
   // Outlane and inlane arrows
   c.fillStyle = "rgba(255,255,255,0.35)";
   for (const [x, y] of [
-    [-3.25, 5.3],
-    [3.25, 5.3],
-    [-4.4, 5.3],
-    [4.4, 5.3]
+    [-3.55, 5.3],
+    [3.55, 5.3],
+    [-4.5, 5.3],
+    [4.5, 5.3]
   ]) {
     insertPath(c, "chevron", X(x), Y(y), U(0.22), Math.PI);
     c.fill();
@@ -266,12 +266,14 @@ export function paintField(THREE, t, lights, tier) {
     fitText(c, text, 0, 0, U(2.6), U(size), "900");
     c.restore();
   };
-  label(t("pbFieldPreprod").toUpperCase(), -4.47, 11.9, 0.22, "#d8b8ff", -Math.PI / 2);
-  label(t("pbFieldProduction").toUpperCase(), 0, 12.1, 0.26, "#a8f0b5");
-  label(t("pbFieldPullRequest").toUpperCase(), -1.55, 12.35, 0.17, "#ffd0a8");
+  label(t("pbFieldPreprod").toUpperCase(), -4.47, 14.4, 0.22, "#d8b8ff", -Math.PI / 2);
+  label(t("pbFieldProduction").toUpperCase(), 0, 14.6, 0.26, "#a8f0b5");
+  label(t("pbFieldPullRequest").toUpperCase(), -1.55, 14.85, 0.17, "#ffd0a8");
+  label(t("pbFieldBackups").toUpperCase(), -3.95, 10.85, 0.17, "#8ff0e4", -Math.PI / 2);
+  label(t("pbFieldCodeQuality").toUpperCase(), 3.75, 10.85, 0.17, "#ffd0a8", Math.PI / 2);
   label(t("pbFieldRecentChanges").toUpperCase(), -4.0, 8.6, 0.15, "#9fd4ff", -1.05);
   label(t("pbFieldChecks").toUpperCase(), 4.0, 8.6, 0.15, "#a8f0b5", 1.05);
-  label(t("pbFieldDeploy").toUpperCase(), -2.3, 7.75, 0.14, "#ffd0a8");
+  label(t("pbFieldDeploy").toUpperCase(), -2.3, 10.25, 0.14, "#ffd0a8");
   // The plunger lane
   c.fillStyle = "rgba(0,0,0,0.45)";
   c.fillRect(X(5.0), Y(14), X(6.1) - X(5.0), Y(-1.6) - Y(14));

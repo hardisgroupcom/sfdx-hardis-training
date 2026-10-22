@@ -56,7 +56,9 @@ const DMD_WORDS = {
   pbLockLit: "dmdLockLit",
   pbNextLevel: "dmdLevelUp",
   pbReleaseDay: "dmdReleaseDay",
-  pbBonusXUp: "dmdBonusX"
+  pbBonusXUp: "dmdBonusX",
+  pbHotfix: "dmdHotfix",
+  pbBackupRestored: "dmdBackup"
 };
 const DMD_ONLY = new Set(["pbJackpot", "pbReleaseJackpot", "pbSuperJackpot", "pbSkillShot", "pbSuperSkill", "pbCombo", "pbBallSaved", "pbKickback", "pbBonusXUp", "pbLocked", "pbBallN", "pbShootAgain", "pbTilt", "pbTiltWarning", "pbExtraBall", "pbMultiball"]);
 // What a mission counts to, for its line on the display
@@ -122,6 +124,13 @@ export const TEXTS = {
     pbFieldDeploy: "Deploy to all orgs",
     pbFieldProductionOrg: "Production org",
     pbFieldRelease: "Release",
+    pbFieldHotfix: "Hotfix",
+    pbFieldBackups: "Backups",
+    pbFieldCodeQuality: "Code quality",
+    pbHotfix: "Hotfix, straight to the inlane +{{points}}",
+    pbBackupRestored: "Backup restored: ball save +{{points}}",
+    dmdHotfix: "Hotfix",
+    dmdBackup: "Backup restored",
     pbBall: "Ball {{n}}",
     pbLevel: "Level {{n}}",
     pbSelectTitle: "Pick a mission with the flippers",
@@ -300,6 +309,13 @@ export const TEXTS = {
     pbFieldDeploy: "Déployer partout",
     pbFieldProductionOrg: "Org de production",
     pbFieldRelease: "Release",
+    pbFieldHotfix: "Hotfix",
+    pbFieldBackups: "Backups",
+    pbFieldCodeQuality: "Qualité du code",
+    pbHotfix: "Hotfix, droit vers le couloir +{{points}}",
+    pbBackupRestored: "Backup restauré : bille sauvée +{{points}}",
+    dmdHotfix: "Hotfix",
+    dmdBackup: "Backup restauré",
     pbBall: "Bille {{n}}",
     pbLevel: "Niveau {{n}}",
     pbSelectTitle: "Choisissez une mission avec les flippers",
@@ -705,7 +721,7 @@ export function createWorld(ctx) {
   /* ---------- The guinea pig watches from its stand over the right side, as the arcade toys do ---------- */
 
   function placePig() {
-    view.worldPoint(5.45, 12.6, 0, point);
+    view.worldPoint(5.45, 15.1, 0, point);
     ctx.pig.object.position.set(point.x, point.y + 0.7, point.z);
     ctx.pig.object.rotation.set(0, Math.PI * 1.2, 0);
     ctx.pig.object.scale.setScalar(0.65);

@@ -7,7 +7,8 @@
  * table group, which leans back like a real cabinet. Walls, posts and lights
  * are instanced, one draw per kind; nothing is allocated per frame.
  */
-import { TABLE } from "./layout.js";
+import { TABLE, sy } from "./layout.js";
+import { BALL_RADIUS } from "./physics.js";
 import { createBallMesh } from "./ball.js";
 import { paintField, paintUpper, paintApron, paintSign, paintBumperCap, shapePoints } from "./art.js";
 
@@ -198,6 +199,8 @@ export function createView(THREE, ctx, table, options) {
     ring.position.y = 0.32;
     g.add(base, cap, ring);
     g.position.set(b.ax, 0, -b.ay);
+    // The side bumpers are smaller
+    g.scale.setScalar(b.r / 0.6);
     group.add(g);
     return { group: g, cap, capMaterial, flash: 0 };
   });
@@ -249,6 +252,15 @@ export function createView(THREE, ctx, table, options) {
     group.add(m);
   }
 
+  // The Backups lane: three round targets on the left wall
+  const backupMaterial = keep(new THREE.MeshStandardMaterial({ color: 0x06a59a, roughness: 0.35, emissive: 0x06a59a, emissiveIntensity: 0.3 }));
+  for (const b of table.parts.backups) {
+    const m = new THREE.Mesh(box, backupMaterial);
+    m.scale.set(0.18, 0.42, 0.48);
+    m.position.set(b.ax + 0.05, 0.21, -(b.ay + b.by) / 2);
+    group.add(m);
+  }
+
   /* ---------- The admins who rise, with their faces ---------- */
 
   const faceLoader = new THREE.TextureLoader();
@@ -283,7 +295,8 @@ export function createView(THREE, ctx, table, options) {
   const holeMaterial = keep(new THREE.MeshBasicMaterial({ color: 0x050a14 }));
   for (const [x, y, floor] of [
     [TABLE.scoop.x, TABLE.scoop.y, 0],
-    [TABLE.release.x, TABLE.release.y, 1]
+    [TABLE.release.x, TABLE.release.y, 1],
+    [TABLE.hotfix.x, TABLE.hotfix.y, 0]
   ]) {
     const h = new THREE.Mesh(keep(new THREE.CircleGeometry(0.42, 24)), holeMaterial);
     h.rotation.x = -Math.PI / 2;
@@ -296,7 +309,7 @@ export function createView(THREE, ctx, table, options) {
   }
   const spinner = new THREE.Mesh(box, chrome);
   spinner.scale.set(1.0, 0.42, 0.03);
-  spinner.position.set(-4.47, 0.42, -11.2);
+  spinner.position.set(-4.47, 0.42, -sy(11.2));
   group.add(spinner);
   let spinLeft = 0;
   const plunger = new THREE.Group();
@@ -318,7 +331,7 @@ export function createView(THREE, ctx, table, options) {
   for (const [name, p] of Object.entries(table.parts.paths)) {
     const pts = [];
     for (let i = 0; i < p.points.length; i += 3) {
-      pts.push(new THREE.Vector3(p.points[i], p.points[i + 2] + 0.42, -p.points[i + 1]));
+      pts.push(new THREE.Vector3(p.points[i], p.points[i + 2] + BALL_RADIUS, -p.points[i + 1]));
     }
     const curve = new THREE.CatmullRomCurve3(pts, false, "centripetal");
     // A ramp that climbs is plastic up to its crest (all the way for the
@@ -342,9 +355,9 @@ export function createView(THREE, ctx, table, options) {
       const segments = Math.max(24, Math.round(p.total * (1 - crest) * 4));
       // Two side rails at the ball's sides, one under it
       for (const [side, drop] of [
-        [-0.46, 0],
-        [0.46, 0],
-        [0, -0.42]
+        [-(BALL_RADIUS + 0.07), 0],
+        [BALL_RADIUS + 0.07, 0],
+        [0, -(BALL_RADIUS + 0.03)]
       ]) {
         const offset = [];
         for (let i = 0; i <= segments; i++) {
@@ -354,7 +367,7 @@ export function createView(THREE, ctx, table, options) {
           const sideV = new THREE.Vector3(-tangent.z, 0, tangent.x).normalize();
           offset.push(at.clone().addScaledVector(sideV, side).add(new THREE.Vector3(0, drop, 0)));
         }
-        const rail = new THREE.Mesh(keep(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(offset), segments, 0.045, 5, false)), rampMaterial);
+        const rail = new THREE.Mesh(keep(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(offset), segments, 0.035, 5, false)), rampMaterial);
         rail.castShadow = tier > 1;
         group.add(rail);
       }
@@ -363,14 +376,14 @@ export function createView(THREE, ctx, table, options) {
       // A printed flag over the mouth of the ramp, high enough for the ball to pass under it
       const flagTexture = keep(paintSign(THREE, t(name === "integration" ? "pbFieldIntegration" : name === "uat" ? "pbFieldUat" : "pbFieldProduction"), plastic[name]));
       const flag = new THREE.Mesh(keep(new THREE.PlaneGeometry(1.35, 1.7)), keep(new THREE.MeshStandardMaterial({ map: flagTexture, transparent: true, roughness: 0.3, emissive: plastic[name], emissiveIntensity: 0.25, side: THREE.DoubleSide })));
-      flag.position.set(p.points[0], 2.25, -(p.points[1] + 1.2));
+      flag.position.set(p.points[0], 2.0, -(p.points[1] + 1.2));
       flag.rotation.x = -0.45;
       group.add(flag);
       // Its two chrome posts
       for (const side of [-0.62, 0.62]) {
         const leg = new THREE.Mesh(cylinder, chrome);
-        leg.scale.set(0.05, 2.2, 0.05);
-        leg.position.set(p.points[0] + side, 1.1, -(p.points[1] + 1.35));
+        leg.scale.set(0.05, 1.95, 0.05);
+        leg.position.set(p.points[0] + side, 0.97, -(p.points[1] + 1.35));
         group.add(leg);
       }
     }
@@ -448,8 +461,8 @@ export function createView(THREE, ctx, table, options) {
   }
   // Vegetables float over the orbits, as the asteroids of the arcade tables do
   for (const [name, x, y, h] of [
-    ["carrot", -4.5, 16.2, 1.7],
-    ["bell-pepper", 4.55, 15.6, 1.8]
+    ["carrot", -4.5, sy(16.2), 1.7],
+    ["bell-pepper", 4.55, sy(15.6), 1.8]
   ]) {
     const veg = ctx.models.get(name, { height: 1.0 });
     if (veg) {
@@ -461,12 +474,12 @@ export function createView(THREE, ctx, table, options) {
   // Dome lights on the side rails and over the slingshots
   const domeGeometry = keep(new THREE.SphereGeometry(1, 16, 10, 0, Math.PI * 2, 0, Math.PI / 2));
   const domes = [
-    [TABLE.left - 0.42, 17.2, 1.05, 0xea001e],
-    [TABLE.right + 0.4, 17.2, 1.05, 0xffb020],
+    [TABLE.left - 0.42, sy(17.2), 1.05, 0xea001e],
+    [TABLE.right + 0.4, sy(17.2), 1.05, 0xffb020],
     [TABLE.left - 0.42, 9.0, 1.05, 0x1b96ff],
     [TABLE.right + 0.4, 9.0, 1.05, 0xea001e],
-    [-2.6, 6.0, 0.48, 0xffb020],
-    [2.6, 6.0, 0.48, 0x1b96ff]
+    [-3.1, 5.9, 0.48, 0xffb020],
+    [3.1, 5.9, 0.48, 0x1b96ff]
   ].map(([x, y, h, hue], i) => {
     const material = keep(new THREE.MeshStandardMaterial({ color: hue, emissive: hue, emissiveIntensity: 0.3, roughness: 0.15, transparent: true, opacity: 0.9 }));
     const dome = new THREE.Mesh(domeGeometry, material);
@@ -832,9 +845,9 @@ function lightLevel(mode, time) {
  * ball and a wall on each side, with a chrome-white lip along their tops.
  */
 function rampGeometry(THREE, curve, u0, u1, segments) {
-  const HALF = 0.56;
-  const FLOOR = -0.44;
-  const WALL = 0.42;
+  const HALF = BALL_RADIUS + 0.15;
+  const FLOOR = -(BALL_RADIUS + 0.03);
+  const WALL = 0.32;
   const positions = [];
   const at = new THREE.Vector3();
   const tangent = new THREE.Vector3();

@@ -5,6 +5,8 @@
  * shells round it make the coat soft at the edge.
  */
 
+import { BALL_RADIUS } from "./physics.js";
+
 let shared = null;
 
 function sharedParts(THREE) {
@@ -58,7 +60,7 @@ function sharedParts(THREE) {
 /** One ball: { group (placed by the view), body (turned as it rolls), update(dt), dispose() }. */
 export function createBallMesh(THREE, options) {
   const parts = sharedParts(THREE);
-  const r = 0.4;
+  const r = BALL_RADIUS;
   const group = new THREE.Group();
   const body = new THREE.Group();
   group.add(body);

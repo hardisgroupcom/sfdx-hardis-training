@@ -3,33 +3,50 @@
  * ramp and light, in table units (see physics.js). The physics, the view and
  * the rules all read it from here, so a post moved here moves everywhere.
  *
- *   y 22 to 30  the Production floor, raised: two small flippers, the Data
+ * The proportions are an arcade table's: a ball about a nineteenth of the
+ * playfield's width, flippers about three balls long with their pivots close
+ * to the middle, a playfield a little over twice as long as it is wide.
+ *
+ * The table is built at its design size, then stretched (sy): everything from
+ * the top of the banks up moves up STRETCH, which opens a band in the middle
+ * for the Backups lane, the side bumpers and the Hotfix hole.
+ *
+ *   top         the Production floor, raised: two small flippers, the Data
  *               Cloud rabbit, the Sales Manager in front of the Release hole
- *   y 17 to 20  three top lanes (the skill shot) under the arc
- *   y 13 to 17  three pop bumpers (Apex triggers), the Pull Request scoop
- *   y 9 to 13   the ramps: integration (left), production (centre, closed
+ *               three top lanes (the skill shot) under the arc
+ *               three pop bumpers (Apex triggers), the Pull Request scoop
+ *               the ramps: integration (left), production (centre, closed
  *               until a promotion opens it), uat (right); the orbits on both
  *               sides (the left one is preprod, with the spinner)
- *   y 6 to 9    the drop targets of Recent Changes (left), three checks
- *               (right), the admins who rise in the middle
+ *   the band    the Backups lane (left wall), the Code quality bumpers (right
+ *               wall), the Hotfix hole, the admins who rise in the middle
+ *   y 6 to 9.4  the drop targets of Recent Changes (left bank), three checks
+ *               and the third flipper (right bank)
  *   y 0 to 6    the slingshots, the inlanes and outlanes, the kickback
  *               (Rollback, left outlane), the flippers; the plunger lane on
  *               the right
  */
-import { createPhysics } from "./physics.js";
+import { createPhysics, BALL_RADIUS } from "./physics.js";
 
-export const TABLE = {
+// Everything from the top of the banks up moves up this much
+const SPLIT = 9.45;
+const STRETCH = 2.5;
+
+/** A design y, stretched: the y of the table as built. */
+export function sy(y) {
+  return y >= SPLIT ? y + STRETCH : y;
+}
+
+// The table at its design size
+const DESIGN = {
   left: -5,
   right: 6.1,
-  // The playfield's right edge: the plunger lane is beyond it
   laneWall: 5,
   top: 20.55,
-  // The Production floor
   upperBottom: 21.8,
   upperTop: 30.4,
   upperLeft: -3.6,
   upperRight: 3.6,
-  // How high the Production floor is drawn above the table
   upperHeight: 2.2,
   plunger: { x: 5.56, y: 0.6 },
   scoop: { x: -1.55, y: 12.9 },
@@ -37,11 +54,22 @@ export const TABLE = {
   arc: { x: 0.55, y: 15, r: 5.55 },
   // The left slingshot's corners (the right one mirrors it): top, bottom, the tip over the flipper
   sling: [
-    [-2.6, 6.0],
-    [-2.6, 4.35],
-    [-1.65, 4.0]
+    [-3.1, 5.9],
+    [-3.1, 4.2],
+    [-2.0, 3.55]
   ]
 };
+
+/** The table as built, stretched: what the view, the rules and the tests read. */
+export const TABLE = Object.assign({}, DESIGN, {
+  top: sy(DESIGN.top),
+  upperBottom: sy(DESIGN.upperBottom),
+  upperTop: sy(DESIGN.upperTop),
+  scoop: { x: DESIGN.scoop.x, y: sy(DESIGN.scoop.y) },
+  release: { x: DESIGN.release.x, y: sy(DESIGN.release.y) },
+  arc: { x: DESIGN.arc.x, y: sy(DESIGN.arc.y), r: DESIGN.arc.r },
+  ball: BALL_RADIUS
+});
 
 // Under each orbit, a bank turned towards the far flipper sends a ball coming
 // down the side wall back into play: the drop targets of Recent Changes on the
@@ -91,7 +119,7 @@ export function buildTable() {
     }
     return list;
   };
-  const T = TABLE;
+  const T = DESIGN;
 
   // The cabinet: left wall, the arc over the top, the outer wall of the plunger lane
   keep(p.capsule(T.left, -1.5, T.left, T.arc.y, { r: 0.12, bounce: 0.45 }), "wall");
@@ -133,7 +161,7 @@ export function buildTable() {
 
   // The ramps: their mouths, and the paths over the table
   const integrationPath = p.path(
-    [-3.0, 10.9, 0, -3.0, 12.6, 0.9, -3.15, 14.2, 1.7, -3.7, 15.0, 1.9, -4.35, 14.3, 1.9, -4.5, 12.4, 1.7, -4.45, 9.6, 1.3, -4.0, 7.8, 0.7, -3.3, 6.6, 0.15, -3.25, 6.0, 0],
+    [-3.0, 10.9, 0, -3.0, 12.6, 0.9, -3.15, 14.2, 1.7, -3.7, 15.0, 1.9, -4.35, 14.3, 1.9, -4.5, 12.4, 1.7, -4.45, 9.6, 1.3, -4.1, 7.8, 0.7, -3.6, 6.6, 0.15, -3.55, 6.0, 0],
     { tag: "integration" }
   );
   keep(p.wall([-3.72, 13.2, -3.72, 10.75, -3.6, 10.55], { r: 0.08, bounce: 0.3 }), "rail");
@@ -141,7 +169,7 @@ export function buildTable() {
   p.line(-3.6, 10.9, -2.4, 10.9, { path: integrationPath, tag: "integrationMouth" });
 
   const uatPath = p.path(
-    [3.0, 10.9, 0, 3.0, 12.6, 0.9, 3.15, 14.2, 1.7, 3.7, 15.0, 1.9, 4.35, 14.3, 1.9, 4.5, 12.4, 1.7, 4.45, 9.6, 1.3, 4.0, 7.8, 0.7, 3.3, 6.6, 0.15, 3.25, 6.0, 0],
+    [3.0, 10.9, 0, 3.0, 12.6, 0.9, 3.15, 14.2, 1.7, 3.7, 15.0, 1.9, 4.35, 14.3, 1.9, 4.5, 12.4, 1.7, 4.45, 9.6, 1.3, 4.1, 7.8, 0.7, 3.6, 6.6, 0.15, 3.55, 6.0, 0],
     { tag: "uat" }
   );
   keep(p.wall([3.72, 13.2, 3.72, 10.75, 3.6, 10.55], { r: 0.08, bounce: 0.3 }), "rail");
@@ -183,9 +211,9 @@ export function buildTable() {
 
   // The inlanes, the outlanes, the slingshots
   for (const side of [-1, 1]) {
-    keep(p.wall([side * 3.85, 6.6, side * 3.85, 3.75, side * 3.12, 3.02], { r: 0.1, bounce: 0.4 }), "wall");
+    keep(p.wall([side * 4.0, 6.4, side * 4.0, 3.5, side * 2.5, 2.62], { r: 0.1, bounce: 0.4 }), "wall");
     // The post at the top of the inlane guide: a rubber that keeps some balls out of the outlane
-    keep(p.circle(side * 3.85, 6.72, 0.22, { bounce: 0.8 }), "rubber");
+    keep(p.circle(side * 4.0, 6.52, 0.18, { bounce: 0.8 }), "rubber");
     const [a, b, c] = T.sling;
     keep(p.capsule(side * -a[0], a[1], side * -b[0], b[1], { r: 0.12, bounce: 0.6 }), "rubber");
     keep(p.capsule(side * -b[0], b[1], side * -c[0], c[1], { r: 0.12, bounce: 0.6 }), "rubber");
@@ -195,40 +223,63 @@ export function buildTable() {
     keep(p.capsule(sc[0], sc[1], sa[0], sa[1], { r: 0.14, bounce: 0.7, kick: 14, kickMin: 6, tag: "slingL" }), "sling"),
     keep(p.capsule(-sa[0], sa[1], -sc[0], sc[1], { r: 0.14, bounce: 0.7, kick: 14, kickMin: 6, tag: "slingR" }), "sling")
   ];
-  p.line(-3.85, 4.6, T.left, 4.6, { tag: "outlaneL" });
-  p.line(T.laneWall, 4.6, 3.85, 4.6, { tag: "outlaneR" });
-  p.line(-2.6, 4.6, -3.85, 4.6, { tag: "inlaneL" });
-  p.line(3.85, 4.6, 2.6, 4.6, { tag: "inlaneR" });
-  const kickback = p.line(-3.85, 1.4, T.left, 1.4, { tag: "kickback" });
+  p.line(-4.0, 4.6, T.left, 4.6, { tag: "outlaneL" });
+  p.line(T.laneWall, 4.6, 4.0, 4.6, { tag: "outlaneR" });
+  p.line(-3.1, 4.6, -4.0, 4.6, { tag: "inlaneL" });
+  p.line(4.0, 4.6, 3.1, 4.6, { tag: "inlaneR" });
+  const kickback = p.line(-4.0, 1.4, T.left, 1.4, { tag: "kickback" });
 
-  const left = p.flipper(-2.95, 2.75, 2.62, { side: 1, rest: -0.49, up: 0.52, tag: "flipper" });
-  const right = p.flipper(2.95, 2.75, 2.62, { side: -1, rest: -0.49, up: 0.52, tag: "flipper" });
+  // Arcade flippers: about three balls long, their pivots close to the middle
+  const left = p.flipper(-2.3, 2.4, 1.65, { side: 1, rest: -0.45, up: 0.5, r: 0.24, rb: 0.12, tag: "flipper" });
+  const right = p.flipper(2.3, 2.4, 1.65, { side: -1, rest: -0.45, up: 0.5, r: 0.24, rb: 0.12, tag: "flipper" });
   // A third, small flipper at the foot of the right bank, as on the arcade
   // tables: a ball rolling down the bank lands on it, and it shoots across to
   // the integration ramp, the scoop and the left orbit
-  const third = p.flipper(3.75, 7.75, 1.4, { side: -1, rest: -0.45, up: 0.55, r: 0.24, rb: 0.13, tag: "flipper" });
+  const third = p.flipper(3.75, 7.75, 1.1, { side: -1, rest: -0.45, up: 0.55, r: 0.2, rb: 0.11, tag: "flipper" });
 
   /* ---------- The Production floor ---------- */
   const U = { floor: 1 };
   keep(p.capsule(T.upperLeft, 24.4, T.upperLeft, 27.4, Object.assign({ r: 0.12 }, U)), "upper");
   keep(p.capsule(T.upperRight, 24.4, T.upperRight, 27.4, Object.assign({ r: 0.12 }, U)), "upper");
   keep(p.arc(0, 27.4, T.upperRight, Math.PI, 0, 18, Object.assign({ r: 0.12 }, U)), "upper");
-  keep(p.wall([T.upperLeft, 24.4, -2.15, 23.35], Object.assign({ r: 0.1 }, U)), "upper");
-  keep(p.wall([T.upperRight, 24.4, 2.15, 23.35], Object.assign({ r: 0.1 }, U)), "upper");
-  const upperLeft = p.flipper(-1.85, 23.05, 1.45, { side: 1, rest: -0.5, up: 0.5, r: 0.26, rb: 0.14, floor: 1, tag: "flipper" });
-  const upperRight = p.flipper(1.85, 23.05, 1.45, { side: -1, rest: -0.5, up: 0.5, r: 0.26, rb: 0.14, floor: 1, tag: "flipper" });
+  keep(p.wall([T.upperLeft, 24.4, -1.92, 23.3], Object.assign({ r: 0.1 }, U)), "upper");
+  keep(p.wall([T.upperRight, 24.4, 1.92, 23.3], Object.assign({ r: 0.1 }, U)), "upper");
+  const upperLeft = p.flipper(-1.7, 23.05, 1.15, { side: 1, rest: -0.5, up: 0.5, r: 0.2, rb: 0.11, floor: 1, tag: "flipper" });
+  const upperRight = p.flipper(1.7, 23.05, 1.15, { side: -1, rest: -0.5, up: 0.5, r: 0.2, rb: 0.11, floor: 1, tag: "flipper" });
   // The Data Cloud rabbit walks across the top; the Sales Manager stands in front of the Release hole
   const rabbit = p.circle(0, 27.4, 0.72, Object.assign({ bounce: 0.75, kick: 6, tag: "rabbit", moving: true }, U));
   const salesManager = p.circle(-2.05, 26.75, 0.42, Object.assign({ bounce: 0.5, tag: "salesManager" }, U));
   keep(p.arc(T.release.x, T.release.y, 0.6, Math.PI * 0.35, Math.PI * 1.45, 6, Object.assign({ r: 0.08 }, U)), "upper");
+  // A slope from the top arc to the back of the Release hole: no corner for a ball to rest in
+  keep(p.wall([-3.4, 28.58, -2.45, 28.18], Object.assign({ r: 0.08 }, U)), "upper");
   const release = p.hole(T.release.x, T.release.y, 0.32, Object.assign({ tag: "release", capture: true }, U));
   const upperTargets = [25.3, 26.3].map((y, i) => p.capsule(3.45, y - 0.25, 3.45, y + 0.25, Object.assign({ r: 0.1, bounce: 0.4, tag: "upperCheck" + i }, U)));
   p.line(3.6, 21.9, -3.6, 21.9, Object.assign({ tag: "upperDrain" }, U));
   // Back down from the Production floor: a wire to the bumpers
   const downPath = p.path([0, 22.0, 2.2, 1.6, 21.6, 2.2, 3.0, 20.3, 2.2, 3.3, 18.6, 1.9, 2.9, 17.3, 1.1, 2.1, 16.9, 0.2, 1.75, 16.7, 0], { tag: "down" });
   // After the Release hole: the long way down to the left inlane
-  const releasePath = p.path([T.release.x, T.release.y, 2.2, -3.4, 26.4, 2.4, -3.9, 23.4, 2.6, -4.55, 19.0, 2.3, -4.55, 15.4, 2.0, -4.5, 12.4, 1.7, -4.45, 9.6, 1.3, -4.0, 7.8, 0.7, -3.3, 6.6, 0.15, -3.25, 6.0, 0], { tag: "releaseWire" });
+  const releasePath = p.path([T.release.x, T.release.y, 2.2, -3.4, 26.4, 2.4, -3.9, 23.4, 2.6, -4.55, 19.0, 2.3, -4.55, 15.4, 2.0, -4.5, 12.4, 1.7, -4.45, 9.6, 1.3, -4.1, 7.8, 0.7, -3.6, 6.6, 0.15, -3.55, 6.0, 0], { tag: "releaseWire" });
 
+  // Stretch the table, then build what lives in the band it opens
+  p.transformY(sy);
+  // The admins who rise in the middle of the band
+  admins[0].ay = admins[0].by = 10.4;
+  admins[1].ay = admins[1].by = 11.1;
+  admins[2].ay = admins[2].by = 10.4;
+  admins[0].ax = admins[0].bx = -1.45;
+  admins[2].ax = admins[2].bx = 1.45;
+  // The Backups lane: three round targets on the left wall
+  const backups = [9.95, 10.8, 11.65].map((y, i) => p.capsule(-4.84, y - 0.24, -4.84, y + 0.24, { r: 0.1, bounce: 0.45, tag: "backup" + i }));
+  // Code quality: three bumpers stacked on the right wall, things to bump on the side
+  for (const [i, y] of [9.95, 10.85, 11.75].entries()) {
+    bumpers.push(p.circle(4.5, y, 0.36, { bounce: 0.6, kick: 13, tag: "bumper" + (3 + i) }));
+  }
+  // The Hotfix hole, by the Backups lane, and its wire loop over the left side to the left inlane
+  const hotfix = p.hole(-3.3, 10.2, 0.3, { tag: "hotfix", capture: true });
+  const hotfixPath = p.path(
+    [-3.3, 10.2, 0, -4.0, 11.6, 0.8, -4.35, 12.8, 1.3, -4.6, 16.4, 2.3, -3.7, 19.3, 2.8, -2.2, 20.2, 2.9, -1.2, 19.4, 2.8, -1.9, 18.3, 2.7, -3.4, 18.6, 2.6, -4.75, 16.0, 2.2, -4.8, 11.0, 1.6, -4.5, 7.8, 0.8, -3.65, 6.5, 0.2, -3.55, 5.9, 0],
+    { tag: "hotfix" }
+  );
   p.build();
 
   const lights = buildLights();
@@ -254,7 +305,9 @@ export function buildTable() {
       orbitLeft,
       orbitRight,
       lanes,
-      paths: { integration: integrationPath, uat: uatPath, production: productionPath, down: downPath, release: releasePath }
+      backups,
+      hotfix,
+      paths: { integration: integrationPath, uat: uatPath, production: productionPath, down: downPath, release: releasePath, hotfix: hotfixPath }
     }
   };
 }
@@ -300,7 +353,7 @@ function buildLights() {
     add("gi-" + i, TABLE.arc.x + Math.cos(a) * (TABLE.arc.r - 0.45), TABLE.arc.y + Math.sin(a) * (TABLE.arc.r - 0.45), { shape: "bulb", size: 0.12, color: 0xffd28a });
   }
   for (let i = 0; i < 4; i++) {
-    add("gi-a" + i, [-4.4, -3.4, 3.4, 4.4][i], 1.9, { shape: "bulb", size: 0.12, color: 0xffd28a });
+    add("gi-a" + i, [-4.5, -3.55, 3.55, 4.5][i], 1.9, { shape: "bulb", size: 0.1, color: 0xffd28a });
   }
   DROPS.forEach((k, i) => {
     const [x, y] = bankPoint(k, 0.72, 1);
@@ -311,7 +364,7 @@ function buildLights() {
     add("check" + i, x, y, { size: 0.19, color: 0x45c65a });
   });
   LANES.forEach((x, i) => add("lane" + i, x, 16.95, { shape: "star", size: 0.24, color: 0xfe9339 }));
-  add("kickback", -4.42, 2.6, { size: 0.26, color: 0xea001e, label: "pbFieldRollback" });
+  add("kickback", -4.5, 2.6, { size: 0.24, color: 0xea001e, label: "pbFieldRollback" });
   add("ballSave", 0, 2.3, { size: 0.4, color: 0x06a59a, label: "pbFieldBallSave", labelAt: "inside" });
   add("extraBall", -1.25, 6.3, { size: 0.24, shape: "star", color: 0xfe9339, label: "pbFieldExtraBall", labelAt: "above" });
   add("note", 1.25, 6.3, { size: 0.24, shape: "star", color: 0xdd7a01, label: "pbFieldNote", labelAt: "above" });
@@ -336,5 +389,13 @@ function buildLights() {
   // The Production floor
   add("rabbit", 0, 25.4, { floor: 1, size: 0.3, color: 0x1b96ff });
   add("release", -2.2, 25.7, { floor: 1, shape: "delta", angle: 0.55, size: 0.36, color: 0x45c65a });
+  // Stretched with the table; a chevron follows the shot it leads to
+  for (const l of lights) {
+    l.y = /^chev-(integration|uat)-/.test(l.id) || /^lock/.test(l.id) ? l.y + STRETCH : sy(l.y);
+  }
+  // The band, placed as built
+  [9.95, 10.8, 11.65].forEach((y, i) => add("backup" + i, -4.3, y, { size: 0.16, color: 0x06a59a }));
+  add("shot-hotfix", -2.65, 9.65, { shape: "delta", angle: 0.85, size: 0.3, color: 0xea001e, label: "pbFieldHotfix", labelAt: "below" });
+  TABLE.hotfix = { x: -3.3, y: 10.2 };
   return lights;
 }

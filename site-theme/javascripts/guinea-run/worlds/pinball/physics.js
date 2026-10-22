@@ -21,7 +21,7 @@ export const STEP = 1 / 720;
 // Down the table, in table units per second squared: a gentle slope, so a
 // phone player has the time to see the ball coming
 export const GRAVITY = 26;
-export const BALL_RADIUS = 0.4;
+export const BALL_RADIUS = 0.27;
 export const MAX_SPEED = 95;
 // A ball on a ramp climbs against a steeper slope than the table's
 const RAMP_GRAVITY = 3.2;
@@ -31,7 +31,7 @@ const CELL = 1.5;
 const GRID_X0 = -7;
 const GRID_Y0 = -3;
 const GRID_W = 11;
-const GRID_H = 24;
+const GRID_H = 26;
 // Room for the biggest ball (the giant one of mission 1) around every shape in the grid
 const GRID_MARGIN = 0.9;
 const MAX_EVENTS = 256;
@@ -249,7 +249,7 @@ export function createPhysics() {
     const shape = capsule(x0, y, x1, y, { r: 0.1, bounce: 0.1, moving: true, tag: "plunger" });
     // The launch speed for a pull: a soft or middle pull drops the ball in
     // the top lanes (the skill shot), a full one sends it round the orbit
-    plunger = { shape, x: (x0 + x1) / 2, y, pull: 0, held: false, travel: 0.9, curve: [0, 26, 0.22, 31.9, 0.78, 33.7, 1, 48] };
+    plunger = { shape, x: (x0 + x1) / 2, y, pull: 0, held: false, travel: 0.9, curve: [0, 29, 0.22, 34.4, 0.78, 36.2, 1, 52] };
     return plunger;
   }
 
@@ -261,6 +261,36 @@ export function createPhysics() {
       }
     }
     return c[c.length - 1];
+  }
+
+  /**
+   * Moves every y of the table through fn: shapes, flipper pivots, sensors,
+   * paths (their lengths again). The layout builds the table at its design
+   * size, then stretches it; call build() after.
+   */
+  function transformY(fn) {
+    for (const s of shapes) {
+      s.ay = fn(s.ay);
+      s.by = fn(s.by);
+      s.pivotY = fn(s.pivotY);
+    }
+    for (const s of sensors) {
+      s.ay = fn(s.ay);
+      s.by = fn(s.by);
+    }
+    for (const p of paths) {
+      const n = p.points.length / 3;
+      for (let i = 0; i < n; i++) {
+        p.points[i * 3 + 1] = fn(p.points[i * 3 + 1]);
+      }
+      for (let i = 1; i < n; i++) {
+        p.lengths[i] = p.lengths[i - 1] + Math.hypot(p.points[i * 3] - p.points[i * 3 - 3], p.points[i * 3 + 1] - p.points[i * 3 - 2], p.points[i * 3 + 2] - p.points[i * 3 - 1]);
+      }
+      p.total = p.lengths[n - 1];
+    }
+    for (const f of flippers) {
+      place(f);
+    }
   }
 
   function build() {
@@ -678,6 +708,7 @@ export function createPhysics() {
     path,
     flipper,
     setPlunger,
+    transformY,
     build,
     addBall,
     removeBall,

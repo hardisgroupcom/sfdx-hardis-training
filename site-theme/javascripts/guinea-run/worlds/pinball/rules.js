@@ -58,6 +58,7 @@ export function newState() {
     stats: { bumpers: 0, ramps: 0, targets: 0, missions: 0 },
     drops: [true, true, true, true, true],
     checks: [false, false, false],
+    backups: [false, false, false],
     lanes: [false, false, false],
     // Rollback is lit when the game starts
     kickback: true,
@@ -78,7 +79,7 @@ export function createRules(table, out, random) {
   const physics = table.physics;
   const parts = table.parts;
   let s = newState();
-  const rt = { pending: [], scoop: null, release: null, dropsResetAt: 0, nextBallAt: 0, ending: false, served: false };
+  const rt = { pending: [], scoop: null, release: null, hotfix: null, dropsResetAt: 0, nextBallAt: 0, ending: false, served: false };
 
   // The lights the view draws: the state lights them, a mission lights over them
   const lights = table.lights.map((l) => ({ id: l.id, mode: OFF, color: l.color, base: l.color }));
@@ -502,6 +503,12 @@ export function createRules(table, out, random) {
       case "enter":
         if (tag === "scoop") {
           scoopEnter(e.ball);
+        } else if (tag === "hotfix") {
+          // A hotfix goes straight round the loop to the left inlane
+          award(50000, "pbHotfix");
+          shot("hotfix");
+          out.sound("pbLock");
+          rt.hotfix = { ball: e.ball, until: s.clock + 0.7 };
         } else if (tag === "release") {
           award(250000, "pbReleased");
           shot("release");
@@ -562,6 +569,20 @@ export function createRules(table, out, random) {
         } else {
           award(15000, "pbChecksGreen");
         }
+      }
+    } else if (tag.startsWith("backup")) {
+      const i = Number(tag.slice(6));
+      s.backups[i] = true;
+      s.stats.targets++;
+      award(4000, "");
+      out.sound("pbTarget");
+      shot("backup", i);
+      if (s.backups.every(Boolean)) {
+        // A backup restored: a second chance, the ball save starts again
+        s.backups = [false, false, false];
+        s.saveUntil = Math.max(s.saveUntil, s.clock + 10);
+        award(30000, "pbBackupRestored");
+        out.sound("pbSave");
       }
     } else if (tag.startsWith("admin")) {
       award(5000, "");
@@ -746,10 +767,12 @@ export function createRules(table, out, random) {
       setLight("drop" + i, s.drops[i] ? ON : OFF);
     }
     for (let i = 0; i < 3; i++) {
+      setLight("backup" + i, s.backups[i] ? ON : OFF);
       setLight("check" + i, s.checks[i] ? ON : OFF);
       setLight("lane" + i, s.lanes[i] ? ON : s.skill && !s.skill.done && s.skill.lane === i && rt.served ? FAST : OFF);
     }
     setLight("kickback", s.kickback ? ON : OFF);
+    setLight("shot-hotfix", BLINK);
     setLight("ballSave", s.clock < s.saveUntil ? (s.saveUntil - s.clock < 2 ? FAST : ON) : OFF);
     setLight("extraBall", s.extraLit ? BLINK : OFF);
     if (s.extraLit && !s.mission) {
@@ -812,6 +835,13 @@ export function createRules(table, out, random) {
       rt.release = null;
       if (ball.active && ball.mode === "held") {
         physics.sendOnPath(ball, parts.paths.release, 7);
+      }
+    }
+    if (rt.hotfix && s.clock >= rt.hotfix.until) {
+      const ball = rt.hotfix.ball;
+      rt.hotfix = null;
+      if (ball.active && ball.mode === "held") {
+        physics.sendOnPath(ball, parts.paths.hotfix, 8);
       }
     }
     if (rt.dropsResetAt && s.clock >= rt.dropsResetAt) {
