@@ -758,12 +758,22 @@ try {
       await page.keyboard.up("ShiftLeft");
       const down = await settles(page, () => flippers().then((f) => !f.left), true, 3000);
       expect(up && down, "the left flipper is up while Shift is held, and down once it is let go");
-      // The halves of the screen, as fingers do
+      // The ball waits on the plunger: while it is the only one, the right half pulls the plunger.
+      // Space launches it first, then the halves of the screen are the flippers, as fingers do
+      await page.keyboard.down("Space");
+      await page.waitForTimeout(500);
+      await page.keyboard.up("Space");
+      await page.waitForTimeout(800);
       await page.mouse.move(1000, 500);
       await page.mouse.down();
       const right = await settles(page, () => flippers().then((f) => f.right && !f.left), true, 3000);
       await page.mouse.up();
       expect(right && (await settles(page, () => flippers().then((f) => !f.right), true, 3000)), "a press on the right half of the screen holds the right flipper");
+      // Straight to the big moments, before the bot plays: its game may end within two minutes
+      await page.evaluate(() => window.__guineaRun.pinball.jump(1));
+      expect(await settles(page, () => page.evaluate(() => window.__guineaRun.pinball.balls().length), 3, 30000), "Deploy to all orgs puts three balls on the table");
+      await page.evaluate(() => window.__guineaRun.pinball.jump(3));
+      expect(await settles(page, () => page.evaluate(() => window.__guineaRun.pinball.balls().some((b) => b.floor === 1 && b.mode === "table")), true, 30000), "the production ramp takes a ball up to the Production floor");
       await page.evaluate(() => window.__guineaRun.pinball.autoplay(true));
       // Two minutes of the bot: the ball never leaves the table
       let escaped = "";
@@ -787,11 +797,6 @@ try {
       expect(!escaped, `the bot played the table${lost ? " to the end of its game" : " for two minutes"} and no ball left it${escaped ? ": " + escaped : ""} (score ${hud.score})`);
       expect(hud.score > 0, `the table scores (${hud.score} points)`);
       if (!lost) {
-        await page.evaluate(() => window.__guineaRun.pinball.jump(1));
-        expect(await settles(page, () => page.evaluate(() => window.__guineaRun.pinball.balls().length), 3, 20000), "Deploy to all orgs puts three balls on the table");
-        await page.evaluate(() => window.__guineaRun.pinball.autoplay(false));
-        await page.evaluate(() => window.__guineaRun.pinball.jump(3));
-        expect(await settles(page, () => page.evaluate(() => window.__guineaRun.pinball.balls().some((b) => b.floor === 1 && b.mode === "table")), true, 20000), "the production ramp takes a ball up to the Production floor");
         await page.evaluate(() => window.__guineaRun.finish());
       }
       expect(await waitState(page, "done"), "a game of Pipeline Pinball ends on its card");
