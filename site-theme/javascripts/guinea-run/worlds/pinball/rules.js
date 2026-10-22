@@ -59,7 +59,8 @@ export function newState() {
     drops: [true, true, true, true, true],
     checks: [false, false, false],
     lanes: [false, false, false],
-    kickback: false,
+    // Rollback is lit when the game starts
+    kickback: true,
     saveUntil: 0,
     saveArmed: true,
     skill: null,
@@ -341,8 +342,9 @@ export function createRules(table, out, random) {
     out.say("coach", "pbNextLevel", { n: s.level });
   }
 
+  // Generous at first, as the course is: 15 seconds, a little less at each level
   function saveTime() {
-    return Math.max(4, 11 - s.level);
+    return Math.max(6, 16 - s.level);
   }
 
   /* ---------- Shots ---------- */

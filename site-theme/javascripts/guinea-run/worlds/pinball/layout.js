@@ -48,13 +48,17 @@ export const TABLE = {
 // left, three checks on the right. From the wall to the end over the inlane
 const BANK_TOP = [-5, 9.4];
 const BANK_END = [-3.9, 7.5];
+// The right bank ends inside the pivot of the third flipper (mirrored here):
+// its face runs on to the top of the flipper, with no step to stop a ball
+const RIGHT_BANK_END = [-3.87, 7.8];
 const DROPS = [0.1, 0.3, 0.5, 0.7, 0.9];
 const STANDUPS = [0.22, 0.5, 0.78];
 
 /** A point along the left bank (mirrored for the right one), pushed off its face by `off`. */
 export function bankPoint(k, off, side) {
-  const dx = BANK_END[0] - BANK_TOP[0];
-  const dy = BANK_END[1] - BANK_TOP[1];
+  const end = side === -1 ? RIGHT_BANK_END : BANK_END;
+  const dx = end[0] - BANK_TOP[0];
+  const dy = end[1] - BANK_TOP[1];
   const len = Math.hypot(dx, dy);
   // The face looks up and across the table, towards the other flipper
   const nx = -dy / len;
@@ -181,7 +185,7 @@ export function buildTable() {
   for (const side of [-1, 1]) {
     keep(p.wall([side * 3.85, 6.6, side * 3.85, 3.75, side * 3.12, 3.02], { r: 0.1, bounce: 0.4 }), "wall");
     // The post at the top of the inlane guide: a rubber that keeps some balls out of the outlane
-    keep(p.circle(side * 3.85, 6.7, 0.17, { bounce: 0.8 }), "rubber");
+    keep(p.circle(side * 3.85, 6.72, 0.22, { bounce: 0.8 }), "rubber");
     const [a, b, c] = T.sling;
     keep(p.capsule(side * -a[0], a[1], side * -b[0], b[1], { r: 0.12, bounce: 0.6 }), "rubber");
     keep(p.capsule(side * -b[0], b[1], side * -c[0], c[1], { r: 0.12, bounce: 0.6 }), "rubber");
@@ -197,8 +201,12 @@ export function buildTable() {
   p.line(3.85, 4.6, 2.6, 4.6, { tag: "inlaneR" });
   const kickback = p.line(-3.85, 1.4, T.left, 1.4, { tag: "kickback" });
 
-  const left = p.flipper(-2.95, 2.75, 2.6, { side: 1, rest: -0.49, up: 0.52, tag: "flipper" });
-  const right = p.flipper(2.95, 2.75, 2.6, { side: -1, rest: -0.49, up: 0.52, tag: "flipper" });
+  const left = p.flipper(-2.95, 2.75, 2.62, { side: 1, rest: -0.49, up: 0.52, tag: "flipper" });
+  const right = p.flipper(2.95, 2.75, 2.62, { side: -1, rest: -0.49, up: 0.52, tag: "flipper" });
+  // A third, small flipper at the foot of the right bank, as on the arcade
+  // tables: a ball rolling down the bank lands on it, and it shoots across to
+  // the integration ramp, the scoop and the left orbit
+  const third = p.flipper(3.75, 7.75, 1.4, { side: -1, rest: -0.45, up: 0.55, r: 0.24, rb: 0.13, tag: "flipper" });
 
   /* ---------- The Production floor ---------- */
   const U = { floor: 1 };
@@ -229,7 +237,7 @@ export function buildTable() {
     walls,
     lights,
     parts: {
-      flippers: { left, right, upperLeft, upperRight },
+      flippers: { left, right, third, upperLeft, upperRight },
       bumpers,
       slings,
       drops,
@@ -271,7 +279,25 @@ function buildLights() {
   // The promotion ladder in front of the production ramp
   ["integration", "uat", "preprod"].forEach((name, i) => add("promo-" + name, -0.5 + i * 0.5, 10.95, { size: 0.18, color: 0x2e844a }));
   // The locks of Deploy to all orgs, on the integration ramp
-  [0, 1, 2].forEach((i) => add("lock" + i, -3.0, 8.0 + i * 0.5, { size: 0.2, color: 0xfe9339 }));
+  [0, 1, 2].forEach((i) => add("lock" + i, -2.3, 8.2 + i * 0.45, { size: 0.2, color: 0xfe9339 }));
+  // Chasing chevrons that lead to a lit shot
+  for (const [shot, x, y] of [
+    ["integration", -3.0, 9.9],
+    ["uat", 3.0, 9.9],
+    ["scoop", -1.55, 11.85]
+  ]) {
+    for (let k = 0; k < 3; k++) {
+      add("chev-" + shot + "-" + k, x, y - 0.55 - k * 0.42, { shape: "chevron", size: 0.26, color: 0xffb020 });
+    }
+  }
+  // The general illumination: warm bulbs round the top arc and along the apron
+  for (let i = 0; i < 11; i++) {
+    const a = Math.PI * (0.06 + (0.88 * i) / 10);
+    add("gi-" + i, TABLE.arc.x + Math.cos(a) * (TABLE.arc.r - 0.45), TABLE.arc.y + Math.sin(a) * (TABLE.arc.r - 0.45), { shape: "bulb", size: 0.12, color: 0xffd28a });
+  }
+  for (let i = 0; i < 6; i++) {
+    add("gi-a" + i, -4.3 + i * 1.72, 1.15, { shape: "bulb", size: 0.12, color: 0xffd28a });
+  }
   DROPS.forEach((k, i) => {
     const [x, y] = bankPoint(k, 0.72, 1);
     add("drop" + i, x, y, { size: 0.16, color: 0x0176d3 });

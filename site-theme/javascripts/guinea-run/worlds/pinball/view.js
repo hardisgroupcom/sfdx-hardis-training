@@ -169,17 +169,27 @@ export function createView(THREE, ctx, table, options) {
 
   /* ---------- Flippers ---------- */
 
-  const flipperMaterial = keep(new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.3 }));
-  const flipperRubber = keep(new THREE.MeshStandardMaterial({ color: 0xea001e, roughness: 0.7 }));
+  // Arcade flippers: a glossy white bat over a red rubber band all round it,
+  // and a chrome cap on the pivot
+  const flipperMaterial = keep(new THREE.MeshStandardMaterial({ color: 0xfbfbf7, roughness: 0.18, metalness: 0.05 }));
+  const flipperRubber = keep(new THREE.MeshStandardMaterial({ color: 0xd8001a, roughness: 0.55 }));
+  const flipperStripe = keep(new THREE.MeshStandardMaterial({ color: 0xffb020, roughness: 0.3, emissive: 0xffb020, emissiveIntensity: 0.15 }));
+  const capGeometry = keep(new THREE.CylinderGeometry(1, 1, 1, 20));
   const flippers = Object.values(table.parts.flippers).map((f) => {
     const s = f.shape;
     const g = new THREE.Group();
-    const geometry = keep(flipperGeometry(THREE, f.length, s.r, s.rb, 0.3));
-    const body = new THREE.Mesh(geometry, flipperMaterial);
+    const rubber = new THREE.Mesh(keep(flipperGeometry(THREE, f.length, s.r + 0.06, s.rb + 0.06, 0.2)), flipperRubber);
+    rubber.position.y = 0.04;
+    const body = new THREE.Mesh(keep(flipperGeometry(THREE, f.length, s.r, s.rb, 0.3)), flipperMaterial);
+    body.position.y = 0.04;
     body.castShadow = tier > 0;
-    const rim = new THREE.Mesh(keep(flipperGeometry(THREE, f.length, s.r + 0.04, s.rb + 0.04, 0.12)), flipperRubber);
-    rim.position.y = 0.06;
-    g.add(rim, body);
+    // A thin coloured stripe along the top, as on the old bats
+    const stripe = new THREE.Mesh(keep(flipperGeometry(THREE, f.length * 0.82, s.r * 0.32, s.rb * 0.32, 0.02)), flipperStripe);
+    stripe.position.set(f.length * 0.06, 0.38, 0);
+    const cap = new THREE.Mesh(capGeometry, chrome);
+    cap.scale.set(s.r * 0.55, 0.1, s.r * 0.55);
+    cap.position.y = 0.4;
+    g.add(rubber, body, stripe, cap);
     g.position.set(s.pivotX, floorY(s.floor) + 0.02, -s.pivotY);
     group.add(g);
     return { f, group: g };
@@ -364,7 +374,9 @@ export function createView(THREE, ctx, table, options) {
   const lightGeometry = {
     round: keep(new THREE.CircleGeometry(1, 20)),
     arrow: keep(arrowGeometry(THREE)),
-    star: keep(starGeometry(THREE))
+    star: keep(starGeometry(THREE)),
+    chevron: keep(chevronGeometry(THREE)),
+    bulb: keep(new THREE.CircleGeometry(1, 12))
   };
   const lightMaterial = keep(new THREE.MeshBasicMaterial({ toneMapped: false }));
   for (const shape of Object.keys(lightGeometry)) {
@@ -385,6 +397,24 @@ export function createView(THREE, ctx, table, options) {
     group.add(mesh);
     lightMeshes[shape] = { mesh, list };
   }
+
+  // What each light follows: a chevron chases towards its shot, a bulb of the
+  // general illumination glows warm and flickers with the play
+  const lightRole = table.lights.map((l) => {
+    const chev = /^chev-(.+)-(\d)$/.exec(l.id);
+    if (chev) {
+      return { kind: "chevron", parent: table.lights.findIndex((x) => x.id === "shot-" + chev[1]), step: Number(chev[2]) };
+    }
+    if (l.id.startsWith("gi-")) {
+      return { kind: "gi", seed: Math.random() * 10 };
+    }
+    if (l.id.startsWith("mission")) {
+      return { kind: "mission", step: Number(l.id.slice(7)) };
+    }
+    return { kind: "plain" };
+  });
+  let showTime = 0;
+  let giFlash = 0;
 
   /* ---------- The balls ---------- */
 
@@ -475,8 +505,17 @@ export function createView(THREE, ctx, table, options) {
   const q = new THREE.Quaternion();
   const axis = new THREE.Vector3();
 
-  function update(dt, lights) {
+  /**
+   * mood: { attract (the ball waits on the plunger), tilted }. Lights follow
+   * the rules, then the moments of the game play over them: a light show
+   * after a jackpot, a chase while the table waits.
+   */
+  function update(dt, lights, mood) {
     time += dt;
+    showTime = Math.max(0, showTime - dt);
+    giFlash = Math.max(0, giFlash - dt * 3);
+    const attract = Boolean(mood && mood.attract);
+    const tilted = Boolean(mood && mood.tilted);
     const physics = table.physics;
     // Balls
     physics.balls.forEach((b, i) => {
@@ -558,15 +597,28 @@ export function createView(THREE, ctx, table, options) {
     salesManager.rotation.y = Math.sin(time * 18) * smShake * 0.5;
     // Lights
     for (const { mesh, list } of Object.values(lightMeshes)) {
-      list.forEach(({ i }, k) => {
+      list.forEach(({ i, l: place }, k) => {
         const l = lights[i];
-        let level = 0.14;
-        if (l.mode === 1) {
-          level = 1;
-        } else if (l.mode === 2) {
-          level = Math.sin(time * 6) > 0 ? 1 : 0.2;
-        } else if (l.mode === 3) {
-          level = Math.sin(time * 16) > 0 ? 1.15 : 0.2;
+        const role = lightRole[i];
+        let level = lightLevel(l.mode, time);
+        if (role.kind === "chevron") {
+          // Three chevrons chase towards a lit shot, one after the other
+          const parent = role.parent >= 0 ? lights[role.parent] : null;
+          level = parent && parent.mode > 0 ? (((time * 5 - (2 - role.step)) % 3) + 3) % 3 < 1 ? 1.3 : 0.18 : 0.08;
+        } else if (role.kind === "gi") {
+          level = tilted ? 0.05 : 0.85 + Math.sin(time * 9 + role.seed) * 0.05 + giFlash * 0.8;
+        } else if (role.kind === "mission" && attract && l.mode === 0) {
+          // The table waits: the mission ring runs round
+          level = ((time * 8 - role.step) % 10 + 10) % 10 < 1.6 ? 1 : 0.14;
+        }
+        if (showTime > 0 && role.kind !== "gi") {
+          // A light show: a band of light sweeps up the table, the rest blinks
+          const band = (time * 1.6) % 1;
+          const at = place.y / 30;
+          level = Math.abs(at - band) < 0.07 ? 1.6 : Math.sin(time * 22 + place.x) > 0.3 ? 0.9 : 0.12;
+        }
+        if (tilted && role.kind !== "gi") {
+          level = 0.05;
         }
         color.setHex(l.color).multiplyScalar(level * (level > 0.5 ? 1.6 : 1));
         mesh.setColorAt(k, color);
@@ -588,6 +640,12 @@ export function createView(THREE, ctx, table, options) {
       if (bumpers[i]) {
         bumpers[i].flash = 1;
       }
+      giFlash = Math.max(giFlash, 0.35);
+    },
+    /** A light show over the whole table, for the big moments. */
+    show(seconds) {
+      showTime = Math.max(showTime, seconds || 1.8);
+      giFlash = 1;
     },
     flashSling(i) {
       if (slingFlash[i]) {
@@ -635,6 +693,32 @@ function flipperGeometry(THREE, length, r1, r2, height) {
   // Flat on the table: shape y becomes -z (table y), the depth goes up
   geometry.rotateX(-Math.PI / 2);
   return geometry;
+}
+
+/** How bright a light of the rules is now: off, on, a slow blink, a fast one. */
+function lightLevel(mode, time) {
+  if (mode === 1) {
+    return 1;
+  }
+  if (mode === 2) {
+    return Math.sin(time * 6) > 0 ? 1 : 0.2;
+  }
+  if (mode === 3) {
+    return Math.sin(time * 16) > 0 ? 1.15 : 0.2;
+  }
+  return 0.14;
+}
+
+function chevronGeometry(THREE) {
+  const shape = new THREE.Shape();
+  shape.moveTo(0, 0.9);
+  shape.lineTo(1, -0.2);
+  shape.lineTo(0.62, -0.55);
+  shape.lineTo(0, 0.12);
+  shape.lineTo(-0.62, -0.55);
+  shape.lineTo(-1, -0.2);
+  shape.closePath();
+  return new THREE.ShapeGeometry(shape);
 }
 
 function arrowGeometry(THREE) {

@@ -18,8 +18,9 @@
  */
 
 export const STEP = 1 / 720;
-// Down the table, in table units per second squared
-export const GRAVITY = 30;
+// Down the table, in table units per second squared: a gentle slope, so a
+// phone player has the time to see the ball coming
+export const GRAVITY = 26;
 export const BALL_RADIUS = 0.4;
 export const MAX_SPEED = 95;
 // A ball on a ramp climbs against a steeper slope than the table's
@@ -224,7 +225,8 @@ export function createPhysics() {
       angle: o.rest === undefined ? -0.5 : o.rest,
       omega: 0,
       // Radians per second, up and down
-      upSpeed: o.upSpeed || 40,
+      // An arcade flipper: a fast, hard snap up
+      upSpeed: o.upSpeed || 46,
       downSpeed: o.downSpeed || 24,
       held: false,
       enabled: true
@@ -247,7 +249,7 @@ export function createPhysics() {
     const shape = capsule(x0, y, x1, y, { r: 0.1, bounce: 0.1, moving: true, tag: "plunger" });
     // The launch speed for a pull: a soft or middle pull drops the ball in
     // the top lanes (the skill shot), a full one sends it round the orbit
-    plunger = { shape, x: (x0 + x1) / 2, y, pull: 0, held: false, travel: 0.9, curve: [0, 27, 0.22, 34.4, 0.78, 36.3, 1, 54] };
+    plunger = { shape, x: (x0 + x1) / 2, y, pull: 0, held: false, travel: 0.9, curve: [0, 26, 0.22, 31.9, 0.78, 33.7, 1, 48] };
     return plunger;
   }
 
@@ -478,12 +480,15 @@ export function createPhysics() {
     if (vn < 0) {
       rx -= (1 + shape.bounce) * vn * nx;
       ry -= (1 + shape.bounce) * vn * ny;
-      // A little grip along the surface
-      const tx = -ny;
-      const ty = nx;
-      const vt = rx * tx + ry * ty;
-      rx -= vt * shape.friction * tx;
-      ry -= vt * shape.friction * ty;
+      // A little grip along the surface, on an impact only: a ball rolling
+      // along a wall or a flipper keeps rolling
+      if (-vn > 1.5) {
+        const tx = -ny;
+        const ty = nx;
+        const vt = rx * tx + ry * ty;
+        rx -= vt * shape.friction * tx;
+        ry -= vt * shape.friction * ty;
+      }
       ball.vx = rx + sx;
       ball.vy = ry + sy;
       if (shape.kick && -vn >= shape.kickMin) {

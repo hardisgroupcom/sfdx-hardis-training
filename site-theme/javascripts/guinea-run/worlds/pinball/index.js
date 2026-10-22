@@ -429,10 +429,12 @@ export function createWorld(ctx) {
         case "jackpot":
         case "note":
           celebrate(data === true ? 90 : 50);
+          view.show(data === true ? 3 : 1.8);
           return;
         case "multiball":
           if (data) {
             celebrate(60);
+            view.show(3);
             music.setSection("chorus");
           }
           return;
@@ -441,6 +443,7 @@ export function createWorld(ctx) {
           return;
         case "level":
           celebrate(120);
+          view.show(4);
           return;
         case "select":
           drawSelect(data);
@@ -564,6 +567,7 @@ export function createWorld(ctx) {
     }
     if (data.ok) {
       celebrate(50);
+      view.show(2.2);
       ctx.pig.hop();
       return;
     }
@@ -618,6 +622,12 @@ export function createWorld(ctx) {
     ctx.bonus.over(summary);
   }
 
+  /** What the lights play over the rules: the attract chase while the first launch waits, dark when tilted. */
+  function mood() {
+    const s = rules.state;
+    return { attract: s.saveArmed && Boolean(physics.ballOnPlunger()), tilted: s.tilted };
+  }
+
   /* ---------- The guinea pig cheers on the apron ---------- */
 
   function placePig() {
@@ -655,12 +665,18 @@ export function createWorld(ctx) {
     held[which] = down;
     const lower = side < 0 ? parts.flippers.left : parts.flippers.right;
     const upper = side < 0 ? parts.flippers.upperLeft : parts.flippers.upperRight;
-    if (down && lower.enabled) {
-      sound.play("pbFlipper");
-      rules.flip(side);
+    if (lower.enabled) {
+      sound.play(down ? "pbFlipper" : "pbFlipperDown");
+      if (down) {
+        rules.flip(side);
+      }
     }
     lower.held = down;
     upper.held = down;
+    // The third flipper, on the right bank, moves with the right button
+    if (side > 0) {
+      parts.flippers.third.held = down;
+    }
   }
 
   function plunger(down) {
@@ -776,13 +792,13 @@ export function createWorld(ctx) {
         }, 300);
       }
       music.start();
-      view.update(0, rules.lights);
+      view.update(0, rules.lights, mood());
       view.snapCamera();
       drawPanel();
     },
     update(dt) {
       if (ended) {
-        view.update(dt, rules.lights);
+        view.update(dt, rules.lights, mood());
         return;
       }
       clock += dt;
@@ -804,7 +820,7 @@ export function createWorld(ctx) {
       physics.readEvents(rules.event);
       rules.update(dt);
       music.update(dt);
-      view.update(dt, rules.lights);
+      view.update(dt, rules.lights, mood());
       placePig();
       drawPanel();
       if (clock >= saveAt) {
