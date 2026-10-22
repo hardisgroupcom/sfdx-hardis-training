@@ -18,6 +18,9 @@
  * - the admin at the end of world 5 clicks Accept Current Change on Mariia's
  *   lines, the guinea pig undoes his clicks and keeps both sides of every
  *   conflict, and his git push --force meets the branch protection
+ * - the testers at the end of the uat branch in world 7 hold the track: the
+ *   vegetables make the first one validate US-062, the second one leaves on
+ *   sick leave, and the promotion question comes after them
  * - the Data Cloud at the end of world 8 throws its errors, a player who jumps
  *   on the beat takes its carrots and fires back, it goes down, and the DORA
  *   card follows
@@ -353,6 +356,29 @@ try {
     await openWorld(page, "en", 6);
     expect((await data(page, "misplaced")) === "1", "an action declared before the deployment in world 3 fails in world 6");
     await page.evaluate((key) => window.localStorage.removeItem(key), PROGRESS_KEY);
+    await page.context().close();
+  }
+
+  // 5a. World 7's testers, played by the world's own autoplay (decided at every
+  // step of the world): the track holds, one tester validates US-062, the other
+  // leaves on sick leave, and the promotion question comes after them. A small
+  // window, so the software renderer plays the fight at about its real speed
+  {
+    const page = await newPage({ viewport: { width: 640, height: 430 } });
+    // guinea-at=285: where the track holds for the testers of the uat org
+    expect(await openWorld(page, "en", 7, "&guinea-at=285"), "world 7 opens at its testers");
+    await page.click('.guinea-run [data-action="start"]');
+    await waitState(page, "playing");
+    await page.evaluate(() => window.__guineaRun.w7.autoplay(true));
+    expect(await settles(page, () => data(page, "boss"), "1", 30000), "the tester of US-062 holds the track at the end of the uat branch");
+    expect(await settles(page, () => data(page, "fight"), "beaten", 240000), "the vegetables make him test: US-062 validated in the uat org");
+    expect(await settles(page, () => data(page, "boss"), "2", 60000), "the tester of US-058 comes at once");
+    expect(await settles(page, () => data(page, "fight"), "escape", 240000), "he leaves on sick leave just before his last test");
+    expect(await settles(page, () => data(page, "choice"), "on", 120000), `the promotion question comes after the testers (${await data(page, "fight-seconds")} s of game time for both)`);
+    const question = (await page.textContent(".guinea-run .gr-run-q")) || "";
+    expect(/US-058/.test(question), "the promotion question says why: US-058 is not validated");
+    expect(await settles(page, () => data(page, "choice"), "off", 120000), "the guinea pig goes through a door of the promotion question");
+    expect((await state(page)) === "playing", `world 7 plays on after its testers (state ${await state(page)})`);
     await page.context().close();
   }
 

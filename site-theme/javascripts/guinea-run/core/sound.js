@@ -283,6 +283,19 @@ export function createSound() {
       bell(2093, 0.05, 0.14, 0.6);
       bell(2637, 0.15, 0.12, 0.8);
     },
+    // World 7: a vegetable on a tester's face, a wet thump and a squelch falling away
+    adminSplat() {
+      thump(0, 0.35);
+      swish(0, 0.16, 2400, 300);
+      bell(pick(PENTATONIC) / 2, 0.02, 0.05, 0.14, 3);
+    },
+    // A tester who coughs his way to sick leave: two short rough bursts, falling
+    adminCough() {
+      swish(0, 0.22, 900, 260);
+      thump(0.02, 0.25);
+      swish(0.2, 0.18, 800, 240);
+      thump(0.22, 0.2);
+    },
     // A vegetable thrown: a soft whoosh and a tiny pluck, quiet, it repeats
     throw() {
       swish(0, 0.07, 1200, 3200);

@@ -11,6 +11,12 @@
  * - gates(index): what stands at the end of a section, if anything: three
  *   doors (some open, some closed, or a quiz), or a manual stop
  * - script: moments set at a distance, for the bosses and the twists
+ * - clear: stretches [from, to] where the runner lays no row of its own (an
+ *   arena), startAt: where the track starts (a retry at a boss)
+ *
+ * hold(true) makes the guinea pig run on the spot: the scenery keeps
+ * scrolling, the distance waits, so a world can play a fight in place and
+ * move its own things towards the guinea pig at runner.speed.
  *
  * Readability rule: what is drawn in 3D carries a glyph and one to three
  * words. The full error goes in the toast when it is hit, the tip in the
@@ -129,7 +135,7 @@ export const RUNNER_TEXTS = {
 
 /**
  * config: { sections, obstacles, items, powers, gates(index), script, speed,
- * spacing, firstRowAt }. See the header of this file.
+ * spacing, firstRowAt, clear, startAt }. See the header of this file.
  */
 export function createRunner(ctx, config) {
   const { THREE, root, pig, paint, t, random } = ctx;
@@ -147,7 +153,11 @@ export function createRunner(ctx, config) {
   const spacing = (config.spacing || [10, 17]).map((gap) => gap + 2);
   const touch = Boolean(ctx.hud.touch);
 
-  let distance = Math.max(0, Math.min(ctx.params.startAt || 0, total - 30));
+  let distance = Math.max(0, Math.min(config.startAt || ctx.params.startAt || 0, total - 30));
+  // What the scenery has scrolled: the distance, plus what was run on the spot (hold)
+  let scroll = distance;
+  let held = false;
+  const clear = config.clear || [];
   let sectionIndex = sectionAt(distance);
   let nextRowAt = Math.max(distance + (config.firstRowAt || 30), 0);
   let gatesSpawned = sectionIndex;
@@ -538,7 +548,7 @@ export function createRunner(ctx, config) {
   const position = new THREE.Vector3();
 
   function placeScenery(time) {
-    const offset = distance % SEGMENT_LENGTH;
+    const offset = scroll % SEGMENT_LENGTH;
     scenery.segments.forEach((slab, i) => {
       slab.position.z = 10 - i * SEGMENT_LENGTH + offset;
     });
@@ -546,7 +556,7 @@ export function createRunner(ctx, config) {
     for (let i = 0; i < 16; i++) {
       for (let j = 0; j < 2; j++) {
         const side = j === 0 ? -1 : 1;
-        const z = 10 - ((i * 10 + loop - (distance % loop)) % loop);
+        const z = 10 - ((i * 10 + loop - (scroll % loop)) % loop);
         const n = i * 2 + j;
         matrix.makeTranslation(side * 3.55, 0.12, z);
         scenery.nodes.setMatrixAt(n, matrix);
@@ -565,7 +575,7 @@ export function createRunner(ctx, config) {
     scenery.poles.instanceMatrix.needsUpdate = true;
     scenery.flags.instanceMatrix.needsUpdate = true;
     scenery.puffs.forEach((p, i) => {
-      const z = 30 - ((p.offset + 220 - ((distance * 0.6) % 220)) % 220) + p.dz;
+      const z = 30 - ((p.offset + 220 - ((scroll * 0.6) % 220)) % 220) + p.dz;
       position.set(p.x, p.y, z);
       scale.set(p.sx, p.sy, p.sz);
       matrix.compose(position, identity, scale);
@@ -578,7 +588,7 @@ export function createRunner(ctx, config) {
       placeShapeIslands(time);
     }
     scenery.balloonList.forEach((b, i) => {
-      const z = 10 - ((b.offset + 160 - (distance % 160)) % 160);
+      const z = 10 - ((b.offset + 160 - (scroll % 160)) % 160);
       position.set(b.x + Math.sin(time * 0.7 + b.phase) * 0.3, b.y + Math.sin(time * 1.3 + b.phase) * 0.35, z);
       scale.set(1, 1, 1);
       matrix.compose(position, scenery.scratchClouds ? turnBack : identity, scale);
@@ -603,7 +613,7 @@ export function createRunner(ctx, config) {
   function placeIslands(time) {
     const k = scenery.kenney;
     scenery.islands.forEach((island, i) => {
-      const z = -4 - ((island.offset + 240 - ((distance * 0.5) % 240)) % 240);
+      const z = -4 - ((island.offset + 240 - ((scroll * 0.5) % 240)) % 240);
       const bob = Math.sin(time * 0.8 + i) * 0.25;
       const s = island.s * 1.1;
       // The block hangs under the lawn line at island.y
@@ -639,14 +649,14 @@ export function createRunner(ctx, config) {
     position.set(dx * s, 0, dz * s).applyQuaternion(island.turn);
     position.x += island.x;
     position.y = island.y + bob;
-    position.z += -4 - ((island.offset + 240 - ((distance * 0.5) % 240)) % 240);
+    position.z += -4 - ((island.offset + 240 - ((scroll * 0.5) % 240)) % 240);
     scale.set(s, s, s);
     matrix.compose(position, island.turn, scale);
   }
 
   function placeShapeIslands(time) {
     scenery.islands.forEach((island, i) => {
-      const z = -4 - ((island.offset + 240 - ((distance * 0.5) % 240)) % 240);
+      const z = -4 - ((island.offset + 240 - ((scroll * 0.5) % 240)) % 240);
       const bob = Math.sin(time * 0.8 + i) * 0.25;
       position.set(island.x, island.y + bob, z);
       scale.set(island.s, island.s, island.s);
@@ -1478,6 +1488,16 @@ export function createRunner(ctx, config) {
       total += metres;
       ended = false;
     },
+    /**
+     * Running on the spot: the guinea pig runs and the scenery scrolls, but
+     * the distance waits (a boss fight). Keep the track ahead clear (clear).
+     */
+    hold(on) {
+      held = Boolean(on);
+    },
+    get held() {
+      return held;
+    },
     /** Lets the guinea pig go again after a manual stop. */
     release() {
       if (stopped) {
@@ -1553,7 +1573,10 @@ export function createRunner(ctx, config) {
       stepPlayer(dt);
       const moving = !stopped;
       lastSpeed = moving ? runningSpeed(dt) : 0;
-      distance += lastSpeed * dt;
+      scroll += lastSpeed * dt;
+      if (!held) {
+        distance += lastSpeed * dt;
+      }
       const section = sectionAt(distance);
       if (section !== sectionIndex) {
         sectionIndex = section;
@@ -1938,6 +1961,10 @@ export function createRunner(ctx, config) {
 
     if (choices.some(([from, to]) => at > from - 6 && at < to)) {
       // A choice: nothing at all, not even a row of rewards
+      return;
+    }
+    if (clear.some(([from, to]) => at > from && at < to)) {
+      // A stretch the world keeps for itself
       return;
     }
     const calm = quiet.some(([from, to]) => at > from && at < to);
