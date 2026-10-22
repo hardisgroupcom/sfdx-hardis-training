@@ -58,9 +58,11 @@ const DMD_WORDS = {
   pbReleaseDay: "dmdReleaseDay",
   pbBonusXUp: "dmdBonusX",
   pbHotfix: "dmdHotfix",
+  pbReplay: "dmdReplay",
+  pbMatchWon: "dmdMatch",
   pbBackupRestored: "dmdBackup"
 };
-const DMD_ONLY = new Set(["pbJackpot", "pbReleaseJackpot", "pbSuperJackpot", "pbSkillShot", "pbSuperSkill", "pbCombo", "pbBallSaved", "pbKickback", "pbBonusXUp", "pbLocked", "pbBallN", "pbShootAgain", "pbTilt", "pbTiltWarning", "pbExtraBall", "pbMultiball"]);
+const DMD_ONLY = new Set(["pbHotfix", "pbReplay", "pbJackpot", "pbReleaseJackpot", "pbSuperJackpot", "pbSkillShot", "pbSuperSkill", "pbCombo", "pbBallSaved", "pbKickback", "pbBonusXUp", "pbLocked", "pbBallN", "pbShootAgain", "pbTilt", "pbTiltWarning", "pbExtraBall", "pbMultiball"]);
 // What a mission counts to, for its line on the display
 const GOAL_TOTALS = { pbGoal0: 4, pbGoal1_0: 8, pbGoal1_1: 2, pbGoal2: 3, pbGoal3: 3, pbGoal4: 75, pbGoal5: 4, pbGoal6: 8, pbGoal7: 3, pbGoal8: 5, pbGoal9: 6, pbGoalWizard: 6, pbGoalWizardBoss: 3 };
 const PULL_S = 0.9;
@@ -127,6 +129,11 @@ export const TEXTS = {
     pbFieldHotfix: "Hotfix",
     pbFieldBackups: "Backups",
     pbFieldCodeQuality: "Code quality",
+    pbFieldShootAgain: "Shoot again",
+    pbReplay: "Replay! Extra ball",
+    pbMatchWon: "Match! One more ball",
+    dmdReplay: "Replay",
+    dmdMatch: "Match",
     pbHotfix: "Hotfix, straight to the inlane +{{points}}",
     pbBackupRestored: "Backup restored: ball save +{{points}}",
     dmdHotfix: "Hotfix",
@@ -207,7 +214,7 @@ export const TEXTS = {
     pbReleaseDayReady: "All ten missions done: Release day!",
     pbMissionDone: "Mission done +{{points}}",
     pbExtraLit: "Extra ball lit at the Pull Request scoop",
-    pbNextLevel: "Level {{n}}: the pipeline speeds up",
+    pbNextLevel: "Level {{n}}: more points, a shorter ball save",
     pbNoteFound: "Victor's note +{{points}}",
     pbNoteLit: "Victor's note is on a shot: find it",
     pbCombo: "Combo x{{n}} +{{points}}",
@@ -312,6 +319,11 @@ export const TEXTS = {
     pbFieldHotfix: "Hotfix",
     pbFieldBackups: "Backups",
     pbFieldCodeQuality: "Qualité du code",
+    pbFieldShootAgain: "Rejouez",
+    pbReplay: "Replay ! Bille en plus",
+    pbMatchWon: "Match ! Une bille de plus",
+    dmdReplay: "Replay",
+    dmdMatch: "Match",
     pbHotfix: "Hotfix, droit vers le couloir +{{points}}",
     pbBackupRestored: "Backup restauré : bille sauvée +{{points}}",
     dmdHotfix: "Hotfix",
@@ -392,7 +404,7 @@ export const TEXTS = {
     pbReleaseDayReady: "Les dix missions faites : jour de release !",
     pbMissionDone: "Mission réussie +{{points}}",
     pbExtraLit: "Bille en plus allumée au trou Pull Request",
-    pbNextLevel: "Niveau {{n}} : le pipeline accélère",
+    pbNextLevel: "Niveau {{n}} : plus de points, une bille sauvée moins longtemps",
     pbNoteFound: "La note de Victor +{{points}}",
     pbNoteLit: "La note de Victor est sur un tir : trouvez-la",
     pbCombo: "Combo x{{n}} +{{points}}",
@@ -569,6 +581,10 @@ export function createWorld(ctx) {
           return;
         case "tilt":
           music.setSection("break");
+          return;
+        case "match":
+          // The number drawn, on the display, as the old tables did
+          dmd.flash(t("dmdMatch"), String(data.drawn).padStart(2, "0"), 2.4);
           return;
         case "gameOver":
           gameOver(data);
@@ -853,7 +869,6 @@ export function createWorld(ctx) {
       }
     } else if (step === 5) {
       s.level = 3;
-      physics.setGravity(physics.gravity * 1.12);
     }
   }
 

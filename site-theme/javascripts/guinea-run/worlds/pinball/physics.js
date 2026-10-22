@@ -59,6 +59,8 @@ export function createPhysics() {
   let gravity = GRAVITY;
   let time = 0;
   let leftover = 0;
+  // Bumpers and slingshots fire; a tilt switches them off, as on a real table
+  let kicks = true;
 
   for (let i = 0; i < MAX_BALLS; i++) {
     balls.push({
@@ -521,7 +523,7 @@ export function createPhysics() {
       }
       ball.vx = rx + sx;
       ball.vy = ry + sy;
-      if (shape.kick && -vn >= shape.kickMin) {
+      if (shape.kick && kicks && -vn >= shape.kickMin) {
         ball.vx += nx * shape.kick;
         ball.vy += ny * shape.kick;
       }
@@ -720,6 +722,10 @@ export function createPhysics() {
     },
     get time() {
       return time;
+    },
+    /** Bumpers and slingshots on or off (off while the table is tilted). */
+    setKicks(on) {
+      kicks = on;
     },
     /** Down the table: the levels make it steeper. */
     setGravity(g) {

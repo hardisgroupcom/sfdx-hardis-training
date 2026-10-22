@@ -25,6 +25,10 @@ const RELEASE_HOLD = 1.2;
 const DROPS_RESET_S = 1.2;
 const LAUNCH_SPEED = 62;
 const NOTE_LIFE = 25;
+// Replay scores: passing one knocks, and gives an extra ball (a free game on the arcade)
+const REPLAYS = [5000000, 25000000, 75000000, 150000000, 300000000];
+// A rollover seen again within this is the same ball on the same switch
+const ROLLOVER_GAP = 0.35;
 const MAJOR = ["integration", "uat", "preprod", "orbitRight", "production"];
 // The light modes: off, on, slow blink, fast blink
 export const OFF = 0;
@@ -70,6 +74,7 @@ export function newState() {
     tilt: 0,
     tilted: false,
     smHits: 0,
+    replayNext: 0,
     smDownUntil: 0,
     over: false
   };
@@ -79,7 +84,7 @@ export function createRules(table, out, random) {
   const physics = table.physics;
   const parts = table.parts;
   let s = newState();
-  const rt = { pending: [], scoop: null, release: null, hotfix: null, dropsResetAt: 0, nextBallAt: 0, ending: false, served: false };
+  const rt = { pending: [], scoop: null, release: null, hotfix: null, dropsResetAt: 0, nextBallAt: 0, ending: false, served: false, laneAt: [-1, -1, -1], matched: false, overAt: 0 };
 
   // The lights the view draws: the state lights them, a mission lights over them
   const lights = table.lights.map((l) => ({ id: l.id, mode: OFF, color: l.color, base: l.color }));
@@ -140,6 +145,13 @@ export function createRules(table, out, random) {
     s.score += value;
     if (key) {
       out.say("toast", key, Object.assign({ points: value }, vars || {}));
+    }
+    // A replay score passed: the knocker, and an extra ball
+    if (s.replayNext < REPLAYS.length && s.score >= REPLAYS[s.replayNext]) {
+      s.replayNext++;
+      s.extraBalls++;
+      out.say("coach", "pbReplay");
+      out.sound("pbExtra");
     }
     return value;
   }
@@ -240,6 +252,7 @@ export function createRules(table, out, random) {
     s.tilted = false;
     s.combo = 0;
     setFlippers(true);
+    physics.setKicks(true);
     if (s.extraBalls > 0) {
       s.extraBalls--;
       out.say("coach", "pbShootAgain");
@@ -247,8 +260,23 @@ export function createRules(table, out, random) {
       return;
     }
     if (s.ballNo >= BALLS_PER_GAME) {
-      s.over = true;
-      out.event("gameOver", summary());
+      // The match, as on the arcade: the last two digits of the score against a
+      // number drawn now; a match is one more ball
+      if (!rt.matched) {
+        rt.matched = true;
+        const drawn = Math.floor(random() * 10) * 10;
+        const won = drawn === s.score % 100;
+        out.event("match", { drawn, won });
+        if (won) {
+          s.extraBalls++;
+          out.say("coach", "pbMatchWon");
+          out.sound("pbExtra");
+          s.extraBalls--;
+          serve();
+          return;
+        }
+      }
+      rt.overAt = s.clock + 2.4;
       return;
     }
     s.ballNo++;
@@ -338,7 +366,7 @@ export function createRules(table, out, random) {
     s.missionsThisLevel = 0;
     s.select = 0;
     s.extraLit = true;
-    physics.setGravity(GRAVITY * (1 + 0.06 * (s.level - 1)));
+    // The table keeps its speed: a level brings more points, a shorter ball save, longer missions
     out.event("level", s.level);
     out.say("coach", "pbNextLevel", { n: s.level });
   }
@@ -634,8 +662,14 @@ export function createRules(table, out, random) {
       }
       return;
     }
-    if (tag.startsWith("lane") && e.value > 0) {
-      laneCross(Number(tag.slice(4)));
+    // A rollover fires whichever way the ball rolls over it: down from the
+    // plunge, or up out of the bumpers
+    if (tag.startsWith("lane")) {
+      const i = Number(tag.slice(4));
+      if (s.clock - rt.laneAt[i] > ROLLOVER_GAP) {
+        rt.laneAt[i] = s.clock;
+        laneCross(i);
+      }
       return;
     }
     if (tag === "spinner") {
@@ -773,7 +807,8 @@ export function createRules(table, out, random) {
     }
     setLight("kickback", s.kickback ? ON : OFF);
     setLight("shot-hotfix", BLINK);
-    setLight("ballSave", s.clock < s.saveUntil ? (s.saveUntil - s.clock < 2 ? FAST : ON) : OFF);
+    // Shoot again: blinking while the ball is saved, lit while an extra ball waits
+    setLight("ballSave", s.clock < s.saveUntil ? (s.saveUntil - s.clock < 2 ? FAST : BLINK) : s.extraBalls > 0 ? ON : OFF);
     setLight("extraBall", s.extraLit ? BLINK : OFF);
     if (s.extraLit && !s.mission) {
       setLight("shot-scoop", BLINK, 0xfe9339);
@@ -841,15 +876,22 @@ export function createRules(table, out, random) {
       const ball = rt.hotfix.ball;
       rt.hotfix = null;
       if (ball.active && ball.mode === "held") {
-        physics.sendOnPath(ball, parts.paths.hotfix, 8);
+        // An up-kicker: hard enough to climb the whole loop
+        physics.sendOnPath(ball, parts.paths.hotfix, 42);
       }
     }
     if (rt.dropsResetAt && s.clock >= rt.dropsResetAt) {
       rt.dropsResetAt = 0;
       resetDrops();
     }
-    if (rt.ending && s.clock >= rt.nextBallAt) {
+    if (rt.ending && s.clock >= rt.nextBallAt && !rt.overAt) {
       nextBall();
+    }
+    if (rt.overAt && s.clock >= rt.overAt) {
+      rt.overAt = 0;
+      s.over = true;
+      out.event("gameOver", summary());
+      return;
     }
     if (s.mission) {
       const m = s.mission.m;
@@ -894,6 +936,9 @@ export function createRules(table, out, random) {
       physics.setGravity(GRAVITY);
       resetDrops();
       setFlippers(true);
+      physics.setKicks(true);
+      rt.matched = false;
+      rt.overAt = 0;
       serve();
     },
     /** The state to save, as plain data. */
@@ -904,7 +949,7 @@ export function createRules(table, out, random) {
     restore(saved) {
       s = Object.assign(newState(), saved);
       s.mb = null;
-      physics.setGravity(GRAVITY * (1 + 0.06 * (s.level - 1)));
+      physics.setGravity(GRAVITY);
       for (let i = 0; i < 5; i++) {
         parts.drops[i].enabled = s.drops[i];
       }
@@ -915,6 +960,7 @@ export function createRules(table, out, random) {
       s.tilted = false;
       s.tilt = 0;
       setFlippers(true);
+      physics.setKicks(true);
       serve();
       s.saveUntil = 0;
       if (s.mission) {
@@ -976,6 +1022,7 @@ export function createRules(table, out, random) {
       if (s.tilt > 2.6) {
         s.tilted = true;
         setFlippers(false);
+        physics.setKicks(false);
         if (s.mission) {
           endMission(false);
         }

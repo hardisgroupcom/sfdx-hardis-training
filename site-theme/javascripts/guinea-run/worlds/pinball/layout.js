@@ -101,10 +101,13 @@ const ADMINS = [
   [0.12, 10.1],
   [1.6, 9.2]
 ];
+// Right under the three top lanes, as on the arcade tables: a ball out of a
+// lane bounces in the bumpers and back up through the lanes, while the
+// flippers move the lit stars along
 const BUMPERS = [
-  [-1.05, 15.75],
-  [1.05, 15.75],
-  [0, 14.45]
+  [1.1, 16.15],
+  [3.3, 16.15],
+  [2.2, 14.95]
 ];
 // Under the arc on the right, where a plunge that is not a full one falls
 const LANES = [1.1, 2.2, 3.3];
@@ -155,8 +158,9 @@ export function buildTable() {
 
   // The Pull Request scoop, with its back wall
   keep(p.arc(T.scoop.x, T.scoop.y, 0.62, -0.25, Math.PI + 0.25, 8, { r: 0.08, bounce: 0.2 }), "wall");
-  // A roof between the scoop and the production ramp: no ball rests in the corner
-  keep(p.wall([-1.95, 13.4, -1.0, 13.98, -0.66, 13.72], { r: 0.08, bounce: 0.3 }), "wall");
+  // One roof over the scoop and the production chute, peaked over the chute:
+  // a ball on it rolls off one side or the other, it never rests in a corner
+  keep(p.wall([-2.28, 13.2, 0, 14.1, 0.66, 13.72], { r: 0.08, bounce: 0.35 }), "wall");
   const scoop = p.hole(T.scoop.x, T.scoop.y, 0.32, { tag: "scoop", capture: true });
 
   // The ramps: their mouths, and the paths over the table
@@ -252,11 +256,12 @@ export function buildTable() {
   keep(p.arc(T.release.x, T.release.y, 0.6, Math.PI * 0.35, Math.PI * 1.45, 6, Object.assign({ r: 0.08 }, U)), "upper");
   // A slope from the top arc to the back of the Release hole: no corner for a ball to rest in
   keep(p.wall([-3.4, 28.58, -2.45, 28.18], Object.assign({ r: 0.08 }, U)), "upper");
-  const release = p.hole(T.release.x, T.release.y, 0.32, Object.assign({ tag: "release", capture: true }, U));
+  // Wide enough that a ball in its mouth drops in, even with the Sales Manager beside it
+  const release = p.hole(T.release.x, T.release.y, 0.45, Object.assign({ tag: "release", capture: true }, U));
   const upperTargets = [25.3, 26.3].map((y, i) => p.capsule(3.45, y - 0.25, 3.45, y + 0.25, Object.assign({ r: 0.1, bounce: 0.4, tag: "upperCheck" + i }, U)));
   p.line(3.6, 21.9, -3.6, 21.9, Object.assign({ tag: "upperDrain" }, U));
   // Back down from the Production floor: a wire to the bumpers
-  const downPath = p.path([0, 22.0, 2.2, 1.6, 21.6, 2.2, 3.0, 20.3, 2.2, 3.3, 18.6, 1.9, 2.9, 17.3, 1.1, 2.1, 16.9, 0.2, 1.75, 16.7, 0], { tag: "down" });
+  const downPath = p.path([0, 22.0, 2.2, 1.6, 21.6, 2.2, 3.0, 20.3, 2.2, 3.3, 18.6, 1.9, 2.9, 17.3, 1.6, 1.4, 17.0, 0.9, 0.3, 16.0, 0.2, 0, 15.6, 0], { tag: "down" });
   // After the Release hole: the long way down to the left inlane
   const releasePath = p.path([T.release.x, T.release.y, 2.2, -3.4, 26.4, 2.4, -3.9, 23.4, 2.6, -4.55, 19.0, 2.3, -4.55, 15.4, 2.0, -4.5, 12.4, 1.7, -4.45, 9.6, 1.3, -4.1, 7.8, 0.7, -3.6, 6.6, 0.15, -3.55, 6.0, 0], { tag: "releaseWire" });
 
@@ -365,7 +370,7 @@ function buildLights() {
   });
   LANES.forEach((x, i) => add("lane" + i, x, 16.95, { shape: "star", size: 0.24, color: 0xfe9339 }));
   add("kickback", -4.5, 2.6, { size: 0.24, color: 0xea001e, label: "pbFieldRollback" });
-  add("ballSave", 0, 2.3, { size: 0.4, color: 0x06a59a, label: "pbFieldBallSave", labelAt: "inside" });
+  add("ballSave", 0, 2.3, { size: 0.4, color: 0x06a59a, label: "pbFieldShootAgain", labelAt: "inside" });
   add("extraBall", -1.25, 6.3, { size: 0.24, shape: "star", color: 0xfe9339, label: "pbFieldExtraBall", labelAt: "above" });
   add("note", 1.25, 6.3, { size: 0.24, shape: "star", color: 0xdd7a01, label: "pbFieldNote", labelAt: "above" });
   // The honeycomb of the ten missions, over the flippers, Release day under it

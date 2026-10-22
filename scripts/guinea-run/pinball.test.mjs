@@ -161,14 +161,16 @@ test("three drains end the game, a ball save gives the ball back", () => {
   for (let i = 0; i < 5; i++) {
     rules.update(0.5);
   }
-  for (let ball = 1; ball <= BALLS_PER_GAME; ball++) {
+  // Three balls, then the match: a match is one more ball, so drain until the end
+  for (let ball = 1; ball <= BALLS_PER_GAME + 2 && !rules.over; ball++) {
     rules.update(20);
     drainAll();
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 12; i++) {
       rules.update(0.5);
     }
   }
   assert.ok(rules.over, "the game is over after " + BALLS_PER_GAME + " balls");
+  assert.ok(log.includes("match"), "the match is drawn at the end");
   assert.ok(log.includes("gameOver"));
 });
 
@@ -182,6 +184,16 @@ test("three nudges in a row tilt the table: flippers dead until the next ball", 
   assert.equal(rules.nudge(), 0);
   assert.equal(rules.state.tilted, true);
   assert.equal(table.parts.flippers.left.enabled, false);
+  // Tilted, a bumper no longer kicks the ball away
+  const p = table.physics;
+  const bumper = table.parts.bumpers[0];
+  const ball = p.balls.find((b) => b.active);
+  ball.x = bumper.ax;
+  ball.y = bumper.ay + 0.95;
+  ball.vx = 0;
+  ball.vy = -6;
+  p.advance(0.1);
+  assert.ok(Math.hypot(ball.vx, ball.vy) < 10, "a dead bumper only lets the ball bounce off");
 });
 
 test("the scoop starts the mission picked with the flippers, and a won mission counts", () => {
@@ -290,4 +302,40 @@ test("a saved game is signed: read back as it was, refused once edited by hand",
   assert.deepEqual(await loadCheckpoint(), { broken: true });
   clearCheckpoint();
   assert.equal(hasCheckpoint(), false);
+});
+
+test("a top lane counts whichever way the ball rolls over it, and a replay score gives an extra ball", () => {
+  const table = buildTable();
+  const rules = createRules(table, quietOut([]), seeded(3));
+  rules.newGame();
+  const ball = table.physics.balls.find((b) => b.active);
+  // Up out of the bumpers
+  rules.event({ type: "cross", tag: "lane0", value: -8, ball });
+  rules.update(0.5);
+  rules.event({ type: "cross", tag: "lane1", value: 8, ball });
+  rules.update(0.5);
+  rules.event({ type: "cross", tag: "lane2", value: -8, ball });
+  assert.equal(rules.state.bonusX, 2, "the three lanes raise the bonus multiplier");
+  rules.state.score = 4999000;
+  rules.event({ type: "hit", tag: "bumper0", value: 10, ball });
+  assert.equal(rules.state.extraBalls, 1, "passing 5,000,000 gives an extra ball");
+});
+
+test("a whole game played by the bot ends: no hole, path or rule keeps a ball forever", () => {
+  const random = seeded(11);
+  const table = buildTable();
+  const log = [];
+  const rules = createRules(table, quietOut(log), random);
+  const bot = createAutoplay(table, random);
+  rules.newGame();
+  const dt = 1 / 60;
+  let t = 0;
+  while (!rules.over && t < 3600) {
+    bot.step(dt, { press: (f) => rules.flip(f.side), release() {}, launched: () => rules.launched() });
+    table.physics.advance(dt);
+    table.physics.readEvents((e) => rules.event(e));
+    rules.update(dt);
+    t += dt;
+  }
+  assert.ok(rules.over, "the game ended within an hour of play (" + Math.round(t / 60) + " min, score " + rules.state.score + ")");
 });
