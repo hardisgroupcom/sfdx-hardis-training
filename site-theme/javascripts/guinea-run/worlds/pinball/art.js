@@ -128,16 +128,19 @@ export function paintField(THREE, t, lights, tier) {
   space(c, canvas.width, canvas.height, ["#04102a", "#0a2c6e", "#2a1160"], 11);
 
   // The zones of the branches, round their ramps
-  const zone = (x0, y0z, x1, y1, color, label) => {
-    rounded(c, X(x0), Y(y1), U(x1 - x0), U(y1 - y0z), U(0.45));
+  // An open zone (the integration and uat ramps) is a glow with no frame round its mouth
+  const zone = (x0, y0z, x1, y1, color, label, open) => {
+    rounded(c, X(x0), Y(y1), U(x1 - x0), U(y1 - y0z), U(open ? 0 : 0.45));
     const g = c.createLinearGradient(0, Y(y1), 0, Y(y0z));
     g.addColorStop(0, color.replace("A", "0.45"));
-    g.addColorStop(1, color.replace("A", "0.08"));
+    g.addColorStop(1, color.replace("A", open ? "0" : "0.08"));
     c.fillStyle = g;
     c.fill();
-    c.lineWidth = U(0.05);
-    c.strokeStyle = color.replace("A", "0.7");
-    c.stroke();
+    if (!open) {
+      c.lineWidth = U(0.05);
+      c.strokeStyle = color.replace("A", "0.7");
+      c.stroke();
+    }
     if (label) {
       c.save();
       c.fillStyle = "rgba(255,255,255,0.9)";
@@ -147,8 +150,8 @@ export function paintField(THREE, t, lights, tier) {
       c.restore();
     }
   };
-  zone(-3.75, 10.65, -2.25, 15.9, "rgba(27,150,255,A)", t("pbFieldIntegration").toUpperCase());
-  zone(2.25, 10.65, 3.75, 15.9, "rgba(6,165,154,A)", t("pbFieldUat").toUpperCase());
+  zone(-3.75, 10.65, -2.25, 15.9, "rgba(27,150,255,A)", t("pbFieldIntegration").toUpperCase(), true);
+  zone(2.25, 10.65, 3.75, 15.9, "rgba(6,165,154,A)", t("pbFieldUat").toUpperCase(), true);
   zone(-0.85, 13.0, 0.85, 16.5, "rgba(69,198,90,A)", "");
 
   // The pipeline road up the middle, from the flippers to production

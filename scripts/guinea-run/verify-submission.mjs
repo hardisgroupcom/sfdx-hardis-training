@@ -25,7 +25,7 @@ import { MODES } from "../../site-theme/javascripts/guinea-run/core/story.js";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 export const FIELD_LABEL = "Scores";
 export const MAX_FIELD_BYTES = 16 * 1024;
-export const DEFAULT_LIMITS = { cap: 20000, legacyCap: 6000, minBossMs: 0, rateMinutes: 10, pinballCap: 500000000, pinballBase: 3000000, pinballPerMinute: 4000000 };
+export const DEFAULT_LIMITS = { cap: 20000, legacyCap: 6000, minBossMs: 0, rateMinutes: 10, pinballCap: 500000000, pinballBase: 3000000, pinballPerMinute: 6000000 };
 // A Pipeline Pinball game lasts at least this, at most this (game time, pauses not counted)
 const PINBALL_MIN_MS = 30000;
 const PINBALL_MAX_MS = 8 * 3600000;

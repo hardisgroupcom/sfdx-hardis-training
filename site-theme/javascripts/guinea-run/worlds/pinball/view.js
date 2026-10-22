@@ -13,8 +13,19 @@ import { createBallMesh } from "./ball.js";
 import { paintField, paintUpper, paintApron, paintSign, paintBumperCap, paintFlow, paintTerminal, shapePoints } from "./art.js";
 
 const LEAN = 0.11;
-const WALL_HEIGHT = { wall: 0.62, rubber: 0.42, rail: 0.36, post: 0.5, gate: 0.3, diverter: 0.42, sling: 0.44, upper: 0.5 };
-const WALL_COLOR = { wall: 0xe8eef5, rubber: 0x1b1b24, rail: 0xb8c4d0, post: 0xf3f6fa, gate: 0xc9c9c9, diverter: 0x2e844a, sling: 0xea001e, upper: 0xd5f5df };
+const WALL_HEIGHT = { wall: 0.5, rubber: 0.4, rail: 0.3, post: 0.45, gate: 0.3, diverter: 0.42, sling: 0.42, upper: 0.45 };
+// As on the arcade: brushed stainless guides, chrome posts, black rubbers; the
+// mouths of the ramps are their own coloured plastic (RAMP_TINT)
+const WALL_LOOK = {
+  wall: { color: 0xaeb8c2, metalness: 0.85, roughness: 0.32 },
+  upper: { color: 0xaeb8c2, metalness: 0.85, roughness: 0.32 },
+  post: { color: 0xe8eef4, metalness: 0.95, roughness: 0.14 },
+  gate: { color: 0xe8eef4, metalness: 0.95, roughness: 0.14 },
+  rubber: { color: 0x141418, metalness: 0, roughness: 0.75 },
+  sling: { color: 0xd8001a, metalness: 0, roughness: 0.55 },
+  diverter: { color: 0x2e844a, metalness: 0.2, roughness: 0.35 }
+};
+const RAMP_TINT = { integration: 0x1b96ff, uat: 0x06a59a, production: 0x45c65a };
 const FLASH_DECAY = 6;
 
 export function createView(THREE, ctx, table, options) {
@@ -36,6 +47,27 @@ export function createView(THREE, ctx, table, options) {
   upper.position.y = TABLE.upperHeight;
   group.add(upper);
 
+  // An arcade at night: what the chrome and the plastics reflect, a dim room,
+  // and the table lit by its own lamps (on the better quality tiers)
+  const roomTexture = keep(paintRoom(THREE));
+  engine.scene.environment = roomTexture;
+  engine.hemi.intensity = 0.55;
+  engine.sun.intensity = 1.3;
+  const lamps = [];
+  if (tier >= 1) {
+    for (const [x, y, hue] of [
+      [-2.2, 4.5, 0xffd8a8],
+      [2.2, 4.5, 0xffd8a8],
+      [0, 11.5, 0xfff0dd],
+      [0, 18.5, 0xffe2c0]
+    ]) {
+      const lamp = new THREE.PointLight(hue, 5, 9, 1.8);
+      lamp.position.set(x, 3.2, -y);
+      group.add(lamp);
+      lamps.push(lamp);
+    }
+  }
+
   const tmp = new THREE.Object3D();
   const color = new THREE.Color();
   const vec = new THREE.Vector3();
@@ -46,7 +78,8 @@ export function createView(THREE, ctx, table, options) {
   const fieldY0 = -1.6;
   const fieldY1 = TABLE.top + 0.3;
   const fieldTexture = keep(paintField(THREE, t, table.lights, tier));
-  const field = new THREE.Mesh(keep(new THREE.PlaneGeometry(fieldW, fieldY1 - fieldY0)), keep(new THREE.MeshStandardMaterial({ map: fieldTexture, roughness: 0.55, metalness: 0.05 })));
+  // The playfield under its clear coat: a little shine, the lamps reflected in it
+  const field = new THREE.Mesh(keep(new THREE.PlaneGeometry(fieldW, fieldY1 - fieldY0)), keep(new THREE.MeshStandardMaterial({ map: fieldTexture, roughness: 0.38, metalness: 0.02, envMapIntensity: 0.3 })));
   field.rotation.x = -Math.PI / 2;
   field.position.set((TABLE.left + TABLE.right) / 2, 0, -(fieldY0 + fieldY1) / 2);
   field.receiveShadow = true;
@@ -88,13 +121,21 @@ export function createView(THREE, ctx, table, options) {
 
   const kinds = {};
   for (const w of table.walls) {
-    (kinds[w.kind] = kinds[w.kind] || []).push(w.shape);
+    // The walls of a ramp's mouth take the colour of its plastic
+    const kind = w.kind === "rail" ? "rail-" + (w.shape.ax < -1 ? "integration" : w.shape.ax > 1 ? "uat" : "production") : w.kind;
+    (kinds[kind] = kinds[kind] || []).push(w.shape);
   }
-  const cylinder = keep(new THREE.CylinderGeometry(1, 1, 1, 12));
+  const cylinder = keep(new THREE.CylinderGeometry(1, 1, 1, 16));
   const wallMeshes = [];
   for (const [kind, shapes] of Object.entries(kinds)) {
-    const material = keep(new THREE.MeshStandardMaterial({ color: WALL_COLOR[kind], roughness: kind === "rubber" || kind === "sling" ? 0.7 : 0.35, metalness: kind === "rail" ? 0.7 : 0.1 }));
-    const h = WALL_HEIGHT[kind] || 0.5;
+    let material;
+    if (kind.startsWith("rail-")) {
+      const tint = RAMP_TINT[kind.slice(5)];
+      material = keep(new THREE.MeshStandardMaterial({ color: tint, emissive: tint, emissiveIntensity: 0.22, roughness: 0.15, metalness: 0.1, transparent: true, opacity: 0.62, depthWrite: false }));
+    } else {
+      material = keep(new THREE.MeshStandardMaterial(Object.assign({}, WALL_LOOK[kind] || WALL_LOOK.wall)));
+    }
+    const h = WALL_HEIGHT[kind.startsWith("rail-") ? "rail" : kind] || 0.5;
     const bodies = new THREE.InstancedMesh(box, material, shapes.length);
     const ends = new THREE.InstancedMesh(cylinder, material, shapes.length * 2);
     shapes.forEach((s, i) => {
@@ -162,7 +203,9 @@ export function createView(THREE, ctx, table, options) {
 
   /* ---------- The slingshots' plastics ---------- */
 
-  const slingMaterial = keep(new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.3, transparent: true, opacity: 0.88 }));
+  // Printed plastics over the slingshots, as on the arcade: colour, a white edge, a gloss
+  const slingTexture = keep(paintPlastic(THREE));
+  const slingMaterial = keep(new THREE.MeshStandardMaterial({ map: slingTexture, roughness: 0.12, metalness: 0.05, transparent: true, opacity: 0.93 }));
   const slingFlash = [];
   for (const side of [-1, 1]) {
     const shape = new THREE.Shape();
@@ -171,7 +214,12 @@ export function createView(THREE, ctx, table, options) {
     shape.lineTo(side * -b[0], b[1]);
     shape.lineTo(side * -c[0], c[1]);
     shape.closePath();
-    const geometry = keep(new THREE.ExtrudeGeometry(shape, { depth: 0.4, bevelEnabled: false }));
+    const geometry = keep(new THREE.ExtrudeGeometry(shape, { depth: 0.46, bevelEnabled: true, bevelSize: 0.04, bevelThickness: 0.03, bevelSegments: 2 }));
+    // The print maps across the triangle, from its top corner
+    const uv = geometry.attributes.uv;
+    for (let i = 0; i < uv.count; i++) {
+      uv.setXY(i, (Math.abs(uv.getX(i)) - 1.95) / 1.2, (uv.getY(i) - 3.5) / 2.5);
+    }
     const material = slingMaterial.clone();
     keep(material);
     const mesh = new THREE.Mesh(geometry, material);
@@ -866,6 +914,7 @@ export function createView(THREE, ctx, table, options) {
       look.y = look.target;
     },
     dispose() {
+      engine.scene.environment = null;
       for (const m of ballMeshes) {
         m.dispose();
       }
@@ -965,4 +1014,73 @@ function insertGeometry(THREE, shape) {
   }
   outline.closePath();
   return new THREE.ShapeGeometry(outline);
+}
+
+/**
+ * The room the table stands in, for reflections: a dark arcade, strip lights
+ * on the ceiling, neon glows round the walls.
+ */
+function paintRoom(THREE) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 512;
+  canvas.height = 256;
+  const c = canvas.getContext("2d");
+  const g = c.createLinearGradient(0, 0, 0, 256);
+  g.addColorStop(0, "#1a1d26");
+  g.addColorStop(0.5, "#0b0d14");
+  g.addColorStop(1, "#050608");
+  c.fillStyle = g;
+  c.fillRect(0, 0, 512, 256);
+  // Strip lights overhead
+  c.fillStyle = "#fff6e8";
+  for (let i = 0; i < 6; i++) {
+    c.fillRect(20 + i * 85, 18, 52, 10);
+  }
+  // Neon glows on the walls: red, blue, orange
+  for (const [x, color] of [
+    [60, "rgba(234,0,30,0.85)"],
+    [200, "rgba(27,150,255,0.85)"],
+    [340, "rgba(254,147,57,0.85)"],
+    [470, "rgba(144,80,233,0.85)"]
+  ]) {
+    const n = c.createRadialGradient(x, 120, 2, x, 120, 70);
+    n.addColorStop(0, color);
+    n.addColorStop(1, "rgba(0,0,0,0)");
+    c.fillStyle = n;
+    c.fillRect(x - 70, 50, 140, 140);
+  }
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.mapping = THREE.EquirectangularReflectionMapping;
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
+/** A printed slingshot plastic: Cloudity colours, a white edge, a star burst. */
+function paintPlastic(THREE) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 256;
+  canvas.height = 256;
+  const c = canvas.getContext("2d");
+  const g = c.createLinearGradient(0, 0, 256, 256);
+  g.addColorStop(0, "#ff4d5e");
+  g.addColorStop(0.55, "#c2001a");
+  g.addColorStop(1, "#5a1aa8");
+  c.fillStyle = g;
+  c.fillRect(0, 0, 256, 256);
+  c.strokeStyle = "rgba(255,255,255,0.9)";
+  c.lineWidth = 14;
+  c.strokeRect(7, 7, 242, 242);
+  c.fillStyle = "rgba(255,255,255,0.35)";
+  for (let i = 0; i < 12; i++) {
+    const a = (i / 12) * Math.PI * 2;
+    c.beginPath();
+    c.moveTo(128, 128);
+    c.lineTo(128 + Math.cos(a) * 160, 128 + Math.sin(a) * 160);
+    c.lineTo(128 + Math.cos(a + 0.12) * 160, 128 + Math.sin(a + 0.12) * 160);
+    c.closePath();
+    c.fill();
+  }
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
 }

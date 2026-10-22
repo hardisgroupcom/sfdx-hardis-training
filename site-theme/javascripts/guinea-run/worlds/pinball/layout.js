@@ -168,17 +168,14 @@ export function buildTable() {
     [-3.0, 10.9, 0, -3.0, 12.6, 0.9, -3.15, 14.2, 1.7, -3.7, 15.0, 1.9, -4.6, 15.2, 2.0, -5.4, 14.6, 2.1, -5.45, 9.5, 2.0, -5.35, 7.2, 1.7, -4.3, 6.3, 0.8, -3.6, 5.9, 0.3, -3.55, 5.5, 0],
     { tag: "integration", exitMax: 9 }
   );
-  keep(p.wall([-3.72, 13.2, -3.72, 10.75, -3.6, 10.55], { r: 0.08, bounce: 0.3 }), "rail");
-  keep(p.wall([-2.28, 13.2, -2.28, 10.75, -2.4, 10.55], { r: 0.08, bounce: 0.3 }), "rail");
-  p.line(-3.6, 10.9, -2.4, 10.9, { path: integrationPath, tag: "integrationMouth" });
+  // No walls at the mouth: the plastic ramp starts flat on the playfield
+  p.line(-3.75, 10.9, -2.25, 10.9, { path: integrationPath, tag: "integrationMouth" });
 
   const uatPath = p.path(
     [3.0, 10.9, 0, 3.0, 12.6, 0.9, 3.15, 14.2, 1.7, 3.7, 15.0, 1.9, 4.6, 15.2, 2.0, 6.45, 14.6, 2.1, 6.5, 9.5, 2.0, 6.4, 7.2, 1.7, 4.4, 6.3, 0.9, 3.6, 5.9, 0.3, 3.55, 5.5, 0],
     { tag: "uat", exitMax: 9 }
   );
-  keep(p.wall([3.72, 13.2, 3.72, 10.75, 3.6, 10.55], { r: 0.08, bounce: 0.3 }), "rail");
-  keep(p.wall([2.28, 13.2, 2.28, 10.75, 2.4, 10.55], { r: 0.08, bounce: 0.3 }), "rail");
-  p.line(2.4, 10.9, 3.6, 10.9, { path: uatPath, tag: "uatMouth" });
+  p.line(2.25, 10.9, 3.75, 10.9, { path: uatPath, tag: "uatMouth" });
 
   // The production ramp climbs to the Production floor; a gate closes its mouth until it is lit
   const productionPath = p.path(
