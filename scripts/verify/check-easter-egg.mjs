@@ -15,6 +15,9 @@
  * - each world opens, starts, takes its controls, ends, and gives back what
  *   it drew when the player returns to the map; the last one ends on the credits,
  *   and its retrofit button takes a click
+ * - the admin at the end of world 5 clicks Accept Current Change on Mariia's
+ *   lines, the guinea pig undoes his clicks and keeps both sides of every
+ *   conflict, and his git push --force meets the branch protection
  * - finishing a world opens the next one, and the browser remembers it
  * - a deployment action declared in the wrong place in world 3 comes back as
  *   a failing gate in world 6
@@ -344,6 +347,27 @@ try {
     await openWorld(page, "en", 6);
     expect((await data(page, "misplaced")) === "1", "an action declared before the deployment in world 3 fails in world 6");
     await page.evaluate((key) => window.localStorage.removeItem(key), PROGRESS_KEY);
+    await page.context().close();
+  }
+
+  // 5c. World 5's admin, played by the world's own autoplay (decided at every
+  // step of the world): it lets him click once, undoes it, keeps both sides of
+  // every conflict, and his push meets the branch protection. A small window,
+  // so the software renderer plays the fight at about its real speed
+  {
+    const page = await newPage({ viewport: { width: 640, height: 430 } });
+    // guinea-at=4: straight to the admin, after the three rounds
+    expect(await openWorld(page, "en", 5, "&guinea-at=4"), "world 5 opens at its admin");
+    await page.click('.guinea-run [data-action="start"]');
+    await waitState(page, "playing");
+    await page.evaluate(() => window.__guineaRun.w5.autoplay(true));
+    expect(await settles(page, () => data(page, "boss"), "fight", 30000), "the admin grabs the mouse at the end of world 5");
+    expect(await settles(page, () => data(page, "boss"), "push", 300000), "the four files are merged with both sides kept");
+    const [wipes, caught] = await Promise.all(["wipes", "caught"].map((name) => data(page, name).then(Number)));
+    expect(wipes > 0 && caught > 0, `he clicked Accept Current Change and the guinea pig undid it (${wipes} clicks, ${caught} undone)`);
+    expect(await settles(page, () => data(page, "boss"), "beaten", 60000), "his git push --force is rejected by the branch protection");
+    const end = ["celebrating", "done"];
+    expect(await waitState(page, end), `world 5 ends on its badge after the admin (${await data(page, "bosstime")} s of game time for the fight)`);
     await page.context().close();
   }
 

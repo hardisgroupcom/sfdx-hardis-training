@@ -292,6 +292,41 @@ export function createSound() {
     moleBonk() {
       thump(0, 0.45);
       bell(pick(PENTATONIC), 0.01, 0.12, 0.18, 3);
+    },
+    // World 8's boss rises: a long swish up and three low bells climbing
+    bossIn() {
+      swish(0, 0.24, 200, 2400);
+      [196, 246.9, 293.7].forEach((frequency, i) => bell(frequency, 0.1 + i * 0.12, 0.18, 0.7, 2.5));
+    },
+    // It throws an error: a swish that falls and a low "boing"
+    bossThrow() {
+      swish(0, 0.1, 2600, 500);
+      bell(146.8, 0.02, 0.12, 0.25, 2.5);
+    },
+    // A vegetable lands on it: a short bonk, quiet, it comes twice a beat
+    bossHit() {
+      thump(0, 0.18);
+      bell(pick(PENTATONIC) * 1.5, 0, 0.06, 0.1, 3);
+    },
+    // It has no life left: bells falling, a deep thump
+    bossDown() {
+      swish(0, 0.2, 3000, 250);
+      [784, 659.3, 523.3, 392, 293.7, 196].forEach((frequency, i) => bell(frequency, i * 0.09, 0.15, 0.4, 2.5));
+      thump(0.6, 0.6);
+    },
+    // World 5: the admin clicks Accept Current Change, two dry mouse clicks and a line swept away
+    adminClick() {
+      bell(2637, 0, 0.09, 0.05, 2);
+      bell(2349.3, 0.07, 0.08, 0.05, 2);
+      swish(0.08, 0.12, 2200, 400);
+      bell(220, 0.1, 0.1, 0.3, 2.5);
+    },
+    // His git push --force meets the branch protection: a heavy lock and a low two-note buzz
+    pushRejected() {
+      thump(0, 0.7);
+      bell(110, 0.02, 0.2, 0.5, 1.5);
+      bell(103.8, 0.3, 0.2, 0.7, 1.5);
+      bell(1568, 0.05, 0.1, 0.4, 3);
     }
   };
 
