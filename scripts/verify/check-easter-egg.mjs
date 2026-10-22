@@ -18,6 +18,9 @@
  * - the admin at the end of world 5 clicks Accept Current Change on Mariia's
  *   lines, the guinea pig undoes his clicks and keeps both sides of every
  *   conflict, and his git push --force meets the branch protection
+ * - the Data Cloud at the end of world 8 throws its errors, a player who jumps
+ *   on the beat takes its carrots and fires back, it goes down, and the DORA
+ *   card follows
  * - finishing a world opens the next one, and the browser remembers it
  * - a deployment action declared in the wrong place in world 3 comes back as
  *   a failing gate in world 6
@@ -347,6 +350,29 @@ try {
     await openWorld(page, "en", 6);
     expect((await data(page, "misplaced")) === "1", "an action declared before the deployment in world 3 fails in world 6");
     await page.evaluate((key) => window.localStorage.removeItem(key), PROGRESS_KEY);
+    await page.context().close();
+  }
+
+  // 5b. World 8's boss, played to its end by the world's own autoplay (a jump on
+  // the exact beat of each target, whatever the frame rate of the software renderer)
+  {
+    const page = await newPage({ viewport: { width: 1280, height: 860 } });
+    // guinea-at=164: the checkpoint where the Data Cloud rises
+    expect(await openWorld(page, "en", 8, "&guinea-at=164"), "world 8 opens at its boss");
+    await page.click('.guinea-run [data-action="start"]');
+    await waitState(page, "playing");
+    await page.evaluate(() => window.__guineaRun.w8.autoplay(true));
+    expect(await settles(page, () => data(page, "boss"), "fight", 20000), "the Data Cloud rises at the end of world 8");
+    const fought = await page
+      .waitForFunction(() => document.querySelector(".guinea-run")?.getAttribute("data-boss") !== "fight", null, { timeout: 240000 })
+      .then(
+        () => true,
+        () => false
+      );
+    const [boss, thrown, shots] = await Promise.all(["boss", "thrown", "shots"].map((name) => data(page, name)));
+    expect(fought && (boss === "down" || boss === "gone"), `the Data Cloud has no life left after the fight (data-boss: ${boss})`);
+    expect(Number(thrown) > 0 && Number(shots) > 0, `it threw errors and the guinea pig fired vegetables back (${thrown} thrown, ${shots} fired)`);
+    expect(await settles(page, () => data(page, "phase"), "dora", 60000), "the DORA card follows the boss");
     await page.context().close();
   }
 

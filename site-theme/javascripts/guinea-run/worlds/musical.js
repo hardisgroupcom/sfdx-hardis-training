@@ -70,6 +70,11 @@ const VEG_H = 0.75;
 const VEG_POINTS = 15;
 // Vegetables come in short rows of one kind; the name shows over the first of each kind
 const VEG_ROW = 3;
+// A block thrown by a boss (def.thrower) leaves its hand this many beats before
+// it is jumped, and lands this many beats before: thrown on a beat, landed on a beat
+const THROW_BEATS = 3;
+const LAND_BEATS = 1;
+const THROW_ARC = 1.6;
 
 export const MUSICAL_TEXTS = {
   en: {
@@ -277,7 +282,11 @@ export function createLevel() {
   };
   const L = {
     events,
-    /** A block to jump over, jumped on beat `at`. look: { id, color, glyph, sign, title, tip, group, hidden, h }. */
+    /**
+     * A block to jump over, jumped on beat `at`. look: { id, color, glyph, sign, title, tip, group, hidden, h },
+     * and for its sign signEvery (on every block of the look), signHeight, signAnchor (0 to 1: the share of it left of the block).
+     * extra: { convert: coin } turns it into that coin (convert()), { thrown: true } has it thrown by def.thrower.
+     */
     block(at, look, extra) {
       return add(Object.assign({ type: "block", at, look }, extra));
     },
@@ -295,9 +304,13 @@ export function createLevel() {
       }
       add({ type: "target", at, bonus: true });
     },
-    /** A power-up at the top of a jump on beat `at` (or on the ground with ground: true). */
+    /**
+     * A power-up at the top of a jump on beat `at` (or on the ground with ground: true).
+     * power: { id, model, color, glyph, sign }, and optionally y (its height) and size.
+     */
     power(at, power, ground) {
-      add({ type: "power", beat: ground ? at : at + 0.5, y: ground ? 0.6 : JUMP_H + 0.45, power });
+      const y = power.y !== undefined ? power.y : ground ? 0.6 : JUMP_H + 0.45;
+      add({ type: "power", beat: ground ? at : at + 0.5, y, power });
       if (!ground) {
         add({ type: "target", at, bonus: true });
       }
@@ -398,6 +411,10 @@ function hexOf(css) {
  * bars], callbacks: { onPower(power), onCoin(coin), onHit(look), onManual(stop,
  * landed), onChoice(stop, round, option, right), onEnd(), onEndAction(name),
  * onSoftHit(look) } }.
+ *
+ * A boss that throws the blocks of the level: def.thrower(vector) writes where a
+ * thrown block leaves from (blocks added with { thrown: true }), and
+ * callbacks.onThrow(look, block) / onLand(look, block) say when it flies and lands.
  */
 export function createMusicalRun(ctx, def) {
   const { THREE, root, pig, paint, hud, engine, sound, t } = ctx;
@@ -946,11 +963,25 @@ export function createMusicalRun(ctx, def) {
         const block = { event: e, look, h, x: X(e.at + 0.5), mesh, normal, dead: false, hidden: Boolean(look.hidden), squash: 0, sign: null, convert: null, popped: 0 };
         if (look.sign && (look.signEvery || !signSeen.has(look.id))) {
           signSeen.add(look.id);
-          block.sign = addSign(look.sign, block.x, h + 0.55, { color: look.color, glyph: look.glyph, name: "mu-block" });
+          block.sign = addSign(look.sign, block.x, h + 0.55, Object.assign({ color: look.color, glyph: look.glyph, name: "mu-block" }, look.signHeight ? { height: look.signHeight } : null));
           block.sign.sprite.visible = !block.hidden;
+          // A long label can hang towards the guinea pig, where a phone has room for it
+          // (moved, not anchored: the sprites of the WebGPU renderer keep their centre)
+          if (look.signAnchor) {
+            block.signShift = look.signAnchor - 0.5;
+            block.sign.sprite.position.x = block.x - block.signShift * block.sign.sprite.scale.x;
+          }
         }
         if (e.convert) {
           block.convert = addCoin(e.at + 0.5, 0.55, e.convert, true);
+        }
+        if (e.thrown) {
+          // Out of sight until it leaves the thrower's hand (flyThrown)
+          block.thrown = { state: "held", from: new THREE.Vector3() };
+          mesh.visible = false;
+          if (block.sign) {
+            block.sign.sprite.visible = false;
+          }
         }
         block.target = addTarget(e.at, false, block);
         block.target.marker.visible = !block.hidden;
@@ -987,9 +1018,9 @@ export function createMusicalRun(ctx, def) {
           mesh.position.set(X(e.beat), e.y, 0);
           root.add(mesh);
         }
-        const entry = { beat: e.beat, x: X(e.beat), y: e.y, power: p, mesh, pool: copies, size: 1.05, got: false, sign: null };
+        const entry = { beat: e.beat, x: X(e.beat), y: e.y, power: p, mesh, pool: copies, size: p.size || 1.05, got: false, sign: null };
         if (p.sign) {
-          entry.sign = addSign(p.sign, X(e.beat), e.y + 1.05, { color: p.color, glyph: p.glyph, name: "mu-power" });
+          entry.sign = addSign(p.sign, X(e.beat), e.y + entry.size, { color: p.color, glyph: p.glyph, name: "mu-power" });
         }
         powers.push(entry);
         break;
@@ -1540,8 +1571,8 @@ export function createMusicalRun(ctx, def) {
     rewind();
   }
 
-  /** Back to the last checkpoint, on a bar of the song. */
-  function rewind() {
+  /** Back to the last checkpoint, on a bar of the song. withMercy false: no mistake was made, the tempo stays. */
+  function rewind(withMercy) {
     run.mode = "rewind";
     run.rewindFrom = X(run.beat);
     run.rewindFromY = player.y;
@@ -1552,7 +1583,7 @@ export function createMusicalRun(ctx, def) {
     music.fill(run.rewindUntil, 1);
     // Mercy: back at the checkpoint, the tempo drops a step for a few bars, then climbs again
     run.pace = paceAt(run.cp.at);
-    const mercy = Math.max(1, paces.filter((x) => x < run.pace - 0.001).pop() || 1);
+    const mercy = withMercy === false ? run.pace : Math.max(1, paces.filter((x) => x < run.pace - 0.001).pop() || 1);
     music.setTempo(def.song.bpm * mercy, run.rewindUntil);
     run.mercyUntil = mercy < run.pace ? run.rewindUntil + MERCY_BEATS : -1;
     if (run.mercyUntil > 0) {
@@ -1865,6 +1896,9 @@ export function createMusicalRun(ctx, def) {
         b.mesh.visible = false;
         continue;
       }
+      if (b.thrown && flyThrown(b)) {
+        continue;
+      }
       if (b.popped > 0) {
         b.popped = Math.max(0, b.popped - dt * 3);
         b.mesh.scale.set(BLOCK_W * (1 + (1 - b.popped) * 0.6), b.h * b.popped, 1.1);
@@ -2016,6 +2050,78 @@ export function createMusicalRun(ctx, def) {
         s.sprite.scale.copy(s.base).multiplyScalar(portrait ? 1.5 : 1);
       }
     }
+  }
+
+  /**
+   * A block thrown by the boss: held until THROW_BEATS before its beat, then in
+   * the air, landed LAND_BEATS before it, and from there drawn as any block.
+   * Returns true while it is not on the track yet. A rewind takes it back to the hand.
+   */
+  function flyThrown(b) {
+    const th = b.thrown;
+    if (b.dead) {
+      if (b.sign) {
+        b.sign.sprite.visible = false;
+      }
+      return false;
+    }
+    const ahead = b.event.at - run.beat;
+    if (ahead > THROW_BEATS) {
+      th.state = "held";
+      b.mesh.visible = false;
+      if (b.sign) {
+        b.sign.sprite.visible = false;
+      }
+      return true;
+    }
+    if (ahead > LAND_BEATS) {
+      if (th.state !== "flying") {
+        th.state = "flying";
+        if (def.thrower) {
+          def.thrower(th.from);
+        } else {
+          th.from.set(b.x + 4, 5, -2);
+        }
+        if (calls.onThrow) {
+          calls.onThrow(b.look, b);
+        }
+      }
+      // From the hand to its place on the track, over a little arc, spinning into place
+      const k = (THROW_BEATS - ahead) / (THROW_BEATS - LAND_BEATS);
+      const s = 0.55 + 0.45 * k;
+      const spin = (1 - k) * (1 - k) * Math.PI * 2;
+      const x = th.from.x + (b.x - th.from.x) * k;
+      const y = th.from.y * (1 - k) + THROW_ARC * 4 * k * (1 - k);
+      const z = th.from.z * (1 - k);
+      b.mesh.visible = true;
+      b.mesh.position.set(x, y + (b.h * s) / 2, z);
+      b.mesh.rotation.set(spin * 0.5, 0, spin);
+      b.mesh.scale.set(BLOCK_W * s, b.h * s, 1.1 * s);
+      if (b.sign) {
+        b.sign.sprite.visible = true;
+        b.sign.sprite.position.set(x - (b.signShift || 0) * b.sign.sprite.scale.x, y + b.h * s + 0.55, z + 0.6);
+      }
+      return true;
+    }
+    if (th.state !== "landed") {
+      th.state = "landed";
+      b.mesh.position.set(b.x, b.h / 2, 0);
+      b.mesh.rotation.set(0, 0, 0);
+      b.squash = 1;
+      if (b.sign) {
+        b.sign.sprite.visible = true;
+        b.sign.sprite.position.set(b.x, b.h + 0.55, 0.6);
+      }
+      ctx.fx.burst(b.x, 0.1, 0, { count: 8, colors: [0xffffff, b.look.burst || 0x7473b5], speed: 2.5, up: 2, life: 0.5 });
+      if (calls.onLand) {
+        calls.onLand(b.look, b);
+      }
+    }
+    if (b.sign && b.signShift) {
+      // A phone turned meanwhile changes the width of the sign
+      b.sign.sprite.position.x = b.x - b.signShift * b.sign.sprite.scale.x;
+    }
+    return false;
   }
 
   function placePig(dt, time) {
@@ -2172,6 +2278,32 @@ export function createMusicalRun(ctx, def) {
     },
     powerTaken(id) {
       return powers.some((p) => p.power.id === id && p.got);
+    },
+    /** The power-ups of that id at or after the last checkpoint come back: a boss round played again. */
+    rearm(id) {
+      for (const p of powers) {
+        if (p.got && p.power.id === id && p.beat >= run.cp.at) {
+          p.got = false;
+          if (p.mesh) {
+            p.mesh.visible = true;
+          }
+          if (p.sign) {
+            p.sign.sprite.visible = true;
+          }
+        }
+      }
+    },
+    /** The run beat of the last checkpoint passed. */
+    get checkpoint() {
+      return run.cp.at;
+    },
+    /** Back to the last checkpoint with no mistake made (a boss still standing plays its round again). */
+    again() {
+      if (run.mode !== "run") {
+        return false;
+      }
+      rewind(false);
+      return true;
     },
     x: X
   };

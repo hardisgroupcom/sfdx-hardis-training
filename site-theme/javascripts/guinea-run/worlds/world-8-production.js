@@ -12,17 +12,23 @@
  * preprod has cost you nothing). In production the same riff comes back with
  * the full band, with one thing more that preprod did not have: drift.
  *
+ * Then the boss: the Data Cloud wakes up, a giant rabbit that never heard of
+ * the new field. It throws its errors on the beat, so jumping in time dodges
+ * them, and golden carrots on the track make the guinea pig fire vegetables
+ * back at it until it has no life left. Its last round comes again until it
+ * is down, and a player out of hearts there starts the next try at it.
+ *
  * The finale is a DORA card after a first release, and two questions about
  * what its numbers really say.
  */
-import { createLevel, createMusicalRun, MUSICAL_TEXTS, MUSICAL_CSS, endMissedInfo, musicalWorld } from "./musical.js";
+import { createLevel, createMusicalRun, MUSICAL_TEXTS, MUSICAL_CSS, UNITS_PER_BEAT, endMissedInfo, musicalWorld } from "./musical.js";
 import { melody } from "../core/music.js";
 import { SLDS } from "../core/painter.js";
 
 export const PADS = ["jump"];
 // The salesforce items (components, checks, runners, orgs, the rocket, the Cloudity logo and the
-// badge), the Kenney springs, trees and bushes far behind, and the bonus vegetables
-export const MODELS = ["salesforce", "platform", "nature", "vegetables"];
+// badge), the Kenney springs, trees and bushes far behind, the bonus vegetables, and the boss
+export const MODELS = ["salesforce", "platform", "nature", "vegetables", "data-cloud"];
 
 const SCENERY = [
   { names: ["tree_default", "tree_oak", "tree_pineRoundA"], z: -4.6, depth: 1.6, every: 5.2, height: 3.2, bounce: 0.05 },
@@ -37,7 +43,22 @@ const SONG = {
   root: 67,
   progression: [0, 5, 3, 4],
   lead: {
-    chorus: melody("7.4.2.4.7.9.7.4. 5.7.9.7.5...2.4. 3.5.7.5.3.5.7.8. 8.6.4.6.8...6.4.")
+    chorus: melody("7.4.2.4.7.9.7.4. 5.7.9.7.5...2.4. 3.5.7.5.3.5.7.8. 8.6.4.6.8...6.4."),
+    // The Data Cloud's theme: the same chords, a lead that stomps
+    boss: melody("7...7.6.7...9... 5...5.4.5...7... 3...3.2.3...5... 4...6.7.9...8.7.")
+  },
+  sections: {
+    // The boss: the whole band, heavier, a snare on the backbeat and a bass on every eighth
+    boss: {
+      kick: "X...x.x.X...x.x.",
+      snare: "....X.......X..x",
+      hat: "xxxxxxxxxxxxxxxx",
+      open: "..x...x...x...x.",
+      bass: "x.xox.xox.xox.xo",
+      stab: "x..x..x...x..x..",
+      arp: true,
+      lead: "boss"
+    }
   },
   start: "intro",
   end: "lounge"
@@ -46,6 +67,40 @@ const SONG = {
 const BAR = 4;
 // The riff rehearsed in preprod, and played again in production
 const RIFF = ["x.x.", "X-x-", "g.o.", "xx..", "x.g.", "o-X-", "x..x", "G-x-"];
+
+/* ---------- The boss: the Data Cloud ---------- */
+
+// After the verification: a bar for the rabbit to rise, then three rounds of four bars
+const BOSS_BAR = 41;
+const ROUND_BARS = 4;
+// A round per line, a bar per string, a beat per character: x an error thrown on
+// the beat, c a golden carrot on the ground. A round after a checkpoint starts
+// with three free beats, so nothing lands on a guinea pig that just came back
+const ROUNDS = [
+  ["x.x.", "x.c.", "..x.", "x.x."],
+  ["...x", "..c.", "x.xx", "..x."],
+  ["...x", "..c.", "x.x.", "xx.x"]
+];
+const ROUNDS_END = (BOSS_BAR + 1 + ROUNDS.length * ROUND_BARS) * BAR;
+// The last round comes again until the boss is down, then two bars to the finish
+const END_BAR = BOSS_BAR + 1 + ROUNDS.length * ROUND_BARS + 2;
+// Three carrots of sixteen vegetables: two are not enough, three are
+const BOSS_HP = 40;
+const BLASTER_BEATS = 8;
+const SHOTS_PER_BEAT = 2;
+const SHOT_BEATS = 0.75;
+// The errors it throws, in turn: a short label and why it happens
+const ERRORS = ["stream", "mapping", "kit", "identity", "segment", "dmo", "space", "activation"];
+const DC = { navy: "#1F1646", lavender: "#7473B5", block: "#3B2D7D", edge: "#5A4FCF" };
+// Where the rabbit floats, from the camera: right of the guinea pig, behind the track, over it
+const BOSS_DESK = { dx: 5.6, y: 2.5, z: -3.4, height: 5.6 };
+const BOSS_PHONE = { dx: 1.55, y: 3.3, z: -3.4, height: 5.8 };
+const VEG_SHOTS = ["carrot", "fennel", "bell-pepper", "cucumber", "romaine", "parsley"];
+const VEG_COLORS = [0xff8a3d, 0x7bc96f, 0xe8473b, 0x3e9b4f, 0x8cd17d, 0x2e844a];
+// A player out of hearts at the boss starts the next try at it, within this long.
+// Kept by the module, which outlives a world (the shell builds a new one for each try)
+const BOSS_RETRY_MS = 15 * 60000;
+let bossRetry = null;
 
 export const TEXTS = {
   en: Object.assign({}, MUSICAL_TEXTS.en, {
@@ -151,7 +206,40 @@ export const TEXTS = {
     info_checks: "You skipped {{n}} of the three checks of step 1: know the manual steps and look at production before you create anything.",
     info_verify: "You verified {{n}} of 3 things in the production org: the most common incident after a release is an old feature breaking.",
     info_quick: "You missed Quick Deploy: the validation already ran the tests.",
-    info_coins: "You ate {{got}} of {{total}} vegetables."
+    info_coins: "You ate {{got}} of {{total}} vegetables.",
+    arch5: "6 · Data Cloud",
+    goal5: "Jump the errors on the beat. Grab a golden carrot",
+    goal5down: "The Data Cloud is down: on to the finish",
+    coachCarrot: "A golden carrot: run into it!",
+    coachBlaster: "Veggie blaster: the guinea pig fires on its own!",
+    coachAgain: "The Data Cloud holds on: one more round",
+    coachDown: "The Data Cloud has no more life!",
+    s_carrot: "Veggie blaster",
+    p_carrot: "Veggie blaster! Vegetables fly at the Data Cloud",
+    bossName: "Data Cloud",
+    sayIn: "A new field on Account? Nobody told me!",
+    sayHit: "Ouch! Not the carrots!",
+    sayAgain: "Still standing! Again!",
+    sayDown: "OK, OK... next time, put me in a data kit.",
+    bossBeaten: "Data Cloud is down",
+    retryBoss: "Straight back to the Data Cloud: the release is done",
+    retryHint: "Try again starts at the Data Cloud.",
+    e_stream: "Data stream failed",
+    e_stream_tip: "A data stream reads its source through a connection of the org it runs in: set the connection up in each org, then run the stream again.",
+    e_mapping: "Field not mapped",
+    e_mapping_tip: "A new field reaches Data Cloud only once it is added to the data stream and mapped to the data model.",
+    e_kit: "Data kit not deployed",
+    e_kit_tip: "Installing the package is not the end: deploy the data kit in the target org to create what it holds.",
+    e_identity: "Identity resolution not ready",
+    e_identity_tip: "Unified profiles exist only once the identity resolution ruleset has run: the segments built on them wait for it.",
+    e_segment: "Segment not refreshed",
+    e_segment_tip: "A segment shows the members of its last refresh: refresh it once the data is in.",
+    e_dmo: "DMO not found",
+    e_dmo_tip: "A mapping to a custom data model object needs that object in the target org first: deploy the data model before the mappings.",
+    e_space: "Data space missing",
+    e_space_tip: "Data Cloud metadata belongs to a data space: the target org needs the same data space.",
+    e_activation: "Activation failed",
+    e_activation_tip: "An activation sends a segment to a target: that activation target must exist in each org."
   }),
   fr: Object.assign({}, MUSICAL_TEXTS.fr, {
     intro: "La recette UAT est validée. La release part dans l'org de production ce soir : répétez le morceau dans l'org preprod, puis jouez-le pour de vrai.",
@@ -256,7 +344,40 @@ export const TEXTS = {
     info_checks: "Vous avez sauté {{n}} des trois contrôles de l'étape 1 : connaissez les étapes manuelles et regardez la production avant de créer quoi que ce soit.",
     info_verify: "Vous avez vérifié {{n}} choses sur 3 dans l'org de production : l'incident le plus courant après une release, c'est une ancienne fonctionnalité qui casse.",
     info_quick: "Vous avez raté le Quick Deploy : la validation a déjà exécuté les tests.",
-    info_coins: "Vous avez mangé {{got}} légumes sur {{total}}."
+    info_coins: "Vous avez mangé {{got}} légumes sur {{total}}.",
+    arch5: "6 · Data Cloud",
+    goal5: "Sautez en rythme, prenez une carotte dorée",
+    goal5down: "Data Cloud est à terre : en route vers l'arrivée",
+    coachCarrot: "Une carotte dorée : foncez dessus !",
+    coachBlaster: "Lance-légumes : le cochon d'Inde tire tout seul !",
+    coachAgain: "Data Cloud tient bon : encore un tour",
+    coachDown: "Data Cloud n'a plus de vie !",
+    s_carrot: "Lance-légumes",
+    p_carrot: "Lance-légumes ! Les légumes volent vers Data Cloud",
+    bossName: "Data Cloud",
+    sayIn: "Un nouveau champ sur Account ? Personne ne m'a prévenu !",
+    sayHit: "Aïe ! Pas les carottes !",
+    sayAgain: "Toujours debout ! Encore !",
+    sayDown: "D'accord, d'accord... la prochaine fois, mettez-moi dans un data kit.",
+    bossBeaten: "Data Cloud est à terre",
+    retryBoss: "Retour direct à Data Cloud : la release est faite",
+    retryHint: "Réessayer reprend à Data Cloud.",
+    e_stream: "Data stream en échec",
+    e_stream_tip: "Un data stream lit sa source par une connexion de l'org où il tourne : créez la connexion dans chaque org, puis relancez le stream.",
+    e_mapping: "Champ non mappé",
+    e_mapping_tip: "Un nouveau champ n'arrive dans Data Cloud qu'une fois ajouté au data stream et mappé au data model.",
+    e_kit: "Data kit non déployé",
+    e_kit_tip: "Installer le package ne suffit pas : déployez le data kit dans l'org cible pour créer ce qu'il contient.",
+    e_identity: "Identity resolution pas prête",
+    e_identity_tip: "Les profils unifiés n'existent qu'une fois le ruleset d'identity resolution exécuté : les segments construits dessus l'attendent.",
+    e_segment: "Segment pas rafraîchi",
+    e_segment_tip: "Un segment montre les membres de son dernier rafraîchissement : rafraîchissez-le une fois les données arrivées.",
+    e_dmo: "DMO introuvable",
+    e_dmo_tip: "Un mapping vers un data model object personnalisé a d'abord besoin de cet objet dans l'org cible : déployez le data model avant les mappings.",
+    e_space: "Data space manquant",
+    e_space_tip: "Les métadonnées Data Cloud appartiennent à un data space : l'org cible a besoin du même data space.",
+    e_activation: "Activation en échec",
+    e_activation_tip: "Une activation envoie un segment vers une cible : cette activation target doit exister dans chaque org."
   })
 };
 
@@ -307,6 +428,10 @@ export function createWorld(ctx) {
   const { t, hud } = ctx;
   const verdict = ctx.judgePlan();
   const manualOk = verdict.deliverability.ok;
+  // The try after running out of hearts at the boss starts at it
+  const startAt = Number(ctx.params && ctx.params.startAt) || 0;
+  const retry = bossRetry && Date.now() - bossRetry.at < BOSS_RETRY_MS ? bossRetry : null;
+  bossRetry = null;
 
   /* ---------- The track ---------- */
 
@@ -417,6 +542,32 @@ export function createWorld(ctx) {
   L.power(35 * BAR + 1, POWER("v1", SLDS.brand, "gear"));
   L.power(37 * BAR + 1, POWER("v2", SLDS.teal, "flow"));
   L.power(39 * BAR + 1, POWER("v3", SLDS.success, "check"));
+
+  // Part 6: the Data Cloud throws its errors on the beat, a checkpoint at each round
+  L.checkpoint(BOSS_BAR * BAR);
+  part(BOSS_BAR, 0x5a4fcf, "arch5");
+  L.music(BOSS_BAR * BAR, "boss");
+  const errorLooks = ERRORS.map((key) => ({ id: "dc-" + key, color: DC.block, glyph: "error", sign: t("e_" + key), title: t("e_" + key), tip: t("e_" + key + "_tip"), group: "boss", signEvery: true, signHeight: 0.46, signAnchor: 0.76, burst: 0x7473b5 }));
+  const carrots = [];
+  let errorCount = 0;
+  ROUNDS.forEach((round, r) => {
+    const from = (BOSS_BAR + 1 + r * ROUND_BARS) * BAR;
+    if (r > 0) {
+      L.checkpoint(from);
+    }
+    [...round.join("")].forEach((ch, i) => {
+      if (ch === "x") {
+        L.block(from + i, errorLooks[errorCount % errorLooks.length], { thrown: true });
+        errorCount += 1;
+      } else if (ch === "c") {
+        // On the ground, a little up: taken by running into it, missed only from the top of a jump
+        const power = { id: "carrot", n: carrots.length, model: "carrot", color: SLDS.warningDark, glyph: "bolt", sign: t("s_carrot"), y: 0.85, size: 1.3 };
+        carrots.push({ beat: from + i, x: (from + i) * UNITS_PER_BEAT, got: false });
+        L.power(from + i, power, true);
+      }
+    });
+  });
+
   // The song speeds up part by part, on bar lines: production plays the riff of preprod faster
   [
     [6, 1.06],
@@ -424,7 +575,7 @@ export function createWorld(ctx) {
     [23, 1.2],
     [35, 1.28]
   ].forEach(([bar, pace]) => L.tempo(bar * BAR, pace));
-  L.end(41 * BAR, { text: t("s_dora"), glyph: "star", color: SLDS.navy });
+  L.end(END_BAR * BAR, { text: t("s_dora"), glyph: "star", color: SLDS.navy });
 
   /* ---------- The story on the way ---------- */
 
@@ -461,12 +612,23 @@ export function createWorld(ctx) {
     hud.goal(t("goal4"));
     api.coach(t("coachVerify"), 2800, true);
   });
+  L.script(BOSS_BAR * BAR, () => {
+    // The pipeline is done: every step of the path is green. The rabbit speaks for itself
+    path(5);
+    hud.goal(t("goal5"));
+  });
 
   let phase = "run";
   let finished = false;
   let card = null;
   let quiz = null;
-  const run = createMusicalRun(ctx, {
+  // The run plays with a context of its own: a retry starts at the boss, and the
+  // last heart lost there says so on the result card
+  const runCtx = Object.create(ctx, {
+    params: { value: { startAt: retry ? BOSS_BAR * BAR : startAt } },
+    loseAttempt: { value: loseAttempt }
+  });
+  const run = createMusicalRun(runCtx, {
     song: SONG,
     level: L,
     palette: [0x9050e9, 0xe3066a, 0xffb400, 0x06a59a, 0x1b96ff, 0x2e844a],
@@ -478,8 +640,21 @@ export function createWorld(ctx) {
     // (the shell shows the badge itself, beside its celebration card)
     finish: [{ name: "rocket", height: 3.6 }],
     finishLine: { name: "cloudity-logo", height: 1.3 },
+    // The errors of part 6 leave from the Data Cloud's paw
+    thrower: (v) => throwFrom(v),
     callbacks: {
+      onThrow() {
+        bossThrows();
+      },
+      onHit() {
+        // Back to the checkpoint: the carrots of the round come back, the blaster stops
+        bossSetBack();
+      },
       onPower(power) {
+        if (power.id === "carrot") {
+          takeCarrot(power);
+          return;
+        }
         const toast = { check1: "p_check1", check2: "p_check2", check3: "p_check3", jwt: "p_jwt", jwt2: "p_jwt2", quick: "p_quick", v1: "p_v1", v2: "p_v2", v3: "p_v3" }[power.id];
         if (toast) {
           hud.toast(t(toast), "power");
@@ -506,6 +681,495 @@ export function createWorld(ctx) {
     }
   });
 
+  /* ---------- The boss: the Data Cloud ---------- */
+
+  const { THREE, camera, engine, sound, pig } = ctx;
+  const overlay = hud.layer.parentElement;
+  // What this world made itself, freed with it (the models' own parts belong to the pack)
+  const owned = [];
+  const boss = { state: "away", hp: BOSS_HP, rise: 0, hit: 0, throwing: 0, droop: 0, down: 0, blink: 2.5, downX: 0, loops: 0, thrown: 0, shots: 0, carrotCoached: false, blasterCoached: false };
+  const rabbit = new THREE.Group();
+  rabbit.visible = false;
+  ctx.root.add(rabbit);
+  const model = (ctx.models && ctx.models.get("data-cloud", { height: 1 })) || codeRabbit();
+  rabbit.add(model);
+  // The nodes that move, with their rest pose
+  const nodes = {};
+  for (const name of ["head", "ear-l", "ear-r", "paw-l", "paw-r", "eye-l", "eye-r"]) {
+    const o = model.getObjectByName("data-cloud-" + name);
+    if (o) {
+      nodes[name] = { o, rot: o.rotation.clone(), scale: o.scale.clone() };
+    }
+  }
+  // Its own materials, so a hit can flash it and its defeat turn it grey
+  const tinted = [];
+  model.traverse((child) => {
+    if (!child.isMesh) {
+      return;
+    }
+    child.material = child.material.clone();
+    owned.push(child.material);
+    // It floats high over the lawn: its shadow would cost a second draw of each part for little
+    child.castShadow = false;
+    const c = child.material.color;
+    if (c && child.material.emissive && c.r + c.g + c.b > 1.2) {
+      tinted.push({ material: child.material, color: c.clone() });
+    }
+  });
+  const grey = new THREE.Color(0x9a98b8);
+  const flash = new THREE.Color(1, 0.42, 0.42);
+  const v = new THREE.Vector3();
+  const aim = new THREE.Vector3();
+
+  // The vegetables the guinea pig fires: two of each kind, used in turn
+  const shotGeometry = new THREE.SphereGeometry(0.26, 12, 8);
+  owned.push(shotGeometry);
+  const shots = [];
+  for (let i = 0; i < VEG_SHOTS.length * 2; i++) {
+    const kind = i % VEG_SHOTS.length;
+    let mesh = ctx.models ? ctx.models.get(VEG_SHOTS[kind], { height: 0.62, shadows: false }) : null;
+    if (!mesh) {
+      mesh = new THREE.Mesh(shotGeometry, ctx.paint.plain(VEG_COLORS[kind], { roughness: 0.4 }));
+    }
+    mesh.visible = false;
+    ctx.root.add(mesh);
+    shots.push({ mesh, live: false, beat: 0, from: new THREE.Vector3(), kind });
+  }
+  let nextShot = 0;
+  const blaster = { until: -1, next: 0 };
+
+  // A gold ring around the next carrot, so it reads as a power-up from afar
+  const haloMaterial = new THREE.MeshBasicMaterial({ color: 0xffb400, transparent: true, opacity: 0.95, toneMapped: false, depthWrite: false });
+  const haloGeometry = new THREE.TorusGeometry(0.85, 0.1, 8, 36);
+  owned.push(haloMaterial, haloGeometry);
+  const halo = new THREE.Mesh(haloGeometry, haloMaterial);
+  halo.visible = false;
+  ctx.root.add(halo);
+
+  // Its life, under the top bar, and what it says, beside its head
+  const bossBar = el("div", "gr-w8-bossbar", hud.extra);
+  bossBar.hidden = true;
+  el("strong", "", bossBar, t("bossName"));
+  const bossFill = el("b", "", el("i", "", bossBar));
+  const sayNode = el("div", "gr-w8-say", hud.layer);
+  sayNode.hidden = true;
+  const bubble = { from: 0, until: 0, px: -1, py: -1 };
+  const shown = {};
+  let autoplay = false;
+  let autoDone = -1;
+
+  // The check plays the boss by itself, on the exact beats (window.__guineaRun only exists for checks)
+  if (window.__guineaRun) {
+    window.__guineaRun.w8 = {
+      autoplay(on) {
+        autoplay = on !== false;
+      }
+    };
+  }
+
+  /** The last heart lost at the boss: the result card says the next try starts there. */
+  function loseAttempt(title, tip) {
+    const atBoss = boss.state === "fight";
+    const last = atBoss && ctx.attempts <= 1;
+    const left = ctx.loseAttempt(title, last ? (tip ? tip + " " : "") + t("retryHint") : tip);
+    if (!ctx.playing && atBoss) {
+      const s = wayStats();
+      bossRetry ={ at: Date.now(), checks: checksTaken(), verified: verified(), quick: quickTaken(), got: s.got, coins: s.coins, vegetables: s.vegetables };
+    }
+    return left;
+  }
+
+  function updateBoss(dt, time) {
+    if (boss.state === "away") {
+      if (run.beat < BOSS_BAR * BAR - 2) {
+        return;
+      }
+      enterBoss();
+    }
+    // The last round again, while the Data Cloud still stands
+    if (boss.state === "fight" && run.mode === "run" && run.beat >= ROUNDS_END) {
+      playAgain();
+    }
+    updateBlaster();
+    updateShots();
+    placeHalo(time);
+    placeRabbit(dt, time);
+    placeBubble();
+    writeBossData();
+  }
+
+  function enterBoss() {
+    boss.state = "fight";
+    boss.rise = 0;
+    rabbit.visible = true;
+    bossBar.hidden = false;
+    renderBossBar();
+    sound.play("bossIn");
+    say(t("sayIn"), 3.2);
+  }
+
+  function bossThrows() {
+    boss.throwing = 1;
+    boss.thrown += 1;
+    sound.play("bossThrow");
+  }
+
+  /** Where a thrown error leaves from: the paw on the guinea pig's side. */
+  function throwFrom(out) {
+    const paw = nodes["paw-r"];
+    if (rabbit.visible && boss.rise > 0.5 && paw) {
+      paw.o.getWorldPosition(out);
+    } else {
+      const P = engine.portrait ? BOSS_PHONE : BOSS_DESK;
+      out.set(camera.position.x + P.dx - P.height * 0.25, P.y + P.height * 0.35, P.z);
+    }
+    return out;
+  }
+
+  function takeCarrot(power) {
+    carrots[power.n].got = true;
+    if (boss.state !== "fight") {
+      ctx.points(20);
+      return;
+    }
+    hud.toast(t("p_carrot"), "power");
+    if (!boss.blasterCoached) {
+      boss.blasterCoached = true;
+      run.coach(t("coachBlaster"), 2400, true);
+    }
+    const beat = run.music.beat;
+    blaster.until = beat + BLASTER_BEATS;
+    blaster.next = Math.ceil(beat * SHOTS_PER_BEAT) / SHOTS_PER_BEAT;
+  }
+
+  /** A hit or a new round sends the guinea pig to the checkpoint: the carrots from there come back. */
+  function bossSetBack() {
+    blaster.until = -1;
+    run.rearm("carrot");
+    for (const c of carrots) {
+      if (c.beat >= run.checkpoint) {
+        c.got = false;
+      }
+    }
+  }
+
+  function playAgain() {
+    bossSetBack();
+    if (run.again()) {
+      boss.loops += 1;
+      run.coach(t("coachAgain"), 2600, true);
+      say(t("sayAgain"), 2.2, 2.7);
+    }
+  }
+
+  /** The blaster fires on every half beat while it lasts: the shots are part of the song. */
+  function updateBlaster() {
+    if (blaster.until < 0) {
+      return;
+    }
+    if (boss.state !== "fight" || run.mode === "rewind") {
+      blaster.until = -1;
+      return;
+    }
+    const beat = run.music.beat;
+    while (beat >= blaster.next && blaster.next < blaster.until) {
+      fire(blaster.next);
+      blaster.next += 1 / SHOTS_PER_BEAT;
+    }
+    if (beat >= blaster.until) {
+      blaster.until = -1;
+    }
+  }
+
+  function fire(beat) {
+    const shot = shots[nextShot % shots.length];
+    nextShot += 1;
+    const p = pig.object.position;
+    shot.live = true;
+    shot.beat = beat;
+    shot.from.set(p.x + 0.55, p.y + 0.65, 0.25);
+    shot.mesh.visible = true;
+    boss.shots += 1;
+    sound.play("throw");
+  }
+
+  function updateShots() {
+    const beat = run.music.beat;
+    const head = nodes.head;
+    for (const shot of shots) {
+      if (!shot.live) {
+        continue;
+      }
+      const k = Math.max(0, (beat - shot.beat) / SHOT_BEATS);
+      if (head) {
+        head.o.getWorldPosition(aim);
+        aim.y += rabbit.scale.y * 0.3;
+      } else {
+        aim.copy(rabbit.position).y += rabbit.scale.y * 0.6;
+      }
+      if (k >= 1) {
+        shot.live = false;
+        shot.mesh.visible = false;
+        hitBoss(shot);
+        continue;
+      }
+      const x = shot.from.x + (aim.x - shot.from.x) * k;
+      const y = shot.from.y + (aim.y - shot.from.y) * k + 2.2 * 4 * k * (1 - k);
+      const z = shot.from.z + (aim.z - shot.from.z) * k;
+      shot.mesh.position.set(x, y - 0.31, z);
+      shot.mesh.rotation.set(k * 5, k * 8, k * 3);
+    }
+  }
+
+  function hitBoss(shot) {
+    if (boss.state !== "fight") {
+      return;
+    }
+    boss.hp = Math.max(0, boss.hp - 1);
+    boss.hit = 1;
+    ctx.points(5);
+    sound.play("bossHit");
+    ctx.fx.burst(aim.x, aim.y, aim.z, { count: 7, colors: [VEG_COLORS[shot.kind], 0xffffff], speed: 3, up: 2.5, life: 0.5 });
+    renderBossBar();
+    // Not while the coach line of the first carrot is up: they would sit on each other
+    if (boss.hp === BOSS_HP - 14 || boss.hp === BOSS_HP / 2) {
+      say(t("sayHit"), 1.8);
+    }
+    if (boss.hp <= 0) {
+      defeatBoss();
+    }
+  }
+
+  function defeatBoss() {
+    boss.state = "down";
+    boss.down = 0;
+    blaster.until = -1;
+    bossRetry = null;
+    // Its errors still ahead pop, the band goes back to the chorus
+    run.convert("boss");
+    run.music.setSection("chorus", run.music.bar + 1);
+    sound.play("bossDown");
+    ctx.collect(300, t("bossBeaten"));
+    hud.goal(t("goal5down"));
+    say(t("sayDown"), 4.2);
+    bossBar.classList.add("is-down");
+    ctx.fx.burst(rabbit.position.x, rabbit.position.y + rabbit.scale.y * 0.6, rabbit.position.z, { count: 50, colors: [0xffffff, 0x7473b5, 0xbec7f6, 0x1f1646], speed: 5, up: 5, life: 1.4 });
+  }
+
+  function renderBossBar() {
+    bossFill.style.width = Math.max(0, (boss.hp / BOSS_HP) * 100) + "%";
+    bossBar.classList.toggle("is-low", boss.hp > 0 && boss.hp <= BOSS_HP * 0.25);
+  }
+
+  /** The rabbit floats right of the guinea pig and moves with the camera, until it is down. */
+  function placeRabbit(dt, time) {
+    const P = engine.portrait ? BOSS_PHONE : BOSS_DESK;
+    const spb = run.music.secondsPerBeat;
+    const pulse = engine.motion ? run.music.pulse : 0;
+    boss.rise = Math.min(1, boss.rise + dt / (spb * 2));
+    boss.hit = Math.max(0, boss.hit - dt * 5);
+    boss.throwing = Math.max(0, boss.throwing - dt / (spb * 0.8));
+    // Rising from behind the lawn, a little past its place, then settling
+    const r = boss.rise;
+    const rise = 1 + 2.7 * Math.pow(r - 1, 3) + 1.7 * Math.pow(r - 1, 2);
+    let x = camera.position.x + P.dx;
+    let y = P.y - (1 - rise) * (P.y + P.height + 1) + (engine.motion ? Math.sin(time * 2.1) * 0.14 : 0);
+    if (boss.state === "down") {
+      // It sags in front of the player for a moment, then the guinea pig runs on and it sinks behind the lawn
+      boss.down += dt;
+      boss.droop = Math.min(1, boss.down / 0.6);
+      const sink = Math.max(0, boss.down - 1.5);
+      if (sink > 0) {
+        x = boss.downX;
+      } else {
+        boss.downX = x;
+      }
+      y = P.y - sink * sink * 2.6 - boss.droop * 0.3;
+      if (y < -P.height - 1) {
+        rabbit.visible = false;
+        boss.state = "gone";
+      }
+    }
+    // Squashed on the beat and by a hit, a little more when it throws
+    const sx = 1 + pulse * 0.025 + boss.hit * 0.08 + boss.droop * 0.06;
+    const sy = 1 - pulse * 0.035 - boss.hit * 0.1 - boss.droop * 0.12;
+    rabbit.scale.set(P.height * sx, P.height * sy, P.height * sx);
+    rabbit.position.set(x, y, P.z);
+    rabbit.rotation.z = boss.droop * 0.22;
+    poseRabbit(dt, time);
+    // Flash on a hit, grey once down
+    for (const m of tinted) {
+      m.material.color.copy(m.color).lerp(grey, boss.droop * 0.55);
+      m.material.emissive.copy(flash).multiplyScalar(boss.hit * 0.6);
+    }
+    rabbit.updateMatrixWorld(true);
+  }
+
+  function poseRabbit(dt, time) {
+    const sway = engine.motion ? Math.sin(time * 3) * 0.08 : 0;
+    const swing = Math.sin(Math.PI * (1 - boss.throwing)) * (boss.throwing > 0 ? 1 : 0);
+    const flop = boss.hit * 0.3 + boss.droop * 1.1;
+    pose("head", 0, boss.throwing * 0.12 - boss.hit * 0.12, (engine.motion ? Math.sin(time * 1.6) * 0.06 : 0) + boss.droop * 0.25);
+    // Ears: the left one (+X) leans out with a turn about -Z, the right one about +Z
+    pose("ear-l", 0, 0, -(sway + flop) - boss.throwing * 0.15);
+    pose("ear-r", 0, 0, sway + flop + boss.throwing * 0.15);
+    // The paw on the guinea pig's side goes up over the head and throws forward and out
+    pose("paw-r", -swing * 2, 0, -swing * 0.5);
+    pose("paw-l", 0, 0, engine.motion ? Math.sin(time * 2.4) * 0.1 : 0);
+    // Blinks now and then; squeezed on a hit; closed once down
+    boss.blink -= dt;
+    if (boss.blink < -0.12) {
+      boss.blink = 2 + ((time * 7.3) % 2);
+    }
+    const open = boss.droop > 0 ? 1 - boss.droop * 0.88 : boss.blink < 0 ? 0.12 : 1 - boss.hit * 0.6;
+    for (const name of ["eye-l", "eye-r"]) {
+      const eye = nodes[name];
+      if (eye) {
+        eye.o.scale.set(eye.scale.x, eye.scale.y * open, eye.scale.z);
+      }
+    }
+  }
+
+  function pose(name, rx, ry, rz) {
+    const n = nodes[name];
+    if (n) {
+      n.o.rotation.set(n.rot.x + rx, n.rot.y + ry, n.rot.z + rz);
+    }
+  }
+
+  /** The gold ring turns round the next carrot not taken yet, near the camera. */
+  function placeHalo(time) {
+    const next = boss.state === "fight" ? carrots.find((c) => !c.got && c.beat > run.beat - 0.3) : null;
+    halo.visible = Boolean(next && next.x - camera.position.x < 14);
+    if (!halo.visible) {
+      return;
+    }
+    const pulse = engine.motion ? run.music.pulse : 0;
+    halo.position.set(next.x, 0.85, 0.05);
+    halo.rotation.set(0, Math.sin(time * 2) * 0.5, time * 1.5);
+    halo.scale.setScalar(1 + pulse * 0.18);
+    if (!boss.carrotCoached && next.beat - run.beat < 3) {
+      boss.carrotCoached = true;
+      run.coach(t("coachCarrot"), 2000, true);
+    }
+  }
+
+  /** A line in the bubble for a few seconds, after a delay when a coach line is up first. */
+  function say(text, seconds, delay) {
+    sayNode.textContent = text;
+    sayNode.hidden = true;
+    bubble.from = engine.time + (delay || 0);
+    bubble.until = bubble.from + seconds;
+    bubble.px = -1;
+  }
+
+  /** The speech bubble sits left of the head, kept on the screen. */
+  function placeBubble() {
+    const head = nodes.head;
+    const on = engine.time >= bubble.from && engine.time <= bubble.until && rabbit.visible && head;
+    if (!on) {
+      sayNode.hidden = true;
+      return;
+    }
+    sayNode.hidden = false;
+    head.o.getWorldPosition(v);
+    v.x -= rabbit.scale.x * 0.3;
+    v.y += rabbit.scale.y * 0.22;
+    v.project(camera);
+    const w = hud.layer.clientWidth;
+    const h = hud.layer.clientHeight;
+    const width = sayNode.offsetWidth;
+    const px = Math.round(Math.min(w - 8, Math.max(width + 8, ((v.x + 1) / 2) * w)));
+    const py = Math.round(Math.min(h * 0.6, Math.max(h * 0.2, ((1 - v.y) / 2) * h)));
+    if (px !== bubble.px || py !== bubble.py) {
+      bubble.px = px;
+      bubble.py = py;
+      sayNode.style.transform = "translate(" + px + "px, " + py + "px) translate(-100%, -50%)";
+    }
+  }
+
+  function writeBossData() {
+    const values = { boss: boss.state, bosshp: boss.hp, thrown: boss.thrown, shots: boss.shots, loops: boss.loops };
+    for (const [name, value] of Object.entries(values)) {
+      if (shown[name] !== value) {
+        shown[name] = value;
+        ctx.setData(name, value);
+      }
+    }
+  }
+
+  /** For the check: a jump on the exact beat of every target, whatever the frame rate. */
+  function autoJump() {
+    if (!autoplay || run.mode !== "run") {
+      return;
+    }
+    // The next target, written by the run at the end of its last step (behind it: not written yet)
+    const next = Number(overlay.getAttribute("data-jumpat"));
+    if (Number.isFinite(next) && next !== autoDone && next > run.beat - 0.05 && next - run.beat < 0.1) {
+      autoDone = next;
+      run.action("jump");
+    }
+  }
+
+  /** The rabbit drawn from code, when the model could not load: the same nodes, plainer. */
+  function codeRabbit() {
+    const sphere = new THREE.SphereGeometry(1, 20, 14);
+    owned.push(sphere);
+    const material = (color, extra) => {
+      const m = new THREE.MeshStandardMaterial(Object.assign({ color, roughness: 0.55 }, extra));
+      owned.push(m);
+      return m;
+    };
+    const white = material(0xffffff);
+    const lavender = material(0x7473b5);
+    const navy = material(0x1f1646, { roughness: 0.9 });
+    const line = material(0x1f1646, { roughness: 0.9, side: THREE.BackSide });
+    const group = (parent, name, x, y, z) => {
+      const g = new THREE.Group();
+      g.name = name;
+      g.position.set(x, y, z);
+      parent.add(g);
+      return g;
+    };
+    const blob = (parent, m, x, y, z, sx, sy, sz) => {
+      const mesh = new THREE.Mesh(sphere, m);
+      mesh.position.set(x, y, z);
+      mesh.scale.set(sx, sy, sz);
+      parent.add(mesh);
+      return mesh;
+    };
+    const root = new THREE.Group();
+    const cloud = group(root, "data-cloud-cloud", 0, 0, 0);
+    for (const [x, s] of [
+      [-0.42, 0.2],
+      [0, 0.26],
+      [0.42, 0.2]
+    ]) {
+      blob(cloud, material(0xe6e9fd), x, s, 0, s * 1.5, s, s);
+    }
+    const body = group(root, "data-cloud-body", 0, 0.3, 0);
+    blob(body, white, 0, 0.18, 0, 0.3, 0.22, 0.26);
+    for (const side of [1, -1]) {
+      const paw = group(root, side > 0 ? "data-cloud-paw-l" : "data-cloud-paw-r", side * 0.27, 0.48, 0.05);
+      blob(paw, white, side * 0.04, -0.1, 0, 0.08, 0.12, 0.08);
+    }
+    const head = group(root, "data-cloud-head", 0, 0.52, 0);
+    blob(head, white, 0, 0.34, 0, 0.5, 0.38, 0.38);
+    blob(head, line, 0, 0.34, 0, 0.56, 0.44, 0.44);
+    blob(head, lavender, 0, 0.27, 0.37, 0.06, 0.035, 0.03);
+    for (const side of [1, -1]) {
+      const eye = group(head, side > 0 ? "data-cloud-eye-l" : "data-cloud-eye-r", side * 0.27, 0.38, 0.33);
+      blob(eye, navy, 0, 0, 0, 0.045, 0.075, 0.03);
+      const ear = group(head, side > 0 ? "data-cloud-ear-l" : "data-cloud-ear-r", side * 0.13, 0.68, 0);
+      ear.rotation.z = -side * 0.28;
+      blob(ear, white, 0, 0.32, 0, 0.13, 0.34, 0.06);
+      blob(ear, lavender, 0, 0.32, 0.04, 0.075, 0.25, 0.03);
+      blob(ear, line, 0, 0.32, 0, 0.17, 0.38, 0.09);
+    }
+    root.scale.setScalar(1 / 1.55);
+    return root;
+  }
+
   /* ---------- The DORA card ---------- */
 
   const QUESTIONS = [
@@ -523,6 +1187,8 @@ export function createWorld(ctx) {
     hud.goal("");
     hud.setPath([], 0);
     hud.setPads([]);
+    bossBar.hidden = true;
+    sayNode.hidden = true;
     card = el("div", "gr-w8-card gr-scroll", hud.layer);
     const head = el("div", "gr-w8-head", card);
     el("strong", "", head, t("doraTitle"));
@@ -617,19 +1283,29 @@ export function createWorld(ctx) {
     }
   }
 
+  // A try that started at the boss counts what the try before it did on the way there
   function checksTaken() {
-    return ["check1", "check2", "check3"].filter((id) => run.powerTaken(id)).length;
+    return retry ? retry.checks : ["check1", "check2", "check3"].filter((id) => run.powerTaken(id)).length;
   }
 
   function verified() {
-    return ["v1", "v2", "v3"].filter((id) => run.powerTaken(id)).length;
+    return retry ? retry.verified : ["v1", "v2", "v3"].filter((id) => run.powerTaken(id)).length;
+  }
+
+  function quickTaken() {
+    return retry ? retry.quick : run.powerTaken("quick");
+  }
+
+  function wayStats() {
+    const s = run.stats;
+    return retry ? Object.assign({}, s, { got: retry.got, coins: retry.coins, vegetables: retry.vegetables }) : s;
   }
 
   function bonus() {
-    const s = run.stats;
+    const s = wayStats();
     let points = 200 + Math.round((200 * s.got) / Math.max(1, s.coins));
     points -= (3 - checksTaken()) * 30 + (3 - verified()) * 30;
-    if (!run.powerTaken("quick")) {
+    if (!quickTaken()) {
       points -= 30;
     }
     return Math.max(0, points);
@@ -637,25 +1313,49 @@ export function createWorld(ctx) {
 
   function missedInfo() {
     const lines = [];
-    const s = run.stats;
     if (checksTaken() < 3) {
       lines.push(t("info_checks", { n: 3 - checksTaken() }));
     }
     if (verified() < 3) {
       lines.push(t("info_verify", { n: verified() }));
     }
-    return endMissedInfo(lines, run, s, t);
+    return endMissedInfo(lines, { powerTaken: (id) => (id === "quick" ? quickTaken() : run.powerTaken(id)) }, wayStats(), t);
   }
 
-  return musicalWorld(
+  const world = musicalWorld(
     run,
     () => finished,
     () => {
       if (card) {
         card.remove();
       }
+      bossBar.remove();
+      sayNode.remove();
+      for (const thing of owned) {
+        thing.dispose();
+      }
+      if (window.__guineaRun && window.__guineaRun.w8) {
+        delete window.__guineaRun.w8;
+      }
+      ctx.setData("boss", "");
     }
   );
+  const runStart = world.start;
+  const runUpdate = world.update;
+  world.start = () => {
+    runStart();
+    if (retry) {
+      hud.toast(t("retryBoss"), "power");
+    }
+  };
+  world.update = (dt, time) => {
+    autoJump();
+    runUpdate(dt, time);
+    if (!finished && ctx.playing) {
+      updateBoss(dt, time);
+    }
+  };
+  return world;
 }
 
 export const CSS =
@@ -766,5 +1466,108 @@ export const CSS =
   background: #fef1ee;
   color: #ba0517;
   text-decoration: line-through;
+}
+/* The Data Cloud's life, under the top bar */
+.guinea-run .gr-w8-bossbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 240px;
+  max-width: 520px;
+  padding: 5px 12px;
+  border: 2px solid #ffffff;
+  border-radius: 12px;
+  background: rgba(31, 22, 70, 0.92);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
+  color: #ffffff;
+  font-size: 14px;
+  pointer-events: none;
+}
+.guinea-run .gr-w8-bossbar[hidden] {
+  display: none;
+}
+.guinea-run .gr-w8-bossbar i {
+  flex: 1 1 auto;
+  display: block;
+  min-width: 110px;
+  height: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+}
+.guinea-run .gr-w8-bossbar b {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #c9c6ff, #7473b5);
+  transition: width 0.15s;
+}
+.guinea-run .gr-w8-bossbar.is-low b {
+  background: linear-gradient(90deg, #ff5d2d, #ea001e);
+  animation: gr-w8-blink 0.5s infinite;
+}
+.guinea-run .gr-w8-bossbar.is-down {
+  opacity: 0.65;
+}
+@keyframes gr-w8-blink {
+  50% {
+    opacity: 0.45;
+  }
+}
+/* At the boss there are no vegetables to eat: its bar takes the place of their count */
+.guinea-run[data-boss="fight"] .gr-mu-veg,
+.guinea-run[data-boss="down"] .gr-mu-veg {
+  display: none;
+}
+/* What the Data Cloud says, left of its head */
+.guinea-run .gr-w8-say {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: max-content;
+  max-width: min(260px, 46vw);
+  padding: 6px 12px;
+  border: 2px solid #1f1646;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 3px 0 rgba(31, 22, 70, 0.35);
+  color: #1f1646;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.25;
+  pointer-events: none;
+}
+.guinea-run .gr-w8-say::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -8px;
+  width: 12px;
+  height: 12px;
+  border-top: 2px solid #1f1646;
+  border-right: 2px solid #1f1646;
+  background: #ffffff;
+  transform: translateY(-50%) rotate(45deg);
+}
+.guinea-run .gr-w8-say[hidden] {
+  display: none;
+}
+.guinea-run:not([data-state="playing"]) .gr-w8-say {
+  visibility: hidden;
+}
+@media (max-width: 600px) {
+  .guinea-run .gr-w8-bossbar {
+    min-width: 0;
+  }
+  .guinea-run .gr-w8-say {
+    padding: 4px 9px;
+    font-size: 13px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .guinea-run .gr-w8-bossbar.is-low b {
+    animation: none;
+  }
 }
 `;
