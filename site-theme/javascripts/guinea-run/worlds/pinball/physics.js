@@ -20,7 +20,8 @@
 export const STEP = 1 / 720;
 // Down the table, in table units per second squared: a gentle slope, so a
 // phone player has the time to see the ball coming
-export const GRAVITY = 26;
+// The slope of a real table, about 6.5 degrees, in table units
+export const GRAVITY = 21;
 export const BALL_RADIUS = 0.27;
 export const MAX_SPEED = 95;
 // A ball on a ramp climbs against a steeper slope than the table's
@@ -204,7 +205,20 @@ export function createPhysics() {
     for (let i = 1; i < n; i++) {
       lengths[i] = lengths[i - 1] + Math.hypot(points[i * 3] - points[i * 3 - 3], points[i * 3 + 1] - points[i * 3 - 2], points[i * 3 + 2] - points[i * 3 - 1]);
     }
-    const p = { points: Float64Array.from(points), lengths, total: lengths[n - 1], tag: o.tag || "", exitFloor: o.exitFloor || 0, entryFloor: o.entryFloor || 0, friction: o.friction === undefined ? 4 : o.friction };
+    const p = {
+      points: Float64Array.from(points),
+      lengths,
+      total: lengths[n - 1],
+      tag: o.tag || "",
+      exitFloor: o.exitFloor || 0,
+      entryFloor: o.entryFloor || 0,
+      friction: o.friction === undefined ? 4 : o.friction,
+      // A wire holds the ball back as it rolls, and the guide at its end drops
+      // it out no faster than exitMax: a ball back from a ramp reaches the
+      // inlane slowly, as on a real table
+      drag: o.drag === undefined ? 0.35 : o.drag,
+      exitMax: o.exitMax === undefined ? Infinity : o.exitMax
+    };
     paths.push(p);
     return p;
   }
@@ -230,7 +244,7 @@ export function createPhysics() {
       omega: 0,
       // Radians per second, up and down
       // An arcade flipper: a fast, hard snap up
-      upSpeed: o.upSpeed || 46,
+      upSpeed: o.upSpeed || 40,
       downSpeed: o.downSpeed || 24,
       held: false,
       enabled: true
@@ -253,7 +267,7 @@ export function createPhysics() {
     const shape = capsule(x0, y, x1, y, { r: 0.1, bounce: 0.1, moving: true, tag: "plunger" });
     // The launch speed for a pull: a soft or middle pull drops the ball in
     // the top lanes (the skill shot), a full one sends it round the orbit
-    plunger = { shape, x: (x0 + x1) / 2, y, pull: 0, held: false, travel: 0.9, curve: [0, 29, 0.22, 34.4, 0.78, 36.2, 1, 52] };
+    plunger = { shape, x: (x0 + x1) / 2, y, pull: 0, held: false, travel: 0.9, curve: [0, 24, 0.22, 30.9, 0.78, 32.7, 1, 46] };
     return plunger;
   }
 
@@ -596,6 +610,7 @@ export function createPhysics() {
     const dh = (pts[i * 3 + 5] - pts[i * 3 + 2]) / seg;
     ball.v -= (gravity * dy + gravity * RAMP_GRAVITY * dh) * STEP;
     ball.v -= Math.sign(ball.v) * p.friction * STEP;
+    ball.v -= ball.v * p.drag * STEP;
     ball.s += ball.v * STEP;
     if (ball.s <= 0 && ball.v <= 0) {
       // Not enough speed: it rolls back where it came from
@@ -619,7 +634,7 @@ export function createPhysics() {
       const ex = pts[(n - 1) * 3] - pts[(n - 2) * 3];
       const ey = pts[(n - 1) * 3 + 1] - pts[(n - 2) * 3 + 1];
       const el = Math.hypot(ex, ey) || 1;
-      const speed = Math.max(3, ball.v);
+      const speed = Math.min(p.exitMax, Math.max(3, ball.v));
       ball.mode = "table";
       ball.path = null;
       ball.floor = p.exitFloor;

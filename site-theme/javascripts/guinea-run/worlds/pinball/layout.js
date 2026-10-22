@@ -154,7 +154,7 @@ export function buildTable() {
   const lanes = LANES.map((x, i) => p.line(x + 0.47, 17.9, x - 0.47, 17.9, { tag: "lane" + i }));
 
   // Apex triggers: the pop bumpers
-  const bumpers = BUMPERS.map(([x, y], i) => p.circle(x, y, 0.6, { bounce: 0.6, kick: 17, tag: "bumper" + i }));
+  const bumpers = BUMPERS.map(([x, y], i) => p.circle(x, y, 0.6, { bounce: 0.6, kick: 15, tag: "bumper" + i }));
 
   // The Pull Request scoop, with its back wall
   keep(p.arc(T.scoop.x, T.scoop.y, 0.62, -0.25, Math.PI + 0.25, 8, { r: 0.08, bounce: 0.2 }), "wall");
@@ -166,7 +166,7 @@ export function buildTable() {
   // The ramps: their mouths, and the paths over the table
   const integrationPath = p.path(
     [-3.0, 10.9, 0, -3.0, 12.6, 0.9, -3.15, 14.2, 1.7, -3.7, 15.0, 1.9, -4.6, 15.2, 2.0, -5.4, 14.6, 2.1, -5.45, 9.5, 2.0, -5.35, 7.2, 1.7, -4.3, 6.3, 0.8, -3.6, 5.9, 0.3, -3.55, 5.5, 0],
-    { tag: "integration" }
+    { tag: "integration", exitMax: 9 }
   );
   keep(p.wall([-3.72, 13.2, -3.72, 10.75, -3.6, 10.55], { r: 0.08, bounce: 0.3 }), "rail");
   keep(p.wall([-2.28, 13.2, -2.28, 10.75, -2.4, 10.55], { r: 0.08, bounce: 0.3 }), "rail");
@@ -174,7 +174,7 @@ export function buildTable() {
 
   const uatPath = p.path(
     [3.0, 10.9, 0, 3.0, 12.6, 0.9, 3.15, 14.2, 1.7, 3.7, 15.0, 1.9, 4.6, 15.2, 2.0, 6.45, 14.6, 2.1, 6.5, 9.5, 2.0, 6.4, 7.2, 1.7, 4.4, 6.3, 0.9, 3.6, 5.9, 0.3, 3.55, 5.5, 0],
-    { tag: "uat" }
+    { tag: "uat", exitMax: 9 }
   );
   keep(p.wall([3.72, 13.2, 3.72, 10.75, 3.6, 10.55], { r: 0.08, bounce: 0.3 }), "rail");
   keep(p.wall([2.28, 13.2, 2.28, 10.75, 2.4, 10.55], { r: 0.08, bounce: 0.3 }), "rail");
@@ -183,7 +183,7 @@ export function buildTable() {
   // The production ramp climbs to the Production floor; a gate closes its mouth until it is lit
   const productionPath = p.path(
     [0, 12.75, 0, 0, 14.6, 0.9, 0.15, 17.4, 1.9, 0.6, 20.0, 2.5, 1.6, 21.6, 2.6, 2.6, 22.6, 2.4, 2.75, 23.4, 2.2, 2.4, 24.2, 2.2],
-    { tag: "production", exitFloor: 1 }
+    { tag: "production", exitFloor: 1, exitMax: 14 }
   );
   keep(p.wall([-0.66, 13.7, -0.66, 12.55], { r: 0.08, bounce: 0.3 }), "rail");
   keep(p.wall([0.66, 13.7, 0.66, 12.55], { r: 0.08, bounce: 0.3 }), "rail");
@@ -224,8 +224,8 @@ export function buildTable() {
   }
   const [sa, , sc] = T.sling;
   const slings = [
-    keep(p.capsule(sc[0], sc[1], sa[0], sa[1], { r: 0.14, bounce: 0.7, kick: 14, kickMin: 6, tag: "slingL" }), "sling"),
-    keep(p.capsule(-sa[0], sa[1], -sc[0], sc[1], { r: 0.14, bounce: 0.7, kick: 14, kickMin: 6, tag: "slingR" }), "sling")
+    keep(p.capsule(sc[0], sc[1], sa[0], sa[1], { r: 0.14, bounce: 0.7, kick: 12, kickMin: 6, tag: "slingL" }), "sling"),
+    keep(p.capsule(-sa[0], sa[1], -sc[0], sc[1], { r: 0.14, bounce: 0.7, kick: 12, kickMin: 6, tag: "slingR" }), "sling")
   ];
   p.line(-4.0, 4.6, T.left, 4.6, { tag: "outlaneL" });
   p.line(T.laneWall, 4.6, 4.0, 4.6, { tag: "outlaneR" });
@@ -261,9 +261,9 @@ export function buildTable() {
   const upperTargets = [25.3, 26.3].map((y, i) => p.capsule(3.45, y - 0.25, 3.45, y + 0.25, Object.assign({ r: 0.1, bounce: 0.4, tag: "upperCheck" + i }, U)));
   p.line(3.6, 21.9, -3.6, 21.9, Object.assign({ tag: "upperDrain" }, U));
   // Back down from the Production floor: a wire to the bumpers
-  const downPath = p.path([0, 22.0, 2.2, 1.6, 21.6, 2.2, 3.0, 20.3, 2.2, 3.3, 18.6, 1.9, 2.9, 17.3, 1.6, 1.4, 17.0, 0.9, 0.3, 16.0, 0.2, 0, 15.6, 0], { tag: "down" });
+  const downPath = p.path([0, 22.0, 2.2, 1.6, 21.6, 2.2, 3.0, 20.3, 2.2, 3.3, 18.6, 1.9, 2.9, 17.3, 1.6, 1.4, 17.0, 0.9, 0.3, 16.0, 0.2, 0, 15.6, 0], { tag: "down", exitMax: 9 });
   // After the Release hole: the long way down to the left inlane
-  const releasePath = p.path([T.release.x, T.release.y, 2.2, -3.4, 26.4, 2.4, -3.9, 23.4, 2.6, -5.35, 19.0, 2.3, -5.4, 14.6, 2.1, -5.45, 9.5, 2.0, -5.35, 7.2, 1.7, -4.3, 6.3, 0.8, -3.6, 5.9, 0.3, -3.55, 5.5, 0], { tag: "releaseWire" });
+  const releasePath = p.path([T.release.x, T.release.y, 2.2, -3.4, 26.4, 2.4, -3.9, 23.4, 2.6, -5.35, 19.0, 2.3, -5.4, 14.6, 2.1, -5.45, 9.5, 2.0, -5.35, 7.2, 1.7, -4.3, 6.3, 0.8, -3.6, 5.9, 0.3, -3.55, 5.5, 0], { tag: "releaseWire", exitMax: 9 });
 
   // Stretch the table, then build what lives in the band it opens
   p.transformY(sy);
@@ -281,7 +281,7 @@ export function buildTable() {
   const hotfix = p.hole(-3.3, 10.2, 0.3, { tag: "hotfix", capture: true });
   const hotfixPath = p.path(
     [-3.3, 10.2, 0, -4.0, 11.6, 0.8, -4.35, 12.8, 1.3, -4.6, 16.4, 2.3, -3.7, 19.3, 2.8, -2.2, 20.2, 2.9, -1.2, 19.4, 2.8, -1.9, 18.3, 2.7, -3.4, 18.6, 2.6, -5.35, 18.0, 2.2, -5.4, 17.1, 2.1, -5.45, 12.0, 2.0, -5.35, 7.2, 1.7, -4.3, 6.3, 0.8, -3.6, 5.9, 0.3, -3.55, 5.5, 0],
-    { tag: "hotfix" }
+    { tag: "hotfix", exitMax: 9 }
   );
   p.build();
 
