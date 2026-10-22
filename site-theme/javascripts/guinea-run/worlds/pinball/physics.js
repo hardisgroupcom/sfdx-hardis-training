@@ -61,6 +61,8 @@ export function createPhysics() {
   let leftover = 0;
   // Bumpers and slingshots fire; a tilt switches them off, as on a real table
   let kicks = true;
+  // A coil never fires twice exactly the same: a small variation on every kick
+  let jitter = () => 0;
 
   for (let i = 0; i < MAX_BALLS; i++) {
     balls.push({
@@ -524,8 +526,9 @@ export function createPhysics() {
       ball.vx = rx + sx;
       ball.vy = ry + sy;
       if (shape.kick && kicks && -vn >= shape.kickMin) {
-        ball.vx += nx * shape.kick;
-        ball.vy += ny * shape.kick;
+        const kick = shape.kick * (1 + jitter());
+        ball.vx += nx * kick;
+        ball.vy += ny * kick;
       }
       // One event per hit, not one per step of a ball resting on it
       if (shape.tag && (-vn > 2 || shape.kick) && time - shape.lastHit > 0.08) {
@@ -722,6 +725,10 @@ export function createPhysics() {
     },
     get time() {
       return time;
+    },
+    /** fn() returns the variation of a kick, a small fraction around 0. */
+    setJitter(fn) {
+      jitter = fn;
     },
     /** Bumpers and slingshots on or off (off while the table is tilted). */
     setKicks(on) {

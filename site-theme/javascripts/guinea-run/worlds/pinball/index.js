@@ -459,6 +459,7 @@ export const TEXTS = {
 
 export const CSS = `
 .gr-dmd { display: flex; justify-content: center; pointer-events: none; margin: 4px auto 0; width: min(520px, 94vw); }
+@media (max-aspect-ratio: 1/1) { .gr-dmd { position: fixed; left: 50%; bottom: 10px; transform: translateX(-50%); width: min(94vw, 460px); margin: 0; z-index: 2; } }
 @media (min-aspect-ratio: 5/4) { .gr-dmd { position: fixed; left: 12px; top: 128px; width: min(380px, calc((100vw - 52vh) / 2 - 24px)); margin: 0; } }
 .gr-dmd-screen { width: 100%; height: auto; aspect-ratio: 4 / 1; background: #0b0502; border: 3px solid #2b2b33; border-radius: 6px; box-shadow: 0 0 0 2px #0b0b0f, 0 6px 18px rgba(0,0,0,0.5), inset 0 0 18px rgba(255,120,30,0.15); image-rendering: auto; }
 .gr-pb { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: center; pointer-events: none; }

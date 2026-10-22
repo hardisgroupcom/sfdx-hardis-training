@@ -85,6 +85,8 @@ export function createRules(table, out, random) {
   const physics = table.physics;
   const parts = table.parts;
   let s = newState();
+  // Kicks vary a little, as real coils do: no shot repeats itself forever
+  physics.setJitter(() => (random() - 0.5) * 0.14);
   const rt = { pending: [], scoop: null, release: null, hotfix: null, dropsResetAt: 0, nextBallAt: 0, ending: false, served: false, laneAt: [-1, -1, -1], matched: false, overAt: 0 };
 
   // The lights the view draws: the state lights them, a mission lights over them
@@ -497,7 +499,8 @@ export function createRules(table, out, random) {
       startMission(s.select);
     }
     if (hold.ball.active && hold.ball.mode === "held") {
-      physics.release(hold.ball, 4.4, -12.4);
+      // Onto the right flipper, never twice exactly the same way
+      physics.release(hold.ball, 4.4 + (random() - 0.5) * 1.4, -12.4 + (random() - 0.5) * 2.2);
       out.sound("pbKick");
     }
   }
