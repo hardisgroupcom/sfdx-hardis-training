@@ -287,6 +287,11 @@ export function createSound() {
     throw() {
       swish(0, 0.07, 1200, 3200);
       bell(pick(PENTATONIC) / 2, 0.01, 0.04, 0.12);
+    },
+    // World 9: an admin whacked back into his hole, a thump and a bright pop
+    moleBonk() {
+      thump(0, 0.45);
+      bell(pick(PENTATONIC), 0.01, 0.12, 0.18, 3);
     }
   };
 

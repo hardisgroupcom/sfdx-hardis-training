@@ -1,5 +1,15 @@
 /*
- * World 9, Monitor production: a Space Invaders over the production org.
+ * World 9, Monitor production: a whack-a-mole, then a Space Invaders, over
+ * the production org.
+ *
+ * First the admins pop up from nine holes in production, each one with what
+ * he is trying: a change set, an edit in Setup, a hotfix in prod... The
+ * guinea pig whacks them (a click, a tap, or the arrows and Space), faster and
+ * faster. One that gets away put his change in production: a button comes up
+ * to retrofit it in git with a Pull Request, and a retrofit that comes too
+ * late costs a heart, because what was changed by hand in production must be
+ * in git quickly, or the next deployment overwrites it. Then the admins team
+ * up against CI/CD, a card says it, and the invasion starts.
  *
  * US-014 is in production, and admins keep changing the production org by
  * hand, in Setup: "But it's faster!". They march down in formation, the way
@@ -33,7 +43,10 @@
  * one heart and leave, the formation steps back: nothing missed blocks the
  * end. The boss attacks one pattern at a time, stops and shakes his phone
  * before each, and a player out of hearts at the boss tries again from the
- * boss, not from the first wave.
+ * boss, one out of hearts in the waves from the waves, never from the moles.
+ * In the moles, a retrofit too late costs a heart, sends the admins up back
+ * down and slows the next ones; the retrofits that wait queue up, and only
+ * the first one counts down.
  *
  * On a phone the guinea pig throws on its own: the thumbs steer, a held fire
  * button would hide part of the field, and the rate is the one a held key
@@ -62,6 +75,29 @@ const NUDGE_S = 0.12;
 const PROD_Z = -1.5;
 const NEAR_Z = 1.25;
 const TOP_Z = -14.4;
+
+// Phase 1, the whack-a-mole: nine holes in the production org, three by three,
+// the front row first
+const HOLE_X = [-3.2, 0, 3.2];
+const HOLE_Z = [-3.4, -7.4, -11.4];
+const HOLES = 9;
+const MOLE_COUNT = 44;
+const MOLE_KINDS = 6;
+const MOLE_RISE_S = 0.16;
+const MOLE_SINK_S = 0.22;
+// From the first admin to the last: the time one stays up, and the time to the next
+const MOLE_UP_S = [2.1, 1];
+const MOLE_GAP_S = [1.5, 0.62];
+const MOLE_POINTS = 30;
+// A change that got through: the time to retrofit it, a little less as the moles speed up
+const RETRO_S = [3.4, 2.4];
+const RETRO_POINTS = 15;
+// The guinea pig waits in front of its hole, this far towards the camera
+const PIG_REST = 1.35;
+// The admins of the holes are drawn a little bigger than those of the waves
+const MOLE_SCALE = 1.2;
+// The keys that move it from hole to hole: [column, row], up the screen is the next row
+const MOVE_KEYS = { ArrowLeft: [-1, 0], KeyA: [-1, 0], ArrowRight: [1, 0], KeyD: [1, 0], ArrowUp: [0, 1], KeyW: [0, 1], ArrowDown: [0, -1], KeyS: [0, -1] };
 
 // The admins: a big face over a small body holding a laptop
 const MAX_ADMINS = 26;
@@ -146,6 +182,8 @@ const NOTE_SPEED = 2.3;
 // a world (the shell builds a fresh one for each try)
 const BOSS_RETRY_MS = 15 * 60000;
 let bossRetryAt = 0;
+// The same for the waves: a player out of hearts there does not whack the moles again
+let wavesRetryAt = 0;
 
 const PR_POOL = 10;
 const PR_LIFE = 1.1;
@@ -154,14 +192,16 @@ const SAYINGS = 6;
 
 export const TEXTS = {
   en: {
-    intro: "US-014 is in production, and now admins change the production org by hand, in Setup, because it's faster. Each vegetable that hits one is the monitoring catching the change: it goes back to the pipeline as a Pull Request.",
-    how1: "Move with Left and Right or A / D, or drag on a phone",
-    how2: "Hold Space or Up to throw vegetables (a phone throws on its own)",
-    how3: "Dodge the gears they drop, then beat the Sales Manager",
+    intro: "US-014 is in production, and now admins push change sets and Setup edits straight into the production org, because it's faster. Whack them, then hold off their invasion: each hit is the monitoring catching a change, sent back to the pipeline as a Pull Request.",
+    how1: "Whack the admins: click or tap them, or arrows and Space",
+    how2: "One got away? Retrofit it in git, fast: R or the button",
+    how3: "Then the waves: throw vegetables, beat the Sales Manager",
     note: "Read last night's backup of production every morning: a change you did not deploy was made by hand. Put it in a Pull Request the same day, before the next deployment overwrites it. - V.",
-    keysJump: "Throw: Space, up arrow or W (Z on AZERTY), hold it to keep throwing",
-    keysTouch: "Drag or use the buttons to move: the guinea pig throws on its own",
+    keysMove: "Move: arrows, or WASD (ZQSD on AZERTY)",
+    keysJump: "Whack, then throw: Space (hold it to keep throwing), retrofit: R",
+    keysTouch: "Tap the admins, then drag to move: the guinea pig throws on its own",
     btnJump: "Throw",
+    p0: "Change sets",
     p1: "Wave 1",
     p2: "Wave 2",
     p3: "Wave 3",
@@ -195,6 +235,46 @@ export const TEXTS = {
     bossDown: "The Sales Manager gives up!",
     retryBoss: "Straight back to the Sales Manager: the waves are done",
     retryHint: "Try again starts at the Sales Manager.",
+    retryHintWaves: "Try again starts at the waves.",
+    retryWaves: "Back to the waves: the change sets are behind you",
+    m0: "Change set",
+    m1: "Outbound change set",
+    m2: "Edit in Setup",
+    m3: "Hotfix in prod",
+    m4: "From my sandbox",
+    m5: "Flow edited live",
+    m0hit: "Change set blocked: open a Pull Request",
+    m1hit: "Outbound change set blocked: the change goes in git",
+    m2hit: "Setup edit caught: make it in a sandbox, then commit it",
+    m3hit: "Hotfix in prod blocked: a hotfix is a Pull Request too",
+    m4hit: "Deployment from a sandbox blocked: the pipeline deploys, from git",
+    m5hit: "Live Flow edit caught: build it in a sandbox, then a Pull Request",
+    m0miss: "A change set reached production",
+    m1miss: "An outbound change set reached production",
+    m2miss: "A Setup edit reached production",
+    m3miss: "A hotfix reached production without a Pull Request",
+    m4miss: "A deployment from a sandbox reached production",
+    m5miss: "A Flow edited live reached production",
+    goalMoles: "Whack the admins before their change gets through",
+    molesCounts: "Blocked {{caught}} · Got through {{missed}}",
+    coachMoles: "Whack the admins: click them!",
+    coachMolesTouch: "Whack the admins: tap them!",
+    coachMolesKeys: "Arrows to move, Space to whack!",
+    changeSetTip: "A change set is not in git: nobody reviews it, the other orgs never get it, and the next deployment from the pipeline overwrites it.",
+    coachRetro: "It got through! Retrofit it: press R or click the button",
+    coachRetroTouch: "It got through! Tap the button to retrofit it",
+    retroLong: "Retrofit it in git with a Pull Request",
+    retroShort: "Retrofit via PR",
+    retroDone: "Retrofitted: the change from production is now in git",
+    retroLateTitle: "Not retrofitted in time",
+    retroLateTip: "A change made directly in production must go into git quickly: otherwise the next deployment overwrites it, and the repository no longer tells the truth about production.",
+    molesDone: "Change sets stopped!",
+    teamTitle: "The admins are teaming up against CI/CD!",
+    teamLine: "Now they march on production in waves: throw vegetables, and the monitoring sends each change back as a Pull Request.",
+    teamKeys: "Left and Right to move, hold Space to throw",
+    teamTouch: "Drag to move: the guinea pig throws on its own",
+    teamGo: "Continue",
+    missedRetroInfo: "{{n}} changes made directly in production were not retrofitted in time. Until a change made by hand is in git, the next deployment can overwrite it.",
     monTitle: "Production monitoring",
     monCounts: "Alerts {{alerts}} · Pull Requests {{prs}}",
     monIdle: "Watching the production org",
@@ -222,14 +302,16 @@ export const TEXTS = {
     missedInfo: "{{n}} admins changed production before you caught them. In real life the nightly backup still shows their changes in the git history of the monitoring repository: read it, and put each one in a Pull Request."
   },
   fr: {
-    intro: "US-014 est en production, et maintenant des admins modifient l'org de production à la main, dans Setup, parce que c'est plus rapide. Chaque légume qui en touche un, c'est le monitoring qui attrape le changement : il repart dans le pipeline en Pull Request.",
-    how1: "Bougez avec Gauche et Droite ou Q / D, ou glissez sur un téléphone",
-    how2: "Maintenez Espace ou Haut pour lancer des légumes (tout seul sur téléphone)",
-    how3: "Évitez les engrenages qu'ils lâchent, puis battez le directeur commercial",
+    intro: "US-014 est en production, et maintenant des admins poussent des change sets et des modifs dans Setup directement dans l'org de production, parce que c'est plus rapide. Tapez-les, puis repoussez leur invasion : chaque coup, c'est le monitoring qui attrape un changement et le renvoie dans le pipeline en Pull Request.",
+    how1: "Tapez les admins : cliquez ou touchez-les, ou flèches et Espace",
+    how2: "Un admin s'échappe ? Faites vite son retrofit dans git : R ou le bouton",
+    how3: "Puis les vagues : lancez des légumes, battez le directeur commercial",
     note: "Lisez chaque matin la sauvegarde de production de la nuit : un changement que vous n'avez pas déployé a été fait à la main. Mettez-le dans une Pull Request le jour même, avant que le prochain déploiement ne l'écrase. - V.",
-    keysJump: "Lancer : Espace, flèche haut ou Z en AZERTY (W en QWERTY), maintenez pour continuer",
-    keysTouch: "Glissez ou utilisez les boutons pour bouger : le cochon d'Inde lance tout seul",
+    keysMove: "Bouger : flèches, ou ZQSD en AZERTY (WASD en QWERTY)",
+    keysJump: "Taper, puis lancer : Espace (maintenez pour continuer), retrofit : R",
+    keysTouch: "Touchez les admins, puis glissez pour bouger : le cochon d'Inde lance tout seul",
     btnJump: "Lancer",
+    p0: "Change sets",
     p1: "Vague 1",
     p2: "Vague 2",
     p3: "Vague 3",
@@ -263,6 +345,46 @@ export const TEXTS = {
     bossDown: "Le directeur commercial abandonne !",
     retryBoss: "Retour direct au directeur commercial : les vagues sont faites",
     retryHint: "Réessayer reprend au directeur commercial.",
+    retryHintWaves: "Réessayer reprend aux vagues.",
+    retryWaves: "Retour aux vagues : les change sets sont derrière vous",
+    m0: "Change set",
+    m1: "Outbound change set",
+    m2: "Modif dans Setup",
+    m3: "Hotfix en prod",
+    m4: "Depuis ma sandbox",
+    m5: "Flow modifié en direct",
+    m0hit: "Change set bloqué : ouvrez une Pull Request",
+    m1hit: "Outbound change set bloqué : le changement va dans git",
+    m2hit: "Modif dans Setup attrapée : faites-la dans une sandbox, puis commitez-la",
+    m3hit: "Hotfix en prod bloqué : un hotfix est aussi une Pull Request",
+    m4hit: "Déploiement depuis une sandbox bloqué : c'est le pipeline qui déploie, depuis git",
+    m5hit: "Flow modifié en direct attrapé : construisez-le dans une sandbox, puis une Pull Request",
+    m0miss: "Un change set a atteint la production",
+    m1miss: "Un outbound change set a atteint la production",
+    m2miss: "Une modif dans Setup a atteint la production",
+    m3miss: "Un hotfix a atteint la production sans Pull Request",
+    m4miss: "Un déploiement depuis une sandbox a atteint la production",
+    m5miss: "Un Flow modifié en direct a atteint la production",
+    goalMoles: "Tapez les admins avant que leur changement ne passe",
+    molesCounts: "Bloqués {{caught}} · Passés {{missed}}",
+    coachMoles: "Tapez les admins : cliquez dessus !",
+    coachMolesTouch: "Tapez les admins : touchez-les !",
+    coachMolesKeys: "Flèches pour bouger, Espace pour taper !",
+    changeSetTip: "Un change set n'est pas dans git : personne ne le relit, les autres orgs ne l'ont jamais, et le prochain déploiement du pipeline l'écrase.",
+    coachRetro: "C'est passé ! Faites le retrofit : touche R ou le bouton",
+    coachRetroTouch: "C'est passé ! Touchez le bouton pour le retrofit",
+    retroLong: "Rapatrier dans git par une Pull Request",
+    retroShort: "Retrofit par PR",
+    retroDone: "Retrofit fait : le changement de production est maintenant dans git",
+    retroLateTitle: "Retrofit trop tard",
+    retroLateTip: "Un changement fait directement en production doit vite aller dans git : sinon le prochain déploiement l'écrase, et le repository ne dit plus la vérité sur la production.",
+    molesDone: "Change sets arrêtés !",
+    teamTitle: "Les admins se liguent contre le CI/CD !",
+    teamLine: "Maintenant ils marchent sur la production par vagues : lancez des légumes, et le monitoring renvoie chaque changement en Pull Request.",
+    teamKeys: "Gauche et Droite pour bouger, maintenez Espace pour lancer",
+    teamTouch: "Glissez pour bouger : le cochon d'Inde lance tout seul",
+    teamGo: "Continuer",
+    missedRetroInfo: "{{n}} changements faits directement en production n'ont pas eu leur retrofit à temps. Tant qu'un changement fait à la main n'est pas dans git, le prochain déploiement peut l'écraser.",
     monTitle: "Monitoring de la production",
     monCounts: "Alertes {{alerts}} · Pull Requests {{prs}}",
     monIdle: "Surveille l'org de production",
@@ -684,7 +806,7 @@ export function createWorld(ctx) {
   const player = { x: 0, target: null, vx: 0, invulnerable: 0, wobble: 0, cooldown: 0, buffer: 0, throwing: 0 };
   // Up on its back legs, front paws free to throw: its face shows from above
   pig.setSitting(true);
-  let phase = "waves";
+  let phase = "moles";
   let clock = 0;
   let shake = 0;
   let pace = 1;
@@ -724,14 +846,63 @@ export function createWorld(ctx) {
   let dragEnded = false;
 
   function onKey(event) {
+    if (event.type === "keydown" && !event.repeat && molesKey(event.code)) {
+      return;
+    }
     const name = KEYS[event.code];
     if (!name || event.repeat) {
       return;
     }
     held[name] = event.type === "keydown";
   }
+  /** The keys of the moles and of the card; false when the key is not theirs. */
+  function molesKey(code) {
+    if (!ctx.playing) {
+      return false;
+    }
+    if (phase === "moles" || phase === "molesDone") {
+      if (code === "KeyR") {
+        takeRetro();
+        return true;
+      }
+      const move = MOVE_KEYS[code];
+      if (move) {
+        moveCursor(move[0], move[1]);
+        return true;
+      }
+      if (code === "Space" || code === "Enter" || code === "NumpadEnter") {
+        bonk(cursor);
+        return true;
+      }
+      return false;
+    }
+    if (phase === "card" && (code === "Enter" || code === "NumpadEnter" || code === "Space")) {
+      closeCard();
+      return true;
+    }
+    return false;
+  }
   function onPadDown(event) {
+    if (event.target.closest && event.target.closest(".gr-w9-retro")) {
+      // Taken at once, and the button never keeps the focus away from the keys
+      event.preventDefault();
+      takeRetro();
+      return;
+    }
     const pad = event.target.closest ? event.target.closest("[data-pad]") : null;
+    if (ctx.playing && (phase === "moles" || phase === "molesDone")) {
+      if (pad) {
+        const name = pad.getAttribute("data-pad");
+        if (name === "left" || name === "right") {
+          moveCursor(name === "left" ? -1 : 1, 0);
+        } else if (name === "jump" || name === "confirm") {
+          bonk(cursor);
+        }
+      } else if (event.target === canvas) {
+        whackAt(event.clientX, event.clientY);
+      }
+      return;
+    }
     if (!pad) {
       if (event.target === canvas && ctx.playing) {
         drag = { id: event.pointerId, x: event.clientX, from: player.x, moved: false };
@@ -786,10 +957,6 @@ export function createWorld(ctx) {
   const firePadLabel = firePad ? firePad.getAttribute("aria-label") : "";
   if (firePad) {
     firePad.setAttribute("aria-label", t("btnJump"));
-  }
-  // A phone throws on its own: the pads only steer
-  if (touch) {
-    hud.setPads(["left", "right"]);
   }
 
   /* ---------- The camera: the whole field on screen, whatever its shape ---------- */
@@ -861,6 +1028,538 @@ export function createWorld(ctx) {
     engine.aimSun(0, -5);
   }
 
+  /* ---------- Phase 1, the whack-a-mole ---------- */
+
+  // Nine holes in the production org. Each hole has its admin, admins[hole],
+  // who pops up with what he is trying (a change set, an edit in Setup...)
+  const holes = [];
+  for (let i = 0; i < HOLES; i++) {
+    holes.push({ x: HOLE_X[i % 3], z: HOLE_Z[Math.floor(i / 3)] });
+  }
+  const holeMesh = instanced(paint.geometry("w9-hole", () => new THREE.CircleGeometry(0.98, 40).rotateX(-Math.PI / 2)), paint.plain(0x050f26, { roughness: 1 }), HOLES);
+  const rimMesh = instanced(paint.geometry("w9-rim", () => new THREE.RingGeometry(0.98, 1.16, 40).rotateX(-Math.PI / 2)), paint.plain(0xffffff, { roughness: 0.5, emissive: 0x16325c, emissiveIntensity: 0.6 }), HOLES, true);
+  holes.forEach((h, i) => {
+    position.set(h.x, 0.012, h.z);
+    quaternion.identity();
+    scale.set(1, 1, 1);
+    matrix.compose(position, quaternion, scale);
+    holeMesh.setMatrixAt(i, matrix);
+    position.y = 0.016;
+    matrix.compose(position, quaternion, scale);
+    rimMesh.setMatrixAt(i, matrix);
+  });
+  holeMesh.instanceMatrix.needsUpdate = true;
+  rimMesh.instanceMatrix.needsUpdate = true;
+
+  // What each admin tries, under his face; and the retrofit button, at the bottom, never over a hole
+  const chipLayer = el("div", "gr-w9-chips", hud.layer);
+  const chips = holes.map(() => {
+    const node = el("div", "gr-w9-chip", chipLayer);
+    node.hidden = true;
+    return { node, px: -1, py: -1 };
+  });
+  const retroButton = el("button", "gr-w9-retro", hud.layer);
+  retroButton.type = "button";
+  retroButton.hidden = true;
+  const retroWhat = el("span", "gr-w9-retro-what", retroButton);
+  const retroLabel = el("strong", "", retroButton, t(touch ? "retroShort" : "retroLong"));
+  void retroLabel;
+  if (!touch) {
+    el("kbd", "", retroButton, "R");
+  }
+  const retroMore = el("em", "", retroButton);
+  const retroBar = el("b", "", el("i", "", retroButton));
+
+  let cursor = 4;
+  let molesSpawned = 0;
+  let molesCaught = 0;
+  let molesMissed = 0;
+  let lateRetrofits = 0;
+  let nextMoleAt = 1.2;
+  let lastHole = -1;
+  let moleCoached = false;
+  let molesDoneAt = 0;
+  let bonks = 0;
+  // The changes that got through, each waiting for its retrofit: only the first counts down
+  const retroQueue = [];
+  const retro = { on: false, left: 0, total: 1, kind: 0, hole: 0 };
+  const hop = { fromX: 0, fromZ: 0, toX: 0, toZ: 0, t: 1, length: 0.16, height: 0.5, back: -1 };
+  let card = null;
+  let cardAt = 0;
+
+  /** The moles are set up behind the intro card: the holes, two admins peeking out. */
+  function setupMoles() {
+    phase = "moles";
+    used = HOLES;
+    const faces = nextFaces();
+    for (let i = 0; i < MAX_ADMINS; i++) {
+      const a = admins[i];
+      a.alive = false;
+      a.dying = 0;
+      a.mole = i < HOLES;
+      if (a.mole) {
+        Object.assign(a, { hole: i, x: holes[i].x, z: holes[i].z, rise: 0, state: "down", upLeft: 0, hitT: 0, kind: 0, face: faces[i], helper: false });
+        bodyMesh.setColorAt(i, color.setHex(ROW_COLORS[i % ROW_COLORS.length]));
+      }
+    }
+    bodyMesh.instanceColor.needsUpdate = true;
+    for (const i of [1, 6]) {
+      admins[i].rise = 0.75;
+      admins[i].state = "peek";
+      admins[i].kind = i === 1 ? 0 : 2;
+    }
+    holeMesh.count = HOLES;
+    rimMesh.count = HOLES;
+    hop.toX = holes[cursor].x;
+    hop.toZ = holes[cursor].z + PIG_REST;
+    hop.t = hop.length;
+    renderCursor();
+    renderMoleCounts();
+    hud.setPath([t("p0"), t("p1"), t("p2"), t("p3"), t("p4")], 0);
+    ctx.setData("wave", "moles");
+    ctx.setData("hole", cursor);
+    ctx.setData("bonks", 0);
+    hud.setPads(touch ? [] : PADS);
+  }
+
+  function startMoles() {
+    for (const a of admins) {
+      if (a.mole && a.state === "peek") {
+        a.state = "sinking";
+      }
+    }
+    coach(touch ? "coachMolesTouch" : "coachMoles", 2600);
+    updateGoal();
+  }
+
+  /** How far the moles are, 0 to 1, by the admins that popped up. */
+  function moleProgress() {
+    return Math.min(1, molesSpawned / MOLE_COUNT);
+  }
+
+  function lerp(range, k) {
+    return range[0] + (range[1] - range[0]) * k;
+  }
+
+  function updateMoles(dt) {
+    const k = Math.pow(moleProgress(), 0.85);
+    // The pace the music and the check read: 1.00 to about 1.40, "Faster!" on the way
+    pace = 1 + 0.4 * k;
+    const hundredths = Math.round(pace * 100);
+    if (hundredths !== paceShown) {
+      paceShown = hundredths;
+      ctx.setData("pace", pace.toFixed(2));
+    }
+    if (phase === "moles" && cue < PACE_CUES.length && pace >= PACE_CUES[cue]) {
+      cue += 1;
+      coach("faster", 1600);
+      ctx.sound.play("combo");
+    }
+    player.invulnerable = Math.max(0, player.invulnerable - dt);
+    let up = 0;
+    for (let i = 0; i < HOLES; i++) {
+      const a = admins[i];
+      if (a.state === "rising") {
+        a.rise = Math.min(1, a.rise + dt / MOLE_RISE_S);
+        if (a.rise >= 1) {
+          a.state = "up";
+        }
+      } else if (a.state === "up") {
+        a.upLeft -= dt;
+        if (a.upLeft <= 0) {
+          escape(a);
+        }
+      } else if (a.state === "sinking") {
+        a.rise = Math.max(0, a.rise - dt / MOLE_SINK_S);
+        if (a.rise <= 0) {
+          a.state = "down";
+        }
+      } else if (a.state === "hit") {
+        a.hitT += dt;
+        if (a.hitT > 0.12) {
+          a.rise = Math.max(0, a.rise - dt / 0.22);
+        }
+        if (a.rise <= 0) {
+          a.state = "down";
+        }
+      }
+      a.alive = a.state === "rising" || a.state === "up";
+      if (a.state !== "down") {
+        up += 1;
+      }
+    }
+    // The next admin, sooner and for less long as it goes on
+    if (phase === "moles" && molesSpawned < MOLE_COUNT) {
+      nextMoleAt -= dt;
+      const most = k < 0.15 ? 1 : k < 0.55 ? 2 : 3;
+      if (nextMoleAt <= 0 && up < most) {
+        popMole(k);
+        nextMoleAt = lerp(MOLE_GAP_S, k) * (0.8 + random() * 0.4) / ease;
+      }
+    }
+    updateRetro(dt);
+    if (!ctx.playing) {
+      return;
+    }
+    if (phase === "moles" && molesSpawned >= MOLE_COUNT && up === 0 && !retro.on && !retroQueue.length) {
+      phase = "molesDone";
+      molesDoneAt = clock;
+      coach("molesDone", 1800);
+      ctx.sound.play("power");
+      ctx.sound.play("wheek");
+    }
+    if (phase === "molesDone" && clock - molesDoneAt > 1.6) {
+      showCard();
+    }
+    // A desktop player who has not found how to whack is told
+    if (!touch && !moleCoached && phase === "moles" && molesSpawned >= 4 && bonks === 0) {
+      moleCoached = true;
+      coach("coachMolesKeys", 2600);
+    }
+  }
+
+  function popMole(k) {
+    let pick = Math.floor(random() * HOLES);
+    for (let n = 0; n < HOLES; n++) {
+      const hole = (pick + n) % HOLES;
+      if (admins[hole].state === "down" && hole !== lastHole) {
+        pick = hole;
+        break;
+      }
+    }
+    const a = admins[pick];
+    if (a.state !== "down") {
+      return;
+    }
+    lastHole = pick;
+    molesSpawned += 1;
+    a.state = "rising";
+    a.rise = 0;
+    a.hitT = 0;
+    a.upLeft = lerp(MOLE_UP_S, k) / ease;
+    // A change set more often than the rest: it is the one the lesson is about
+    a.kind = random() < 0.35 ? 0 : 1 + Math.floor(random() * (MOLE_KINDS - 1));
+    a.face = nextFaces()[0];
+    faceSeen[a.face] += 1;
+    chips[pick].node.textContent = keepTogether(t("m" + a.kind));
+    chips[pick].px = -1;
+    if (random() < 0.3) {
+      say(a);
+    }
+    ctx.sound.play("click");
+  }
+
+  /** The guinea pig whacks a hole: the admin there, if one is up, is caught. */
+  function bonk(hole) {
+    if (phase !== "moles" && phase !== "molesDone") {
+      return;
+    }
+    moveCursorTo(hole, true);
+    bonks += 1;
+    ctx.setData("bonks", bonks);
+    const a = admins[hole];
+    if (a.state !== "rising" && a.state !== "up") {
+      ctx.sound.play("click");
+      return;
+    }
+    a.state = "hit";
+    a.hitT = 0;
+    a.alive = false;
+    molesCaught += 1;
+    renderMoleCounts();
+    showAlert(t("m" + a.kind + "hit"), "good");
+    spawnPr(a.x, a.z);
+    ctx.fx.burst(a.x, FACE_Y + 0.4, a.z, { count: 18, colors: [0xffd84d, 0xffb400, 0xffffff, 0x2e844a], speed: 3.5, up: 4, life: 0.8 });
+    ctx.collect(MOLE_POINTS);
+    ctx.sound.play("moleBonk");
+    ctx.sound.play("wheek");
+    shake = Math.max(shake, 0.1);
+    for (const b of bubbles) {
+      if (b.admin === a) {
+        b.until = 0;
+      }
+    }
+  }
+
+  /** An admin went back down untouched: his change is in production, retrofit it. */
+  function escape(a) {
+    a.state = "sinking";
+    a.alive = false;
+    molesMissed += 1;
+    renderMoleCounts();
+    showAlert(t("m" + a.kind + "miss"), "bad");
+    ctx.points(-10);
+    ctx.sound.play("wrong");
+    retroQueue.push({ kind: a.kind, hole: a.hole });
+    if (molesMissed === 1) {
+      coach(touch ? "coachRetroTouch" : "coachRetro", 2800);
+      hud.tip(t("changeSetTip"), 8000);
+    }
+    if (!retro.on) {
+      nextRetro();
+    } else {
+      renderRetro();
+    }
+  }
+
+  function nextRetro() {
+    const next = retroQueue.shift();
+    if (!next) {
+      retro.on = false;
+      retroButton.hidden = true;
+      ctx.setData("retrofit", 0);
+      return;
+    }
+    retro.on = true;
+    retro.kind = next.kind;
+    retro.hole = next.hole;
+    // A little less time as the moles speed up, never less than RETRO_S[1]
+    retro.total = lerp(RETRO_S, Math.pow(moleProgress(), 0.85)) / Math.max(ease, 0.9);
+    retro.left = retro.total;
+    retroButton.hidden = false;
+    renderRetro();
+  }
+
+  function renderRetro() {
+    retroWhat.textContent = keepTogether(t("m" + retro.kind + "miss"));
+    retroMore.textContent = retroQueue.length ? "+" + retroQueue.length : "";
+    ctx.setData("retrofit", retroQueue.length + (retro.on ? 1 : 0));
+  }
+
+  function updateRetro(dt) {
+    if (!retro.on) {
+      return;
+    }
+    retro.left -= dt;
+    retroBar.style.width = Math.max(0, (retro.left / retro.total) * 100).toFixed(1) + "%";
+    retroButton.classList.toggle("is-late", retro.left < retro.total * 0.35);
+    if (retro.left <= 0) {
+      lateRetrofits += 1;
+      nextRetro();
+      // Too late: production and git disagree, one heart
+      hurt("retroLateTitle", "retroLateTip", true);
+      if (ctx.playing) {
+        // Mercy, a little more than in the waves: the admins up go back down
+        // without a change, and the next ones come a little later
+        ease = Math.max(EASE_MIN, ease - 0.04);
+        for (let i = 0; i < HOLES; i++) {
+          const a = admins[i];
+          if (a.state === "rising" || a.state === "up") {
+            a.state = "sinking";
+            a.alive = false;
+          }
+        }
+        nextMoleAt = Math.max(nextMoleAt, 1.3);
+      }
+    }
+  }
+
+  function takeRetro() {
+    if (!retro.on || !ctx.playing) {
+      return;
+    }
+    const hole = holes[retro.hole];
+    showAlert(t("retroDone"), "good");
+    spawnPr(hole.x, hole.z);
+    ctx.collect(RETRO_POINTS, t("retroShort"));
+    ctx.sound.play("power");
+    nextRetro();
+  }
+
+  function moveCursor(dCol, dRow) {
+    const col = clamp((cursor % 3) + dCol, 0, 2);
+    const row = clamp(Math.floor(cursor / 3) + dRow, 0, 2);
+    moveCursorTo(row * 3 + col, false);
+  }
+
+  /** The guinea pig hops to a hole: onto it for a whack, in front of it otherwise. */
+  function moveCursorTo(hole, whack) {
+    const h = holes[hole];
+    hop.fromX = pig.object.position.x;
+    hop.fromZ = pig.object.position.z;
+    hop.toX = h.x;
+    hop.toZ = h.z + (whack ? 0.45 : PIG_REST);
+    hop.t = 0;
+    hop.length = whack ? 0.14 : 0.16;
+    hop.height = whack ? 1.1 : 0.5;
+    // After a whack it jumps back down in front of the hole
+    hop.back = whack ? hole : -1;
+    if (hole !== cursor) {
+      cursor = hole;
+      renderCursor();
+      ctx.setData("hole", cursor);
+    }
+  }
+
+  function renderCursor() {
+    for (let i = 0; i < HOLES; i++) {
+      // The keyboard's hole glows yellow; a finger needs no cursor
+      rimMesh.setColorAt(i, color.setHex(i === cursor && !touch ? 0xffd84d : 0x8fd3ff));
+    }
+    rimMesh.instanceColor.needsUpdate = true;
+  }
+
+  function renderMoleCounts() {
+    counts.textContent = t("molesCounts", { caught: molesCaught, missed: molesMissed });
+    ctx.setData("moles", molesCaught);
+  }
+
+  /** A tap or a click on the field: the hole under the finger, if any. */
+  function whackAt(clientX, clientY) {
+    const box = overlay.getBoundingClientRect();
+    const x = clientX - box.left;
+    const y = clientY - box.top;
+    let best = -1;
+    let bestD = Infinity;
+    for (let i = 0; i < HOLES; i++) {
+      const a = admins[i];
+      const lift = a.state === "rising" || a.state === "up" ? 0 : -1.2;
+      point.set(holes[i].x, FACE_Y + lift, holes[i].z).project(camera);
+      const dx = ((point.x + 1) / 2) * view.width - x;
+      const dy = ((1 - point.y) / 2) * view.height - y;
+      const d = dx * dx + dy * dy;
+      if (d < bestD) {
+        bestD = d;
+        best = i;
+      }
+    }
+    // Within about half the gap between two holes
+    point.set(holes[0].x, 0, holes[0].z).project(camera);
+    const left = point.x;
+    point.set(holes[1].x, 0, holes[1].z).project(camera);
+    const gap = Math.abs(point.x - left) * (view.width / 2);
+    if (best >= 0 && bestD < Math.pow(gap * 0.62, 2)) {
+      bonk(best);
+    }
+  }
+
+  function placeMolePig(dt, time) {
+    hop.t = Math.min(hop.length, hop.t + dt);
+    const k = hop.t / hop.length;
+    const x = hop.fromX + (hop.toX - hop.fromX) * k;
+    const z = hop.fromZ + (hop.toZ - hop.fromZ) * k;
+    const y = Math.sin(k * Math.PI) * hop.height;
+    if (k >= 1 && hop.back >= 0) {
+      const h = holes[hop.back];
+      hop.back = -1;
+      hop.fromX = x;
+      hop.fromZ = z;
+      hop.toX = h.x;
+      hop.toZ = h.z + PIG_REST;
+      hop.t = 0;
+      hop.length = 0.16;
+      hop.height = 0.35;
+    }
+    pig.object.position.set(x, y, z);
+    pig.object.scale.setScalar(1.05);
+    pig.object.rotation.set(-0.35, 0.75, 0, "YXZ");
+    pig.shadow.position.set(x, 0.012, z + 0.05);
+    pigState.running = false;
+    pigState.airborne = y > 0.02;
+    pigState.height = y;
+    pig.state = pigState;
+    pig.object.visible = !(player.invulnerable > 0 && Math.floor(time * 12) % 2 === 0);
+    if (player.wobble > 0) {
+      player.wobble = Math.max(0, player.wobble - dt * 1.6);
+      pig.hitWobble(player.wobble);
+    }
+  }
+
+  /** What each up admin tries, in a chip under his face. */
+  function placeChips() {
+    for (let i = 0; i < HOLES; i++) {
+      const a = admins[i];
+      const c = chips[i];
+      const shown = (a.state === "rising" || a.state === "up") && a.rise > 0.5 && phase !== "card";
+      if (!shown) {
+        if (!c.node.hidden) {
+          c.node.hidden = true;
+        }
+        continue;
+      }
+      if (c.node.hidden) {
+        c.node.hidden = false;
+      }
+      point.set(a.x, FACE_Y * MOLE_SCALE + a.lift, a.z).project(camera);
+      const px = Math.round(((point.x + 1) / 2) * view.width);
+      const py = Math.round(((1 - point.y) / 2) * view.height + faceRadiusPx(a));
+      if (px !== c.px || py !== c.py) {
+        c.px = px;
+        c.py = py;
+        c.node.style.transform = "translate(" + px + "px, " + py + "px)";
+      }
+    }
+  }
+
+  function faceRadiusPx(a) {
+    point.set(a.x, FACE_Y * (a.mole ? MOLE_SCALE : 1) + a.lift, a.z).project(camera);
+    const y0 = point.y;
+    const r = (FACE_SIZE / 2) * (a.mole ? MOLE_SCALE : 1);
+    point.set(a.x + up.x * r, FACE_Y * (a.mole ? MOLE_SCALE : 1) + a.lift + up.y * r, a.z + up.z * r).project(camera);
+    return Math.abs(point.y - y0) * (view.height / 2) - 4;
+  }
+
+  /** The moles are done: the admins team up. A card says it, then the waves come. */
+  function showCard() {
+    phase = "card";
+    cardAt = clock;
+    holeMesh.count = 0;
+    rimMesh.count = 0;
+    for (const c of chips) {
+      c.node.hidden = true;
+    }
+    for (const a of admins) {
+      a.mole = false;
+      a.state = "down";
+      a.rise = 0;
+    }
+    player.x = 0;
+    player.vx = 0;
+    startWave(0);
+    renderCounts();
+    alertHead.textContent = "";
+    alertText.textContent = t("monIdle");
+    alertLine.classList.remove("is-good");
+    hud.goal("");
+    hud.setPads([]);
+    card = el("div", "gr-w9-card", hud.layer);
+    card.setAttribute("role", "dialog");
+    el("h2", "", card, keepTogether(t("teamTitle")));
+    const faces = el("div", "gr-w9-card-faces", card);
+    for (const i of nextFaces().slice(0, 5)) {
+      const img = el("img", "", faces);
+      img.alt = "";
+      img.src = new URL("../../../images/bosses/boss-" + (i + 1) + ".svg", import.meta.url).href;
+    }
+    el("p", "", card, keepTogether(t("teamLine")));
+    el("p", "gr-w9-card-keys", card, keepTogether(t(touch ? "teamTouch" : "teamKeys")));
+    const go = el("button", "gr-button gr-primary", card, t("teamGo") + (touch ? "" : " (Enter)"));
+    go.type = "button";
+    card.addEventListener("click", closeCard);
+    // A player who lost hearts on the moles comes to the waves with one back
+    if (ctx.attempts < 3) {
+      ctx.gainAttempt();
+    }
+    ctx.sound.play("gate");
+    ctx.setData("wave", "card");
+  }
+
+  function closeCard() {
+    // A moment to read it, even for a player still hammering Space
+    if (phase !== "card" || clock - cardAt < 1.2) {
+      return;
+    }
+    card.remove();
+    card = null;
+    phase = "waves";
+    pace = 1;
+    cue = 0;
+    ctx.setData("wave", 1);
+    hud.setPads(touch ? ["left", "right"] : PADS);
+    coach("coachStart", 2600);
+    updateGoal();
+  }
+
   /* ---------- Waves ---------- */
 
   function startWave(n) {
@@ -896,7 +1595,7 @@ export function createWorld(ctx) {
     waveTotal = k;
     waveCaught = 0;
     ctx.setData("wave", n + 1);
-    hud.setPath([t("p1"), t("p2"), t("p3"), t("p4")], n);
+    hud.setPath([t("p0"), t("p1"), t("p2"), t("p3"), t("p4")], n + 1);
     if (n > 0) {
       coach(n === 1 ? "coachWave2" : "coachWave3", 2400);
       ctx.sound.play("gate");
@@ -1237,9 +1936,11 @@ export function createWorld(ctx) {
     updateGoal();
   }
 
-  function showAlert(text) {
-    alertHead.textContent = t("alertHead");
-    alertText.textContent = " " + text;
+  /** A line of the monitoring panel; a good one has no "Detected by" in front. */
+  function showAlert(text, tone) {
+    alertHead.textContent = tone === "good" ? "" : t("alertHead");
+    alertText.textContent = tone === "good" ? text : " " + text;
+    alertLine.classList.toggle("is-good", tone === "good");
     if (!hud.reduced) {
       panel.classList.remove("is-new");
       void panel.offsetWidth;
@@ -1304,7 +2005,7 @@ export function createWorld(ctx) {
     fight.hp = BOSS_HP;
     boss.group.visible = true;
     boss.face.visible = true;
-    hud.setPath([t("p1"), t("p2"), t("p3"), t("p4")], 3);
+    hud.setPath([t("p0"), t("p1"), t("p2"), t("p3"), t("p4")], 4);
     ctx.setData("wave", "boss");
     ctx.setData("boss", fight.hp);
     coach("coachBoss", 2400);
@@ -1611,7 +2312,9 @@ export function createWorld(ctx) {
         b.admin = null;
         continue;
       }
-      placeBubble(b, b.admin.x + up.x * (FACE_SIZE / 2 + 0.08), FACE_Y + up.y * (FACE_SIZE / 2 + 0.08), b.admin.z + up.z * (FACE_SIZE / 2 + 0.08));
+      const k = b.admin.mole ? MOLE_SCALE : 1;
+      const r = (FACE_SIZE / 2) * k + 0.08;
+      placeBubble(b, b.admin.x + up.x * r, FACE_Y * k + b.admin.lift + up.y * r, b.admin.z + up.z * r);
     }
     if (bossBubble.until > clock) {
       placeBubble(bossBubble, fight.x, 0.2, fight.z + 2.6);
@@ -1649,11 +2352,14 @@ export function createWorld(ctx) {
     }
     formation.pause = Math.max(formation.pause, 0.8);
     dropTimer = Math.max(dropTimer, 1.6);
-    // The last heart at the boss: the result card says the next try starts at him
-    const last = phase === "boss" && ctx.attempts <= 1;
-    ctx.loseAttempt(t(titleKey), t(tipKey) + (last ? " " + t("retryHint") : ""));
+    // The last heart at the boss or in the waves: the result card says where the next try starts
+    const inWaves = phase === "waves" || phase === "between";
+    const hint = ctx.attempts > 1 ? "" : phase === "boss" ? " " + t("retryHint") : inWaves ? " " + t("retryHintWaves") : "";
+    ctx.loseAttempt(t(titleKey), t(tipKey) + hint);
     if (!ctx.playing && phase === "boss") {
       bossRetryAt = Date.now();
+    } else if (!ctx.playing && inWaves) {
+      wavesRetryAt = Date.now();
     }
   }
 
@@ -1685,11 +2391,13 @@ export function createWorld(ctx) {
   }
 
   function updateGoal() {
-    if (finished) {
+    if (finished || phase === "card" || phase === "molesDone") {
       hud.goal("");
       return;
     }
-    if (phase === "waves") {
+    if (phase === "moles") {
+      hud.goal(t("goalMoles"));
+    } else if (phase === "waves") {
       hud.goal(t("goalWave", { n: liveAdmins() }));
       ctx.setData("admins", liveAdmins());
     } else if (fight.state === "fight") {
@@ -1765,11 +2473,19 @@ export function createWorld(ctx) {
       a.say = Math.max(0, a.say - dt);
       const step = Math.sin(time * 9 + a.phase);
       // The one talking stands up on tiptoe
-      const lift = Math.abs(step) * 0.06 + (a.say > 0 ? Math.sin((a.say / 0.3) * Math.PI) * 0.18 : 0);
+      let lift = Math.abs(step) * 0.06 + (a.say > 0 ? Math.sin((a.say / 0.3) * Math.PI) * 0.18 : 0);
+      // A mole comes out of its hole, and squashes when whacked
+      let squash = 0;
+      if (a.mole) {
+        s = a.rise > 0.01 ? MOLE_SCALE : 0;
+        lift = (a.rise - 1) * 2.4 + Math.abs(step) * 0.04;
+        squash = a.state === "hit" ? Math.min(1, a.hitT / 0.08) : 0;
+      }
+      a.lift = lift;
       position.set(a.x, lift, a.z);
       euler.set(0, a.dying > 0 ? (1 - s) * 7 : 0, step * 0.08);
       quaternion.setFromEuler(euler);
-      scale.setScalar(s);
+      scale.set(s * (1 + squash * 0.25), s * (1 - squash * 0.35), s);
       matrix.compose(position, quaternion, scale);
       for (const part of adminParts) {
         work.multiplyMatrices(matrix, part.local);
@@ -1778,10 +2494,10 @@ export function createWorld(ctx) {
       if (s > 0) {
         // The face always looks at the camera, with the waddle of the march
         const face = faceMeshes[a.face];
-        position.set(a.x, FACE_Y + lift, a.z);
+        position.set(a.x, FACE_Y * (a.mole ? MOLE_SCALE : 1) + lift, a.z);
         roll.setFromAxisAngle(AXIS_Z, step * 0.1 + (a.dying > 0 ? (1 - s) * 5 : 0));
         quaternion.copy(camera.quaternion).multiply(roll);
-        scale.setScalar(s);
+        scale.set(s * (1 + squash * 0.2), s * (1 - squash * 0.3), s);
         matrix.compose(position, quaternion, scale);
         face.mesh.setMatrixAt(face.n, matrix);
         face.n += 1;
@@ -1904,38 +2620,65 @@ export function createWorld(ctx) {
   /* ---------- The test hook, on test pages only ---------- */
 
   if (/[?&]guinea-(unlock=all|test=1)/.test(window.location.search)) {
-    window.__guineaShooter = { admins, drops, shots, fight, player, note, formation, bubbles, rain, used: () => used, phase: () => phase, clock: () => clock, nextSay: () => nextSay };
+    window.__guineaShooter = { admins, drops, shots, fight, player, note, formation, bubbles, rain, holes, retro, retroQueue, cursor: () => cursor, used: () => used, phase: () => phase, clock: () => clock, nextSay: () => nextSay };
   }
 
   ctx.setData("shots", 0);
-  ctx.setData("wave", 1);
   ctx.setData("pace", "1.00");
   ctx.setData("x", "0.00");
-  startWave(0);
+  ctx.setData("retrofit", 0);
+  setupMoles();
   // The world is drawn behind the intro card
-  placePig(0, 0);
   placeCamera(0, 0);
-  updateFormation(0);
+  placeMolePig(0, 0);
   drawAdmins(0, 0);
+
+  /** Straight to the waves or the boss: the holes go, the guinea pig takes its place. */
+  function leaveMoles() {
+    holeMesh.count = 0;
+    rimMesh.count = 0;
+    for (const c of chips) {
+      c.node.hidden = true;
+    }
+    for (const a of admins) {
+      a.mole = false;
+      a.alive = false;
+      a.state = "down";
+      a.rise = 0;
+    }
+    player.x = 0;
+    hud.setPads(touch ? ["left", "right"] : PADS);
+    renderCounts();
+  }
 
   return {
     start() {
-      // guinea-at=2 or 3 (a check setting, like a runner's metres) opens that wave, 4 the boss
+      // guinea-at (a check setting, like a runner's metres): 1 the moles, 2 or 3 that wave, 4 the boss
       const at = ctx.params.startAt;
-      if (at >= 2 && at <= 3) {
-        startWave(at - 1);
-      } else if (at === 4 || (!at && bossRetryAt && Date.now() - bossRetryAt < BOSS_RETRY_MS)) {
+      const now = Date.now();
+      const wavesRetry = !at && wavesRetryAt && now - wavesRetryAt < BOSS_RETRY_MS;
+      if ((at >= 2 && at <= 3) || wavesRetry) {
+        wavesRetryAt = 0;
+        leaveMoles();
+        phase = "waves";
+        startWave(wavesRetry ? 0 : at - 1);
+        if (wavesRetry) {
+          ease = 1 - EASE_PER_LOSS * 2;
+          hud.toast(t("retryWaves"), "power");
+        }
+      } else if (at === 4 || (!at && bossRetryAt && now - bossRetryAt < BOSS_RETRY_MS)) {
         const retry = at !== 4;
         bossRetryAt = 0;
-        for (const a of admins) {
-          a.alive = false;
-        }
+        leaveMoles();
         if (retry) {
           // A little easier too, as after any lost heart
           ease = 1 - EASE_PER_LOSS * 2;
           hud.toast(t("retryBoss"), "power");
         }
         startBoss();
+        return;
+      } else {
+        startMoles();
         return;
       }
       coach("coachStart", 2600);
@@ -1963,9 +2706,17 @@ export function createWorld(ctx) {
           hud.toast(t("endToast"), "good");
         }
         if (clock >= endAt && ctx.playing) {
-          ctx.finish(200 + (missed === 0 ? 200 : 0), missed > 0 ? t("missedInfo", { n: missed }) : "");
+          const info = [lateRetrofits > 0 ? t("missedRetroInfo", { n: lateRetrofits }) : "", missed > 0 ? t("missedInfo", { n: missed }) : ""].filter(Boolean).join(" ");
+          ctx.finish(200 + (missed === 0 ? 200 : 0) + (lateRetrofits === 0 ? 100 : 0), info);
           return;
         }
+      } else if (phase === "moles" || phase === "molesDone") {
+        updateMoles(dt);
+        if (!ctx.playing) {
+          return;
+        }
+      } else if (phase === "card") {
+        // Nothing moves while the card is read
       } else {
         updatePace(dt);
         movePlayer(dt);
@@ -2024,11 +2775,26 @@ export function createWorld(ctx) {
       for (const c of clouds) {
         c.cloud.position.y = c.y + Math.sin(time * 0.5 + c.phase) * 0.3;
       }
-      placePig(dt, time);
+      if (phase === "moles" || phase === "molesDone") {
+        placeMolePig(dt, time);
+      } else {
+        placePig(dt, time);
+      }
       placeCamera(time, dt);
       updateBubbles(dt);
+      placeChips();
     },
     action(name) {
+      // The moles take their keys and taps themselves (molesKey, onPadDown)
+      if (phase === "card") {
+        if (name === "confirm" || name === "tap" || name === "jump") {
+          closeCard();
+        }
+        return;
+      }
+      if (phase === "moles" || phase === "molesDone") {
+        return;
+      }
       if (name === "left" || name === "right") {
         // The end of a drag is not a swipe
         if (dragEnded) {
@@ -2066,6 +2832,11 @@ export function createWorld(ctx) {
       panel.remove();
       bossBar.remove();
       bubbleLayer.remove();
+      chipLayer.remove();
+      retroButton.remove();
+      if (card) {
+        card.remove();
+      }
       hud.goal("");
       hud.setPath([], 0);
       pig.object.scale.setScalar(1);
@@ -2514,6 +3285,169 @@ export const CSS = `
   border-left: 2px solid #ea001e;
   border-top: 2px solid #ea001e;
 }
+.guinea-run .gr-w9-alert.is-good span {
+  color: #2e844a;
+  font-weight: 700;
+}
+.guinea-run .gr-layer > .gr-w9-chips {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.guinea-run .gr-w9-chip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: max-content;
+  max-width: 150px;
+  padding: 3px 10px;
+  border: 2px solid #ea001e;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 2px 0 rgba(3, 45, 96, 0.3);
+  color: #032d60;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
+  translate: -50% 0;
+  pointer-events: none;
+}
+.guinea-run .gr-w9-chip[hidden] {
+  display: none;
+}
+.guinea-run .gr-layer > .gr-w9-retro {
+  position: absolute;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: min(380px, calc(100vw - 32px));
+  padding: 9px 44px 15px;
+  overflow: hidden;
+  border: 3px solid #ffffff;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #2e844a, #1f6a38);
+  box-shadow: 0 5px 0 #144a26, 0 10px 24px rgba(3, 45, 96, 0.35);
+  color: #ffffff;
+  font: inherit;
+  cursor: pointer;
+  transform: translateX(-50%);
+  animation: gr-w9-pop 0.25s ease-out;
+}
+.guinea-run .gr-layer > .gr-w9-retro[hidden] {
+  display: none;
+}
+.guinea-run .gr-w9-retro.is-late {
+  background: linear-gradient(180deg, #ea001e, #ba0517);
+  box-shadow: 0 5px 0 #7a0010, 0 10px 24px rgba(3, 45, 96, 0.35);
+}
+.guinea-run .gr-w9-retro-what {
+  font-size: 12px;
+  opacity: 0.92;
+}
+.guinea-run .gr-w9-retro strong {
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.guinea-run .gr-w9-retro kbd {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  padding: 1px 7px;
+  border: 2px solid #ffffff;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  transform: translateY(-55%);
+}
+.guinea-run .gr-w9-retro em {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: #ffb400;
+  color: #032d60;
+  font-style: normal;
+  font-weight: 800;
+  transform: translateY(-55%);
+}
+.guinea-run .gr-w9-retro em:empty {
+  display: none;
+}
+.guinea-run .gr-w9-retro i {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 7px;
+  background: rgba(255, 255, 255, 0.25);
+}
+.guinea-run .gr-w9-retro i b {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #ffd84d;
+}
+.guinea-run .gr-layer > .gr-w9-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(460px, calc(100vw - 32px));
+  padding: 18px 20px 16px;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 2px 30px rgba(3, 45, 96, 0.5);
+  color: #181818;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  animation: gr-w9-pop 0.3s ease-out;
+  cursor: pointer;
+}
+.guinea-run .gr-w9-card h2 {
+  margin: 0 0 10px;
+  color: #ba0517;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+.guinea-run .gr-w9-card-faces {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.guinea-run .gr-w9-card-faces img {
+  width: 48px;
+  height: 48px;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(3, 45, 96, 0.35);
+}
+.guinea-run .gr-w9-card p {
+  margin: 0 0 8px;
+  font-size: 15px;
+  line-height: 1.4;
+}
+.guinea-run .gr-w9-card .gr-w9-card-keys {
+  color: #444444;
+  font-size: 13px;
+  font-weight: 700;
+}
+.guinea-run .gr-w9-card .gr-button {
+  min-width: 160px;
+  margin-top: 6px;
+}
+@keyframes gr-w9-pop {
+  from { opacity: 0; scale: 0.85; }
+  to { opacity: 1; scale: 1; }
+}
 @keyframes gr-w9-flash {
   0% { background: #ffe3e8; transform: scale(1.03); }
   100% { background: rgba(255, 255, 255, 0.95); transform: scale(1); }
@@ -2569,6 +3503,18 @@ export const CSS = `
     max-width: calc(100vw - 32px);
     font-size: 14px;
   }
+  .guinea-run .gr-w9-chip {
+    max-width: 112px;
+    padding: 2px 7px;
+    font-size: 12px;
+  }
+  .guinea-run .gr-w9-card h2 {
+    font-size: 19px;
+  }
+  .guinea-run .gr-w9-card-faces img {
+    width: 40px;
+    height: 40px;
+  }
   /* The tip after a mistake takes the whole width, so it stays short above the field */
   .guinea-run .gr-tipbar {
     width: calc(100vw - 24px);
@@ -2579,7 +3525,9 @@ export const CSS = `
 }
 @media (prefers-reduced-motion: reduce) {
   .guinea-run .gr-w9-dot,
-  .guinea-run .gr-w9-bossbar.is-angry b {
+  .guinea-run .gr-w9-bossbar.is-angry b,
+  .guinea-run .gr-layer > .gr-w9-retro,
+  .guinea-run .gr-layer > .gr-w9-card {
     animation: none;
   }
 }

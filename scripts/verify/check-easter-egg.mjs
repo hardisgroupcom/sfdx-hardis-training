@@ -13,7 +13,8 @@
  *   in a text field it does not
  * - from the map, the keyboard alone opens world 0, starts it and plays it
  * - each world opens, starts, takes its controls, ends, and gives back what
- *   it drew when the player returns to the map; the last one ends on the credits
+ *   it drew when the player returns to the map; the last one ends on the credits,
+ *   and its retrofit button takes a click
  * - finishing a world opens the next one, and the browser remembers it
  * - a deployment action declared in the wrong place in world 3 comes back as
  *   a failing gate in world 6
@@ -177,7 +178,8 @@ const WORLD_PROBES = {
   6: { keys: ["ArrowUp"], attr: "jumps", changes: true },
   7: { keys: ["ArrowLeft"], attr: "lane", expect: "0" },
   8: { keys: ["ArrowUp"], attr: "jumps", changes: true },
-  9: { keys: ["ArrowUp"], attr: "shots", changes: true }
+  // World 9 opens on its whack-a-mole: the left arrow takes the guinea pig from the middle hole to the one on its left
+  9: { keys: ["ArrowLeft"], attr: "hole", expect: "3" }
 };
 
 try {
@@ -272,6 +274,17 @@ try {
     await page.waitForTimeout(1500);
     const playing = await state(page);
     expect(playing === "playing" || playing === "failed", `world ${world.id} keeps running for a few seconds (state ${playing})`);
+    if (world.module === "world-9-monitoring.js") {
+      // An admin who gets away brings up the retrofit button, and a click takes it
+      const waiting = () => data(page, "retrofit").then((n) => Number(n || 0));
+      const shown = await settles(page, async () => (await waiting()) > 0, true, 15000);
+      expect(shown, "world 9 brings up the retrofit button when an admin gets away");
+      if (shown) {
+        const queued = await waiting();
+        await page.click(".guinea-run .gr-w9-retro");
+        expect(await settles(page, async () => (await waiting()) < queued, true, 5000), "world 9 takes the retrofit on a click");
+      }
+    }
     await page.evaluate(() => window.__guineaRun.finish());
     // The last world ends on the credits, the others on their result
     const last = world.id === WORLDS.length - 1;
