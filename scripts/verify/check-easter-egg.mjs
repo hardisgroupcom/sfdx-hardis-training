@@ -22,6 +22,9 @@
  *   on the beat takes its carrots and fires back, it goes down, and the DORA
  *   card follows
  * - finishing a world opens the next one, and the browser remembers it
+ * - the "git add ." admin at the end of world 2 throws everything onto the
+ *   commit, a player who throws back all but the four files of US-014 beats
+ *   him, and the commit cards follow to the end of the world
  * - a deployment action declared in the wrong place in world 3 comes back as
  *   a failing gate in world 6
  * - every lab a world card links to exists, in English and in French
@@ -394,6 +397,26 @@ try {
     expect(await settles(page, () => data(page, "boss"), "beaten", 60000), "his git push --force is rejected by the branch protection");
     const end = ["celebrating", "done"];
     expect(await waitState(page, end), `world 5 ends on its badge after the admin (${await data(page, "bosstime")} s of game time for the fight)`);
+    await page.context().close();
+  }
+
+  // 5d. World 2's admin, played by the world's own autoplay (decided at every
+  // step of the world): it throws back every crate that is not US-014 and lets
+  // the four files roll in, he gives up, and the commit cards follow to the end
+  // of the world. A small window, so the software renderer plays the fight at
+  // about its real speed
+  {
+    const page = await newPage({ viewport: { width: 640, height: 430 } });
+    // guinea-at=1: straight to the admin, the four files of US-014 staged
+    expect(await openWorld(page, "en", 2, "&guinea-at=1"), "world 2 opens at its admin");
+    await page.click('.guinea-run [data-action="start"]');
+    await waitState(page, "playing");
+    await page.evaluate(() => window.__guineaRun.w2.autoplay(true));
+    expect(await settles(page, () => data(page, "boss"), "fight", 30000), 'the "git add ." admin comes out of the Metadata Retriever at the end of world 2');
+    expect(await settles(page, () => data(page, "boss"), "beaten", 300000), "the junk thrown back at him takes all his health");
+    const [dumped, back, staged] = await Promise.all(["dumped", "thrownback", "staged"].map((name) => data(page, name).then(Number)));
+    expect(dumped > 0 && back > 0 && staged === 4, `he threw crates, the guinea pig threw the junk back and kept its 4 files (${dumped} thrown, ${back} back, ${staged} staged)`);
+    expect(await waitState(page, "done"), `the commit cards follow and world 2 ends (${await data(page, "bosstime")} s of game time for the fight)`);
     await page.context().close();
   }
 
