@@ -1312,6 +1312,9 @@ export function createMusicalRun(ctx, def) {
   let rewardAt = null;
   let frames = 0;
   let presses = 0;
+  // The next target written by the last step, and the last one the autoplay jumped for
+  let jumpAt = NaN;
+  let autoDone = -1;
   const frustum = new THREE.Frustum();
   const viewProjection = new THREE.Matrix4();
   const sphere3 = new THREE.Sphere();
@@ -2214,6 +2217,7 @@ export function createMusicalRun(ctx, def) {
     setData("y", player.y.toFixed(1));
     const next = targets.find((x) => !x.bonus && x.at > run.beat - 0.05 && !(x.owner && x.owner.dead) && !(x.owner && x.owner.done));
     setData("jumpat", next ? next.at : "none");
+    jumpAt = next ? next.at : NaN;
     setData("stopped", run.mode === "stop" ? "yes" : "no");
     setData("stopkind", run.mode === "stop" && run.stop ? run.stop.type : "");
     frames += 1;
@@ -2296,6 +2300,20 @@ export function createMusicalRun(ctx, def) {
     /** The run beat of the last checkpoint passed. */
     get checkpoint() {
       return run.cp.at;
+    },
+    /**
+     * For the checks (window.__guineaRun.wN.autoplay): a jump on the exact beat
+     * of the next target, the one written at the end of the last step (one
+     * behind it is not written yet), whatever the frame rate. Call it before update().
+     */
+    autoJump() {
+      if (run.mode !== "run") {
+        return;
+      }
+      if (Number.isFinite(jumpAt) && jumpAt !== autoDone && jumpAt > run.beat - 0.05 && jumpAt - run.beat < 0.1) {
+        autoDone = jumpAt;
+        api.action("jump");
+      }
     },
     /** Back to the last checkpoint with no mistake made (a boss still standing plays its round again). */
     again() {
@@ -2496,4 +2514,160 @@ export function createMusicalRun(ctx, def) {
       }
     }
   });
+}
+
+/* ---------- A boss of a musical run (worlds 6 and 8) ---------- */
+
+/**
+ * The rounds of a boss that throws the blocks of the level (def.thrower), from
+ * the bar after o.bar: a round of o.roundBars bars per entry of o.rounds, a
+ * string per bar, a character per beat: x a block thrown (o.look(n), the n-th
+ * thrown), c a power-up on the ground (o.power(n), the n-th power-up). A round
+ * after the first starts at a checkpoint, so nothing lands on a guinea pig
+ * that just came back. Returns the power-ups placed, { beat, x, got }, for
+ * createBossBlaster, and the run beat where the rounds end.
+ */
+export function bossRounds(L, o) {
+  const powers = [];
+  let thrown = 0;
+  o.rounds.forEach((round, r) => {
+    const from = (o.bar + 1 + r * o.roundBars) * 4;
+    if (r > 0) {
+      L.checkpoint(from);
+    }
+    [...round.join("")].forEach((ch, i) => {
+      if (ch === "x") {
+        L.block(from + i, o.look(thrown), { thrown: true });
+        thrown += 1;
+      } else if (ch === "c") {
+        L.power(from + i, Object.assign({ n: powers.length }, o.power(powers.length)), true);
+        powers.push({ beat: from + i, x: (from + i) * UNITS_PER_BEAT, got: false });
+      }
+    });
+  });
+  return { powers, end: (o.bar + 1 + o.rounds.length * o.roundBars) * 4 };
+}
+
+/**
+ * What a boss power-up gives: the guinea pig fires on its own, on every
+ * 1/o.perBeat beat for o.beats beats, each shot flying o.flight beats over an
+ * arc to o.aim(out) and calling o.onHit(shot, at) there (shot.color is its
+ * colour). A gold ring turns round the next power-up not taken, near the camera.
+ * o: { id (of the power-ups), powers (from bossRounds), models and colors of
+ * the shots (one of each in turn), beats, perBeat, flight, aim, onHit, onFire }.
+ */
+export function createBossBlaster(ctx, run, o) {
+  const { THREE, pig, camera, engine } = ctx;
+  const owned = [];
+  const shotGeometry = new THREE.SphereGeometry(0.26, 12, 8);
+  owned.push(shotGeometry);
+  const shots = [];
+  for (let i = 0; i < o.models.length * 2; i++) {
+    const kind = i % o.models.length;
+    let mesh = ctx.models ? ctx.models.get(o.models[kind], { height: 0.62, shadows: false }) : null;
+    if (!mesh) {
+      mesh = new THREE.Mesh(shotGeometry, ctx.paint.plain(o.colors[kind], { roughness: 0.4 }));
+    }
+    mesh.visible = false;
+    ctx.root.add(mesh);
+    shots.push({ mesh, live: false, beat: 0, from: new THREE.Vector3(), kind, color: o.colors[kind] });
+  }
+  let nextShot = 0;
+  const blaster = { until: -1, next: 0 };
+  const target = new THREE.Vector3();
+  const haloMaterial = new THREE.MeshBasicMaterial({ color: 0xffb400, transparent: true, opacity: 0.95, toneMapped: false, depthWrite: false });
+  const haloGeometry = new THREE.TorusGeometry(0.85, 0.1, 8, 36);
+  owned.push(haloMaterial, haloGeometry);
+  const halo = new THREE.Mesh(haloGeometry, haloMaterial);
+  halo.visible = false;
+  ctx.root.add(halo);
+
+  function fire(beat) {
+    const shot = shots[nextShot % shots.length];
+    nextShot += 1;
+    const p = pig.object.position;
+    shot.live = true;
+    shot.beat = beat;
+    shot.from.set(p.x + 0.55, p.y + 0.65, 0.25);
+    shot.mesh.visible = true;
+    if (o.onFire) {
+      o.onFire(shot);
+    }
+  }
+
+  function flyShots() {
+    const beat = run.music.beat;
+    for (const shot of shots) {
+      if (!shot.live) {
+        continue;
+      }
+      const k = Math.max(0, (beat - shot.beat) / o.flight);
+      o.aim(target);
+      if (k >= 1) {
+        shot.live = false;
+        shot.mesh.visible = false;
+        o.onHit(shot, target);
+        continue;
+      }
+      const x = shot.from.x + (target.x - shot.from.x) * k;
+      const y = shot.from.y + (target.y - shot.from.y) * k + 2.2 * 4 * k * (1 - k);
+      const z = shot.from.z + (target.z - shot.from.z) * k;
+      shot.mesh.position.set(x, y - 0.31, z);
+      shot.mesh.rotation.set(k * 5, k * 8, k * 3);
+    }
+  }
+
+  return {
+    /** The n-th power-up is taken: with fire, the blaster starts on the next half beat. */
+    take(n, fire) {
+      o.powers[n].got = true;
+      if (fire) {
+        const beat = run.music.beat;
+        blaster.until = beat + o.beats;
+        blaster.next = Math.ceil(beat * o.perBeat) / o.perBeat;
+      }
+    },
+    stop() {
+      blaster.until = -1;
+    },
+    /** A hit or a new round sends the guinea pig to the checkpoint: the power-ups from there come back. */
+    setBack() {
+      blaster.until = -1;
+      run.rearm(o.id);
+      for (const power of o.powers) {
+        if (power.beat >= run.checkpoint) {
+          power.got = false;
+        }
+      }
+    },
+    /** One step: the blaster fires on the beat while the boss fights, the shots fly, the ring turns. Returns the next power-up. */
+    update(time, fighting) {
+      if (blaster.until >= 0 && (!fighting || run.mode === "rewind")) {
+        blaster.until = -1;
+      }
+      const beat = run.music.beat;
+      while (blaster.until >= 0 && beat >= blaster.next && blaster.next < blaster.until) {
+        fire(blaster.next);
+        blaster.next += 1 / o.perBeat;
+      }
+      if (blaster.until >= 0 && beat >= blaster.until) {
+        blaster.until = -1;
+      }
+      flyShots();
+      const next = fighting ? o.powers.find((c) => !c.got && c.beat > run.beat - 0.3) : null;
+      halo.visible = Boolean(next && next.x - camera.position.x < 14);
+      if (halo.visible) {
+        const pulse = engine.motion ? run.music.pulse : 0;
+        halo.position.set(next.x, 0.85, 0.05);
+        halo.rotation.set(0, Math.sin(time * 2) * 0.5, time * 1.5);
+        halo.scale.setScalar(1 + pulse * 0.18);
+      }
+      return next;
+    },
+    dispose() {
+      for (const thing of owned) {
+        thing.dispose();
+      }
+    }
+  };
 }

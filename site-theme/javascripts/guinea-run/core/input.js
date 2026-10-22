@@ -45,7 +45,7 @@ function isControl(element) {
  * Listens on the overlay and the window and calls onAction(name, element) for
  * every action. Returns a function that removes every listener.
  */
-export function createInput(overlay, canvas, onAction) {
+export function createInput(overlay, canvas, onAction, options = {}) {
   const cleanups = [];
 
   function listen(target, type, handler, options) {
@@ -81,6 +81,13 @@ export function createInput(overlay, canvas, onAction) {
   // Swipes and taps on the canvas
   let start = null;
   listen(canvas, "pointerdown", (event) => {
+    // A world with a single jump pad has no swipe to tell apart: its tap counts
+    // at the touch, as fast as the pad
+    if (options.tapOnDown && options.tapOnDown()) {
+      start = null;
+      onAction("tap", null);
+      return;
+    }
     start = { x: event.clientX, y: event.clientY, time: performance.now(), id: event.pointerId };
   });
   listen(canvas, "pointerup", (event) => {

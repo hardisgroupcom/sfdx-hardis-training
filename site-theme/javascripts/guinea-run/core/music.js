@@ -37,7 +37,9 @@ const STEPS_PER_BAR = 16;
 const VOLUME = 0.34;
 // Notes are scheduled this far behind the game, so they are always in the future
 const LATENCY_S = 0.04;
-const LOOKAHEAD_S = 0.12;
+// How far ahead the notes are scheduled. A phone stalls longer (a garbage
+// collection, a texture upload): a notes queue that runs dry is a silence
+const LOOKAHEAD_S = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(pointer: coarse)").matches ? 0.3 : 0.12;
 
 // The sections every song can use; a song can replace or add its own
 export const SECTIONS = {

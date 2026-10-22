@@ -71,8 +71,10 @@ const GATE_PANEL_AT = 60;
 // the moment its question and doors show in the HUD to the doors. The run
 // eases down to a calm speed for that stretch (DECIDE_SLOW of the pace there,
 // within DECIDE_SPEED m/s, so the doors show inside the shortest horizon),
-// nothing else is on the track, then the pace comes back smoothly
+// nothing else is on the track, then the pace comes back smoothly. A long
+// question (or language) gets up to DECIDE_LONGEST seconds to be read
 const DECIDE_TIME = 10;
+const DECIDE_LONGEST = 14;
 const DECIDE_SLOW = 0.65;
 const DECIDE_SPEED = [4.5, 6.5];
 const DECIDE_EASE = 2.5;
@@ -1425,7 +1427,8 @@ export function createRunner(ctx, config) {
       const gate = add({ type: "gate", kind: "gate", spec, x: 0, at, mesh: gateMesh(spec), depth: 0.4 });
       gate.panelAt = GATE_PANEL_AT;
       if (spec.choice !== false) {
-        gate.panelAt = DECIDE_TIME * decideSpeed(at);
+        gate.decide = decideTime(spec);
+        gate.panelAt = gate.decide * decideSpeed(at);
         clearForChoice(at - gate.panelAt - DECIDE_LEAD, at + DECIDE_AFTER);
       }
       return gate;
@@ -1710,6 +1713,14 @@ export function createRunner(ctx, config) {
     objects = objects.filter((object) => !object.removed);
   }
 
+  /** The seconds a choice lasts: its question and its doors read, most of them at least. */
+  function decideTime(spec) {
+    const question = spec.question || (typeof spec.banner === "string" ? spec.banner : "");
+    const text = [question, ...(spec.doors || []).map((door) => door.text || door.short || "")].join(" ");
+    // Most of a line's reading time (1.6 s + 60 ms a character), as the doors are read while steering
+    return Math.min(DECIDE_LONGEST, Math.max(DECIDE_TIME, 0.8 * (1.6 + 0.06 * text.length)));
+  }
+
   /** The calm speed of the choice at a gate: its pace slowed, kept readable. */
   function decideSpeed(at) {
     return Math.min(DECIDE_SPEED[1], Math.max(DECIDE_SPEED[0], startSpeed * basePace(at) * DECIDE_SLOW));
@@ -1761,7 +1772,7 @@ export function createRunner(ctx, config) {
         runSpeed = lastSpeed || normal;
       }
       const left = Math.max(0, choice.gate.at - distance);
-      const want = Math.max(1.5, left / Math.max(0.35, DECIDE_TIME - choice.elapsed));
+      const want = Math.max(1.5, left / Math.max(0.35, (choice.gate.decide || DECIDE_TIME) - choice.elapsed));
       runSpeed += (want - runSpeed) * Math.min(1, dt * DECIDE_EASE);
       choice.elapsed += dt;
       return runSpeed;

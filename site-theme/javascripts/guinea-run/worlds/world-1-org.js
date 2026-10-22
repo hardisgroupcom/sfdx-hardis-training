@@ -28,13 +28,26 @@
  * vegetables from further away, and a fall only shrinks it back. It never
  * skips a lesson: the wrong answers still give way under it, and the parts are
  * still taken one by one.
+ *
+ * After Acme Corp, a castle, the way the SNES Mario castles end: a bridge
+ * over the lava, an admin on it who wants one monster Flow for everything,
+ * and an axe at the far end. He throws Flows, low (jump them) or high (stay
+ * down), and jumps now and then: the guinea pig runs under him while he is
+ * up, or jumps right over him with good timing, and touches the axe.
+ * The bridge goes down segment by segment and he falls into the lava,
+ * screaming. Out of hearts there, the next try starts at the bridge.
  */
-import { SLDS, rounded, fitText, glyph, font, pictureBox } from "../core/painter.js";
+import { SLDS, rounded, fitText, glyph, font, pictureBox, wrapLines } from "../core/painter.js";
+import { pickAdmins, adminFaceUrl } from "../core/faces.js";
+import { readingMs } from "../hud.js";
 
 export const PADS = ["left", "right", "jump"];
 // The course's own items for the parts of the story; Kenney flags and far-away
 // islands for the scenery; the vegetables for the bonus points
 export const MODELS = ["salesforce", "platform", "nature", "vegetables"];
+// The world's theme (core/themes.js); the castle switches it to its darker
+// variation. The shell reads this binding every frame, so a change is heard at once
+export let MUSIC = 1;
 
 // The bonus vegetables, one kind per model of the vegetables pack (as in world 0)
 const VEGETABLES = ["fennel", "carrot", "bellPepper", "cucumber", "romaine", "parsley"];
@@ -151,7 +164,26 @@ export const TEXTS = {
     veg_bellPepper: "Bell pepper",
     veg_cucumber: "Cucumber",
     veg_romaine: "Romaine",
-    veg_parsley: "Parsley"
+    veg_parsley: "Parsley",
+    c_castle: "Keep running right: someone waits on the bridge",
+    goalBoss: "Touch the axe behind the admin",
+    adminName: "The admin",
+    adminSay: "Stop! I'm building a monster Flow, and everything goes in it: US-014, the emails, the whole org!",
+    youSay: "Small Flows, sure. The rest in simple Apex and LWC: with agentic engineering, a coding agent writes and tests them with me.",
+    c_axe: "Get past him and touch the axe!",
+    c_flow: "Jump the low Flows, stay down under the high ones",
+    c_under: "He jumps: run under him!",
+    o_flowHit: "Hit by the monster Flow",
+    o_flowHit_tip: "One Flow that does everything is hard to read, test and deploy. Jump the low Flows, stay down under the high ones.",
+    o_admin: "Bumped into the admin",
+    o_admin_tip: "Run under him when he jumps, or take off a little before him and jump right over.",
+    o_lava: "Into the lava",
+    o_lava_tip: "Stay on the bridge: the axe is at the far end, behind the admin.",
+    retryHint: "Try again starts at the bridge.",
+    retryBoss: "Straight back to the bridge: the field is built",
+    scream: "Flows, flows everywheeeeere!",
+    bossDown: "The monster Flow went down with the bridge!",
+    info_boss: "Flows are great for simple automation. When one grows into a monster, put the logic in simple Apex and LWC: with agentic engineering, a coding agent writes them with you, tests included, and you review."
   },
   fr: {
     intro: "US-014, afficher le niveau client sur les comptes. Démarrez-la sur sa propre branch, puis construisez-la dans Setup : un champ, une présentation de page, deux permission sets.",
@@ -231,7 +263,26 @@ export const TEXTS = {
     veg_bellPepper: "Poivron",
     veg_cucumber: "Concombre",
     veg_romaine: "Romaine",
-    veg_parsley: "Persil"
+    veg_parsley: "Persil",
+    c_castle: "Continuez à droite : quelqu'un vous attend sur le pont",
+    goalBoss: "Touchez la hache derrière l'admin",
+    adminName: "L'admin",
+    adminSay: "Halte ! Je construis un Flow monstre, et tout va dedans : US-014, les e-mails, toute l'org !",
+    youSay: "Des petits Flows, oui. Le reste en Apex et LWC simples : avec l'agentic engineering, un agent de code les écrit et les teste avec moi.",
+    c_axe: "Passez-le et touchez la hache !",
+    c_flow: "Sautez les Flows bas, restez au sol sous les hauts",
+    c_under: "Il saute : passez dessous !",
+    o_flowHit: "Touché par le Flow monstre",
+    o_flowHit_tip: "Un Flow qui fait tout est difficile à lire, à tester et à déployer. Sautez les Flows bas, restez au sol sous les hauts.",
+    o_admin: "Vous avez percuté l'admin",
+    o_admin_tip: "Passez sous lui quand il saute, ou sautez par-dessus en partant un peu avant lui.",
+    o_lava: "Dans la lave",
+    o_lava_tip: "Restez sur le pont : la hache est tout au bout, derrière l'admin.",
+    retryHint: "Réessayer reprend au pont.",
+    retryBoss: "Retour direct au pont : le champ est construit",
+    scream: "Des Flows, des Flows partouuuuut !",
+    bossDown: "Le Flow monstre est tombé avec le pont !",
+    info_boss: "Les Flows sont parfaits pour l'automatisation simple. Quand l'un d'eux devient un monstre, mettez la logique en Apex et LWC simples : avec l'agentic engineering, un agent de code les écrit avec vous, tests compris, et vous relisez."
   }
 };
 
@@ -300,6 +351,69 @@ const MERCY_FACTOR = 0.85;
 // How fast the pace may change, per second: never a jump
 const PACE_RATE = 0.08;
 
+/* ---------- The castle at the end: the admin on the bridge ---------- */
+
+// After Acme Corp: a stone ledge, the bridge over the lava, and the axe on its
+// ledge at the far end, against the castle wall
+const CASTLE_X0 = 167.5;
+const CASTLE_CAM_X = 163;
+const TALK_X = 165.5;
+const BOSS_CHECK_X = 169;
+const BRIDGE_X0 = 171;
+const BRIDGE_SEGMENTS = 16;
+const SEGMENT_W = 1.1;
+const BRIDGE_X1 = BRIDGE_X0 + BRIDGE_SEGMENTS * SEGMENT_W;
+const BRIDGE_TOP = 2;
+const BRIDGE_H = 0.45;
+const AXE_X = 190.3;
+const WALL_X0 = 192.8;
+const LAVA_Y = -1.4;
+// The admin: a slow patrol round his spot, a Flow thrown every few seconds,
+// low (jump it) or high (stay down), a jump now and then. The guinea pig close
+// in front of him on the bridge makes him jump: that is the way under him
+// His face: a different one of the twenty-one admins at each play, drawn in createWorld
+let ADMIN_FACE_URL = adminFaceUrl(1);
+const PIG_FACE_URL = new URL("../../../images/guinea-pig-small.webp", import.meta.url).href;
+const ADMIN_HOME = 184.2;
+const ADMIN_PATROL = 1.2;
+const ADMIN_WALK = 0.8;
+const ADMIN_HALF_W = 0.6;
+// What hits stops at his chin, so a well-timed jump clears him; his face goes higher
+const ADMIN_H = 1.95;
+const ADMIN_TOP = 2.55;
+const ADMIN_NEAR = 4.6;
+const ADMIN_CROUCH_S = 0.4;
+const ADMIN_JUMP_V = 9;
+const ADMIN_GRAVITY = 12;
+const ADMIN_FALL_GRAVITY = 6;
+const THROW_GAP_S = 2.3;
+const WINDUP_S = 0.55;
+const FLOW_SPEED = 4.6;
+const FLOW_R = 0.33;
+const FLOW_LOW = BRIDGE_TOP + 0.42;
+const FLOW_HIGH = BRIDGE_TOP + 1.3;
+const FLOW_POOL = 4;
+const FLOW_TRAIL = 3;
+// The talk before the fight: the admin, then the guinea pig, a few seconds each
+// The guinea pig answers while the admin's line is still up: both stay until read
+// The shortest talk: the guinea pig answers after 4 s, the fight starts at 9 s.
+// Longer lines (and languages) get the time to read them; walking onto the
+// bridge starts the fight at once.
+const TALK_YOU_S = 4;
+const TALK_END_S = 9;
+// The bridge goes, a segment at a time, from the axe end
+const COLLAPSE_WAIT_S = 0.35;
+const COLLAPSE_STEP_S = 0.075;
+const HANG_S = 0.6;
+const FINISH_S = 2;
+const BOSS_POINTS = 400;
+// Each heart lost in the castle slows him a little, three times at most
+const BOSS_EASE = 0.12;
+// Out of hearts in the castle: the next try starts there, within this long. Kept
+// by the module, which outlives a world (the shell builds a fresh one for each try)
+const BOSS_RETRY_MS = 15 * 60000;
+let bossRetryAt = 0;
+
 /* ---------- The level, left to right ---------- */
 
 // Each platform: x0, x1, top, look, text, extra. Every one is a solid box.
@@ -337,7 +451,13 @@ function levelPlatforms(t) {
     { x0: 139.4, x1: 148, top: 4.4, look: "meta", text: "Sales_Manager", sub: "PermissionSet", line: "m_manager", ghost: true },
     // The record
     { x0: 149.5, x1: 153, top: 2.8, look: "card", text: "App Launcher" },
-    { x0: 154.5, x1: 167.5, top: 2, h: 2.6, look: "record", text: "Acme Corp" }
+    { x0: 154.5, x1: CASTLE_X0, top: 2, h: 2.6, look: "record", text: "Acme Corp" },
+    // The castle: a stone ledge, the bridge (built apart, it goes down one
+    // segment at a time), the axe's ledge and the wall. Nothing hangs over the
+    // bridge: a jump over a Flow never hits a ceiling
+    { x0: CASTLE_X0, x1: BRIDGE_X0, top: BRIDGE_TOP, h: 6, look: "stone" },
+    { x0: BRIDGE_X1, x1: WALL_X0, top: BRIDGE_TOP, h: 6, look: "stone" },
+    { x0: WALL_X0, x1: WALL_X0 + 3, top: 10, h: 14, look: "stone" }
   ];
 }
 
@@ -368,7 +488,8 @@ const HAZARDS = [
 // A hit counts only when the boxes really overlap: forgiving edges
 const HAZARD_MARGIN = 0.15;
 
-// x, y (top of the floor) and the step of the Path it belongs to
+// x, y (top of the floor), the step of the Path it belongs to, and the log
+// line it writes when passed. The last one is the castle's
 const CHECKPOINTS = [
   [0, 0, 0],
   [19.5, 2.2, 0],
@@ -381,8 +502,10 @@ const CHECKPOINTS = [
   [111, 2.6, 2],
   [130.5, 4.4, 2],
   [140, 4.4, 2],
-  [150, 2.8, 3]
+  [150, 2.8, 3, "App Launcher > Sales > Accounts"],
+  [BOSS_CHECK_X, BRIDGE_TOP, 3]
 ];
+const BOSS_CP = CHECKPOINTS.length - 1;
 
 // The bonus vegetables: x, y of their middle. Their kind follows VEGETABLES in turn
 const VEGETABLE_SPOTS = [
@@ -403,11 +526,12 @@ const SCREENS = [
   [92.8, 110, "setup", "Account", "Account Layout"],
   [110, 139, "ghost", "Setup > Permission Sets > Sales Rep", "Sales_Rep"],
   [139, 149, "ghost", "Setup > Permission Sets", "Sales_Manager"],
-  [149, 169, "record", "Sales · Accounts", "Acme Corp"]
+  [149, CASTLE_X0, "record", "Sales · Accounts", "Acme Corp"]
 ];
 
 export function createWorld(ctx) {
   const { THREE, root, pig, paint, t, hud, engine } = ctx;
+  ADMIN_FACE_URL = adminFaceUrl(pickAdmins(1, ctx.random)[0]);
   const camera = ctx.camera;
   const disposables = [];
   const keep = (thing) => {
@@ -426,13 +550,16 @@ export function createWorld(ctx) {
     vscode: paint.plain(0x3c3c3c, { roughness: 0.8 }),
     light: paint.plain(0xf3f3f3, { roughness: 0.8 }),
     brand: paint.plain(0x0b5cab, { roughness: 0.6 }),
-    green: paint.plain(0x2e844a, { roughness: 0.6 })
+    green: paint.plain(0x2e844a, { roughness: 0.6 }),
+    // The castle's stone
+    stone: paint.plain(0x6b6573, { roughness: 0.95 })
   };
   const sides = {
     vscode: paint.plain(0x252526, { roughness: 0.8 }),
     light: paint.plain(0xc9c9c9, { roughness: 0.8 }),
     brand: paint.plain(0x014486, { roughness: 0.6 }),
-    green: paint.plain(0x22683a, { roughness: 0.6 })
+    green: paint.plain(0x22683a, { roughness: 0.6 }),
+    stone: paint.plain(0x3f3a46, { roughness: 0.95 })
   };
   // Light platforms: white tops, a cheerful colour on their sides, in turn
   const HAPPY = [0x1b96ff, 0x06a59a, 0x9050e9, 0xfe9339, 0xe3478b, 0x2e844a];
@@ -445,7 +572,8 @@ export function createWorld(ctx) {
   function buildPlatform(def, i) {
     const h = def.h || 0.8;
     const w = def.x1 - def.x0;
-    const family = def.look === "vscode" ? "vscode" : def.look === "button" ? "brand" : def.look === "branch" ? "green" : "light";
+    const FAMILIES = { vscode: "vscode", button: "brand", branch: "green", stone: "stone" };
+    const family = FAMILIES[def.look] || "light";
     let front;
     let record = null;
     if (def.look === "record") {
@@ -502,7 +630,7 @@ export function createWorld(ctx) {
     return holder;
   }
 
-  // The finish: the account Acme Corp, and the Cloudity mark over the end of the world
+  // The account Acme Corp, and the Cloudity mark at the very end, on top of the castle wall
   {
     const record = ctx.models.get("record", { height: 1.3 });
     if (record) {
@@ -511,7 +639,7 @@ export function createWorld(ctx) {
     }
     const logo = ctx.models.get("cloudity-logo", { height: 1.8 });
     if (logo) {
-      logo.position.set(END_X + 3, recordPlatform.top, -0.6);
+      logo.position.set(WALL_X0 + 1.5, 10, 0);
       root.add(logo);
     }
   }
@@ -892,9 +1020,262 @@ export function createWorld(ctx) {
     note = { x: 89, y: 7.4, group, done: false };
   }
 
+  /* ---------- The castle: the bridge, the lava, the admin and his monster Flow ---------- */
+
+  const cm = new THREE.Matrix4();
+  const cq = new THREE.Quaternion();
+  const ce = new THREE.Euler();
+  const cs = new THREE.Vector3();
+  const cp = new THREE.Vector3();
+  let disposed = false;
+
+  // The bridge is solid as one platform; it is drawn as segments, so it goes
+  // down one segment at a time from the axe end, the SNES way
+  const bridge = { x0: BRIDGE_X0, x1: BRIDGE_X1, top: BRIDGE_TOP, h: BRIDGE_H, w: BRIDGE_X1 - BRIDGE_X0, look: "bridge", bx0: BRIDGE_X0, btop: BRIDGE_TOP, dx: 0, dy: 0, gone: false, timer: 0, fallV: 0 };
+  platforms.push(bridge);
+  const segmentMesh = keep(
+    new THREE.InstancedMesh(
+      paint.geometry("w1-segment", () => new THREE.BoxGeometry(SEGMENT_W - 0.06, BRIDGE_H, 1.7)),
+      paint.material("w1-plank", 128, 64, drawPlank, { roughness: 0.85, emissive: 0x1c0e04 }),
+      BRIDGE_SEGMENTS
+    )
+  );
+  segmentMesh.castShadow = shadows;
+  segmentMesh.receiveShadow = true;
+  segmentMesh.frustumCulled = false;
+  root.add(segmentMesh);
+  const segments = [];
+  for (let i = 0; i < BRIDGE_SEGMENTS; i++) {
+    segments.push({ x: BRIDGE_X0 + (i + 0.5) * SEGMENT_W, y: BRIDGE_TOP - BRIDGE_H / 2, vy: 0, spin: 0, turn: 0, falling: false });
+  }
+  const collapse = { wait: 0, left: BRIDGE_SEGMENTS, moving: false };
+  placeSegments(0);
+
+  // The chain from the axe's post to the end of the bridge: the axe cuts it
+  const chain = (() => {
+    const from = new THREE.Vector3(AXE_X - 0.1, BRIDGE_TOP + 1.3, 0.72);
+    const to = new THREE.Vector3(BRIDGE_X1 - 1.6, BRIDGE_TOP + 0.02, 0.72);
+    const length = from.distanceTo(to);
+    const mesh = new THREE.Mesh(paint.geometry("w1-chain", () => new THREE.CylinderGeometry(0.045, 0.045, 1, 6)), paint.plain(0x2b2b33, { roughness: 0.4, metalness: 0.6 }));
+    mesh.scale.set(1, length, 1);
+    mesh.position.copy(from).add(to).multiplyScalar(0.5);
+    mesh.rotation.z = Math.atan2(to.y - from.y, to.x - from.x) - Math.PI / 2;
+    root.add(mesh);
+    return mesh;
+  })();
+
+  // The axe on its post, gold and silver, turning a little: the end of the world
+  const axe = (() => {
+    const group = new THREE.Group();
+    group.position.set(AXE_X, BRIDGE_TOP, 0.15);
+    const wood = paint.plain(0x6b4423, { roughness: 0.7 });
+    const post = new THREE.Mesh(paint.geometry("w1-axe-post", () => new THREE.CylinderGeometry(0.08, 0.1, 1.0, 10)), wood);
+    post.position.y = 0.5;
+    const tool = new THREE.Group();
+    tool.position.y = 1.05;
+    const handle = new THREE.Mesh(unit, wood);
+    handle.scale.set(0.11, 0.95, 0.11);
+    handle.position.y = 0.42;
+    const blade = new THREE.Mesh(
+      paint.geometry("w1-axe-blade", () => {
+        const shape = new THREE.Shape();
+        shape.moveTo(0, -0.26);
+        shape.quadraticCurveTo(0.46, -0.42, 0.52, 0);
+        shape.quadraticCurveTo(0.46, 0.42, 0, 0.26);
+        shape.lineTo(0, -0.26);
+        const geometry = new THREE.ExtrudeGeometry(shape, { depth: 0.09, bevelEnabled: false });
+        geometry.translate(0, 0, -0.045);
+        return geometry;
+      }),
+      paint.plain(0xdfe5ec, { roughness: 0.25, metalness: 0.65, emissive: 0x3a3f48 })
+    );
+    blade.position.set(0.05, 0.72, 0);
+    const back = new THREE.Mesh(unit, paint.plain(0xffc72c, { roughness: 0.35, metalness: 0.5, emissive: 0x4a3200 }));
+    back.scale.set(0.18, 0.3, 0.12);
+    back.position.set(-0.08, 0.72, 0);
+    tool.add(handle, blade, back);
+    group.add(post, tool);
+    group.scale.setScalar(1.35);
+    group.traverse((child) => {
+      if (child.isMesh) {
+        child.castShadow = shadows;
+      }
+    });
+    root.add(group);
+    return { group, tool, gone: 0 };
+  })();
+
+  // The lava: a glowing sea under the bridge, slowly moving, a few bubbles
+  const lavaTexture = paint.texture("w1-lava", 256, 256, drawLava);
+  lavaTexture.wrapS = THREE.RepeatWrapping;
+  lavaTexture.wrapT = THREE.RepeatWrapping;
+  lavaTexture.repeat.set(9, 3.5);
+  lavaTexture.needsUpdate = true;
+  const lava = new THREE.Mesh(plane, keep(new THREE.MeshBasicMaterial({ map: lavaTexture, toneMapped: false, fog: false })));
+  lava.rotation.x = -Math.PI / 2;
+  lava.scale.set(WALL_X0 - CASTLE_X0 + 4, 10, 1);
+  lava.position.set((CASTLE_X0 + WALL_X0) / 2, LAVA_Y, -1);
+  root.add(lava);
+  const glowMaterial = keep(
+    new THREE.MeshBasicMaterial({ map: paint.texture("w1-lava-glow", 8, 128, drawGlow), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false, fog: false })
+  );
+  const glow = new THREE.Mesh(plane, glowMaterial);
+  glow.scale.set(BRIDGE_X1 - BRIDGE_X0 + 2, 4.2, 1);
+  glow.position.set((BRIDGE_X0 + BRIDGE_X1) / 2, LAVA_Y + 2.1, -1.6);
+  root.add(glow);
+  const bubbleCount = 7;
+  const bubbles = keep(new THREE.InstancedMesh(paint.geometry("w1-bubble", () => new THREE.SphereGeometry(0.2, 10, 6)), paint.plain(0xffb020, { emissive: 0xff6a00, emissiveIntensity: 1.6 }), bubbleCount));
+  bubbles.frustumCulled = false;
+  // Placed once the guinea pig comes near: none at the start of the world
+  bubbles.count = 0;
+  root.add(bubbles);
+
+  // The castle wall behind, its battlements against a darkening sky, two torches
+  const brickTexture = paint.texture("w1-bricks", 256, 256, (c, w, h) => drawBricks(c, w, h, 64));
+  brickTexture.wrapS = THREE.RepeatWrapping;
+  brickTexture.wrapT = THREE.RepeatWrapping;
+  brickTexture.repeat.set(11, 4);
+  brickTexture.needsUpdate = true;
+  const wall = new THREE.Mesh(plane, keep(new THREE.MeshStandardMaterial({ map: brickTexture, color: 0x9a92a6, roughness: 1, emissive: 0x150d18 })));
+  wall.scale.set(44, 16, 1);
+  wall.position.set(185, 4, -4.8);
+  root.add(wall);
+  const merlonCount = 20;
+  const merlons = keep(new THREE.InstancedMesh(unit, paint.plain(0x4a4452, { roughness: 1 }), merlonCount));
+  for (let i = 0; i < merlonCount; i++) {
+    cp.set(163.6 + i * 2.2, 12.55, -4.8);
+    cs.set(1.2, 1.1, 0.7);
+    cm.compose(cp, cq.identity(), cs);
+    merlons.setMatrixAt(i, cm);
+  }
+  root.add(merlons);
+  const darkSky = new THREE.Mesh(plane, keep(new THREE.MeshBasicMaterial({ map: paint.texture("w1-dark-sky", 256, 64, drawDarkSky), transparent: true, depthWrite: false, fog: false, toneMapped: false })));
+  darkSky.scale.set(150, 130, 1);
+  darkSky.position.set(212, 20, -45);
+  darkSky.renderOrder = -1;
+  root.add(darkSky);
+  const flameMaterial = keep(new THREE.SpriteMaterial({ map: paint.texture("w1-flame", 64, 128, drawFlame), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false }));
+  const torches = [166.6, 191.4].map((x) => {
+    const bracket = new THREE.Mesh(unit, paint.plain(0x2b2b33, { metalness: 0.5, roughness: 0.5 }));
+    bracket.scale.set(0.18, 0.5, 0.18);
+    bracket.position.set(x, 4.6, -4.6);
+    const flame = new THREE.Sprite(flameMaterial);
+    flame.position.set(x, 5.2, -4.5);
+    flame.scale.set(0.55, 0.9, 1);
+    root.add(bracket, flame);
+    return flame;
+  });
+  // His monster Flow, open in Flow Builder on the wall
+  const monster = new THREE.Mesh(plane, paint.material("w1-monster-flow", 1024, 560, drawMonsterFlow, { emissive: 0x2a2a2a, roughness: 0.9 }));
+  monster.scale.set(12.4, 6.8, 1);
+  monster.position.set(180.6, 7.6, -4.5);
+  root.add(monster);
+
+  // The admin: a big body, his cartoon face, a Flow on his hoodie
+  const admin = buildAdmin();
+  const adminSign = paint.sign("w1-admin", "Admin", { color: SLDS.error, glyph: "flow", height: 0.5 });
+  admin.group.add(adminSign);
+  adminSign.position.set(0, ADMIN_TOP + 0.4, 0.3);
+
+  // His Flows: the Flow icon in a red ring, with flames, and a trail
+  const flowMaterial = keep(new THREE.MeshBasicMaterial({ map: paint.texture("w1-flow-ball", 128, 128, drawFlowBall), alphaTest: 0.35, toneMapped: false, fog: false }));
+  const flowGeometry = paint.geometry("w1-flow-ball", () => new THREE.CircleGeometry(FLOW_R * 1.45, 28));
+  const flowMesh = keep(new THREE.InstancedMesh(flowGeometry, flowMaterial, FLOW_POOL * (1 + FLOW_TRAIL)));
+  flowMesh.frustumCulled = false;
+  flowMesh.count = 0;
+  root.add(flowMesh);
+  const flows = [];
+  for (let i = 0; i < FLOW_POOL; i++) {
+    flows.push({ live: false, x: 0, y: 0, vx: 0, age: 0, high: false });
+  }
+  // The one in his hand, growing while he winds up: where it will fly, low or high
+  const heldFlow = new THREE.Mesh(flowGeometry, flowMaterial);
+  heldFlow.visible = false;
+  root.add(heldFlow);
+
+  // What he screams as he falls: a comic bubble that follows him down
+  const screamMaterial = keep(new THREE.SpriteMaterial({ map: paint.texture("w1-scream", 512, 232, (c, w, h) => drawScream(c, w, h, t("scream"))), transparent: true, depthWrite: false, toneMapped: false }));
+  const screamBubble = new THREE.Sprite(screamMaterial);
+  screamBubble.scale.set(4.6, 2.08, 1);
+  screamBubble.renderOrder = 3;
+  screamBubble.visible = false;
+  root.add(screamBubble);
+
+  // The prize, after the fall: simple Apex and LWC rise above the axe's ledge
+  const prizes = ["apex", "lwc"].map((name, i) => {
+    const item = itemOr(name, 0.75, () => pictureBox(THREE, tileGeometry, paint.tile("w1-prize-" + name, i ? "#FFC72C" : "#9050E9", i ? "bolt" : "apex"), paint.plain(i ? 0xd99a00 : 0x6b2fc0)));
+    item.visible = false;
+    root.add(item);
+    return { item, x: BRIDGE_X1 + 0.8 + i * 1.3, t: -1 };
+  });
+
+  // The two lines before the fight, as chat bubbles: who speaks, a face, the words
+  const talk = document.createElement("div");
+  talk.className = "gr-w1-talk";
+  hud.layer.appendChild(talk);
+  // Each line stays its own reading time: { node, left } in the order they were said
+  const talkLines = [];
+
+  const boss = {
+    phase: "wait",
+    state: "stand",
+    t: 0,
+    youAt: TALK_YOU_S,
+    endAt: TALK_END_S,
+    x: ADMIN_HOME,
+    y: BRIDGE_TOP,
+    vy: 0,
+    facing: -1,
+    dir: -1,
+    lean: 0,
+    nextThrow: 1,
+    nextJump: 5,
+    jumpIn: -1,
+    cooldown: 0,
+    calm: 0,
+    high: false,
+    lastHigh: false,
+    thrown: 0,
+    jumps: 0,
+    losses: 0,
+    saidYou: false,
+    splashed: false,
+    downAt: 0,
+    retry: false
+  };
+  // When Acme Corp showed its Customer Tier (the last lesson), and the world clock
+  let recordAt = 0;
+  let clock = 0;
+  let autoplay = false;
+  let overHim = false;
+  let overJump = false;
+  const castle = { k: 0 };
+
+  // The check plays the castle by itself, and loses a heart the way a hit there
+  // does (window.__guineaRun only exists for checks)
+  const hooks = {
+    // true: under him while he jumps; "over": right over him while he stands
+    autoplay(on) {
+      autoplay = on !== false;
+      overHim = on === "over";
+    },
+    lose() {
+      if (ctx.playing) {
+        loseOne("o_flowHit", "o_flowHit_tip");
+      }
+    }
+  };
+  if (window.__guineaRun) {
+    window.__guineaRun.w1 = hooks;
+  }
+
   /* ---------- Starting further down (guinea-at, for checks) ---------- */
 
-  const startAt = ctx.params.startAt || 0;
+  // Out of hearts in the castle a moment ago: this try starts at the bridge
+  const retryBoss = bossRetryAt > 0 && Date.now() - bossRetryAt < BOSS_RETRY_MS && (ctx.params.startAt || 0) < BOSS_CHECK_X;
+  bossRetryAt = 0;
+  const startAt = retryBoss ? BOSS_CHECK_X : ctx.params.startAt || 0;
+  MUSIC = startAt >= BOSS_CHECK_X ? "1-castle" : 1;
   if (startAt > 0) {
     for (let i = CHECKPOINTS.length - 1; i >= 0; i--) {
       if (CHECKPOINTS[i][0] <= startAt) {
@@ -930,6 +1311,12 @@ export function createWorld(ctx) {
     }
     player.x = cx;
     player.y = checkpoints[checkpoint].y;
+    if (cx > END_X) {
+      // Acme Corp already shows its Customer Tier: the castle is next
+      recordAt = -1;
+      boss.retry = retryBoss;
+      castle.k = 1;
+    }
   }
   for (let i = 0; i <= checkpoint; i++) {
     checkpoints[i].flag.material = flagGreen;
@@ -1028,7 +1415,7 @@ export function createWorld(ctx) {
     updateNext();
     const part = parts[nextPart];
     const taken = parts.filter((p) => p.done).length;
-    const goal = part ? t("goalNext", { label: part.label }) : t("goalEnd");
+    const goal = ending ? "" : part ? t("goalNext", { label: part.label }) : recordAt ? t("goalBoss") : t("goalEnd");
     if (goal !== lastGoal) {
       lastGoal = goal;
       hud.goal(goal);
@@ -1102,7 +1489,9 @@ export function createWorld(ctx) {
     const progress = parts.filter((p) => p.done).length / totalParts;
     // The first stage stays at the gentle pace, then the level picks up
     const ramp = Math.max(0, (progress - PACE_CALM) / (1 - PACE_CALM));
-    const wanted = (1 + PACE_GAIN * ramp * (0.35 + 0.65 * ramp)) * (mercy > 0 ? MERCY_FACTOR : 1);
+    // The castle has its own steady pace: the fight is the same whatever came before
+    const level = checkpoint === BOSS_CP ? 1 : 1 + PACE_GAIN * ramp * (0.35 + 0.65 * ramp);
+    const wanted = level * (mercy > 0 ? MERCY_FACTOR : 1);
     mercy = Math.max(0, mercy - dt);
     pace += Math.sign(wanted - pace) * Math.min(Math.abs(wanted - pace), PACE_RATE * dt);
     ctx.setData("pace", pace.toFixed(2));
@@ -1132,13 +1521,13 @@ export function createWorld(ctx) {
     }
   }
 
-  function hurt(title, tip, from) {
+  function hurt(title, tip, from, coachKey) {
     if (player.inv > 0) {
       return;
     }
-    const left = ctx.loseAttempt(t(title), t(tip));
+    const left = loseOne(title, tip);
     mercy = MERCY_S;
-    coach("c_hazard", true);
+    coach(coachKey || "c_hazard", true);
     player.inv = INVULNERABLE_S;
     player.hit = 0.6;
     shake = engine.motion ? 0.35 : 0;
@@ -1158,6 +1547,12 @@ export function createWorld(ctx) {
       // Never twice the same mistake: that answer holds from now on
       trap.learned = true;
     }
+    // In the castle the drop is the lava
+    const lavaFall = player.x > CASTLE_X0 && player.x < WALL_X0;
+    if (lavaFall) {
+      ctx.fx.burst(player.x, LAVA_Y + 0.2, 0.2, { count: 30, colors: [0xff6a00, 0xffd24a, 0xba0517], speed: 3, up: 5 });
+      ctx.sound.play("lavaSplash");
+    }
     if (isGiant()) {
       shrinkNow();
       if (!trap) {
@@ -1169,12 +1564,26 @@ export function createWorld(ctx) {
         return;
       }
     }
-    ctx.loseAttempt(t(trap ? trap.title : "o_fall"), t(trap ? trap.tip : "o_fall_tip"));
+    loseOne(trap ? trap.title : lavaFall ? "o_lava" : "o_fall", trap ? trap.tip : lavaFall ? "o_lava_tip" : "o_fall_tip");
     mercy = MERCY_S;
     if (ctx.playing) {
       coach("c_fall", true);
       respawn();
     }
+  }
+
+  /** A heart lost; the last one in the castle says where the next try starts, and keeps it. */
+  function loseOne(titleKey, tipKey) {
+    const atBoss = checkpoint === BOSS_CP;
+    const last = atBoss && ctx.attempts <= 1;
+    if (atBoss) {
+      boss.losses += 1;
+    }
+    const left = ctx.loseAttempt(t(titleKey), t(tipKey) + (last ? " " + t("retryHint") : ""));
+    if (!ctx.playing && atBoss) {
+      bossRetryAt = Date.now();
+    }
+    return left;
   }
 
   function respawn() {
@@ -1197,6 +1606,9 @@ export function createWorld(ctx) {
     }
     camX = player.x + 2;
     camY = player.y + 1.4;
+    if (checkpoint === BOSS_CP && boss.phase === "fight") {
+      resetAdmin(1.4);
+    }
   }
 
   /* ---------- Physics ---------- */
@@ -1460,8 +1872,8 @@ export function createWorld(ctx) {
         if (checkpoints[i].star) {
           checkpoints[i].star.visible = true;
         }
-        if (i === checkpoints.length - 1) {
-          hud.tick("App Launcher > Sales > Accounts");
+        if (CHECKPOINTS[i][3]) {
+          hud.tick(CHECKPOINTS[i][3]);
         }
         ctx.fx.burst(checkpoints[i].x, checkpoints[i].y + 1.4, -0.9, { count: 10, colors: [0x2e844a, 0x91db8b, 0xffffff], speed: 2, up: 2.5, life: 0.7 });
         ctx.sound.play("click");
@@ -1471,14 +1883,20 @@ export function createWorld(ctx) {
       pathIndex = checkpoints[checkpoint].path;
       hud.setPath([t("path0"), t("path1"), t("path2"), t("path3")], pathIndex);
     }
-    // The end: the record page always ends the world; what was missed is told, not enforced
-    if (!ending && player.x >= END_X && player.grounded && player.ground === recordPlatform) {
-      ending = time;
+    // The last lesson: the record page shows the field, or nothing; what was
+    // missed is told, not enforced. The castle comes next whatever happened
+    if (!recordAt && player.x >= END_X && player.grounded && player.ground === recordPlatform) {
+      recordAt = clock;
       ctx.sound.play("gate");
       // The sales manager's choice, typed in: Gold, whatever was eaten on the way.
       // Still a ghost: no permission set grants the field to you, the record shows nothing
       recordPlatform.record.draw(ghost ? null : "Gold");
       hud.toast(ghost ? t("doneGhost") : t("done", { n: "Gold" }), ghost ? "bad" : "good");
+      renderBar();
+    }
+    // The axe, at the far end: the bridge goes, and the admin with it
+    if (!ending && (boss.phase === "talk" || boss.phase === "fight") && player.x > AXE_X - 0.95 && player.y < BRIDGE_TOP + 2.4) {
+      touchAxe();
     }
   }
 
@@ -1507,10 +1925,13 @@ export function createWorld(ctx) {
     if (others.length) {
       lines.push(t("info_other", { list: others.slice(0, 4).join(", ") + (others.length > 4 ? ", ..." : "") }));
     }
-    // The mushroom is fun, never a lesson: told, never counted
-    if (!giant.eaten) {
+    // The mushroom is fun, never a lesson: told, never counted (not on a try
+    // that started at the bridge, which never passed it)
+    if (!giant.eaten && startAt < BOSS_CHECK_X) {
       lines.push(t("info_mushroom"));
     }
+    // What the admin's fall says
+    lines.push(t("info_boss"));
     return { text: lines.join(" "), count: missed.length };
   }
 
@@ -1682,6 +2103,823 @@ export function createWorld(ctx) {
     }
   }
 
+  /* ---------- The castle, step by step ---------- */
+
+  function setPhase(phase) {
+    boss.phase = phase;
+    boss.t = 0;
+    ctx.setData("boss", phase);
+  }
+
+  /** One line of the talk before the fight, as a chat bubble with the speaker's face. */
+  function say(who, text, seconds) {
+    // The admin opens the talk; the guinea pig's answer comes under his line
+    if (who === "admin") {
+      clearTalk();
+    }
+    const bubble = document.createElement("div");
+    bubble.className = "gr-bubble gr-w1-say gr-w1-say--" + who;
+    const avatar = document.createElement("span");
+    avatar.className = "gr-avatar gr-w1-avatar";
+    avatar.style.backgroundImage = 'url("' + (who === "admin" ? ADMIN_FACE_URL : PIG_FACE_URL) + '")';
+    const content = document.createElement("div");
+    const name = document.createElement("strong");
+    name.textContent = who === "admin" ? t("adminName") : t("castYou");
+    const words = document.createElement("span");
+    words.textContent = text;
+    content.append(name, words);
+    bubble.append(avatar, content);
+    talk.appendChild(bubble);
+    talkLines.push({ node: bubble, left: Math.max(seconds, readingMs(text) / 1000) });
+  }
+
+  function clearTalk() {
+    talk.replaceChildren();
+    talkLines.length = 0;
+  }
+
+  function updateTalk(dt) {
+    for (let i = talkLines.length - 1; i >= 0; i--) {
+      const line = talkLines[i];
+      line.left -= dt;
+      if (line.left < 0.4) {
+        line.node.classList.add("is-leaving");
+      }
+      if (line.left <= 0) {
+        line.node.remove();
+        talkLines.splice(i, 1);
+      }
+    }
+  }
+
+  /** The guinea pig walks in: the darker music, and the admin says what he wants. */
+  function enterCastle() {
+    MUSIC = "1-castle";
+    if (boss.retry) {
+      // Straight back after the last heart: no talk, a calm second, and go
+      hud.toast(t("retryBoss"), "power");
+      startFight(1.6);
+      return;
+    }
+    setPhase("talk");
+    boss.youAt = Math.max(TALK_YOU_S, (0.8 * readingMs(t("adminSay"))) / 1000);
+    boss.endAt = Math.max(TALK_END_S, boss.youAt + (0.9 * readingMs(t("youSay"))) / 1000);
+    say("admin", t("adminSay"), boss.youAt + 0.2);
+    ctx.sound.play("bridgeStomp");
+    renderBar();
+  }
+
+  function startFight(firstThrow) {
+    setPhase("fight");
+    resetAdmin(firstThrow);
+    coach("c_axe", true);
+    renderBar();
+  }
+
+  /** Back at his spot, nothing in the air, a moment before the next Flow. */
+  function resetAdmin(calm) {
+    boss.x = ADMIN_HOME;
+    boss.y = BRIDGE_TOP;
+    boss.vy = 0;
+    boss.state = "stand";
+    boss.t = 0;
+    boss.calm = calm;
+    boss.nextThrow = calm + 0.2;
+    boss.nextJump = 4.5 + ctx.random() * 2;
+    boss.jumpIn = -1;
+    boss.cooldown = 0;
+    heldFlow.visible = false;
+    clearFlows(false);
+  }
+
+  function clearFlows(puff) {
+    for (const f of flows) {
+      if (f.live && puff) {
+        ctx.fx.burst(f.x, f.y, 0.2, { count: 8, colors: [0xff7a1a, 0xffd24a, 0xffffff], speed: 2, up: 1.5, life: 0.5 });
+      }
+      f.live = false;
+    }
+  }
+
+  function updateCastle(dt) {
+    updateTalk(dt);
+    if (boss.phase === "wait") {
+      if (recordAt > 0 && clock - recordAt > 1.8 && player.x < TALK_X) {
+        coachOnce("c_castle");
+      }
+      if (player.x > TALK_X) {
+        enterCastle();
+      }
+      return;
+    }
+    boss.t += dt;
+    if (boss.phase === "talk") {
+      if (!boss.saidYou && boss.t > boss.youAt) {
+        boss.saidYou = true;
+        say("you", t("youSay"), boss.endAt - boss.youAt + 1.6);
+      }
+      if (boss.t > boss.endAt || player.x > BRIDGE_X0 + 0.4) {
+        startFight(boss.t > boss.endAt ? 0.3 : 0.6);
+      }
+      adminTouches();
+      return;
+    }
+    if (boss.phase === "fight") {
+      // Rushed onto the bridge: the guinea pig still says why, once the admin is done
+      if (!boss.saidYou && !boss.retry && !talkLines.length) {
+        boss.saidYou = true;
+        say("you", t("youSay"), 5.5);
+      }
+      fightStep(dt);
+      moveFlows(dt);
+      if (ctx.playing) {
+        adminTouches();
+      }
+      return;
+    }
+    if (boss.phase === "axe" || boss.phase === "fall" || boss.phase === "down") {
+      collapseStep(dt);
+      fallStep(dt);
+    }
+  }
+
+  /** The admin's mind: jump when the guinea pig comes close, throw a Flow now and then, walk. */
+  function fightStep(dt) {
+    const ease = 1 + BOSS_EASE * Math.min(3, boss.losses);
+    boss.calm = Math.max(0, boss.calm - dt);
+    boss.cooldown = Math.max(0, boss.cooldown - dt);
+    boss.nextThrow -= dt;
+    boss.nextJump -= dt;
+    if (boss.state === "air") {
+      adminFly(dt, true);
+      return;
+    }
+    if (boss.state === "crouch") {
+      if (boss.t >= ADMIN_CROUCH_S) {
+        boss.state = "air";
+        boss.t = 0;
+        boss.vy = ADMIN_JUMP_V;
+        boss.jumps += 1;
+        ctx.setData("adminJumps", boss.jumps);
+      }
+      return;
+    }
+    if (boss.state === "windup") {
+      if (boss.t >= WINDUP_S * (1 + (ease - 1) * 0.5)) {
+        throwFlow(ease);
+      }
+      return;
+    }
+    // Standing or walking: he faces the guinea pig. The guinea pig close on the
+    // bridge makes him stand his ground and jump after a moment, the first time
+    // soon, then less sure (the way under him); the calm after a hit only holds
+    // his Flows and his other jumps
+    const dx = player.x - boss.x;
+    boss.facing = dx < 0 ? -1 : 1;
+    // Close, even in the air: he stays where he is; on the bridge, he gets ready to jump
+    const close = player.x > BRIDGE_X0 - 1.5 && Math.abs(dx) < ADMIN_NEAR;
+    const onBridge = player.y < BRIDGE_TOP + 0.9;
+    let near = false;
+    if (close && onBridge && boss.cooldown <= 0) {
+      if (boss.jumpIn < 0) {
+        boss.jumpIn = boss.jumps ? 0.35 + ctx.random() * 1.1 : 0.5;
+      } else {
+        boss.jumpIn = Math.max(0, boss.jumpIn - dt);
+        near = boss.jumpIn === 0;
+      }
+    } else {
+      boss.jumpIn = -1;
+    }
+    if (boss.calm > 0 && !near) {
+      boss.state = "stand";
+      return;
+    }
+    if (near || boss.nextJump <= 0) {
+      boss.state = "crouch";
+      boss.t = 0;
+      boss.jumpIn = -1;
+      if (near) {
+        coachOnce("c_under");
+      }
+      return;
+    }
+    if (boss.jumpIn >= 0) {
+      // Ready to jump: no Flow now
+      boss.state = "stand";
+      return;
+    }
+    if (boss.nextThrow <= 0 && Math.abs(dx) > 2.6) {
+      boss.state = "windup";
+      boss.t = 0;
+      // The first one low, to learn the jump; never two high ones in a row
+      boss.high = boss.thrown > 0 && !boss.lastHigh && ctx.random() < 0.4;
+      if (!boss.thrown) {
+        coachOnce("c_flow");
+      }
+      return;
+    }
+    if (close) {
+      boss.state = "stand";
+      return;
+    }
+    // A slow patrol round his spot
+    boss.state = "walk";
+    boss.x += boss.dir * ADMIN_WALK * dt;
+    if (boss.x < ADMIN_HOME - ADMIN_PATROL) {
+      boss.x = ADMIN_HOME - ADMIN_PATROL;
+      boss.dir = 1;
+    } else if (boss.x > ADMIN_HOME + ADMIN_PATROL) {
+      boss.x = ADMIN_HOME + ADMIN_PATROL;
+      boss.dir = -1;
+    }
+  }
+
+  /** Up and down; lands on what is left of the bridge, or falls when nothing is. */
+  function adminFly(dt, fighting) {
+    boss.vy -= ADMIN_GRAVITY * dt;
+    boss.y += boss.vy * dt;
+    if (boss.y > BRIDGE_TOP || boss.vy > 0) {
+      return;
+    }
+    if (bridgeUnder(boss.x)) {
+      boss.y = BRIDGE_TOP;
+      boss.vy = 0;
+      boss.state = "stand";
+      boss.t = 0;
+      boss.cooldown = 0.9 + ctx.random() * 0.8;
+      boss.nextJump = 4.5 + ctx.random() * 2;
+      shake = engine.motion ? 0.2 : 0;
+      ctx.sound.play("bridgeStomp");
+      ctx.fx.burst(boss.x, BRIDGE_TOP + 0.05, 0.3, { count: 12, colors: [0xffffff, 0xd8c3a5], speed: 3, up: 1.2, life: 0.5 });
+    } else if (!fighting) {
+      startFall(false);
+    }
+  }
+
+  function bridgeUnder(x) {
+    return !bridge.gone && x - 0.35 < bridge.x1 && x + 0.35 > bridge.x0;
+  }
+
+  function throwFlow(ease) {
+    boss.state = "stand";
+    boss.t = 0;
+    heldFlow.visible = false;
+    const f = flows.find((one) => !one.live);
+    if (f) {
+      f.live = true;
+      f.high = boss.high;
+      f.x = boss.x + boss.facing * 1.0;
+      f.y = boss.high ? FLOW_HIGH : FLOW_LOW;
+      f.vx = (boss.facing * FLOW_SPEED) / (1 + (ease - 1) * 0.5);
+      f.age = 0;
+      boss.thrown += 1;
+      ctx.setData("flows", boss.thrown);
+      ctx.sound.play("fireFlow");
+    }
+    boss.lastHigh = boss.high;
+    boss.nextThrow = (THROW_GAP_S + ctx.random() * 0.8) * ease;
+  }
+
+  function moveFlows(dt) {
+    const halfW = HALF_W * giant.size - HAZARD_MARGIN;
+    const bottom = player.y + HAZARD_MARGIN;
+    const top = player.y + HEIGHT * giant.size - HAZARD_MARGIN;
+    for (const f of flows) {
+      if (!f.live) {
+        continue;
+      }
+      f.age += dt;
+      f.x += f.vx * dt;
+      if (f.x < CASTLE_X0 - 6 || f.x > WALL_X0) {
+        f.live = false;
+        continue;
+      }
+      // A circle against the guinea pig's box, with forgiving edges
+      const r = FLOW_R * 0.85;
+      const nx = Math.max(player.x - halfW, Math.min(f.x, player.x + halfW));
+      const ny = Math.max(bottom, Math.min(f.y, top));
+      if ((f.x - nx) ** 2 + (f.y - ny) ** 2 < r * r && player.inv <= 0) {
+        f.live = false;
+        ctx.fx.burst(f.x, f.y, 0.3, { count: 18, colors: [0xff7a1a, 0xea001e, 0x0176d3, 0xffffff], speed: 3, up: 2 });
+        bossHit("o_flowHit", "o_flowHit_tip", f.x - f.vx, "c_flow");
+        if (!ctx.playing) {
+          return;
+        }
+      }
+    }
+  }
+
+  /** Into the admin: a hit, giant or not; a giant only shrinks back. */
+  function adminTouches() {
+    if (player.inv > 0) {
+      return;
+    }
+    const m = HAZARD_MARGIN;
+    const halfW = HALF_W * giant.size;
+    const overlapX = player.x + halfW - m > boss.x - ADMIN_HALF_W && player.x - halfW + m < boss.x + ADMIN_HALF_W;
+    const overlapY = player.y + HEIGHT * giant.size - m > boss.y + 0.05 && player.y + m < boss.y + ADMIN_H - 0.1;
+    if (overlapX && overlapY) {
+      bossHit("o_admin", "o_admin_tip", boss.x, "c_under");
+    }
+  }
+
+  /** What the admin does to the guinea pig: a heart, or a giant's size, and a calm moment. */
+  function bossHit(title, tip, from, coachKey) {
+    boss.calm = Math.max(boss.calm, 2);
+    boss.nextThrow = Math.max(boss.nextThrow, 2.4);
+    if (boss.state === "windup") {
+      boss.state = "stand";
+      heldFlow.visible = false;
+    }
+    clearFlows(true);
+    if (isGiant()) {
+      // A giant shrugs off one hit: it only shrinks back
+      shrinkNow();
+      hud.toast(t("giantHit"), "power");
+      player.inv = INVULNERABLE_S;
+      player.hit = 0.6;
+      const dir = Math.sign(player.x - from) || -player.facing;
+      player.vx = dir * 6;
+      player.vy = 7;
+      player.lock = 0.3;
+      player.grounded = false;
+      return;
+    }
+    hurt(title, tip, from, coachKey);
+  }
+
+  /** The axe: it cuts the chain, and the bridge goes from this end. */
+  function touchAxe() {
+    ending = clock;
+    setPhase("axe");
+    if (boss.state === "windup" || boss.state === "crouch" || boss.state === "walk") {
+      boss.state = "stand";
+    }
+    heldFlow.visible = false;
+    clearFlows(true);
+    axe.gone = 0.001;
+    chain.visible = false;
+    collapse.wait = COLLAPSE_WAIT_S;
+    collapse.left = BRIDGE_SEGMENTS;
+    collapse.moving = true;
+    // Never left over the bridge as it goes
+    if (player.x < BRIDGE_X1 + 0.6) {
+      player.vx = Math.max(player.vx, 3);
+    }
+    clearTalk();
+    ctx.collect(150, "");
+    ctx.sound.play("bridgeAxe");
+    ctx.fx.burst(AXE_X, BRIDGE_TOP + 1.7, 0.4, { count: 30, colors: [0xffc72c, 0xffffff, 0xdfe5ec], speed: 4, up: 4 });
+    renderBar();
+  }
+
+  function collapseStep(dt) {
+    if (collapse.left <= 0) {
+      return;
+    }
+    collapse.wait -= dt;
+    while (collapse.wait <= 0 && collapse.left > 0) {
+      collapse.left -= 1;
+      const s = segments[collapse.left];
+      s.falling = true;
+      s.vy = 0;
+      s.spin = (collapse.left % 2 ? 1 : -1) * (1.5 + (collapse.left % 3) * 0.6);
+      bridge.x1 = BRIDGE_X0 + collapse.left * SEGMENT_W;
+      bridge.w = bridge.x1 - bridge.x0;
+      if (collapse.left === 0) {
+        bridge.gone = true;
+      }
+      if (collapse.left % 2 === 0) {
+        ctx.sound.play("bridgeDrop");
+      }
+      collapse.wait += COLLAPSE_STEP_S;
+    }
+  }
+
+  /** He stands on what is left; when that goes, a moment in the air, then the lava. */
+  function fallStep(dt) {
+    if (boss.phase === "axe") {
+      if (boss.state === "air") {
+        adminFly(dt, false);
+      } else if (!bridgeUnder(boss.x)) {
+        startFall(true);
+      }
+      return;
+    }
+    if (boss.state === "hang") {
+      if (boss.t >= HANG_S) {
+        boss.state = "drop";
+        boss.vy = 0.8;
+      }
+      return;
+    }
+    if (boss.state === "drop") {
+      boss.vy -= ADMIN_FALL_GRAVITY * dt;
+      boss.y += boss.vy * dt;
+      if (!boss.splashed && boss.y < LAVA_Y + 0.15) {
+        splash();
+      }
+      if (boss.splashed) {
+        // Sinking slowly, the bubble still over the lava
+        boss.vy = Math.max(boss.vy, -0.9);
+      }
+    }
+    if (boss.phase === "down") {
+      for (const p of prizes) {
+        if (p.t >= 0) {
+          p.t += dt;
+        }
+      }
+    }
+  }
+
+  function startFall(hang) {
+    setPhase("fall");
+    boss.state = hang ? "hang" : "drop";
+    boss.vy = hang ? 0 : boss.vy;
+    adminSign.visible = false;
+    screamBubble.visible = true;
+    ctx.sound.play("bridgeScream");
+    shake = engine.motion ? 0.25 : 0;
+  }
+
+  function splash() {
+    boss.splashed = true;
+    boss.downAt = clock;
+    setPhase("down");
+    boss.state = "drop";
+    shake = engine.motion ? 0.35 : 0;
+    ctx.sound.play("lavaSplash");
+    ctx.fx.burst(boss.x, LAVA_Y + 0.3, 0.3, { count: 70, colors: [0xff6a00, 0xffd24a, 0xba0517, 0x0176d3], speed: 5, up: 7, life: 1.4 });
+    ctx.collect(BOSS_POINTS, t("bossDown"));
+    for (const p of prizes) {
+      p.t = 0;
+      p.item.visible = true;
+    }
+    pig.hop();
+    ctx.sound.play("happy");
+  }
+
+  /**
+   * For the check: past the admin and to the axe, decided at every step of the
+   * world, so it plays the same whatever the frame rate. It waits in front of
+   * him, jumps the low Flows, never jumps into a high one, and runs under him
+   * while he is up.
+   */
+  function autopilot() {
+    held.left = false;
+    held.right = false;
+    if (ending) {
+      return;
+    }
+    if (boss.phase === "wait" || boss.phase === "talk") {
+      // Hops the gap before Acme Corp, then listens at the door: the fight
+      // starts when the talk is over
+      held.right = player.x < BRIDGE_X0 - 0.8;
+      const edge = player.grounded && player.ground && player.ground.x1 - player.x < 0.6;
+      if (edge && !platforms.some((p) => p !== player.ground && !p.gone && p.x0 <= player.ground.x1 + 0.05 && p.x1 > player.ground.x1 && Math.abs(p.top - player.ground.top) < 0.5)) {
+        player.buffer = BUFFER_S;
+        heldPress = false;
+      }
+      return;
+    }
+    const dx = boss.x - player.x;
+    const speed = RUN_SPEED * (1 + (pace - 1) * PACE_RUN_SHARE);
+    let jump = false;
+    let stayDown = false;
+    for (const f of flows) {
+      if (!f.live || (player.x - f.x) * f.vx <= 0) {
+        continue;
+      }
+      const d = Math.abs(f.x - player.x);
+      const closing = Math.abs(f.vx) + Math.max(0, Math.sign(f.x - player.x) * player.vx);
+      if (f.high) {
+        stayDown = stayDown || d < 4;
+      } else if (d < 1.05 + closing * 0.16) {
+        jump = true;
+      }
+    }
+    if (dx < -1.1) {
+      // Past him: to the axe
+      held.right = true;
+    } else if (overHim && boss.state !== "crouch" && boss.state !== "air" && (player.grounded ? dx > 2.45 : dx > -1.1)) {
+      // Over him: from a little way off, just after a Flow, at full speed, and
+      // the jump from 2.45 to 2.9 in front of him; a Flow's jump goes straight up
+      const clear = boss.state !== "windup" && boss.nextThrow > 1.5 && !flows.some((f) => f.live);
+      if (player.grounded) {
+        overJump = false;
+      }
+      // Once on its way (inside 5.4), it goes on
+      held.right = player.grounded ? dx > 5.6 || dx < 5.4 || clear : overJump;
+      if (player.grounded && dx < 2.9 && Math.abs(player.vx) > speed * 0.95) {
+        player.buffer = BUFFER_S;
+        heldPress = false;
+        overJump = true;
+      }
+    } else if (boss.state === "crouch" || boss.state === "air") {
+      // From when to when his feet are over the guinea pig's head (0.8 up),
+      // against when it would touch him and when it would be past him
+      const clear = 0.8;
+      const h = boss.y - BRIDGE_TOP;
+      const v = boss.state === "crouch" ? ADMIN_JUMP_V : boss.vy;
+      const wait = boss.state === "crouch" ? ADMIN_CROUCH_S - boss.t : 0;
+      const g = ADMIN_GRAVITY;
+      let from = Infinity;
+      let until = 0;
+      if (h >= clear) {
+        from = 0;
+        until = (v + Math.sqrt(v * v + 2 * g * (h - clear))) / g;
+      } else if (v > 0 && v * v > 2 * g * (clear - h)) {
+        from = wait + (v - Math.sqrt(v * v - 2 * g * (clear - h))) / g;
+        until = wait + (v + Math.sqrt(v * v - 2 * g * (clear - h))) / g;
+      }
+      const touch = (dx - 0.95) / speed;
+      const past = (dx + 0.95) / speed + 0.12;
+      if (dx < 0.95 || ((from === 0 || touch >= from + 0.06) && past <= until)) {
+        held.right = true;
+      } else if (dx < 2.2) {
+        held.left = true;
+      }
+    } else if (dx > 4.2) {
+      held.right = true;
+    } else if (dx < 3.4) {
+      held.left = true;
+    }
+    // Over him, it keeps its one jump for him: never a Flow's jump just before
+    if (jump && !stayDown && player.grounded && !(overHim && dx < 3.2)) {
+      player.buffer = BUFFER_S;
+      heldPress = false;
+    }
+  }
+
+  /** Everything of the castle where it is this frame. */
+  function placeCastle(dt, time) {
+    // Inside the castle the day goes: the light dims, the camera holds the bridge
+    castle.k += ((player.x > CASTLE_CAM_X ? 1 : 0) - castle.k) * Math.min(1, dt * 1.6);
+    engine.hemi.intensity = (ghost ? 1.15 : 1.6) * (1 - 0.3 * castle.k);
+    engine.sun.intensity = 2.4 * (1 - 0.22 * castle.k);
+    if (player.x < CASTLE_CAM_X - 32) {
+      // Far away: nothing of it moves on screen
+      return;
+    }
+    if (collapse.moving) {
+      let moving = false;
+      for (const s of segments) {
+        if (s.falling && s.y > LAVA_Y - 1.5) {
+          s.vy -= GRAVITY * 0.55 * dt;
+          s.y += s.vy * dt;
+          s.turn += s.spin * dt;
+          moving = true;
+        }
+      }
+      collapse.moving = moving || collapse.left > 0;
+      placeSegments();
+    }
+    lavaTexture.offset.x = time * 0.025;
+    lavaTexture.offset.y = Math.sin(time * 0.4) * 0.03;
+    glowMaterial.opacity = 0.75 + Math.sin(time * 2.1) * 0.15;
+    bubbles.count = bubbleCount;
+    for (let i = 0; i < bubbleCount; i++) {
+      const k = (time * 0.55 + i * 0.37) % 1;
+      cp.set(BRIDGE_X0 + 0.8 + ((i * 2.47) % (BRIDGE_X1 - BRIDGE_X0 - 1.6)), LAVA_Y + k * 0.35, -0.8 + (i % 3) * 0.7);
+      const size = k < 0.85 ? 0.4 + k : (1 - k) * 8;
+      cs.set(size, size * 0.8, size);
+      cm.compose(cp, cq.identity(), cs);
+      bubbles.setMatrixAt(i, cm);
+    }
+    bubbles.instanceMatrix.needsUpdate = true;
+    for (let i = 0; i < torches.length; i++) {
+      const f = 1 + Math.sin(time * 13 + i * 2) * 0.08 + Math.sin(time * 7.3 + i) * 0.06;
+      torches[i].scale.set(0.55 * f, 0.9 * (2 - f), 1);
+    }
+    placeAxe(dt, time);
+    placeAdmin(dt, time);
+    placeFlows(time);
+    for (let i = 0; i < prizes.length; i++) {
+      const p = prizes[i];
+      if (p.t >= 0) {
+        const k = Math.min(1, p.t / 0.6);
+        p.item.position.set(p.x, BRIDGE_TOP + 0.4 + k * 1.4 + Math.sin(time * 3 + i) * 0.06, 0.3);
+        p.item.rotation.y = time * 2.4 + i;
+        p.item.scale.setScalar(Math.max(0.01, k));
+      }
+    }
+    // The halo points at the axe once nothing else is left to take
+    if (!halo.visible && (boss.phase === "talk" || boss.phase === "fight")) {
+      halo.visible = true;
+      halo.position.set(AXE_X + 0.2, BRIDGE_TOP + 2.35, 0.6);
+      halo.scale.setScalar(1.25 + Math.sin(time * 6) * 0.1);
+      halo.rotation.z = time;
+    }
+  }
+
+  /** How far ahead of the guinea pig the castle view looks: as far as the screen allows, the guinea pig kept in sight. */
+  function castleLead() {
+    const half = Math.max(8, camera.position.z) * Math.tan((camera.fov * Math.PI) / 360) * camera.aspect;
+    return Math.max(1.5, Math.min(6.6, half - 2.2));
+  }
+
+  function placeSegments() {
+    for (let i = 0; i < segments.length; i++) {
+      const s = segments[i];
+      cp.set(s.x, s.y, 0);
+      ce.set(0, 0, s.turn);
+      cq.setFromEuler(ce);
+      const k = s.y < LAVA_Y - 1.4 ? 0 : 1;
+      cs.set(k, k, k);
+      cm.compose(cp, cq, cs);
+      segmentMesh.setMatrixAt(i, cm);
+    }
+    segmentMesh.instanceMatrix.needsUpdate = true;
+  }
+
+  function placeAxe(dt, time) {
+    if (axe.gone > 0) {
+      // Cut: it spins up and away
+      axe.gone += dt;
+      const k = Math.min(1, axe.gone / 0.7);
+      axe.tool.rotation.z = -k * Math.PI * 3;
+      axe.tool.position.y = 1.05 + k * 1.6;
+      axe.tool.scale.setScalar(Math.max(0.01, 1 - k));
+      return;
+    }
+    axe.tool.rotation.z = Math.sin(time * 2) * 0.12;
+    axe.tool.rotation.y = Math.sin(time * 1.3) * 0.25;
+  }
+
+  function placeAdmin(dt, time) {
+    const a = admin;
+    a.group.position.set(boss.x, boss.y, 0.1);
+    a.group.visible = boss.y > LAVA_Y - ADMIN_TOP - 0.4;
+    const facing = boss.facing;
+    // Lean toward the guinea pig; squash in the crouch, stretch in the air
+    boss.lean += (facing * 0.12 - boss.lean) * Math.min(1, dt * 6);
+    a.body.rotation.z = -boss.lean;
+    let sy = 1;
+    let arm = 0.25;
+    let legs = 0;
+    let wave = 0;
+    let bob = 0;
+    if (boss.state === "crouch") {
+      sy = 1 - 0.18 * Math.min(1, boss.t / ADMIN_CROUCH_S);
+    } else if (boss.state === "air") {
+      sy = 1.06;
+      arm = 2.4;
+    } else if (boss.state === "walk") {
+      legs = Math.sin(time * 7) * 0.45;
+    } else if (boss.state === "windup") {
+      arm = boss.high ? 2.3 : 1.2;
+    } else if (boss.state === "hang") {
+      legs = Math.sin(time * 26) * 0.7;
+      wave = Math.sin(time * 22) * 0.5;
+      arm = 2.6;
+    } else if (boss.state === "drop") {
+      legs = Math.sin(time * 18) * 0.5;
+      wave = Math.sin(time * 16) * 0.4;
+      arm = 2.9;
+    } else if (boss.phase === "talk") {
+      // Telling the guinea pig about his Flow: one arm waving
+      wave = Math.sin(time * 6) * 0.35;
+      arm = 1.6;
+    } else {
+      bob = Math.sin(time * 3) * 0.02;
+    }
+    a.body.position.y = bob;
+    a.body.scale.set(1 + (1 - sy) * 0.6, sy, 1);
+    a.legs[0].rotation.x = legs;
+    a.legs[1].rotation.x = -legs;
+    // The arm toward the guinea pig throws; the other one waves or hangs
+    const front = facing < 0 ? a.arms[0] : a.arms[1];
+    const back = facing < 0 ? a.arms[1] : a.arms[0];
+    front.rotation.z = facing < 0 ? -arm : arm;
+    back.rotation.z = facing < 0 ? 0.25 + wave : -0.25 - wave;
+    if (boss.state === "hang" || boss.state === "drop") {
+      back.rotation.z = facing < 0 ? 2.6 + wave : -2.6 - wave;
+      a.group.rotation.z = Math.sin(time * 9) * 0.12;
+    } else {
+      a.group.rotation.z = 0;
+    }
+    // The Flow in his hand while he winds up, where it will fly
+    if (boss.state === "windup") {
+      const k = Math.min(1, boss.t / WINDUP_S);
+      heldFlow.visible = true;
+      heldFlow.position.set(boss.x + facing * 1.0, boss.high ? FLOW_HIGH : FLOW_LOW, 0.35);
+      heldFlow.scale.setScalar(0.3 + 0.7 * k + Math.sin(time * 30) * 0.05 * k);
+      heldFlow.rotation.z = time * 4;
+    }
+    if (screamBubble.visible) {
+      // Over his head, kept inside the view: a phone is narrow
+      const half = (camera.position.z - 0.6) * Math.tan((camera.fov * Math.PI) / 360) * camera.aspect;
+      const room = Math.max(0, half - screamBubble.scale.x / 2 - 0.15);
+      const x = Math.min(Math.max(boss.x + 0.9, camera.position.x - room), camera.position.x + room);
+      screamBubble.position.set(x, Math.max(LAVA_Y + 3.4, boss.y + ADMIN_TOP + 1.2), 0.6);
+    }
+  }
+
+  function placeFlows(time) {
+    let n = 0;
+    for (const f of flows) {
+      if (!f.live) {
+        continue;
+      }
+      const y = f.y + Math.sin(f.age * 9) * 0.04;
+      const back = -Math.sign(f.vx);
+      for (let k = 0; k <= FLOW_TRAIL; k++) {
+        // The Flow itself, then its trail of smaller ones behind
+        const s = k === 0 ? 1 : Math.pow(0.68, k);
+        cp.set(f.x + back * k * 0.3, y + (k ? Math.sin(f.age * 9 - k) * 0.05 : 0), 0.3 - k * 0.02);
+        ce.set(0, 0, k === 0 ? Math.sin(f.age * 5) * 0.25 : time * 3 + k);
+        cq.setFromEuler(ce);
+        cs.set(s, s, s);
+        cm.compose(cp, cq, cs);
+        flowMesh.setMatrixAt(n, cm);
+        n += 1;
+      }
+    }
+    flowMesh.count = n;
+    flowMesh.instanceMatrix.needsUpdate = true;
+  }
+
+  /** The admin from boxes and capsules, his face from its SVG, a Flow on his hoodie. */
+  function buildAdmin() {
+    const group = new THREE.Group();
+    const body = new THREE.Group();
+    group.add(body);
+    root.add(group);
+    const hoodie = paint.plain(0x16325c, { roughness: 0.75 });
+    const jeans = paint.plain(0x34507e, { roughness: 0.8 });
+    const shoe = paint.plain(0x161616, { roughness: 0.6 });
+    const skin = paint.plain(0xe2ad86, { roughness: 0.7 });
+    const torsoGeometry = paint.geometry("w1-admin-torso", () => new THREE.CapsuleGeometry(0.5, 0.6, 6, 16));
+    const limbGeometry = paint.geometry("w1-admin-limb", () => new THREE.CapsuleGeometry(0.15, 0.5, 4, 10));
+    const handGeometry = paint.geometry("w1-admin-hand", () => new THREE.SphereGeometry(0.15, 12, 8));
+    const legs = [-1, 1].map((side) => {
+      const hip = new THREE.Group();
+      hip.position.set(side * 0.24, 0.62, 0);
+      const leg = new THREE.Mesh(limbGeometry, jeans);
+      leg.scale.set(1.25, 0.8, 1.25);
+      leg.position.y = -0.31;
+      const foot = new THREE.Mesh(unit, shoe);
+      foot.scale.set(0.34, 0.16, 0.52);
+      foot.position.set(0, -0.56, 0.08);
+      hip.add(leg, foot);
+      body.add(hip);
+      return hip;
+    });
+    const torso = new THREE.Mesh(torsoGeometry, hoodie);
+    torso.scale.set(1.3, 0.6, 0.86);
+    torso.position.y = 1.1;
+    body.add(torso);
+    // His love: a Flow on the chest
+    const badge = new THREE.Mesh(paint.geometry("w1-admin-badge", () => new THREE.CircleGeometry(0.24, 28)), keep(new THREE.MeshBasicMaterial({ map: paint.texture("w1-admin-badge", 128, 128, drawFlowBadge), toneMapped: false })));
+    badge.position.set(0, 1.08, 0.445);
+    body.add(badge);
+    const arms = [-1, 1].map((side) => {
+      const shoulder = new THREE.Group();
+      shoulder.position.set(side * 0.66, 1.42, 0);
+      const arm = new THREE.Mesh(limbGeometry, hoodie);
+      arm.position.y = -0.36;
+      const hand = new THREE.Mesh(handGeometry, skin);
+      hand.position.y = -0.74;
+      shoulder.add(arm, hand);
+      body.add(shoulder);
+      return shoulder;
+    });
+    const neck = new THREE.Mesh(paint.geometry("w1-admin-neck", () => new THREE.CylinderGeometry(0.16, 0.18, 0.2, 12)), skin);
+    neck.position.y = 1.62;
+    body.add(neck);
+    // His face in a round frame, drawn plain until it loads
+    const canvas = document.createElement("canvas");
+    canvas.width = 256;
+    canvas.height = 256;
+    const context = canvas.getContext("2d");
+    drawAdminPlain(context, 256);
+    const texture = keep(new THREE.CanvasTexture(canvas));
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.anisotropy = 4;
+    const image = new Image();
+    image.decoding = "async";
+    image.onload = () => {
+      if (!disposed) {
+        drawAdminFramed(context, image, 256);
+        texture.needsUpdate = true;
+      }
+    };
+    image.onerror = () => {};
+    image.src = ADMIN_FACE_URL;
+    const face = new THREE.Mesh(paint.geometry("w1-admin-face", () => new THREE.CircleGeometry(0.62, 44)), keep(new THREE.MeshBasicMaterial({ map: texture, alphaTest: 0.5, toneMapped: false })));
+    // Big and in front, readable on a phone
+    face.position.set(0, ADMIN_TOP - 0.62, 0.47);
+    face.renderOrder = 1;
+    body.add(face);
+    group.traverse((child) => {
+      if (child.isMesh && child !== face && child !== badge) {
+        child.castShadow = shadows;
+      }
+    });
+    return { group, body, legs, arms, face };
+  }
+
   /* ---------- Drawing each step ---------- */
 
   const matrix = new THREE.Matrix4();
@@ -1822,16 +3060,26 @@ export function createWorld(ctx) {
     const portrait = engine.portrait;
     const lead = portrait ? 1.2 : 2.4;
     const ease = Math.min(1, dt * 4);
-    camX += (player.x + player.facing * lead - camX) * ease;
-    const groundY = player.grounded ? player.y : Math.min(player.y, camY - 1.4);
+    let targetX = player.x + player.facing * lead;
+    let groundY = player.grounded ? player.y : Math.min(player.y, camY - 1.4);
+    if (castle.k > 0.001) {
+      // In the castle the view holds the bridge: between the guinea pig and the
+      // admin, the guinea pig always on screen, steady through the jumps
+      const falling = boss.phase === "fall" || boss.phase === "down";
+      const room = Math.max(player.x - (falling ? 3 : 1), Math.min((player.x + boss.x) / 2, player.x + castleLead()));
+      targetX += (room - targetX) * castle.k;
+      groundY += (BRIDGE_TOP + (falling ? -0.6 : 0.7) - groundY) * castle.k;
+    }
+    camX += (targetX - camX) * ease;
     camY += (Math.max(groundY, -2) + 1.4 - camY) * Math.min(1, dt * 2.5);
     shake = Math.max(0, shake - dt);
     const jitter = shake > 0 ? (Math.random() - 0.5) * shake : 0;
     camera.fov = (portrait ? 64 : 46) + (pace - 1) * 10;
     camera.updateProjectionMatrix();
-    // A giant guinea pig: the camera steps back and up a little, so it stays on screen
+    // A giant guinea pig: the camera steps back and up a little, so it stays on
+    // screen; in the castle a little more, so the Flows are seen coming
     const grown = giant.size - 1;
-    const distance = (portrait ? 13 : 12.5) * (1 + grown * 0.32);
+    const distance = (portrait ? 13 : 12.5) * (1 + grown * 0.32) * (1 + castle.k * (portrait ? 0.24 : 0.18));
     camera.position.set(camX + jitter, camY + (portrait ? 2.4 : 1.6) + grown * 0.9, distance);
     camera.lookAt(camX, camY + (portrait ? 0.8 : 0.4) + grown * 0.6, 0);
     engine.aimSun(player.x, 0);
@@ -1849,9 +3097,17 @@ export function createWorld(ctx) {
   ctx.setData("giant", "off");
   placeMushrooms(0, 0);
   renderBar();
-  // Customer Tier on the record, still empty
-  recordPlatform.record.draw("");
+  // Customer Tier on the record, still empty (or done, on a try that starts in the castle)
+  recordPlatform.record.draw(recordAt < 0 ? (ghost ? null : "Gold") : "");
+  placeCastle(0, 0);
+  if (castle.k === 1) {
+    // Starting in the castle: the view already holds the bridge
+    camX = Math.min((player.x + boss.x) / 2, player.x + castleLead());
+    camY = BRIDGE_TOP + 2.1;
+  }
   ctx.setData("x", Math.round(player.x));
+  ctx.setData("boss", boss.phase);
+  ctx.setData("flows", 0);
 
   return {
     start() {
@@ -1861,11 +3117,18 @@ export function createWorld(ctx) {
       hud.tick(t("target"));
       lastGoal = "";
       renderBar();
-      coach("c_start", true);
+      // A try that starts in the castle hears the castle's own lines instead
+      if (startAt < BOSS_CHECK_X) {
+        coach("c_start", true);
+      }
     },
     update(dt, time) {
       if (!ctx.playing) {
         return;
+      }
+      clock += dt;
+      if (autoplay) {
+        autopilot();
       }
       updatePace(dt);
       movePlatforms(dt);
@@ -1873,6 +3136,10 @@ export function createWorld(ctx) {
       stepPlayer(dt);
       dropTraps(dt);
       touch(time);
+      if (!ctx.playing) {
+        return;
+      }
+      updateCastle(dt);
       if (!ctx.playing) {
         return;
       }
@@ -1886,7 +3153,9 @@ export function createWorld(ctx) {
         ctx.sound.play("wrong");
         shake = engine.motion ? 0.25 : 0;
       }
-      if (player.y < FALL_Y) {
+      // In the castle the drop is the lava, much nearer than the clouds
+      const inCastle = player.x > CASTLE_X0 && player.x < WALL_X0;
+      if (player.y < (inCastle ? LAVA_Y + 0.1 : FALL_Y)) {
         fell();
         if (!ctx.playing) {
           return;
@@ -1895,6 +3164,7 @@ export function createWorld(ctx) {
       placeVegetables(time);
       placeMushrooms(dt, time);
       placeParts(dt, time);
+      placeCastle(dt, time);
       placePig(dt, time);
       placeCamera(dt);
       ctx.setData("x", Math.round(player.x));
@@ -1908,18 +3178,15 @@ export function createWorld(ctx) {
       ctx.setData("hz", near ? near.cx.toFixed(2) + "," + near.bottom.toFixed(2) : "999,0");
       ctx.setData("smashed", giant.smashed);
       ctx.setData("checkpoint", checkpoint);
-      // A happy hop on the record, then the result
-      if (ending) {
-        if (player.grounded && time - ending < 1.2) {
-          player.buffer = 0.1;
-        }
-        if (time - ending > 1.3) {
-          const missed = missedInfo();
-          hud.goal("");
-          // Everything built and visible again: the full bonus. Each part missed costs a little
-          const complete = missed.count === 0 && !ghost;
-          ctx.finish(Math.max(0, 200 + (complete ? 300 : 0) - missed.count * 20), missed.text);
-        }
+      ctx.setData("admin", boss.state);
+      ctx.setData("ax", boss.x.toFixed(2));
+      // The admin in the lava, the prize up: then the result
+      if (boss.phase === "down" && clock - boss.downAt > FINISH_S) {
+        const missed = missedInfo();
+        hud.goal("");
+        // Everything built and visible again: the full bonus. Each part missed costs a little
+        const complete = missed.count === 0 && !ghost;
+        ctx.finish(Math.max(0, 200 + (complete ? 300 : 0) - missed.count * 20), missed.text);
       }
     },
     action(name) {
@@ -1960,6 +3227,12 @@ export function createWorld(ctx) {
       for (const thing of disposables) {
         thing.dispose();
       }
+      disposed = true;
+      MUSIC = 1;
+      if (window.__guineaRun && window.__guineaRun.w1 === hooks) {
+        delete window.__guineaRun.w1;
+      }
+      talk.remove();
       bar.remove();
       hud.goal("");
       hud.setPath([], 0);
@@ -2094,6 +3367,10 @@ function drawFront(c, w, h, def) {
     c.fillStyle = SLDS.white;
     c.textAlign = "left";
     fitText(c, text, 84, h / 2 + 2, w - 100, 38, "700", true);
+    return;
+  }
+  if (look === "stone") {
+    drawBricks(c, w, h, 54);
     return;
   }
   c.fillStyle = SLDS.white;
@@ -2280,6 +3557,333 @@ function drawBlock(c, w, h, used) {
   }
 }
 
+/* ---------- The castle's pictures ---------- */
+
+/** Castle stone: rows of bricks, each a little different, dark mortar between. */
+function drawBricks(c, w, h, row) {
+  c.fillStyle = "#2c2832";
+  c.fillRect(0, 0, w, h);
+  const tones = ["#5d5766", "#555060", "#625b6b", "#4f4a58", "#58525f"];
+  const brick = row * 2;
+  for (let y = 0, r = 0; y < h; y += row, r++) {
+    for (let x = r % 2 ? -brick / 2 : 0, i = 0; x < w; x += brick, i++) {
+      c.fillStyle = tones[(r * 3 + i * 7) % tones.length];
+      c.fillRect(x + 3, y + 3, brick - 6, row - 6);
+      // A lighter top edge: the light comes from above
+      c.fillStyle = "rgba(255, 255, 255, 0.07)";
+      c.fillRect(x + 3, y + 3, brick - 6, 4);
+    }
+  }
+}
+
+/** The bridge's planks: warm wood, dark joints, two nails. */
+function drawPlank(c, w, h) {
+  c.fillStyle = "#a86a32";
+  c.fillRect(0, 0, w, h);
+  c.fillStyle = "#c4834a";
+  c.fillRect(0, 0, w, h * 0.28);
+  c.strokeStyle = "rgba(70, 35, 10, 0.45)";
+  c.lineWidth = 3;
+  for (const y of [0.45, 0.7]) {
+    c.beginPath();
+    c.moveTo(0, h * y);
+    c.bezierCurveTo(w * 0.3, h * y - 4, w * 0.7, h * y + 4, w, h * y);
+    c.stroke();
+  }
+  c.fillStyle = "#5a3412";
+  c.fillRect(0, 0, 6, h);
+  c.fillRect(w - 6, 0, 6, h);
+  c.fillStyle = "#3a3a40";
+  for (const x of [18, w - 18]) {
+    c.beginPath();
+    c.arc(x, h * 0.55, 4, 0, Math.PI * 2);
+    c.fill();
+  }
+}
+
+/** Lava: an orange sea, darker crusts drifting, bright veins. Tiles both ways. */
+function drawLava(c, w, h) {
+  c.fillStyle = "#f2581a";
+  c.fillRect(0, 0, w, h);
+  let seed = 7;
+  const rnd = () => {
+    seed = (seed * 16807) % 2147483647;
+    return seed / 2147483647;
+  };
+  // Drawn three times across each edge, so the tile has no seam
+  const blob = (x, y, r, color) => {
+    for (const ox of [-w, 0, w]) {
+      for (const oy of [-h, 0, h]) {
+        c.beginPath();
+        c.ellipse(x + ox, y + oy, r, r * 0.6, 0, 0, Math.PI * 2);
+        c.fillStyle = color;
+        c.fill();
+      }
+    }
+  };
+  for (let i = 0; i < 12; i++) {
+    blob(rnd() * w, rnd() * h, 18 + rnd() * 28, "rgba(150, 10, 20, 0.45)");
+  }
+  for (let i = 0; i < 16; i++) {
+    blob(rnd() * w, rnd() * h, 4 + rnd() * 9, "rgba(255, 200, 70, 0.65)");
+  }
+}
+
+/** The glow over the lava: bright at the bottom, gone at the top. */
+function drawGlow(c, w, h) {
+  const gradient = c.createLinearGradient(0, h, 0, 0);
+  gradient.addColorStop(0, "rgba(255, 120, 30, 0.85)");
+  gradient.addColorStop(0.35, "rgba(255, 70, 20, 0.35)");
+  gradient.addColorStop(1, "rgba(255, 40, 0, 0)");
+  c.fillStyle = gradient;
+  c.fillRect(0, 0, w, h);
+}
+
+/** The sky over the castle: a dusk that fades in from the left. */
+function drawDarkSky(c, w, h) {
+  const gradient = c.createLinearGradient(0, 0, 0, h);
+  gradient.addColorStop(0, "#1a1030");
+  gradient.addColorStop(0.55, "#3a1d4a");
+  gradient.addColorStop(1, "#7a2a2a");
+  c.fillStyle = gradient;
+  c.fillRect(0, 0, w, h);
+  c.globalCompositeOperation = "destination-in";
+  const fade = c.createLinearGradient(0, 0, w, 0);
+  fade.addColorStop(0, "rgba(0, 0, 0, 0)");
+  fade.addColorStop(0.22, "rgba(0, 0, 0, 1)");
+  fade.addColorStop(1, "rgba(0, 0, 0, 1)");
+  c.fillStyle = fade;
+  c.fillRect(0, 0, w, h);
+  c.globalCompositeOperation = "source-over";
+}
+
+/** A torch flame: a soft teardrop, yellow at its heart. */
+function drawFlame(c, w, h) {
+  const gradient = c.createRadialGradient(w / 2, h * 0.68, 2, w / 2, h * 0.62, h * 0.45);
+  gradient.addColorStop(0, "rgba(255, 245, 200, 1)");
+  gradient.addColorStop(0.3, "rgba(255, 190, 60, 0.95)");
+  gradient.addColorStop(0.7, "rgba(255, 90, 20, 0.5)");
+  gradient.addColorStop(1, "rgba(255, 60, 0, 0)");
+  c.beginPath();
+  c.moveTo(w / 2, 2);
+  c.bezierCurveTo(w * 0.95, h * 0.5, w * 0.95, h * 0.95, w / 2, h - 2);
+  c.bezierCurveTo(w * 0.05, h * 0.95, w * 0.05, h * 0.5, w / 2, 2);
+  c.fillStyle = gradient;
+  c.fill();
+}
+
+/**
+ * The admin's monster Flow, open in Flow Builder: one Flow for everything,
+ * hundreds of elements, connectors crossing everywhere.
+ */
+function drawMonsterFlow(c, w, h) {
+  c.fillStyle = "#f3f3f3";
+  c.fillRect(0, 0, w, h);
+  // The dotted canvas
+  c.fillStyle = "#d8dde6";
+  for (let y = 70; y < h; y += 18) {
+    for (let x = 8; x < w; x += 18) {
+      c.fillRect(x, y, 2, 2);
+    }
+  }
+  // The header
+  c.fillStyle = SLDS.white;
+  c.fillRect(0, 0, w, 56);
+  c.fillStyle = SLDS.brand;
+  c.fillRect(0, 56, w, 4);
+  glyph(c, "flow", 34, 28, 40, SLDS.brand);
+  c.textAlign = "left";
+  c.textBaseline = "middle";
+  c.fillStyle = SLDS.weak;
+  fitText(c, "Flow Builder", 64, 20, 220, 18, "700");
+  c.fillStyle = SLDS.text;
+  fitText(c, "Account: Do Everything", 64, 40, 420, 22, "800");
+  rounded(c, w - 230, 12, 214, 32, 16);
+  c.fillStyle = SLDS.error;
+  c.fill();
+  c.fillStyle = SLDS.white;
+  c.textAlign = "center";
+  fitText(c, "412 elements", w - 123, 29, 190, 20, "800");
+  // The elements: a start, then a tangle of decisions, assignments, loops and
+  // record updates, every one linked to too many others
+  let seed = 3;
+  const rnd = () => {
+    seed = (seed * 16807) % 2147483647;
+    return seed / 2147483647;
+  };
+  const nodes = [];
+  const cols = 13;
+  const rows = 6;
+  for (let r = 0; r < rows; r++) {
+    for (let k = 0; k < cols; k++) {
+      nodes.push({ x: 50 + k * ((w - 100) / (cols - 1)) + (rnd() - 0.5) * 30, y: 118 + r * ((h - 160) / (rows - 1)) + (rnd() - 0.5) * 22, kind: Math.floor(rnd() * 5) });
+    }
+  }
+  c.strokeStyle = "rgba(112, 110, 107, 0.75)";
+  c.lineWidth = 2;
+  for (let i = 0; i < nodes.length; i++) {
+    const a = nodes[i];
+    for (const step of [1, cols, cols + 1 + Math.floor(rnd() * 9)]) {
+      const b = nodes[(i + step) % nodes.length];
+      c.beginPath();
+      c.moveTo(a.x, a.y);
+      c.bezierCurveTo(a.x, (a.y + b.y) / 2, b.x, (a.y + b.y) / 2, b.x, b.y);
+      c.stroke();
+    }
+  }
+  const COLORS = ["#FF8A3D", "#DD7A01", "#F9548A", "#0176D3", "#032D60"];
+  for (const n of nodes) {
+    c.fillStyle = COLORS[n.kind];
+    c.beginPath();
+    if (n.kind === 0) {
+      // A decision: a diamond
+      c.moveTo(n.x, n.y - 17);
+      c.lineTo(n.x + 17, n.y);
+      c.lineTo(n.x, n.y + 17);
+      c.lineTo(n.x - 17, n.y);
+      c.closePath();
+    } else if (n.kind === 2) {
+      c.arc(n.x, n.y, 15, 0, Math.PI * 2);
+    } else {
+      rounded(c, n.x - 14, n.y - 14, 28, 28, 6);
+    }
+    c.fill();
+    c.fillStyle = SLDS.white;
+    c.fillRect(n.x - 6, n.y - 1.5, 12, 3);
+  }
+  // The start, at the top
+  c.beginPath();
+  c.arc(w / 2, 86, 16, 0, Math.PI * 2);
+  c.fillStyle = SLDS.success;
+  c.fill();
+}
+
+/** A Flow the admin throws: the Flow icon in a red ring, in flames. */
+function drawFlowBall(c, w) {
+  const r = w / 2;
+  const icon = r * 0.69;
+  for (let i = 0; i < 14; i++) {
+    const a = (i / 14) * Math.PI * 2;
+    const reach = r * (i % 2 ? 0.86 : 0.99);
+    c.beginPath();
+    c.moveTo(r + Math.cos(a - 0.34) * icon, r + Math.sin(a - 0.34) * icon);
+    c.quadraticCurveTo(r + Math.cos(a) * reach, r + Math.sin(a) * reach, r + Math.cos(a + 0.34) * icon, r + Math.sin(a + 0.34) * icon);
+    c.closePath();
+    c.fillStyle = i % 2 ? "#ffd24a" : "#ff7a1a";
+    c.fill();
+  }
+  for (const [radius, color] of [
+    [icon, "#ea001e"],
+    [icon * 0.8, "#ffffff"],
+    [icon * 0.68, "#0176d3"]
+  ]) {
+    c.beginPath();
+    c.arc(r, r, radius, 0, Math.PI * 2);
+    c.fillStyle = color;
+    c.fill();
+  }
+  glyph(c, "flow", r, r, icon * 1.05, "#ffffff");
+}
+
+/** The Flow on the admin's hoodie. */
+function drawFlowBadge(c, w) {
+  const r = w / 2;
+  c.beginPath();
+  c.arc(r, r, r - 2, 0, Math.PI * 2);
+  c.fillStyle = "#ffffff";
+  c.fill();
+  c.beginPath();
+  c.arc(r, r, r * 0.84, 0, Math.PI * 2);
+  c.fillStyle = "#0176d3";
+  c.fill();
+  glyph(c, "flow", r, r, r * 1.1, "#ffffff");
+}
+
+/** What he screams as he falls, in a comic bubble whose tail points down at him. */
+function drawScream(c, w, h, text) {
+  const body = h * 0.78;
+  rounded(c, 6, 6, w - 12, body - 12, 44);
+  c.fillStyle = "#ffffff";
+  c.fill();
+  c.lineWidth = 8;
+  c.strokeStyle = "#ea001e";
+  c.stroke();
+  // The tail, toward the bottom left
+  c.beginPath();
+  c.moveTo(w * 0.2, body - 14);
+  c.lineTo(w * 0.12, h - 4);
+  c.lineTo(w * 0.36, body - 14);
+  c.closePath();
+  c.fillStyle = "#ffffff";
+  c.fill();
+  c.beginPath();
+  c.moveTo(w * 0.2, body - 10);
+  c.lineTo(w * 0.12, h - 4);
+  c.lineTo(w * 0.36, body - 10);
+  c.stroke();
+  c.fillStyle = SLDS.navy;
+  c.textAlign = "center";
+  c.textBaseline = "middle";
+  // As big as two lines allow: every word of the scream is shown
+  let size = 58;
+  let lines = [];
+  for (; size >= 34; size -= 4) {
+    font(c, size, "800");
+    lines = wrapLines(c, text, w - 70);
+    if (lines.length <= 2) {
+      break;
+    }
+  }
+  lines.forEach((line, i) => fitText(c, line, w / 2, body / 2 + (i - (lines.length - 1) / 2) * size * 1.12, w - 60, size, "800"));
+}
+
+/** The admin's face until his portrait loads, or if it never does: bald, bearded, cross. */
+function drawAdminPlain(c, size) {
+  const r = size / 2;
+  c.save();
+  c.beginPath();
+  c.arc(r, r, r - 2, 0, Math.PI * 2);
+  c.fillStyle = "#ffffff";
+  c.fill();
+  c.beginPath();
+  c.arc(r, r, r * 0.9, 0, Math.PI * 2);
+  c.clip();
+  c.fillStyle = "#d6dde6";
+  c.fillRect(0, 0, size, size);
+  c.fillStyle = "#e2ad86";
+  c.beginPath();
+  c.ellipse(r, r * 0.92, r * 0.5, r * 0.58, 0, 0, Math.PI * 2);
+  c.fill();
+  c.fillStyle = "#5b4130";
+  c.beginPath();
+  c.ellipse(r, r * 1.28, r * 0.46, r * 0.34, 0, 0, Math.PI);
+  c.fill();
+  c.fillStyle = "#1a1a2e";
+  for (const side of [-1, 1]) {
+    c.fillRect(r + side * r * 0.2 - r * 0.07, r * 0.78, r * 0.14, r * 0.05);
+    c.beginPath();
+    c.arc(r + side * r * 0.2, r * 0.9, r * 0.055, 0, Math.PI * 2);
+    c.fill();
+  }
+  c.restore();
+}
+
+/** His portrait, round, with a white ring. */
+function drawAdminFramed(c, image, size) {
+  const r = size / 2;
+  c.clearRect(0, 0, size, size);
+  c.save();
+  c.beginPath();
+  c.arc(r, r, r - 2, 0, Math.PI * 2);
+  c.fillStyle = "#ffffff";
+  c.fill();
+  c.beginPath();
+  c.arc(r, r, r * 0.92, 0, Math.PI * 2);
+  c.clip();
+  c.drawImage(image, size * 0.04, size * 0.04, size * 0.92, size * 0.92);
+  c.restore();
+}
+
 export const CSS = `
 .guinea-run .gr-w1-bar {
   display: flex;
@@ -2330,5 +3934,39 @@ export const CSS = `
 }
 .guinea-run .gr-w1-giant[hidden] {
   display: none;
+}
+/* The talk before the castle fight: where the cast's chat bubbles go */
+.guinea-run .gr-layer .gr-w1-talk {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 64px);
+  right: calc(env(safe-area-inset-right, 0px) + 10px);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: min(340px, calc(100vw - 20px));
+  pointer-events: none;
+}
+.guinea-run .gr-layer .gr-w1-talk:empty,
+.guinea-run:not([data-state="playing"]) .gr-layer .gr-w1-talk {
+  display: none;
+}
+.guinea-run .gr-w1-say--admin {
+  border-color: #ea001e;
+}
+.guinea-run .gr-w1-avatar {
+  flex-basis: 40px;
+  width: 40px;
+  height: 40px;
+  background: #ffffff center / cover no-repeat;
+  box-shadow: 0 0 0 2px #ffffff;
+}
+@media (max-width: 600px) {
+  .guinea-run .gr-layer .gr-w1-talk {
+    top: calc(var(--gr-top-end, 160px) + 48px);
+    left: calc(env(safe-area-inset-left, 0px) + 10px);
+    right: calc(env(safe-area-inset-right, 0px) + 10px);
+    width: auto;
+  }
 }
 `;

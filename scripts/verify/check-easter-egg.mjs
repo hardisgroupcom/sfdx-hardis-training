@@ -15,6 +15,20 @@
  * - each world opens, starts, takes its controls, ends, and gives back what
  *   it drew when the player returns to the map; the last one ends on the credits,
  *   and its retrofit button takes a click
+ * - finishing a world opens the next one, and the browser remembers it
+ * - the "Why install anything?" admin past the Re-check door of world 0 holds
+ *   the track and throws his blocks across the lanes, the tools brought to his
+ *   laptop take all his excuses, he installs VS Code himself and the world ends
+ * - the admin at the end of world 1 throws his Flows and jumps, a player who
+ *   runs under him touches the axe, and the bridge goes down with him
+ * - the "git add ." admin at the end of world 2 throws everything onto the
+ *   commit, a player who throws back all but the four files of US-014 beats
+ *   him, and the commit cards follow to the end of the world
+ * - the "I'll do it by hand after" admin at the end of world 3 takes the
+ *   deployment actions out of the Pull Request and switches its base to main,
+ *   a player who puts each back in time beats him, and the check goes green
+ * - a deployment action declared in the wrong place in world 3 comes back as
+ *   a failing gate in world 6
  * - the admin at the end of world 5 clicks Accept Current Change on Mariia's
  *   lines, the guinea pig undoes his clicks and keeps both sides of every
  *   conflict, and his git push --force meets the branch protection
@@ -24,15 +38,6 @@
  * - the Data Cloud at the end of world 8 throws its errors, a player who jumps
  *   on the beat takes its carrots and fires back, it goes down, and the DORA
  *   card follows
- * - finishing a world opens the next one, and the browser remembers it
- * - the "git add ." admin at the end of world 2 throws everything onto the
- *   commit, a player who throws back all but the four files of US-014 beats
- *   him, and the commit cards follow to the end of the world
- * - the "I'll do it by hand after" admin at the end of world 3 takes the
- *   deployment actions out of the Pull Request and switches its base to main,
- *   a player who puts each back in time beats him, and the check goes green
- * - a deployment action declared in the wrong place in world 3 comes back as
- *   a failing gate in world 6
  * - every lab a world card links to exists, in English and in French
  * - every string a world quotes from a lab (its QUOTES) is still in that lab,
  *   in English and in French: a reworded lab fails here, naming the line
@@ -279,12 +284,23 @@ try {
     await page.click('.guinea-run [data-action="start"]');
     expect(await waitState(page, "playing"), `world ${world.id} starts`);
     const probe = WORLD_PROBES[world.id];
+    // The first frames of a world can be slow on a busy machine: start from its
+    // first drawn frame, then give the keys a few seconds to show
+    const firstFrameBy = Date.now() + 5000;
+    while ((await data(page, probe.attr)) === null && Date.now() < firstFrameBy) {
+      await page.waitForTimeout(150);
+    }
     const before = await data(page, probe.attr);
     await page.waitForTimeout(600);
     await typeKeys(page, probe.keys, 250);
-    await page.waitForTimeout(700);
-    const after = await data(page, probe.attr);
-    const reacted = probe.changes ? after !== null && after !== before : after === probe.expect;
+    const hasReacted = (value) => (probe.changes ? value !== null && value !== before : value === probe.expect);
+    let after = await data(page, probe.attr);
+    const until = Date.now() + 3000;
+    while (!hasReacted(after) && Date.now() < until) {
+      await page.waitForTimeout(150);
+      after = await data(page, probe.attr);
+    }
+    const reacted = hasReacted(after);
     expect(reacted, `world ${world.id} reacts to its controls (data-${probe.attr}: ${before} -> ${after})`);
     await page.waitForTimeout(1500);
     const playing = await state(page);
@@ -312,6 +328,15 @@ try {
     }
     if (!last) {
       expect((await page.locator('.guinea-run [data-action="next"]').count()) === 1, `world ${world.id} offers the next world`);
+    } else {
+      // The credits roll first: the Special Thanks of sfdx-hardis, then Cloudity
+      const roll = await page.evaluate(() => ({
+        names: document.querySelectorAll(".guinea-run .gr-roll-names li").length,
+        contact: document.querySelector(".guinea-run .gr-roll .gr-roll-contact")?.getAttribute("href") || ""
+      }));
+      expect(roll.names >= 40 && /^https:\/\/cloudity\.com\/contact-us\//.test(roll.contact), `the credits roll the special thanks (${roll.names} names) and invite to contact Cloudity`);
+      await page.click('.guinea-run [data-action="credits-card"]');
+      expect(await settles(page, () => page.locator('.guinea-run [data-action="credits-roll"]').count(), 1), "the credits roll leads to the final card");
     }
     const geometriesInWorld = await page.evaluate(() => window.__guineaRun.geometries());
     await page.click('.guinea-run [data-action="map"]');
@@ -345,6 +370,52 @@ try {
     expect((await page.locator('.guinea-run [data-action="play"][data-world="1"]').count()) === 1, "the browser remembers world 1 is open");
     expect((await page.textContent('.guinea-run .gr-card[data-world="0"] .gr-stars')).includes("★"), "the map shows the stars of world 0");
     await page.evaluate((key) => window.localStorage.removeItem(key), PROGRESS_KEY);
+    await page.context().close();
+  }
+
+  // 4a. World 0's admin, played by the world's own autoplay (decided at every
+  // step of the world): past the Re-check door the track holds, he throws his
+  // blocks across the lanes, the tools caught fly to his laptop until his
+  // excuses run out, he installs VS Code himself and the world ends. A small
+  // window, so the software renderer plays the fight at about its real speed
+  {
+    const page = await newPage({ viewport: { width: 640, height: 430 } });
+    // guinea-at=860: past the Re-check door, 20 m before the admin
+    expect(await openWorld(page, "en", 0, "&guinea-at=860"), "world 0 opens before its admin");
+    await page.click('.guinea-run [data-action="start"]');
+    await waitState(page, "playing");
+    await page.evaluate(() => window.__guineaRun.w0.autoplay(true));
+    expect(await settles(page, () => data(page, "boss"), "fight", 30000), 'the "Why install anything?" admin holds the track past the Re-check door');
+    // "beaten" lasts a few seconds, then "done" as the track runs again: either one says he gave in
+    const gaveIn = () => data(page, "boss").then((v) => (v === "beaten" || v === "done" ? "in" : v));
+    expect(await settles(page, gaveIn, "in", 240000), "the tools brought to his laptop take all his excuses");
+    const [thrown, bites] = await Promise.all(["thrown", "bites"].map((name) => data(page, name).then(Number)));
+    expect(thrown > 0 && bites >= 18, `he threw blocks across the lanes and the guinea pig brought him his tools (${thrown} rows thrown, ${bites} tools)`);
+    expect(await waitState(page, "done"), `he installs VS Code himself and world 0 ends (${await data(page, "bosstime")} s of game time for the fight)`);
+    await page.context().close();
+  }
+
+  // 4b. World 1's castle, played to its end by the world's own autoplay: it
+  // dodges the admin's Flows, runs under him while he jumps, touches the axe,
+  // and the bridge goes down with him (decided at every step of the world,
+  // whatever the frame rate of the software renderer)
+  {
+    const page = await newPage({ viewport: { width: 1280, height: 860 } });
+    // guinea-at=169: the checkpoint at the castle door
+    expect(await openWorld(page, "en", 1, "&guinea-at=169"), "world 1 opens at its castle");
+    await page.click('.guinea-run [data-action="start"]');
+    await waitState(page, "playing");
+    await page.evaluate(() => window.__guineaRun.w1.autoplay(true));
+    // A slow software renderer plays the game slower than the clock: generous waits
+    expect(await settles(page, () => data(page, "boss"), "fight", 120000), "the admin on the bridge fights after his talk");
+    const over = async () => (["done", "failed"].includes(await state(page)) ? "over" : "playing");
+    await settles(page, over, "over", 300000);
+    const end = await state(page);
+    const boss = await data(page, "boss");
+    const flows = Number(await data(page, "flows"));
+    const jumps = Number(await data(page, "adminJumps"));
+    expect(end === "done" && boss === "down", `the guinea pig touches the axe and the admin falls into the lava (state ${end}, data-boss: ${boss})`);
+    expect(flows > 0 && jumps > 0, `the admin threw Flows and jumped (${flows} thrown, ${jumps} jumps)`);
     await page.context().close();
   }
 
@@ -465,6 +536,62 @@ try {
     const taken = Number(await data(page, "taken"));
     expect(taken >= 8, `he took the deployment actions out and switched the base, and each went back (${taken} moves)`);
     expect(await waitState(page, ["celebrating", "done"]), `world 3 ends on its badge after the admin (${await data(page, "bosstime")} s of game time for the fight)`);
+    await page.context().close();
+  }
+
+  // 5f. World 4's Dev, played by the world's own autoplay (decided at every
+  // step of the world): he throws lines of i++ and worse down the lanes, the
+  // guinea pig stops them and hits him when his lane is clear, he gives up and
+  // the world ends. A small window, so the software renderer plays the fight
+  // at about its real speed
+  {
+    const page = await newPage({ viewport: { width: 640, height: 430 } });
+    // guinea-at=6: straight to the Dev, after the review of Mariia's Pull Request
+    expect(await openWorld(page, "en", 4, "&guinea-at=6"), "world 4 opens at its Dev");
+    await page.click('.guinea-run [data-action="start"]');
+    await waitState(page, "playing");
+    await page.evaluate(() => window.__guineaRun.w4.autoplay(true));
+    expect(await settles(page, () => data(page, "dev"), "fight", 30000), "the Dev who pads his tests with i++ comes at the end of world 4");
+    const face = await page.evaluate(() => {
+      const img = document.querySelector(".guinea-run .gr-dev-bar img");
+      return Boolean(img && img.complete && img.naturalWidth > 0 && /bosses\/boss-\d+\.svg/.test(img.src));
+    });
+    expect(face && Number(await data(page, "devface")) > 0, `the Dev has one of the twenty-one faces (data-devface: ${await data(page, "devface")})`);
+    expect(await settles(page, () => data(page, "dev"), "beaten", 240000), "the fixes thrown when his lane is clear take all his health");
+    const [thrown, stopped] = await Promise.all(["thrown", "stopped"].map((name) => data(page, name).then(Number)));
+    expect(thrown > 0 && stopped > 0, `he threw his lines and the guinea pig stopped the i++ (${thrown} thrown, ${stopped} i++ stopped)`);
+    expect(await waitState(page, "done"), "he says he will write real assertions, and world 4 ends");
+    await page.context().close();
+  }
+
+  // 5g. World 6's Dev "works on my sandbox", played to its end by the world's
+  // own autoplay (a jump on the exact beat of each target, whatever the frame
+  // rate of the software renderer): he throws his uncommitted components on
+  // the beat, the Pull Requests make the pipeline fire back, and the
+  // deployment reaches the integration org
+  {
+    const page = await newPage({ viewport: { width: 1280, height: 860 } });
+    // guinea-at=196: the checkpoint where the Dev walks in, after the choice of US-062
+    expect(await openWorld(page, "en", 6, "&guinea-at=196"), "world 6 opens at its Dev");
+    await page.click('.guinea-run [data-action="start"]');
+    await waitState(page, "playing");
+    await page.evaluate(() => window.__guineaRun.w6.autoplay(true));
+    expect(await settles(page, () => data(page, "dev"), "fight", 20000), 'the Dev "works on my sandbox" walks in near the end of world 6');
+    const face = await page.evaluate(() => {
+      const img = document.querySelector(".guinea-run .gr-dev-bar img");
+      return Boolean(img && img.complete && img.naturalWidth > 0 && /bosses\/boss-\d+\.svg/.test(img.src));
+    });
+    expect(face && Number(await data(page, "devface")) > 0, `the Dev has one of the twenty-one faces (data-devface: ${await data(page, "devface")})`);
+    const fought = await page
+      .waitForFunction(() => document.querySelector(".guinea-run")?.getAttribute("data-dev") !== "fight", null, { timeout: 240000 })
+      .then(
+        () => true,
+        () => false
+      );
+    const [dev, thrown, shots] = await Promise.all(["dev", "thrown", "shots"].map((name) => data(page, name)));
+    expect(fought && (dev === "down" || dev === "gone"), `the Dev has no health left after the fight (data-dev: ${dev})`);
+    expect(Number(thrown) > 0 && Number(shots) > 0, `he threw his components and the pipeline fired back (${thrown} thrown, ${shots} fired)`);
+    expect(await waitState(page, "done"), "the deployment from git reaches the integration org, and world 6 ends");
     await page.context().close();
   }
 

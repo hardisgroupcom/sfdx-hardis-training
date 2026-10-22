@@ -71,6 +71,32 @@ export const THEMES = {
     ]
   },
 
+  // 0, the "Why install anything?" admin past the Re-check door
+  // (worlds/world-0-setup.js switches to it while he fights): the first-day
+  // tune in a minor key, faster, a square lead over a driving beat
+  "0-admin": {
+    bpm: 132,
+    root: 57,
+    scale: MINOR,
+    progression: [0, 5, 3, 4],
+    volume: 0.16,
+    leadVoice: "square",
+    lead: {
+      a: melody("4.2.0.2.4...4... 5.3.5.7.5...3... 7.5.4.5.7...9... 8.6.4.6.4...2.1."),
+      b: melody("0.0.4.0.7.0.4.0. 0.0.5.0.8.0.5.0. 7.7.9.7.b.9.7.5. 4.4.5.4.2...0...")
+    },
+    sections: {
+      intro: { kick: FOUR, hat: OFFBEATS, bass: "x.......x......." },
+      fight: { kick: FOUR, clap: BACKBEAT, hat: EIGHTHS, bass: "x.x.o.x.x.x.o.x.", stab: OFFBEATS, lead: "a" },
+      push: { kick: FOUR, clap: BACKBEAT, hat: SIXTEENTHS, bass: "x.x.x.x.x.x.x.x.", arp: true, lead: "b" }
+    },
+    form: [
+      ["intro", 1],
+      ["fight", 8],
+      ["push", 4]
+    ]
+  },
+
   // 1 Build it in the org: a bouncy platformer, octave bass and a staccato square lead
   1: {
     bpm: 128,
@@ -92,6 +118,30 @@ export const THEMES = {
       ["chorus", 8],
       ["break", 4],
       ["chorus", 8]
+    ]
+  },
+
+  // 1, the castle at the end (worlds/world-1-org.js switches to it on the
+  // bridge): the same tune in a minor key, lower and slower, a heavy beat
+  "1-castle": {
+    bpm: 112,
+    root: 53,
+    scale: MINOR,
+    progression: [0, 5, 3, 4],
+    volume: 0.16,
+    leadVoice: "square",
+    lead: {
+      a: melody("0.2.4.7.4.2.4... 8.6.4.6.8...6... 9.7.5.7.9.a.9... 7.5.3.5.7...5.4.")
+    },
+    sections: {
+      intro: { kick: FOUR, pad: true, bass: "x.......x......." },
+      fight: { kick: FOUR, clap: BACKBEAT, hat: EIGHTHS, bass: "x.x.o.x.x.x.o.x.", stab: OFFBEATS, lead: "a" },
+      dread: { kick: "x.....x.x.......", hat: OFFBEATS, pad: true, arp: true, bass: "x.......x......." }
+    },
+    form: [
+      ["intro", 1],
+      ["fight", 8],
+      ["dread", 2]
     ]
   },
 
@@ -171,6 +221,32 @@ export const THEMES = {
       ["chorus", 8],
       ["break", 4],
       ["chorus", 8]
+    ]
+  },
+
+  // 4, the Dev who pads his test class with i++ (worlds/world-4-checks.js
+  // switches to it while he fights): the defense pulse, faster, a square
+  // lead that types away over sixteenth hats
+  "4-dev": {
+    bpm: 144,
+    root: 59,
+    scale: MINOR,
+    progression: [0, 5, 2, 6],
+    volume: 0.16,
+    leadVoice: "square",
+    lead: {
+      a: melody("4...4.2.4...7... 7...7.5.7...9... 6...6.4.6...8... 8...8.6.a...8.6."),
+      b: melody("0.0.0.2.4.4.4.2. 0.0.0.2.4...7... 5.5.5.4.2.2.2.0. 2.2.4.2.0.......")
+    },
+    sections: {
+      intro: { kick: FOUR, hat: SIXTEENTHS, bass: "x.......x......." },
+      fight: { kick: FOUR, clap: BACKBEAT, hat: SIXTEENTHS, bass: "x.xxx.xxx.xxx.xx", stab: OFFBEATS, lead: "b" },
+      push: { kick: FOUR, clap: BACKBEAT, hat: SIXTEENTHS, open: OFFBEATS, bass: "x.x.x.x.x.x.x.x.", arp: true, lead: "a" }
+    },
+    form: [
+      ["intro", 1],
+      ["fight", 8],
+      ["push", 4]
     ]
   },
 

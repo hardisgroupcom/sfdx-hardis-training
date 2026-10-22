@@ -13,11 +13,16 @@
  */
 
 const MUTE_KEY = "guinea-run-muted";
-const CLIPS = ["wheek-1", "wheek-2", "wheek-3", "hungry", "happy", "scared", "annoyed", "chirp"];
+// The wheeks of a jump: thirteen real ones, never the same twice in a row
+const WHEEKS = Array.from({ length: 13 }, (_, i) => "wheek-" + (i + 1));
+const CLIPS = [...WHEEKS, "hungry", "happy", "scared", "annoyed", "chirp"];
 // A wheek on every jump would be too much: at most one this often
 const WHEEK_GAP_S = 0.45;
 // C major pentatonic, two octaves up: any two of them sound good together
 const PENTATONIC = [1046.5, 1174.7, 1318.5, 1568, 1760, 2093];
+
+// What brings a suspended audio back: a gesture, or the page shown again
+const WAKE_EVENTS = ["pointerdown", "touchend", "keydown", "visibilitychange"];
 
 export function createSound() {
   let context = null;
@@ -25,6 +30,7 @@ export function createSound() {
   let room = null;
   let muted = false;
   let lastWheek = -10;
+  let lastWheekName = "";
   const buffers = {};
   try {
     muted = window.localStorage.getItem(MUTE_KEY) === "1";
@@ -53,10 +59,28 @@ export function createSound() {
       room = createRoom(context);
       room.output.connect(limiter);
       loadClips();
+      // A phone suspends the audio on a notification, a call or a dimmed
+      // screen, and never brings it back by itself: the next touch, key or
+      // return to the page does
+      context.addEventListener("statechange", wake);
+      for (const type of WAKE_EVENTS) {
+        document.addEventListener(type, wake, { capture: true, passive: true });
+      }
     } catch {
       context = null;
     }
     return context;
+  }
+
+  function wake() {
+    if (!context || context.state === "running" || context.state === "closed" || document.hidden) {
+      return;
+    }
+    try {
+      context.resume().catch(() => {});
+    } catch {
+      // Tried again at the next touch
+    }
   }
 
   /** A short, soft room: noise that fades out, used as a reverb. */
@@ -212,7 +236,10 @@ export function createSound() {
         return;
       }
       lastWheek = now;
-      clip(pick(["wheek-1", "wheek-2", "wheek-3"]), 0.42);
+      // Any of them but the last one heard
+      const choices = WHEEKS.filter((name) => name !== lastWheekName);
+      lastWheekName = pick(choices);
+      clip(lastWheekName, 0.42);
     },
     // A long wheek, as when the fridge opens: a world starts
     hungry() {
@@ -276,6 +303,92 @@ export function createSound() {
       swish(0, 0.2, 3000, 500);
       bell(523.3, 0.02, 0.16, 0.25, 2.5);
       bell(1046.5, 0.06, 0.14, 0.35, 3);
+    },
+    // World 1's castle: the admin throws a Flow, a fiery whoosh and a low crackle
+    fireFlow() {
+      swish(0, 0.16, 500, 2600);
+      swish(0.06, 0.08, 3200, 900);
+      bell(220, 0.01, 0.08, 0.2, 2.5);
+    },
+    // He lands on the bridge: a heavy wooden thump
+    bridgeStomp() {
+      thump(0, 0.7);
+      bell(98, 0, 0.12, 0.3, 2.2);
+    },
+    // The axe: a bright clang, the chain let go
+    bridgeAxe() {
+      bell(1318.5, 0, 0.22, 0.9, 5.4);
+      bell(1975.5, 0.01, 0.12, 0.7, 3.3);
+      swish(0.05, 0.12, 2500, 600);
+    },
+    // A segment of the bridge drops: a short knock, quiet, it repeats
+    bridgeDrop() {
+      thump(0, 0.22);
+      bell(pick([196, 220, 246.9]), 0, 0.05, 0.12, 2.5);
+    },
+    // He falls: a voice that screams all the way down, a falling whistle under it
+    bridgeScream() {
+      const ctx = audio();
+      if (!ctx) {
+        return;
+      }
+      const start = ctx.currentTime;
+      const length = 2.1;
+      const voice = ctx.createOscillator();
+      voice.type = "sawtooth";
+      voice.frequency.setValueAtTime(640, start);
+      voice.frequency.exponentialRampToValueAtTime(430, start + 0.5);
+      voice.frequency.exponentialRampToValueAtTime(160, start + length);
+      const vibrato = ctx.createOscillator();
+      vibrato.frequency.value = 7;
+      const depth = ctx.createGain();
+      depth.gain.value = 22;
+      vibrato.connect(depth);
+      depth.connect(voice.frequency);
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(0.4, start + 0.06);
+      gain.gain.setValueAtTime(0.4, start + length - 0.5);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + length);
+      // Three formants: a wide-open "aaah"
+      [
+        [800, 5, 1],
+        [1250, 7, 0.6],
+        [2600, 9, 0.25]
+      ].forEach(([frequency, q, level]) => {
+        const formant = ctx.createBiquadFilter();
+        formant.type = "bandpass";
+        formant.frequency.value = frequency;
+        formant.Q.value = q;
+        const formantGain = ctx.createGain();
+        formantGain.gain.value = level;
+        voice.connect(formant);
+        formant.connect(formantGain);
+        formantGain.connect(gain);
+      });
+      connect(gain, true);
+      voice.start(start);
+      vibrato.start(start);
+      voice.stop(start + length + 0.05);
+      vibrato.stop(start + length + 0.05);
+      const whistle = ctx.createOscillator();
+      whistle.type = "sine";
+      whistle.frequency.setValueAtTime(1700, start + 0.1);
+      whistle.frequency.exponentialRampToValueAtTime(260, start + 1.9);
+      const whistleGain = ctx.createGain();
+      whistleGain.gain.setValueAtTime(0.0001, start + 0.1);
+      whistleGain.gain.exponentialRampToValueAtTime(0.05, start + 0.2);
+      whistleGain.gain.exponentialRampToValueAtTime(0.0001, start + 1.95);
+      whistle.connect(whistleGain);
+      connect(whistleGain, true);
+      whistle.start(start + 0.1);
+      whistle.stop(start + 2);
+    },
+    // Into the lava: a deep plop and a hiss
+    lavaSplash() {
+      thump(0, 0.6);
+      swish(0.02, 0.22, 1800, 200);
+      swish(0.2, 0.1, 4000, 2000);
     },
     // Victor's note: a little chirp and a chime
     note() {
@@ -350,6 +463,34 @@ export function createSound() {
       bell(110, 0.02, 0.2, 0.5, 1.5);
       bell(103.8, 0.3, 0.2, 0.7, 1.5);
       bell(1568, 0.05, 0.1, 0.4, 3);
+    },
+    // World 0: the admin throws a block, a swish and a low "access denied" buzz, twice
+    w0Denied() {
+      swish(0, 0.12, 2600, 700);
+      bell(233.1, 0.03, 0.12, 0.16, 1.5);
+      bell(233.1, 0.2, 0.12, 0.2, 1.5);
+    },
+    // A tool lands on his laptop: a soft knock and an install chime going up
+    w0Install() {
+      thump(0, 0.2);
+      [0, 2, 4].forEach((step, i) => bell(PENTATONIC[step] / 2, 0.02 + i * 0.06, 0.14, 0.35));
+    },
+    // World 4: the Dev types a line of i++, three dry key clicks and a swish
+    w4Type() {
+      [0, 0.05, 0.1].forEach((at) => bell(2093, at, 0.03, 0.03, 2));
+      swish(0.1, 0.1, 2400, 900);
+    },
+    // A line of i++ stopped: a short pop going down
+    w4Squash() {
+      thump(0, 0.12);
+      bell(880, 0, 0.06, 0.08, 3);
+      bell(659.3, 0.04, 0.06, 0.1, 3);
+    },
+    // World 6: the Dev deploys a component from his sandbox, a terminal beep and a swish
+    w6Deploy() {
+      bell(1318.5, 0, 0.06, 0.06, 2);
+      bell(1760, 0.06, 0.06, 0.06, 2);
+      swish(0.08, 0.12, 2400, 600);
     }
   };
 
@@ -367,6 +508,7 @@ export function createSound() {
       }
       try {
         if (audio()) {
+          wake();
           SOUNDS[name]();
         }
       } catch {
@@ -383,7 +525,11 @@ export function createSound() {
       return muted;
     },
     dispose() {
+      for (const type of WAKE_EVENTS) {
+        document.removeEventListener(type, wake, { capture: true });
+      }
       if (context) {
+        context.removeEventListener("statechange", wake);
         context.close().catch(() => {});
         context = null;
       }

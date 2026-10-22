@@ -1614,3 +1614,116 @@ html.guinea-run-open body {
     font-size: 12px;
   }
 }
+
+/* ---------- The end credits: a roll on the navy of the pipeline, then the final card ---------- */
+
+.guinea-run .gr-panel.gr-roll-panel {
+  background: var(--gr-navy);
+  color: #ffffff;
+}
+
+.guinea-run .gr-roll-panel .gr-modal-header h2 {
+  color: #ffffff;
+}
+
+.guinea-run .gr-roll-panel .gr-modal-body {
+  padding: 0;
+  overflow: hidden;
+}
+
+.guinea-run .gr-roll {
+  position: relative;
+  height: min(520px, calc(100dvh - 190px));
+  overflow: hidden;
+  touch-action: none;
+  mask-image: linear-gradient(transparent, #000000 12%, #000000 88%, transparent);
+}
+
+.guinea-run .gr-roll.is-still {
+  overflow-y: auto;
+  touch-action: pan-y;
+  mask-image: none;
+}
+
+.guinea-run .gr-roll-track {
+  padding: 0 20px;
+  will-change: transform;
+}
+
+.guinea-run .gr-roll-block {
+  margin: 0 0 34px;
+}
+
+.guinea-run .gr-roll-block h3 {
+  margin: 0 0 8px;
+  color: #90d0fe;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.guinea-run .gr-roll-block p {
+  margin: 4px 0;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.guinea-run .gr-roll .gr-logo {
+  display: block;
+}
+
+.guinea-run .gr-roll-game {
+  font-size: 26px !important;
+  font-weight: 700;
+}
+
+.guinea-run .gr-roll-names {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 16px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+
+.guinea-run .gr-roll-logo {
+  display: block;
+  width: 150px;
+  margin: 0 auto 8px;
+}
+
+.guinea-run .gr-roll-by {
+  font-weight: 700;
+}
+
+.guinea-run .gr-roll-contact {
+  display: inline-block;
+  margin: 12px 0 4px;
+  text-decoration: none;
+}
+
+.guinea-run .gr-roll-panel .gr-roll-contact {
+  border-color: #ffffff;
+  background: #ffffff;
+  color: var(--gr-navy);
+}
+
+.guinea-run .gr-roll-thanks {
+  margin-top: 18px !important;
+  font-size: 18px !important;
+}
+
+.guinea-run .gr-roll-cta .gr-roll-contact {
+  margin-top: 8px;
+}
+
+@media (max-width: 600px) {
+  .guinea-run .gr-roll {
+    height: calc(100dvh - 150px);
+  }
+
+  .guinea-run .gr-roll-names {
+    grid-template-columns: 1fr;
+  }
+}

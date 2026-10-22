@@ -99,7 +99,7 @@ function createGame(options) {
   let run = null;
 
   loadStylesheet(options.base + "guinea-run.css");
-  const hud = createHud(shellT, { logoUrl, badgeUrl, labs });
+  const hud = createHud(shellT, { logoUrl, badgeUrl, labs, lang });
   const overlay = hud.overlay;
   document.body.appendChild(overlay);
   document.documentElement.classList.add("guinea-run-open");
@@ -130,7 +130,9 @@ function createGame(options) {
   });
   listen(window, "blur", pause);
 
-  const disposeInput = createInput(overlay, hud.canvas, onAction);
+  const disposeInput = createInput(overlay, hud.canvas, onAction, {
+    tapOnDown: () => state === "playing" && Boolean(current) && String(current.module.PADS) === "jump"
+  });
 
   function onAction(action, element) {
     if (action === "quit") {
@@ -177,6 +179,16 @@ function createGame(options) {
         return;
       case "resume":
         resume();
+        return;
+      case "credits-card":
+        if (state === "credits") {
+          hud.creditsCard();
+        }
+        return;
+      case "credits-roll":
+        if (state === "credits") {
+          hud.creditsRoll();
+        }
         return;
       case "pause":
         if (state === "playing") {
@@ -701,7 +713,8 @@ function createGame(options) {
   let backgroundMusic = null;
 
   function wantedTheme() {
-    if (state === "map") {
+    // The soft theme of the map plays under the credits too
+    if (state === "map" || state === "credits") {
       return THEMES.map ? { key: "map", run: null } : null;
     }
     if (!current || !current.world || (state !== "playing" && state !== "paused")) {
@@ -727,7 +740,7 @@ function createGame(options) {
         backgroundMusic.music.start();
       }
     }
-    if (!backgroundMusic || (state !== "playing" && state !== "map")) {
+    if (!backgroundMusic || (state !== "playing" && state !== "map" && state !== "credits")) {
       return;
     }
     // A world that speeds up (data-pace) takes its theme along, gently, on a bar line

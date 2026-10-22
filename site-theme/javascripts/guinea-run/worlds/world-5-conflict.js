@@ -8,7 +8,7 @@
  * merges lines, not permissions. Round 2 is the Account record page: each side
  * added one field at the same place, and keeping both is plainly right.
  * Round 3: three Pull Requests on a Friday afternoon, put in the order a
- * release manager picks. Then the boss (BOSS_FILES below): an admin in a hurry
+ * release manager picks. Then the boss (BOSS_FILES below): a dev in a hurry
  * grabs the mouse and clicks Accept Current Change on every conflict of one
  * more merge with Mariia, and his git push --force meets branch protection.
  *
@@ -17,6 +17,8 @@
  * the same buttons for a finger. A timer bar per round only gives a bonus.
  */
 import { SLDS, glyph, fitText, rounded } from "../core/painter.js";
+import { pickAdmins, adminFaceUrl as adminFaceUrlOf } from "../core/faces.js";
+import { readingMs } from "../hud.js";
 
 export const PADS = ["left", "right", "jump", "duck", "confirm"];
 
@@ -43,7 +45,7 @@ const CAMERA_WIDE = { x: 4.5, y: 2.0, z: 3.8 };
 const CAMERA_TALL = { x: 3.0, y: 2.3, z: 7.6 };
 
 /*
- * The boss, after the release: an admin in a hurry grabs the mouse during one
+ * The boss, after the release: a dev in a hurry grabs the mouse during one
  * more merge with Mariia and clicks Accept Current Change on every conflict.
  * Four files, each conflict two whole blocks (yours, then hers), so Accept
  * Both Changes is right every time. He hovers a link before he clicks it (the
@@ -86,7 +88,6 @@ const BOSS_FILES = [
 ];
 // One bite per conflict kept whole and per click caught; the push takes what is left
 const BOSS_HP = 12;
-const BOSS_FACES = 20;
 // Per file: how long he hovers a link before he clicks, and how long he waits between two
 const BOSS_WINDUP = [2.2, 1.8, 1.5, 1.3];
 const BOSS_PAUSE = [1.0, 0.8, 0.7, 0.6];
@@ -206,11 +207,11 @@ export const TEXTS = {
     e_pageLostHers: "Mariia's Region field is gone from the record page",
     e_page_tip: "Each side added one complete field block. Accept Incoming alone drops your field, Accept Current alone drops Mariia's: click both, and the page shows the two fields.",
     prList: "Pull Requests · integration branch",
-    bossName: "Admin in a hurry",
+    bossName: "Dev in a hurry",
     bossFile: "File {{n}} / {{total}}",
     r4_task:
-      "Monday: Mariia's US-062 is in the integration branch, and an admin grabbed your mouse. Each conflict is two people's work: keep both.",
-    co_boss: "An admin in a hurry grabs the mouse!",
+      "Monday: Mariia's US-062 is in the integration branch, and a dev grabbed your mouse. Each conflict is two people's work: keep both.",
+    co_boss: "A dev in a hurry grabs the mouse!",
     co_double: "Two at once: watch both!",
     co_protected: "Branch protection said no!",
     g_boss: "Accept Both Changes before he clicks",
@@ -228,7 +229,7 @@ export const TEXTS = {
     b_kept: "Both kept",
     b_first: "Faster than him",
     b_caughtToast: "Caught! The line is back",
-    b_beaten: "The admin gives the mouse back!",
+    b_beaten: "The dev gives the mouse back!",
     b_held: "Branch protection held",
     b_wipedHers: "Mariia's line removed",
     b_wipedYours: "Your line removed",
@@ -248,8 +249,8 @@ export const TEXTS = {
     c_mariia_end: "Every line of mine is there. Thanks for reading both sides!",
     stampProtected: "Branch protection: push rejected",
     screenProtected: "Protected",
-    retryHint: "Try again starts at the admin.",
-    retryBoss: "Straight back to the admin: the three rounds are done",
+    retryHint: "Try again starts at the dev.",
+    retryBoss: "Straight back to the dev: the three rounds are done",
     info_lost:
       "Accept Current Change is the fast button, and it throws the other side away without a word: read both sides before you click.",
   },
@@ -350,11 +351,11 @@ export const TEXTS = {
     e_pageLostHers: "Le champ Region de Mariia a disparu de la page d'enregistrement",
     e_page_tip: "Chaque côté a ajouté un bloc de champ complet. Accept Incoming seul retire votre champ, Accept Current seul retire celui de Mariia : cliquez sur les deux, et la page montre les deux champs.",
     prList: "Pull Requests · branch integration",
-    bossName: "Admin pressé",
+    bossName: "Dev pressé",
     bossFile: "Fichier {{n}} / {{total}}",
     r4_task:
-      "Lundi : US-062 de Mariia est dans la branch integration, et un admin a pris votre souris. Chaque conflit est le travail de deux personnes : gardez les deux.",
-    co_boss: "Un admin pressé prend la souris !",
+      "Lundi : US-062 de Mariia est dans la branch integration, et un dev a pris votre souris. Chaque conflit est le travail de deux personnes : gardez les deux.",
+    co_boss: "Un dev pressé prend la souris !",
     co_double: "Deux d'un coup : surveillez les deux !",
     co_protected: "La protection de branch a dit non !",
     g_boss: "Accept Both Changes avant son clic",
@@ -372,7 +373,7 @@ export const TEXTS = {
     b_kept: "Les deux gardés",
     b_first: "Plus rapide que lui",
     b_caughtToast: "Rattrapé ! La ligne revient",
-    b_beaten: "L'admin rend la souris !",
+    b_beaten: "Le dev rend la souris !",
     b_held: "La protection de branch a tenu",
     b_wipedHers: "Ligne de Mariia supprimée",
     b_wipedYours: "Votre ligne supprimée",
@@ -392,8 +393,8 @@ export const TEXTS = {
     c_mariia_end: "Toutes mes lignes sont là. Merci d'avoir lu les deux côtés !",
     stampProtected: "Protection de branch : push refusé",
     screenProtected: "Protégée",
-    retryHint: "Réessayer reprend à l'admin.",
-    retryBoss: "Retour direct à l'admin : les trois manches sont faites",
+    retryHint: "Réessayer reprend au dev.",
+    retryBoss: "Retour direct au dev : les trois manches sont faites",
     info_lost:
       "Accept Current Change est le bouton rapide, et il jette l'autre côté sans un mot : lisez les deux côtés avant de cliquer.",
   },
@@ -751,11 +752,12 @@ export function createWorld(ctx) {
   let herTurn = 0;
   let clockHead = 0;
 
-  /* ---------- The admin of the boss: a body, and one of the twenty faces ---------- */
+  /* ---------- The admin of the boss: a body, and one of the twenty-one faces ---------- */
 
   // A face picked once per play: guinea-seed replays the same one
-  const adminFace = 1 + Math.floor(ctx.random() * BOSS_FACES);
-  const adminFaceUrl = new URL("../../../images/bosses/boss-" + adminFace + ".svg", import.meta.url).href;
+  // One of the twenty-one admins, not the one of the last play
+  const adminFace = pickAdmins(5, ctx.random)[0];
+  const adminFaceUrl = adminFaceUrlOf(adminFace);
   // Where he stands, by the guinea pig's desk, and where he walks in from
   const ADMIN_AT = { x: 1.45, z: -0.25 };
   const ADMIN_FROM = 5.4;
@@ -784,7 +786,7 @@ export function createWorld(ctx) {
     body.position.y = 0.36;
     body.castShadow = true;
     torso.add(body);
-    // His badge on a lanyard: he is the admin, he has every permission
+    // His badge on a lanyard: he has every permission
     const badge = new THREE.Mesh(box, paint.plain(0xffffff, { roughness: 0.4 }));
     badge.scale.set(0.16, 0.2, 0.03);
     badge.position.set(0, 0.36, 0.29);
@@ -837,7 +839,7 @@ export function createWorld(ctx) {
     face.visible = false;
     face.renderOrder = 1;
     ctx.root.add(face);
-    const sign = paint.sign("w5-admin-sign", "Admin", { color: SLDS.error, glyph: "profile", height: 0.24 });
+    const sign = paint.sign("w5-admin-sign", "Dev", { color: SLDS.error, glyph: "profile", height: 0.24 });
     sign.visible = false;
     ctx.root.add(sign);
     return { group, torso, legs, arms, face, sign, gone: false };
@@ -1877,7 +1879,7 @@ export function createWorld(ctx) {
   arrow.appendChild(arrowPath);
   pointer.appendChild(arrow);
   faceImage(el("span", "gr-w5-admin-face", pointer));
-  el("span", "gr-w5-admin-tag", pointer, "Admin");
+  el("span", "gr-w5-admin-tag", pointer, "Dev");
   // What he says, in a bubble with his face
   const adminSay = el("div", "gr-w5-say", hud.layer);
   adminSay.hidden = true;
@@ -1887,6 +1889,9 @@ export function createWorld(ctx) {
   el("strong", "", sayBody, t("bossName"));
   const sayText = el("span", "", sayBody);
   let sayUntil = 0;
+  // Until when his last line is being read: a reaction does not replace it before
+  let sayRead = 0;
+  let sayPending = null;
   let completeButton = null;
 
   // A finger on the list: nothing scrolls under it for a moment
@@ -2200,7 +2205,7 @@ export function createWorld(ctx) {
       hitBoss();
       ctx.collect(80, t("b_caughtToast"));
       spark(20);
-      bossSay(t("b_caught"), 1.6);
+      bossSay(t("b_caught"), 1.6, true);
       // Caught red-handed: he steps back a moment
       setTargets([]);
       pointer.style.setProperty("--p", "0");
@@ -2401,12 +2406,23 @@ export function createWorld(ctx) {
       pointer.style.setProperty("--p", "0");
       if (clock - boss.lastMissSay > 6) {
         boss.lastMissSay = clock;
-        bossSay(t("b_missed"), 1.5);
+        bossSay(t("b_missed"), 1.5, true);
       }
     }
   }
 
-  function bossSay(text, seconds) {
+  function bossSay(text, seconds, reaction) {
+    // A quip never cuts a line still being read; a new line waits its turn (the newest only)
+    if (clock < sayRead) {
+      if (!reaction) {
+        sayPending = [text, seconds];
+      }
+      return;
+    }
+    sayPending = null;
+    const read = readingMs(text) / 1000;
+    sayRead = clock + (reaction ? 0.6 * read : read);
+    seconds = Math.max(seconds, read);
     sayText.textContent = text;
     adminSay.hidden = false;
     adminSay.classList.remove("is-new");
@@ -2540,6 +2556,9 @@ export function createWorld(ctx) {
       if (shown >= PUSH_COMMAND.length) {
         boss.typing = null;
       }
+    }
+    if (sayPending && clock >= sayRead) {
+      bossSay(sayPending[0], sayPending[1]);
     }
     if (!adminSay.hidden && clock > sayUntil) {
       adminSay.hidden = true;

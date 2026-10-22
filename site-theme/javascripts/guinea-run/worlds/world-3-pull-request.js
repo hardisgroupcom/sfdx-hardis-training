@@ -16,12 +16,12 @@
  */
 import { DEPLOYMENT_ACTIONS } from "../core/story.js";
 import { SLDS, fitText, glyph } from "../core/painter.js";
+import { pickAdmins, adminFaceUrl } from "../core/faces.js";
+import { lineKeeper } from "../hud.js";
 
 // Everything here is touched or dragged: no pads (the keys still work)
 export const PADS = [];
 
-// The admin of the end wears one of the twenty faces of images/bosses, at random
-const BOSS_FACES = 20;
 // Each card or base put back takes this much of his bar
 const BOSS_HP = 8;
 // His "manual step" timer, in seconds: time for a thumb, a little less once he is angry
@@ -363,7 +363,8 @@ export function createWorld(ctx) {
   let questionStart = 0;
   let elapsed = 0;
   // The admin's face for this play: guinea-seed replays the same one
-  const faceUrl = new URL("../../../images/bosses/boss-" + (1 + Math.floor(ctx.random() * BOSS_FACES)) + ".svg", import.meta.url).href;
+  // One of the twenty-one admins, not the one of the last play
+  const faceUrl = adminFaceUrl(pickAdmins(3, ctx.random)[0]);
   // A phone shows the Pull Request across the screen; from 1000 px the messages fit over the desk beside it
   const narrow = window.matchMedia ? window.matchMedia("(max-width: 700px)") : { matches: false };
   const roomy = window.matchMedia ? window.matchMedia("(min-width: 1000px)") : { matches: true };
@@ -1303,9 +1304,14 @@ export function createWorld(ctx) {
     ctx.setData("boss-hp", boss.hp);
   }
 
-  /** What he says, in his strip: two lines kept for it, so nothing below moves. */
-  function say(text) {
-    bossSay.textContent = text;
+  // What he says, in his strip (two lines kept for it, so nothing below moves)
+  const sayKeeper = lineKeeper();
+
+  /** His line: a quip at a hit never cuts a line still being read, a new line waits its turn. */
+  function say(text, reaction) {
+    sayKeeper.say(text, reaction, () => {
+      bossSay.textContent = text;
+    });
   }
 
   function updateBossMonitor() {
@@ -1525,7 +1531,7 @@ export function createWorld(ctx) {
     bossNode.classList.remove("is-hit");
     void bossNode.offsetWidth;
     bossNode.classList.add("is-hit");
-    say(line);
+    say(line, true);
     if (!boss.angry && boss.hp <= BOSS_HP / 2 && boss.hp > 0) {
       boss.angry = true;
       bossNode.classList.add("is-angry");

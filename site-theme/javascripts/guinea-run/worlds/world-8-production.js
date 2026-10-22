@@ -21,9 +21,10 @@
  * The finale is a DORA card after a first release, and two questions about
  * what its numbers really say.
  */
-import { createLevel, createMusicalRun, MUSICAL_TEXTS, MUSICAL_CSS, UNITS_PER_BEAT, endMissedInfo, musicalWorld } from "./musical.js";
+import { createLevel, createMusicalRun, MUSICAL_TEXTS, MUSICAL_CSS, endMissedInfo, musicalWorld, bossRounds, createBossBlaster } from "./musical.js";
 import { melody } from "../core/music.js";
 import { SLDS } from "../core/painter.js";
+import { readingMs } from "../hud.js";
 
 export const PADS = ["jump"];
 // The salesforce items (components, checks, runners, orgs, the rocket, the Cloudity logo and the
@@ -548,24 +549,13 @@ export function createWorld(ctx) {
   part(BOSS_BAR, 0x5a4fcf, "arch5");
   L.music(BOSS_BAR * BAR, "boss");
   const errorLooks = ERRORS.map((key) => ({ id: "dc-" + key, color: DC.block, glyph: "error", sign: t("e_" + key), title: t("e_" + key), tip: t("e_" + key + "_tip"), group: "boss", signEvery: true, signHeight: 0.46, signAnchor: 0.76, burst: 0x7473b5 }));
-  const carrots = [];
-  let errorCount = 0;
-  ROUNDS.forEach((round, r) => {
-    const from = (BOSS_BAR + 1 + r * ROUND_BARS) * BAR;
-    if (r > 0) {
-      L.checkpoint(from);
-    }
-    [...round.join("")].forEach((ch, i) => {
-      if (ch === "x") {
-        L.block(from + i, errorLooks[errorCount % errorLooks.length], { thrown: true });
-        errorCount += 1;
-      } else if (ch === "c") {
-        // On the ground, a little up: taken by running into it, missed only from the top of a jump
-        const power = { id: "carrot", n: carrots.length, model: "carrot", color: SLDS.warningDark, glyph: "bolt", sign: t("s_carrot"), y: 0.85, size: 1.3 };
-        carrots.push({ beat: from + i, x: (from + i) * UNITS_PER_BEAT, got: false });
-        L.power(from + i, power, true);
-      }
-    });
+  // A carrot is on the ground, a little up: taken by running into it, missed only from the top of a jump
+  const { powers: carrots } = bossRounds(L, {
+    bar: BOSS_BAR,
+    roundBars: ROUND_BARS,
+    rounds: ROUNDS,
+    look: (n) => errorLooks[n % errorLooks.length],
+    power: () => ({ id: "carrot", model: "carrot", color: SLDS.warningDark, glyph: "bolt", sign: t("s_carrot"), y: 0.85, size: 1.3 })
   });
 
   // The song speeds up part by part, on bar lines: production plays the riff of preprod faster
@@ -684,7 +674,6 @@ export function createWorld(ctx) {
   /* ---------- The boss: the Data Cloud ---------- */
 
   const { THREE, camera, engine, sound, pig } = ctx;
-  const overlay = hud.layer.parentElement;
   // What this world made itself, freed with it (the models' own parts belong to the pack)
   const owned = [];
   const boss = { state: "away", hp: BOSS_HP, rise: 0, hit: 0, throwing: 0, droop: 0, down: 0, blink: 2.5, downX: 0, loops: 0, thrown: 0, shots: 0, carrotCoached: false, blasterCoached: false };
@@ -719,32 +708,22 @@ export function createWorld(ctx) {
   const grey = new THREE.Color(0x9a98b8);
   const flash = new THREE.Color(1, 0.42, 0.42);
   const v = new THREE.Vector3();
-  const aim = new THREE.Vector3();
-
-  // The vegetables the guinea pig fires: two of each kind, used in turn
-  const shotGeometry = new THREE.SphereGeometry(0.26, 12, 8);
-  owned.push(shotGeometry);
-  const shots = [];
-  for (let i = 0; i < VEG_SHOTS.length * 2; i++) {
-    const kind = i % VEG_SHOTS.length;
-    let mesh = ctx.models ? ctx.models.get(VEG_SHOTS[kind], { height: 0.62, shadows: false }) : null;
-    if (!mesh) {
-      mesh = new THREE.Mesh(shotGeometry, ctx.paint.plain(VEG_COLORS[kind], { roughness: 0.4 }));
+  // The carrots make the guinea pig fire vegetables at its head (musical.js)
+  const blaster = createBossBlaster(ctx, run, {
+    id: "carrot",
+    powers: carrots,
+    models: VEG_SHOTS,
+    colors: VEG_COLORS,
+    beats: BLASTER_BEATS,
+    perBeat: SHOTS_PER_BEAT,
+    flight: SHOT_BEATS,
+    aim: aimAtHead,
+    onHit: (shot, at) => hitBoss(shot, at),
+    onFire: () => {
+      boss.shots += 1;
+      sound.play("throw");
     }
-    mesh.visible = false;
-    ctx.root.add(mesh);
-    shots.push({ mesh, live: false, beat: 0, from: new THREE.Vector3(), kind });
-  }
-  let nextShot = 0;
-  const blaster = { until: -1, next: 0 };
-
-  // A gold ring around the next carrot, so it reads as a power-up from afar
-  const haloMaterial = new THREE.MeshBasicMaterial({ color: 0xffb400, transparent: true, opacity: 0.95, toneMapped: false, depthWrite: false });
-  const haloGeometry = new THREE.TorusGeometry(0.85, 0.1, 8, 36);
-  owned.push(haloMaterial, haloGeometry);
-  const halo = new THREE.Mesh(haloGeometry, haloMaterial);
-  halo.visible = false;
-  ctx.root.add(halo);
+  });
 
   // Its life, under the top bar, and what it says, beside its head
   const bossBar = el("div", "gr-w8-bossbar", hud.extra);
@@ -756,7 +735,6 @@ export function createWorld(ctx) {
   const bubble = { from: 0, until: 0, px: -1, py: -1 };
   const shown = {};
   let autoplay = false;
-  let autoDone = -1;
 
   // The check plays the boss by itself, on the exact beats (window.__guineaRun only exists for checks)
   if (window.__guineaRun) {
@@ -790,9 +768,7 @@ export function createWorld(ctx) {
     if (boss.state === "fight" && run.mode === "run" && run.beat >= ROUNDS_END) {
       playAgain();
     }
-    updateBlaster();
-    updateShots();
-    placeHalo(time);
+    coachCarrot(blaster.update(time, boss.state === "fight"));
     placeRabbit(dt, time);
     placeBubble();
     writeBossData();
@@ -827,7 +803,7 @@ export function createWorld(ctx) {
   }
 
   function takeCarrot(power) {
-    carrots[power.n].got = true;
+    blaster.take(power.n, boss.state === "fight");
     if (boss.state !== "fight") {
       ctx.points(20);
       return;
@@ -837,20 +813,11 @@ export function createWorld(ctx) {
       boss.blasterCoached = true;
       run.coach(t("coachBlaster"), 2400, true);
     }
-    const beat = run.music.beat;
-    blaster.until = beat + BLASTER_BEATS;
-    blaster.next = Math.ceil(beat * SHOTS_PER_BEAT) / SHOTS_PER_BEAT;
   }
 
   /** A hit or a new round sends the guinea pig to the checkpoint: the carrots from there come back. */
   function bossSetBack() {
-    blaster.until = -1;
-    run.rearm("carrot");
-    for (const c of carrots) {
-      if (c.beat >= run.checkpoint) {
-        c.got = false;
-      }
-    }
+    blaster.setBack();
   }
 
   function playAgain() {
@@ -862,66 +829,19 @@ export function createWorld(ctx) {
     }
   }
 
-  /** The blaster fires on every half beat while it lasts: the shots are part of the song. */
-  function updateBlaster() {
-    if (blaster.until < 0) {
-      return;
-    }
-    if (boss.state !== "fight" || run.mode === "rewind") {
-      blaster.until = -1;
-      return;
-    }
-    const beat = run.music.beat;
-    while (beat >= blaster.next && blaster.next < blaster.until) {
-      fire(blaster.next);
-      blaster.next += 1 / SHOTS_PER_BEAT;
-    }
-    if (beat >= blaster.until) {
-      blaster.until = -1;
-    }
-  }
-
-  function fire(beat) {
-    const shot = shots[nextShot % shots.length];
-    nextShot += 1;
-    const p = pig.object.position;
-    shot.live = true;
-    shot.beat = beat;
-    shot.from.set(p.x + 0.55, p.y + 0.65, 0.25);
-    shot.mesh.visible = true;
-    boss.shots += 1;
-    sound.play("throw");
-  }
-
-  function updateShots() {
-    const beat = run.music.beat;
+  /** Where the vegetables fly: its head. */
+  function aimAtHead(out) {
     const head = nodes.head;
-    for (const shot of shots) {
-      if (!shot.live) {
-        continue;
-      }
-      const k = Math.max(0, (beat - shot.beat) / SHOT_BEATS);
-      if (head) {
-        head.o.getWorldPosition(aim);
-        aim.y += rabbit.scale.y * 0.3;
-      } else {
-        aim.copy(rabbit.position).y += rabbit.scale.y * 0.6;
-      }
-      if (k >= 1) {
-        shot.live = false;
-        shot.mesh.visible = false;
-        hitBoss(shot);
-        continue;
-      }
-      const x = shot.from.x + (aim.x - shot.from.x) * k;
-      const y = shot.from.y + (aim.y - shot.from.y) * k + 2.2 * 4 * k * (1 - k);
-      const z = shot.from.z + (aim.z - shot.from.z) * k;
-      shot.mesh.position.set(x, y - 0.31, z);
-      shot.mesh.rotation.set(k * 5, k * 8, k * 3);
+    if (head) {
+      head.o.getWorldPosition(out);
+      out.y += rabbit.scale.y * 0.3;
+    } else {
+      out.copy(rabbit.position).y += rabbit.scale.y * 0.6;
     }
+    return out;
   }
 
-  function hitBoss(shot) {
+  function hitBoss(shot, aim) {
     if (boss.state !== "fight") {
       return;
     }
@@ -929,11 +849,11 @@ export function createWorld(ctx) {
     boss.hit = 1;
     ctx.points(5);
     sound.play("bossHit");
-    ctx.fx.burst(aim.x, aim.y, aim.z, { count: 7, colors: [VEG_COLORS[shot.kind], 0xffffff], speed: 3, up: 2.5, life: 0.5 });
+    ctx.fx.burst(aim.x, aim.y, aim.z, { count: 7, colors: [shot.color, 0xffffff], speed: 3, up: 2.5, life: 0.5 });
     renderBossBar();
     // Not while the coach line of the first carrot is up: they would sit on each other
     if (boss.hp === BOSS_HP - 14 || boss.hp === BOSS_HP / 2) {
-      say(t("sayHit"), 1.8);
+      say(t("sayHit"), 1.8, 0, true);
     }
     if (boss.hp <= 0) {
       defeatBoss();
@@ -943,7 +863,9 @@ export function createWorld(ctx) {
   function defeatBoss() {
     boss.state = "down";
     boss.down = 0;
-    blaster.until = -1;
+    // It sinks once its last line has been read
+    boss.sinkAt = Math.max(1.5, readingMs(t("sayDown")) / 1000 - 1);
+    blaster.stop();
     bossRetry = null;
     // Its errors still ahead pop, the band goes back to the chorus
     run.convert("boss");
@@ -978,7 +900,7 @@ export function createWorld(ctx) {
       // It sags in front of the player for a moment, then the guinea pig runs on and it sinks behind the lawn
       boss.down += dt;
       boss.droop = Math.min(1, boss.down / 0.6);
-      const sink = Math.max(0, boss.down - 1.5);
+      const sink = Math.max(0, boss.down - (boss.sinkAt || 1.5));
       if (sink > 0) {
         x = boss.downX;
       } else {
@@ -1037,25 +959,23 @@ export function createWorld(ctx) {
     }
   }
 
-  /** The gold ring turns round the next carrot not taken yet, near the camera. */
-  function placeHalo(time) {
-    const next = boss.state === "fight" ? carrots.find((c) => !c.got && c.beat > run.beat - 0.3) : null;
-    halo.visible = Boolean(next && next.x - camera.position.x < 14);
-    if (!halo.visible) {
-      return;
-    }
-    const pulse = engine.motion ? run.music.pulse : 0;
-    halo.position.set(next.x, 0.85, 0.05);
-    halo.rotation.set(0, Math.sin(time * 2) * 0.5, time * 1.5);
-    halo.scale.setScalar(1 + pulse * 0.18);
-    if (!boss.carrotCoached && next.beat - run.beat < 3) {
+  /** The first time the gold ring turns round a carrot near the guinea pig (musical.js), the coach says what it is. */
+  function coachCarrot(next) {
+    if (next && !boss.carrotCoached && next.x - camera.position.x < 14 && next.beat - run.beat < 3) {
       boss.carrotCoached = true;
       run.coach(t("coachCarrot"), 2000, true);
     }
   }
 
   /** A line in the bubble for a few seconds, after a delay when a coach line is up first. */
-  function say(text, seconds, delay) {
+  function say(text, seconds, delay, reaction) {
+    // A reaction never cuts a line still being read; every line stays its reading time
+    if (reaction && engine.time < (bubble.read || 0)) {
+      return;
+    }
+    const read = readingMs(text) / 1000;
+    seconds = Math.max(seconds, read);
+    bubble.read = reaction ? 0 : engine.time + (delay || 0) + read;
     sayNode.textContent = text;
     sayNode.hidden = true;
     bubble.from = engine.time + (delay || 0);
@@ -1098,16 +1018,10 @@ export function createWorld(ctx) {
     }
   }
 
-  /** For the check: a jump on the exact beat of every target, whatever the frame rate. */
+  /** For the check: a jump on the exact beat of every target, whatever the frame rate (musical.js). */
   function autoJump() {
-    if (!autoplay || run.mode !== "run") {
-      return;
-    }
-    // The next target, written by the run at the end of its last step (behind it: not written yet)
-    const next = Number(overlay.getAttribute("data-jumpat"));
-    if (Number.isFinite(next) && next !== autoDone && next > run.beat - 0.05 && next - run.beat < 0.1) {
-      autoDone = next;
-      run.action("jump");
+    if (autoplay) {
+      run.autoJump();
     }
   }
 
@@ -1331,6 +1245,7 @@ export function createWorld(ctx) {
       }
       bossBar.remove();
       sayNode.remove();
+      blaster.dispose();
       for (const thing of owned) {
         thing.dispose();
       }

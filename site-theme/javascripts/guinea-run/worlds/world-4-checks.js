@@ -16,8 +16,16 @@
  * big green merge button, and the Opportunity layout lost Next_Step__c on
  * the way. Spotting it and asking for the change wins; merging costs an
  * attempt.
+ *
+ * The boss at the end: a Dev (one of the twenty-one faces, a different one at
+ * each play) who wants his 80% by padding his test class with i++. He throws
+ * lines of i++ down the lanes, with an empty catch, a query in a loop or a
+ * hardcoded Id among them. The guinea pig stops them and hits him when his
+ * lane is clear, until he says he will write real assertions.
  */
 import { SLDS, pictureBox, rounded, fitText, glyph } from "../core/painter.js";
+import { pickAdmins, adminFaceUrl } from "../core/faces.js";
+import { createDevFigure, createDevBar, createDevSpeech, DEV_CSS, DEV_HEAD_R } from "../core/dev.js";
 
 export const PADS = ["left", "right", "jump", "confirm"];
 // The world's own items: CI runners, check statuses, Apex test flasks, Victor's note
@@ -25,6 +33,8 @@ export const PADS = ["left", "right", "jump", "confirm"];
 export const PHONE_MESSAGES = "bottom";
 
 export const MODELS = ["salesforce"];
+/** The theme of the world, and the Dev's own while he fights (core/themes.js). */
+export let MUSIC = 4;
 
 const LANES = [-2.2, 0, 2.2];
 const SPAWN_Z = -22;
@@ -51,6 +61,20 @@ const PACE_GAIN = 0.36;
 const MERCY = 0.2;
 const MERCY_FADE = 0.04;
 
+// The Dev at the end
+const DEV_HP = 12;
+const DEV_Z = -9;
+const DEV_SCALE = 1.6;
+const DEV_PACE = 1.12;
+const DEV_ENTER_S = 2.8;
+const DEV_BEATEN_S = 3.4;
+const DEV_LEAVE_S = 1.1;
+// After a hit he hops to another lane, and a fix cannot touch him on the way
+const DEV_GUARD_S = 0.9;
+// Out of attempts at the Dev: the next try, within this time, starts at him
+const DEV_RETRY_MS = 15 * 60000;
+let devRetryAt = 0;
+
 // The Opportunity Information section of Opportunity-Opportunity Layout, before US-052
 const LAYOUT = [
   ["Opportunity Name", "Name"],
@@ -72,7 +96,7 @@ const REQUIRED = "StageName";
 
 export const TEXTS = {
   en: {
-    intro: "Your next story, US-016, computes the tier in Apex. The findings of its Pull Request's checks march on it down three lanes. Stop the errors, keep the coverage over 80%, then review Mariia's Pull Request before you merge it.",
+    intro: "Your next story, US-016, computes the tier in Apex. The findings of its Pull Request's checks march on it down three lanes. Stop the errors, keep the coverage over 80%, then review Mariia's Pull Request before you merge it. A Dev waits at the end.",
     how1: "Left and right arrows, or swipe, to change lane",
     how2: "Up, Space or a tap throws a fix down your lane",
     how3: "Stop the red errors, let the grey warnings pass",
@@ -198,10 +222,35 @@ export const TEXTS = {
     faster: "Faster!",
     coverageShort: "Coverage still under 80%: in a real project the check would refuse it",
     missedCoverage: "The coverage stayed at {{coverage}}%: the deployment check refuses anything under 80%, and the two tests of AccountTierService are what lets it through.",
-    missedMerge: "You merged US-052 before the fix: that takes Next_Step__c off the layout in the integration org, and Restore branch is the way back."
+    missedMerge: "You merged US-052 before the fix: that takes Next_Step__c off the layout in the integration org, and Restore branch is the way back.",
+    p6: "Dev",
+    goal6: "Stop the i++, then throw at the Dev",
+    devName: "Dev",
+    devPr: "The Dev's Pull Request",
+    devInto: "AccountTierServiceTest.cls: 300 lines of i++",
+    devArrive: "80% coverage by Friday? Easy: I fill my test class with i++.",
+    devLine1: "Coverage is coverage! Nobody reads test classes.",
+    devLine2: "Then an empty catch: no error, no problem!",
+    devOuch: "Hey, that line was covered!",
+    devGloat: "See? The percentage goes up!",
+    devGiveUp: "OK, OK... I'll write real tests, with real assertions.",
+    chip_ipp: "i++",
+    chip_emptyCatch: "Empty catch",
+    chip_hardId: "Hardcoded Id",
+    fix_ipp: "i++ is not a test",
+    fix_catch: "Handle the error, or let it fail",
+    fix_hardId: "Query the record, never its Id",
+    tip_catch: "An empty catch hides the error: the test goes green and the bug ships. Log it, handle it, or let it fail.",
+    tip_hardId: "A record Id changes from one org to the next: the code works in your sandbox and fails in the production org. Query the record by a field that means something.",
+    ippIn: "i++ got in: the coverage goes up, nothing is tested",
+    devDown: "Coverage comes from assertions",
+    devLesson: "The quality gate and the reviewer caught the fake coverage",
+    retryHint: "Try again starts at the Dev.",
+    retryBoss: "Straight back to the Dev: your review is done",
+    missedPadding: "{{n}} lines of i++ reached the Pull Request: they lift the coverage and test nothing. A test proves something, with System.assertEquals."
   },
   fr: {
-    intro: "Votre story suivante, US-016, calcule le niveau en Apex. Les trouvailles des contrôles de sa Pull Request marchent sur elle par trois couloirs. Arrêtez les erreurs, gardez la couverture au-dessus de 80 %, puis relisez la Pull Request de Mariia avant de la merger.",
+    intro: "Votre story suivante, US-016, calcule le niveau en Apex. Les trouvailles des contrôles de sa Pull Request marchent sur elle par trois couloirs. Arrêtez les erreurs, gardez la couverture au-dessus de 80 %, puis relisez la Pull Request de Mariia avant de la merger. Un dev vous attend à la fin.",
     how1: "Flèches gauche et droite, ou glisser, pour changer de couloir",
     how2: "Haut, Espace ou un tap lance une correction",
     how3: "Arrêtez les erreurs rouges, laissez passer les gris",
@@ -327,7 +376,32 @@ export const TEXTS = {
     faster: "Plus vite !",
     coverageShort: "Couverture toujours sous 80 % : sur un vrai projet, le contrôle la refuserait",
     missedCoverage: "La couverture est restée à {{coverage}} % : le contrôle de déploiement refuse tout ce qui est sous 80 %, et ce sont les deux tests d'AccountTierService qui la font passer.",
-    missedMerge: "Vous avez mergé US-052 avant la correction : cela retire Next_Step__c de la présentation de page dans l'org d'integration, et Restore branch est le chemin du retour."
+    missedMerge: "Vous avez mergé US-052 avant la correction : cela retire Next_Step__c de la présentation de page dans l'org d'integration, et Restore branch est le chemin du retour.",
+    p6: "Dev",
+    goal6: "Arrêtez les i++, puis visez le dev",
+    devName: "Dev",
+    devPr: "La Pull Request du dev",
+    devInto: "AccountTierServiceTest.cls : 300 lignes de i++",
+    devArrive: "80 % de couverture pour vendredi\u00a0? Facile\u00a0: je remplis ma classe de test avec des i++.",
+    devLine1: "La couverture, c'est la couverture\u00a0! Personne ne lit les classes de test.",
+    devLine2: "Alors un catch vide\u00a0: pas d'erreur, pas de problème\u00a0!",
+    devOuch: "Hé, cette ligne était couverte\u00a0!",
+    devGloat: "Vous voyez\u00a0? Le pourcentage monte\u00a0!",
+    devGiveUp: "OK, OK... j'écris de vrais tests, avec de vraies assertions.",
+    chip_ipp: "i++",
+    chip_emptyCatch: "catch vide",
+    chip_hardId: "Id en dur",
+    fix_ipp: "i++ n'est pas un test",
+    fix_catch: "Traitez l'erreur, ou laissez-la échouer",
+    fix_hardId: "Requêtez l'enregistrement, pas son Id",
+    tip_catch: "Un catch vide cache l'erreur : le test passe au vert et le bug part avec. Tracez-la, traitez-la, ou laissez-la échouer.",
+    tip_hardId: "Un Id d'enregistrement change d'une org à l'autre : le code marche dans votre sandbox et échoue dans l'org de production. Requêtez l'enregistrement par un champ qui a du sens.",
+    ippIn: "Un i++ est passé : la couverture monte, rien n'est testé",
+    devDown: "La couverture vient des assertions",
+    devLesson: "Le contrôle qualité et le relecteur ont repéré la fausse couverture",
+    retryHint: "Réessayer reprend au dev.",
+    retryBoss: "Retour direct au dev : votre revue est faite",
+    missedPadding: "{{n}} lignes de i++ ont atteint la Pull Request : elles montent la couverture et ne testent rien. Un test prouve quelque chose, avec System.assertEquals."
   }
 };
 
@@ -363,8 +437,14 @@ const KINDS = {
   select: { tone: "error", title: "SELECT Id, Title", detail: "FROM Contact", speed: 2.72, hp: 1, fix: "fix_select", tip: "tip_select", points: 30 },
   golden: { tone: "golden", speed: 3.68, hp: 1 },
   test: { tone: "test", speed: 2.24 },
-  fake: { tone: "fake", speed: 2.24 }
+  fake: { tone: "fake", speed: 2.24 },
+  // What the Dev throws: mostly lines of i++, now and then worse
+  ipp: { tone: "padding", title: "i++;", face: "i++", speed: 2.2, hp: 1, points: 15 },
+  emptyCatch: { tone: "error", title: "catch (Exception e) {}", detail: "AccountTierService.cls", speed: 1.9, hp: 1, fix: "fix_catch", tip: "tip_catch", points: 40 },
+  hardId: { tone: "error", title: "WHERE Id = '0015g00000XyZ1AAA'", detail: "AccountTierService.cls", speed: 2.1, hp: 1, fix: "fix_hardId", tip: "tip_hardId", points: 40 }
 };
+// The Dev's worse lines, by stage of the fight
+const DEV_WORSE = [["hardId", "select"], ["hardId", "select", "emptyCatch"], ["emptyCatch", "select", "emptyCatch", "hardId"]];
 const WARNINGS = ["warnDebug", "warnDoc", "warnTrivy", "warnActions"];
 const TEST_NAMES = [
   "tierIsGoldForAccountsWithManyContacts",
@@ -377,12 +457,14 @@ const TONES = {
   error: { color: SLDS.error, icon: "error", side: 0xba0517 },
   test: { color: SLDS.success, icon: "check", side: 0x2e844a },
   fake: { color: "#8AA594", icon: "empty", side: 0x8aa594 },
-  golden: { color: "#C98A00", icon: "star", side: 0xf2c94c }
+  golden: { color: "#C98A00", icon: "star", side: 0xf2c94c },
+  padding: { color: "#DD7A01", icon: "code", side: 0xa35400 }
 };
 
 export function createWorld(ctx) {
   const { THREE, root, pig, paint, t, hud, engine, camera } = ctx;
   const random = ctx.random;
+  MUSIC = 4;
 
   /* ---------- The stage: three lanes from the linter to the Pull Request ---------- */
 
@@ -681,6 +763,7 @@ export function createWorld(ctx) {
   // A card face is a colour and a glyph: the words are on the sign above it
   function faceOf(kind) {
     const tone = TONES[KINDS[kind].tone];
+    const words = KINDS[kind].face;
     return {
       face: paint.material(
         "w4-face:" + KINDS[kind].tone,
@@ -691,6 +774,14 @@ export function createWorld(ctx) {
           c.fillStyle = tone.color;
           c.fill();
           glyph(c, tone.icon, 44, h / 2, 64, SLDS.white);
+          if (words) {
+            // The Dev's padding says what it is, big, on the card itself
+            c.fillStyle = SLDS.white;
+            c.textAlign = "center";
+            c.textBaseline = "middle";
+            fitText(c, words, 160, h / 2 + 2, 150, 60, "800", true);
+            return;
+          }
           c.fillStyle = "rgba(255,255,255,0.85)";
           for (const [y, len] of [
             [22, 150],
@@ -834,7 +925,8 @@ export function createWorld(ctx) {
     error: [0xea001e, 0xff5d2d, 0xffb400, 0xffffff],
     test: [0x2e844a, 0x45c65a, 0xffb400, 0x1b96ff],
     fake: [0x8aa594, 0xc9c9c9],
-    golden: [0xffb400, 0xf2c94c, 0xffffff, 0xe3066a]
+    golden: [0xffb400, 0xf2c94c, 0xffffff, 0xe3066a],
+    padding: [0xdd7a01, 0xfe9339, 0xffffff]
   };
 
   function burst(x, y, z, tone, count) {
@@ -874,6 +966,10 @@ export function createWorld(ctx) {
   let lastCoach = -10;
   /** A big instruction in the middle, never more than one every 3 seconds. */
   function coach(key, force) {
+    // At the Dev the goal line says it: a big line in the middle would hide him
+    if (phase === "dev") {
+      return;
+    }
     if (force || clock - lastCoach > 3) {
       lastCoach = clock;
       hud.coach(t(key), 2600);
@@ -897,7 +993,7 @@ export function createWorld(ctx) {
     waveTime = 0;
     queue = [];
     ctx.setData("wave", n);
-    hud.setPath([t("p1"), t("p2"), t("p3"), t("p4"), t("p5")], n - 1);
+    hud.setPath([t("p1"), t("p2"), t("p3"), t("p4"), t("p5"), t("p6")], n - 1);
     showBanner(n);
     // On a phone the review panel says it itself, under the top bar
     hud.goal(n === 5 && engine.portrait ? "" : t("goal" + n));
@@ -1144,6 +1240,15 @@ export function createWorld(ctx) {
       ctx.collect(30, t("fakeShot"));
       return;
     }
+    if (tone === "padding") {
+      kill(o, true);
+      dev.stopped += 1;
+      ctx.sound.play("w4Squash");
+      ctx.collect(o.def.points, dev.stopped === 1 ? t("fix_ipp") : "");
+      renderDevBar();
+      setDevData();
+      return;
+    }
     if (tone === "golden") {
       kill(o, true);
       goldenFound = true;
@@ -1211,6 +1316,7 @@ export function createWorld(ctx) {
       }
       const bossZ = boss.group.position.z;
       const bossInWay = boss.active && !boss.dying && Math.abs(boss.x - LANES[slot.lane]) < 1.2 && bossZ <= from + 0.3 && bossZ >= slot.z - 0.3;
+      const devInWay = dev.state === "fight" && dev.guard <= 0 && Math.abs(dev.x - LANES[slot.lane]) < 1.1 && dev.z <= from + 0.3 && dev.z >= slot.z - 0.3;
       if (target) {
         slot.live = false;
         slot.mesh.visible = false;
@@ -1219,6 +1325,10 @@ export function createWorld(ctx) {
         slot.live = false;
         slot.mesh.visible = false;
         hitBoss();
+      } else if (devInWay) {
+        slot.live = false;
+        slot.mesh.visible = false;
+        hitDev();
       } else if (slot.z < SPAWN_Z - 2) {
         slot.live = false;
         slot.mesh.visible = false;
@@ -1316,14 +1426,42 @@ export function createWorld(ctx) {
       hud.tick(t("goldenPassed"));
       return;
     }
+    if (tone === "padding") {
+      // Points, never an attempt: the result says how many got in
+      dev.letIn += 1;
+      ctx.points(-20);
+      ctx.sound.play("wrong");
+      burst(LANES[o.lane], 0.8, PR_LINE + 0.6, "padding", 5);
+      if (dev.letIn === 1) {
+        hud.toast(t("ippIn"), "bad");
+        hud.tick("AccountTierServiceTest.cls: i++; i++; i++;");
+      }
+      devSay("devGloat", true);
+      renderDevBar();
+      setDevData();
+      return;
+    }
     if (tone === "error") {
       shake = 0.4;
       pig.hitWobble(0.6);
       burst(LANES[o.lane], 0.8, PR_LINE + 0.6, "error", 8);
-      ctx.loseAttempt(t("errorReached", { finding: t("chip_" + o.kind) }), t(o.def.tip));
+      lose(t("errorReached", { finding: t("chip_" + o.kind) }), t(o.def.tip));
       coach("coachError");
       // Mercy: the pace drops a notch for a few seconds, then climbs again
       mercy = MERCY;
+    }
+  }
+
+  /**
+   * A mistake that costs an attempt. Out of attempts at the Dev, the card says
+   * the next try starts at him.
+   */
+  function lose(title, tip) {
+    const atDev = phase === "dev";
+    const last = atDev && ctx.attempts <= 1;
+    if (ctx.loseAttempt(title, last ? tip + " " + t("retryHint") : tip) <= 0 && atDev) {
+      devRetryAt = Date.now();
+      speech.hide();
     }
   }
 
@@ -1662,16 +1800,15 @@ export function createWorld(ctx) {
         prView.box = "merged";
         drawPr();
         hud.toast(t("fixMerged"), "good");
-        // The review is done: the panel steps aside for the Cloudity mark
+        // The review is done: the panel steps aside, the lanes are back
         panel.hidden = true;
-        if (cloudity) {
-          cloudity.visible = true;
-          cloudRise = 0.001;
-        }
         ctx.fx.burst(0, 2, -2.5, { count: 60, speed: 5, up: 6, life: 1.4 });
         ctx.sound.play("gate");
       });
-      after(6.2, () => ctx.finish(state.merges === 0 && state.wrong === 0 ? 300 : 150, missed.join(" ")));
+      after(6.4, () => {
+        reviewBonus = state.merges === 0 && state.wrong === 0 ? 300 : 150;
+        startDev(false);
+      });
     });
 
     mergeButton.addEventListener("click", () => {
@@ -1735,6 +1872,285 @@ export function createWorld(ctx) {
     list[next].focus();
   }
 
+  /* ---------- The Dev at the end: "80% by Friday, with i++" ---------- */
+
+  // His face: one of the twenty-one, not the one of the last play
+  const devFace = pickAdmins(4, random)[0];
+  const devFaceUrl = adminFaceUrl(devFace);
+  const dev = { state: "off", hp: DEV_HP, lane: 1, x: 0, z: DEV_Z - 8, time: 0, nextMove: 0, nextShot: 0, volley: 0, volleyLane: 1, stage: 0, flash: 0, type: 0, guard: 0, hits: 0, thrown: 0, stopped: 0, letIn: 0, endAt: 0, giveUpShown: false };
+  let reviewBonus = 300;
+  let autoplay = false;
+  let autoTimer = 0;
+
+  // The check plays the Dev by itself (window.__guineaRun only exists for checks)
+  if (window.__guineaRun) {
+    window.__guineaRun.w4 = {
+      autoplay(on) {
+        autoplay = on !== false;
+      },
+      // Straight to the Dev from the battle, as if the review were done (a try again then starts at him)
+      toDev() {
+        if (phase === "battle" && !boss.active) {
+          startDev(false);
+        }
+      }
+    };
+  }
+
+  const devBody = createDevFigure(ctx, { faceUrl: devFaceUrl, name: t("devName"), screen: "i++; i++;", onFace: () => ctx.setData("devface", String(devFace)) });
+  const devBar = createDevBar(hud, devFaceUrl, t("devName"));
+  const speech = createDevSpeech(hud, () => clock);
+
+  function renderDevBar() {
+    devBar.render(dev.hp / DEV_HP, "i++ \u2713" + dev.stopped + (dev.letIn ? "  \u2192" + dev.letIn : ""), dev.letIn > 0);
+  }
+
+  function setDevData() {
+    ctx.setData("dev", dev.state);
+    ctx.setData("devhp", dev.hp);
+    ctx.setData("thrown", dev.thrown);
+    ctx.setData("stopped", dev.stopped);
+    ctx.setData("letin", dev.letIn);
+  }
+
+  /** A line of the Dev (core/dev.js keeps it its reading time); his give-up starts the end once it shows. */
+  function devSay(key, reaction) {
+    const end = (read) => {
+      dev.giveUpShown = true;
+      dev.endAt = clock + Math.max(DEV_BEATEN_S, read + 0.4);
+    };
+    speech.say(t(key), reaction, key === "devGiveUp" ? end : null);
+  }
+
+  /** The Dev comes, after the review (or straight away: guinea-at=6, or a try again after the attempts ran out at him). */
+  function startDev(retry) {
+    phase = "dev";
+    wave = 6;
+    queue = [];
+    for (const o of liveObjects()) {
+      kill(o, false);
+    }
+    if (review) {
+      review.panel.hidden = true;
+    }
+    ctx.setData("wave", 6);
+    ctx.setData("review", review ? "changes" : "skipped");
+    hud.setPads(PADS);
+    hud.setPath([t("p1"), t("p2"), t("p3"), t("p4"), t("p5"), t("p6")], 5);
+    hud.goal(t("goal6"));
+    meter.hidden = true;
+    ctx.setData("messages", "bottom");
+    source.material = sourceMaterial("AccountTierServiceTest.cls");
+    prView.short = t("devPr");
+    prView.sub = t("devInto");
+    setChecks(["run", t("running")], ["ok", t("passing")], "blocked");
+    Object.assign(dev, { state: "enter", hp: DEV_HP, lane: 1, x: 0, z: DEV_Z - 8, time: 0, nextMove: 3, nextShot: 0, volley: 0, stage: 0, flash: 0, hits: 0, thrown: 0, stopped: 0, letIn: 0, endAt: 0, giveUpShown: false });
+    devBody.visible = true;
+    devBar.hidden = false;
+    renderDevBar();
+    MUSIC = "4-dev";
+    pace = 1;
+    mercy = retry ? MERCY : 0;
+    ctx.sound.play("bossIn");
+    devSay("devArrive");
+    hud.tick("@isTest static void coverage() { Integer i = 0; i++; i++; i++; i++; i++; i++; i++; }");
+    // A player who lost a lot comes to him with an attempt back
+    if (ctx.attempts < 3) {
+      ctx.gainAttempt();
+    }
+    if (retry) {
+      hud.toast(t("retryBoss"), "power");
+    }
+    setDevData();
+  }
+
+  function stepDev(dt) {
+    dev.time += dt;
+    dev.flash = Math.max(0, dev.flash - dt);
+    dev.type = Math.max(0, dev.type - dt);
+    dev.guard = Math.max(0, dev.guard - dt);
+    speech.update();
+    // A steady pace, eased for a while after a mistake
+    mercy = Math.max(0, mercy - MERCY_FADE * dt);
+    pace += (Math.max(0.85, DEV_PACE - mercy) - pace) * Math.min(1, dt * 0.8);
+    ctx.setData("pace", pace.toFixed(2));
+    if (dev.state === "enter") {
+      dev.z += (DEV_Z - dev.z) * Math.min(1, dt * 1.6);
+      // He talks first: nothing comes down the lanes before his line is read
+      if (dev.time >= DEV_ENTER_S && !speech.reading) {
+        dev.state = "fight";
+        dev.nextShot = 0.4;
+        setDevData();
+      }
+    } else if (dev.state === "fight") {
+      dev.nextMove -= dt;
+      if (dev.nextMove <= 0 && dev.volley === 0) {
+        dev.lane = (dev.lane + 1 + Math.floor(random() * 2)) % 3;
+        dev.nextMove = 2.8 + random() * 1.4 - dev.stage * 0.3;
+      }
+      dev.nextShot -= dt * pace;
+      if (dev.nextShot <= 0) {
+        devShoot();
+      }
+    } else if (dev.state === "beaten" && dev.giveUpShown && clock >= dev.endAt) {
+      devGone();
+    }
+    dev.x += (LANES[dev.lane] - dev.x) * Math.min(1, dt * 4);
+  }
+
+  /** He types: a volley of i++ down one lane, or now and then a worse line. */
+  function devShoot() {
+    if (dev.volley > 0) {
+      dev.volley -= 1;
+      spawn("ipp", dev.volleyLane, { z: dev.z + 1.2 });
+      dev.thrown += 1;
+      dev.type = 0.3;
+      ctx.sound.play("w4Type");
+      dev.nextShot = dev.volley > 0 ? 0.6 : 1.5 - dev.stage * 0.15;
+    } else if (random() < 0.16 + dev.stage * 0.06) {
+      const worse = DEV_WORSE[dev.stage];
+      spawn(worse[Math.floor(random() * worse.length)], pickLane(dev.lane), { z: dev.z + 1.2 });
+      dev.thrown += 1;
+      dev.type = 0.3;
+      ctx.sound.play("bossThrow");
+      dev.nextShot = 1.7;
+    } else {
+      // Three to five lines in a row, mostly down his own lane
+      dev.volley = 3 + Math.floor(random() * 2) + (dev.stage > 0 ? 1 : 0);
+      dev.volleyLane = random() < 0.7 ? dev.lane : pickLane(dev.lane);
+      devShoot();
+      return;
+    }
+    setDevData();
+  }
+
+  function hitDev() {
+    dev.hp -= 1;
+    dev.hits += 1;
+    dev.flash = 0.18;
+    shake = 0.15;
+    burst(dev.x, 2.6, dev.z + 0.6, "padding", 6);
+    ctx.sound.play("bossHit");
+    renderDevBar();
+    if (dev.hp <= 0) {
+      beatDev();
+      return;
+    }
+    ctx.collect(40, "");
+    // He hops aside at once, and types again soon
+    dev.guard = DEV_GUARD_S;
+    dev.lane = (dev.lane + 1 + Math.floor(random() * 2)) % 3;
+    dev.nextMove = 2.8 + random() * 1.4 - dev.stage * 0.3;
+    dev.nextShot = Math.min(dev.nextShot, 0.7);
+    const stage = dev.hp <= 4 ? 2 : dev.hp <= 8 ? 1 : 0;
+    if (stage > dev.stage) {
+      dev.stage = stage;
+      devSay(stage === 1 ? "devLine1" : "devLine2");
+    } else if (dev.hits % 3 === 1) {
+      devSay("devOuch", true);
+    }
+    setDevData();
+  }
+
+  function beatDev() {
+    dev.state = "beaten";
+    devRetryAt = 0;
+    for (const o of liveObjects()) {
+      kill(o, false);
+    }
+    queue = [];
+    devSay("devGiveUp");
+    MUSIC = 4;
+    ctx.sound.play("bossDown");
+    shake = 0.5;
+    ctx.fx.burst(dev.x, 2.6, dev.z + 0.6, { count: 70, colors: [0xdd7a01, 0xffd84d, 0x2e844a, 0x0176d3, 0xffffff], speed: 6, up: 6, life: 1.4 });
+    ctx.collect(500, t("devDown"));
+    hud.goal("");
+    hud.toast(t("devLesson"), "good");
+    devBar.hidden = true;
+    setChecks(["fail", "i++"], ["ok", t("passing")], "blocked");
+    setDevData();
+  }
+
+  /** He is gone with his laptop: the Cloudity mark rises, and the world ends. */
+  function devGone() {
+    dev.state = "gone";
+    phase = "end";
+    devBody.visible = false;
+    speech.hide();
+    if (cloudity) {
+      cloudity.visible = true;
+      cloudRise = 0.001;
+    }
+    ctx.fx.burst(0, 2, -2.5, { count: 60, speed: 5, up: 6, life: 1.4 });
+    ctx.sound.play("gate");
+    if (dev.letIn) {
+      missed.push(t("missedPadding", { n: dev.letIn }));
+    }
+    setDevData();
+    after(1.8, () => ctx.finish(reviewBonus + (dev.letIn === 0 ? 150 : 0), missed.join(" ")));
+  }
+
+  /** Where he stands and how he moves: walking in, typing, shaken by a hit, ashamed, leaving. */
+  function placeDev(time) {
+    if (!devBody.visible) {
+      return;
+    }
+    let scale = DEV_SCALE;
+    let lean = 0;
+    if (dev.state === "beaten") {
+      lean = 0.3;
+      const left = dev.giveUpShown ? dev.endAt - clock : DEV_LEAVE_S;
+      if (left < DEV_LEAVE_S) {
+        scale *= Math.max(0.05, left / DEV_LEAVE_S);
+      }
+    }
+    const walking = (dev.state === "enter" && Math.abs(DEV_Z - dev.z) > 0.3) || Math.abs(LANES[dev.lane] - dev.x) > 0.15;
+    const stride = walking ? Math.sin(time * 10) : 0;
+    // The hop of his dodge
+    const hop = dev.guard > 0 ? Math.sin((dev.guard / DEV_GUARD_S) * Math.PI) * 0.6 : 0;
+    const bob = hop + (walking ? Math.abs(stride) * 0.08 : Math.sin(time * 2.6) * 0.03);
+    // Both hands on the keyboard, faster when he types a line
+    const typing = dev.type > 0 ? Math.sin(time * 30) * 0.18 : Math.sin(time * 6) * 0.04;
+    devBody.place({ x: dev.x, y: bob, z: dev.z, scale: scale * (1 + dev.flash * 0.4), lean, stride, typing });
+  }
+
+  function placeSay() {
+    speech.place(camera, devBody.face.position, DEV_HEAD_R * devBody.face.scale.x);
+  }
+
+  /** For the check: the world plays its battle and the Dev by itself (window.__guineaRun.w4.autoplay). */
+  function autoStep(dt) {
+    autoTimer -= dt;
+    if (autoTimer > 0 || (phase !== "battle" && phase !== "dev")) {
+      return;
+    }
+    autoTimer = 0.1;
+    const live = liveObjects().filter((o) => o.z > SPAWN_Z + 4);
+    const nearest = (list) => list.sort((a, b) => b.z - a.z)[0];
+    // What costs an attempt first, then what costs points, then a test to catch
+    const threat = nearest(live.filter((o) => o.def.tone === "error")) || nearest(live.filter((o) => o.def.tone === "padding" || o.def.tone === "fake"));
+    const test = nearest(live.filter((o) => o.def.tone === "test"));
+    let lane = player.lane;
+    if (threat) {
+      lane = threat.lane;
+    } else if (test) {
+      lane = test.lane;
+    } else if (phase === "dev" && dev.state === "fight") {
+      lane = dev.lane;
+    } else if (boss.active && !boss.dying) {
+      lane = boss.lane;
+    }
+    if (lane !== player.lane) {
+      player.lane += lane < player.lane ? -1 : 1;
+      return;
+    }
+    const first = nearest(live.filter((o) => o.lane === lane));
+    if (first ? !["warning", "test"].includes(first.def.tone) : (phase === "dev" && dev.state === "fight") || boss.active) {
+      throwFix();
+    }
+  }
+
   /* ---------- Camera ---------- */
 
   function placeCamera(time, dt) {
@@ -1777,8 +2193,20 @@ export function createWorld(ctx) {
 
   return {
     start() {
+      // guinea-at=6 (a check setting) opens the Dev; so does the try again of a player out of attempts at him
+      const at = ctx.params.startAt;
+      const retry = !at && devRetryAt > 0 && Date.now() - devRetryAt < DEV_RETRY_MS;
+      devRetryAt = 0;
+      if (at >= 6 || retry) {
+        coverage = COVERAGE_TARGET + 0.52;
+        shownCoverage = coverage;
+        renderMeter();
+        prView.box = "merged";
+        startDev(retry);
+        return;
+      }
       // guinea-at=5 (a check setting, like a runner's metres) opens the review directly
-      if (ctx.params.startAt === 5) {
+      if (at === 5) {
         coverage = COVERAGE_TARGET + 0.52;
         shownCoverage = coverage;
         renderMeter();
@@ -1799,6 +2227,15 @@ export function createWorld(ctx) {
       }
       player.cooldown = Math.max(0, player.cooldown - dt);
       player.stun = Math.max(0, player.stun - dt);
+      if (autoplay) {
+        autoStep(dt);
+      }
+      if (phase === "dev") {
+        stepDev(dt);
+        if (!ctx.playing) {
+          return;
+        }
+      }
       if (phase === "battle") {
         updatePace(dt);
         updateWave(dt);
@@ -1837,6 +2274,8 @@ export function createWorld(ctx) {
       }
       placePig(dt);
       placeCamera(time, dt);
+      placeDev(time);
+      placeSay();
       ctx.setData("lane", player.lane);
       if (boss.active) {
         ctx.setData("boss", boss.hp);
@@ -1865,7 +2304,7 @@ export function createWorld(ctx) {
         player.lane = Math.max(0, player.lane - 1);
       } else if (name === "right") {
         player.lane = Math.min(2, player.lane + 1);
-      } else if (phase === "battle" && (name === "jump" || name === "tap" || name === "confirm")) {
+      } else if ((phase === "battle" || phase === "dev") && (name === "jump" || name === "tap" || name === "confirm")) {
         throwFix();
       }
     },
@@ -1883,6 +2322,12 @@ export function createWorld(ctx) {
       bossFace.dispose();
       meter.remove();
       banner.remove();
+      devBar.remove();
+      speech.remove();
+      devBody.dispose();
+      if (window.__guineaRun && window.__guineaRun.w4) {
+        delete window.__guineaRun.w4;
+      }
       if (review) {
         review.panel.remove();
         review.ghost.remove();
@@ -1893,7 +2338,9 @@ export function createWorld(ctx) {
   };
 }
 
-export const CSS = `
+export const CSS =
+  DEV_CSS +
+  `
 .guinea-run .gr-w4-meter {
   display: flex;
   align-items: center;

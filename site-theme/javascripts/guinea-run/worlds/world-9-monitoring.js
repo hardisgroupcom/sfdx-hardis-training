@@ -30,7 +30,7 @@
  * shows on the floor before it falls, and, once he is angry, admins called to
  * help. Beaten, he gives up in one line and the world ends.
  *
- * Each admin wears one of twenty cartoon faces (images/bosses/boss-N.svg),
+ * Each admin wears one of twenty-one cartoon faces (images/bosses/boss-N.svg),
  * never the same twice in a wave, the boss his own (final-boss.svg): one atlas
  * texture, one instanced disc per face. A face that does not load is drawn plain, the world never waits.
  *
@@ -54,6 +54,7 @@
  */
 
 import { glyph, fitText } from "../core/painter.js";
+import { readingMs } from "../hud.js";
 
 export const PADS = ["left", "right", "jump"];
 // The salesforce pack for the Flows, the Pull Requests and Victor's note; the vegetables are thrown
@@ -101,7 +102,7 @@ const MOVE_KEYS = { ArrowLeft: [-1, 0], KeyA: [-1, 0], ArrowRight: [1, 0], KeyD:
 
 // The admins: a big face over a small body holding a laptop
 const MAX_ADMINS = 26;
-const FACES = 20;
+const FACES = 21;
 // The faces atlas: tiles of 256 px, five a row
 const ATLAS_COLS = 5;
 const ATLAS_ROWS = Math.ceil(FACES / ATLAS_COLS);
@@ -419,6 +420,8 @@ export const QUOTES = [];
 export function createWorld(ctx) {
   const { THREE, root, pig, paint, t, hud, engine, camera } = ctx;
   const random = ctx.random;
+  // He speaks before the fight, untouchable, as long as his line takes to read
+  const bossTalkS = Math.max(BOSS_TALK_S, readingMs(t("bossLine")) / 1000);
   const scene = ctx.scene;
   const touch = Boolean(hud.touch);
   const overlay = hud.layer.parentElement;
@@ -2036,12 +2039,12 @@ export function createWorld(ctx) {
       if (fight.time > BOSS_ENTER_S) {
         fight.state = "talk";
         fight.time = 0;
-        bossSay(t("bossLine"), BOSS_TALK_S);
+        bossSay(t("bossLine"), bossTalkS);
         updateGoal();
       }
     } else if (fight.state === "talk") {
       fight.z += (BOSS_Z - fight.z) * Math.min(1, dt * 2.2);
-      if (fight.time > BOSS_TALK_S) {
+      if (fight.time > bossTalkS) {
         fight.state = "fight";
         fight.time = 0;
         fight.next = 1.2;
@@ -2252,7 +2255,7 @@ export function createWorld(ctx) {
     // "But it's faster!" most of the time, a cousin of it otherwise
     const key = random() < 0.6 ? 0 : 1 + Math.floor(random() * (SAYINGS - 1));
     slot.admin = a;
-    slot.until = clock + 2.2;
+    slot.until = clock + Math.max(2.2, readingMs(t("say" + key)) / 1000);
     slot.node.textContent = keepTogether(t("say" + key));
     slot.node.hidden = false;
     slot.px = -1;
@@ -2261,6 +2264,7 @@ export function createWorld(ctx) {
   }
 
   function bossSay(text, seconds) {
+    seconds = Math.max(seconds, readingMs(text) / 1000);
     bossBubble.node.textContent = keepTogether(text);
     bossBubble.node.hidden = false;
     bossBubble.until = clock + seconds;

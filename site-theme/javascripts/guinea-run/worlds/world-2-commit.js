@@ -24,14 +24,16 @@
  * kind that reaches your commit says why and costs an attempt, never two within
  * a few seconds and at most two in the fight; more of it costs points. Your own
  * file thrown back costs points and heals him a little.
- * He wears one of the twenty admin portraits (images/bosses/boss-N.svg), picked
- * by the seed. guinea-at=1 opens the boss, and a player out of attempts at him
+ * He wears one of the twenty-one admin portraits (images/bosses/boss-N.svg), a
+ * different one at each play (core/faces.js). guinea-at=1 opens the boss, and a player out of attempts at him
  * tries again from him.
  *
  * Once he gives up: Commit, Save / Publish, its first question, the Git Delta
  * package.xml report, push.
  */
 import { SLDS, rounded, font, fitText, glyph } from "../core/painter.js";
+import { pickAdmins, adminFaceUrl } from "../core/faces.js";
+import { readingMs } from "../hud.js";
 
 export const PADS = ["left", "right", "jump", "confirm"];
 /** On a phone, toasts and tips sit above the pads: the track runs up the middle. */
@@ -76,7 +78,6 @@ const BOSS_HEAD_Y = 3.2;
 const BOSS_ENTER_S = 2.8;
 const BOSS_LEAVE_S = 2.2;
 const BOSS_BEATEN_S = 3.8;
-const BOSS_FACES = 20;
 const LAND_Z = -10.5;
 const WINDUP_S = 0.45;
 const TOSS_S = 0.7;
@@ -1317,9 +1318,9 @@ export function createWorld(ctx) {
 
   /* ---------- The boss: the "git add ." admin ---------- */
 
-  // His face: one of the twenty admin portraits, the same one for a given guinea-seed
-  const bossFace = 1 + Math.floor(random() * BOSS_FACES);
-  const bossFaceUrl = new URL("../../../images/bosses/boss-" + bossFace + ".svg", import.meta.url).href;
+  // His face: one of the twenty-one admins, not the one of the last play
+  const bossFace = pickAdmins(2, random)[0];
+  const bossFaceUrl = adminFaceUrl(bossFace);
   let disposed = false;
   const boss = buildBoss();
   const fight = {
@@ -1915,10 +1916,21 @@ export function createWorld(ctx) {
     bossBar.classList.toggle("is-angry", fight.stage >= 2);
   }
 
+  // His reactions to a hit never cut a line still being read; his arrival,
+  // his escalations and his give-up always show, each for its reading time
+  const SAY_REACTIONS = ["bossOuch", "bossOuchProfile", "bossThanks", "bossGloat"];
+
   function bossSay(key, seconds) {
-    say.textContent = keepTogether(t(key));
+    const reaction = SAY_REACTIONS.includes(key);
+    if (reaction && fight.time < (sayAt.read || 0)) {
+      return;
+    }
+    const text = t(key);
+    const read = readingMs(text) / 1000;
+    say.textContent = keepTogether(text);
     say.hidden = false;
-    sayAt.until = fight.time + seconds;
+    sayAt.until = fight.time + Math.max(seconds, read);
+    sayAt.read = fight.time + (reaction ? 0.6 * read : read);
     sayAt.width = 0;
     sayAt.x = -1;
   }

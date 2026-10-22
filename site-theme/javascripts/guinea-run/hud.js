@@ -13,12 +13,69 @@
  * data-pad and react on pointerdown.
  */
 import { WORLDS } from "./core/story.js";
+import { SPECIAL_THANKS, CONTACT_URLS } from "./credits.js";
 
 /**
  * The guinea pig of the cards: a picture of the 3D model
  * (scripts/blender/guinea-pig.py with GUINEA_PORTRAIT=1), set by guinea-run.css.
  */
 const GUINEA_ART = '<span class="gr-pig" aria-hidden="true"></span>';
+
+/**
+ * How long a text stays on screen so a player can read it while playing:
+ * a fixed time to notice it, then so much per character (about 17 characters
+ * a second for a line worth reading, faster for a short call), capped. The
+ * worlds use it for their own bubbles too.
+ */
+export function readingMs(text, kind) {
+  const length = String(text || "").length;
+  if (kind === "call") {
+    return Math.min(6000, 1200 + length * 45);
+  }
+  return Math.min(12000, 1600 + length * 60);
+}
+
+/** Runs fn once the current changes are painted (two frames later). */
+function afterPaint(fn) {
+  window.requestAnimationFrame(() => window.requestAnimationFrame(fn));
+}
+
+/**
+ * Keeps a character's lines readable, in real time whatever the pace of the
+ * world: say(text, reaction, show) runs show() now, or once the line on
+ * screen has been read (only the newest waiting line is kept), or never for a
+ * reaction (a quip at a hit) while a line is still being read.
+ */
+export function lineKeeper() {
+  let readUntil = 0;
+  let pending = 0;
+  return {
+    say(text, reaction, show) {
+      const wait = readUntil - performance.now();
+      if (wait > 0) {
+        if (reaction) {
+          return;
+        }
+        window.clearTimeout(pending);
+        pending = window.setTimeout(() => {
+          readUntil = 0;
+          this.say(text, reaction, show);
+        }, wait);
+        return;
+      }
+      readUntil = reaction ? 0 : performance.now() + readingMs(text);
+      show();
+    },
+    /** The seconds a line should stay, at least, in real time. */
+    seconds(text) {
+      return readingMs(text) / 1000;
+    },
+    clear() {
+      window.clearTimeout(pending);
+      readUntil = 0;
+    }
+  };
+}
 
 export const BADGE_NAMES = {
   1: "sfdx-hardis Contributor Basics",
@@ -129,6 +186,10 @@ export function createHud(t, options) {
   const coach = element("div", "gr-coach", overlay);
   coach.setAttribute("aria-live", "assertive");
   let coachTimer = 0;
+  let coachReadUntil = 0;
+  let coachPending = 0;
+  let coachLast = "";
+  let coachSeq = 0;
   let pendingCoach = null;
   let coaching = false;
   let goalValue = "";
@@ -139,10 +200,74 @@ export function createHud(t, options) {
   const tipTitle = element("strong", "", tipBar);
   const tipText = element("span", "", tipBar);
   let tipTimer = 0;
+  let tipReadUntil = 0;
+  let tipPending = 0;
   const toast = element("div", "gr-toast", overlay);
   toast.setAttribute("aria-live", "polite");
   let toastTimer = 0;
+  let toastReadUntil = 0;
+  let toastPending = 0;
   const chat = element("div", "gr-chat", overlay);
+  // The chat bubbles waiting for the oldest one on screen to be read
+  const chatQueue = [];
+
+  function showChat(who, text, life) {
+    const person = CAST[who] || CAST.you;
+    const bubble = element("div", "gr-bubble", chat);
+    const avatar = element("span", "gr-avatar", bubble, person.face ? "" : person.initials);
+    avatar.style.backgroundColor = person.color;
+    if (person.face) {
+      avatar.classList.add("gr-avatar--" + who);
+    }
+    const content = element("div", "", bubble);
+    element("strong", "", content, person === CAST.you ? t("castYou") : person.name);
+    element("span", "", content, text);
+    bubble.dataset.readUntil = String(performance.now() + Math.min(life, readingMs(text) + 250));
+    while (chat.children.length > 2) {
+      chat.firstChild.remove();
+    }
+    window.setTimeout(() => bubble.classList.add("is-leaving"), life - 400);
+    window.setTimeout(() => {
+      bubble.remove();
+      if (chatQueue.length) {
+        nextChat();
+      }
+    }, life);
+  }
+
+  function nextChat() {
+    if (!chatQueue.length) {
+      return;
+    }
+    const wait = chatWait();
+    if (wait > 0) {
+      window.setTimeout(nextChat, wait);
+      return;
+    }
+    const queued = chatQueue.shift();
+    showChat(queued[0], queued[1], chatLife(queued[1], queued[2]));
+    if (chatQueue.length) {
+      window.setTimeout(nextChat, Math.max(0, chatWait()));
+    }
+  }
+
+  /** How long a bubble stays: its reading time, plus its slide in and fade out. */
+  function chatLife(text, ms) {
+    return Math.max(ms || 4500, readingMs(text) + 650);
+  }
+
+  /**
+   * How long a new bubble must wait: two fit on a large screen (a third pushes
+   * the oldest out), a phone shows only the newest (it would hide the last one).
+   */
+  function chatWait() {
+    const room = narrow.matches ? 1 : 2;
+    const hidden = narrow.matches ? chat.lastElementChild : chat.firstElementChild;
+    if (chat.children.length < room || !hidden) {
+      return 0;
+    }
+    return Number(hidden.dataset.readUntil || 0) - performance.now();
+  }
   chat.setAttribute("aria-live", "polite");
   const ticker = element("div", "gr-ticker", overlay);
   ticker.setAttribute("aria-hidden", "true");
@@ -200,6 +325,7 @@ export function createHud(t, options) {
     panel.replaceChildren();
     panel.hidden = false;
     panel.classList.toggle("gr-wide", Boolean(wide));
+    panel.classList.remove("gr-roll-panel");
     const header = element("div", "gr-modal-header", panel);
     element("h2", "", header, title);
     const body = element("div", "gr-modal-body", panel);
@@ -209,6 +335,135 @@ export function createHud(t, options) {
     if (primary) {
       primary.focus({ preventScroll: true });
     }
+  }
+
+  /* ---------- The end credits ---------- */
+
+  let creditsArgs = null;
+  let rollAnimation = null;
+  // How fast the roll goes up: a name read at a glance, two columns of them
+  // (one on a phone, faster, so the roll lasts as long)
+  const ROLL_PX_PER_S = 34;
+  const ROLL_PX_PER_S_PHONE = 52;
+
+  function rollCredits() {
+    screen("credits", t("rollAgain"), (body, footer) => {
+      panel.classList.add("gr-roll-panel");
+      const roll = element("div", "gr-roll", body);
+      const track = element("div", "gr-roll-track", roll);
+      const block = (title, lines, className) => {
+        const section = element("section", "gr-roll-block" + (className ? " " + className : ""), track);
+        if (title) {
+          element("h3", "", section, title);
+        }
+        for (const line of lines) {
+          element("p", "", section, line);
+        }
+        return section;
+      };
+      const top = block("", [], "gr-roll-top");
+      element("div", "gr-logo gr-logo--happy", top).innerHTML = GUINEA_ART;
+      element("p", "gr-roll-game", top, t("title"));
+      element("p", "", top, t("rollSubtitle"));
+      block(t("rollStarring"), [t("rollPig")]);
+      block(t("rollTeam"), [CAST.mariia.name, CAST.romain.name, CAST.victor.name]);
+      block("", [t("rollBosses"), t("rollSalesManager")]);
+      const thanks = block(t("rollThanks"), [t("rollThanksText")]);
+      const names = element("ul", "gr-roll-names", thanks);
+      for (const name of SPECIAL_THANKS) {
+        element("li", "", names, name);
+      }
+      block(t("rollMadeWith"), [t("rollTool1"), t("rollTool2"), t("rollTool3")]);
+      const end = block("", [], "gr-roll-end");
+      image(end, "gr-roll-logo", options.logoUrl, "Cloudity");
+      element("p", "gr-roll-by", end, t("rollBy"));
+      element("p", "", end, t("rollCta"));
+      contactLink(end);
+      element("p", "gr-roll-thanks", end, t("rollEnd"));
+      const next = button(footer, "credits-card", t("rollSkip"), "gr-primary");
+      startRoll(roll, track, end, next);
+    }, true);
+  }
+
+  /** Up from below the box until the Cloudity block sits in it; held while pressed. */
+  function startRoll(roll, track, end, next) {
+    if (rollAnimation) {
+      rollAnimation.cancel();
+      rollAnimation = null;
+    }
+    const done = () => {
+      next.textContent = t("rollContinue");
+      next.setAttribute("aria-label", t("rollContinue"));
+    };
+    if (reduced || typeof track.animate !== "function") {
+      // Read at one's own pace: the roll scrolls by hand
+      roll.classList.add("is-still");
+      done();
+      return;
+    }
+    afterPaint(() => {
+      if (!track.isConnected) {
+        return;
+      }
+      const box = roll.clientHeight;
+      const stop = -(end.offsetTop + end.offsetHeight / 2 - box / 2);
+      const distance = box - stop;
+      rollAnimation = track.animate([{ transform: "translateY(" + box + "px)" }, { transform: "translateY(" + stop + "px)" }], {
+        duration: (distance / (narrow.matches ? ROLL_PX_PER_S_PHONE : ROLL_PX_PER_S)) * 1000,
+        easing: "linear",
+        fill: "forwards"
+      });
+      rollAnimation.onfinish = done;
+      const hold = () => rollAnimation && rollAnimation.playState === "running" && rollAnimation.pause();
+      const go = () => rollAnimation && rollAnimation.playState === "paused" && rollAnimation.play();
+      roll.addEventListener("pointerdown", hold);
+      roll.addEventListener("pointerup", go);
+      roll.addEventListener("pointercancel", go);
+      roll.addEventListener("pointerleave", go);
+    });
+  }
+
+  function contactLink(parent) {
+    const link = element("a", "gr-button gr-roll-contact", parent, t("rollContact"));
+    link.href = CONTACT_URLS[options.lang === "fr" ? "fr" : "en"];
+    link.target = "_blank";
+    link.rel = "noopener";
+    return link;
+  }
+
+  /** The final card: the last world's result, the badges, Cloudity. */
+  function creditsCard(earned, result) {
+    if (rollAnimation) {
+      rollAnimation.cancel();
+      rollAnimation = null;
+    }
+    panel.classList.remove("gr-roll-panel");
+    screen("credits", t("creditsTitle"), (body, footer) => {
+      element("div", "gr-logo gr-logo--happy", body).innerHTML = GUINEA_ART;
+      // The result of the last world first, as any world shows it
+      element("p", "gr-result-stars", body, starsText(result.stars));
+      element("p", "gr-score", body, t("score") + ": " + result.score);
+      element("p", "gr-muted", body, result.newBest ? t("newBest") : t("best") + ": " + result.best);
+      if (result.missed) {
+        const box = element("div", "gr-rule gr-rule--info", body);
+        element("strong", "", box, t("goodToKnow"));
+        element("span", "", box, result.missed);
+      }
+      const rule = element("div", "gr-rule", body);
+      element("strong", "", rule, t("theRule"));
+      element("span", "", rule, t("w" + result.world.id + "_rule"));
+      element("p", "gr-small-title", body, t("labs"));
+      labLinks(body, result.world.labs);
+      element("p", "", body, t("creditsText"));
+      badgesRow(body, earned);
+      element("p", "gr-teaser", body, t("teaser"));
+      const cloudity = element("div", "gr-rule gr-rule--info gr-roll-cta", body);
+      element("span", "", cloudity, t("rollCta"));
+      contactLink(cloudity);
+      button(footer, "credits-roll", t("rollAgain"));
+      button(footer, "start", t("replay"));
+      button(footer, "map", t("backToMap"), "gr-primary");
+    });
   }
 
   function labLinks(parent, labs) {
@@ -431,30 +686,24 @@ export function createHud(t, options) {
       });
     },
 
-    /** The end of the game, after the last world. */
+    /** The end of the game, after the last world: the credits roll, then the final card. */
     credits(earned, result) {
-      screen("credits", t("creditsTitle"), (body, footer) => {
-        element("div", "gr-logo gr-logo--happy", body).innerHTML = GUINEA_ART;
-        // The result of the last world first, as any world shows it
-        element("p", "gr-result-stars", body, starsText(result.stars));
-        element("p", "gr-score", body, t("score") + ": " + result.score);
-        element("p", "gr-muted", body, result.newBest ? t("newBest") : t("best") + ": " + result.best);
-        if (result.missed) {
-          const box = element("div", "gr-rule gr-rule--info", body);
-          element("strong", "", box, t("goodToKnow"));
-          element("span", "", box, result.missed);
-        }
-        const rule = element("div", "gr-rule", body);
-        element("strong", "", rule, t("theRule"));
-        element("span", "", rule, t("w" + result.world.id + "_rule"));
-        element("p", "gr-small-title", body, t("labs"));
-        labLinks(body, result.world.labs);
-        element("p", "", body, t("creditsText"));
-        badgesRow(body, earned);
-        element("p", "gr-teaser", body, t("teaser"));
-        button(footer, "start", t("replay"));
-        button(footer, "map", t("backToMap"), "gr-primary");
-      });
+      creditsArgs = [earned, result];
+      rollCredits();
+    },
+
+    /** The credits roll again, from the final card. */
+    creditsRoll() {
+      if (creditsArgs) {
+        rollCredits();
+      }
+    },
+
+    /** From the roll to the final card: Skip, Continue. */
+    creditsCard() {
+      if (creditsArgs) {
+        creditsCard(creditsArgs[0], creditsArgs[1]);
+      }
     },
 
     playing() {
@@ -516,12 +765,30 @@ export function createHud(t, options) {
     },
 
     toast(text, tone) {
+      // A short reward ("Both kept x3") never pushes out a longer toast still being
+      // read; anything else waits its turn (the newest only). A short toast
+      // holds for a second, a longer one for its reading time.
+      const now = performance.now();
+      const long = String(text).length >= 36;
+      const current = String(toast.textContent);
+      if (now < toastReadUntil && current !== text) {
+        if (!long && current.length >= 36) {
+          return;
+        }
+        window.clearTimeout(toastPending);
+        toastPending = window.setTimeout(() => {
+          toastReadUntil = 0;
+          hud.toast(text, tone);
+        }, toastReadUntil - now);
+        return;
+      }
+      toastReadUntil = now + (long ? readingMs(text, "call") : Math.min(readingMs(text, "call"), 1000));
       toast.textContent = text;
       toast.className = "gr-toast gr-toast--show" + (tone ? " gr-toast--" + tone : "");
       window.clearTimeout(toastTimer);
       toastTimer = window.setTimeout(() => {
         toast.className = "gr-toast";
-      }, 1800);
+      }, Math.max(1800, readingMs(text, "call")));
     },
 
     /** The goal line under the top bar; an empty text hides it. */
@@ -541,17 +808,30 @@ export function createHud(t, options) {
 
     /** Why that was wrong: a tip box for a few seconds, after a mistake. */
     tip(text, ms, heading) {
+      const wait = tipReadUntil - performance.now();
+      if (wait > 0 && tipBar.classList.contains("is-shown") && tipText.textContent !== text) {
+        window.clearTimeout(tipPending);
+        tipPending = window.setTimeout(() => hud.tip(text, ms, heading), wait);
+        return;
+      }
       window.clearTimeout(tipTimer);
       // On a phone the toast hides behind the tip: the tip says what went wrong
       tipTitle.textContent = narrow.matches && heading ? heading : t("tipTitle");
       tipText.textContent = text;
       tipBar.classList.add("is-shown");
-      tipTimer = window.setTimeout(() => tipBar.classList.remove("is-shown"), ms || Math.min(11000, 4000 + text.length * 45));
+      const read = Math.max(4000, readingMs(text));
+      tipReadUntil = performance.now() + Math.min(read, 11000);
+      tipTimer = window.setTimeout(() => tipBar.classList.remove("is-shown"), Math.max(ms || 0, read));
     },
 
-    /** A good move: the tip of the last mistake is no longer the point. */
+    /** A good move: the tip of the last mistake is no longer the point, once it had time to be read. */
     hideTip() {
       window.clearTimeout(tipTimer);
+      const left = tipReadUntil - performance.now();
+      if (left > 0) {
+        tipTimer = window.setTimeout(() => tipBar.classList.remove("is-shown"), left);
+        return;
+      }
       tipBar.classList.remove("is-shown");
     },
 
@@ -562,6 +842,16 @@ export function createHud(t, options) {
         pendingCoach = [text, ms];
         return;
       }
+      // The line on screen is read first: the newest line waits, older waiting ones are dropped
+      const wait = coachReadUntil - performance.now();
+      if (wait > 0 && coachLast !== text) {
+        window.clearTimeout(coachPending);
+        coachPending = window.setTimeout(() => hud.coach(text, ms), wait);
+        return;
+      }
+      coachLast = text;
+      // Until painted, at most the longest guard (the paint refreshes it)
+      coachReadUntil = performance.now() + 3900;
       window.clearTimeout(coachTimer);
       // A phone keeps the middle of the screen for what is coming: the coach
       // speaks in the goal line for a moment, then the goal comes back
@@ -570,48 +860,68 @@ export function createHud(t, options) {
         goal.hidden = false;
         goal.classList.add("is-coach");
         goalText.textContent = text;
-        coachTimer = window.setTimeout(() => {
-          coaching = false;
-          goal.classList.remove("is-coach");
-          goalText.textContent = goalValue;
-          goal.hidden = !goalValue;
-        }, ms || 2200);
+        const seq = ++coachSeq;
+        afterPaint(() => {
+          if (seq !== coachSeq) {
+            return;
+          }
+          coachReadUntil = performance.now() + Math.min(readingMs(text, "call"), 3400);
+          coachTimer = window.setTimeout(() => {
+            coaching = false;
+            goal.classList.remove("is-coach");
+            goalText.textContent = goalValue;
+            goal.hidden = !goalValue;
+          }, Math.max(ms || 2200, readingMs(text, "call")));
+        });
         return;
       }
       coach.textContent = text;
       coach.classList.remove("is-shown");
       void coach.offsetWidth;
       coach.classList.add("is-shown");
-      coachTimer = window.setTimeout(() => coach.classList.remove("is-shown"), ms || 2000);
+      // The time to read starts once the line is on screen: the first frames of a world can stall
+      const seq = ++coachSeq;
+      afterPaint(() => {
+        if (seq !== coachSeq) {
+          return;
+        }
+        coachReadUntil = performance.now() + Math.min(readingMs(text, "call"), 3400);
+        coachTimer = window.setTimeout(() => coach.classList.remove("is-shown"), Math.max(ms || 2000, readingMs(text, "call")));
+      });
     },
 
-    /** A message from the cast, as a Lightning chat bubble. */
+    /**
+     * A message from the cast, as a Lightning chat bubble. Two at most on
+     * screen: a third one waits until the oldest has been read.
+     */
     chat(who, text, ms) {
-      const person = CAST[who] || CAST.you;
-      const bubble = element("div", "gr-bubble", chat);
-      const avatar = element("span", "gr-avatar", bubble, person.face ? "" : person.initials);
-      avatar.style.backgroundColor = person.color;
-      if (person.face) {
-        avatar.classList.add("gr-avatar--" + who);
+      const life = chatLife(text, ms);
+      // Lines already waiting go first
+      if (chatQueue.length) {
+        if (chatQueue.length >= 4) {
+          chatQueue.shift();
+        }
+        chatQueue.push([who, text, ms]);
+        return;
       }
-      const content = element("div", "", bubble);
-      element("strong", "", content, person === CAST.you ? t("castYou") : person.name);
-      element("span", "", content, text);
-      while (chat.children.length > 2) {
-        chat.firstChild.remove();
+      const wait = chatWait();
+      if (wait > 0) {
+        chatQueue.push([who, text, ms]);
+        window.setTimeout(nextChat, wait);
+        return;
       }
-      const life = ms || 4500;
-      window.setTimeout(() => bubble.classList.add("is-leaving"), life - 400);
-      window.setTimeout(() => bubble.remove(), life);
+      showChat(who, text, life);
     },
+
 
     /** Victor's note, found: a sticky note that pops up for a moment. */
     note(text) {
       const card = element("div", "gr-note", overlay);
       element("strong", "", card, t("noteFoundTitle"));
       element("span", "", card, text);
-      window.setTimeout(() => card.classList.add("is-leaving"), 3600);
-      window.setTimeout(() => card.remove(), 4000);
+      const life = Math.max(4000, readingMs(text));
+      window.setTimeout(() => card.classList.add("is-leaving"), life - 400);
+      window.setTimeout(() => card.remove(), life);
     },
 
     /** One line of a deployment log, at the bottom left. */
@@ -634,6 +944,15 @@ export function createHud(t, options) {
       extra.replaceChildren();
       ticker.replaceChildren();
       chat.replaceChildren();
+      chatQueue.length = 0;
+      tipReadUntil = 0;
+      window.clearTimeout(tipPending);
+      window.clearTimeout(coachPending);
+      coachReadUntil = 0;
+      coachLast = "";
+      coachSeq++;
+      toastReadUntil = 0;
+      window.clearTimeout(toastPending);
       hud.goal("");
       coach.classList.remove("is-shown");
       pendingCoach = null;

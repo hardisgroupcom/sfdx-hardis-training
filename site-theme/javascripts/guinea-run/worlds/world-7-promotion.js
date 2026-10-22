@@ -25,6 +25,7 @@
  * to carry. A player out of hearts at the admins tries again at the admins.
  */
 import { createRunner, RUNNER_TEXTS, RUNNER_CSS } from "./runner.js";
+import { pickAdmins } from "../core/faces.js";
 
 export const PADS = ["left", "right", "jump", "duck", "confirm"];
 // The Salesforce items of the track, and the Kenney islands far away
@@ -82,8 +83,8 @@ const VEGETABLE_COLORS = { carrot: 0xff8a3d, "bell-pepper": 0xe8473b, cucumber: 
 // every: the pause between two throws, windup: the warning before one,
 // double: the chance of a throw in two lanes, veg: a vegetable every so often
 const ADMINS = [
-  { face: "boss-14.svg", story: "US-062", name: "b1Name", hello: "b1Hello", half: "b1Half", goal: "goalBoss1", shirt: 0x3a6fb8, tests: 13, every: 1.7, windup: 1.1, double: 0, veg: 1.6 },
-  { face: "boss-4.svg", story: "US-058", name: "b2Name", hello: "b2Hello", half: "b2Half", goal: "goalBoss2", shirt: 0x8a4fd1, tests: 13, every: 1.4, windup: 0.95, double: 0.45, veg: 1.5, escapes: true }
+  { face: "", story: "US-062", name: "b1Name", hello: "b1Hello", half: "b1Half", goal: "goalBoss1", shirt: 0x3a6fb8, tests: 13, every: 1.7, windup: 1.1, double: 0, veg: 1.6 },
+  { face: "", story: "US-058", name: "b2Name", hello: "b2Hello", half: "b2Half", goal: "goalBoss2", shirt: 0x8a4fd1, tests: 13, every: 1.4, windup: 0.95, double: 0.45, veg: 1.5, escapes: true }
 ];
 
 export const TEXTS = {
@@ -336,6 +337,10 @@ export const QUOTES = [
 
 export function createWorld(ctx) {
   const { t, hud, THREE } = ctx;
+  // Two different admins at each play, neither of the last play
+  pickAdmins(7, ctx.random, 2).forEach((n, i) => {
+    ADMINS[i].face = "boss-" + n + ".svg";
+  });
   const verdict = ctx.judgePlan();
   let finished = false;
   let prs = 0;
