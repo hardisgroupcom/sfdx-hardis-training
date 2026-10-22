@@ -53,6 +53,14 @@ export function rankWorld(board, w) {
     .sort((a, b) => b.score - a.score || b.stars - a.stars || (a.bossMs ?? slow) - (b.bossMs ?? slow) || a.at.localeCompare(b.at));
 }
 
+/** The players of Pipeline Pinball, best first: score, then level, then who got there first. */
+export function rankPinball(board) {
+  return players(board)
+    .filter((p) => p.pinball && p.pinball.score > 0)
+    .map((p) => ({ handle: p.handle, badge: p.badge || 0, score: p.pinball.score, level: p.pinball.level || 1, missions: p.pinball.missions || 0, ms: p.pinball.ms || 0, at: p.pinball.at || "" }))
+    .sort((a, b) => b.score - a.score || b.level - a.level || a.at.localeCompare(b.at));
+}
+
 /** The rank (1-based) of a handle in a ranked list, or 0. */
 export function rankOf(list, handle) {
   const key = String(handle || "").toLowerCase();
@@ -101,6 +109,11 @@ export function collectResults(progress, now) {
     } else if (!e.record && legacyOpen(now)) {
       results.push({ w, sc: e.best, st: e.stars, legacy: true });
     }
+  }
+  // The best game of Pipeline Pinball, on its own board
+  const bonus = progress.bonus;
+  if (bonus && bonus.record && bonus.record.sg && bonus.record.pin === 1) {
+    results.push(bonus.record);
   }
   return results;
 }

@@ -8,7 +8,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { rankGeneral, rankWorld, rankOf } from "../../site-theme/javascripts/guinea-run/core/hof.js";
+import { rankGeneral, rankWorld, rankPinball, rankOf, collectResults } from "../../site-theme/javascripts/guinea-run/core/hof.js";
 import { emptyBoard, mergeSubmission, badgeLevel, refreshBadges, banPlayer, removePlayer, ranksMessage, readBoard, writeBoard } from "./hall-of-fame.mjs";
 
 const at = (minute) => `2026-11-02T10:${String(minute).padStart(2, "0")}:00.000Z`;
@@ -109,11 +109,11 @@ test("the message gives the overall rank and the rank in each world", () => {
   send(board, "Jane", [world(0, 4000, 3), world(2, 100, 1)], 1);
   send(board, "Bob", [world(0, 5000, 3)], 2);
   const message = ranksMessage(board, "jane");
-  assert.match(message, /| 2. Retrieve and commit| 0. Get set up\*\*#2\*\* of 2 overall, with 4100 points and 4 stars/);
+  assert.match(message, /\*\*#2\*\* of 2 overall, with 4100 points and 4 stars/);
   // Worlds are numbered from 0, as in the game
   assert.match(message, /\| 0\. Get set up \| 4000 \| #2 of 2 \|/);
   assert.match(message, /\| 2\. Retrieve and commit \| 100 \| #1 of 1 \|/);
-  assert.match(message, /| 2. Retrieve and commit| 0. Get set uphall-of-fame\//);
+  assert.match(message, /hall-of-fame\//);
 });
 
 test("a board is written as 2-space JSON with a final newline, and read back", () => {
@@ -136,4 +136,27 @@ test("the board says which mode earned a score, and its world ranking shows it",
   assert.equal(board.players.jane.worlds["2"].mode, "hard");
   const list = rankWorld(board, 2);
   assert.deepEqual(list.map((p) => [p.handle, p.mode]), [["Jane", "hard"], ["Joe", "easy"]]);
+});
+
+test("a Pipeline Pinball game keeps the best one, on its own board, out of the total", () => {
+  const board = emptyBoard();
+  const game = (score, level, minute) => ({ pinball: true, score, ms: 600000, level, missions: 3, notes: 0, at: at(minute) });
+  send(board, "Jane", [world(0, 4000, 3), game(5000000, 2, 1)], 1);
+  let entry = send(board, "Jane", [game(3000000, 1, 20)], 20);
+  assert.equal(entry.pinball.score, 5000000);
+  assert.equal(entry.total, 4000, "the pinball score is not added to the worlds");
+  entry = send(board, "Jane", [game(9000000, 3, 40)], 40);
+  assert.equal(entry.pinball.level, 3);
+  send(board, "Bob", [game(9000000, 4, 50)], 50);
+  send(board, "Ann", [world(1, 100, 1)], 51);
+  assert.deepEqual(rankPinball(board).map((p) => p.handle), ["Bob", "Jane"]);
+  const message = ranksMessage(board, "jane");
+  assert.match(message, /\| Bonus\. Pipeline Pinball \| 9000000 \| #2 of 2 \|/);
+});
+
+test("the pinball record goes with the results only once it is signed", () => {
+  const fake = (bonus) => ({ world: () => ({ best: 0, stars: 0 }), bonus });
+  assert.equal(collectResults(fake({ best: 10, record: { pin: 1, sc: 10 } }), 0).length, 0);
+  const signed = collectResults(fake({ best: 10, record: { pin: 1, sc: 10, sg: "x" } }), 0);
+  assert.deepEqual(signed, [{ pin: 1, sc: 10, sg: "x" }]);
 });

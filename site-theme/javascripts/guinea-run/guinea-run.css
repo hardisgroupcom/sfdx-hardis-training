@@ -1940,3 +1940,23 @@ html.guinea-run-open body {
 .guinea-run .gr-hof-mode--hard {
   background: var(--gr-error);
 }
+
+/* The bonus table: its wide card under the worlds, and its line on the final card */
+.guinea-run .gr-card[data-world="pinball"] { --gr-card: #dd7a01; }
+
+.guinea-run .gr-bonus-card {
+  margin: 4px 0 8px;
+  text-align: left;
+  background: linear-gradient(120deg, color-mix(in srgb, #dd7a01 16%, #ffffff), #ffffff 55%, color-mix(in srgb, #9050e9 12%, #ffffff));
+}
+
+.guinea-run .gr-bonus-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: center;
+}
+
+.guinea-run .gr-bonus-cta strong {
+  flex-basis: 100%;
+}

@@ -486,6 +486,82 @@ export function createSound() {
       bell(880, 0, 0.06, 0.08, 3);
       bell(659.3, 0.04, 0.06, 0.1, 3);
     },
+    // Pipeline Pinball: short and bright, they come many times a second
+    pbFlipper() {
+      thump(0, 0.05);
+    },
+    pbBumper() {
+      bell(1568 + Math.random() * 200, 0, 0.05, 0.12, 3);
+      thump(0, 0.06);
+    },
+    pbSling() {
+      bell(880, 0, 0.035, 0.08, 3);
+    },
+    pbDrop() {
+      bell(659.3, 0, 0.05, 0.12, 3);
+      thump(0, 0.05);
+    },
+    pbTarget() {
+      bell(1318.5, 0, 0.05, 0.1, 2);
+    },
+    pbLane() {
+      bell(2093, 0, 0.035, 0.1, 2);
+    },
+    pbSpin() {
+      bell(2349.3, 0, 0.02, 0.05, 2);
+    },
+    pbRamp() {
+      [1046.5, 1318.5, 1568].forEach((f, i) => bell(f, i * 0.06, 0.05, 0.25, 3));
+    },
+    pbOrbit() {
+      swish(0, 0.06, 900, 2600);
+      bell(1760, 0.08, 0.04, 0.2, 3);
+    },
+    pbKick() {
+      thump(0, 0.1);
+      swish(0, 0.05, 600, 2200);
+    },
+    pbLock() {
+      [784, 1046.5].forEach((f, i) => bell(f, i * 0.1, 0.06, 0.4, 3));
+    },
+    pbGate() {
+      [1046.5, 1318.5, 1568, 2093].forEach((f, i) => bell(f, i * 0.08, 0.05, 0.4, 3));
+    },
+    pbMission() {
+      [784, 988, 1174.7].forEach((f, i) => bell(f, i * 0.1, 0.06, 0.45, 3));
+    },
+    pbCombo() {
+      bell(1568, 0, 0.05, 0.15, 3);
+      bell(2093, 0.07, 0.05, 0.2, 3);
+    },
+    pbJackpot() {
+      [1046.5, 1318.5, 1568, 2093, 2637].forEach((f, i) => bell(f, i * 0.07, 0.07, 0.5, 3));
+      thump(0, 0.12);
+    },
+    pbMultiball() {
+      [523.3, 659.3, 784, 1046.5, 1318.5, 1568].forEach((f, i) => bell(f, i * 0.09, 0.07, 0.6, 3));
+      swish(0.2, 0.08, 400, 3000);
+    },
+    pbExtra() {
+      clip("happy", 0.5);
+      [1318.5, 1568, 2093].forEach((f, i) => bell(f, i * 0.1, 0.06, 0.5, 3));
+    },
+    pbSave() {
+      bell(1318.5, 0, 0.05, 0.3, 3);
+      bell(1760, 0.1, 0.05, 0.3, 3);
+    },
+    pbTiltWarn() {
+      bell(440, 0, 0.06, 0.25, 5);
+    },
+    pbTilt() {
+      bell(220, 0, 0.08, 0.8, 5);
+      thump(0, 0.15);
+    },
+    pbDrain() {
+      clip("scared", 0.45);
+      bell(523.3, 0.05, 0.05, 0.4, 3);
+      bell(392, 0.2, 0.05, 0.5, 3);
+    },
     // World 6: the Dev deploys a component from his sandbox, a terminal beep and a swish
     w6Deploy() {
       bell(1318.5, 0, 0.06, 0.06, 2);
