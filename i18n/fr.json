@@ -150,7 +150,15 @@
     "world": "Monde {n} - {name}",
     "worldEmpty": "Personne n'a encore terminé ce monde.",
     "generalColumns": ["Rang", "", "Joueur", "Badge", "Total", "Étoiles"],
-    "worldColumns": ["Rang", "", "Joueur", "Score", "Mode", "Étoiles", "Temps du boss"],
+    "worldColumns": [
+      "Rang",
+      "",
+      "Joueur",
+      "Score",
+      "Mode",
+      "Étoiles",
+      "Temps du boss"
+    ],
     "seconds": "{value} s",
     "badgeAlt": "Badge de niveau {level}"
   },

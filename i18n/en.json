@@ -144,7 +144,15 @@
     "world": "World {n} - {name}",
     "worldEmpty": "Nobody finished this world yet.",
     "generalColumns": ["Rank", "", "Player", "Badge", "Total", "Stars"],
-    "worldColumns": ["Rank", "", "Player", "Score", "Mode", "Stars", "Boss time"],
+    "worldColumns": [
+      "Rank",
+      "",
+      "Player",
+      "Score",
+      "Mode",
+      "Stars",
+      "Boss time"
+    ],
     "seconds": "{value} s",
     "badgeAlt": "Level {level} badge"
   },
