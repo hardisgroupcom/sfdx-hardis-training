@@ -354,10 +354,10 @@ export function createView(THREE, ctx, table, options) {
     if (crest < 1) {
       const segments = Math.max(24, Math.round(p.total * (1 - crest) * 4));
       // Two side rails at the ball's sides, one under it
+      // A habitrail: two thin rails at the ball's sides
       for (const [side, drop] of [
-        [-(BALL_RADIUS + 0.07), 0],
-        [BALL_RADIUS + 0.07, 0],
-        [0, -(BALL_RADIUS + 0.03)]
+        [-(BALL_RADIUS + 0.06), -0.05],
+        [BALL_RADIUS + 0.06, -0.05]
       ]) {
         const offset = [];
         for (let i = 0; i <= segments; i++) {
@@ -367,25 +367,20 @@ export function createView(THREE, ctx, table, options) {
           const sideV = new THREE.Vector3(-tangent.z, 0, tangent.x).normalize();
           offset.push(at.clone().addScaledVector(sideV, side).add(new THREE.Vector3(0, drop, 0)));
         }
-        const rail = new THREE.Mesh(keep(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(offset), segments, 0.035, 5, false)), rampMaterial);
+        const rail = new THREE.Mesh(keep(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(offset), segments, 0.028, 5, false)), rampMaterial);
         rail.castShadow = tier > 1;
         group.add(rail);
       }
     }
     if (plastic[name]) {
-      // A printed flag over the mouth of the ramp, high enough for the ball to pass under it
+      // A printed flag standing on the ramp at its crest, out of the way of the mouth
       const flagTexture = keep(paintSign(THREE, t(name === "integration" ? "pbFieldIntegration" : name === "uat" ? "pbFieldUat" : "pbFieldProduction"), plastic[name]));
       const flag = new THREE.Mesh(keep(new THREE.PlaneGeometry(1.35, 1.7)), keep(new THREE.MeshStandardMaterial({ map: flagTexture, transparent: true, roughness: 0.3, emissive: plastic[name], emissiveIntensity: 0.25, side: THREE.DoubleSide })));
-      flag.position.set(p.points[0], 2.0, -(p.points[1] + 1.2));
-      flag.rotation.x = -0.45;
+      const crestAt = curve.getPointAt(Math.max(0, crest - 0.08));
+      flag.scale.setScalar(0.8);
+      flag.position.set(crestAt.x, crestAt.y + 0.9, crestAt.z);
+      flag.rotation.x = -0.35;
       group.add(flag);
-      // Its two chrome posts
-      for (const side of [-0.62, 0.62]) {
-        const leg = new THREE.Mesh(cylinder, chrome);
-        leg.scale.set(0.05, 1.95, 0.05);
-        leg.position.set(p.points[0] + side, 0.97, -(p.points[1] + 1.35));
-        group.add(leg);
-      }
     }
   }
 
