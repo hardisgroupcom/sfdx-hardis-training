@@ -73,7 +73,7 @@ export function createDmd(parent) {
       return;
     }
     if (view.mission) {
-      line(view.mission + "  " + view.time + "s", 7, 9, "700");
+      line(view.mission + "  " + view.time, 7, 9, "700");
       line(view.goal, 18, 8, "700");
       line(view.score, 28, 9, "900");
       return;

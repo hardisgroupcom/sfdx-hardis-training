@@ -339,3 +339,111 @@ test("a whole game played by the bot ends: no hole, path or rule keeps a ball fo
   }
   assert.ok(rules.over, "the game ended within an hour of play (" + Math.round(t / 60) + " min, score " + rules.state.score + ")");
 });
+
+test("each round of jackpots is worth a step more, and the super jackpot pays the round back", () => {
+  const table = buildTable();
+  const log = [];
+  const rules = createRules(table, quietOut(log), seeded(3));
+  rules.newGame();
+  const ball = table.physics.balls.find((b) => b.active);
+  ball.x = 0;
+  ball.y = 10;
+  for (let lock = 0; lock < 3; lock++) {
+    for (let i = 0; i < 5; i++) {
+      rules.event({ type: "hit", tag: "drop" + i, value: 10, ball });
+    }
+    rules.event({ type: "rampDone", tag: "integration", value: 30, ball });
+    rules.update(2);
+  }
+  assert.ok(rules.state.mb, "Deploy to all orgs started");
+  rules.event({ type: "rampDone", tag: "integration", value: 30, ball });
+  rules.event({ type: "rampDone", tag: "uat", value: 30, ball });
+  rules.event({ type: "cross", tag: "orbitLeft", value: 20, ball });
+  assert.equal(rules.state.mb.collected, 1200000, "three jackpots of the first round");
+  rules.event({ type: "rampDone", tag: "production", value: 30, ball });
+  assert.ok(log.includes("pbSuperJackpot"));
+  assert.equal(rules.state.mb.step, 1, "the next round is a step up");
+  rules.event({ type: "rampDone", tag: "uat", value: 30, ball });
+  assert.equal(rules.state.mb.collected, 800000, "a jackpot of the second round is worth twice the first");
+});
+
+test("orbits one after the other are loops, and the whole pipeline in one go pays", () => {
+  const table = buildTable();
+  const log = [];
+  const rules = createRules(table, quietOut(log), seeded(3));
+  rules.newGame();
+  const ball = table.physics.balls.find((b) => b.active);
+  rules.event({ type: "cross", tag: "orbitRight", value: 20, ball });
+  rules.update(1);
+  rules.event({ type: "cross", tag: "orbitLeft", value: 20, ball });
+  assert.equal(rules.state.loops, 2);
+  assert.ok(log.includes("pbLoops"));
+  rules.update(5);
+  rules.event({ type: "rampDone", tag: "integration", value: 30, ball });
+  rules.update(2);
+  rules.event({ type: "rampDone", tag: "uat", value: 30, ball });
+  rules.update(2);
+  rules.event({ type: "cross", tag: "orbitLeft", value: 20, ball });
+  rules.update(2);
+  rules.event({ type: "rampDone", tag: "production", value: 30, ball });
+  assert.ok(log.includes("pbPipelineCombo"), "integration, uat, preprod and production within a few seconds each");
+});
+
+test("back from production, the Hotfix hurry-up loses value every second, and runs out", () => {
+  const table = buildTable();
+  const log = [];
+  const rules = createRules(table, quietOut(log), seeded(3));
+  rules.newGame();
+  const ball = table.physics.balls.find((b) => b.active);
+  rules.event({ type: "rampDone", tag: "down", value: 5, ball });
+  assert.ok(log.includes("pbHurryStart"));
+  const first = rules.hud().hurry;
+  rules.update(8);
+  const later = rules.hud().hurry;
+  assert.ok(first === 1000000 && later < first && later > 100000, "the value falls: " + first + " then " + later);
+  rules.event({ type: "enter", tag: "hotfix", value: 5, ball });
+  assert.ok(log.includes("pbHurryDone"));
+  assert.equal(rules.hud().hurry, 0);
+  rules.update(3);
+  rules.event({ type: "rampDone", tag: "releaseWire", value: 5, ball });
+  rules.update(25);
+  assert.ok(log.includes("pbHurryMissed"), "a hurry-up not made runs out");
+});
+
+test("a soft plunge into the terminal is the secret skill shot", () => {
+  const table = buildTable();
+  const log = [];
+  const rules = createRules(table, quietOut(log), seeded(3));
+  rules.newGame();
+  const ball = table.physics.balls.find((b) => b.active);
+  rules.launched();
+  rules.update(1.2);
+  table.physics.hold(ball, -1.6, 18.6);
+  rules.event({ type: "enter", tag: "terminal", value: 5, ball });
+  assert.ok(log.includes("pbSecretSkill"));
+});
+
+test("the Code freeze of Release day counts flips, not seconds", () => {
+  const table = buildTable();
+  const log = [];
+  const rules = createRules(table, quietOut(log), seeded(3));
+  rules.newGame();
+  rules.state.done = rules.state.done.map(() => true);
+  const ball = table.physics.balls.find((b) => b.active);
+  table.physics.hold(ball, TABLE.scoop.x, TABLE.scoop.y);
+  rules.event({ type: "enter", tag: "scoop", value: 5, ball });
+  rules.update(3);
+  assert.equal(rules.state.mission.id, "wizard");
+  for (let i = 0; i < 6; i++) {
+    rules.event({ type: "rampDone", tag: i % 2 ? "uat" : "integration", value: 30, ball });
+  }
+  assert.ok(log.includes("pbCodeFreeze"));
+  assert.equal(rules.hud().flips, 40);
+  rules.update(300);
+  assert.equal(rules.state.mission && rules.state.mission.id, "wizard", "the clock is stopped");
+  for (let i = 0; i < 40; i++) {
+    rules.flip(i % 2 ? 1 : -1);
+  }
+  assert.equal(rules.state.mission, null, "out of flips, the release is over");
+  assert.ok(log.includes("pbFreezeTip"));
+});

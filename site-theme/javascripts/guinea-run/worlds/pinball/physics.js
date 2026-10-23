@@ -1,7 +1,7 @@
 /*
  * The physics of Pipeline Pinball: balls rolling on a tilted table, seen from
  * above, in table units (x across, y up the table from the drain, a ball of
- * radius 0.4). No Three.js here: scripts/guinea-run/pinball-physics.test.mjs
+ * radius 0.27: 1 unit is 5 cm). No Three.js here: scripts/guinea-run/pinball.test.mjs
  * runs it in Node.
  *
  * Two shapes make the whole table. A capsule is a segment with a radius, which
@@ -18,10 +18,12 @@
  */
 
 export const STEP = 1 / 720;
-// Down the table, in table units per second squared: a gentle slope, so a
-// phone player has the time to see the ball coming
-// The slope of a real table, about 6.5 degrees, in table units
-export const GRAVITY = 21;
+// Down the table, in table units per second squared (1 unit is 5 cm, the
+// ball 27 mm across): a real table's 6.5 degrees, for a ball that rolls, so
+// 5/7 of g sin(6.5): 0.79 m/s2
+export const GRAVITY = 16;
+// Straight down, for the small hops off the rubbers and the targets
+const DROP_GRAVITY = 196;
 export const BALL_RADIUS = 0.27;
 export const MAX_SPEED = 95;
 // A ball on a ramp climbs against a steeper slope than the table's
@@ -76,6 +78,8 @@ export function createPhysics() {
       x: 0,
       y: 0,
       h: 0,
+      // The speed of a hop, straight up
+      hv: 0,
       vx: 0,
       vy: 0,
       r: BALL_RADIUS,
@@ -110,7 +114,11 @@ export function createPhysics() {
    * A capsule from (ax, ay) to (bx, by). options: r (its radius at a), rb (at
    * b, for a taper), floor (0 the table, 1 the Production floor), bounce
    * (restitution), kick (a speed added along the normal at a hit: bumpers and
-   * slingshots), kickMin (the impact speed a slingshot needs), oneWay ({ x, y },
+   * slingshots), kickMin (the impact speed a slingshot needs), kickProfile
+   * (a slingshot: the kick is strongest in the middle of its band, nothing at
+   * its ends), falloff (the bounce softens as the impact gets harder, as a
+   * rubber does: bounce / (1 + falloff x impact speed)), hop (a ball hit hard
+   * jumps a little off it: the share of the impact speed), oneWay ({ x, y },
    * the only direction a ball may cross it), tag (named in the hit events),
    * moving (its position changes while the table plays).
    */
@@ -128,6 +136,9 @@ export function createPhysics() {
       friction: o.friction === undefined ? 0.02 : o.friction,
       kick: o.kick || 0,
       kickMin: o.kickMin || 0,
+      kickProfile: Boolean(o.kickProfile),
+      falloff: o.falloff || 0,
+      hop: o.hop || 0,
       oneWayX: o.oneWay ? o.oneWay.x : 0,
       oneWayY: o.oneWay ? o.oneWay.y : 0,
       tag: o.tag || "",
@@ -200,10 +211,15 @@ export function createPhysics() {
     return field;
   }
 
-  /** A round sensor: a ball whose centre enters it emits "enter"; with capture, it is held there. */
+  /**
+   * A round sensor: a ball whose centre enters it emits "enter"; with
+   * capture, it is held there. maxSpeed: a saucer in the open playfield, which
+   * a ball faster than this rattles over (as on the arcade, only a ball that
+   * arrives gently stays in).
+   */
   function hole(x, y, r, options) {
     const o = options || {};
-    const sensor = { kind: "hole", ax: x, ay: y, r, floor: o.floor || 0, tag: o.tag || "", capture: Boolean(o.capture), enabled: o.enabled !== false };
+    const sensor = { kind: "hole", ax: x, ay: y, r, floor: o.floor || 0, tag: o.tag || "", capture: Boolean(o.capture), maxSpeed: o.maxSpeed || Infinity, enabled: o.enabled !== false };
     sensors.push(sensor);
     return sensor;
   }
@@ -247,7 +263,8 @@ export function createPhysics() {
   function flipper(px, py, length, options) {
     const o = options || {};
     const side = o.side || 1;
-    const shape = capsule(px, py, px, py, { r: o.r || 0.34, rb: o.rb || 0.18, floor: o.floor || 0, bounce: 0.22, friction: 0.08, tag: o.tag || "", moving: true });
+    // A rubber ring all round the bat: lively for a ball that drops on it, deader for a hard one
+    const shape = capsule(px, py, px, py, { r: o.r || 0.34, rb: o.rb || 0.18, floor: o.floor || 0, bounce: 0.55, falloff: 0.0075, friction: 0.12, tag: o.tag || "", moving: true });
     shape.pivotX = px;
     shape.pivotY = py;
     const f = {
@@ -258,10 +275,13 @@ export function createPhysics() {
       up: o.up === undefined ? 0.52 : o.up,
       angle: o.rest === undefined ? -0.5 : o.rest,
       omega: 0,
-      // Radians per second, up and down
-      // An arcade flipper: a fast, hard snap up
-      upSpeed: o.upSpeed || 40,
-      downSpeed: o.downSpeed || 24,
+      // As a coil does: the bat speeds up all the way, up in about 30 ms,
+      // and falls back on its spring in about 70 ms (radians per second, and
+      // per second squared)
+      upSpeed: o.upSpeed || 75,
+      upAccel: o.upAccel || 2000,
+      downSpeed: o.downSpeed || 16,
+      downAccel: o.downAccel || 600,
       held: false,
       enabled: true
     };
@@ -283,7 +303,7 @@ export function createPhysics() {
     const shape = capsule(x0, y, x1, y, { r: 0.1, bounce: 0.1, moving: true, tag: "plunger" });
     // The launch speed for a pull: a soft or middle pull drops the ball in
     // the top lanes (the skill shot), a full one sends it round the orbit
-    plunger = { shape, x: (x0 + x1) / 2, y, pull: 0, held: false, travel: 0.9, curve: [0, 24, 0.22, 30.9, 0.78, 32.7, 1, 46] };
+    plunger = { shape, x: (x0 + x1) / 2, y, pull: 0, held: false, travel: 0.9, curve: [0, 20, 0.22, 27.1, 0.78, 28.85, 1, 40] };
     return plunger;
   }
 
@@ -371,6 +391,7 @@ export function createPhysics() {
         ball.x = x;
         ball.y = y;
         ball.h = 0;
+        ball.hv = 0;
         ball.vx = vx || 0;
         ball.vy = vy || 0;
         ball.r = BALL_RADIUS;
@@ -450,12 +471,15 @@ export function createPhysics() {
   }
 
   function stepFlipper(f) {
-    const target = f.held && f.enabled ? f.up : f.rest;
+    const up = f.held && f.enabled;
+    const target = up ? f.up : f.rest;
     if (f.angle < target) {
-      f.omega = f.held ? f.upSpeed : f.downSpeed;
+      f.omega = Math.max(0, f.omega);
+      f.omega = Math.min(up ? f.upSpeed : f.downSpeed, f.omega + (up ? f.upAccel : f.downAccel) * STEP);
       f.angle = Math.min(target, f.angle + f.omega * STEP);
     } else if (f.angle > target) {
-      f.omega = -(f.held && f.enabled ? f.upSpeed : f.downSpeed);
+      f.omega = Math.min(0, f.omega);
+      f.omega = Math.max(-(up ? f.upSpeed : f.downSpeed), f.omega - (up ? f.upAccel : f.downAccel) * STEP);
       f.angle = Math.max(target, f.angle + f.omega * STEP);
     } else {
       f.omega = 0;
@@ -477,6 +501,15 @@ export function createPhysics() {
     ball.x += ball.vx * STEP;
     ball.y += ball.vy * STEP;
     ball.contact = Math.max(0, ball.contact - STEP);
+    // A small hop off a rubber or a target: up, then back on the playfield with a tiny bounce
+    if (ball.h > 0 || ball.hv > 0) {
+      ball.h += ball.hv * STEP;
+      ball.hv -= DROP_GRAVITY * STEP;
+      if (ball.h <= 0) {
+        ball.h = 0;
+        ball.hv = ball.hv < -6 ? -ball.hv * 0.3 : 0;
+      }
+    }
     for (let i = 0; i < fields.length; i++) {
       const f = fields[i];
       const dx = ball.x - f.ax;
@@ -569,8 +602,9 @@ export function createPhysics() {
     let ry = ball.vy - sy;
     const vn = rx * nx + ry * ny;
     if (vn < 0) {
-      rx -= (1 + shape.bounce) * vn * nx;
-      ry -= (1 + shape.bounce) * vn * ny;
+      const bounce = shape.falloff ? shape.bounce / (1 + shape.falloff * -vn) : shape.bounce;
+      rx -= (1 + bounce) * vn * nx;
+      ry -= (1 + bounce) * vn * ny;
       // A little grip along the surface, on an impact only: a ball rolling
       // along a wall or a flipper keeps rolling
       if (-vn > 1.5) {
@@ -582,8 +616,13 @@ export function createPhysics() {
       }
       ball.vx = rx + sx;
       ball.vy = ry + sy;
+      if (shape.hop && -vn > 8 && ball.h === 0) {
+        ball.hv = -vn * shape.hop;
+      }
       if (shape.kick && kicks && -vn >= shape.kickMin) {
-        const kick = shape.kick * (1 + jitter());
+        // A slingshot's band pushes hardest in its middle
+        const along = shape.kickProfile ? 1 - (2 * t - 1) * (2 * t - 1) : 1;
+        const kick = shape.kick * (1 + jitter()) * Math.max(0.3, along);
         ball.vx += nx * kick;
         ball.vy += ny * kick;
       }
@@ -606,6 +645,12 @@ export function createPhysics() {
         const dx = ball.x - s.ax;
         const dy = ball.y - s.ay;
         if (dx * dx + dy * dy < s.r * s.r) {
+          if (ball.vx * ball.vx + ball.vy * ball.vy > s.maxSpeed * s.maxSpeed) {
+            // Too fast: it rattles over the rim and goes on, a little slower
+            ball.vx *= 0.97;
+            ball.vy *= 0.97;
+            continue;
+          }
           if (ball.lastSensor === s && time - ball.lastSensorAt < 0.3) {
             ball.lastSensorAt = time;
             continue;
@@ -652,13 +697,18 @@ export function createPhysics() {
     const dy = (pts[i * 3 + 4] - pts[i * 3 + 1]) / seg;
     const dh = (pts[i * 3 + 5] - pts[i * 3 + 2]) / seg;
     ball.v -= (gravity * dy + gravity * RAMP_GRAVITY * dh) * STEP;
-    ball.v -= Math.sign(ball.v) * p.friction * STEP;
+    // Rolling friction slows a moving ball, it never holds a stopped one on a slope
+    if (Math.abs(ball.v) > 1) {
+      ball.v -= Math.sign(ball.v) * p.friction * STEP;
+    }
     ball.v -= ball.v * p.drag * STEP;
     ball.s += ball.v * STEP;
     if (ball.s <= 0 && ball.v <= 0) {
-      // Not enough speed: it rolls back where it came from
+      // Not enough speed: it rolls back where it came from. A deflector
+      // under the entrance plate turns it towards the middle of the table,
+      // so a missed ramp comes back to the flippers instead of the drain
       const back = Math.max(4, -ball.v);
-      const ex = pts[3] - pts[0];
+      const ex = pts[3] - pts[0] + (pts[0] > 0.5 ? 0.45 : pts[0] < -0.5 ? -0.45 : 0) * Math.hypot(pts[3] - pts[0], pts[4] - pts[1]);
       const ey = pts[4] - pts[1];
       const el = Math.hypot(ex, ey) || 1;
       ball.mode = "table";
@@ -667,6 +717,7 @@ export function createPhysics() {
       ball.x = pts[0] - (ex / el) * 0.05;
       ball.y = pts[1] - (ey / el) * 0.05;
       ball.h = 0;
+      ball.hv = 0;
       ball.vx = (-ex / el) * back;
       ball.vy = (-ey / el) * back;
       emit("rampBack", p.tag, 0, ball);

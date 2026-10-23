@@ -218,7 +218,7 @@ export function createView(THREE, ctx, table, options) {
     // The print maps across the triangle, from its top corner
     const uv = geometry.attributes.uv;
     for (let i = 0; i < uv.count; i++) {
-      uv.setXY(i, (Math.abs(uv.getX(i)) - 1.95) / 1.2, (uv.getY(i) - 3.5) / 2.5);
+      uv.setXY(i, (Math.abs(uv.getX(i)) - 1.75) / 1.4, (uv.getY(i) - 3.45) / 2.55);
     }
     const material = slingMaterial.clone();
     keep(material);
@@ -304,7 +304,7 @@ export function createView(THREE, ctx, table, options) {
   const backupMaterial = keep(new THREE.MeshStandardMaterial({ color: 0x06a59a, roughness: 0.35, emissive: 0x06a59a, emissiveIntensity: 0.3 }));
   for (const b of table.parts.backups) {
     const m = new THREE.Mesh(box, backupMaterial);
-    m.scale.set(0.18, 0.42, 0.48);
+    m.scale.set(0.18, 0.42, 0.52);
     m.position.set(b.ax + 0.05, 0.21, -(b.ay + b.by) / 2);
     group.add(m);
   }
@@ -653,7 +653,9 @@ export function createView(THREE, ctx, table, options) {
     const half = (vfov * Math.PI) / 360;
     const hfov = 2 * Math.atan(Math.tan(half) * aspect);
     const width = TABLE.right - TABLE.left + 1.0;
-    const pitch = portrait ? 1.18 : 1.08;
+    // A wide screen sits lower, about 35 degrees off the vertical, as the arcade
+    // desktop views do: the ramps and the toys stand up off the playfield
+    const pitch = portrait ? 1.18 : 0.96;
     // Far enough for the width, and on a wide screen for the whole length too:
     // the flippers and the top of the table are always in sight there
     let distance = width / 2 / Math.tan(hfov / 2) + 1.0;
@@ -722,7 +724,7 @@ export function createView(THREE, ctx, table, options) {
       if (!b.active) {
         return;
       }
-      const h = b.mode === "path" ? b.h : floorY(b.floor);
+      const h = b.mode === "path" ? b.h : floorY(b.floor) + b.h;
       const scale = giant ? 1.5 : 1;
       m.group.position.set(b.x, h + b.r * scale, -b.y);
       m.group.scale.setScalar(scale);
@@ -958,10 +960,15 @@ function lightLevel(mode, time) {
 
 /**
  * A plastic ramp along a curve, from u0 to u1 of its length: a floor under the
- * ball and a wall on each side, with a chrome-white lip along their tops.
+ * ball and a wall on each side. As on the arcade, it starts flat on the
+ * playfield with a mouth as wide as the shot (about two balls and a half),
+ * narrows to its lane, and its walls rise from nothing at the mouth.
  */
 function rampGeometry(THREE, curve, u0, u1, segments) {
-  const HALF = BALL_RADIUS + 0.15;
+  const LANE = BALL_RADIUS + 0.15;
+  const MOUTH = 0.6;
+  // The flare covers this much of the ramp, from its mouth
+  const FLARE = 1.6;
   const FLOOR = -(BALL_RADIUS + 0.03);
   const WALL = 0.32;
   const positions = [];
@@ -974,12 +981,18 @@ function rampGeometry(THREE, curve, u0, u1, segments) {
     curve.getPointAt(u, at);
     curve.getTangentAt(u, tangent);
     side.set(-tangent.z, 0, tangent.x).normalize();
-    const floorY = at.y + FLOOR;
+    // Flat on the playfield at the mouth, then the ramp's own height
+    const floorY = Math.max(0.005, at.y + FLOOR);
+    const along = u * curve.getLength();
+    const k = u0 === 0 ? Math.min(1, along / FLARE) : 1;
+    const ease = k * k * (3 - 2 * k);
+    const HALF = MOUTH + (LANE - MOUTH) * ease;
+    const wall = WALL * (0.25 + 0.75 * ease);
     rows.push([
-      [at.x - side.x * HALF, floorY + WALL, at.z - side.z * HALF],
+      [at.x - side.x * HALF, floorY + wall, at.z - side.z * HALF],
       [at.x - side.x * HALF, floorY, at.z - side.z * HALF],
       [at.x + side.x * HALF, floorY, at.z + side.z * HALF],
-      [at.x + side.x * HALF, floorY + WALL, at.z + side.z * HALF]
+      [at.x + side.x * HALF, floorY + wall, at.z + side.z * HALF]
     ]);
   }
   // Three strips: the left wall, the floor, the right wall

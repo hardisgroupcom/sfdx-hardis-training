@@ -150,8 +150,8 @@ export function paintField(THREE, t, lights, tier) {
       c.restore();
     }
   };
-  zone(-3.75, 10.65, -2.25, 15.9, "rgba(27,150,255,A)", t("pbFieldIntegration").toUpperCase(), true);
-  zone(2.25, 10.65, 3.75, 15.9, "rgba(6,165,154,A)", t("pbFieldUat").toUpperCase(), true);
+  zone(-3.6, 10.65, -2.4, 15.9, "rgba(27,150,255,A)", "", true);
+  zone(2.4, 10.65, 3.6, 15.9, "rgba(6,165,154,A)", "", true);
   zone(-0.85, 13.0, 0.85, 16.5, "rgba(69,198,90,A)", "");
 
   // The pipeline road up the middle, from the flippers to production
@@ -269,14 +269,14 @@ export function paintField(THREE, t, lights, tier) {
     fitText(c, text, 0, 0, U(2.6), U(size), "900");
     c.restore();
   };
-  label(t("pbFieldPreprod").toUpperCase(), -4.47, 14.4, 0.22, "#d8b8ff", -Math.PI / 2);
+  label(t("pbFieldPreprod").toUpperCase(), -4.42, 15.6, 0.22, "#d8b8ff", -Math.PI / 2);
   label(t("pbFieldProduction").toUpperCase(), 0, 14.6, 0.26, "#a8f0b5");
   label(t("pbFieldPullRequest").toUpperCase(), -1.55, 14.85, 0.17, "#ffd0a8");
-  label(t("pbFieldBackups").toUpperCase(), -3.95, 10.85, 0.17, "#8ff0e4", -Math.PI / 2);
-  label(t("pbFieldCodeQuality").toUpperCase(), 3.75, 10.85, 0.17, "#ffd0a8", Math.PI / 2);
+  label(t("pbFieldBackups").toUpperCase(), -3.95, 10.9, 0.15, "#8ff0e4", -Math.PI / 2);
+  label(t("pbFieldCodeQuality").toUpperCase(), 3.95, 10.9, 0.15, "#ffd0a8", Math.PI / 2);
   label(t("pbFieldRecentChanges").toUpperCase(), -4.0, 8.6, 0.15, "#9fd4ff", -1.05);
   label(t("pbFieldChecks").toUpperCase(), 4.0, 8.6, 0.15, "#a8f0b5", 1.05);
-  label(t("pbFieldDeploy").toUpperCase(), -2.3, 10.25, 0.14, "#ffd0a8");
+  label(t("pbFieldDeploy").toUpperCase(), -1.95, 10.2, 0.14, "#ffd0a8");
   // The plunger lane
   c.fillStyle = "rgba(0,0,0,0.45)";
   c.fillRect(X(5.0), Y(14), X(6.1) - X(5.0), Y(-1.6) - Y(14));

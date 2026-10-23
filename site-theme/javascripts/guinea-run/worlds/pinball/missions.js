@@ -378,7 +378,12 @@ export const MISSIONS = [
   }
 ];
 
-/** Release day: four balls, every shot a jackpot, then the Sales Manager on the Production floor. */
+/**
+ * Release day: four balls, every shot a jackpot, then the Sales Manager on the
+ * Production floor during the Code freeze: no more clock, a number of flips.
+ */
+const FREEZE_FLIPS = 40;
+
 export const WIZARD = {
   time: 100,
   start(m, api) {
@@ -397,6 +402,11 @@ export const WIZARD = {
     if (["integration", "uat", "preprod", "orbitRight", "scoop"].includes(shot.name)) {
       m.jackpots++;
       api.award(1000000, "pbReleaseJackpot");
+      if (m.jackpots === 6) {
+        // The Code freeze starts: the clock stops, the flips are counted
+        m.flips = FREEZE_FLIPS;
+        api.award(0, "pbCodeFreeze", { n: FREEZE_FLIPS });
+      }
     } else if (shot.name === "salesManager" && m.jackpots >= 6) {
       m.boss++;
       api.award(500000, "pbSalesManagerHit");
@@ -407,7 +417,23 @@ export const WIZARD = {
     }
   },
   goal(m) {
-    return m.jackpots < 6 ? ["pbGoalWizard", { n: m.jackpots }] : ["pbGoalWizardBoss", { n: m.boss }];
+    return m.jackpots < 6 ? ["pbGoalWizard", { n: m.jackpots }] : ["pbGoalWizardBoss", { n: m.boss, flips: m.flips }];
+  },
+  /** During the Code freeze the clock stops: the flips run out instead. */
+  frozen(m) {
+    return m.jackpots >= 6;
+  },
+  flipsLeft(m) {
+    return m.jackpots >= 6 ? m.flips : null;
+  },
+  flip(m, api) {
+    if (m.jackpots < 6) {
+      return;
+    }
+    m.flips--;
+    if (m.flips <= 0) {
+      api.fail("pbFreezeOver", "pbFreezeTip");
+    }
   },
   end(m, api) {
     // He stands in front of the Release hole again, as before Release day

@@ -48,6 +48,11 @@ const DMD_WORDS = {
   pbReleased: "dmdReleased",
   pbLocked: "dmdLocked",
   pbCombo: "dmdCombo",
+  pbLoops: "dmdLoops",
+  pbPipelineCombo: "dmdPipeline",
+  pbHurryDone: "dmdHurry",
+  pbSecretSkill: "dmdSecretSkill",
+  pbCodeFreeze: "dmdCodeFreeze",
   pbProductionOpen: "dmdProductionOpen",
   pbNoteFound: "dmdNote",
   pbShootAgain: "dmdShootAgain",
@@ -64,7 +69,7 @@ const DMD_WORDS = {
   pbMatchWon: "dmdMatch",
   pbBackupRestored: "dmdBackup"
 };
-const DMD_ONLY = new Set(["pbHotfix", "pbReplay", "pbJackpot", "pbReleaseJackpot", "pbSuperJackpot", "pbSkillShot", "pbSuperSkill", "pbCombo", "pbBallSaved", "pbKickback", "pbBonusXUp", "pbLocked", "pbBallN", "pbShootAgain", "pbTilt", "pbTiltWarning", "pbExtraBall", "pbMultiball"]);
+const DMD_ONLY = new Set(["pbLoops", "pbSecretSkill", "pbHotfix", "pbReplay", "pbJackpot", "pbReleaseJackpot", "pbSuperJackpot", "pbSkillShot", "pbSuperSkill", "pbCombo", "pbBallSaved", "pbKickback", "pbBonusXUp", "pbLocked", "pbBallN", "pbShootAgain", "pbTilt", "pbTiltWarning", "pbExtraBall", "pbMultiball"]);
 // What a mission counts to, for its line on the display
 const GOAL_TOTALS = { pbGoal0: 4, pbGoal1_0: 8, pbGoal1_1: 2, pbGoal2: 3, pbGoal3: 3, pbGoal4: 75, pbGoal5: 4, pbGoal6: 8, pbGoal7: 3, pbGoal8: 5, pbGoal9: 6, pbGoalWizard: 6, pbGoalWizardBoss: 3 };
 const PULL_S = 0.9;
@@ -105,6 +110,12 @@ export const TEXTS = {
     dmdReleased: "Released",
     dmdLocked: "Ball locked",
     dmdCombo: "Combo",
+    dmdLoops: "Loop",
+    dmdPipeline: "Pipeline",
+    dmdHurry: "Hotfix",
+    dmdSecretSkill: "Secret skill",
+    dmdCodeFreeze: "Code freeze",
+    dmdFlips: "flips",
     dmdProductionOpen: "Production open",
     dmdNote: "Victor's note",
     dmdShootAgain: "Shoot again",
@@ -167,6 +178,15 @@ export const TEXTS = {
     dmdReplay: "Replay",
     dmdMatch: "Match",
     pbHotfix: "Hotfix, straight to the inlane +{{points}}",
+    pbHurryStart: "A bug in production: shoot the Hotfix hole before its value runs out",
+    pbHurryDone: "Hotfix deployed +{{points}}",
+    pbHurryMissed: "The bug stayed in production too long: a hotfix must reach production fast, then go back down the pipeline",
+    pbLoops: "Loop x{{n}} +{{points}}",
+    pbPipelineCombo: "The whole pipeline in one go: integration, uat, preprod, production +{{points}}",
+    pbSecretSkill: "Secret skill shot: straight into the terminal +{{points}}",
+    pbCodeFreeze: "Code freeze: {{n}} flips to stop the Sales Manager",
+    pbFreezeOver: "Code freeze over",
+    pbFreezeTip: "During a code freeze only the release goes through: be quick and precise",
     pbBackupRestored: "Backup restored: ball save +{{points}}",
     dmdHotfix: "Hotfix",
     dmdBackup: "Backup restored",
@@ -212,7 +232,7 @@ export const TEXTS = {
     pbGoal8: "Up to the Production floor: hit the Data Cloud rabbit, {{n}}/5",
     pbGoal9: "Hit the admins before their change set lands: {{n}}/6",
     pbGoalWizard: "Release day: every lit shot is a jackpot, {{n}}/6",
-    pbGoalWizardBoss: "The Sales Manager blocks the release: hit him on the Production floor, {{n}}/3",
+    pbGoalWizardBoss: "Code freeze: hit the Sales Manager on the Production floor, {{n}}/3, {{flips}} flips left",
     pbGoalSelect: "Pick the mission with the flippers",
     pbBuiltField: "Field built +{{points}}",
     pbBuiltLayout: "Layout built +{{points}}",
@@ -250,7 +270,7 @@ export const TEXTS = {
     pbNoteFound: "Victor's note +{{points}}",
     pbNoteLit: "Victor's note is on a shot: find it",
     pbCombo: "Combo x{{n}} +{{points}}",
-    pbJackpot: "Jackpot +{{points}}",
+    pbJackpot: "Jackpot x{{n}} +{{points}}",
     pbSuperLit: "Super jackpot lit: the production ramp",
     pbSuperJackpot: "Super jackpot +{{points}}",
     pbPromo1: "Promoted to integration +{{points}}",
@@ -325,6 +345,12 @@ export const TEXTS = {
     dmdReleased: "En production",
     dmdLocked: "Bille verrouillée",
     dmdCombo: "Combo",
+    dmdLoops: "Boucle",
+    dmdPipeline: "Pipeline",
+    dmdHurry: "Hotfix",
+    dmdSecretSkill: "Tir secret",
+    dmdCodeFreeze: "Code freeze",
+    dmdFlips: "coups",
     dmdProductionOpen: "Production ouverte",
     dmdNote: "Note de Victor",
     dmdShootAgain: "Rejouez",
@@ -387,6 +413,15 @@ export const TEXTS = {
     dmdReplay: "Replay",
     dmdMatch: "Match",
     pbHotfix: "Hotfix, droit vers le couloir +{{points}}",
+    pbHurryStart: "Un bug en production : visez le trou Hotfix avant que sa valeur ne fonde",
+    pbHurryDone: "Hotfix déployé +{{points}}",
+    pbHurryMissed: "Le bug est resté trop longtemps en production : un hotfix doit y arriver vite, puis redescendre le pipeline",
+    pbLoops: "Boucle x{{n}} +{{points}}",
+    pbPipelineCombo: "Tout le pipeline d'un coup : integration, uat, preprod, production +{{points}}",
+    pbSecretSkill: "Tir d'adresse secret : droit dans le terminal +{{points}}",
+    pbCodeFreeze: "Code freeze : {{n}} coups de flipper pour arrêter le Sales Manager",
+    pbFreezeOver: "Fin du code freeze",
+    pbFreezeTip: "Pendant un code freeze, seule la release passe : soyez rapide et précis",
     pbBackupRestored: "Backup restauré : bille sauvée +{{points}}",
     dmdHotfix: "Hotfix",
     dmdBackup: "Backup restauré",
@@ -432,7 +467,7 @@ export const TEXTS = {
     pbGoal8: "Montez à l'étage Production : touchez le lapin Data Cloud, {{n}}/5",
     pbGoal9: "Touchez les admins avant que leur change set n'arrive : {{n}}/6",
     pbGoalWizard: "Jour de release : chaque tir allumé est un jackpot, {{n}}/6",
-    pbGoalWizardBoss: "Le Sales Manager bloque la release : touchez-le à l'étage Production, {{n}}/3",
+    pbGoalWizardBoss: "Code freeze : touchez le Sales Manager à l'étage Production, {{n}}/3, encore {{flips}} coups de flipper",
     pbGoalSelect: "Choisissez la mission avec les flippers",
     pbBuiltField: "Champ créé +{{points}}",
     pbBuiltLayout: "Présentation faite +{{points}}",
@@ -470,7 +505,7 @@ export const TEXTS = {
     pbNoteFound: "La note de Victor +{{points}}",
     pbNoteLit: "La note de Victor est sur un tir : trouvez-la",
     pbCombo: "Combo x{{n}} +{{points}}",
-    pbJackpot: "Jackpot +{{points}}",
+    pbJackpot: "Jackpot x{{n}} +{{points}}",
     pbSuperLit: "Super jackpot allumé : la rampe production",
     pbSuperJackpot: "Super jackpot +{{points}}",
     pbPromo1: "Promu en integration +{{points}}",
@@ -569,7 +604,7 @@ export function createWorld(ctx) {
       }
       const text = t(key, values);
       if (DMD_WORDS[key]) {
-        const small = values.points !== undefined ? "+" + values.points : values.n !== undefined ? String(values.n) : "";
+        const small = values.points !== undefined && values.points !== "0" ? "+" + values.points : values.n !== undefined ? String(values.n) : "";
         dmd.flash(t(DMD_WORDS[key]), small, key === "pbTilt" ? 3 : 1.8);
         if (DMD_ONLY.has(key)) {
           return;
@@ -711,14 +746,15 @@ export function createWorld(ctx) {
       lastTop = top;
       ctx.bonus.hud({ score: fmt(h.score), ball: t("pbBall", { n: h.ballNo }) });
     }
-    const status = [t("pbBall", { n: h.ballNo }) + (h.extraBalls ? " +" + h.extraBalls : ""), t("pbLevel", { n: h.level }), h.bonusX > 1 ? "x" + h.bonusX : ""].filter(Boolean).join("  ");
+    const status = h.hurry ? t("dmdHurry") + " " + fmt(h.hurry) : [t("pbBall", { n: h.ballNo }) + (h.extraBalls ? " +" + h.extraBalls : ""), t("pbLevel", { n: h.level }), h.bonusX > 1 ? "x" + h.bonusX : ""].filter(Boolean).join("  ");
     const mission = h.mission === null ? "" : h.mission === "wizard" ? t("pbNameWizard") : t("pbShort" + h.mission);
     let goal = "";
     if (h.mission !== null && h.goal) {
       const total = GOAL_TOTALS[h.goal[0]];
       goal = total ? h.goal[1].n + " / " + total : t("dmdGo");
     }
-    dmd.update(dt || 0, { score: fmt(h.score), status: status.toUpperCase(), mission: mission.toUpperCase(), time: h.timeLeft, goal });
+    const time = h.flips !== null && h.flips !== undefined ? h.flips + " " + t("dmdFlips") : h.timeLeft + "s";
+    dmd.update(dt || 0, { score: fmt(h.score), status: status.toUpperCase(), mission: mission.toUpperCase(), time: time.toUpperCase(), goal });
     const text = h.goal ? t(h.goal[0], h.goal[1]) : "";
     if (text !== lastGoal) {
       lastGoal = text;

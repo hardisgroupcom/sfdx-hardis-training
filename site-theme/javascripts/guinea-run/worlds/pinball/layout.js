@@ -3,9 +3,9 @@
  * ramp and light, in table units (see physics.js). The physics, the view and
  * the rules all read it from here, so a post moved here moves everywhere.
  *
- * The proportions are an arcade table's: a ball about a nineteenth of the
- * playfield's width, flippers about three balls long with their pivots close
- * to the middle, a playfield a little over twice as long as it is wide.
+ * The proportions are an arcade table's, 1 unit for 5 cm: a 27 mm ball,
+ * 3 inch flippers with their pivots 7 inches apart, ramp mouths about two
+ * balls and a half wide, a playfield a little over twice as long as wide.
  *
  * The table is built at its design size, then stretched (sy): everything from
  * the top of the banks up moves up STRETCH, which opens a band in the middle
@@ -14,12 +14,15 @@
  *   top         the Production floor, raised: two small flippers, the Data
  *               Cloud rabbit, the Sales Manager in front of the Release hole
  *               three top lanes (the skill shot) under the arc
- *               three pop bumpers (Apex triggers), the Pull Request scoop
- *               the ramps: integration (left), production (centre, closed
- *               until a promotion opens it), uat (right); the orbits on both
- *               sides (the left one is preprod, with the spinner)
- *   the band    the Backups lane (left wall), the Code quality bumpers (right
- *               wall), the Hotfix hole, the admins who rise in the middle
+ *               three pop bumpers (Apex triggers), the sf hardis terminal and
+ *               the monster Flow, the Pull Request scoop
+ *               the shots, fanned out from the flippers: the left orbit
+ *               (preprod, the spinner), integration, the scoop, production
+ *               (closed until a promotion opens it), Validate, uat, the right
+ *               orbit
+ *   the band    the Backups targets (left wall) and the Code quality ones
+ *               (right wall) under the orbit mouths, the Hotfix hole, the
+ *               admins who rise in the middle
  *   y 6 to 9.4  the drop targets of Recent Changes (left bank), three checks
  *               and the third flipper (right bank)
  *   y 0 to 6    the slingshots, the inlanes and outlanes, the kickback
@@ -56,7 +59,7 @@ const DESIGN = {
   sling: [
     [-3.1, 5.9],
     [-3.1, 4.2],
-    [-2.0, 3.55]
+    [-1.8, 3.5]
   ]
 };
 
@@ -111,6 +114,20 @@ const BUMPERS = [
 ];
 // Under the arc on the right, where a plunge that is not a full one falls
 const LANES = [1.1, 2.2, 3.3];
+// The shots fan out from the flippers, as on the arcade tables: from left to
+// right the left orbit, the integration ramp, the scoop, the production ramp,
+// the uat ramp, the right orbit, each with a clear lane (measured with a ball
+// flipped from every point of each flipper). The orbits open level with the
+// ramp mouths, as built (after the stretch), between the side wall and their
+// inner walls; Backups and Code quality stand on the side walls under them
+const ORBIT_MOUTH = 13.0;
+const INNER = 3.8;
+const SIDE_TARGETS = [10.3, 10.9, 11.5];
+const SIDE_X = 4.84;
+// A saucer low on the left, shot from the right flipper
+const HOTFIX = { x: -3.3, y: 10.2 };
+// The monster Flow spins by the terminal, where the bumpers throw the ball
+const FLOW = { x: -2.55, y: 20.0, r: 0.7 };
 
 /** Builds the table: { physics, parts, walls, lights }. */
 export function buildTable() {
@@ -134,13 +151,13 @@ export function buildTable() {
   p.setPlunger(5.12, 5.98, T.plunger.y);
 
   // The orbits: an inner wall on each side makes a lane up to the arc
-  keep(p.capsule(-3.95, 10.8, -3.95, 14.7, { r: 0.1 }), "wall");
-  keep(p.arc(-3.15, 14.7, 0.8, Math.PI, Math.PI / 2, 5, { r: 0.1 }), "wall");
-  keep(p.capsule(3.95, 10.8, 3.95, 14.2, { r: 0.1 }), "wall");
-  keep(p.arc(3.15, 14.2, 0.8, 0, Math.PI / 2, 5, { r: 0.1 }), "wall");
-  const spinner = p.line(-3.95, 11.2, T.left, 11.2, { tag: "spinner" });
-  const orbitLeft = p.line(T.left, 14.2, -3.95, 14.2, { tag: "orbitLeft" });
-  const orbitRight = p.line(3.95, 13.0, T.laneWall, 13.0, { tag: "orbitRight" });
+  keep(p.capsule(-INNER, 10.8, -INNER, 14.7, { r: 0.1 }), "wall");
+  keep(p.arc(-INNER + 0.8, 14.7, 0.8, Math.PI, Math.PI / 2, 5, { r: 0.1 }), "wall");
+  keep(p.capsule(INNER, 10.8, INNER, 14.2, { r: 0.1 }), "wall");
+  keep(p.arc(INNER - 0.8, 14.2, 0.8, 0, Math.PI / 2, 5, { r: 0.1 }), "wall");
+  const spinner = p.line(-INNER, 11.2, T.left, 11.2, { tag: "spinner" });
+  const orbitLeft = p.line(T.left, 14.2, -INNER, 14.2, { tag: "orbitLeft" });
+  const orbitRight = p.line(INNER, 13.0, T.laneWall, 13.0, { tag: "orbitRight" });
 
   // The top lanes, under the arc: three rollovers, lit for the skill shot
   for (const [x, top] of [
@@ -169,13 +186,14 @@ export function buildTable() {
     { tag: "integration", exitMax: 9 }
   );
   // No walls at the mouth: the plastic ramp starts flat on the playfield
-  p.line(-3.75, 10.9, -2.25, 10.9, { path: integrationPath, tag: "integrationMouth" });
+  // A mouth about two balls and a half wide, as on the arcade
+  p.line(-3.6, 10.9, -2.4, 10.9, { path: integrationPath, tag: "integrationMouth" });
 
   const uatPath = p.path(
     [3.0, 10.9, 0, 3.0, 12.6, 0.9, 3.15, 14.2, 1.7, 3.7, 15.0, 1.9, 4.6, 15.2, 2.0, 6.45, 14.6, 2.1, 6.5, 9.5, 2.0, 6.4, 7.2, 1.7, 4.4, 6.3, 0.9, 3.6, 5.9, 0.3, 3.55, 5.5, 0],
     { tag: "uat", exitMax: 9 }
   );
-  p.line(2.25, 10.9, 3.75, 10.9, { path: uatPath, tag: "uatMouth" });
+  p.line(2.4, 10.9, 3.6, 10.9, { path: uatPath, tag: "uatMouth" });
 
   // The production ramp climbs to the Production floor; a gate closes its mouth until it is lit
   const productionPath = p.path(
@@ -212,17 +230,20 @@ export function buildTable() {
 
   // The inlanes, the outlanes, the slingshots
   for (const side of [-1, 1]) {
-    keep(p.wall([side * 4.0, 6.4, side * 4.0, 3.5, side * 2.5, 2.62], { r: 0.1, bounce: 0.4 }), "wall");
+    // The inlane guide ends over the flipper's pivot: the ball rolls on to the bat
+    keep(p.wall([side * 4.0, 6.4, side * 4.0, 3.5, side * 2.3, 2.75], { r: 0.1, bounce: 0.45, falloff: 0.0025 }), "wall");
     // The post at the top of the inlane guide: a rubber that keeps some balls out of the outlane
-    keep(p.circle(side * 4.0, 6.52, 0.18, { bounce: 0.8 }), "rubber");
+    keep(p.circle(side * 4.0, 6.52, 0.18, { bounce: 0.9, falloff: 0.0075, hop: 0.2 }), "rubber");
     const [a, b, c] = T.sling;
-    keep(p.capsule(side * -a[0], a[1], side * -b[0], b[1], { r: 0.12, bounce: 0.6 }), "rubber");
-    keep(p.capsule(side * -b[0], b[1], side * -c[0], c[1], { r: 0.12, bounce: 0.6 }), "rubber");
+    keep(p.capsule(side * -a[0], a[1], side * -b[0], b[1], { r: 0.12, bounce: 0.9, falloff: 0.0125 }), "rubber");
+    keep(p.capsule(side * -b[0], b[1], side * -c[0], c[1], { r: 0.12, bounce: 0.9, falloff: 0.0125 }), "rubber");
   }
   const [sa, , sc] = T.sling;
+  // The slingshots kick hardest in the middle of the band, about 1 m/s
+  const sling = { r: 0.14, bounce: 0.9, falloff: 0.0125, kick: 22, kickMin: 4, kickProfile: true, hop: 0.15 };
   const slings = [
-    keep(p.capsule(sc[0], sc[1], sa[0], sa[1], { r: 0.14, bounce: 0.7, kick: 12, kickMin: 6, tag: "slingL" }), "sling"),
-    keep(p.capsule(-sa[0], sa[1], -sc[0], sc[1], { r: 0.14, bounce: 0.7, kick: 12, kickMin: 6, tag: "slingR" }), "sling")
+    keep(p.capsule(sc[0], sc[1], sa[0], sa[1], Object.assign({ tag: "slingL" }, sling)), "sling"),
+    keep(p.capsule(-sa[0], sa[1], -sc[0], sc[1], Object.assign({ tag: "slingR" }, sling)), "sling")
   ];
   p.line(-4.0, 4.6, T.left, 4.6, { tag: "outlaneL" });
   p.line(T.laneWall, 4.6, 4.0, 4.6, { tag: "outlaneR" });
@@ -231,12 +252,14 @@ export function buildTable() {
   const kickback = p.line(-4.0, 1.4, T.left, 1.4, { tag: "kickback" });
 
   // Arcade flippers: about three balls long, their pivots close to the middle
-  const left = p.flipper(-2.3, 2.4, 1.65, { side: 1, rest: -0.45, up: 0.5, r: 0.24, rb: 0.12, tag: "flipper" });
-  const right = p.flipper(2.3, 2.4, 1.65, { side: -1, rest: -0.45, up: 0.5, r: 0.24, rb: 0.12, tag: "flipper" });
+  // As measured on the arcade: pivots 7 inches apart, the bats 31 degrees
+  // down at rest and 21 up, the tips under two balls apart
+  const left = p.flipper(-2.05, 2.4, 1.65, { side: 1, rest: -0.54, up: 0.37, r: 0.24, rb: 0.12, tag: "flipper" });
+  const right = p.flipper(2.05, 2.4, 1.65, { side: -1, rest: -0.54, up: 0.37, r: 0.24, rb: 0.12, tag: "flipper" });
   // A third, small flipper at the foot of the right bank, as on the arcade
   // tables: a ball rolling down the bank lands on it, and it shoots across to
   // the integration ramp, the scoop and the left orbit
-  const third = p.flipper(3.75, 7.75, 1.1, { side: -1, rest: -0.45, up: 0.55, r: 0.2, rb: 0.11, tag: "flipper" });
+  const third = p.flipper(3.75, 7.75, 1.1, { side: -1, rest: -0.5, up: 0.45, r: 0.2, rb: 0.11, tag: "flipper" });
 
   /* ---------- The Production floor ---------- */
   const U = { floor: 1 };
@@ -245,8 +268,8 @@ export function buildTable() {
   keep(p.arc(0, 27.4, T.upperRight, Math.PI, 0, 18, Object.assign({ r: 0.12 }, U)), "upper");
   keep(p.wall([T.upperLeft, 24.4, -1.92, 23.3], Object.assign({ r: 0.1 }, U)), "upper");
   keep(p.wall([T.upperRight, 24.4, 1.92, 23.3], Object.assign({ r: 0.1 }, U)), "upper");
-  const upperLeft = p.flipper(-1.7, 23.05, 1.15, { side: 1, rest: -0.5, up: 0.5, r: 0.2, rb: 0.11, floor: 1, tag: "flipper" });
-  const upperRight = p.flipper(1.7, 23.05, 1.15, { side: -1, rest: -0.5, up: 0.5, r: 0.2, rb: 0.11, floor: 1, tag: "flipper" });
+  const upperLeft = p.flipper(-1.7, 23.05, 1.15, { side: 1, rest: -0.5, up: 0.42, r: 0.2, rb: 0.11, floor: 1, tag: "flipper" });
+  const upperRight = p.flipper(1.7, 23.05, 1.15, { side: -1, rest: -0.5, up: 0.42, r: 0.2, rb: 0.11, floor: 1, tag: "flipper" });
   // The Data Cloud rabbit walks across the top; the Sales Manager stands in front of the Release hole
   const rabbit = p.circle(0, 27.4, 0.72, Object.assign({ bounce: 0.75, kick: 6, tag: "rabbit", moving: true }, U));
   const salesManager = p.circle(-2.05, 26.75, 0.42, Object.assign({ bounce: 0.5, tag: "salesManager" }, U));
@@ -269,23 +292,29 @@ export function buildTable() {
   admins[1].ay = admins[1].by = 10.0;
   admins[2].ay = admins[2].by = 10.4;
   // Spaced so that the gap between two of them is wider than the ball: no ball rests between them
-  admins[0].ax = admins[0].bx = -1.5;
-  admins[1].ax = admins[1].bx = 0;
-  admins[2].ax = admins[2].bx = 1.5;
-  // The Backups lane: three round targets on the left wall
-  const backups = [9.95, 10.8, 11.65].map((y, i) => p.capsule(-4.84, y - 0.24, -4.84, y + 0.24, { r: 0.1, bounce: 0.45, tag: "backup" + i }));
-  // Code quality: three round targets to push in on the right wall
-  const quality = [9.95, 10.8, 11.65].map((y, i) => p.capsule(4.84, y - 0.24, 4.84, y + 0.24, { r: 0.1, bounce: 0.45, tag: "quality" + i }));
-  // The monster Flow: a disc in the middle of the band that spins the ball off its line
-  const flow = p.disc(0, 11.6, 0.75, { tag: "flow", strength: 16 });
-  // Validate: a target right of the production chute, the first half of a Quick deploy
-  const validate = p.capsule(1.0, 12.5, 1.55, 12.65, { r: 0.1, bounce: 0.4, tag: "validate" });
+  // and none on the centre line, where a slow ball could rest exactly on top of it
+  admins[0].ax = admins[0].bx = -1.45;
+  admins[1].ax = admins[1].bx = 0.1;
+  admins[2].ax = admins[2].bx = 1.65;
+  // The inner walls of the orbits come down to their mouths
+  keep(p.capsule(-INNER, ORBIT_MOUTH, -INNER, sy(10.8), { r: 0.1, bounce: 0.45, falloff: 0.0025 }), "wall");
+  keep(p.capsule(INNER, ORBIT_MOUTH, INNER, sy(10.8), { r: 0.1, bounce: 0.45, falloff: 0.0025 }), "wall");
+  // The Backups lane: three targets on the left wall, under the orbit
+  const backups = SIDE_TARGETS.map((y, i) => p.capsule(-SIDE_X, y - 0.2, -SIDE_X, y + 0.2, { r: 0.1, bounce: 0.45, hop: 0.2, tag: "backup" + i }));
+  // Code quality: three round targets to push in on the right wall, under the orbit
+  const quality = SIDE_TARGETS.map((y, i) => p.capsule(SIDE_X, y - 0.2, SIDE_X, y + 0.2, { r: 0.1, bounce: 0.45, hop: 0.2, tag: "quality" + i }));
+  // The shots fan out from the flippers with nothing in their way, as on the
+  // arcade tables: the toys stand between them or above them.
+  // The monster Flow: a disc by the terminal, where the bumpers throw the ball, that spins it off its line
+  const flow = p.disc(FLOW.x, FLOW.y, FLOW.r, { tag: "flow", strength: 16 });
+  // Validate: a standup between the production and the uat shots, the first half of a Quick deploy
+  const validate = p.capsule(1.3, 13.85, 1.85, 14.0, { r: 0.1, bounce: 0.45, hop: 0.2, tag: "validate" });
   // The sf hardis terminal: a saucer high on the left, fed by the bumpers; it types a command
-  const terminal = p.hole(-1.6, 18.6, 0.36, { tag: "terminal", capture: true });
+  const terminal = p.hole(-1.6, 18.6, 0.36, { tag: "terminal", capture: true, maxSpeed: 34 });
   // The Hotfix hole, by the Backups lane, and its wire loop over the left side to the left inlane
-  const hotfix = p.hole(-3.3, 10.2, 0.3, { tag: "hotfix", capture: true });
+  const hotfix = p.hole(HOTFIX.x, HOTFIX.y, 0.3, { tag: "hotfix", capture: true, maxSpeed: 30 });
   const hotfixPath = p.path(
-    [-3.3, 10.2, 0, -4.0, 11.6, 0.8, -4.35, 12.8, 1.3, -4.6, 16.4, 2.3, -3.7, 19.3, 2.8, -2.2, 20.2, 2.9, -1.2, 19.4, 2.8, -1.9, 18.3, 2.7, -3.4, 18.6, 2.6, -5.35, 18.0, 2.2, -5.4, 17.1, 2.1, -5.45, 12.0, 2.0, -5.35, 7.2, 1.7, -4.3, 6.3, 0.8, -3.6, 5.9, 0.3, -3.55, 5.5, 0],
+    [HOTFIX.x, HOTFIX.y, 0, -4.0, 11.6, 0.8, -4.35, 12.8, 1.3, -4.6, 16.4, 2.3, -3.7, 19.3, 2.8, -2.2, 20.2, 2.9, -1.2, 19.4, 2.8, -1.9, 18.3, 2.7, -3.4, 18.6, 2.6, -5.35, 18.0, 2.2, -5.4, 17.1, 2.1, -5.45, 12.0, 2.0, -5.35, 7.2, 1.7, -4.3, 6.3, 0.8, -3.6, 5.9, 0.3, -3.55, 5.5, 0],
     { tag: "hotfix", exitMax: 9 }
   );
   p.build();
@@ -407,13 +436,13 @@ function buildLights() {
     l.y = /^chev-(integration|uat)-/.test(l.id) || /^lock/.test(l.id) ? l.y + STRETCH : sy(l.y);
   }
   // The band, placed as built
-  [9.95, 10.8, 11.65].forEach((y, i) => add("backup" + i, -4.3, y, { size: 0.16, color: 0x06a59a }));
-  [9.95, 10.8, 11.65].forEach((y, i) => add("quality" + i, 4.3, y, { size: 0.16, color: 0xffb020 }));
-  add("shot-hotfix", -2.65, 9.65, { shape: "delta", angle: 0.85, size: 0.3, color: 0xea001e, label: "pbFieldHotfix", labelAt: "below" });
-  TABLE.hotfix = { x: -3.3, y: 10.2 };
+  SIDE_TARGETS.forEach((y, i) => add("backup" + i, -SIDE_X + 0.5, y, { size: 0.16, color: 0x06a59a }));
+  SIDE_TARGETS.forEach((y, i) => add("quality" + i, SIDE_X - 0.5, y, { size: 0.16, color: 0xffb020 }));
+  add("shot-hotfix", HOTFIX.x + 0.65, HOTFIX.y - 0.55, { shape: "delta", angle: 0.85, size: 0.3, color: 0xea001e, label: "pbFieldHotfix", labelAt: "below" });
+  TABLE.hotfix = HOTFIX;
   TABLE.terminal = { x: -1.6, y: 18.6 };
-  TABLE.flow = { x: 0, y: 11.6, r: 0.75 };
+  TABLE.flow = FLOW;
   add("shot-terminal", -1.6, 17.75, { shape: "delta", size: 0.3, color: 0x2e844a, label: "pbFieldTerminal", labelAt: "below" });
-  add("validate", 1.28, 12.15, { size: 0.15, color: 0x45c65a, label: "pbFieldValidate", labelAt: "below" });
+  add("validate", 1.55, 13.4, { size: 0.15, color: 0x45c65a, label: "pbFieldValidate", labelAt: "below" });
   return lights;
 }

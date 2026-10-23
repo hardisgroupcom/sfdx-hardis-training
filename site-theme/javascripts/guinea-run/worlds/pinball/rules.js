@@ -3,7 +3,7 @@
  * Deploy to all orgs, the scoop and its missions, Release day and the levels.
  * No Three.js and no page here: the rules read the events of the physics and
  * tell the world module what to show through `out`, so
- * scripts/guinea-run/pinball-rules.test.mjs plays them in Node.
+ * scripts/guinea-run/pinball.test.mjs plays them in Node.
  *
  * Everything that must survive a pause lives in `s`, a plain object: the
  * checkpoint saves it as is. What only matters for the ball on screen (a ball
@@ -53,6 +53,27 @@ const VALIDATE_S = 3;
 const QUICK_S = 12;
 const DOUBLE_S = 20;
 const MAJOR = ["integration", "uat", "preprod", "orbitRight", "production"];
+// Deploy to all orgs: each round of jackpots is worth one step more, its shots
+// change colour (blue, green, yellow, orange, red), and the super jackpot pays
+// back every jackpot of the round
+const JACKPOT = 400000;
+const JACKPOT_COLORS = [0x1b96ff, 0x45c65a, 0xffd23f, 0xfe9339, 0xea001e];
+const SUPER_MIN = 1500000;
+// The orbits made one after the other: each loop pays more, up to ten
+const LOOP_WINDOW = 3.5;
+const LOOP_MAX = 10;
+const LOOP_EXTRA = 6;
+// The whole pipeline in one go: integration, uat, preprod, then production,
+// each shot within PIPELINE_WINDOW of the one before
+const PIPELINE = ["integration", "uat", "preprod", "production"];
+const PIPELINE_WINDOW = 6;
+const PIPELINE_AWARD = 1500000;
+// Back from production, a bug: a Hotfix hurry-up, worth less every second
+const HURRY_START = 1000000;
+const HURRY_FLOOR = 100000;
+const HURRY_S = 20;
+// A soft plunge straight into the sf hardis terminal: the secret skill shot
+const SECRET_SKILL = 750000;
 // The light modes: off, on, slow blink, fast blink
 export const OFF = 0;
 export const ON = 1;
@@ -105,6 +126,11 @@ export function newState() {
     lostPromo: 0,
     lastCommand: -1,
     smDownUntil: 0,
+    loops: 0,
+    lastLoop: -10,
+    chain: 0,
+    lastChain: -10,
+    hurry: null,
     over: false
   };
 }
@@ -301,6 +327,9 @@ export function createRules(table, out, random) {
     rt.ending = false;
     s.stats = { bumpers: 0, ramps: 0, targets: 0, missions: 0 };
     s.bonusX = 1;
+    s.loops = 0;
+    s.chain = 0;
+    s.hurry = null;
     // The monster Flow is back for the new ball
     s.flowHits = 0;
     s.flowDone = false;
@@ -445,6 +474,10 @@ export function createRules(table, out, random) {
       award(1000000, "pbNoteFound");
       out.event("note", s.notes);
     }
+    if (name === "preprod" || name === "orbitRight") {
+      loop();
+    }
+    pipeline(name);
     if (MAJOR.includes(name)) {
       s.combo = s.clock - s.lastMajor < COMBO_WINDOW ? Math.min(s.combo + 1, 5) : 1;
       s.lastMajor = s.clock;
@@ -465,9 +498,12 @@ export function createRules(table, out, random) {
   function multiballShot(name) {
     const mb = s.mb;
     const i = ["integration", "uat", "preprod"].indexOf(name);
+    const step = mb.step || 0;
     if (i >= 0 && mb.lit[i]) {
       mb.lit[i] = false;
-      award(400000, "pbJackpot");
+      const value = JACKPOT * (step + 1);
+      mb.collected = (mb.collected || 0) + value;
+      award(value, "pbJackpot", { n: step + 1 });
       out.event("jackpot", false);
       out.sound("pbJackpot");
       if (!mb.lit.some(Boolean)) {
@@ -475,12 +511,69 @@ export function createRules(table, out, random) {
         out.say("coach", "pbSuperLit");
       }
     } else if (name === "production" && mb.superLit) {
+      // The super jackpot pays back the round, then the next round is worth a step more
       mb.superLit = false;
       mb.lit = [true, true, true];
-      award(1500000, "pbSuperJackpot");
+      award(Math.max(SUPER_MIN, mb.collected || 0), "pbSuperJackpot");
+      mb.collected = 0;
+      mb.step = Math.min(JACKPOT_COLORS.length - 1, step + 1);
       out.event("jackpot", true);
       out.sound("pbJackpot");
     }
+  }
+
+  /** An orbit made: a loop, worth more when it follows another one. */
+  function loop() {
+    s.loops = s.clock - s.lastLoop < LOOP_WINDOW ? Math.min(LOOP_MAX, s.loops + 1) : 1;
+    s.lastLoop = s.clock;
+    if (s.loops < 2) {
+      return;
+    }
+    award(50000 * s.loops, "pbLoops", { n: s.loops });
+    out.sound("pbCombo");
+    if (s.loops === LOOP_EXTRA && !s.extraLit) {
+      s.extraLit = true;
+      out.say("toast", "pbExtraLit", {}, "good");
+    }
+  }
+
+  /** Integration, uat, preprod, production, each one quickly after the other: the whole pipeline in one go. */
+  function pipeline(name) {
+    const at = PIPELINE.indexOf(name);
+    if (at < 0) {
+      return;
+    }
+    const inTime = s.clock - s.lastChain < PIPELINE_WINDOW;
+    if (at === 0) {
+      s.chain = 1;
+    } else if (inTime && at === s.chain) {
+      s.chain++;
+    } else {
+      s.chain = 0;
+      return;
+    }
+    s.lastChain = s.clock;
+    if (s.chain === PIPELINE.length) {
+      s.chain = 0;
+      award(PIPELINE_AWARD, "pbPipelineCombo");
+      out.event("jackpot", true);
+      out.sound("pbJackpot");
+    }
+  }
+
+  /** The value of the Hotfix hurry-up now. */
+  function hurryValue() {
+    const left = Math.max(0, s.hurry.until - s.clock) / HURRY_S;
+    return Math.round((HURRY_FLOOR + (HURRY_START - HURRY_FLOOR) * left) / 1000) * 1000;
+  }
+
+  function startHurry() {
+    if (s.hurry || s.mb || s.tilted || (s.mission && s.mission.id === "wizard")) {
+      return;
+    }
+    s.hurry = { until: s.clock + HURRY_S };
+    out.say("coach", "pbHurryStart");
+    out.sound("pbTiltWarn");
   }
 
   function promotion(name) {
@@ -496,7 +589,8 @@ export function createRules(table, out, random) {
   }
 
   function startMultiball() {
-    s.mb = { lit: [true, true, true], superLit: false };
+    s.mb = { lit: [true, true, true], superLit: false, step: 0, collected: 0 };
+    s.hurry = null;
     s.lockLit = false;
     launchLater(1);
     launchLater(2.2);
@@ -597,6 +691,12 @@ export function createRules(table, out, random) {
           scoopEnter(e.ball);
         } else if (tag === "terminal") {
           award(20000, "");
+          // A plunge soft enough to drop into the terminal: the secret skill shot
+          if (s.skill && !s.skill.done && s.clock < s.skill.until) {
+            s.skill.done = true;
+            award(SECRET_SKILL, "pbSecretSkill");
+            out.sound("pbJackpot");
+          }
           shot("terminal");
           rt.terminal = { ball: e.ball, until: s.clock + TERMINAL_HOLD };
           runCommand();
@@ -604,6 +704,11 @@ export function createRules(table, out, random) {
           flowEnter();
         } else if (tag === "hotfix") {
           // A hotfix goes straight round the loop to the left inlane
+          if (s.hurry) {
+            award(hurryValue(), "pbHurryDone");
+            s.hurry = null;
+            out.event("jackpot", false);
+          }
           award(50000, "pbHotfix");
           shot("hotfix");
           out.sound("pbLock");
@@ -874,6 +979,7 @@ export function createRules(table, out, random) {
       out.event("upper", true);
     } else if (tag === "down" || tag === "releaseWire") {
       out.event("upper", false);
+      startHurry();
     }
     void e;
   }
@@ -909,7 +1015,8 @@ export function createRules(table, out, random) {
       setLight("shot-integration", FAST, 0xfe9339);
     }
     if (s.mb) {
-      ["integration", "uat", "preprod"].forEach((n, i) => s.mb.lit[i] && setLight("shot-" + n, FAST, 0xffb020));
+      const color = JACKPOT_COLORS[s.mb.step || 0];
+      ["integration", "uat", "preprod"].forEach((n, i) => s.mb.lit[i] && setLight("shot-" + n, FAST, color));
     }
     for (let i = 0; i < 5; i++) {
       setLight("drop" + i, s.drops[i] ? ON : OFF);
@@ -921,7 +1028,7 @@ export function createRules(table, out, random) {
       setLight("lane" + i, s.lanes[i] ? ON : s.skill && !s.skill.done && s.skill.lane === i && rt.served ? FAST : OFF);
     }
     setLight("kickback", s.kickback ? ON : OFF);
-    setLight("shot-hotfix", BLINK);
+    setLight("shot-hotfix", s.hurry ? FAST : BLINK);
     setLight("shot-terminal", rt.terminal ? FAST : BLINK);
     setLight("validate", rt.validating ? FAST : s.clock < rt.quickUntil ? ON : BLINK);
     if (s.clock < rt.quickUntil) {
@@ -1168,7 +1275,7 @@ export function createRules(table, out, random) {
       if (def.update) {
         def.update(m, dt, api);
       }
-      if (s.mission) {
+      if (s.mission && !(def.frozen && def.frozen(s.mission.m))) {
         s.mission.m.timeLeft -= dt;
         if (s.mission.m.timeLeft <= 0) {
           endMission(false, "pbTimeUp");
@@ -1177,6 +1284,10 @@ export function createRules(table, out, random) {
     }
     if (s.note && s.clock > s.note.until) {
       s.note = null;
+    }
+    if (s.hurry && s.clock > s.hurry.until) {
+      s.hurry = null;
+      out.say("tip", "pbHurryMissed");
     }
     s.tilt = Math.max(0, s.tilt - dt * 0.45);
     // The rabbit walks across the Production floor, faster when it is the mission
@@ -1279,6 +1390,12 @@ export function createRules(table, out, random) {
         out.event("select", id);
         return;
       }
+      if (s.mission) {
+        const def = missionDef(s.mission.id);
+        if (def.flip) {
+          def.flip(s.mission.m, api);
+        }
+      }
       const l = s.lanes;
       s.lanes = side > 0 ? [l[2], l[0], l[1]] : [l[1], l[2], l[0]];
       if (s.skill && !s.skill.done && !s.skill.until) {
@@ -1341,6 +1458,8 @@ export function createRules(table, out, random) {
         select: rt.scoop && rt.scoop.start === "select" ? s.select : -1,
         done: s.done,
         multiball: Boolean(s.mb),
+        hurry: s.hurry ? hurryValue() : 0,
+        flips: mission && missionDef(mission.id).flipsLeft ? missionDef(mission.id).flipsLeft(mission.m) : null,
         tilted: s.tilted
       };
     },

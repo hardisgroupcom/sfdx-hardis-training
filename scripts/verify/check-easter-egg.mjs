@@ -787,7 +787,8 @@ try {
         }
         const balls = await page.evaluate(() => window.__guineaRun.pinball.balls());
         for (const b of balls) {
-          const out = b.mode === "table" && (b.floor === 0 ? b.x < -5.6 || b.x > 6.7 || b.y > 21.1 : b.x < -4.1 || b.x > 4.1 || b.y > 30.9);
+          // Past the walls: the top arc ends at 23.05, the arc of the Production floor at 33.5
+          const out = b.mode === "table" && (b.floor === 0 ? b.x < -5.6 || b.x > 6.7 || b.y > 23.4 : b.x < -4.1 || b.x > 4.1 || b.y > 33.8);
           if (out) {
             escaped = `${b.x.toFixed(2)},${b.y.toFixed(2)} on floor ${b.floor}`;
           }
