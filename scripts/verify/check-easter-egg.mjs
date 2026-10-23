@@ -194,6 +194,13 @@ const waitState = (page, values) =>
       () => false
     );
 
+// Whether the invitation to send a top 5 score shows on the end card, and says this
+const invited = (page, pattern) =>
+  page.textContent(".guinea-run .gr-hof-invite:not([hidden])", { timeout: 500 }).then(
+    (text) => pattern.test(text || ""),
+    () => false
+  );
+
 async function typeKeys(page, keys, gap) {
   for (const key of keys) {
     await page.keyboard.press(key);
@@ -381,8 +388,12 @@ try {
     await waitState(page, "intro");
     await page.click('.guinea-run [data-action="start"]');
     await waitState(page, "playing");
+    // A board where any score of world 0 enters the top 5
+    await page.evaluate(() => window.__guineaRun.board({ players: {} }));
     await page.evaluate(() => window.__guineaRun.finish());
     await waitState(page, "done");
+    const invite = await settles(page, () => invited(page, /#1 in .*#1 overall/), true, 10000);
+    expect(invite, "the end card invites a score that enters the top 5 of its world and of the total");
     await page.click('.guinea-run [data-action="map"]');
     await waitState(page, "map");
     expect((await page.locator('.guinea-run [data-action="play"][data-world="1"]').count()) === 1, "finishing world 0 opens world 1");
@@ -425,6 +436,8 @@ try {
       }, PROGRESS_KEY);
       await typeKeys(page, KONAMI_ARROWS);
       await waitState(page, "map");
+      // 1500 on world 0 beats Jane-Doe's 900: second of that board, not sent yet
+      expect(await settles(page, () => page.locator(".guinea-run .gr-map-meta .gr-hof-open.is-marked").count(), 1, 15000), "the map marks the Hall of Fame button while a top 5 score waits to be sent");
       if (!viewport.mobile) {
         await page.click('.guinea-run [data-action="mode"][data-mode="hard"]');
         const hard = await settles(page, () => page.locator('.guinea-run [data-mode="hard"].is-active').count(), 1);
@@ -774,7 +787,17 @@ try {
       expect(await settles(page, () => page.evaluate(() => window.__guineaRun.pinball.balls().length), 3, 30000), "Deploy to all orgs puts three balls on the table");
       await page.evaluate(() => window.__guineaRun.pinball.jump(3));
       expect(await settles(page, () => page.evaluate(() => window.__guineaRun.pinball.balls().some((b) => b.floor === 1 && b.mode === "table")), true, 30000), "the production ramp takes a ball up to the Production floor");
+      // Five players on its board, the fifth at 5 points: the game passes it
+      await page.evaluate(() => {
+        const players = {};
+        for (let i = 1; i <= 5; i++) {
+          players["p" + i] = { handle: "p" + i, worlds: {}, total: 0, stars: 0, pinball: { score: i, level: 1, at: "2026-10-20T10:00:00Z" } };
+        }
+        window.__guineaRun.board({ players });
+      });
+      expect(await settles(page, () => page.evaluate(() => window.__guineaRun.hofTarget()), 1, 5000), "the table knows the score of the fifth of its board");
       await page.evaluate(() => window.__guineaRun.pinball.autoplay(true));
+      expect(await settles(page, () => data(page, "pb-top5"), "1", 30000), "the display flashes TOP 5 once the game passes the fifth of the board");
       // Two minutes of the bot: the ball never leaves the table
       let escaped = "";
       let lost = false;
@@ -802,6 +825,8 @@ try {
       }
       expect(await waitState(page, "done"), "a game of Pipeline Pinball ends on its card");
       expect((await page.locator(".guinea-run .gr-score").count()) === 1, "the end card of the bonus table shows the score");
+      const pinInvite = await settles(page, () => invited(page, /#1 on Pipeline Pinball/), true, 10000);
+      expect(pinInvite, "the end card of the bonus table invites a game that enters its top 5");
       await page.click('.guinea-run [data-action="map"]');
       expect(await waitState(page, "map"), "the bonus table goes back to the map");
       expect(await page.evaluate(() => !document.getElementById("guinea-run-world-css")), "the bonus table takes its styles away with it");

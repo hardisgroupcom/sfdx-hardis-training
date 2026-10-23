@@ -37,7 +37,7 @@ import { createMusic } from "./core/music.js";
 import { THEMES } from "./core/themes.js";
 import { TALLY_SET, stamp, stampPinball } from "./core/tally.js";
 import { hasCheckpoint, loadCheckpoint, saveCheckpoint, clearCheckpoint } from "./core/checkpoint.js";
-import { GAME_VERSION, collectResults, isHandle, loadBoard, submissionUrl } from "./core/hof.js";
+import { GAME_VERSION, WORLD_COUNT, collectResults, isHandle, loadBoard, pinballTarget, scoresOf, submissionUrl, topInvites } from "./core/hof.js";
 
 // scripts/build/vendor-three.mjs copies the add-ons of this same version
 const THREE_VERSION = "0.186.1";
@@ -116,6 +116,13 @@ function createGame(options) {
   // The Hall of Fame as last read, and where its card was opened from
   let board = null;
   let hofFrom = null;
+  // The results of the last issue prepared, what the last invitation asked, a signature on its way
+  let prepared = null;
+  let inviteAsk = 0;
+  let signing = Promise.resolve();
+  // The score Pipeline Pinball must pass to enter the top 5 (0: no flash), and the last game's score in a check
+  let pinTarget = 0;
+  let testPinball = 0;
 
   loadStylesheet(options.base + "guinea-run.css");
   const hud = createHud(shellT, { logoUrl, badgeUrl, labs, lang });
@@ -410,6 +417,7 @@ function createGame(options) {
       },
       { open: bonusOpen(), best: progress.bonus.best, hasSave: hasCheckpoint() }
     );
+    markMap();
   }
 
   async function openWorld(id) {
@@ -468,6 +476,7 @@ function createGame(options) {
     // A world says how it is played in three short steps: how1, how2, how3
     const how = ["how1", "how2", "how3"].map((key) => current.t(key)).filter((text, i) => text && text !== "how" + (i + 1));
     if (info === BONUS) {
+      readPinballTarget();
       hud.bonusIntro({ story: current.t("intro"), how, best: progress.bonus.best, hasSave: hasCheckpoint(), title: current.t("pbTitle") });
     } else {
       hud.intro(info, progress.world(id), current.t("intro"), how, module.PADS, modeOf(progress.mode));
@@ -515,11 +524,15 @@ function createGame(options) {
     const record = testMode ? null : { pin: 1, sc: summary.score, ms: summary.ms, lv: summary.level, mi: summary.missions, nt: summary.notes, at: Date.now(), v: GAME_VERSION, k: TALLY_SET };
     const newBest = testMode ? summary.score > before : progress.completeBonus(summary.score, record);
     if (newBest && record) {
-      stampPinball(record).then((sg) => sg && progress.setBonusRecord(Object.assign({}, record, { sg })));
+      signing = stampPinball(record).then((sg) => sg && progress.setBonusRecord(Object.assign({}, record, { sg })));
+    }
+    if (testMode) {
+      testPinball = Math.max(testPinball, summary.score);
     }
     track("easter_egg_bonus_over", { score: summary.score, level: summary.level, missions: summary.missions, minutes: Math.round(summary.ms / 60000), trigger: options.trigger });
     sound.play(newBest ? "fanfare" : "happy");
     hud.bonusResult(Object.assign({ best: Math.max(before, summary.score), newBest }, summary));
+    inviteFor(["pinball"]);
   }
 
   /** Builds the world from its module, fresh: every attempt of a world starts clean. */
@@ -621,6 +634,10 @@ function createGame(options) {
       sound,
       world: info,
       params: { startAt, testMode, seed: Number(seedParam) || 0 },
+      /** The score Pipeline Pinball must pass to enter the top 5 of its board, 0 when there is nothing to flash. */
+      get hofTarget() {
+        return pinTarget;
+      },
       /** How much faster than Easy the world runs (1, 1.5 or 2): its update already gets the faster time, a musical run sets its tempo with it. */
       get speed() {
         return run.mode.speed;
@@ -807,7 +824,7 @@ function createGame(options) {
     const newBest = progress.complete(info.id, run.score, stars, last ? info.id : info.id + 1, record);
     if (newBest && !testMode) {
       // A few milliseconds: the card does not wait for it
-      stamp(record).then((sg) => sg && progress.setRecord(info.id, Object.assign({}, record, { sg })));
+      signing = stamp(record).then((sg) => sg && progress.setRecord(info.id, Object.assign({}, record, { sg })));
     }
     track("easter_egg_world_done", { world: info.id, stars, score: run.score, mode: run.mode.id, trigger: options.trigger });
     engine.setActive(false);
@@ -821,6 +838,7 @@ function createGame(options) {
       } else {
         state = "done";
         hud.result(result);
+        inviteFor([info.id, "all"]);
       }
     };
     if (info.badge) {
@@ -866,10 +884,9 @@ function createGame(options) {
     hud.clearWorldUi();
     hud.setPads([]);
     const view = { tab, from, handle: progress.handle, canSend: !testMode, prepare: prepareSubmission, onSent: sentScores };
-    if (!board || Date.now() - board.at > BOARD_REUSE_MS) {
+    if (!boardFresh()) {
       hud.hallOfFame(Object.assign({ loading: true }, view));
-      const loaded = await loadBoard(siteRoot);
-      board = Object.assign(loaded, { at: Date.now() });
+      const loaded = await currentBoard();
       if (state !== "hof" || hofFrom !== from) {
         return;
       }
@@ -890,14 +907,97 @@ function createGame(options) {
     if (!results.length) {
       return { error: "hofNothing" };
     }
+    prepared = results;
     return { url: await submissionUrl(handle, results, Date.now()), count: results.length };
   }
 
   function sentScores(handle, count) {
     progress.setHandle(handle);
+    if (prepared) {
+      progress.addSent(scoresOf(prepared));
+    }
+    hud.markHof(false);
     // The next look at the board reads it again: the new scores land within minutes
     board = null;
     track("easter_egg_hof_submit", { worlds: count });
+  }
+
+  function boardFresh() {
+    return Boolean(board) && Date.now() - board.at <= BOARD_REUSE_MS;
+  }
+
+  /** The board, read again once it is older than BOARD_REUSE_MS. Never throws. */
+  async function currentBoard() {
+    if (!boardFresh()) {
+      const loaded = await loadBoard(siteRoot);
+      board = Object.assign(loaded, { at: Date.now() });
+    }
+    return board;
+  }
+
+  /** The scores the player can send now; in a check, the bests of this session. */
+  function mineScores() {
+    if (testMode) {
+      const worlds = {};
+      for (let w = 0; w < WORLD_COUNT; w++) {
+        worlds[w] = progress.world(w).best;
+      }
+      return { worlds, pinball: testPinball };
+    }
+    return scoresOf(collectResults(progress, Date.now()));
+  }
+
+  /** The boards where the scores not sent yet would enter the top 5. Nothing to send: no need to read the board. */
+  async function invitesFor(boards) {
+    const empty = { players: {} };
+    if (!topInvites(empty, mineScores(), progress.sent, progress.handle, boards).length) {
+      return [];
+    }
+    const read = await currentBoard();
+    return read.ok ? topInvites(read.board, mineScores(), progress.sent, progress.handle, boards) : [];
+  }
+
+  /**
+   * The invitation on the end card, once the signature and the board are in:
+   * with a known handle a link straight to the issue, otherwise the Hall of Fame card.
+   */
+  async function inviteFor(boards) {
+    const ask = ++inviteAsk;
+    const shown = state;
+    await signing;
+    const invites = await invitesFor(boards);
+    if (ask !== inviteAsk || state !== shown || !invites.length) {
+      return;
+    }
+    const view = { invites, canSend: !testMode, onSent: sentScores };
+    if (progress.handle && !testMode) {
+      const ready = await prepareSubmission(progress.handle);
+      if (ask !== inviteAsk || state !== shown) {
+        return;
+      }
+      if (ready.url) {
+        Object.assign(view, { handle: progress.handle, url: ready.url, count: ready.count });
+      }
+    }
+    hud.invite(view);
+    hud.markHof(true);
+    track("easter_egg_hof_invite", { boards: invites.map((i) => i.board).join(","), rank: Math.min(...invites.map((i) => i.rank)) });
+  }
+
+  /** The mark on the Hall of Fame button of the map, while a top 5 score waits to be sent. */
+  async function markMap() {
+    const boards = Array.from({ length: WORLD_COUNT }, (_, w) => w).concat(["all", "pinball"]);
+    const invites = await invitesFor(boards);
+    if (state === "map") {
+      hud.markHof(invites.length > 0);
+    }
+  }
+
+  /** What Pipeline Pinball must pass to flash TOP 5, read while its card shows. */
+  async function readPinballTarget() {
+    pinTarget = 0;
+    const read = await currentBoard();
+    pinTarget = read.ok ? pinballTarget(read.board, progress.sent, progress.handle) : 0;
   }
 
   function updateHud() {
@@ -1068,6 +1168,14 @@ function createGame(options) {
       fail: () => current && current.world && failWorld(),
       action: (name) => onAction(name, null),
       bossClock: () => (run ? run.bossClock : null),
+      // A board to rank against, instead of the one on GitHub
+      board: (value) => {
+        board = { board: value, ok: true, at: Date.now() + 864e5 };
+        if (current && current.info === BONUS) {
+          readPinballTarget();
+        }
+      },
+      hofTarget: () => pinTarget,
       // The models stay loaded for the session: only what a world made itself counts
       geometries: () => (engine ? engine.renderer.info.memory.geometries - (models ? models.geometryCount : 0) : 0),
       textures: () => (engine ? engine.renderer.info.memory.textures : 0)

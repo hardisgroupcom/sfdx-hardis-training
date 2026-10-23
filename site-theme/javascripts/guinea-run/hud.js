@@ -507,6 +507,29 @@ export function createHud(t, options) {
     refresh();
   }
 
+  // The invitation box of the end card on screen, and whether the map marks the Hall of Fame button
+  let inviteBox = null;
+  let hofMarked = false;
+
+  /** An empty invitation box on an end card, filled by invite() once the board is read. */
+  function invitePlace(body) {
+    inviteBox = element("div", "gr-hof-invite", body);
+    inviteBox.hidden = true;
+    inviteBox.setAttribute("aria-live", "polite");
+  }
+
+  /** Where the scores would rank: "#3 in Commit, #2 overall". */
+  function inviteList(invites) {
+    const parts = invites.map((i) =>
+      i.board === "all"
+        ? t("hofInviteAll", { rank: i.rank })
+        : i.board === "pinball"
+          ? t("hofInvitePinball", { rank: i.rank })
+          : t("hofInviteWorld", { rank: i.rank, world: t("w" + i.board + "_name") })
+    );
+    return parts.length > 1 ? parts.slice(0, -1).join(", ") + " " + t("hofAnd") + " " + parts[parts.length - 1] : parts[0];
+  }
+
   /* ---------- The end credits ---------- */
 
   let creditsArgs = null;
@@ -776,7 +799,11 @@ export function createHud(t, options) {
           }
           const meta = element("div", "gr-map-meta", body);
           badgesRow(meta, progress.badges);
-          button(meta, "hof", t("hofButton"), "gr-small gr-hof-open");
+          const hof = button(meta, "hof", t("hofButton"), "gr-small gr-hof-open");
+          hof.classList.toggle("is-marked", hofMarked);
+          if (hofMarked) {
+            hof.title = t("hofMarkTitle");
+          }
           element("p", "gr-muted", meta, t("notesFound", { n: progress.notesFound(), total: WORLDS.length }));
           const reset = element("button", "gr-link", meta, t("resetProgress"));
           reset.type = "button";
@@ -869,6 +896,7 @@ export function createHud(t, options) {
         if (result.notes > 0) {
           element("li", "", list, t("bonusNotesLine", { n: result.notes }));
         }
+        invitePlace(body);
         const rule = element("div", "gr-rule", body);
         element("strong", "", rule, t("theRule"));
         element("span", "", rule, t("bonusRule"));
@@ -901,6 +929,49 @@ export function createHud(t, options) {
       });
     },
 
+    /**
+     * The invitation to send a top 5 score, on the end card on screen.
+     * view: { invites: [{ board, rank }], canSend, handle, url, count, onSent }:
+     * with a url, a link straight to the issue; otherwise the Hall of Fame card.
+     */
+    invite(view) {
+      if (!inviteBox || !inviteBox.isConnected) {
+        return;
+      }
+      const box = inviteBox;
+      box.textContent = "";
+      box.hidden = false;
+      element("strong", "gr-hof-invite-title", box, t("hofInviteTitle"));
+      element("span", "", box, t("hofInviteLine", { list: inviteList(view.invites) }));
+      const first = view.invites[0].board;
+      if (view.url) {
+        const link = element("a", "gr-button gr-primary gr-small gr-hof-link", box, t("hofSubmit"));
+        link.href = view.url;
+        link.target = "_blank";
+        link.rel = "noopener";
+        const message = element("p", "gr-muted gr-hof-message", box, t("hofInviteAs", { handle: view.handle }));
+        link.addEventListener("click", () => {
+          view.onSent(view.handle, view.count);
+          message.textContent = t("hofSent");
+        });
+      } else {
+        const open = button(box, "hof", t("hofSendTitle"), "gr-primary gr-small gr-hof-open");
+        if (first !== "all") {
+          open.setAttribute("data-world", String(first));
+        }
+      }
+    },
+
+    /** The mark on the Hall of Fame button of the map: a top 5 score waits to be sent. */
+    markHof(on) {
+      hofMarked = Boolean(on);
+      const node = overlay.querySelector(".gr-map-meta .gr-hof-open");
+      if (node) {
+        node.classList.toggle("is-marked", hofMarked);
+        node.title = hofMarked ? t("hofMarkTitle") : "";
+      }
+    },
+
     /** After a world: result = { ok, world, score, best, newBest, stars, tip, hasNext }. */
     result(result) {
       const world = result.world;
@@ -921,6 +992,7 @@ export function createHud(t, options) {
             element("strong", "", missed, t("goodToKnow"));
             element("span", "", missed, result.missed);
           }
+          invitePlace(body);
           const rule = element("div", "gr-rule", body);
           element("strong", "", rule, t("theRule"));
           element("span", "", rule, t("w" + world.id + "_rule"));

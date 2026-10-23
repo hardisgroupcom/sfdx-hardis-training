@@ -67,6 +67,7 @@ const DMD_WORDS = {
   pbQuickDeploy: "dmdQuickDeploy",
   pbReplay: "dmdReplay",
   pbMatchWon: "dmdMatch",
+  pbTop5: "dmdTop5",
   pbBackupRestored: "dmdBackup"
 };
 const DMD_ONLY = new Set(["pbLoops", "pbSecretSkill", "pbHotfix", "pbReplay", "pbJackpot", "pbReleaseJackpot", "pbSuperJackpot", "pbSkillShot", "pbSuperSkill", "pbCombo", "pbBallSaved", "pbKickback", "pbBonusXUp", "pbLocked", "pbBallN", "pbShootAgain", "pbTilt", "pbTiltWarning", "pbExtraBall", "pbMultiball"]);
@@ -175,8 +176,10 @@ export const TEXTS = {
     dmdQuickLit: "Quick deploy lit",
     dmdQuickDeploy: "Quick deploy x2",
     pbMatchWon: "Match! One more ball",
+    pbTop5: "This game enters the top 5 of the Hall of Fame: send it at the end",
     dmdReplay: "Replay",
     dmdMatch: "Match",
+    dmdTop5: "Top 5",
     pbHotfix: "Hotfix, straight to the inlane +{{points}}",
     pbHurryStart: "A bug in production: shoot the Hotfix hole before its value runs out",
     pbHurryDone: "Hotfix deployed +{{points}}",
@@ -410,8 +413,10 @@ export const TEXTS = {
     dmdQuickLit: "Quick deploy allumé",
     dmdQuickDeploy: "Quick deploy x2",
     pbMatchWon: "Match ! Une bille de plus",
+    pbTop5: "Cette partie entre dans le top 5 du Hall of Fame : envoyez-la à la fin",
     dmdReplay: "Replay",
     dmdMatch: "Match",
+    dmdTop5: "Top 5",
     pbHotfix: "Hotfix, droit vers le couloir +{{points}}",
     pbHurryStart: "Un bug en production : visez le trou Hotfix avant que sa valeur ne fonde",
     pbHurryDone: "Hotfix déployé +{{points}}",
@@ -738,6 +743,8 @@ export function createWorld(ctx) {
   let eobTimer = 0;
   let lastTop = "";
   let lastGoal = "";
+  // Once a game: the score passes the fifth of the Hall of Fame
+  let topFlashed = false;
 
   function drawPanel(dt) {
     const h = rules.hud();
@@ -752,6 +759,12 @@ export function createWorld(ctx) {
     if (h.mission !== null && h.goal) {
       const total = GOAL_TOTALS[h.goal[0]];
       goal = total ? h.goal[1].n + " / " + total : t("dmdGo");
+    }
+    if (!topFlashed && ctx.hofTarget > 0 && h.score > ctx.hofTarget) {
+      topFlashed = true;
+      out.say("toast", "pbTop5");
+      out.sound("pbJackpot");
+      ctx.setData("pb-top5", 1);
     }
     const time = h.flips !== null && h.flips !== undefined ? h.flips + " " + t("dmdFlips") : h.timeLeft + "s";
     dmd.update(dt || 0, { score: fmt(h.score), status: status.toUpperCase(), mission: mission.toUpperCase(), time: time.toUpperCase(), goal });

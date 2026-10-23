@@ -1734,6 +1734,59 @@ html.guinea-run-open body {
   margin-top: 4px;
 }
 
+/* A top 5 score to send: the box on the end card, the dot on the map button */
+.guinea-run .gr-hof-invite {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 10px 0;
+  padding: 10px 12px;
+  border: 2px solid #f2a900;
+  border-radius: 6px;
+  background: #fff8e1;
+  text-align: left;
+  font-size: 15px;
+  animation: gr-fade-in 0.4s ease-out;
+}
+
+.guinea-run .gr-hof-invite[hidden] {
+  display: none;
+}
+
+.guinea-run .gr-hof-invite-title {
+  color: #8a5a00;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.guinea-run .gr-hof-invite .gr-hof-message {
+  margin: 0;
+}
+
+.guinea-run .gr-hof-open.is-marked {
+  position: relative;
+}
+
+.guinea-run .gr-hof-open.is-marked::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  background: #f2a900;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guinea-run .gr-hof-invite {
+    animation: none;
+  }
+}
+
 .guinea-run .gr-hof-tabs {
   display: flex;
   gap: 6px;

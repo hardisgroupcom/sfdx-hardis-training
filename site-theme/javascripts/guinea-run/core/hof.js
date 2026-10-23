@@ -68,6 +68,88 @@ export function rankOf(list, handle) {
   return i + 1;
 }
 
+// A score that would enter this top of a board is worth an invitation to send it
+export const INVITE_TOP = 5;
+
+/**
+ * The boards where the player's scores would enter the top 5, and are not on
+ * the board yet: what the game invites them to send.
+ * mine: { worlds: { w: score }, pinball: score }, the scores the player can send.
+ * sent: the same shape, what they sent already (their board entry may lag).
+ * handle: theirs, or "": their own entry is not a rival.
+ * boards: the boards to look at, world ids, "all" and "pinball".
+ * Returns [{ board, rank }] in the order of boards. A tie goes to whoever was
+ * there first, so a score must beat the fifth one.
+ */
+export function topInvites(board, mine, sent, handle, boards) {
+  const key = String(handle || "").toLowerCase();
+  const others = players(board).filter((p) => p.handle.toLowerCase() !== key);
+  const own = players(board).find((p) => key && p.handle.toLowerCase() === key) || {};
+  const ownWorld = (w) => (own.worlds && own.worlds[w] ? own.worlds[w].score || 0 : 0);
+  const worldScore = (w) => (mine.worlds && mine.worlds[w]) || 0;
+  const isNew = (score, before) => score > 0 && score > before;
+  const rankAmong = (score, scores) => 1 + scores.filter((s) => s >= score).length;
+  const invites = [];
+  for (const name of boards) {
+    let rank = 0;
+    if (name === "pinball") {
+      const score = mine.pinball || 0;
+      if (isNew(score, Math.max(own.pinball ? own.pinball.score || 0 : 0, (sent && sent.pinball) || 0))) {
+        rank = rankAmong(score, others.filter((p) => p.pinball && p.pinball.score > 0).map((p) => p.pinball.score));
+      }
+    } else if (name === "all") {
+      // Each world counts the higher of the new score and the board entry, as the workflow merges them
+      let total = 0;
+      let fresh = false;
+      for (let w = 0; w < WORLD_COUNT; w++) {
+        total += Math.max(worldScore(w), ownWorld(w));
+        fresh = fresh || isNew(worldScore(w), Math.max(ownWorld(w), (sent && sent.worlds && sent.worlds[w]) || 0));
+      }
+      if (fresh) {
+        rank = rankAmong(total, others.filter((p) => p.total > 0).map((p) => p.total));
+      }
+    } else {
+      const score = worldScore(name);
+      if (isNew(score, Math.max(ownWorld(name), (sent && sent.worlds && sent.worlds[name]) || 0))) {
+        rank = rankAmong(score, others.filter((p) => p.worlds && p.worlds[name] && p.worlds[name].score > 0).map((p) => p.worlds[name].score));
+      }
+    }
+    if (rank > 0 && rank <= INVITE_TOP) {
+      invites.push({ board: name, rank });
+    }
+  }
+  return invites;
+}
+
+/**
+ * The score Pipeline Pinball must pass to enter the top 5, and beat what the
+ * player already has there; 0 while the board has fewer than 5 other players
+ * (any score enters it then, a flash would come at the first points).
+ */
+export function pinballTarget(board, sent, handle) {
+  const key = String(handle || "").toLowerCase();
+  const list = rankPinball(board);
+  const others = list.filter((p) => p.handle.toLowerCase() !== key);
+  if (others.length < INVITE_TOP) {
+    return 0;
+  }
+  const own = list.find((p) => key && p.handle.toLowerCase() === key);
+  return Math.max(others[INVITE_TOP - 1].score, own ? own.score : 0, (sent && sent.pinball) || 0);
+}
+
+/** The scores of results, in the shape topInvites reads. */
+export function scoresOf(results) {
+  const scores = { worlds: {}, pinball: 0 };
+  for (const r of results) {
+    if (r.pin === 1) {
+      scores.pinball = Math.max(scores.pinball, r.sc || 0);
+    } else if (typeof r.w === "number") {
+      scores.worlds[r.w] = Math.max(scores.worlds[r.w] || 0, r.sc || 0);
+    }
+  }
+  return scores;
+}
+
 /** The avatar GitHub serves for a handle. */
 export function avatarUrl(handle, size) {
   return "https://github.com/" + encodeURIComponent(handle) + ".png?size=" + (size || 48);

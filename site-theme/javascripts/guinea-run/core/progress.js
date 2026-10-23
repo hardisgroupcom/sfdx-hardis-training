@@ -1,9 +1,9 @@
 /*
  * What a player has done, kept in their browser: which worlds are open, the
  * best score and stars of each (with the result the Hall of Fame receives),
- * the badges, Victor's notes found, the GitHub handle of the player, the
- * deployment actions plan declared in world 3, which the runners read, and
- * the best game of Pipeline Pinball, the bonus table. A pinball game in
+ * the badges, Victor's notes found, the GitHub handle of the player and the
+ * scores they sent to the Hall of Fame, the deployment actions plan declared
+ * in world 3, which the runners read, and the best game of Pipeline Pinball, the bonus table. A pinball game in
  * progress is saved apart, by core/checkpoint.js.
  *
  * Every access is wrapped: a browser that blocks storage still plays, it just
@@ -116,6 +116,19 @@ export function createProgress(options) {
       state.handle = handle;
       save();
     },
+    /** The scores sent to the Hall of Fame so far, { worlds: { w: score }, pinball }: the board may not show them yet. */
+    get sent() {
+      return state.sent || { worlds: {}, pinball: 0 };
+    },
+    addSent(scores) {
+      const sent = this.sent;
+      for (const [w, score] of Object.entries(scores.worlds || {})) {
+        sent.worlds[w] = Math.max(sent.worlds[w] || 0, score);
+      }
+      sent.pinball = Math.max(sent.pinball || 0, scores.pinball || 0);
+      state.sent = sent;
+      save();
+    },
     addBadge(level) {
       if (!state.badges.includes(level)) {
         state.badges.push(level);
@@ -168,9 +181,12 @@ export function createProgress(options) {
       save();
     },
     reset() {
-      // The handle and the mode are who the player is, not what they did: they stay
-      const { handle, mode } = state;
+      // The handle, the mode and what was sent are who the player is, not what they did: they stay
+      const { handle, mode, sent } = state;
       state = empty();
+      if (sent) {
+        state.sent = sent;
+      }
       if (handle) {
         state.handle = handle;
       }
