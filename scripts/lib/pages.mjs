@@ -327,12 +327,21 @@ export function hallOfFamePage({ s, board, badgeHref, badgeImage }) {
     "",
     ...header(w.generalColumns),
     ...general.map((p, i) => row([i + 1, player(p, true), p.total, p.stars])),
-    "",
-    `## ${w.worlds.heading}`,
-    "",
-    fill(w.worlds.intro, { count: HALL_OF_FAME_TOP }),
     ""
   );
+  // The bonus table right after the total: both are one board for the whole game
+  const number = new Intl.NumberFormat(s.lang || "en");
+  lines.push(`## ${w.pinball.heading}`, "", fill(w.pinball.intro, { count: HALL_OF_FAME_TOP }), "");
+  if (pinball.length === 0) {
+    lines.push(w.pinball.empty, "");
+  } else {
+    lines.push(
+      ...header(w.pinball.columns),
+      ...pinball.map((p, i) => row([i + 1, player(p, true), number.format(p.score), p.level, p.missions, Math.max(1, Math.round(p.ms / 60000))])),
+      ""
+    );
+  }
+  lines.push(`## ${w.worlds.heading}`, "", fill(w.worlds.intro, { count: HALL_OF_FAME_TOP }), "");
   for (let n = 0; n < WORLD_COUNT; n++) {
     const title = fill(w.world, { n, name: t(`w${n}_name`) }).replace(/"/g, "'");
     const list = top(rankWorld(board, n));
@@ -344,17 +353,6 @@ export function hallOfFamePage({ s, board, badgeHref, badgeImage }) {
           ...list.map((p, i) => row([i + 1, player(p, false), p.score, t(`mode_${p.mode}`), p.stars, boss(p.bossMs)]))
         ];
     lines.push(...body.map((line) => `    ${line}`), "");
-  }
-  const number = new Intl.NumberFormat(s.lang || "en");
-  lines.push(`## ${w.pinball.heading}`, "", fill(w.pinball.intro, { count: HALL_OF_FAME_TOP }), "");
-  if (pinball.length === 0) {
-    lines.push(w.pinball.empty, "");
-  } else {
-    lines.push(
-      ...header(w.pinball.columns),
-      ...pinball.map((p, i) => row([i + 1, player(p, true), number.format(p.score), p.level, p.missions, Math.max(1, Math.round(p.ms / 60000))])),
-      ""
-    );
   }
   lines.push("</div>", "");
   return lines.join("\n");
