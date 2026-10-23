@@ -164,14 +164,7 @@
       "heading": "Pipeline Pinball",
       "intro": "La table bonus, ouverte à ceux qui ont terminé les dix mondes. La meilleure partie de chaque joueur, à part : elle ne compte pas dans le total. Les {count} premiers joueurs.",
       "empty": "Personne n'a encore envoyé de partie de la table bonus.",
-      "columns": [
-        "#",
-        "Joueur",
-        "Score",
-        "Niveau",
-        "Missions",
-        "Minutes"
-      ]
+      "columns": ["#", "Joueur", "Score", "Niveau", "Missions", "Minutes"]
     }
   },
   "badges": {
