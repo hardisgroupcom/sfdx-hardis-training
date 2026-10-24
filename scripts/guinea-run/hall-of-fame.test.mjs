@@ -8,7 +8,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { rankGeneral, rankWorld, rankPinball, rankOf, collectResults, topInvites, pinballTarget, scoresOf } from "../../site-theme/javascripts/guinea-run/core/hof.js";
+import { rankGeneral, rankWorld, rankPinball, rankOf, collectResults, topInvites, pinballTarget, scoresOf, sendWait, SEND_PAUSE_MS } from "../../site-theme/javascripts/guinea-run/core/hof.js";
 import { emptyBoard, mergeSubmission, badgeLevel, refreshBadges, banPlayer, removePlayer, ranksMessage, readBoard, writeBoard } from "./hall-of-fame.mjs";
 
 const at = (minute) => `2026-11-02T10:${String(minute).padStart(2, "0")}:00.000Z`;
@@ -226,4 +226,12 @@ test("Pipeline Pinball is invited on its own board, and flashes past the fifth",
 
 test("the scores of results, worlds and pinball", () => {
   assert.deepEqual(scoresOf([{ w: 0, sc: 10 }, { w: 2, sc: 30, legacy: true }, { pin: 1, sc: 99 }]), { worlds: { 0: 10, 2: 30 }, pinball: 99 });
+});
+
+test("after a send, the game waits before it offers another", () => {
+  const now = Date.parse("2026-10-24T17:00:00Z");
+  assert.equal(sendWait(0, now), 0, "never sent");
+  assert.equal(sendWait(now - 3 * 60000, now), SEND_PAUSE_MS - 3 * 60000, "sent 3 minutes ago");
+  assert.equal(sendWait(now - SEND_PAUSE_MS, now), 0, "the pause is over");
+  assert.equal(sendWait(now + 60000, now), 0, "a clock moved back never blocks");
 });

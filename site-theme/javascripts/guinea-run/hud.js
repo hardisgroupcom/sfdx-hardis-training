@@ -481,7 +481,7 @@ export function createHud(t, options) {
         return;
       }
       if (answer.error) {
-        message.textContent = t(answer.error);
+        message.textContent = t(answer.error, answer.params);
         return;
       }
       ready = { handle, count: answer.count };

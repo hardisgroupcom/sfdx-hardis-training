@@ -120,13 +120,18 @@ export function createProgress(options) {
     get sent() {
       return state.sent || { worlds: {}, pinball: 0 };
     },
-    addSent(scores) {
+    /** When the player last sent their scores (ms), 0 if never. */
+    get sentAt() {
+      return Number(state.sentAt) || 0;
+    },
+    addSent(scores, now) {
       const sent = this.sent;
       for (const [w, score] of Object.entries(scores.worlds || {})) {
         sent.worlds[w] = Math.max(sent.worlds[w] || 0, score);
       }
       sent.pinball = Math.max(sent.pinball || 0, scores.pinball || 0);
       state.sent = sent;
+      state.sentAt = now;
       save();
     },
     addBadge(level) {

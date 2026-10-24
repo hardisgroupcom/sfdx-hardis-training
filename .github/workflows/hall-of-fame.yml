@@ -10,7 +10,8 @@
 #     written.
 #  3. The limits (GUINEA_RUN_LIMITS) and the keys (GUINEA_RUN_KEYS) are secrets on
 #     purpose. Never echo them, and never tell a player why a submission failed:
-#     the reason code stays in the job log.
+#     the reason code stays in the job log. Two exceptions, which reveal no
+#     limit: an old copy of the game, and a send too soon after the last one.
 #  4. Serialise with a concurrency group, and never cancel: two submissions both
 #     write hall-of-fame/hall-of-fame.json and both push to main.
 #  5. Ask for the site build after the push. A push made with GITHUB_TOKEN starts
@@ -103,10 +104,13 @@ jobs:
           ISSUE: ${{ github.event.issue.number }}
           REASON: ${{ steps.verify.outputs.reason }}
         run: |
-          # Rule 3: the reason stays in the log, except an old copy of the game,
-          # which the player fixes alone and which says nothing about a limit
+          # Rule 3: the reason stays in the log, except an old copy of the game
+          # and a send too soon after the last one, which the player fixes alone.
+          # Neither message says what a limit is.
           if [ "$REASON" = "old-game" ]; then
             echo "Your page is running an older version of the game, and its scores cannot be verified any more. Close the tab of the course, open the course again, and send your scores again from the Hall of Fame of the game." > /tmp/comment.md
+          elif [ "$REASON" = "rate-limited" ]; then
+            echo "You sent your scores a few minutes ago, and the Hall of Fame takes one send every few minutes. Nothing is lost: your scores stay in your browser. Wait a little, then send them again from the Hall of Fame of the game." > /tmp/comment.md
           else
             echo "This submission could not be verified. Play again and send your scores from the game, without editing the issue." > /tmp/comment.md
           fi

@@ -37,7 +37,7 @@ import { createMusic } from "./core/music.js";
 import { THEMES } from "./core/themes.js";
 import { TALLY_SET, stamp, stampPinball } from "./core/tally.js";
 import { hasCheckpoint, loadCheckpoint, saveCheckpoint, clearCheckpoint } from "./core/checkpoint.js";
-import { GAME_VERSION, WORLD_COUNT, collectResults, isHandle, loadBoard, pinballTarget, scoresOf, submissionUrl, topInvites } from "./core/hof.js";
+import { GAME_VERSION, WORLD_COUNT, collectResults, isHandle, loadBoard, pinballTarget, scoresOf, sendWait, submissionUrl, topInvites } from "./core/hof.js";
 
 // scripts/build/vendor-three.mjs copies the add-ons of this same version
 const THREE_VERSION = "0.186.1";
@@ -907,6 +907,10 @@ function createGame(options) {
     if (!results.length) {
       return { error: "hofNothing" };
     }
+    const wait = sendWait(progress.sentAt, Date.now());
+    if (wait > 0) {
+      return { error: "hofWait", params: { n: Math.ceil(wait / 60000) } };
+    }
     prepared = results;
     return { url: await submissionUrl(handle, results, Date.now()), count: results.length };
   }
@@ -914,7 +918,7 @@ function createGame(options) {
   function sentScores(handle, count) {
     progress.setHandle(handle);
     if (prepared) {
-      progress.addSent(scoresOf(prepared));
+      progress.addSent(scoresOf(prepared), Date.now());
     }
     hud.markHof(false);
     // The next look at the board reads it again: the new scores land within minutes
@@ -947,9 +951,16 @@ function createGame(options) {
     return scoresOf(collectResults(progress, Date.now()));
   }
 
-  /** The boards where the scores not sent yet would enter the top 5. Nothing to send: no need to read the board. */
+  /**
+   * The boards where the scores not sent yet would enter the top 5. Nothing to
+   * send, or too soon after the last send: no need to read the board. The
+   * invitation comes back at the next end card or map once the pause is over.
+   */
   async function invitesFor(boards) {
     const empty = { players: {} };
+    if (!testMode && sendWait(progress.sentAt, Date.now()) > 0) {
+      return [];
+    }
     if (!topInvites(empty, mineScores(), progress.sent, progress.handle, boards).length) {
       return [];
     }

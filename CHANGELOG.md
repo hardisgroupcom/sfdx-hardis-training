@@ -3,6 +3,10 @@
 What changed in the course, for learners and trainers. The course has no versions: each section is
 a day, newest first, and a change goes under the date of the day it is made.
 
+## 2026-10-24
+
+- Guinea Run no longer invites you to send your scores again a few minutes after a send, which the Hall of Fame refused as unverified. The game says when you can send again, and a send that comes too soon gets an answer that says so.
+
 ## 2026-10-23
 
 - Guinea Run invites you to send your scores as soon as one would enter the top 5 of a world, of the overall total or of Pipeline Pinball.

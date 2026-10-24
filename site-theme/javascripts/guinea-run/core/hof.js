@@ -21,11 +21,23 @@ export const LEGACY_UNTIL = "2026-12-31";
 export const WORLD_COUNT = 10;
 // The title of a score issue starts with it: the workflow also knows an issue by it, when the label is missing
 export const ISSUE_PREFIX = "[Guinea Run] ";
+// After a send, the game waits this long before it offers another: the workflow
+// refuses a send that comes too soon after the last one, and the player would
+// only see "could not be verified"
+export const SEND_PAUSE_MS = 10 * 60000;
 const HANDLE = /^[A-Za-z0-9](?:[A-Za-z0-9]|-(?=[A-Za-z0-9])){0,38}$/;
 
 /** Whether a text is a possible GitHub handle. */
 export function isHandle(text) {
   return HANDLE.test(String(text || ""));
+}
+
+/** How long before the player may send again, in ms: 0 when they may. sentAt: their last send, 0 if none. */
+export function sendWait(sentAt, now) {
+  if (!Number.isFinite(sentAt) || sentAt <= 0 || sentAt > now) {
+    return 0;
+  }
+  return Math.max(0, sentAt + SEND_PAUSE_MS - now);
 }
 
 /** Whether results without a signature may still be sent at this time. */
