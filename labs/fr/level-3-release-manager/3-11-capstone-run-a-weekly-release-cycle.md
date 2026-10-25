@@ -5,7 +5,7 @@ description: "Menez une semaine entière de release manager Salesforce sans pas-
 level: 3
 lab: 11
 lang: fr
-source_rev: "7aa43daa4e278e646fc65e8df0c1e9282b41b083"
+source_rev: "cdce29eb8691d591a48144d320b44eae9f40edaf"
 screenshots:
   - annotated/web/github-star-vscode-sfdx-hardis
   - annotated/vscode/welcome-custom-menu-3
@@ -232,6 +232,12 @@ Dev Hub d'où créer des scratch orgs. Si vous les gardez, supprimez les secrets
 certificats JWT de votre fork (votre copie personnelle du repository du cours sur GitHub, par
 exemple `github.com/my-username/sfdx-hardis-training`) sont de vrais identifiants vers de vraies
 orgs.
+Le job nocturne de capacité des équipes du [Lab 2.4](../level-2-contributor-advanced/2-4-ship-reference-data-and-a-batch-with-deployment-actions.md) continue de tourner dans chaque org où il a été
+planifié, et vous envoie un résumé par email chaque nuit.
+**Training: Level 3** > **Clean up a training org** l'arrête, et retire l'app Helios et ses données
+de l'org choisie. Pour garder Helios et
+ne perdre que l'email, ouvrez **Setup** > **Scheduled Jobs** dans l'org et cliquez sur **Del** sur la
+ligne du job, `Helios crew capacity nightly` si vous avez gardé le nom du lab.
 
 Trois : gardez les promotion branches comme exception. Le [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md) vous en a fait
 assembler une, et cette semaine a remis la pipeline en place. Sur un vrai projet la pression va dans

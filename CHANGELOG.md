@@ -3,6 +3,13 @@
 What changed in the course, for learners and trainers. The course has no versions: each section is
 a day, newest first, and a change goes under the date of the day it is made.
 
+## 2026-10-26
+
+- Lab 2.7: taking both sides of the permission set conflict gives two complete blocks with nothing to type, and the merge editor pictures show the real Helios file.
+- Lab 2.4: **Create my lab records** says when `External_Id__c` is not marked External Id or a field cannot be edited, instead of blaming the profile.
+- Lab 3.10: troubleshooting for a cherry-pick of US-059 that conflicts on one file only.
+- Lab 3.11: how to stop the nightly crew capacity email in the orgs you keep.
+
 ## 2026-10-24
 
 - Guinea Run no longer invites you to send your scores again a few minutes after a send, which the Hall of Fame refused as unverified. The game says when you can send again, and a send that comes too soon gets an answer that says so.

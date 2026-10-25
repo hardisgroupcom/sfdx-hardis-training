@@ -219,6 +219,11 @@ after 30 days. The two Developer Edition orgs holding a fictional solar company 
 place to try things, and `helios-prod` stays a Dev Hub you can create scratch orgs from. If you keep
 them, delete the `SFDX_AUTH_URL_INTEGRATION` and `SFDX_AUTH_URL_UAT` secrets, which [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) left in
 place, and remember the JWT certificates in your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`) are real credentials to real orgs.
+The nightly crew capacity job of [Lab 2.4](../level-2-contributor-advanced/2-4-ship-reference-data-and-a-batch-with-deployment-actions.md) keeps running in every org it was scheduled in, and
+emails you a summary each night. **Training: Level 3** > **Clean up a training org** stops it, and
+removes the Helios app and its data from the org you pick. To keep Helios and lose only the email,
+open **Setup** > **Scheduled Jobs** in the org and click **Del** on the row of the job, `Helios crew capacity nightly` if you kept the
+name of the lab.
 
 Three: keep promotion branches as the exception. [Lab 3.10](3-10-promote-a-subset-with-promotion-branches.md) had you assemble one, and this
 week put the pipeline back. On a real project the pressure runs the other way: the first subset is

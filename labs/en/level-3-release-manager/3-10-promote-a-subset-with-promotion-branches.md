@@ -823,11 +823,12 @@ branch the pipeline does not merge into opens nothing, on purpose.
 sfdx-hardis is willing to invent: which branches a release manager may promote between is a decision
 about your pipeline.
 
-**The cherry-pick of US-059 did not conflict.**
+**The cherry-pick of US-059 did not conflict, or conflicted on one file only.**
 Something solved it for you, usually the `sf-git-merge-driver` plugin if it is installed on your
 machine. Open the **Files changed** tab of the Pull Request and look for `Warranty_Years__c` in the
 layout and the permission set. If it travelled, the deployment fails on a field `preprod` does not
-have: take it out on the promotion branch the way step 6 does, and push.
+have: take it out on the promotion branch the way step 6 does, and push. If it did not, the
+promotion is right as it is, and the retrofit of step 9 can still stop on both files.
 
 **There are no Accept links above the conflict block.**
 The file is open in a preview or the block is out of view. Click into the file, scroll to the

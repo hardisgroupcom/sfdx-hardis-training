@@ -612,6 +612,14 @@ The CI user cannot write the fields: the grant of step 1 is missing from `Helios
 or never reached the repository. A deployment grants no field permissions to anybody by itself. Add
 them in `helios-dev`, retrieve the permission set, and publish again.
 
+**Create my lab records stops on `External_Id__c`, or says the records could not be created.**
+The twelve records are matched on `External_Id__c`, so that field needs the **External Id** box of
+step 1. In `helios-dev`, open the field in Setup, click **Edit**, tick **External Id**, save, and
+click **Create my lab records** again. Then retrieve the field with the Metadata Retriever, so that
+your branch carries the box too. If the box was already ticked, read the grey lines above the
+message: they are the Salesforce error, and a field missing from the **Helios Delivery Manager**
+grant of step 1 is the other usual cause.
+
 **The import creates duplicates every run.**
 The operation is `Insert`, not `Upsert`, or the external id is not set. Open the workspace in the
 **Data Workbench** panel and correct both there.

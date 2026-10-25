@@ -5,7 +5,7 @@ description: "Une collègue a mergé en premier sur le même flow et le même pe
 level: 2
 lab: 7
 lang: fr
-source_rev: "b1467f03acb9c4e1c409f231225075b21f2d8555"
+source_rev: "59a817bf9a422e9d78fd52397b8cc283cde9c42d"
 screenshots:
   - annotated/salesforce/flow-builder-assign-crew
   - annotated/salesforce/flow-builder-assign-crew-full
@@ -268,31 +268,22 @@ Celui-ci est mécanique, et vous pouvez trancher sans comprendre le XML : les de
 place. Mariia a accordé un champ, vous en avez accordé un autre, et un permission set en contient
 autant qu'il en faut.
 
-#### À faire : faire deux blocs du résultat
+#### À faire : lire le résultat, puis terminer le merge
 
-1. Lisez maintenant le **Result** **(1)** avant toute chose
+1. Lisez le **Result** **(1)** avant toute chose : il contient deux blocs `<fieldPermissions>`
+   complets, le `Crew_Capacity_Cap__c` de Mariia en premier et votre `Crew_Notes__c` en second
 
    ![L'éditeur de merge après avoir accepté les deux côtés, avec Complete Merge](../../_assets/annotated/vscode/git-merge-editor-accepted--result.png)
 
-2. Tapez-le dans le volet **Result** : après la première ligne `<field>`, ajoutez les quatre lignes
-   qui ferment le premier bloc et ouvrent le second. Copiez-les d'ici : on ne demande à personne
-   d'écrire du XML de mémoire
+2. Cliquez sur **Complete Merge** **(2)**
 
-   ```xml title="À modifier dans le fichier"
-           <readable>true</readable>
-       </fieldPermissions>
-       <fieldPermissions>
-           <editable>true</editable>
-   ```
+#### Pourquoi le lire
 
-3. Cliquez ensuite sur **Complete Merge** **(2)**
-
-#### Pourquoi deux blocs
-
-L'éditeur a gardé les deux lignes, et les a mises dans le même bloc : un seul `<fieldPermissions>`
-avec deux lignes `<field>`, ce que Salesforce refuse. Git merge des lignes, pas des permissions. Vous
-voulez deux blocs complets, un par champ, le `Crew_Capacity_Cap__c` de Mariia en premier et votre
-`Crew_Notes__c` en second. La section sous le capot ci-dessous montre le résultat que vous visez.
+Chacun de vous a ajouté un bloc entier, et l'éditeur de merge compare chaque côté à la version dont
+vous êtes partis tous les deux : garder les deux donne donc deux blocs, sans rien taper. Lisez-le
+quand même : un bloc `<fieldPermissions>` nomme un seul champ, et Salesforce refuse un bloc avec deux
+lignes `<field>`. Si votre **Result** ressemble à cela, **En cas de problème** à la fin de ce lab
+donne la correction.
 
 Prendre les deux est la bonne réponse pour presque tous les conflits de permission set. Choisir
 un côté est la façon dont la permission d'un collègue disparaît en silence, sans que personne s'en
@@ -300,8 +291,8 @@ aperçoive avant que quelqu'un ne voie plus un champ.
 
 <details markdown="1"><summary>Sous le capot : à quoi ressemblait vraiment le conflit</summary>
 
-Git entre en conflit sur des lignes, pas sur du XML : les marqueurs ont donc atterri à l'intérieur
-d'un bloc plutôt qu'autour de deux :
+Git entre en conflit sur des lignes, pas sur du XML : les marqueurs qu'il écrit dans le fichier ont
+donc atterri à l'intérieur d'un bloc plutôt qu'autour de deux :
 
 ```xml title="Résultat"
     <fieldPermissions>
@@ -315,10 +306,11 @@ d'un bloc plutôt qu'autour de deux :
     </fieldPermissions>
 ```
 
-Une fois les quatre lignes ajoutées, le résultat contient deux blocs complets, par ordre
-alphabétique, ce qui est de toute façon la façon dont Salesforce les écrit :
+L'éditeur de merge ne vous montre pas ces marqueurs. Il compare chaque côté à la version dont vous
+êtes partis tous les deux, trouve un bloc entier ajouté de chaque côté, et garder les deux conserve
+les deux blocs, par ordre alphabétique, ce qui est de toute façon la façon dont Salesforce les écrit :
 
-```xml title="À modifier dans le fichier"
+```xml title="Résultat"
     <fieldPermissions>
         <editable>true</editable>
         <field>Installation__c.Crew_Capacity_Cap__c</field>
@@ -476,6 +468,18 @@ Votre résolution a laissé le flow avec ses éléments dans le désordre. Un fi
 les éléments de même nature : toutes les affectations, puis toutes les décisions. Si votre merge a
 déposé un élément conservé entre deux blocs d'une autre nature, remontez-le auprès des siens. L'ordre
 à l'intérieur de chaque groupe n'a pas d'importance, le groupement si.
+
+**Le Result du permission set montre un seul bloc avec deux lignes `<field>`.**
+Avant de cliquer sur **Complete Merge**, tapez dans le volet **Result** : après la première ligne
+`<field>`, ajoutez les quatre lignes qui ferment le premier bloc et ouvrent le second. Copiez-les
+d'ici :
+
+```xml title="À modifier dans le fichier"
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+```
 
 **`Element field is duplicated at this location in type PermissionSetFieldPermissions`.**
 Vous avez gardé les deux côtés à l'intérieur d'une seule autorisation au lieu de garder les deux

@@ -258,37 +258,29 @@ This one is mechanical, and you can decide it without understanding the XML: bot
 belong. Mariia granted one field, you granted another, and a permission set holds as many as it
 needs.
 
-#### Do: make two blocks of the result
+#### Do: read the result, then complete the merge
 
-1. Now read the **Result** **(1)** before anything else
+1. Read the **Result** **(1)** before anything else: it holds two complete `<fieldPermissions>`
+   blocks, Mariia's `Crew_Capacity_Cap__c` first and your `Crew_Notes__c` second
 
    ![The merge editor after both sides were accepted, with Complete Merge](../../_assets/annotated/vscode/git-merge-editor-accepted--result.png)
 
-2. Type it in the **Result** pane: after the first `<field>` line, add the four lines that close the
-   first block and open the second. Copy them from here: nobody is asked to write XML from memory
+2. Click **Complete Merge** **(2)**
 
-   ```xml title="Edit this file"
-           <readable>true</readable>
-       </fieldPermissions>
-       <fieldPermissions>
-           <editable>true</editable>
-   ```
+#### Why read it
 
-3. Then click **Complete Merge** **(2)**
-
-#### Why two blocks
-
-The editor kept both lines, and put them in the same block: one `<fieldPermissions>` with two
-`<field>` lines, which Salesforce refuses. Git merges lines, not permissions. You want two complete
-blocks, one per field, Mariia's `Crew_Capacity_Cap__c` first and your `Crew_Notes__c` second. The
-under the hood section below shows the result you are aiming at.
+Each of you added a whole block, and the merge editor compares each side with the version you both
+started from, so taking both gives two blocks with nothing to type. Read it anyway: one
+`<fieldPermissions>` block names one field, and Salesforce refuses a block with two `<field>` lines.
+If your **Result** looks like that, **If it goes wrong** at the end of this lab has the fix.
 
 Take both is the right answer for almost every permission set conflict. Choosing one side is how
 a teammate's permission quietly disappears, and nobody notices until somebody cannot see a field.
 
 <details markdown="1"><summary>Under the hood: what the conflict actually looked like</summary>
 
-Git conflicts on lines, not on XML, so the markers landed inside one block rather than around two:
+Git conflicts on lines, not on XML, so the markers it writes in the file landed inside one block
+rather than around two:
 
 ```xml title="Output"
     <fieldPermissions>
@@ -302,10 +294,11 @@ Git conflicts on lines, not on XML, so the markers landed inside one block rathe
     </fieldPermissions>
 ```
 
-Once you added the four lines, the result holds two complete blocks, in alphabetical order, which is
-how Salesforce writes them anyway:
+The merge editor does not show you those markers. It compares each side with the version you both
+started from, finds a whole block added on each side, and taking both keeps the two blocks, in
+alphabetical order, which is how Salesforce writes them anyway:
 
-```xml title="Edit this file"
+```xml title="Output"
     <fieldPermissions>
         <editable>true</editable>
         <field>Installation__c.Crew_Capacity_Cap__c</field>
@@ -456,6 +449,17 @@ Your resolution left the flow with its elements out of order. A flow file groups
 the same kind together: all the assignments, then all the decisions. If your merge dropped a kept
 element between two blocks of another kind, move it back up next to its own kind. The order inside
 each group does not matter, the grouping does.
+
+**The Result of the permission set shows one block with two `<field>` lines.**
+Before you click **Complete Merge**, type in the **Result** pane: after the first `<field>` line, add
+the four lines that close the first block and open the second. Copy them from here:
+
+```xml title="Edit this file"
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+```
 
 **`Element field is duplicated at this location in type PermissionSetFieldPermissions`.**
 You kept both sides inside a single grant instead of keeping both grants. One `<fieldPermissions>`

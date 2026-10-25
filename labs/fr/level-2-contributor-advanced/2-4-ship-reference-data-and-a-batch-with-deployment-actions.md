@@ -5,7 +5,7 @@ description: "Un déploiement vert n'est pas une fonctionnalité qui marche. Liv
 level: 2
 lab: 4
 lang: fr
-source_rev: "f6d43148b9aebd99be359ad671d3c904ecb6156d"
+source_rev: "66f31b641bbfc947fa2abdbef474bd96d9319815"
 screenshots:
   - annotated/vscode/sidebar-commands-custom-menu-2--lab-records
   - annotated/salesforce/crew-capacity-records
@@ -629,6 +629,14 @@ L'utilisateur de CI ne peut pas écrire les champs : l'autorisation de l'étape 
 `Helios_Delivery_Manager`, ou n'a jamais atteint le repository. Un déploiement n'accorde de lui-même
 aucune permission de champ à qui que ce soit. Ajoutez-les dans `helios-dev`, récupérez le permission
 set, et publiez à nouveau.
+
+**Create my lab records s'arrête sur `External_Id__c`, ou dit que les enregistrements n'ont pas pu être créés.**
+Les douze enregistrements sont rapprochés sur `External_Id__c` : ce champ a besoin de la case
+**External Id** de l'étape 1. Dans `helios-dev`, ouvrez le champ dans Setup, cliquez sur **Edit**,
+cochez **External Id**, enregistrez, et cliquez de nouveau sur **Create my lab records**. Récupérez
+ensuite le champ avec le Metadata Retriever, pour que votre branche porte aussi la case. Si la case
+était déjà cochée, lisez les lignes grises au-dessus du message : c'est l'erreur Salesforce, et un
+champ absent de l'autorisation **Helios Delivery Manager** de l'étape 1 est l'autre cause habituelle.
 
 **L'import crée des doublons à chaque exécution.**
 L'opération est `Insert` et non `Upsert`, ou l'identifiant externe n'est pas renseigné. Ouvrez le
