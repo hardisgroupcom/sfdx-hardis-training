@@ -454,6 +454,18 @@ html.guinea-run-open body {
   text-decoration: none;
 }
 
+.guinea-run .gr-install[hidden],
+.guinea-run .gr-install-link[hidden] {
+  display: none;
+}
+
+/* On the map, under the modes: the offer stays in sight without pushing the worlds far down */
+.guinea-run .gr-install--map {
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
 .guinea-run .gr-star-goals {
   display: flex;
   flex-wrap: wrap;

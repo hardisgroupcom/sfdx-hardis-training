@@ -5,6 +5,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 
 ## 2026-10-26
 
+- Guinea Run: on a phone, the map now offers to add the game to the home screen, and the offer stays until the game is really installed.
 - Lab 2.7: step 1 builds the flat roof decision and its assignment click by click, with the names the pictures show, and both flow saves use **Save As New Version**.
 - Lab 2.7 and Lab 2.1: the teammate step names the **Open the Pull Request** button at the bottom of the panel.
 - Lab 2.6: step 3 says how to open the Pipeline Settings panel, and the settings are named by their panel labels, **Minimize Profiles** and **Auto-Remove User Permissions on profiles**, next to their keys in the configuration file.

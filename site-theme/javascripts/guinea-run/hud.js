@@ -518,14 +518,30 @@ export function createHud(t, options) {
     inviteBox.setAttribute("aria-live", "polite");
   }
 
-  /** On a phone, after a won world: add the game to the home screen, it then plays offline. install: { kind, url }. */
-  function installBox(body, install) {
-    const box = element("div", "gr-rule gr-rule--info gr-install", body);
+  /**
+   * On a phone, on the map and after a won world: add the game to the home
+   * screen, it then plays offline. install: null or { kind, url }; null leaves
+   * the box empty and hidden, so the map can fill it when the browser offers
+   * the install later.
+   */
+  function installBox(body, install, className) {
+    const box = element("div", "gr-rule gr-rule--info gr-install" + (className ? " " + className : ""), body);
+    box.setAttribute("aria-live", "polite");
+    fillInstall(box, install);
+  }
+
+  function fillInstall(box, install) {
+    box.textContent = "";
+    box.hidden = !install;
+    if (!install) {
+      return;
+    }
     element("strong", "", box, t("installTitle"));
     element("span", "", box, t("install_" + install.kind));
     if (install.kind === "page") {
       const link = element("a", "gr-button gr-small gr-install-link", box, t("installOpenPage"));
       link.href = install.url;
+      link.setAttribute("data-action", "install-page");
     } else if (install.kind === "prompt") {
       button(box, "install", t("installButton"), "gr-small gr-install-link");
     }
@@ -764,8 +780,11 @@ export function createHud(t, options) {
       });
     },
 
-    /** The map of the worlds. progress: the progress store. bonus: { open, best, hasSave } for the bonus table. */
-    map(progress, onReset, bonus) {
+    /**
+     * The map of the worlds. progress: the progress store. bonus: { open, best,
+     * hasSave } for the bonus table. install: the home screen offer, or null.
+     */
+    map(progress, onReset, bonus, install) {
       screen(
         "map",
         t("mapTitle"),
@@ -774,6 +793,7 @@ export function createHud(t, options) {
           const allDone = progress.finished && progress.world(WORLDS[WORLDS.length - 1].id).stars > 0;
           element("p", "gr-muted gr-map-hint", body, allDone ? t("allDone") : t("mapHint"));
           modeSwitch(body, progress.mode);
+          installBox(body, install || null, "gr-install--map");
           const grid = element("ol", "gr-map", body);
           let focus = null;
           for (const world of WORLDS) {
@@ -972,6 +992,19 @@ export function createHud(t, options) {
         if (first !== "all") {
           open.setAttribute("data-world", String(first));
         }
+      }
+    },
+
+    /** True while the map or an end card shows the install box. */
+    hasInstallBox() {
+      return !panel.hidden && Boolean(panel.querySelector(".gr-install"));
+    },
+
+    /** The install offer changed (the browser offered it late, the box was answered, the game got installed). */
+    refreshInstall(install) {
+      const box = panel.querySelector(".gr-install");
+      if (box) {
+        fillInstall(box, install);
       }
     },
 

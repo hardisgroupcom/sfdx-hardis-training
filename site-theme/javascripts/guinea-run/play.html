@@ -60,6 +60,8 @@
   </head>
   <body>
     <script type="module">
+      import { createInstallOffer } from "./core/install.js";
+
       const params = new URLSearchParams(location.search);
       // The home screen app has no lang in its address: the phone's language then
       const asked = params.get("lang") || (navigator.language || "").slice(0, 2);
@@ -68,15 +70,26 @@
       const app = params.get("from") === "app" || (window.matchMedia && window.matchMedia("(display-mode: standalone), (display-mode: fullscreen)").matches) || navigator.standalone === true;
       document.documentElement.lang = lang;
 
-      // Android browsers offer to install the page: kept for the button of the end card
-      let installPrompt = null;
+      // Android browsers offer to install the page: kept for the install buttons of the map and the end card
+      let storage = null;
+      try {
+        storage = window.localStorage;
+      } catch {
+        // Blocked storage: the offer is not remembered
+      }
+      const install = createInstallOffer({ storage, isApp: app, notify: () => window.dispatchEvent(new Event("guinea-run-install")) });
       window.addEventListener("beforeinstallprompt", (event) => {
         event.preventDefault();
-        installPrompt = event;
+        install.promptArrived(event);
       });
-      window.addEventListener("appinstalled", () => {
-        installPrompt = null;
-      });
+      window.addEventListener("appinstalled", () => install.installedNow());
+      // Chrome on Android lists the game when it is on the home screen (related_applications of the manifest)
+      if (!framed && !app && navigator.getInstalledRelatedApps) {
+        navigator
+          .getInstalledRelatedApps()
+          .then((apps) => install.relatedApps(apps.filter((one) => one.platform === "webapp")))
+          .catch(() => {});
+      }
 
       function tell(message) {
         if (framed) {
@@ -103,14 +116,7 @@
         trigger: params.get("from") === "vscode" ? "vscode" : app ? "app" : "embed",
         base,
         track: () => {},
-        install: framed || app ? null : {
-          canPrompt: () => Boolean(installPrompt),
-          prompt: () => {
-            const event = installPrompt;
-            installPrompt = null;
-            return event ? event.prompt() : Promise.resolve();
-          }
-        },
+        install: framed || app ? null : install,
         onExit: () => {
           tell({ type: "exit" });
           if (framed) {
