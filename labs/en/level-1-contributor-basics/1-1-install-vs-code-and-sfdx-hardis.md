@@ -46,7 +46,7 @@ GitHub, GitLab, Azure DevOps and Bitbucket all work the same from here.
     is where the training-specific part starts: free Salesforce orgs, a training repository,
     fictional data. None of that belongs on a real project.
 
-!!! tip "No VS Code? Use Agentforce Vibes"
+!!! tip "No VS Code? Agentforce Vibes or Cursor work too"
     [Agentforce Vibes](https://www.salesforce.com/agentforce/developers/vibe-coding/ide/) is VS Code inside Google Chrome, launched from a Salesforce org:
     a developer sandbox, or the free Developer Edition org [Lab 1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md)
     signs you up for, which means this path costs nothing and needs nothing you do not already
@@ -57,11 +57,13 @@ GitHub, GitLab, Azure DevOps and Bitbucket all work the same from here.
     the same, and so are the screenshots: they were taken in desktop VS Code, which is the same
     editor.
 
-    Follow the course in one of these two editors, and nothing else: desktop VS Code, or Agentforce
-    Vibes when you cannot use VS Code. Pick one now and keep it to the end of the course. The scratch
-    orgs Lab 1.2 creates are connected in the editor that created them only. Set up from the other
-    editor, and the training environment finds none of them there and asks for three new ones, which
-    the Dev Hub refuses while the first three are alive.
+    [Cursor](https://cursor.com/) works the same way, from the same Open VSX listing. Whichever of
+    VS Code, Agentforce Vibes or Cursor you use, the rest of this lab is written for what you see in it.
+
+    Pick one now and keep it to the end of the course. The scratch orgs Lab 1.2 creates are
+    connected only in the editor that created them. Set up from another editor, and the training
+    environment finds none of them there and asks for three new ones, which the Dev Hub refuses
+    while the first three are alive.
 
 ## Before you start
 

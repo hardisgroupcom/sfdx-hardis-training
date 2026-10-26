@@ -5,7 +5,7 @@ description: "Installez Git, Node.js, VS Code et l'extension sfdx-hardis, puis l
 level: 1
 lab: 1
 lang: fr
-source_rev: "918ff06eca1160abff04fd1f90007fdce27549be"
+source_rev: "d07ab599ccbb8487897f5fd2c1b0e46a64ee6906"
 screenshots:
   - annotated/web/git-download
   - annotated/web/vscode-download
@@ -48,7 +48,7 @@ et Bitbucket fonctionnent tous pareil à partir d'ici.
     gratuites, repository d'entraînement, données fictives. Rien de tout cela n'a sa place sur un
     vrai projet.
 
-!!! tip "Pas de VS Code ? Utilisez Agentforce Vibes"
+!!! tip "Pas de VS Code ? Agentforce Vibes ou Cursor fonctionnent aussi"
     [Agentforce Vibes](https://www.salesforce.com/agentforce/developers/vibe-coding/ide/) est VS Code dans Google Chrome, lancé depuis une org Salesforce :
     une sandbox de développement, ou l'org Developer Edition gratuite pour laquelle le
     [Lab 1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) vous inscrit, ce qui veut dire
@@ -60,12 +60,13 @@ et Bitbucket fonctionnent tous pareil à partir d'ici.
     sont les mêmes, et les captures d'écran aussi : elles ont été prises dans VS Code de bureau, qui
     est le même éditeur.
 
-    Suivez le cours dans l'un de ces deux éditeurs, et aucun autre : VS Code de bureau, ou Agentforce
-    Vibes quand vous ne pouvez pas utiliser VS Code. Choisissez maintenant et gardez le même jusqu'à
-    la fin du cours. Les scratch orgs que crée le Lab 1.2 ne sont connectées que dans l'éditeur qui
-    les a créées. Lancez la mise en place depuis l'autre éditeur, et l'environnement de formation
-    n'en trouve aucune et en demande trois nouvelles, ce que le Dev Hub refuse tant que les trois
-    premières sont actives.
+    [Cursor](https://cursor.com/) fonctionne pareil, depuis le même Open VSX. Que vous utilisiez
+    VS Code, Agentforce Vibes ou Cursor, la suite de ce lab est écrite pour ce que vous y voyez.
+
+    Choisissez maintenant et gardez le même jusqu'à la fin du cours. Les scratch orgs que crée le
+    Lab 1.2 ne sont connectées que dans l'éditeur qui les a créées. Lancez la mise en place depuis un
+    autre éditeur, et l'environnement de formation n'en trouve aucune et en demande trois nouvelles,
+    ce que le Dev Hub refuse tant que les trois premières sont actives.
 
 ## Avant de commencer
 
