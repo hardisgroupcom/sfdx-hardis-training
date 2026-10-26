@@ -59,7 +59,7 @@ export function createInstallOffer({ storage, isApp, notify }) {
   let accepted = false;
   let installed = Boolean(isApp) || rememberedInstalled(storage);
   if (isApp) {
-    remember(storage, true);
+    remember(storage);
   }
   const changed = () => {
     if (notify) {
@@ -78,18 +78,18 @@ export function createInstallOffer({ storage, isApp, notify }) {
     installedNow() {
       installed = true;
       waiting = null;
-      remember(storage, true);
+      remember(storage);
       changed();
     },
-    /** What getInstalledRelatedApps() answered, where the browser has it. */
+    /**
+     * What getInstalledRelatedApps() answered, where the browser has it. Only
+     * a listed game counts: an empty list is no proof (Chrome answers it on a
+     * computer, on a local copy, and wherever it cannot match the manifest), so
+     * it never brings back an offer that a sure signal hid.
+     */
     relatedApps(list) {
       if (list && list.length) {
         this.installedNow();
-      } else if (installed && !isApp) {
-        // Removed from the home screen since: offered again
-        installed = false;
-        remember(storage, false);
-        changed();
       }
     },
     /** Opens the browser's box. Resolves to "accepted", "dismissed", "failed" or "none". */
@@ -125,13 +125,9 @@ export function rememberedInstalled(storage) {
   }
 }
 
-function remember(storage, on) {
+function remember(storage) {
   try {
-    if (on) {
-      storage.setItem(INSTALLED_KEY, "1");
-    } else {
-      storage.removeItem(INSTALLED_KEY);
-    }
+    storage.setItem(INSTALLED_KEY, "1");
   } catch {
     // Nothing kept: the offer may show again at the next visit
   }

@@ -114,15 +114,20 @@ test("running as the app is remembered", () => {
   assert.equal(rememberedInstalled(storage), true);
 });
 
-test("getInstalledRelatedApps: listed means installed, empty after an install means removed since", () => {
+test("getInstalledRelatedApps: listed means installed, an empty list never brings the offer back", () => {
   const storage = memoryStorage();
+  const empty = offer(storage).install;
+  empty.relatedApps([]);
+  assert.deepEqual(installKind(empty, ANDROID), { kind: "menu" });
   const { install } = offer(storage);
   install.relatedApps([{ platform: "webapp", url: "https://example.com/manifest.webmanifest" }]);
   assert.equal(installKind(install, ANDROID), null);
   assert.equal(rememberedInstalled(storage), true);
-  install.relatedApps([]);
-  assert.deepEqual(installKind(install, ANDROID), { kind: "menu" });
-  assert.equal(rememberedInstalled(storage), false);
+  // The next visit, on a page where Chrome answers an empty list: still installed
+  const next = offer(storage).install;
+  next.relatedApps([]);
+  assert.equal(installKind(next, ANDROID), null);
+  assert.equal(rememberedInstalled(storage), true);
 });
 
 test("a storage that throws never breaks the offer", () => {
