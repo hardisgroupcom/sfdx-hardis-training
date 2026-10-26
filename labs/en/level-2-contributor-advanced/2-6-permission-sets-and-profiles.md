@@ -116,21 +116,25 @@ Your commit had the permission in it. You saw it in the diff before you clicked 
 
 1. Open the **Source Control** panel and look at the history of your branch
 2. Read the commit **Save / Publish** made after yours, `chore(sfdx-hardis): clean sfdx project`
-3. Find the setting in the **Pipeline Settings** panel, on the **Salesforce Project** tab
+3. Find the setting that made it: open the **DevOps Pipeline** panel, then **Configure Pipeline
+   Settings** in the gear menu at its top right, and click the **Salesforce Project** tab. The
+   setting is **Auto-Cleaning types**, and its list holds **Minimize Profiles**. Step 6 comes back
+   to this panel, with its picture
 
 #### Why
 
 The commit takes the permission you added straight back out, along with every other section of the
 file that a Permission Set could carry. What is left is what only a Profile can hold.
 
-That is a project setting called `minimizeProfiles`, one of the cleaning rules this project
-switched on, and you can see it in the **Pipeline Settings** panel on the **Salesforce Project**
-tab.
+That is a cleaning rule this project switched on. The panel shows it by its label, **Minimize
+Profiles** in **Auto-Cleaning types**. The project configuration file, `config/.sfdx-hardis.yml`,
+stores it by its key, `minimizeProfiles` in the `autoCleanTypes` list, and that key is the name the
+documentation and the rest of this lab use.
 
 #### You should now see
 
 - The cleaning commit removing your grant from the Profile
-- `minimizeProfiles` listed on the **Salesforce Project** tab
+- **Minimize Profiles** listed in **Auto-Cleaning types**, on the **Salesforce Project** tab
 
 ### 4. Understand why a project would ever do that
 
@@ -221,7 +225,8 @@ Goal: you know which setting cleans what, and on which tab of the settings each 
 
 #### Do
 
-1. Open the **DevOps Pipeline** panel, then **Configure Pipeline Settings** in the gear menu
+1. Open the **DevOps Pipeline** panel, then **Configure Pipeline Settings** in the gear menu, as in
+   step 3
 2. Leave the scope selector **(1)** on **Global Settings**: these are project rules, identical for
    every branch
 
@@ -229,10 +234,10 @@ Goal: you know which setting cleans what, and on which tab of the settings each 
 
 3. Find the two settings of the table below on the **Salesforce Project** tab **(2)**
 
-| Setting                            | Tab                            | What it protects against                                                                    |
-|------------------------------------|--------------------------------|---------------------------------------------------------------------------------------------|
-| `autoCleanTypes: minimizeProfiles` | **Salesforce Project** **(2)** | A Profile carrying permissions that belong on a Permission Set                              |
-| `autoRemoveUserPermissions`        | **Salesforce Project** **(2)** | Specific user permissions that must never travel between orgs at all, whatever carries them |
+| In the panel                                                  | In `config/.sfdx-hardis.yml`       | Tab                            | What it protects against                                                                    |
+|---------------------------------------------------------------|------------------------------------|--------------------------------|---------------------------------------------------------------------------------------------|
+| **Minimize Profiles**, in the list of **Auto-Cleaning types** | `autoCleanTypes: minimizeProfiles` | **Salesforce Project** **(2)** | A Profile carrying permissions that belong on a Permission Set                              |
+| **Auto-Remove User Permissions on profiles**                  | `autoRemoveUserPermissions`        | **Salesforce Project** **(2)** | Specific user permissions that must never travel between orgs at all, whatever carries them |
 
 #### Why
 
@@ -284,7 +289,8 @@ Command documentation: [hardis:work:save](https://sfdx-hardis.cloudity.com/hardi
 
 #### You should now see
 
-- `minimizeProfiles` and `autoRemoveUserPermissions` on the **Salesforce Project** tab **(2)**, and
+- **Auto-Cleaning types**, with **Minimize Profiles** in it, and **Auto-Remove User Permissions on
+  profiles** on the **Salesforce Project** tab **(2)**, and
   the **Deployment** tab **(3)** beside it
 
 ## What you should see
@@ -307,7 +313,7 @@ the integration org user, which **Training: Level 2 > Set up one of my training 
 A Profile retrieved whole keeps, after the cleaning, the tab settings and the page layout of every
 object of the org, its default app and record types, and on `Admin` its user permissions: those
 stay on purpose. If it still carries field, object or class permissions, it was committed after a retrieve and never went through the cleaning. Check
-that `minimizeProfiles` is still listed on the **Salesforce Project** tab of **Pipeline Settings**, then
+that **Minimize Profiles** is still listed in **Auto-Cleaning types**, on the **Salesforce Project** tab of **Pipeline Settings**, then
 **Save / Publish** again. Do not shorten the file by hand.
 
 **A deployment refuses the Profile with `no Layout named ...` or `no CustomTab named ...`.**

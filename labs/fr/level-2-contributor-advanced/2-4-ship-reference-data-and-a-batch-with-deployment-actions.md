@@ -5,7 +5,7 @@ description: "Un déploiement vert n'est pas une fonctionnalité qui marche. Liv
 level: 2
 lab: 4
 lang: fr
-source_rev: "66f31b641bbfc947fa2abdbef474bd96d9319815"
+source_rev: "01284af833e091e8a6965e7cd0a994f54be48fb3"
 screenshots:
   - annotated/vscode/sidebar-commands-custom-menu-2--lab-records
   - annotated/salesforce/crew-capacity-records
@@ -407,7 +407,10 @@ production est pire que pas d'étape du tout.
 
 1. Cliquez sur **Open Git** dans la notification du dernier **Save** : il ouvre **Source Control**,
    où le fichier d'actions attend
-2. Commitez-le, puis **Save / Publish**
+2. Avant de commiter, ramenez le commit que MegaLinter a probablement poussé entre-temps sur votre
+   branche, `chore(megalinter): apply linters fixes` : dans le menu **...** en haut de **Source
+   Control**, cliquez sur **Pull**
+3. Commitez le fichier d'actions, puis **Save / Publish**
 
 #### Pourquoi
 
@@ -420,6 +423,12 @@ suivi du chemin du fichier.
 Le contrôle de la Pull Request et le déploiement lisent les actions dans ce fichier, sur la branche
 de la Pull Request, et non dans le panneau : une action jamais poussée ne tourne pas, et rien
 n'échoue pour vous le dire.
+
+Le commit de MegaLinter est attendu sur cette Pull Request. Le **Data Workbench** écrit
+`export.json` sans ligne vide à la fin, le formateur JSON de MegaLinter l'ajoute, et pousse le
+résultat sur votre branche. GitHub ne lance pas les contrôles pour un commit poussé par son propre
+robot, si bien que ce commit affiche des contrôles en attente : le push de votre fichier d'actions
+les relance. Le **Pull** d'abord est ce qui laisse passer ce push.
 
 #### Vous devriez voir
 
@@ -608,6 +617,13 @@ fork mis à jour avant ce jour se contente de lister l'étape dans le commentair
 mais rien n'empêche le merge non plus. Cliquez sur **Welcome page** > **Training: Level 2** >
 **Update my course**, mergez la Pull Request qu'il ouvre, puis ramenez `integration` dans votre
 branche comme au [Lab 2.1](2-1-backpromote-your-teammates-work.md) et publiez : le check suivant s'arrête sur l'étape.
+
+**Le push est refusé, ou les contrôles attendent sur `chore(megalinter): apply linters fixes`.**
+MegaLinter a ajouté la dernière ligne manquante d'`export.json` et l'a poussée sur votre branche :
+GitHub a donc un commit que votre ordinateur n'a pas. Dans le menu **...** de **Source Control**,
+cliquez sur **Pull**, puis de nouveau **Save / Publish** : c'est votre push qui relance les
+contrôles, sans rien à approuver. Le même commit du robot figure dans le dépannage du
+[Lab 1.6](../level-1-contributor-basics/1-6-pull-request-deployment-check-and-merge.md).
 
 **Le fichier d'actions s'appelle `.sfdx-hardis.draft.yml`, ou le check s'arrête sur *Draft deployment actions file found*.**
 Vous avez ajouté l'action alors que le panneau ne connaissait aucune Pull Request pour votre

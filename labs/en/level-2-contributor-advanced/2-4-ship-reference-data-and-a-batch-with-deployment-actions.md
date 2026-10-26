@@ -397,7 +397,10 @@ you meant, they will guess, and a wrong guess in production is worse than no ste
 
 1. Click **Open Git** in the notification of the last **Save**: it opens **Source Control**, where
    the action file waits
-2. Commit it, then **Save / Publish**
+2. Before you commit, bring down the commit MegaLinter has probably pushed on your branch meanwhile,
+   `chore(megalinter): apply linters fixes`: in the **...** menu at the top of **Source Control**,
+   click **Pull**
+3. Commit the action file, then **Save / Publish**
 
 #### Why
 
@@ -409,6 +412,12 @@ saved for Pull Request #12. Don't forget to commit and push**, followed by the p
 The Pull Request check and the deployment read the actions from that file in the branch of the
 Pull Request, not from the panel: an action that was never pushed does not run, and nothing fails
 to tell you.
+
+The MegaLinter commit is expected on this Pull Request. The **Data Workbench** writes `export.json`
+without an empty line at the end, MegaLinter's JSON formatter adds it, and pushes the result on your
+branch. GitHub does not start the checks for a commit its own robot pushed, so that commit shows its
+checks as waiting: your push of the action file starts them again. Pulling first is what lets that
+push through.
 
 #### You should now see
 
@@ -593,6 +602,12 @@ Your fork does not hold the setting that makes the check stop: the course receiv
 broken, but nothing stops the merge either. Click **Welcome page** > **Training: Level 2** >
 **Update my course**, merge the Pull Request it opens, then bring `integration` into your branch
 as in [Lab 2.1](2-1-backpromote-your-teammates-work.md) and publish: the next check stops on the step.
+
+**The push is refused, or the checks wait on `chore(megalinter): apply linters fixes`.**
+MegaLinter added the missing last line of `export.json` and pushed it on your branch, so GitHub has
+a commit your computer does not. In the **...** menu of **Source Control**, click **Pull**, then
+**Save / Publish** again: your push is what starts the checks again, with nothing to approve. The
+same robot commit is in the troubleshooting of [Lab 1.6](../level-1-contributor-basics/1-6-pull-request-deployment-check-and-merge.md).
 
 **The action file is called `.sfdx-hardis.draft.yml`, or the check stops on *Draft deployment actions file found*.**
 You added the action while the panel knew no Pull Request for your branch: the **My Pull Request**

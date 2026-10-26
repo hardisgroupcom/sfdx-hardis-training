@@ -115,8 +115,8 @@ merge while a check is red or running.
 
 Only if you answered **No**, or if the panel could not merge.
 
-1. Open the Pull Request: click the address the panel printed, or open your fork on GitHub
-   (`github.com/my-username/sfdx-hardis-training`), click the **Pull requests** tab, then
+1. Open the Pull Request: click **Open the Pull Request** at the bottom of the panel, or open your
+   fork on GitHub (`github.com/my-username/sfdx-hardis-training`), click the **Pull requests** tab, then
    **US-017 Record who signed an installation off**
 2. Click **Files changed** **(1)**. The file list on the left **(2)** has three files: the new field
    `Signed_Off_By__c`, the permission set `Helios_Delivery_Manager` and the `Installation` layout.

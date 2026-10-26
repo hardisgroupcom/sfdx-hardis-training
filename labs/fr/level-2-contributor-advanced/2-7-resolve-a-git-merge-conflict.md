@@ -5,7 +5,7 @@ description: "Une collègue a mergé en premier sur le même flow et le même pe
 level: 2
 lab: 7
 lang: fr
-source_rev: "7bc30991204d61ef34021d66c5575d254d6032e6"
+source_rev: "3da15eebaa45e5ac1e6cf68b9c6c71136d54ea86"
 screenshots:
   - annotated/salesforce/flow-builder-assign-crew
   - annotated/salesforce/flow-builder-assign-crew-full
@@ -68,17 +68,34 @@ Rappel : [Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publish
 
    ![La carte New User Story du panneau DevOps Pipeline](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
-2. Dans `helios-dev`, ouvrez le flow `Installation Assign Crew` et ajoutez une décision pour qu'une
-   installation dont le type de toiture est `Flat` reçoive une équipe d'au moins 3 personnes, quoi
-   que le flow ait décidé par ailleurs
-3. Reliez-la à la même affectation sur laquelle le flow se termine déjà, pour que la nouvelle règle
-   tourne après le changement de statut
-4. **Save**, puis **Activate** : chaque enregistrement d'un flow crée une nouvelle version, et seule
-   la version active s'exécute
-5. Sur le permission set `Helios Delivery Manager`, accordez l'accès en écriture sur
+2. Dans `helios-dev`, ouvrez **Setup > Flows**, puis **Installation Assign Crew**. Le flow se
+   termine sur une affectation, **Move To Scheduled**, le **(1)** de l'image sous **Vous devriez
+   voir**. La règle que vous ajoutez : une installation dont le type de toiture est `Flat` reçoit
+   une équipe d'au moins 3 personnes, quoi que le flow ait décidé par ailleurs
+3. Cliquez sur le **+** de la ligne sous **Move To Scheduled**, et choisissez **Decision**
+4. Remplissez la décision :
+
+   | Champ                                      | Valeur                                                         |
+   |--------------------------------------------|----------------------------------------------------------------|
+   | **Label**                                  | `Flat Roof Minimum`                                            |
+   | **Label** du premier résultat              | `Too small for a flat roof`                                    |
+   | Première condition                         | `Roof Type` de l'Installation déclencheuse, **Equals**, `Flat` |
+   | Deuxième condition, avec **Add Condition** | `Crew Size` de l'Installation déclencheuse, **Less Than**, `3` |
+   | **When to Execute Outcome**                | **All Conditions Are Met**                                     |
+   | **Label** du **Default Outcome**           | `Crew is enough`                                               |
+
+5. Le canevas montre maintenant deux branches sous la décision. Sur la branche **Too small for a
+   flat roof**, cliquez sur le **+** et choisissez **Assignment**. **Label** `Raise Crew To Three`,
+   puis une ligne : `Crew Size` de l'Installation déclencheuse, **Equals**, `3`
+6. **Save As New Version**, puis **Activate** : le flow est actif, donc chaque enregistrement crée
+   une nouvelle version, et seule la version active s'exécute
+7. Sur le permission set `Helios Delivery Manager`, accordez l'accès en écriture sur
    `Installation__c.Crew_Notes__c`, pour qu'un planificateur puisse dire pourquoi une équipe a été
-   renforcée
-6. Faites un retrieve du flow et du permission set, et commitez-les
+   renforcée : **Setup > Permission Sets > Helios Delivery Manager > Object Settings >
+   Installations > Edit**, cochez **Edit Access** sur `Crew Notes`, **Save**
+8. Faites un retrieve du flow et du permission set comme d'habitude : **Commit changes**, **Recent
+   Changes**, cochez les deux, retrieve, puis indexez les deux fichiers et commitez-les depuis
+   **Source Control**
 
 !!! warning "Attention"
     Arrêtez-vous là : ne publiez pas encore. L'étape suivante a besoin que votre modification
@@ -120,10 +137,11 @@ fork pour que vous puissiez réellement le relire et le merger.
    Request et écrit **Pull Request merged into its base branch**. Si vous la mergez sur GitHub
    pendant que le panneau attend encore, il s'en aperçoit et s'arrête
 
-  !!! tip "Si vous avez répondu No"
-      Avec **No**, ouvrez l'adresse affichée, jetez un œil à **Files changed**, et mergez-la avec
-      **Squash and merge** une fois les checks verts : les mêmes clics qu'au
-      [Lab 2.1](2-1-backpromote-your-teammates-work.md), étape 1b, où chacun a sa capture d'écran.
+4. Avec **No**, cliquez sur **Open the Pull Request** en bas du panneau, jetez un œil à **Files
+   changed**, et mergez-la avec **Squash and merge** une fois les checks verts : les mêmes clics
+   qu'au [Lab 2.1](2-1-backpromote-your-teammates-work.md), étape 1b, où chacun a sa capture
+   d'écran. Le panneau affiche ce bouton quelle que soit votre réponse : après **Yes**, il ouvre la
+   Pull Request mergée, si vous voulez lire ce que Mariia a modifié
 
 #### Pourquoi après votre modification
 
@@ -380,12 +398,14 @@ le plafond de Mariia.
    menu au bout de la ligne `Installation Assign Crew`, **View Details and Versions**, et ouvrez la
    version en haut de la liste. Ouvrir le flow depuis son nom peut tomber sur une version plus
    ancienne, sans sa décision **Crew Over Cap**
-4. Rajoutez votre règle de toiture plate, avant son plafond. Votre décision **(1)** vient en premier,
-   sa décision **Crew Over Cap** **(2)** en dernier
+4. Rajoutez votre règle de toiture plate, avant son plafond : cliquez sur le **+** entre **Move To
+   Scheduled** et sa décision **Crew Over Cap**, et construisez la même décision et la même
+   affectation qu'à l'étape 1, avec les mêmes noms. Votre décision **(1)** vient en premier, sa
+   décision **Crew Over Cap** **(2)** en dernier
 
    ![Le flow reconstruit : le minimum de toiture plate d'abord, le plafond en dernier](../../_assets/annotated/salesforce/flow-builder-assign-crew-full.png)
 
-5. **Save**, puis **Activate**
+5. **Save As New Version**, puis **Activate**
 6. Revenez dans VS Code, faites un retrieve du flow reconstruit avec **Commit changes**, et indexez-le
    dans **Source Control**, à côté du permission set. Ne commitez pas encore : un merge se termine
    par un seul commit, et l'étape suivante le fait

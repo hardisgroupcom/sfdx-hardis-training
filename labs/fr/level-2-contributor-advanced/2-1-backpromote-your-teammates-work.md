@@ -5,7 +5,7 @@ description: "Votre org de développement est en retard sur integration. Faites-
 level: 2
 lab: 1
 lang: fr
-source_rev: "975691b620ebf3625c6aacb8edccefc920b3696c"
+source_rev: "42ecaa3d11856095d75b2f26d3525baa18251df7"
 screenshots:
   - annotated/vscode/sidebar-commands-custom-menu-2--training-menu
   - annotated/web/github-pr-files
@@ -123,8 +123,8 @@ protégée, et GitHub refuserait le merge tant qu'un check est rouge ou en cours
 
 Seulement si vous avez répondu **No**, ou si le panneau n'a pas pu merger.
 
-1. Ouvrez la Pull Request : cliquez sur l'adresse affichée par le panneau, ou ouvrez votre fork sur
-   GitHub (`github.com/my-username/sfdx-hardis-training`), cliquez sur l'onglet **Pull requests**,
+1. Ouvrez la Pull Request : cliquez sur **Open the Pull Request** en bas du panneau, ou ouvrez votre
+   fork sur GitHub (`github.com/my-username/sfdx-hardis-training`), cliquez sur l'onglet **Pull requests**,
    puis sur **US-017 Record who signed an installation off**
 2. Cliquez sur **Files changed** **(1)**. La liste des fichiers à gauche **(2)** en contient trois :
    le nouveau champ `Signed_Off_By__c`, le permission set `Helios_Delivery_Manager` et le layout

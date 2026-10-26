@@ -66,14 +66,33 @@ Refresher: [Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publi
 
    ![The New User Story card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
-2. In `helios-dev`, open the flow `Installation Assign Crew` and add a decision so that an
-   installation whose roof type is `Flat` gets a crew of at least 3, whatever else the flow decided
-3. Connect it to the same assignment the flow already ends on, so the new rule runs after the
-   status change
-4. **Save**, then **Activate**: each save of a flow is a new version, and only the active one runs
-5. On the permission set `Helios Delivery Manager`, grant edit access on
-   `Installation__c.Crew_Notes__c`, so a planner can say why a crew was raised
-6. Retrieve the flow and the permission set, and commit them
+2. In `helios-dev`, open **Setup > Flows**, then **Installation Assign Crew**. The flow ends on one
+   assignment, **Move To Scheduled**, the **(1)** of the picture under **You should now see**. The
+   rule you add: an installation whose roof type is `Flat` gets a crew of at least 3, whatever else
+   the flow decided
+3. Click the **+** on the line below **Move To Scheduled**, and pick **Decision**
+4. Fill the decision in:
+
+   | Field                                    | Value                                                          |
+   |------------------------------------------|----------------------------------------------------------------|
+   | **Label**                                | `Flat Roof Minimum`                                            |
+   | **Label** of the first outcome           | `Too small for a flat roof`                                    |
+   | First condition                          | `Roof Type` of the triggering Installation, **Equals**, `Flat` |
+   | Second condition, with **Add Condition** | `Crew Size` of the triggering Installation, **Less Than**, `3` |
+   | **When to Execute Outcome**              | **All Conditions Are Met**                                     |
+   | **Label** of the **Default Outcome**     | `Crew is enough`                                               |
+
+5. The canvas now shows two branches under the decision. On the **Too small for a flat roof**
+   branch, click the **+** and pick **Assignment**. **Label** `Raise Crew To Three`, then one line:
+   `Crew Size` of the triggering Installation, **Equals**, `3`
+6. **Save As New Version**, then **Activate**: the flow is active, so each save is a new version,
+   and only the active one runs
+7. On the permission set `Helios Delivery Manager`, grant edit access on
+   `Installation__c.Crew_Notes__c`, so a planner can say why a crew was raised: **Setup >
+   Permission Sets > Helios Delivery Manager > Object Settings > Installations > Edit**, tick
+   **Edit Access** on `Crew Notes`, **Save**
+8. Retrieve the flow and the permission set the usual way: **Commit changes**, **Recent Changes**,
+   tick both, retrieve, then stage the two files and commit them from **Source Control**
 
 !!! warning "Careful"
     Stop there: do not publish yet. The next step needs your change to exist before Mariia's work
@@ -114,11 +133,11 @@ can genuinely review and merge it.
 3. With **Yes**, let the panel wait for the checks, two to four minutes: it merges the Pull Request
    and writes **Pull Request merged into its base branch**. If you merge it on GitHub while the
    panel is still waiting, it notices and stops
-
-  !!! tip "If you answered No"
-      With **No**, open the address it printed, have a look at **Files changed**, and merge it
-      with **Squash and merge** once the checks are green: the same clicks as
-      [Lab 2.1](2-1-backpromote-your-teammates-work.md), step 1b, where each one has its screenshot.
+4. With **No**, click **Open the Pull Request** at the bottom of the panel, have a look at **Files
+   changed**, and merge it with **Squash and merge** once the checks are green: the same clicks as
+   [Lab 2.1](2-1-backpromote-your-teammates-work.md), step 1b, where each one has its screenshot.
+   The panel shows that button whatever you answered: after **Yes**, it opens the merged Pull
+   Request, if you want to read what Mariia changed
 
 #### Why after your change
 
@@ -364,12 +383,13 @@ your minimum applies only when it does not exceed Mariia's cap.
    the end of the `Installation Assign Crew` row, **View Details and Versions**, and open the
    version at the top of the list. Opening the flow from its name can land on an older version,
    without her **Crew Over Cap** decision
-4. Add your flat-roof rule again, before her cap. Your decision **(1)** comes first, her **Crew Over
-   Cap** decision **(2)** last
+4. Add your flat-roof rule again, before her cap: click the **+** between **Move To Scheduled** and
+   her **Crew Over Cap** decision, and build the same decision and assignment as in step 1, with
+   the same names. Your decision **(1)** comes first, her **Crew Over Cap** decision **(2)** last
 
    ![The rebuilt flow: the flat roof minimum first, the cap last](../../_assets/annotated/salesforce/flow-builder-assign-crew-full.png)
 
-5. **Save**, then **Activate**
+5. **Save As New Version**, then **Activate**
 6. Come back to VS Code, retrieve the rebuilt flow with **Commit changes**, and stage it in
    **Source Control**, next to the permission set. Do not commit yet: a merge ends with one commit,
    and the next step makes it
