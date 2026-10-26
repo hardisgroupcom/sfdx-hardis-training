@@ -518,6 +518,19 @@ export function createHud(t, options) {
     inviteBox.setAttribute("aria-live", "polite");
   }
 
+  /** On a phone, after a won world: add the game to the home screen, it then plays offline. install: { kind, url }. */
+  function installBox(body, install) {
+    const box = element("div", "gr-rule gr-rule--info gr-install", body);
+    element("strong", "", box, t("installTitle"));
+    element("span", "", box, t("install_" + install.kind));
+    if (install.kind === "page") {
+      const link = element("a", "gr-button gr-small gr-install-link", box, t("installOpenPage"));
+      link.href = install.url;
+    } else if (install.kind === "prompt") {
+      button(box, "install", t("installButton"), "gr-small gr-install-link");
+    }
+  }
+
   /** Where the scores would rank: "#3 in Commit, #2 overall". */
   function inviteList(invites) {
     const parts = invites.map((i) =>
@@ -993,6 +1006,9 @@ export function createHud(t, options) {
             element("span", "", missed, result.missed);
           }
           invitePlace(body);
+          if (result.install) {
+            installBox(body, result.install);
+          }
           const rule = element("div", "gr-rule", body);
           element("strong", "", rule, t("theRule"));
           element("span", "", rule, t("w" + world.id + "_rule"));

@@ -9,6 +9,12 @@
  * Every access is wrapped: a browser that blocks storage still plays, it just
  * forgets between visits. With ?guinea-unlock=all every world is open and
  * nothing is written, so a check never changes a real player's progress.
+ *
+ * The game can be open twice (two tabs, two VS Code windows): each save reads
+ * what is stored first and keeps the best of both (mergeProgress), so a world
+ * won in one is never erased by the other, and a save written elsewhere is
+ * merged in as soon as the browser says so. The first world won of a visit
+ * asks the browser to keep the save when it cleans up storage.
  */
 
 const KEY = "guinea-run-progress-v1";
@@ -19,34 +25,57 @@ function empty() {
 
 export function createProgress(options) {
   const volatile = Boolean(options && options.volatile);
-  let state = empty();
   // Read even when volatile: a check can set a plan or a progress and play it,
   // without the game ever writing over it
-  {
-    try {
-      const raw = window.localStorage.getItem(KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (parsed && parsed.v === 1) {
-          state = Object.assign(empty(), parsed);
-        }
-      }
-    } catch {
-      state = empty();
-    }
-  }
+  let state = readStored() || empty();
+  // The choices this game made (mode, handle, plan): they win over the stored ones
+  const touched = new Set();
+  let keepAsked = false;
   if (options && options.unlockAll) {
     state.unlocked = 99;
+  }
+  if (!volatile) {
+    try {
+      window.addEventListener("storage", (event) => {
+        if (event.key === KEY && event.newValue) {
+          const stored = parse(event.newValue);
+          if (stored) {
+            state = mergeProgress(stored, state, touched);
+          }
+        }
+      });
+    } catch {
+      // No storage events: the next save merges anyway
+    }
   }
 
   function save() {
     if (volatile) {
       return;
     }
+    const stored = readStored();
+    if (stored) {
+      state = mergeProgress(stored, state, touched);
+    }
+    write(state);
+  }
+
+  /** The first world won of a visit: the browser is asked to keep the save when it cleans up (no prompt in most browsers). */
+  function askToKeep() {
+    if (keepAsked || volatile) {
+      return;
+    }
+    keepAsked = true;
     try {
-      window.localStorage.setItem(KEY, JSON.stringify(state));
+      const storage = navigator.storage;
+      if (storage && storage.persist && storage.persisted) {
+        storage
+          .persisted()
+          .then((kept) => kept || storage.persist())
+          .catch(() => {});
+      }
     } catch {
-      // Storage refused: the game goes on without remembering
+      // Not available: nothing changes
     }
   }
 
@@ -90,6 +119,7 @@ export function createProgress(options) {
         state.unlocked = Math.max(state.unlocked, next);
       }
       save();
+      askToKeep();
       return newBest;
     },
     /** The signed result of a world, once its signature is ready, if it is still the best. */
@@ -106,6 +136,7 @@ export function createProgress(options) {
     },
     setMode(mode) {
       state.mode = mode;
+      touched.add("mode");
       save();
     },
     /** The GitHub handle the player sends their scores as. */
@@ -114,6 +145,7 @@ export function createProgress(options) {
     },
     setHandle(handle) {
       state.handle = handle;
+      touched.add("handle");
       save();
     },
     /** The scores sent to the Hall of Fame so far, { worlds: { w: score }, pinball }: the board may not show them yet. */
@@ -147,6 +179,7 @@ export function createProgress(options) {
     },
     setPlan(plan) {
       state.plan = plan;
+      touched.add("plan");
       save();
     },
     setFinished() {
@@ -171,6 +204,7 @@ export function createProgress(options) {
       }
       state.bonus = bonus;
       save();
+      askToKeep();
       return newBest;
     },
     setBonusRecord(record) {
@@ -198,7 +232,104 @@ export function createProgress(options) {
       if (mode) {
         state.mode = mode;
       }
-      save();
+      // Written as is: a reset is not merged with what it forgets
+      if (!volatile) {
+        write(state);
+      }
     }
   };
+}
+
+/**
+ * Two saves of the same player made one: the best of each world (with the
+ * result of that best), every badge and note, the furthest world open, the
+ * best pinball game. mode, handle and plan come from mine when this game chose
+ * them (touched), from stored otherwise.
+ */
+export function mergeProgress(stored, mine, touched) {
+  const merged = Object.assign(empty(), stored, mine);
+  merged.unlocked = Math.max(Number(stored.unlocked) || 0, Number(mine.unlocked) || 0);
+  merged.worlds = {};
+  for (const id of new Set(Object.keys(stored.worlds || {}).concat(Object.keys(mine.worlds || {})))) {
+    merged.worlds[id] = mergeWorld((stored.worlds || {})[id], (mine.worlds || {})[id]);
+  }
+  merged.badges = Array.from(new Set((stored.badges || []).concat(mine.badges || []))).sort();
+  merged.notes = Object.assign({}, stored.notes, mine.notes);
+  merged.finished = Boolean(stored.finished || mine.finished);
+  for (const key of ["mode", "handle", "plan"]) {
+    const value = touched && touched.has(key) ? mine[key] : stored[key];
+    if (value === undefined) {
+      delete merged[key];
+    } else {
+      merged[key] = value;
+    }
+  }
+  if (stored.sent || mine.sent) {
+    merged.sent = mergeSent(stored.sent, mine.sent);
+    merged.sentAt = Math.max(Number(stored.sentAt) || 0, Number(mine.sentAt) || 0);
+  }
+  if (stored.bonus || mine.bonus) {
+    merged.bonus = mergeBonus(stored.bonus, mine.bonus);
+  }
+  return merged;
+}
+
+function readStored() {
+  try {
+    return parse(window.localStorage.getItem(KEY));
+  } catch {
+    return null;
+  }
+}
+
+function parse(raw) {
+  try {
+    const parsed = raw ? JSON.parse(raw) : null;
+    return parsed && parsed.v === 1 ? Object.assign(empty(), parsed) : null;
+  } catch {
+    return null;
+  }
+}
+
+function write(state) {
+  try {
+    window.localStorage.setItem(KEY, JSON.stringify(state));
+  } catch {
+    // Storage refused: the game goes on without remembering
+  }
+}
+
+function mergeWorld(a, b) {
+  if (!a || !b) {
+    return a || b;
+  }
+  // The record that goes with the best score; on a tie, a signed one first, then mine
+  const signed = (entry) => Boolean(entry.record && entry.record.sg);
+  const winner = a.best > b.best || (a.best === b.best && signed(a) && !signed(b)) ? a : b;
+  const world = { best: Math.max(a.best || 0, b.best || 0), stars: Math.max(a.stars || 0, b.stars || 0) };
+  if (winner.record) {
+    world.record = winner.record;
+  }
+  return world;
+}
+
+function mergeSent(a, b) {
+  const sent = { worlds: {}, pinball: 0 };
+  for (const part of [a, b]) {
+    if (!part) {
+      continue;
+    }
+    for (const [w, score] of Object.entries(part.worlds || {})) {
+      sent.worlds[w] = Math.max(sent.worlds[w] || 0, score);
+    }
+    sent.pinball = Math.max(sent.pinball, part.pinball || 0);
+  }
+  return sent;
+}
+
+function mergeBonus(a, b) {
+  const one = Object.assign({ best: 0, record: null, teaserSeen: false }, a || {});
+  const two = Object.assign({ best: 0, record: null, teaserSeen: false }, b || {});
+  const winner = one.best > two.best || (one.best === two.best && one.record && one.record.sg && !(two.record && two.record.sg)) ? one : two;
+  return Object.assign({}, one, two, { best: winner.best, record: winner.record, teaserSeen: one.teaserSeen || two.teaserSeen });
 }

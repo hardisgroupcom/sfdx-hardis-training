@@ -51,6 +51,8 @@
  *   table, a ball reaches the Production floor, the bot plays it for two
  *   minutes without a ball ever leaving the table, a game ends on its card,
  *   and the Hall of Fame has its board
+ * - play.html, opened once online, saves the whole game (sw.js); with the
+ *   network cut, every world and the pinball still open and world 1 plays
  *
  * Three.js comes from jsDelivr, so this needs the network, like the site does.
  */
@@ -147,6 +149,9 @@ if (fs.existsSync(labsModule)) {
 
 /* ---------- In a browser ---------- */
 
+// The service worker's own requests go through the routes and the offline
+// switch too: the offline probe must not pass on a file the worker fetched
+process.env.PW_EXPERIMENTAL_SERVICE_WORKER_NETWORK_EVENTS = "1";
 let chromium;
 try {
   ({ chromium } = await import("playwright-core"));
@@ -904,6 +909,39 @@ try {
     await page.tap('.guinea-run [data-action="quit"]');
     await page.waitForTimeout(300);
     expect((await state(page)) === null, "the close button closes the game on a phone");
+    await page.context().close();
+  }
+
+  // 7. Offline: play.html saves the game once, then plays without a network
+  {
+    const page = await newPage({ viewport: { width: 1280, height: 860 } });
+    const play = `${site.base}theme/javascripts/guinea-run/play.html?guinea-offline=1`;
+    await page.goto(play, { waitUntil: "load" });
+    expect(await waitState(page, "map"), "play.html opens the map");
+    const saved = await page.evaluate(async () => {
+      const registration = await navigator.serviceWorker.ready;
+      const until = Date.now() + 60000;
+      while (Date.now() < until) {
+        const names = (await caches.keys()).filter((name) => name.startsWith("guinea-run-"));
+        if (names.length && registration.active) {
+          return (await (await caches.open(names[0])).keys()).length;
+        }
+        await new Promise((resolve) => setTimeout(resolve, 250));
+      }
+      return 0;
+    });
+    expect(saved > 100, `play.html saves the whole game for offline play (${saved} files)`);
+    await page.context().route(/./, (route) => (new URL(route.request().url()).origin === new URL(site.base).origin ? route.continue() : route.abort()));
+    await page.context().setOffline(true);
+    for (const world of WORLDS.map((w) => String(w.id)).concat(["pinball"])) {
+      await page.goto(`${play}&guinea-unlock=all&guinea-world=${world}`, { waitUntil: "load" });
+      expect(await waitState(page, "intro"), `offline, world ${world} opens from the saved copy`);
+    }
+    await page.goto(`${play}&guinea-unlock=all&guinea-world=1`, { waitUntil: "load" });
+    if (await waitState(page, "intro")) {
+      await page.click('.guinea-run [data-action="start"]');
+      expect(await waitState(page, "playing"), "offline, world 1 starts and plays");
+    }
     await page.context().close();
   }
 } finally {

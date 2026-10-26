@@ -18,6 +18,7 @@
  *
  *   node scripts/build/site.mjs
  */
+import crypto from "crypto";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -754,4 +755,68 @@ function hallOfFamePages() {
 }
 const hallOfFamePageCount = hallOfFamePages();
 
-console.log(`site-src assembled: ${pages} lab page(s), ${backlogs} backlog page(s), ${stories} story page(s), ${assets} asset(s), ${themeFiles} theme file(s), ${badgePageCount} badge page(s), ${statsPageCount} statistics page(s), ${hallOfFamePageCount} Hall of Fame page(s), ${badgeRecords} badge record(s), ${locales.length} locale(s)`);
+/**
+ * Guinea Run offline: the service worker next to play.html saves the files the
+ * game loads (itself, its pictures, its fonts, the badge banners), listed here
+ * from what was just assembled, with a version that changes with any of them
+ * or with Three.js. Written into the built sw.js; the source keeps "dev".
+ */
+function guineaRunOfflineFiles() {
+  const gameDir = path.join(OUT, "theme", "javascripts", "guinea-run");
+  const files = [];
+  const walk = (dir) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        walk(full);
+      } else if (!entry.name.endsWith(".txt") && full !== path.join(gameDir, "sw.js")) {
+        files.push(full);
+      }
+    }
+  };
+  walk(gameDir);
+  const images = path.join(OUT, "theme", "images");
+  for (const name of ["guinea-pig.webp", "guinea-pig-small.webp", "mariia.svg", "romain.svg", "cloudity-text-logo-white.svg"]) {
+    files.push(path.join(images, name));
+  }
+  for (const name of fs.readdirSync(path.join(images, "bosses")).filter((n) => n.endsWith(".svg")).sort()) {
+    files.push(path.join(images, "bosses", name));
+  }
+  for (const name of ["open-sans-latin.woff2", "jetbrains-mono-latin.woff2"]) {
+    files.push(path.join(OUT, "theme", "stylesheets", "fonts", name));
+  }
+  for (const level of [1, 2, 3]) {
+    files.push(path.join(OUT, "badges", "img", `banner-level-${level}.svg`));
+  }
+  const gameJs = fs.readFileSync(path.join(gameDir, "game.js"), "utf8");
+  const threeVersion = (gameJs.match(/const THREE_VERSION = "([^"]+)"/) || [])[1];
+  if (!threeVersion) {
+    throw new Error("Guinea Run: THREE_VERSION not found in game.js");
+  }
+  const threeUrl = `https://cdn.jsdelivr.net/npm/three@${threeVersion}/build/three.webgpu.min.js`;
+  const hash = crypto.createHash("sha256").update(threeUrl);
+  const relative = [];
+  for (const file of files) {
+    if (!fs.existsSync(file)) {
+      throw new Error(`Guinea Run offline: ${path.relative(OUT, file)} is missing`);
+    }
+    const name = path.relative(gameDir, file).split(path.sep).join("/");
+    relative.push(name);
+    hash.update(name).update(fs.readFileSync(file));
+  }
+  const version = hash.digest("hex").slice(0, 16);
+  const swPath = path.join(gameDir, "sw.js");
+  const source = fs.readFileSync(swPath, "utf8");
+  const built = source
+    .replace('const VERSION = "dev";', `const VERSION = ${JSON.stringify(version)};`)
+    .replace("const FILES = [];", `const FILES = ${JSON.stringify(relative, null, 2)};`)
+    .replace('const THREE_URL = "";', `const THREE_URL = ${JSON.stringify(threeUrl)};`);
+  if (built === source || built.includes('const VERSION = "dev"')) {
+    throw new Error("Guinea Run offline: sw.js placeholders not found");
+  }
+  fs.writeFileSync(swPath, built, "utf8");
+  return relative.length;
+}
+const offlineFileCount = guineaRunOfflineFiles();
+
+console.log(`site-src assembled: ${pages} lab page(s), ${backlogs} backlog page(s), ${stories} story page(s), ${assets} asset(s), ${themeFiles} theme file(s), ${badgePageCount} badge page(s), ${statsPageCount} statistics page(s), ${hallOfFamePageCount} Hall of Fame page(s), ${offlineFileCount} Guinea Run offline file(s), ${badgeRecords} badge record(s), ${locales.length} locale(s)`);

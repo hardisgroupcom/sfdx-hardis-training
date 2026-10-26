@@ -5,6 +5,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 
 ## 2026-10-26
 
+- Guinea Run: once opened online, the game plays offline, and on a phone it can be added to the home screen; progress is no longer lost when the game is open in two tabs or two VS Code windows.
 - Guinea Run: Pipeline Pinball runs at the same speed in Easy, Normal and Hard, since its points do not depend on the mode.
 - Lab 1.2: **Set up my training environment** asks which GitHub account to fork into when this computer was already signed in to GitHub, and can switch to another one.
 - Home page and Lab 1.1: keep the same editor (VS Code, Agentforce Vibes or Cursor) from start to finish, since the scratch orgs are connected only in the editor that created them.
