@@ -544,8 +544,10 @@ function createGame(options) {
     engine.resetLook();
     hud.clearWorldUi();
     resetPig();
-    // The mode is read once per run: a world is played in one mode from start to end
-    run = { score: 0, attempts: ATTEMPTS, lost: 0, note: false, tip: "", combo: 0, comboTime: -10, ended: false, bossClock: null, bossDone: false, mode: modeOf(progress.mode) };
+    // The mode is read once per run: a world is played in one mode from start to end.
+    // The pinball ignores it: same points in every mode, so the same speed (Easy's)
+    const mode = current.info === BONUS ? modeOf("easy") : modeOf(progress.mode);
+    run = { score: 0, attempts: ATTEMPTS, lost: 0, note: false, tip: "", combo: 0, comboTime: -10, ended: false, bossClock: null, bossDone: false, mode };
     const root = new THREE.Group();
     engine.scene.add(root);
     const paint = createPainter(THREE);

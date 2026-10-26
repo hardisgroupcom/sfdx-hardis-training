@@ -5,6 +5,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 
 ## 2026-10-26
 
+- Guinea Run: Pipeline Pinball runs at the same speed in Easy, Normal and Hard, since its points do not depend on the mode.
 - Lab 1.2: **Set up my training environment** asks which GitHub account to fork into when this computer was already signed in to GitHub, and can switch to another one.
 - Home page and Lab 1.1: keep the same editor (VS Code, Agentforce Vibes or Cursor) from start to finish, since the scratch orgs are connected only in the editor that created them.
 - Lab 2.7: taking both sides of the permission set conflict gives two complete blocks with nothing to type, and the merge editor pictures show the real Helios file.
