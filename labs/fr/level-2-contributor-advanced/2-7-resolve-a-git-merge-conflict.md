@@ -5,7 +5,7 @@ description: "Une collègue a mergé en premier sur le même flow et le même pe
 level: 2
 lab: 7
 lang: fr
-source_rev: "59a817bf9a422e9d78fd52397b8cc283cde9c42d"
+source_rev: "7bc30991204d61ef34021d66c5575d254d6032e6"
 screenshots:
   - annotated/salesforce/flow-builder-assign-crew
   - annotated/salesforce/flow-builder-assign-crew-full
@@ -49,6 +49,9 @@ flow et le même permission set que vous. Elle a mergé ce matin. Pas vous.
 
 - [ ] [Lab 2.6](2-6-permission-sets-and-profiles.md) terminé et mergé
 - [ ] Rien en attente dans le panneau **Source Control** auquel vous teniez encore
+- [ ] **SF Merge Driver**, en bas à droite de VS Code, affiche un rond gris : le driver est éteint.
+      Si le rond est vert, cliquez dessus pour l'éteindre, sinon il résout les conflits dont parle
+      ce lab avant que vous ne les voyiez
 
 ## Les étapes
 
@@ -489,6 +492,13 @@ bloc avec deux lignes `<field>`.
 **Le flow refuse de se déployer après le merge : "duplicate element name".**
 Vous avez gardé les deux côtés d'un élément qui ne peut exister qu'une fois. Les noms d'éléments de
 flow sont uniques. Renommez-en un ou supprimez-en un.
+
+**Merge Changes ne liste pas le permission set, ou aucun fichier.**
+Le SF Merge Driver les a mergés pour vous : son élément en bas à droite de VS Code affiche un rond
+vert. Ouvrez le permission set et vérifiez qu'il contient les deux blocs de l'étape 5. Si le flow a
+été mergé aussi, ouvrez-le dans Flow Builder et vérifiez-le par rapport à l'étape 6 : le driver
+merge le XML, il ne décide pas quelle règle l'emporte. Cliquez ensuite sur l'élément pour éteindre
+le driver, avant que le [Lab 3.10](../level-3-release-manager/3-10-promote-a-subset-with-promotion-branches.md) n'ait besoin des conflits lui aussi.
 
 **Vous avez perdu votre modification entièrement.**
 Vous avez accepté le côté de Mariia sur tout le fichier. Dans le panneau **Source Control**, menu

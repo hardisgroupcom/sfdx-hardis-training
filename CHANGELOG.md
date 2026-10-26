@@ -8,6 +8,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 - Lab 2.7: taking both sides of the permission set conflict gives two complete blocks with nothing to type, and the merge editor pictures show the real Helios file.
 - Lab 2.4: **Create my lab records** says when `External_Id__c` is not marked External Id or a field cannot be edited, instead of blaming the profile.
 - Lab 3.10: troubleshooting for a cherry-pick of US-059 that conflicts on one file only.
+- Labs 2.7 and 3.10: check that the SF Merge Driver is off before you start, since it solves the conflicts these labs teach.
 - Lab 3.11: how to stop the nightly crew capacity email in the orgs you keep.
 
 ## 2026-10-24

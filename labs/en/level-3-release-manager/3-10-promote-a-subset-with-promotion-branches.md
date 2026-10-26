@@ -71,6 +71,9 @@ included.
 - [ ] `enablePromotionBranches` and `allowedPromotionSteps` published in
       [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md), and carried up to `preprod` by the promotions of Labs 3.5 and 3.6
 - [ ] Nothing waiting in the **Source Control** panel that you still care about
+- [ ] **SF Merge Driver**, at the bottom right of VS Code, shows a grey circle: the driver is off.
+      If the circle is green, click it to turn the driver off, or it solves the conflicts of step 4
+      before you see them
 
 ## Steps
 
@@ -824,8 +827,8 @@ sfdx-hardis is willing to invent: which branches a release manager may promote b
 about your pipeline.
 
 **The cherry-pick of US-059 did not conflict, or conflicted on one file only.**
-Something solved it for you, usually the `sf-git-merge-driver` plugin if it is installed on your
-machine. Open the **Files changed** tab of the Pull Request and look for `Warranty_Years__c` in the
+Something solved it for you, usually the SF Merge Driver: its item at the bottom right of VS Code
+shows a green circle, and a click turns it off. Open the **Files changed** tab of the Pull Request and look for `Warranty_Years__c` in the
 layout and the permission set. If it travelled, the deployment fails on a field `preprod` does not
 have: take it out on the promotion branch the way step 6 does, and push. If it did not, the
 promotion is right as it is, and the retrofit of step 9 can still stop on both files.

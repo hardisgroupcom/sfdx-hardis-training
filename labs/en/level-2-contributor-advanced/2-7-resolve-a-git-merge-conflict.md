@@ -48,6 +48,9 @@ flow and the same permission set as you. She merged this morning. You did not.
 
 - [ ] [Lab 2.6](2-6-permission-sets-and-profiles.md) finished and merged
 - [ ] Nothing waiting in the **Source Control** panel that you still care about
+- [ ] **SF Merge Driver**, at the bottom right of VS Code, shows a grey circle: the driver is off.
+      If the circle is green, click it to turn the driver off, or it solves the conflicts this lab
+      is about before you see them
 
 ## Steps
 
@@ -468,6 +471,13 @@ block names one field: the fix is two blocks, not one block with two `<field>` l
 **The flow will not deploy after the merge: "duplicate element name".**
 You kept both sides of an element that can only exist once. Flow element names are unique. Rename or
 remove one.
+
+**Merge Changes lists no permission set, or no file at all.**
+The SF Merge Driver merged them for you: its item at the bottom right of VS Code shows a green
+circle. Open the permission set and check that it holds the two blocks of step 5. If the flow merged
+too, open it in Flow Builder and check it against step 6: the driver merges the XML, it does not
+decide which rule wins. Then click the item to turn the driver off, before [Lab 3.10](../level-3-release-manager/3-10-promote-a-subset-with-promotion-branches.md) needs the
+conflicts too.
 
 **You lost your change entirely.**
 You accepted Mariia's side on the whole file. In the **Source Control** panel, the **...** menu >
