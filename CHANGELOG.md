@@ -5,6 +5,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 
 ## 2026-10-26
 
+- Lab 1.2: **Set up my training environment** asks which GitHub account to fork into when this computer was already signed in to GitHub, and can switch to another one.
 - Home page and Lab 1.1: follow the course in VS Code, or in Agentforce Vibes when you cannot use VS Code, and keep the same editor to the end, since the scratch orgs are connected only in the editor that created them.
 - Lab 2.7: taking both sides of the permission set conflict gives two complete blocks with nothing to type, and the merge editor pictures show the real Helios file.
 - Lab 2.4: **Create my lab records** says when `External_Id__c` is not marked External Id or a field cannot be edited, instead of blaming the profile.

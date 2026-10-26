@@ -5,7 +5,7 @@ description: "Inscrivez-vous à une org Salesforce Developer Edition gratuite, p
 level: 1
 lab: 2
 lang: fr
-source_rev: "d82a755e4de3c0f4a6f11202e27a206fad0aa0b9"
+source_rev: "02b44cdce73360708efb1b4f4efb733351e1264c"
 screenshots:
   - annotated/web/sf-signup
   - annotated/web/gh-cli-download
@@ -354,10 +354,16 @@ Helios, et une pipeline câblée dessus, le tout construit par une seule command
       Le navigateur ne s'ouvre pas tout seul : cliquez sur le lien affiché.
 
 6. Revenez dans VS Code : la commande repart toute seule et ne redemandera plus rien
-7. Elle ouvre ensuite l'onglet **Actions** de votre fork dans votre navigateur, et attend. Cliquez
+7. Si cet ordinateur était déjà connecté à GitHub, les points 5 et 6 n'ont pas lieu. Elle demande à
+   la place **Fork the course into the GitHub account your-handle?**, avec le compte qu'elle a
+   trouvé. Lisez le nom. Si c'est le compte où vous voulez le fork, choisissez **Yes, use
+   your-handle**. Sinon, par exemple le compte d'un ancien employeur, choisissez **Use ... instead**
+   quand votre propre compte est dans la liste, ou **Sign in with another GitHub account**, qui
+   passe par le code du point 5
+8. Elle ouvre ensuite l'onglet **Actions** de votre fork dans votre navigateur, et attend. Cliquez
    sur **I understand my workflows, go ahead and enable them**, et revenez dans VS Code : la
    commande continue toute seule
-8. Laissez-la dérouler ses huit étapes. Elle vous tient au courant au fur et à mesure :
+9. Laissez-la dérouler ses huit étapes. Elle vous tient au courant au fur et à mesure :
 
    ```text title="Résultat"
    Developer Edition org: helios-prod
@@ -393,9 +399,9 @@ Helios, et une pipeline câblée dessus, le tout construit par une seule command
    OK  A branch is now deleted once its Pull Request is merged. integration and uat stay: a protected branch cannot be deleted.
    ```
 
-9. Attendez. Comptez quinze à vingt minutes, presque entièrement sur les étapes 4 et 5, quand
-   Salesforce crée les orgs et que l'application est déployée dans les trois à la fois. Rien ne
-   s'affiche pendant ce temps-là. Ce n'est pas bloqué
+10. Attendez. Comptez quinze à vingt minutes, presque entièrement sur les étapes 4 et 5, quand
+    Salesforce crée les orgs et que l'application est déployée dans les trois à la fois. Rien ne
+    s'affiche pendant ce temps-là. Ce n'est pas bloqué
 
 !!! warning "Lisez la ligne avant d'autoriser"
     **Allow once** ne lance que cette fois-ci, **Always allow** s'en souvient. Les deux conviennent
@@ -425,6 +431,11 @@ La première chose qu'elle fait, c'est vous connecter à GitHub. L'étape 1 des 
 du repository, et cela demande votre compte GitHub. Il demande à créer un repository dans votre
 compte et à écrire les secrets que lisent les jobs CI, c'est-à-dire exactement ce que fait cette
 étape.
+
+Quand la CLI GitHub était déjà connectée, elle vous demande le compte à la place. La CLI garde une
+connexion un an, et le fork va dans le compte qu'elle détient, quel que soit le nom qu'affichent
+VS Code ou git. Sur un ordinateur qui garde encore un compte de travail, ou celui d'un ancien
+employeur, c'est là que le fork arriverait, sans un mot.
 
 Puis elle vous demande un clic sur GitHub. GitHub désactive les workflows de chaque nouveau fork,
 derrière une bannière qu'aucune commande ne peut presser. Sans ce clic, rien ne vérifierait ni ne
@@ -482,6 +493,15 @@ Le chargement de données est un **upsert sur un identifiant externe**, le lance
 jour les mêmes 235 enregistrements au lieu d'en créer 470. Tout ce qui, dans ce cours, peut être
 lancé deux fois, peut être lancé deux fois.
 
+Avant le fork, quand la CLI GitHub était déjà connectée, il a listé les comptes qu'elle détient :
+
+    gh auth status --hostname github.com
+
+`gh repo fork` fait le fork dans le compte actif. Choisir un autre compte que la CLI détient déjà
+lance :
+
+    gh auth switch --hostname github.com --user <your-handle>
+
 Il a fait pointer ce dossier vers vos orgs, dans le répertoire `.sf` ignoré par git :
 
     sf config set target-dev-hub=helios-prod target-org=helios-dev
@@ -519,6 +539,8 @@ Documentation de la commande : [hardis:org:data:import](https://sfdx-hardis.clou
 #### Vous devriez voir
 
 - Les huit étapes de l'exécution, chacune avec ses lignes `OK`, comme dans le résultat ci-dessus
+- Si elle a demandé dans quel compte GitHub faire le fork, le compte choisi dans la ligne
+  `origin is now your-handle/sfdx-hardis-training`
 
 ### 6. Ce qu'elle vient de faire
 

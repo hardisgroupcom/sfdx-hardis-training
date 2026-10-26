@@ -334,9 +334,14 @@ wired to them, all built by one command.
       The browser does not open on its own: click the printed link.
 
 6. Come back to VS Code: the command carries on by itself, and never asks again
-7. It then opens the **Actions** tab of your fork in your browser and waits. Click **I understand my
+7. If this computer was already signed in to GitHub, items 5 and 6 do not happen. It asks instead
+   **Fork the course into the GitHub account your-handle?**, with the account it found. Read the
+   name. If it is the account you want the fork in, pick **Yes, use your-handle**. If it is not,
+   say the account of a former job, pick **Use ... instead** when your own account is in the list,
+   or **Sign in with another GitHub account**, which goes through the code of item 5
+8. It then opens the **Actions** tab of your fork in your browser and waits. Click **I understand my
    workflows, go ahead and enable them**, and come back to VS Code: the command carries on by itself
-8. Let it work through its eight steps. It tells you as it goes:
+9. Let it work through its eight steps. It tells you as it goes:
 
    ```text title="Output"
    Developer Edition org: helios-prod
@@ -372,9 +377,9 @@ wired to them, all built by one command.
    OK  A branch is now deleted once its Pull Request is merged. integration and uat stay: a protected branch cannot be deleted.
    ```
 
-9. Wait. Count on fifteen to twenty minutes, nearly all of it steps 4 and 5, when Salesforce creates
-   the orgs and the app is deployed into all three at once. Nothing prints while that happens. It is
-   not stuck
+10. Wait. Count on fifteen to twenty minutes, nearly all of it steps 4 and 5, when Salesforce creates
+    the orgs and the app is deployed into all three at once. Nothing prints while that happens. It is
+    not stuck
 
 !!! warning "Read the line before you allow it"
     **Allow once** runs it this time only, **Always allow** remembers it. Either is fine here: you
@@ -401,6 +406,11 @@ says so.
 The first thing it does is sign you in to GitHub. Step 1 of the eight makes your own copy of the
 repository, and that needs your GitHub account. It is asking to create a repository in your account
 and to write the secrets the CI jobs read, which is the whole of what this step does.
+
+When the GitHub CLI was already signed in, it asks about the account instead. The CLI keeps a
+sign-in for a year, and the fork goes to the account it holds, whatever name VS Code or git show.
+On a computer that still holds a work account, or the account of a former job, that is where the
+fork would land without a word.
 
 Then it asks for one click on GitHub. GitHub switches off the workflows of every new fork, behind a
 banner that no command can press. Without that click, nothing would ever check or deploy your work.
@@ -453,6 +463,14 @@ message that says nothing about permissions.
 The data load is an **upsert on an external id**, so running it twice updates the same 235 records
 instead of creating 470. Anything in this course that can be run twice, can be run twice.
 
+Before the fork, when the GitHub CLI was already signed in, it listed the accounts the CLI holds:
+
+    gh auth status --hostname github.com
+
+`gh repo fork` forks into the active one. Picking another account the CLI already holds runs:
+
+    gh auth switch --hostname github.com --user <your-handle>
+
 It made this folder point at your orgs, in the git-ignored `.sf` directory:
 
     sf config set target-dev-hub=helios-prod target-org=helios-dev
@@ -489,6 +507,8 @@ Command documentation: [hardis:org:data:import](https://sfdx-hardis.cloudity.com
 #### You should now see
 
 - The eight steps of the run, each with its `OK` lines, as in the output above
+- If it asked which GitHub account to fork into, the account you picked in the line
+  `origin is now your-handle/sfdx-hardis-training`
 
 ### 6. What it just did
 
