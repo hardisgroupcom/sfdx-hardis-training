@@ -10,6 +10,10 @@
   "guinea-run", type: "exit" } when the player closes the game, and { type:
   "openExternal", url } for each link: in a frame a lab link would otherwise
   replace the game. Opened on its own, the game plays the same.
+
+  Once opened online, it plays offline too: sw.js keeps a copy of the game.
+  On a phone it can be added to the home screen (manifest.webmanifest), and
+  opens from its icon (?from=app) without a network.
 -->
 <html lang="en">
   <head>
@@ -21,6 +25,14 @@
     <meta property="og:image" content="https://sfdx-hardis-training.cloudity.com/_assets/social/course.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
+    <!-- The home screen app -->
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="icons/icon-180.png">
+    <meta name="theme-color" content="#032d60">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Guinea Run">
     <style>
       @font-face {
         font-family: "Open Sans";
@@ -49,9 +61,22 @@
   <body>
     <script type="module">
       const params = new URLSearchParams(location.search);
-      const lang = params.get("lang") === "fr" ? "fr" : "en";
+      // The home screen app has no lang in its address: the phone's language then
+      const asked = params.get("lang") || (navigator.language || "").slice(0, 2);
+      const lang = asked === "fr" ? "fr" : "en";
       const framed = window.parent !== window;
+      const app = params.get("from") === "app" || (window.matchMedia && window.matchMedia("(display-mode: standalone), (display-mode: fullscreen)").matches) || navigator.standalone === true;
       document.documentElement.lang = lang;
+
+      // Android browsers offer to install the page: kept for the button of the end card
+      let installPrompt = null;
+      window.addEventListener("beforeinstallprompt", (event) => {
+        event.preventDefault();
+        installPrompt = event;
+      });
+      window.addEventListener("appinstalled", () => {
+        installPrompt = null;
+      });
 
       function tell(message) {
         if (framed) {
@@ -75,17 +100,67 @@
       const game = await import(base + "game.js");
       game.start({
         lang,
-        trigger: params.get("from") === "vscode" ? "vscode" : "embed",
+        trigger: params.get("from") === "vscode" ? "vscode" : app ? "app" : "embed",
         base,
         track: () => {},
+        install: framed || app ? null : {
+          canPrompt: () => Boolean(installPrompt),
+          prompt: () => {
+            const event = installPrompt;
+            installPrompt = null;
+            return event ? event.prompt() : Promise.resolve();
+          }
+        },
         onExit: () => {
           tell({ type: "exit" });
-          if (!framed) {
+          if (framed) {
+            return;
+          }
+          if (app) {
+            // No course to go back to from the home screen, offline even less: the map again
+            location.reload();
+          } else {
             location.href = new URL("../../../" + (lang === "fr" ? "fr/" : "en/"), location.href).href;
           }
         }
       });
       tell({ type: "ready" });
+      keepOffline(params.get("guinea-offline"));
+
+      /*
+       * The service worker (sw.js) keeps a copy of the game, so this page plays
+       * offline once opened online. Registered when the game is ready and the
+       * browser is idle. Off on a local copy (the fast loop copies files into it)
+       * unless ?guinea-offline=1; ?guinea-offline=0 removes it and its copies.
+       */
+      function keepOffline(setting) {
+        try {
+          if (!("serviceWorker" in navigator)) {
+            return;
+          }
+          if (setting === "0") {
+            navigator.serviceWorker
+              .getRegistrations()
+              .then((registrations) => Promise.all(registrations.filter((r) => r.scope === base).map((r) => r.unregister())))
+              .then(() => caches.keys())
+              .then((names) => Promise.all(names.filter((name) => name.startsWith("guinea-run-")).map((name) => caches.delete(name))))
+              .catch(() => {});
+            return;
+          }
+          const local = ["127.0.0.1", "localhost", "[::1]"].includes(location.hostname);
+          if (local && setting !== "1") {
+            return;
+          }
+          const register = () => navigator.serviceWorker.register(base + "sw.js", { scope: base }).catch(() => {});
+          if ("requestIdleCallback" in window) {
+            requestIdleCallback(register, { timeout: 5000 });
+          } else {
+            setTimeout(register, 2000);
+          }
+        } catch {
+          // A frame or a browser that refuses service workers: the game plays online, as before
+        }
+      }
     </script>
   </body>
 </html>

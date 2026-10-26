@@ -9,6 +9,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 - Lab 2.7 and Lab 2.1: the teammate step names the **Open the Pull Request** button at the bottom of the panel.
 - Lab 2.6: step 3 says how to open the Pipeline Settings panel, and the settings are named by their panel labels, **Minimize Profiles** and **Auto-Remove User Permissions on profiles**, next to their keys in the configuration file.
 - Lab 2.4: says to pull the MegaLinter commit that adds the last line of `export.json` before pushing the deployment actions, with a troubleshooting entry for a refused push.
+- Guinea Run: once opened online, the game plays offline, and on a phone it can be added to the home screen; progress is no longer lost when the game is open in two tabs or two VS Code windows.
 - Guinea Run: Pipeline Pinball runs at the same speed in Easy, Normal and Hard, since its points do not depend on the mode.
 - Lab 1.2: **Set up my training environment** asks which GitHub account to fork into when this computer was already signed in to GitHub, and can switch to another one.
 - Home page and Lab 1.1: keep the same editor (VS Code, Agentforce Vibes or Cursor) from start to finish, since the scratch orgs are connected only in the editor that created them.

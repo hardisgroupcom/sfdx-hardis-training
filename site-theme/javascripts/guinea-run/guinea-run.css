@@ -448,6 +448,12 @@ html.guinea-run-open body {
   color: #444444;
 }
 
+.guinea-run .gr-install-link {
+  align-self: flex-start;
+  margin-top: 8px;
+  text-decoration: none;
+}
+
 .guinea-run .gr-star-goals {
   display: flex;
   flex-wrap: wrap;
