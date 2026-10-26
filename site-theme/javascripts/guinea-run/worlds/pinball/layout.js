@@ -124,6 +124,8 @@ const ORBIT_MOUTH = 13.0;
 const INNER = 3.8;
 const SIDE_TARGETS = [10.3, 10.9, 11.5];
 const SIDE_X = 4.84;
+// The Rollback kick, on the right side (mirrored on the left): up the outlane, over the post, down the inlane
+const KICK_PATH = [4.5, 1.4, 0, 4.5, 5.2, 0.3, 4.45, 6.3, 0.9, 4.0, 6.75, 1.1, 3.6, 5.9, 0.3, 3.55, 5.5, 0];
 // A saucer low on the left, shot from the right flipper
 const HOTFIX = { x: -3.3, y: 10.2 };
 // The monster Flow spins by the terminal, where the bumpers throw the ball
@@ -249,7 +251,13 @@ export function buildTable() {
   p.line(T.laneWall, 4.6, 4.0, 4.6, { tag: "outlaneR" });
   p.line(-3.1, 4.6, -4.0, 4.6, { tag: "inlaneL" });
   p.line(4.0, 4.6, 3.1, 4.6, { tag: "inlaneR" });
+  // Rollback, in both outlanes: the lane is closed over its top by the bank,
+  // so the kick lifts the ball up the lane and over the inlane post, onto the
+  // inlane and its flipper (a path, not drawn: the ball hops back into play)
   const kickback = p.line(-4.0, 1.4, T.left, 1.4, { tag: "kickback" });
+  const kickbackR = p.line(T.laneWall, 1.4, 4.0, 1.4, { tag: "kickbackR" });
+  const kickPath = (side) => p.path(KICK_PATH.map((v, i) => (i % 3 === 0 ? v * side : v)), { tag: side < 0 ? "kickback" : "kickbackR", exitMax: 9 });
+  const kickPaths = { left: kickPath(-1), right: kickPath(1) };
 
   // Arcade flippers: about three balls long, their pivots close to the middle
   // As measured on the arcade: pivots 7 inches apart, the bats 31 degrees
@@ -338,6 +346,8 @@ export function buildTable() {
       scoop,
       release,
       kickback,
+      kickbackR,
+      kickPaths,
       spinner,
       orbitLeft,
       orbitRight,
@@ -407,6 +417,7 @@ function buildLights() {
   // The stars of the top lanes, in the lanes themselves, over the bumpers
   LANES.forEach((x, i) => add("lane" + i, x, 18.15, { shape: "star", size: 0.36, color: 0xffb020 }));
   add("kickback", -4.5, 2.6, { size: 0.24, color: 0xea001e, label: "pbFieldRollback" });
+  add("kickbackR", 4.5, 2.6, { size: 0.24, color: 0xea001e, label: "pbFieldRollback" });
   add("ballSave", 0, 2.3, { size: 0.4, color: 0x06a59a, label: "pbFieldShootAgain", labelAt: "inside" });
   add("extraBall", -1.25, 6.3, { size: 0.24, shape: "star", color: 0xfe9339, label: "pbFieldExtraBall", labelAt: "above" });
   add("note", 1.25, 6.3, { size: 0.24, shape: "star", color: 0xdd7a01, label: "pbFieldNote", labelAt: "above" });

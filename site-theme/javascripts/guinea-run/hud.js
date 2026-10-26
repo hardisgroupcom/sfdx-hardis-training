@@ -217,12 +217,16 @@ export function createHud(t, options) {
   // The chat bubbles waiting for the oldest one on screen to be read
   const chatQueue = [];
 
+  /** who: a name of CAST, or a speaker outside it: { name, faceUrl, color }. */
   function showChat(who, text, life) {
-    const person = CAST[who] || CAST.you;
+    const person = typeof who === "object" && who ? who : CAST[who] || CAST.you;
     const bubble = element("div", "gr-bubble", chat);
-    const avatar = element("span", "gr-avatar", bubble, person.face ? "" : person.initials);
+    const avatar = element("span", "gr-avatar", bubble, person.face || person.faceUrl ? "" : person.initials);
     avatar.style.backgroundColor = person.color;
-    if (person.face) {
+    if (person.faceUrl) {
+      avatar.classList.add("gr-avatar--portrait");
+      avatar.style.backgroundImage = 'url("' + person.faceUrl + '")';
+    } else if (person.face) {
       avatar.classList.add("gr-avatar--" + who);
     }
     const content = element("div", "", bubble);
@@ -1310,7 +1314,8 @@ export function createHud(t, options) {
 
     /**
      * A message from the cast, as a Lightning chat bubble. Two at most on
-     * screen: a third one waits until the oldest has been read.
+     * screen: a third one waits until the oldest has been read. who: a name
+     * of the cast, or { name, faceUrl, color } for someone outside it.
      */
     chat(who, text, ms) {
       const life = chatLife(text, ms);

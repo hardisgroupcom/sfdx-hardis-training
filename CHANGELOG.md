@@ -5,6 +5,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 
 ## 2026-10-26
 
+- Pipeline Pinball: a ball no longer gets stuck in a hole during multiball, Rollback now works and lights both outlanes, a ball below the Production floor waits until it is back in view, the admins show their faces, and the score display is easier to read.
 - Guinea Run: on a phone, the map now offers to add the game to the home screen, and the offer stays until the game is really installed.
 - Lab 2.7: step 1 builds the flat roof decision and its assignment click by click, with the names the pictures show, and both flow saves use **Save As New Version**.
 - Lab 2.7 and Lab 2.1: the teammate step names the **Open the Pull Request** button at the bottom of the panel.

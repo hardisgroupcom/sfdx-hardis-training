@@ -160,6 +160,8 @@ export const TEXTS = {
     pbCmdClean: "References cleaned: Recent Changes reset +{{points}}",
     pbCmdApi: "API versions checked +{{points}}",
     pbCmdLegacy: "Legacy API calls found before they break +{{points}}",
+    pbAdminName: "An admin",
+    pbRaidAdmin: "But it's faster! I'm changing production by hand.",
     pbRaid: "An admin is changing production by hand! Hit him before his change set lands.",
     pbRaidCaught: "Caught by the monitoring backup +{{points}}",
     pbRaidMissed: "A change in production that is not in git: the promotion is lost. Retrofit it at the Pull Request scoop.",
@@ -397,6 +399,8 @@ export const TEXTS = {
     pbCmdClean: "Références nettoyées : modifications récentes remises +{{points}}",
     pbCmdApi: "Versions d'API vérifiées +{{points}}",
     pbCmdLegacy: "Appels d'API obsolètes trouvés avant qu'ils ne cassent +{{points}}",
+    pbAdminName: "Un admin",
+    pbRaidAdmin: "Mais c'est plus rapide ! Je modifie la production à la main.",
     pbRaid: "Un admin modifie la production à la main ! Touchez-le avant que son change set n'arrive.",
     pbRaidCaught: "Attrapé par le backup du monitoring +{{points}}",
     pbRaidMissed: "Une modification en production qui n'est pas dans git : la promotion est perdue. Faites le retrofit au trou Pull Request.",
@@ -592,9 +596,11 @@ export function createWorld(ctx) {
   const table = buildTable();
   const physics = table.physics;
   const parts = table.parts;
-  const faces = pickAdmins("pinball", random, 3);
+  // Three admins who walk into production, and the author of the monster Flow
+  const faces = pickAdmins("pinball", random, 4);
   const view = createView(THREE, ctx, table, {
     faceUrl: (i) => adminFaceUrl(faces[i]),
+    flowFaceUrl: adminFaceUrl(faces[3]),
     salesManagerUrl: new URL("../../../../images/bosses/final-boss.svg", import.meta.url).href
   });
   const music = createMusic(sound, THEMES.pinball);
@@ -632,7 +638,12 @@ export function createWorld(ctx) {
       } else if (kind === "tip") {
         hud.tip(text, 0);
       } else if (kind === "chat") {
-        hud.chat(key === "pbSickLeave" ? "mariia" : "victor", text);
+        if (key === "pbRaidAdmin") {
+          // The admin who walks in says it, with their face
+          hud.chat({ name: t("pbAdminName"), faceUrl: adminFaceUrl(faces[values.admin] || faces[0]), color: "#032d60" }, text);
+        } else {
+          hud.chat(key === "pbSickLeave" ? "mariia" : "victor", text);
+        }
       }
     },
     sound(name) {
@@ -1109,6 +1120,8 @@ export function createWorld(ctx) {
         pulling = Math.min(1, pulling + dt / PULL_S);
         physics.pullPlunger(pulling);
       }
+      // A ball out of sight below the Production floor waits for the view to come back
+      physics.freezeOutOfSight(view.sight);
       physics.advance(dt);
       physics.readEvents(rules.event);
       rules.update(dt);

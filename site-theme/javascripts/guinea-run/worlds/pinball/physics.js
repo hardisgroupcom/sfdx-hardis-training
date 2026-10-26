@@ -92,6 +92,10 @@ export function createPhysics() {
       lastSensorAt: -1,
       // The spinning disc the ball is on, if any
       field: null,
+      // The hole holding it, while it is held
+      holder: null,
+      // Out of sight while the view shows the Production floor: it waits, still
+      frozen: false,
       // The view rolls the guinea pig from these
       spinX: 0,
       spinY: 0,
@@ -219,7 +223,7 @@ export function createPhysics() {
    */
   function hole(x, y, r, options) {
     const o = options || {};
-    const sensor = { kind: "hole", ax: x, ay: y, r, floor: o.floor || 0, tag: o.tag || "", capture: Boolean(o.capture), maxSpeed: o.maxSpeed || Infinity, enabled: o.enabled !== false };
+    const sensor = { kind: "hole", ax: x, ay: y, r, floor: o.floor || 0, tag: o.tag || "", capture: Boolean(o.capture), maxSpeed: o.maxSpeed || Infinity, enabled: o.enabled !== false, holding: null };
     sensors.push(sensor);
     return sensor;
   }
@@ -399,6 +403,8 @@ export function createPhysics() {
         ball.path = null;
         ball.lastSensor = null;
         ball.contact = 0;
+        ball.holder = null;
+        ball.frozen = false;
         return ball;
       }
     }
@@ -406,13 +412,20 @@ export function createPhysics() {
   }
 
   function removeBall(ball) {
+    letGo(ball);
+    ball.frozen = false;
     ball.active = false;
     ball.mode = "table";
     ball.path = null;
   }
 
   /** The rules hold a ball (a scoop, a lock): it waits, still, until release(). */
-  function hold(ball, x, y) {
+  function hold(ball, x, y, sensor) {
+    letGo(ball);
+    if (sensor) {
+      sensor.holding = ball;
+      ball.holder = sensor;
+    }
     ball.mode = "held";
     ball.x = x;
     ball.y = y;
@@ -421,6 +434,7 @@ export function createPhysics() {
   }
 
   function release(ball, vx, vy) {
+    letGo(ball);
     ball.mode = "table";
     ball.vx = vx;
     ball.vy = vy;
@@ -430,11 +444,42 @@ export function createPhysics() {
 
   /** A ball onto a path from its start, at a speed: a ball served by the rules (a lock let go, a wire rail). */
   function sendOnPath(ball, p, speed) {
+    letGo(ball);
     ball.mode = "path";
     ball.path = p;
     ball.s = 0;
     ball.v = speed;
     pathPoint(ball);
+  }
+
+  /** The hole holding a ball is free again: it can catch the next one. */
+  function letGo(ball) {
+    if (ball.holder) {
+      if (ball.holder.holding === ball) {
+        ball.holder.holding = null;
+      }
+      ball.holder = null;
+    }
+  }
+
+  /**
+   * While the view shows the Production floor, a ball below it, out of sight,
+   * waits where it is until the view comes back to it: no ball is lost where
+   * the player cannot see it. sight: { up, from, to }, the table y the view
+   * shows; up while it frames the Production floor.
+   */
+  function freezeOutOfSight(sight) {
+    for (const ball of balls) {
+      if (!ball.active) {
+        continue;
+      }
+      if (ball.floor === 1 && ball.mode === "table") {
+        ball.frozen = false;
+        continue;
+      }
+      const out = ball.y < sight.from || ball.y > sight.to;
+      ball.frozen = out && (sight.up || ball.frozen);
+    }
   }
 
   /* ---------- One step ---------- */
@@ -455,11 +500,11 @@ export function createPhysics() {
       if (!ball.active) {
         continue;
       }
-      if (ball.mode === "path") {
-        stepPath(ball);
+      if (ball.frozen || ball.mode === "held") {
         continue;
       }
-      if (ball.mode === "held") {
+      if (ball.mode === "path") {
+        stepPath(ball);
         continue;
       }
       stepBall(ball);
@@ -657,8 +702,12 @@ export function createPhysics() {
           }
           ball.lastSensor = s;
           ball.lastSensorAt = time;
+          if (s.capture && s.holding && s.holding !== ball && s.holding.active && s.holding.mode === "held") {
+            // A ball already sits in it: one ball per hole, as on the arcade
+            continue;
+          }
           if (s.capture) {
-            hold(ball, s.ax, s.ay);
+            hold(ball, s.ax, s.ay, s);
           }
           emit("enter", s.tag, Math.hypot(ball.vx, ball.vy), ball);
           if (!ball.active || ball.mode !== "table") {
@@ -769,15 +818,22 @@ export function createPhysics() {
     ball.h = pts[i * 3 + 2] + (pts[i * 3 + 5] - pts[i * 3 + 2]) * k;
   }
 
+  /**
+   * Two balls on the table bounce off each other. A ball held in a hole, or
+   * waiting out of sight, stands still like a post: the other one bounces off
+   * it, so a second ball never drops into a hole already holding one.
+   */
   function collideBalls() {
     for (let i = 0; i < balls.length; i++) {
       const a = balls[i];
-      if (!a.active || a.mode !== "table") {
+      const aMoving = ballMoving(a);
+      if (!aMoving && !ballStill(a)) {
         continue;
       }
       for (let j = i + 1; j < balls.length; j++) {
         const b = balls[j];
-        if (!b.active || b.mode !== "table" || b.floor !== a.floor) {
+        const bMoving = ballMoving(b);
+        if ((!bMoving && !ballStill(b)) || (!aMoving && !bMoving) || b.floor !== a.floor) {
           continue;
         }
         const dx = b.x - a.x;
@@ -790,6 +846,19 @@ export function createPhysics() {
         const d = Math.sqrt(d2);
         const nx = dx / d;
         const ny = dy / d;
+        if (!aMoving || !bMoving) {
+          // One of them stands still: only the other moves, and bounces off
+          const mover = aMoving ? a : b;
+          const sign = aMoving ? -1 : 1;
+          mover.x += sign * nx * (reach - d);
+          mover.y += sign * ny * (reach - d);
+          const vn = (mover.vx * nx + mover.vy * ny) * sign;
+          if (vn < 0) {
+            mover.vx -= sign * nx * vn * 1.5;
+            mover.vy -= sign * ny * vn * 1.5;
+          }
+          continue;
+        }
         const push = (reach - d) / 2;
         a.x -= nx * push;
         a.y -= ny * push;
@@ -805,6 +874,14 @@ export function createPhysics() {
         }
       }
     }
+  }
+
+  function ballMoving(ball) {
+    return ball.active && ball.mode === "table" && !ball.frozen;
+  }
+
+  function ballStill(ball) {
+    return ball.active && (ball.mode === "held" || (ball.mode === "table" && ball.frozen));
   }
 
   return {
@@ -831,6 +908,7 @@ export function createPhysics() {
     hold,
     release,
     sendOnPath,
+    freezeOutOfSight,
     get plunger() {
       return plunger;
     },
@@ -878,7 +956,7 @@ export function createPhysics() {
     /** A push of the table: every ball on it moves a little. */
     nudge(dx, dy) {
       for (const ball of balls) {
-        if (ball.active && ball.mode === "table") {
+        if (ball.active && ball.mode === "table" && !ball.frozen) {
           ball.vx += dx;
           ball.vy += dy;
         }
@@ -916,7 +994,7 @@ export function createPhysics() {
         return null;
       }
       for (const ball of balls) {
-        if (ball.active && ball.mode === "table" && ball.floor === 0 && Math.abs(ball.x - plunger.x) < 0.6 && ball.y < plunger.y + 1.2 && Math.abs(ball.vy) < 2) {
+        if (ball.active && ball.mode === "table" && ball.floor === 0 && Math.abs(ball.x - plunger.x) < 0.6 && ball.y < plunger.y + 1.2 && (Math.abs(ball.vy) < 2 || ball.frozen)) {
           return ball;
         }
       }

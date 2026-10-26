@@ -27,6 +27,14 @@ const WALL_LOOK = {
 };
 const RAMP_TINT = { integration: 0x1b96ff, uat: 0x06a59a, production: 0x45c65a };
 const FLASH_DECAY = 6;
+// A ball this close to the edge of the screen counts as out of sight (table units)
+const SIGHT_MARGIN = 0.8;
+// The admins' faces: the raid admins, the author of the monster Flow; faded while a ball is behind one
+const FACE_R = 0.7;
+const FACE_HEIGHT = 1.25;
+const FLOW_FACE_R = 0.6;
+const FLOW_FACE_HEIGHT = 1.9;
+const FACE_FADED = 0.25;
 
 export function createView(THREE, ctx, table, options) {
   const t = ctx.t;
@@ -321,12 +329,61 @@ export function createView(THREE, ctx, table, options) {
   });
 
   // The monster Flow: a disc that spins in the playfield, until it is refactored into Apex
+  /**
+   * A round portrait in a white ring, as on the cards. Drawn into a canvas
+   * first, as the other worlds do: an SVG handed straight to a texture draws
+   * nothing in WebGPU (it has no size of its own). White until it loads.
+   */
+  function faceMaterial(url) {
+    const canvas = document.createElement("canvas");
+    canvas.width = 256;
+    canvas.height = 256;
+    const c = canvas.getContext("2d");
+    c.fillStyle = "#ffffff";
+    c.beginPath();
+    c.arc(128, 128, 126, 0, Math.PI * 2);
+    c.fill();
+    const texture = keep(new THREE.CanvasTexture(canvas));
+    texture.colorSpace = THREE.SRGBColorSpace;
+    // Transparent so that it fades when a ball rolls behind it (fadeFace)
+    const material = keep(new THREE.MeshBasicMaterial({ map: texture, alphaTest: 0.5, toneMapped: false, transparent: true }));
+    if (url) {
+      const portrait = new Image();
+      portrait.decoding = "async";
+      portrait.onload = () => {
+        c.save();
+        c.beginPath();
+        c.arc(128, 128, 114, 0, Math.PI * 2);
+        c.clip();
+        c.drawImage(portrait, 14, 14, 228, 228);
+        c.restore();
+        texture.needsUpdate = true;
+      };
+      // A portrait that does not load keeps the white disc
+      portrait.onerror = () => {};
+      portrait.src = url;
+    }
+    return material;
+  }
+
   const flowTextures = { spin: keep(paintFlow(THREE, false)), apex: keep(paintFlow(THREE, true)) };
   const flowMaterial = keep(new THREE.MeshStandardMaterial({ map: flowTextures.spin, roughness: 0.3, emissive: 0xfe9339, emissiveIntensity: 0.25 }));
   const flowDisc = new THREE.Mesh(keep(new THREE.CylinderGeometry(TABLE.flow.r, TABLE.flow.r, 0.03, 40)), flowMaterial);
   flowDisc.position.set(TABLE.flow.x, 0.02, -TABLE.flow.y);
   group.add(flowDisc);
   let flowFlash = 0;
+  // The admin who built the monster Flow, over it until it is refactored into Apex
+  const flowFace = new THREE.Group();
+  const flowFaceMaterial = faceMaterial(options.flowFaceUrl);
+  // On a post, high enough to stand clear of the Flow's own picture
+  const flowFacePost = new THREE.Mesh(keep(new THREE.CylinderGeometry(0.05, 0.05, 1.6, 8)), keep(new THREE.MeshStandardMaterial({ color: 0x032d60, roughness: 0.5 })));
+  flowFacePost.position.y = 0.8;
+  const flowFaceDisc = new THREE.Mesh(keep(new THREE.CircleGeometry(FLOW_FACE_R, 32)), flowFaceMaterial);
+  flowFaceDisc.position.y = FLOW_FACE_HEIGHT;
+  flowFace.add(flowFacePost, flowFaceDisc);
+  flowFace.position.set(TABLE.flow.x, 0, -TABLE.flow.y);
+  group.add(flowFace);
+  let flowFaceSink = 0;
   // The sf hardis terminal: a small screen behind its saucer
   const terminalScreen = new THREE.Mesh(keep(new THREE.PlaneGeometry(1.0, 0.62)), keep(new THREE.MeshBasicMaterial({ map: keep(paintTerminal(THREE)), toneMapped: false })));
   terminalScreen.position.set(TABLE.terminal.x, 0.75, -(TABLE.terminal.y + 0.75));
@@ -345,31 +402,20 @@ export function createView(THREE, ctx, table, options) {
 
   /* ---------- The admins who rise, with their faces ---------- */
 
-  const faceLoader = new THREE.TextureLoader();
-  const disc = keep(new THREE.CircleGeometry(0.44, 28));
+  // Bigger than the admin's post (0.44, what the ball hits): a face read on a phone
+  const disc = keep(new THREE.CircleGeometry(FACE_R, 32));
   const admins = table.parts.admins.map((a, i) => {
     const g = new THREE.Group();
     const post = new THREE.Mesh(cylinder, keep(new THREE.MeshStandardMaterial({ color: 0x032d60, roughness: 0.5 })));
     post.scale.set(0.42, 0.5, 0.42);
     post.position.y = 0.25;
-    const material = keep(new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true }));
-    const url = options.faceUrl(i);
-    if (url) {
-      faceLoader.load(url, (texture) => {
-        keep(texture);
-        texture.colorSpace = THREE.SRGBColorSpace;
-        material.map = texture;
-        material.needsUpdate = true;
-      });
-    }
-    const face = new THREE.Mesh(disc, material);
-    face.position.y = 0.95;
-    face.rotation.x = -0.35;
+    const face = new THREE.Mesh(disc, faceMaterial(options.faceUrl(i)));
+    face.position.y = FACE_HEIGHT;
     g.add(post, face);
     g.position.set(a.ax, -1.2, -a.ay);
     g.visible = false;
     group.add(g);
-    return { group: g, rise: 0, up: false };
+    return { group: g, face, rise: 0, up: false };
   });
 
   /* ---------- Scoop, release hole, spinner, plunger ---------- */
@@ -502,13 +548,7 @@ export function createView(THREE, ctx, table, options) {
   let rabbitHop = 0;
   const smShape = table.parts.salesManager;
   const salesManager = new THREE.Group();
-  const smMaterial = keep(new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true }));
-  faceLoader.load(options.salesManagerUrl, (texture) => {
-    keep(texture);
-    texture.colorSpace = THREE.SRGBColorSpace;
-    smMaterial.map = texture;
-    smMaterial.needsUpdate = true;
-  });
+  const smMaterial = faceMaterial(options.salesManagerUrl);
   const smPost = new THREE.Mesh(cylinder, keep(new THREE.MeshStandardMaterial({ color: 0x181818, roughness: 0.5 })));
   smPost.scale.set(0.42, 0.6, 0.42);
   smPost.position.y = 0.3;
@@ -627,6 +667,8 @@ export function createView(THREE, ctx, table, options) {
   /* ---------- The camera ---------- */
 
   const look = { y: 6, target: 6 };
+  // What the view shows of the table (table y), up while it frames the Production floor
+  const sight = { up: false, from: -Infinity, to: Infinity };
 
   function placeCamera(dt) {
     const balls = table.physics.balls;
@@ -677,7 +719,8 @@ export function createView(THREE, ctx, table, options) {
     const min = -0.9 + below;
     const max = Math.max(min, TABLE.top + 0.6 - above);
     let target;
-    if (up && (!low || low.y > 9 || low.mode === "path")) {
+    sight.up = Boolean(up && (!low || low.y > 9 || low.mode === "path"));
+    if (sight.up) {
       const middle = (TABLE.upperBottom + TABLE.upperTop) / 2 + below - span / 2;
       // A phone centres the upper floor a little low, under the goal line and the buttons, whole
       target = portrait ? middle - span * 0.07 : Math.max(min, Math.min(middle, TABLE.upperTop + 0.6 - above));
@@ -690,6 +733,9 @@ export function createView(THREE, ctx, table, options) {
     look.target = target;
     const k = 1 - Math.exp(-dt * (low && low.y < 4 ? 6 : 3));
     look.y += (look.target - look.y) * k;
+    // The part of the table in sight, with a margin for the edges of the screen
+    sight.from = look.y - below + SIGHT_MARGIN;
+    sight.to = look.y + above - SIGHT_MARGIN;
     vec.set((TABLE.left + TABLE.right) / 2, look.y > 20 ? TABLE.upperHeight : 0, -look.y);
     group.localToWorld(vec);
     const tx = vec.x;
@@ -699,6 +745,26 @@ export function createView(THREE, ctx, table, options) {
     camera.lookAt(tx, ty, tz);
     camera.updateProjectionMatrix();
     engine.aimSun(tx, tz);
+  }
+
+  /**
+   * A face standing up off the table hides the table just behind it, seen
+   * from the player: it fades while a ball rolls there, so no ball is lost
+   * behind a face. (x, y) the foot of its post, h the height of the face, r its radius.
+   */
+  function fadeFace(material, x, y, h, r, dt) {
+    // Seen from the player's height, a face at h covers the table about h * 0.45 further up
+    const middle = y + h * 0.45;
+    let behind = false;
+    const balls = table.physics.balls;
+    for (let i = 0; i < balls.length; i++) {
+      const b = balls[i];
+      if (b.active && b.floor === 0 && Math.abs(b.x - x) < r + 0.35 && Math.abs(b.y - middle) < r + 0.45) {
+        behind = true;
+        break;
+      }
+    }
+    material.opacity += ((behind ? FACE_FADED : 1) - material.opacity) * Math.min(1, dt * 12);
   }
 
   /* ---------- Each frame ---------- */
@@ -775,6 +841,11 @@ export function createView(THREE, ctx, table, options) {
       v.group.visible = v.rise > 0.02;
       v.group.position.y = -1.2 + v.rise * 1.2;
       v.group.rotation.y = Math.sin(time * 3 + i) * 0.15;
+      if (v.group.visible) {
+        // The face turns to the player, read whole from any view
+        v.face.lookAt(camera.position);
+        fadeFace(v.face.material, a.ax, a.ay, FACE_HEIGHT, FACE_R, dt);
+      }
     });
     if (gateEntry) {
       const open = !table.parts.productionGate.enabled;
@@ -791,6 +862,14 @@ export function createView(THREE, ctx, table, options) {
     // The monster Flow spins while it is on
     if (table.parts.flow.enabled) {
       flowDisc.rotation.y += dt * 4.5;
+    }
+    // Its author stands over the monster Flow, and sinks once it is refactored into Apex
+    flowFaceSink += ((table.parts.flow.enabled ? 0 : 1) - flowFaceSink) * Math.min(1, dt * 3);
+    flowFace.visible = flowFaceSink < 0.98;
+    if (flowFace.visible) {
+      flowFace.position.y = -flowFaceSink * 1.5 + Math.sin(time * 2.4) * 0.06;
+      flowFaceDisc.lookAt(camera.position);
+      fadeFace(flowFaceMaterial, TABLE.flow.x, TABLE.flow.y, FLOW_FACE_HEIGHT, FLOW_FACE_R, dt);
     }
     flowFlash = Math.max(0, flowFlash - dt * 3);
     flowMaterial.emissiveIntensity = 0.25 + flowFlash;
@@ -859,6 +938,10 @@ export function createView(THREE, ctx, table, options) {
   return {
     update,
     placeCamera,
+    /** The part of the table in sight: { up, from, to }, read by physics.freezeOutOfSight. */
+    get sight() {
+      return sight;
+    },
     /** Where ball i is in the scene, into out, or null when it is not on the table. */
     ballPoint(i, out) {
       const m = ballMeshes[i];

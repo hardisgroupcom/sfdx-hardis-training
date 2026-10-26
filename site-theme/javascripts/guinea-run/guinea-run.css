@@ -776,6 +776,16 @@ html.guinea-run-open body {
   background-image: url("../../images/romain.svg");
 }
 
+/* Someone outside the cast with a portrait (a pinball admin) */
+.guinea-run .gr-avatar--portrait {
+  flex-basis: 38px;
+  width: 38px;
+  height: 38px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
 /* Victor's note */
 .guinea-run .gr-note {
   position: absolute;

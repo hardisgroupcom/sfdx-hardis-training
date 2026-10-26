@@ -44,6 +44,8 @@ const COMMANDS = [
   { cmd: "hardis:org:diagnose:legacyapi", key: "pbCmdLegacy", points: 200000 }
 ];
 const TERMINAL_HOLD = 2.8;
+// The Rollback kick: fast enough to clear the inlane post every time
+const KICKBACK_SPEED = 30;
 // An admin in production: a raid now and then, and the time to catch him
 const RAID_FIRST = 45;
 const RAID_EVERY = 60;
@@ -109,8 +111,9 @@ export function newState() {
     backups: [false, false, false],
     quality: [false, false, false],
     lanes: [false, false, false],
-    // Rollback is lit when the game starts
+    // Rollback is lit in both outlanes when the game starts
     kickback: true,
+    kickbackR: true,
     saveUntil: 0,
     saveArmed: true,
     skill: null,
@@ -767,8 +770,9 @@ export function createRules(table, out, random) {
       shot("check", i);
       if (s.checks.every(Boolean)) {
         s.checks = [false, false, false];
-        if (!s.kickback) {
+        if (!s.kickback || !s.kickbackR) {
           s.kickback = true;
+          s.kickbackR = true;
           award(15000, "pbKickbackLit");
         } else {
           award(15000, "pbChecksGreen");
@@ -858,11 +862,16 @@ export function createRules(table, out, random) {
     if (s.tilted) {
       return;
     }
-    if (tag === "kickback" && e.value > 0) {
-      if (s.kickback) {
-        s.kickback = false;
-        e.ball.vx = 0.4;
-        e.ball.vy = 46;
+    if ((tag === "kickback" || tag === "kickbackR") && e.value > 0) {
+      const left = tag === "kickback";
+      if (left ? s.kickback : s.kickbackR) {
+        if (left) {
+          s.kickback = false;
+        } else {
+          s.kickbackR = false;
+        }
+        // The bank closes the outlane over its top: the kick lifts the ball over the inlane post
+        physics.sendOnPath(e.ball, left ? parts.kickPaths.left : parts.kickPaths.right, KICKBACK_SPEED);
         out.say("toast", "pbKickback", {}, "good");
         out.sound("pbKick");
       }
@@ -1028,6 +1037,7 @@ export function createRules(table, out, random) {
       setLight("lane" + i, s.lanes[i] ? ON : s.skill && !s.skill.done && s.skill.lane === i && rt.served ? FAST : OFF);
     }
     setLight("kickback", s.kickback ? ON : OFF);
+    setLight("kickbackR", s.kickbackR ? ON : OFF);
     setLight("shot-hotfix", s.hurry ? FAST : BLINK);
     setLight("shot-terminal", rt.terminal ? FAST : BLINK);
     setLight("validate", rt.validating ? FAST : s.clock < rt.quickUntil ? ON : BLINK);
@@ -1132,6 +1142,7 @@ export function createRules(table, out, random) {
         break;
       case "kickback":
         s.kickback = true;
+        s.kickbackR = true;
         break;
       case "drops":
         resetDrops();
@@ -1169,6 +1180,7 @@ export function createRules(table, out, random) {
     out.event("admin", { i, up: true });
     rt.raid = { i, until: s.clock + RAID_TIME };
     out.event("raid", "start");
+    out.say("chat", "pbRaidAdmin", { admin: i });
     out.say("chat", "pbRaid");
     out.sound("pbTiltWarn");
   }

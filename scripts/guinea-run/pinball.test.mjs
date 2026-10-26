@@ -447,3 +447,121 @@ test("the Code freeze of Release day counts flips, not seconds", () => {
   assert.equal(rules.state.mission, null, "out of flips, the release is over");
   assert.ok(log.includes("pbFreezeTip"));
 });
+
+test("a hole holds one ball at a time: a second ball bounces off the first, none stays stuck", () => {
+  const table = buildTable();
+  const p = table.physics;
+  const rules = createRules(table, quietOut([]), seeded(5));
+  rules.newGame();
+  for (const ball of p.balls) {
+    if (ball.active) {
+      p.removeBall(ball);
+    }
+  }
+  for (const tag of ["hotfix", "terminal", "scoop"]) {
+    const hole = table.parts[tag];
+    // The first ball drops in gently, a second one rolls at it a moment later
+    const first = p.addBall(hole.ax, hole.ay + 0.05, 0, -0.5, 0);
+    p.advance(1 / 60);
+    p.readEvents(rules.event);
+    assert.equal(first.mode, "held", tag + ": the first ball is caught");
+    const second = p.addBall(hole.ax, hole.ay + 1.2, 0, -2, 0);
+    let caughtTogether = false;
+    for (let t = 0; t < 0.4; t += 1 / 60) {
+      p.advance(1 / 60);
+      p.readEvents(rules.event);
+      rules.update(1 / 60);
+      caughtTogether = caughtTogether || (first.mode === "held" && second.mode === "held");
+    }
+    assert.equal(caughtTogether, false, tag + ": two balls held in the same hole");
+    // Whatever happens next, no ball stays held
+    for (let t = 0; t < 6; t += 1 / 60) {
+      p.advance(1 / 60);
+      p.readEvents(rules.event);
+      rules.update(1 / 60);
+    }
+    assert.ok(p.balls.every((b) => !b.active || b.mode !== "held"), tag + ": a ball stayed held");
+    assert.equal(hole.holding === null || !hole.holding.active || hole.holding.mode !== "held", true, tag + ": the hole is not freed");
+    for (const ball of p.balls) {
+      if (ball.active) {
+        p.removeBall(ball);
+      }
+    }
+  }
+});
+
+test("Rollback, on either side, puts the ball back in play: never back into its own outlane", () => {
+  for (const side of [-1, 1]) {
+    const random = seeded(11);
+    let kicks = 0;
+    for (let run = 0; run < 200; run++) {
+      const table = buildTable();
+      const p = table.physics;
+      const rules = createRules(table, quietOut([]), seeded(run + 1));
+      rules.newGame();
+      for (const ball of p.balls) {
+        if (ball.active) {
+          p.removeBall(ball);
+        }
+      }
+      const tag = side < 0 ? "kickback" : "kickbackR";
+      const ball = p.addBall(side * (4.2 + random() * 0.55), 3.5 + random(), (random() - 0.5) * 3, -3 - random() * 8, 0);
+      let crossings = 0;
+      let landed = false;
+      for (let t = 0; t < 4; t += 1 / 60) {
+        p.advance(1 / 60);
+        p.readEvents((e) => {
+          if (e.type === "cross" && e.tag === tag && e.value > 0) {
+            crossings++;
+          }
+          if (e.type === "rampDone" && e.tag === tag) {
+            landed = true;
+          }
+          rules.event(e);
+        });
+        rules.update(1 / 60);
+        if (landed) {
+          break;
+        }
+      }
+      if (crossings === 0) {
+        continue;
+      }
+      kicks++;
+      assert.equal(crossings, 1, "side " + side + ", run " + run + ": the ball came back to Rollback");
+      assert.ok(landed, "side " + side + ", run " + run + ": the kick did not reach the inlane");
+      assert.ok(ball.x * side < 3.9, "side " + side + ", run " + run + ": not on the inlane");
+      assert.equal(side < 0 ? rules.state.kickback : rules.state.kickbackR, false, "Rollback is spent");
+    }
+    assert.ok(kicks > 150, "side " + side + ": only " + kicks + " kicks");
+  }
+});
+
+test("a ball out of sight waits while the view shows the Production floor, then goes on as it was", () => {
+  const table = buildTable();
+  const p = table.physics;
+  const low = p.addBall(-1, 8, 1.5, -4, 0);
+  const sight = { up: true, from: 10, to: 40 };
+  p.freezeOutOfSight(sight);
+  p.advance(0.5);
+  assert.equal(low.frozen, true);
+  assert.equal(low.x, -1);
+  assert.equal(low.y, 8);
+  // Another ball rolling at it bounces off, the waiting one does not move
+  const other = p.addBall(-1, 9.2, 0, -3, 0);
+  p.advance(0.3);
+  assert.equal(low.x, -1);
+  assert.equal(low.y, 8);
+  assert.ok(Math.hypot(other.x + 1, other.y - 8) >= low.r + other.r - 1e-6, "the balls overlap");
+  // The view comes down: still out of sight, it keeps waiting; in sight, it goes on
+  sight.up = false;
+  p.freezeOutOfSight(sight);
+  assert.equal(low.frozen, true);
+  sight.from = 0;
+  p.freezeOutOfSight(sight);
+  assert.equal(low.frozen, false);
+  assert.equal(low.vx, 1.5);
+  assert.equal(low.vy, -4);
+  p.advance(0.1);
+  assert.ok(low.y < 8, "it moves again");
+});
