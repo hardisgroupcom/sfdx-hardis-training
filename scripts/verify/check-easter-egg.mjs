@@ -58,6 +58,10 @@
  *   invitation, and the Hall of Fame has its board
  * - play.html, opened once online, saves the whole game (sw.js); with the
  *   network cut, every world and both bonuses still open and world 1 plays
+ * - in the VS Code frame (play.html?from=vscode&save=host), the game asks the
+ *   page around it for the shared save, sends it signed after a change,
+ *   refuses one edited by hand (card, storage cleared, file deleted) and puts
+ *   a valid one back into its storage
  *
  * Three.js comes from jsDelivr, so this needs the network, like the site does.
  */
@@ -1018,6 +1022,75 @@ try {
       await page.click('.guinea-run [data-action="start"]');
       expect(await waitState(page, "playing"), "offline, world 1 starts and plays");
     }
+    await page.context().close();
+  }
+
+  // 8. The save VS Code shares between projects: a page plays the extension around play.html
+  {
+    const page = await newPage({ viewport: { width: 1280, height: 860 } });
+    const play = `${site.base}theme/javascripts/guinea-run/play.html?lang=en&from=vscode&save=host`;
+    // A page of the local site plays the panel: a routed page counts as public, and Chrome refuses it a loopback frame
+    await page.goto(`${site.base}404.html`, { waitUntil: "load" });
+    await page.evaluate((url) => {
+      // Over the page, which stays as it is (its own scripts expect their elements)
+      const frame = document.createElement("iframe");
+      frame.style.cssText = "position:fixed;inset:0;width:100%;height:100%;border:0;z-index:2147483647";
+      document.body.appendChild(frame);
+      window.file = null;
+      window.stored = [];
+      window.cleared = false;
+      window.addEventListener("message", (event) => {
+        const data = event.data || {};
+        if (event.source !== frame.contentWindow || data.source !== "guinea-run") {
+          return;
+        }
+        if (data.type === "loadSave") {
+          frame.contentWindow.postMessage({ source: "vscode-sfdx-hardis", type: "save", blob: window.file }, "*");
+        } else if (data.type === "storeSave") {
+          window.stored.push(data.blob);
+        } else if (data.type === "clearSave") {
+          window.cleared = true;
+          window.file = null;
+        }
+      });
+      window.openGame = (file) => {
+        window.file = file;
+        window.stored = [];
+        window.cleared = false;
+        frame.src = url;
+      };
+    }, play);
+    const gameFrame = () => page.frames().find((f) => f.url().includes("play.html"));
+    const frameState = async () => {
+      const frame = gameFrame();
+      return frame ? frame.evaluate(() => document.querySelector(".guinea-run")?.getAttribute("data-state") || null).catch(() => null) : null;
+    };
+    const openGame = async (file, wanted) => {
+      await page.evaluate((f) => window.openGame(f), file);
+      return settles(page, frameState, wanted, OPEN_TIMEOUT);
+    };
+
+    expect(await openGame(null, "map"), "in VS Code, the game asks for the shared save and opens the map");
+    const hint = await gameFrame().textContent(".guinea-run .gr-map-hint");
+    expect(/every VS Code project/.test(hint || ""), `in VS Code, the map says the progress follows every project (${hint})`);
+    await gameFrame().click('.guinea-run [data-action="mute"]');
+    const sent = await settles(page, () => page.evaluate(() => window.stored.some((blob) => JSON.parse(JSON.parse(blob).text).muted === "1")), true, 5000);
+    expect(sent, "in VS Code, a change (the sound muted) is sent to the extension, signed");
+    const good = await page.evaluate(() => window.stored[window.stored.length - 1]);
+
+    // Edited by hand: refused, everything cleared, the extension told to delete it
+    const edited = JSON.stringify(Object.assign(JSON.parse(good), { text: JSON.parse(good).text.replace('"muted":"1"', '"muted":"0"') }));
+    expect(await openGame(edited, "credits"), "a shared save edited by hand shows the card that refuses it");
+    const title = await gameFrame().textContent(".guinea-run .gr-modal-header h2");
+    expect(/Nice try/.test(title || ""), `the refused save says why (${title})`);
+    expect(await page.evaluate(() => window.cleared), "a refused save is deleted by the extension");
+    const left = await gameFrame().evaluate(() => window.localStorage.getItem("guinea-run-muted"));
+    expect(left === null, "a refused save clears what the game kept in this project");
+
+    // Valid again: it is put back into this project's storage
+    expect(await openGame(good, "map"), "a valid shared save opens the map");
+    const muted = await gameFrame().evaluate(() => window.localStorage.getItem("guinea-run-muted"));
+    expect(muted === "1", "a valid shared save comes back into this project's storage");
     await page.context().close();
   }
 } finally {

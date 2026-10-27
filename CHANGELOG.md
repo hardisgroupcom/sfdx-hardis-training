@@ -5,6 +5,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 
 ## 2026-10-27
 
+- Guinea Run: in VS Code, your progress follows you in every project, and a save edited by hand sends the guinea pig back to the first world.
 - Lab 2.6: the `no Layout named ...` troubleshooting entry names `FlowRecord-Flow Layout` as a layout to delete from the Profile.
 - Lab 2.8: a troubleshooting entry says a red check on the Profile of the over-wide Pull Request is cleared by the reset, nothing to fix by hand.
 

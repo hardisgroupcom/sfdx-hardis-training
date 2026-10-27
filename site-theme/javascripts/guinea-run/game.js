@@ -129,7 +129,7 @@ function createGame(options) {
   const testBonus = { pinball: 0, orgman: 0 };
 
   loadStylesheet(options.base + "guinea-run.css");
-  const hud = createHud(shellT, { logoUrl, badgeUrl, labs, lang });
+  const hud = createHud(shellT, { logoUrl, badgeUrl, labs, lang, hostSave: Boolean(options.hostSave) });
   const overlay = hud.overlay;
   document.body.appendChild(overlay);
   document.documentElement.classList.add("guinea-run-open");
@@ -420,6 +420,11 @@ function createGame(options) {
       openWorld(directWorld);
     } else {
       showMap();
+      // The shared save of VS Code was edited by hand: play.html cleared it, the player hears why
+      if (options.saveRefused) {
+        track("easter_egg_save_refused", { trigger: options.trigger });
+        hud.saveRefused();
+      }
     }
   }
 

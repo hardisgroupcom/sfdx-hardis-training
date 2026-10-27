@@ -16,7 +16,11 @@
  * won in one is never erased by the other, and a save written elsewhere is
  * merged in as soon as the browser says so. The first world won of a visit
  * asks the browser to keep the save when it cleans up storage.
+ *
+ * In VS Code each project has its own browser storage: core/host-save.js
+ * shares the save between them through the extension (savedLocally).
  */
+import { savedLocally } from "./save-signal.js";
 
 const KEY = "guinea-run-progress-v1";
 
@@ -316,7 +320,9 @@ function write(state) {
     window.localStorage.setItem(KEY, JSON.stringify(state));
   } catch {
     // Storage refused: the game goes on without remembering
+    return;
   }
+  savedLocally();
 }
 
 function mergeWorld(a, b) {

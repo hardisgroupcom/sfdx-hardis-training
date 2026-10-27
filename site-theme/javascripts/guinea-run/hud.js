@@ -816,7 +816,7 @@ export function createHud(t, options) {
         (body, footer) => {
           // A world added after a player finished the game is not done yet
           const allDone = progress.finished && progress.world(WORLDS[WORLDS.length - 1].id).stars > 0;
-          element("p", "gr-muted gr-map-hint", body, allDone ? t("allDone") : t("mapHint"));
+          element("p", "gr-muted gr-map-hint", body, allDone ? t("allDone") : t(options.hostSave ? "mapHintVscode" : "mapHint"));
           modeSwitch(body, progress.mode);
           installBox(body, install || null, "gr-install--map");
           const grid = element("ol", "gr-map", body);
@@ -992,6 +992,15 @@ export function createHud(t, options) {
         list.forEach((id, i) => {
           button(footer, "bonus", t(bonusText(id).play), i === list.length - 1 ? "gr-primary" : "").setAttribute("data-world", id);
         });
+      });
+    },
+
+    /** The shared save of VS Code was edited by hand: everything starts again from zero. */
+    saveRefused() {
+      screen("credits", t("saveRefusedTitle"), (body, footer) => {
+        element("div", "gr-logo gr-logo--sad", body).innerHTML = GUINEA_ART;
+        element("p", "gr-teaser", body, t("saveRefusedBody"));
+        button(footer, "map", t("saveRefusedOk"), "gr-primary");
       });
     },
 
