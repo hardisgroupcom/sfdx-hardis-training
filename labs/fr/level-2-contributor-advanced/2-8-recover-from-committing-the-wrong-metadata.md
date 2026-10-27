@@ -5,7 +5,7 @@ description: "Vous avez publié bien plus que votre story. Voyez ce que cela fai
 level: 2
 lab: 8
 lang: fr
-source_rev: "0de38e2c487aeae596ed75e418acd7d43ec151be"
+source_rev: "216a670e1a6e021dc05048d0d3fcc8644447fd1d"
 screenshots:
   - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/metadata-retriever-recent-changes--pick-rows
@@ -297,6 +297,12 @@ Documentation des commandes : [hardis:work:resetselection](https://sfdx-hardis.c
 - [ ] Votre modification de présentation de page toujours présente dans `helios-dev`
 
 ## En cas de problème
+
+**Le contrôle de la Pull Request trop large passe au rouge sur un profil, avec `no Layout named ...`.**
+Cela peut arriver : le profil est venu entier, avec des présentations de page que l'org cible n'a
+peut-être pas, l'erreur du [Lab 2.6](2-6-permission-sets-and-profiles.md). Ne corrigez pas le
+profil ici. La réinitialisation de l'étape 3 le retire de la Pull Request, et le contrôle de
+l'étape 5 ne porte que sur votre présentation de page.
 
 **La réinitialisation dit que vous avez des modifications en attente.**
 Publiez-les ou jetez-les d'abord dans le panneau **Source Control**, puis relancez la

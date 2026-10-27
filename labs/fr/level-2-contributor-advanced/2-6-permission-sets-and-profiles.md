@@ -5,7 +5,7 @@ description: "Une permission accordée sur un profil s'évapore après un déplo
 level: 2
 lab: 6
 lang: fr
-source_rev: "5059760d99ece54425247b423945bbbf479cbb55"
+source_rev: "428f79cc61e3becef2e6945d3aa17b7f6a987ee9"
 screenshots:
   - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/pipeline-packages-menu--package-xml
@@ -353,7 +353,9 @@ cible n'a pas. Le message la nomme, sous la forme `Objet-Nom de la présentation
    manager, ou en la désactivant dans l'org où vous construisez, puis récupérez le profil de
    nouveau. Une langue : passez votre utilisateur en anglais dans l'org cible, **votre photo >
    Settings > Language & Time Zone**, et renommez-y la présentation. Tout le reste, sur un objet
-   que votre projet n'utilise pas : la ligne n'a rien à faire dans le repository. Ouvrez le
+   que votre projet n'utilise pas : la ligne n'a rien à faire dans le repository.
+   `FlowRecord-Flow Layout` en fait partie : certaines orgs ont une présentation sur l'objet
+   standard `FlowRecord`, d'autres n'en ont aucune. Ouvrez le
    fichier du profil, supprimez le bloc `<layoutAssignments>` qui nomme la présentation, ou le
    bloc `<tabVisibilities>` qui nomme l'onglet, commitez, et faites **Save / Publish** : sur la
    branche de ce lab quand c'est sa propre Pull Request qui est rouge, dans une User Story **Fix**

@@ -3,6 +3,11 @@
 What changed in the course, for learners and trainers. The course has no versions: each section is
 a day, newest first, and a change goes under the date of the day it is made.
 
+## 2026-10-27
+
+- Lab 2.6: the `no Layout named ...` troubleshooting entry names `FlowRecord-Flow Layout` as a layout to delete from the Profile.
+- Lab 2.8: a troubleshooting entry says a red check on the Profile of the over-wide Pull Request is cleared by the reset, nothing to fix by hand.
+
 ## 2026-10-26
 
 - Guinea Run: on a phone, the map now offers to add the game to the home screen, and the offer stays until the game is really installed.

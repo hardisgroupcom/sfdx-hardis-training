@@ -284,6 +284,11 @@ Command documentation: [hardis:work:resetselection](https://sfdx-hardis.cloudity
 
 ## If it goes wrong
 
+**The check of the over-wide Pull Request goes red on a Profile, with `no Layout named ...`.**
+It can: the Profile came whole, with page layouts the target org may not have, the error of
+[Lab 2.6](2-6-permission-sets-and-profiles.md). Do not fix the Profile here. The reset of step 3
+takes it out of the Pull Request, and the check of step 5 runs on your layout alone.
+
 **The reset says you have changes waiting.**
 Publish them or discard them in the **Source Control** panel first, then run the reset again.
 
