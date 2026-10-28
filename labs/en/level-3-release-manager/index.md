@@ -97,6 +97,15 @@ Manager** with the alias `helios-preprod`. Then seed both Developer Edition orgs
 until now only created the others and held nothing. If it stops on `Profile Helios Crew`, the
 **If it goes wrong** section of [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) says why.
 
+Salesforce refuses a second Developer Edition org on an email address that already has one. Give
+the same address with a `+` and a word before the `@`, for example `myname+preprod@gmail.com`:
+the mail still reaches your inbox, and Salesforce sees a new address. Sign up from a private window,
+signed out of Trailhead, or the page shows a short form that only asks for a country.
+
+The setup takes a few minutes per org, and its counter (`49/64` for example) can stay on one number
+for several of them near the end. Leave VS Code alone until it says the app is deployed. If VS Code
+says the window appears to be stuck, pick **Wait**.
+
 `helios-prod` gets the same sources as the other orgs. Nothing seeds a deployment history, and the
 seeding itself is not a deployment of the pipeline, so the DORA metrics of Lab 3.6 hold only the
 deployment jobs your own merges ran.

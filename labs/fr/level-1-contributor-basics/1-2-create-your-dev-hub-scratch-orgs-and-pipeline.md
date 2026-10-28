@@ -5,7 +5,7 @@ description: "Inscrivez-vous à une org Salesforce Developer Edition gratuite, p
 level: 1
 lab: 2
 lang: fr
-source_rev: "02b44cdce73360708efb1b4f4efb733351e1264c"
+source_rev: "63be2eacc288f263657ab31e1f2f7f68cc164f42"
 screenshots:
   - annotated/web/sf-signup
   - annotated/web/gh-cli-download
@@ -710,6 +710,14 @@ au lieu de vous préparer à le faire : un ticket, une branche, une modification
 déploiement.
 
 ## En cas de problème
+
+**La page Welcome n'affiche pas CUSTOM MENUS, et le menu de gauche a CI/CD (simple) juste sous Welcome.**
+VS Code n'est pas ouvert sur le clone du cours, donc l'extension n'a jamais lu
+`config/.sfdx-hardis.yml`, le fichier qui déclare les menus Training. Attendre n'y change rien.
+Ouvrez **File > Open Folder** et choisissez le dossier `sfdx-hardis-training` créé à l'étape 3,
+celui qui contient directement `sfdx-project.json`. Les menus Training apparaissent quelques
+secondes plus tard. Si ce dossier n'existe pas sur votre machine, l'étape 3 n'a pas été faite :
+refaites-la.
 
 **Il dit que la CLI GitHub n'est pas installée, alors que vous venez de l'installer.**
 VS Code était ouvert pendant l'installation et ne la voit pas encore. Fermez VS Code complètement,

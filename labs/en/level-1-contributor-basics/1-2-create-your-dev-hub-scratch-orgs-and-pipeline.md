@@ -667,6 +667,13 @@ job rather than preparing to do it: a ticket, a branch, a change, a Pull Request
 
 ## If it goes wrong
 
+**The Welcome page shows no CUSTOM MENUS, and the side menu has CI/CD (simple) right under Welcome.**
+VS Code is not open on the course clone, so the extension never read `config/.sfdx-hardis.yml`,
+the file that declares the Training menus. Waiting does not help. Open **File > Open Folder** and
+pick the `sfdx-hardis-training` folder made in step 3, the one that directly contains
+`sfdx-project.json`. The Training menus appear a few seconds later. If there is no such folder on
+your machine, step 3 did not run: do it again.
+
 **It says the GitHub CLI is not installed, and you just installed it.**
 VS Code was open during the install and does not see it yet. Close VS Code completely, open it
 again, and click the card again. If it still says so, install it from

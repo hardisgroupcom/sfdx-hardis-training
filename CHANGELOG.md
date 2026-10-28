@@ -3,6 +3,14 @@
 What changed in the course, for learners and trainers. The course has no versions: each section is
 a day, newest first, and a change goes under the date of the day it is made.
 
+## 2026-10-28
+
+- Lab 1.2: a troubleshooting entry for a Welcome page with no Training menus, when VS Code is not open on the course folder.
+- Level 3: the page says how to sign up for a second Developer Edition org with the same email address, and that the org setup can pause on one number for minutes.
+- Lab 3.1: the first picture shows your fork as it is, with no feature branches, and the step texts match the questions the command asks: the app name to keep, **System Administrator** to pick, and the end of the questions for `main`.
+- Lab 3.1: a troubleshooting entry for `You need openssl to be locally installed`, and the Replacement rules paragraph says your fork has none.
+- Your fork no longer runs the Guinea Run, links, translations and Hall of Fame checks of the course, which took up to half an hour of your GitHub Actions minutes per course update.
+
 ## 2026-10-27
 
 - Guinea Run: in VS Code, your progress follows you in every project, and a save edited by hand sends the guinea pig back to the first world.

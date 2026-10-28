@@ -4,7 +4,7 @@ description: "Tenez une pipeline CI/CD Salesforce avec sfdx-hardis : environneme
 id: l3-home
 level: 3
 lang: fr
-source_rev: "1431bf36f54a60c46579ea6a2d0884c751b31ccd"
+source_rev: "c101466e2ca1388765f000cdadbc7ef57ff852ed"
 ---
 
 # Niveau 3 - Release manager Salesforce DevOps
@@ -103,6 +103,16 @@ avec **Training: Level 3 > Set up one of my training orgs** : `helios-preprod`, 
 qui jusqu'ici ne faisait que créer les autres et ne contenait rien. S'il s'arrête sur
 `Profile Helios Crew`, la section **En cas de problème** du
 [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) dit pourquoi.
+
+Salesforce refuse une deuxième org Developer Edition sur une adresse email qui en a déjà une.
+Donnez la même adresse avec un `+` et un mot avant le `@`, par exemple `monnom+preprod@gmail.com` :
+le mail arrive toujours dans votre boîte, et Salesforce y voit une nouvelle adresse. Inscrivez-vous
+depuis une fenêtre de navigation privée, déconnecté de Trailhead, sinon la page affiche un formulaire
+court qui ne demande qu'un pays.
+
+L'installation prend quelques minutes par org, et son compteur (`49/64` par exemple) peut rester
+sur le même nombre plusieurs minutes vers la fin. Laissez VS Code tranquille jusqu'à ce qu'il dise
+que l'application est déployée. Si VS Code dit que la fenêtre semble bloquée, choisissez **Wait**.
 
 `helios-prod` reçoit les mêmes sources que les autres orgs. Rien n'alimente un historique de
 déploiement, et l'alimentation elle-même n'est pas un déploiement du pipeline : les métriques DORA
