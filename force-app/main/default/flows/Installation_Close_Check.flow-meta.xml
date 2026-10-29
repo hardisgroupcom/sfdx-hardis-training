@@ -3,6 +3,17 @@
     <apiVersion>64.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <customErrors>
+        <description>Refuses to close an installation that has at least one handover item not done.</description>
+        <name>Handover_item_not_done</name>
+        <label>Handover item not done</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <customErrorMessages>
+            <errorMessage>Finish all handover item before closing this installation.</errorMessage>
+            <isFieldError>false</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <customErrors>
         <description>Refuses to close an installation that was never given an install date.</description>
         <name>Install_Date_Missing</name>
         <label>Install Date Missing</label>
@@ -19,6 +30,9 @@
         <label>No Install Date</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Get_at_least_one_Handover_Item</targetReference>
+        </defaultConnector>
         <defaultConnectorLabel>Install date set</defaultConnectorLabel>
         <rules>
             <name>Date_Missing</name>
@@ -34,6 +48,28 @@
                 <targetReference>Install_Date_Missing</targetReference>
             </connector>
             <label>Date missing</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>One_Handover_Item_Found</name>
+        <label>One Handover Item Found</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <rules>
+            <name>Yes</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_at_least_one_Handover_Item</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Handover_item_not_done</targetReference>
+            </connector>
+            <label>Yes</label>
         </rules>
     </decisions>
     <description>An installation cannot be closed without an install date.</description>
@@ -53,6 +89,27 @@
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_at_least_one_Handover_Item</name>
+        <label>Get at least one Handover Item</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>One_Handover_Item_Found</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Is_Done__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Handover_Item__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <start>
         <locationX>0</locationX>
         <locationY>0</locationY>
