@@ -65,7 +65,7 @@ become curves over months. That is out of scope here.
 - [ ] `helios-prod` connected in **Orgs Manager**
 - [ ] An empty GitHub repository of your own, with `monitoring` in its name
 - [ ] An email address you can read, for the alerts
-- [ ] About 20 of those 35 minutes will be the first monitoring run
+- [ ] About 20 more minutes for the first monitoring run, on top of the lab itself
 
 ## Steps
 
@@ -81,9 +81,9 @@ from. Not usually, not by preference: always.
 #### Do
 
 1. Create an empty private repository called `sfdx-hardis-training-monitoring` on GitHub
-2. Clone it the way [Lab 1.2](../level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) cloned this one: **File > Open Folder** on an empty folder
-3. In the **Source Control** panel, **Clone Repository**, and paste the address from the green
-   **Code** button of your new repository
+2. Clone it the way [Lab 1.2](../level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) cloned this one: **File > New Window**, so that no folder is open
+3. In the **Source Control** panel, **Clone Repository**, and paste the HTTPS address that GitHub
+   shows under *Quick setup* on the page of your new, empty repository
 
 !!! warning "Careful"
     This is the part people get wrong, and it is the part that is expensive to undo once a year of

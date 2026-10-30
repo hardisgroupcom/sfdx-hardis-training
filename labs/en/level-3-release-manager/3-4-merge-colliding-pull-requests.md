@@ -236,7 +236,7 @@ Three mechanisms are worth being able to point at.
    ![Global Pipeline Settings, with the tabs that hold the cleaning, overwrite and delta settings](../../_assets/annotated/vscode/pipeline-config--cleaning-overwrite.png)
 
 2. Cleaning: open the **Salesforce Project** tab **(1)** of **Global Settings**, and find
-   `autoCleanTypes`
+   **Auto-Cleaning types** (`autoCleanTypes`)
 3. Delta deployment: open the global **Deployment** tab **(2)**, and read **Use Delta Deployment**
    **(3)**
 

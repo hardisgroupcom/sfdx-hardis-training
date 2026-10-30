@@ -5,7 +5,7 @@ description: "Revoyez l'ordre de merge de deux Pull Requests qui ont modifié le
 level: 3
 lab: 4
 lang: fr
-source_rev: "70a2d1ecc855753b9a3ed48189df9bd7188782c8"
+source_rev: "8104ca506f8f45fc1d69ab0beb67c19dbe14dfc9"
 screenshots:
   - annotated/vscode/welcome-custom-menu-3
   - annotated/vscode/pipeline-config--cleaning-overwrite
@@ -254,7 +254,7 @@ Trois mécanismes méritent qu'on sache les montrer du doigt.
    ![Global Pipeline Settings, avec les onglets qui contiennent les réglages de nettoyage, d'écrasement et de delta](../../_assets/annotated/vscode/pipeline-config--cleaning-overwrite.png)
 
 2. Le nettoyage : ouvrez l'onglet **Salesforce Project** **(1)** des **Global Settings**, et trouvez
-   `autoCleanTypes`
+   **Auto-Cleaning types** (`autoCleanTypes`)
 3. Le déploiement delta : ouvrez l'onglet **Deployment** **(2)** global, et lisez **Use Delta
    Deployment** **(3)**
 
