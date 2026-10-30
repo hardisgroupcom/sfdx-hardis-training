@@ -68,7 +68,7 @@ périmètre ici.
 - [ ] `helios-prod` connectée dans **Orgs Manager**
 - [ ] Un repository GitHub vide à vous, avec `monitoring` dans son nom
 - [ ] Une adresse e-mail que vous pouvez lire, pour les alertes
-- [ ] Environ 20 de ces 35 minutes seront la première exécution du monitoring
+- [ ] Environ 20 minutes de plus pour la première exécution du monitoring, en plus du lab lui-même
 
 ## Les étapes
 
@@ -84,9 +84,9 @@ pipeline déploie. Pas en général, pas par préférence : toujours.
 #### À faire
 
 1. Créez un repository privé vide appelé `sfdx-hardis-training-monitoring` sur GitHub
-2. Clonez-le comme le [Lab 1.2](../level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) a cloné celui-ci : **File > Open Folder** sur un dossier vide
-3. Dans le panneau **Source Control**, **Clone Repository**, et collez l'adresse du bouton vert
-   **Code** de votre nouveau repository
+2. Clonez-le comme le [Lab 1.2](../level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) a cloné celui-ci : **File > New Window**, pour qu'aucun dossier ne soit ouvert
+3. Dans le panneau **Source Control**, **Clone Repository**, et collez l'adresse HTTPS que GitHub
+   affiche sous *Quick setup* sur la page de votre nouveau repository vide
 
 !!! warning "Attention"
     C'est la partie que les gens ratent, et c'est celle qui coûte cher à défaire une fois qu'une

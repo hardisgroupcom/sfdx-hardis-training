@@ -3,6 +3,13 @@
 What changed in the course, for learners and trainers. The course has no versions: each section is
 a day, newest first, and a change goes under the date of the day it is made.
 
+## 2026-10-30
+
+- Lab 3.4: the cleaning step names the **Auto-Cleaning types** setting as the panel shows it.
+- Labs 3.6 and 3.7: the promotion, release and hotfix steps say to click **Create pull request** after the title.
+- Lab 3.7: the retrofit branch is created in the order the questions come, target branch first.
+- Lab 3.8: the monitoring repository is cloned with no folder open, as in Lab 1.2, with the address GitHub shows on an empty repository.
+
 ## 2026-10-28
 
 - Lab 1.2: a troubleshooting entry for a Welcome page with no Training menus, when VS Code is not open on the course folder.

@@ -205,7 +205,7 @@ Pipeline.
 
    ![La pastille + PR sur la flèche de preprod vers main](../../_assets/annotated/vscode/devops-pipeline-level3--release-to-prod.png)
 
-2. Intitulez-la simplement, et employez le mot Hotfix plutôt que Release :
+2. Intitulez-la simplement, employez le mot Hotfix plutôt que Release, puis cliquez sur **Create pull request** :
 
    > Hotfix US-045 to production
 
@@ -270,12 +270,10 @@ l'incident reviendra un jour où personne ne l'attend.
 
    ![Les cartes de contribution du panneau DevOps Pipeline](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
-2. Prenez le troisième type de branche, **Retrofit: merge production back down into the pipeline after
-   a hotfix (release manager)** **(1)**
+2. Répondez aux questions avec le tableau ci-dessous. À **Type of branch**, prenez le troisième,
+   **Retrofit: merge production back down into the pipeline after a hotfix (release manager)** **(1)**
 
    ![La question du type de branche, avec Retrofit](../../_assets/annotated/vscode/work-new-story-type--retrofit.png)
-
-3. Répondez aux questions avec le tableau ci-dessous
 
 | Question        | Votre réponse                                                              |
 |-----------------|----------------------------------------------------------------------------|

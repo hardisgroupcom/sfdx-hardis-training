@@ -203,7 +203,7 @@ A **+ PR** chip sits on each arrow between major branches in the DevOps Pipeline
 
    ![The + PR chip on the arrow from preprod to main](../../_assets/annotated/vscode/devops-pipeline-level3--release-to-prod.png)
 
-2. Title it plainly, and use the word Hotfix rather than Release:
+2. Title it plainly, use the word Hotfix rather than Release, then click **Create pull request**:
 
    > Hotfix US-045 to production
 
@@ -268,12 +268,10 @@ comes back on a day nobody is expecting it.
 
    ![The contribution cards of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--new-user-story.png)
 
-2. Take the third branch type, **Retrofit: merge production back down into the pipeline after a hotfix
-   (release manager)** **(1)**
+2. Answer the questions with the table below. At **Type of branch**, take the third one, **Retrofit:
+   merge production back down into the pipeline after a hotfix (release manager)** **(1)**
 
    ![The branch type question, with Retrofit](../../_assets/annotated/vscode/work-new-story-type--retrofit.png)
-
-3. Answer the questions with the table below
 
 | Question       | Your answer                                                     |
 |----------------|-----------------------------------------------------------------|

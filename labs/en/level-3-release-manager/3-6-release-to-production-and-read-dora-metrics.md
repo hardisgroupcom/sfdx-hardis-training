@@ -83,7 +83,7 @@ Refresher: [Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md), [Lab 3.1](3
 1. Click the **+ PR** chip on the arrow from `uat` to `preprod`, in the DevOps Pipeline diagram, the
    same way you created the promotion in [Lab 3.5](3-5-promote-to-uat-and-write-release-notes.md). GitHub opens on the Pull Request from `uat` into
    `preprod`
-2. Title it plainly:
+2. Title it plainly, then click **Create pull request**:
 
    > Promotion 2026-09 to preprod
 
@@ -122,7 +122,7 @@ Goal: the production Pull Request from `preprod` into `main`, with a green check
 #### Do
 
 1. Click the **+ PR** chip on the arrow from `preprod` to `main`, from `preprod` into `main`
-2. Title it plainly:
+2. Title it plainly, then click **Create pull request**:
 
    > Release 2026-09 to production
 
