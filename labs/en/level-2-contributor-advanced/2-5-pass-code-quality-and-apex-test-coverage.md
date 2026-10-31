@@ -309,7 +309,7 @@ appears on projects that set `enableDeploymentApexTestClasses`. Helios does not:
 
 1. Push, and read what they say on the Pull Request
 
-#### Why
+#### Why in CI
 
 Linters are the one check you cannot usefully run on your own machine, because they need
 a container image the CI already has. That is two

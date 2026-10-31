@@ -250,7 +250,7 @@ ServiceNow connector instead.
 
       ![The window of a Pull Request in VS Code while its deployment check is running](../../_assets/annotated/vscode/pipeline-pr-window-running.png)
 
-#### Why
+#### Why the card can lag
 
 If the card still reads *Pull Request not created yet*, the panel is showing what it knew before
 you created it. It also catches up by itself within a minute.
@@ -277,7 +277,7 @@ When the job ends, its row leaves and the comment takes its place, with the time
 
    ![The Files button of the validation job, opened on the reports the job kept](../../_assets/annotated/vscode/pipeline-pr-window-files.png)
 
-#### Why
+#### Why keep the files
 
 You will not need these files today. They are there for the day a check goes red and the comment is
 not enough, and they save you a trip to GitHub.

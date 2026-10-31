@@ -546,7 +546,7 @@ diagramme ne dessine aucune flèche de `uat` vers `preprod`, et le [Lab 3.6](3-6
 
 - `SFDX_CLIENT_ID_MAIN` et `SFDX_CLIENT_KEY_MAIN` dans la liste des secrets de votre fork
 - Le diagramme qui dessine une seule ligne de quatre branches, `integration` → `uat` → `preprod` →
-  `main`, comme sur l'image de l'[étape 12](#12-regarder-le-diagramme-a-nouveau)
+  `main`, comme sur l'image de l'[étape 12](#12-regarder-le-diagramme-de-nouveau)
 
 ### 9. Laisser les contributeurs démarrer un hotfix
 
@@ -810,7 +810,7 @@ Documentation des commandes : [hardis:project:create](https://sfdx-hardis.cloudi
 - Votre Pull Request de configuration mergée dans `integration`
 - Votre `integration` qui récupère la configuration, mergée
 
-### 12. Regarder le diagramme à nouveau
+### 12. Regarder le diagramme de nouveau
 
 Objectif : la pipeline à quatre étages que vous avez construite, sur le diagramme.
 

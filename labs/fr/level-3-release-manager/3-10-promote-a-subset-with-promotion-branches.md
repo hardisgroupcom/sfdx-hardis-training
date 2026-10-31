@@ -5,7 +5,7 @@ description: "Transportez trois User Stories approuvées sur cinq de uat vers pr
 level: 3
 lab: 10
 lang: fr
-source_rev: "6588ba18ee6f7e3d3089d42686bfe09fb3efe2f1"
+source_rev: "8f7d2cddcce4b0fe424d7c7c497282578a18ebcb"
 screenshots:
   - annotated/vscode/welcome-custom-menu-3
   - annotated/vscode/pipeline-config-danger--promotion-branches
@@ -747,7 +747,7 @@ des promotion branches prescrit après chaque promotion, et celle que le
 #### À faire
 
 1. **New User Story**, comme au [Lab 3.7](3-7-hotfix-and-retrofit.md) étape 7 : type **Retrofit**, nom `US-059-retrofit`, cible
-   `integration`, org `helios-dev`
+   `integration`, org `helios-dev` (**Scratch org**, puis **Reuse scratch org helios-dev**)
 2. **Git: Fetch** puis **Git: Merge...** depuis la Command Palette, comme au [Lab 3.7](3-7-hotfix-and-retrofit.md) étape 8, et
    choisissez **origin/preprod** cette fois, sous **remote branches**
 3. Le merge s'arrête sur les deux mêmes fichiers, qui apparaissent sous **Merge Changes** dans le
