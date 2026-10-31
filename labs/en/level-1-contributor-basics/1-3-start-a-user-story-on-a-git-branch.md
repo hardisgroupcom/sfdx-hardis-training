@@ -237,7 +237,8 @@ which did six things, in order:
 3. **Created the branch**, named from your answers:
    `git checkout -b features/US-014-panels-required`
 4. **Wrote your user configuration** in `config/user/.sfdx-hardis.<your-username>.yml`, recording
-   the org for this User Story. That file is git-ignored: it is yours, nobody else needs it
+   the branch this User Story targets, `integration`. That file is git-ignored: it is yours, nobody
+   else needs it
 5. **Selected the org** as the default target for the following commands
 6. **Opened the org** in your browser, since you are about to work in it
 

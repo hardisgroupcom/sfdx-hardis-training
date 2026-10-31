@@ -323,9 +323,7 @@ wired to them, all built by one command.
 
    ![VS Code asking how to allow the Training command, with Always allow](../../_assets/annotated/vscode/training-menu-authorization.png)
 
-4. It names the org it takes, `helios-prod`, and asks only for a yes before it changes anything.
-   Answer yes
-5. It stops on a line like `Your one-time code is 5989-F9D9` and opens
+4. It stops on a line like `Your one-time code is 5989-F9D9` and opens
    [github.com/login/device](https://github.com/login/device) in your browser. Type the code there,
    then accept everything github.com asks for: the authorisation screen and each permission it
    lists. If the browser did not open, the address is printed right under the code
@@ -333,12 +331,14 @@ wired to them, all built by one command.
   !!! tip "In Agentforce Vibes"
       The browser does not open on its own: click the printed link.
 
-6. Come back to VS Code: the command carries on by itself, and never asks again
-7. If this computer was already signed in to GitHub, items 5 and 6 do not happen. It asks instead
+5. Come back to VS Code: the command carries on by itself, and never asks you to sign in again
+6. If this computer was already signed in to GitHub, items 4 and 5 do not happen. It asks instead
    **Fork the course into the GitHub account your-handle?**, with the account it found. Read the
    name. If it is the account you want the fork in, pick **Yes, use your-handle**. If it is not,
    say the account of a former job, pick **Use ... instead** when your own account is in the list,
-   or **Sign in with another GitHub account**, which goes through the code of item 5
+   or **Sign in with another GitHub account**, which goes through the code of item 4
+7. Then it names the org it takes, `helios-prod`, and asks only for a yes before it changes
+   anything. Answer yes
 8. It then opens the **Actions** tab of your fork in your browser and waits. Click **I understand my
    workflows, go ahead and enable them**, and come back to VS Code: the command carries on by itself
 9. Let it work through its eight steps. It tells you as it goes:

@@ -5,7 +5,7 @@ description: "Modifiez un flow Salesforce existant, puis lisez correctement un c
 level: 2
 lab: 2
 lang: fr
-source_rev: "4a64557c53f76ffa52e9f5764df00e397e071399"
+source_rev: "d8b2e7ab77642413a79fd1662a9260ed987dae58"
 screenshots:
   - annotated/vscode/package-xml-filtered
   - annotated/vscode/editor-field-file
@@ -159,7 +159,7 @@ de Flow Builder ci-dessous. Le flow lui-même tourne en mode système et n'a bes
    the panels it needs.`
 10. **Activate**, le bouton qui remplace **Deactivate** sur la nouvelle version
 
-#### Pourquoi
+#### Pourquoi une nouvelle version
 
 Le flow est actif, Flow Builder ouvre donc la version qui tourne : chaque modification que vous faites
 est enregistrée comme une nouvelle version, et l'ancienne continue de tourner jusqu'à ce que vous
@@ -183,7 +183,7 @@ en avait déjà un, et votre nouvel élément le suit.
    tâche tarde à s'afficher, cliquez sur **Refresh** dans le panneau d'activités
 2. Enregistrez à nouveau
 
-#### Pourquoi
+#### Pourquoi vous ne voyez pas la case
 
 C'est la story qui fonctionne, dans votre org. La case à cocher elle-même reste invisible : aucun
 permission set ne l'accorde, parce que personne d'autre que le flow n'en a besoin, et la seule

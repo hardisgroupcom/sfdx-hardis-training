@@ -5,7 +5,7 @@ description: "Inscrivez-vous à une org Salesforce Developer Edition gratuite, p
 level: 1
 lab: 2
 lang: fr
-source_rev: "63be2eacc288f263657ab31e1f2f7f68cc164f42"
+source_rev: "47ebc265cc7dc1192cd82702aa22d2e7d0610914"
 screenshots:
   - annotated/web/sf-signup
   - annotated/web/gh-cli-download
@@ -342,9 +342,7 @@ Helios, et une pipeline câblée dessus, le tout construit par une seule command
 
    ![VS Code demandant comment autoriser la commande Training, avec Always allow](../../_assets/annotated/vscode/training-menu-authorization.png)
 
-4. Elle nomme l'org qu'elle prend, `helios-prod`, et ne demande qu'un oui avant de changer quoi que
-   ce soit. Répondez oui
-5. Elle s'arrête sur une ligne du genre `Your one-time code is 5989-F9D9` et ouvre
+4. Elle s'arrête sur une ligne du genre `Your one-time code is 5989-F9D9` et ouvre
    [github.com/login/device](https://github.com/login/device) dans votre navigateur. Saisissez le
    code là-bas, puis acceptez tout ce que github.com demande : l'écran d'autorisation et chacune
    des permissions listées. Si le navigateur ne s'est pas ouvert, l'adresse est affichée juste sous
@@ -353,13 +351,16 @@ Helios, et une pipeline câblée dessus, le tout construit par une seule command
   !!! tip "Dans Agentforce Vibes"
       Le navigateur ne s'ouvre pas tout seul : cliquez sur le lien affiché.
 
-6. Revenez dans VS Code : la commande repart toute seule et ne redemandera plus rien
-7. Si cet ordinateur était déjà connecté à GitHub, les points 5 et 6 n'ont pas lieu. Elle demande à
+5. Revenez dans VS Code : la commande repart toute seule et ne vous redemandera plus de vous
+   connecter
+6. Si cet ordinateur était déjà connecté à GitHub, les points 4 et 5 n'ont pas lieu. Elle demande à
    la place **Fork the course into the GitHub account your-handle?**, avec le compte qu'elle a
    trouvé. Lisez le nom. Si c'est le compte où vous voulez le fork, choisissez **Yes, use
    your-handle**. Sinon, par exemple le compte d'un ancien employeur, choisissez **Use ... instead**
    quand votre propre compte est dans la liste, ou **Sign in with another GitHub account**, qui
-   passe par le code du point 5
+   passe par le code du point 4
+7. Elle nomme ensuite l'org qu'elle prend, `helios-prod`, et ne demande qu'un oui avant de changer
+   quoi que ce soit. Répondez oui
 8. Elle ouvre ensuite l'onglet **Actions** de votre fork dans votre navigateur, et attend. Cliquez
    sur **I understand my workflows, go ahead and enable them**, et revenez dans VS Code : la
    commande continue toute seule

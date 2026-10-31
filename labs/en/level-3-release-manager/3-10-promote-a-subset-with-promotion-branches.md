@@ -721,7 +721,7 @@ the one the promotion branches documentation prescribes after every promotion, a
 #### Do
 
 1. **New User Story**, as in [Lab 3.7](3-7-hotfix-and-retrofit.md) step 7: type **Retrofit**, name `US-059-retrofit`, target
-   `integration`, org `helios-dev`
+   `integration`, org `helios-dev` (**Scratch org**, then **Reuse scratch org helios-dev**)
 2. **Git: Fetch** then **Git: Merge...** from the Command Palette, as in [Lab 3.7](3-7-hotfix-and-retrofit.md) step 8, and
    pick **origin/preprod** this time, under **remote branches**
 3. The merge stops on the same two files, which appear under **Merge Changes** in the **Source

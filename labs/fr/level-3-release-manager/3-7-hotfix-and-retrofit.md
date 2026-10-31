@@ -5,7 +5,7 @@ description: "Livrez un hotfix Salesforce de preprod vers la production quand la
 level: 3
 lab: 7
 lang: fr
-source_rev: "6bc0c7ae04bb497459c0e9d70c1753372612ce3a"
+source_rev: "5b2920ba818a2d9e388513741b8f4f7c3b61438d"
 screenshots:
   - annotated/salesforce/validation-rule
   - annotated/vscode/welcome-custom-menu-3
@@ -281,6 +281,10 @@ l'incident reviendra un jour où personne ne l'attend.
 | Type de branche | **Retrofit**                                                               |
 | Nom             | `US-045-retrofit`, la story dont vous ramenez le hotfix                    |
 | Org de travail  | `helios-dev` : rien n'est construit ici, l'org n'a donc guère d'importance |
+
+Pour l'org, prenez **Scratch org**, puis **Reuse scratch org helios-dev**, comme au
+[Lab 1.3](../level-1-contributor-basics/1-3-start-a-user-story-on-a-git-branch.md). Pas **Current org** : depuis le
+[Lab 3.1](3-1-configure-the-pipeline-up-to-production.md), votre org par défaut est `helios-prod`, la production.
 
 #### Pourquoi
 

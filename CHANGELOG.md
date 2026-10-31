@@ -3,6 +3,17 @@
 What changed in the course, for learners and trainers. The course has no versions: each section is
 a day, newest first, and a change goes under the date of the day it is made.
 
+## 2026-10-31
+
+- Lab 1.2: **Set up my training environment** lists its questions in the order it asks them, the GitHub sign-in or account first and the yes for `helios-prod` after.
+- Lab 1.3: the user configuration file records the branch your User Story targets, not its org.
+- Lab 1.5: Save / Publish shows one line per cleaning rule, four on this story, and none for Flow positions when the story has no Flow.
+- Labs 1.6, 2.1, 2.2, 2.4 and 2.5: a step with several Why blocks gives each its own title, and French Lab 3.1 links to its step 12 again, so the MegaLinter comment of your Pull Requests no longer warns about 21 markdownlint errors in the course.
+- Lab 2.1: the backpromote branch is named after the id of your org, as the picture shows, not after its alias.
+- Lab 2.4: when MegaLinter's commit arrives after your last push, approve its workflows on the Pull Request, since there is nothing left to push.
+- Labs 3.5 and 3.8: **Publish my pipeline configuration** asks for **Squash and merge**, as the check comment of its Pull Request does, instead of a merge commit.
+- Labs 3.7 and 3.10: the retrofit story says how to reach `helios-dev`, **Scratch org** then **Reuse scratch org helios-dev**, since **Current org** is production by then.
+
 ## 2026-10-30
 
 - Lab 3.4: the cleaning step names the **Auto-Cleaning types** setting as the panel shows it.

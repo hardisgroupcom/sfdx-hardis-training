@@ -5,7 +5,7 @@ description: "Un déploiement vert n'est pas une fonctionnalité qui marche. Liv
 level: 2
 lab: 4
 lang: fr
-source_rev: "23fcd314ece946f024d9d2d1787f3cf3204cc459"
+source_rev: "d0af33d7b06d7ba34a028f03b1ea9604853e02b3"
 screenshots:
   - annotated/vscode/sidebar-commands-custom-menu-2--lab-records
   - annotated/salesforce/crew-capacity-records
@@ -325,7 +325,7 @@ lesquelles la pipeline déploie.
 | Scheduled Job Name (Optional) | `Helios crew capacity nightly`                     |
 | Run Only Once By Org          | oui                                                |
 
-#### Pourquoi
+#### Pourquoi la boîte de dialogue change
 
 **Schedule Batch** **(1)** remplace le champ de script par deux champs à lui : **Apex Class Name**
 **(2)**, une liste déroulante des classes que Salesforce peut lancer selon une planification, lues
@@ -363,7 +363,7 @@ déploie, et la classe y est avant qu'elle ne tourne.
 4. Check: the page reads **All email**. If it already did, there is nothing to do.
 ```
 
-#### Pourquoi
+#### Pourquoi une étape à la main
 
 Certaines choses n'ont pas d'API. La délivrabilité des e-mails est la plus connue : le droit pour une
 org d'envoyer des e-mails tout court est un réglage de Setup qu'aucun déploiement ne peut changer. Le
@@ -412,7 +412,7 @@ production est pire que pas d'étape du tout.
    Control**, cliquez sur **Pull**
 3. Commitez le fichier d'actions, puis **Save / Publish**
 
-#### Pourquoi
+#### Pourquoi mettre à jour la Pull Request
 
 Pour l'instant, les actions ne sont que sur votre poste. Chaque **Save** a écrit l'action dans un
 fichier sous `scripts/actions/`, nommé d'après le numéro de votre Pull Request :
@@ -624,6 +624,11 @@ GitHub a donc un commit que votre ordinateur n'a pas. Dans le menu **...** de **
 cliquez sur **Pull**, puis de nouveau **Save / Publish** : c'est votre push qui relance les
 contrôles, sans rien à approuver. Le même commit du robot figure dans le dépannage du
 [Lab 1.6](../level-1-contributor-basics/1-6-pull-request-deployment-check-and-merge.md).
+
+Si vous aviez déjà tout poussé quand le commit du robot est arrivé, le Pull ne pousse rien et les
+contrôles de ce commit restent en attente d'une approbation. Ouvrez la Pull Request sur GitHub : sous
+**Workflow(s) awaiting approval**, cliquez sur **Approve and run**, et les deux contrôles démarrent
+sur le commit du robot.
 
 **Le fichier d'actions s'appelle `.sfdx-hardis.draft.yml`, ou le check s'arrête sur *Draft deployment actions file found*.**
 Vous avez ajouté l'action alors que le panneau ne connaissait aucune Pull Request pour votre

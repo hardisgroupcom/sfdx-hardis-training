@@ -5,7 +5,7 @@ description: "Votre org de développement est en retard sur integration. Faites-
 level: 2
 lab: 1
 lang: fr
-source_rev: "04806dac78b01b9587a43244bc18d1b2b5399870"
+source_rev: "ac5493554e9de8dab1b3214e81a351b8746e87cf"
 screenshots:
   - annotated/vscode/sidebar-commands-custom-menu-2--training-menu
   - annotated/web/github-pr-files
@@ -153,7 +153,7 @@ Seulement si vous avez répondu **No**, ou si le panneau n'a pas pu merger.
     Si un check échoue ici, relancez **Simulate my teammates** : elle recrée la branche et la Pull
     Request.
 
-#### Pourquoi
+#### Pourquoi lire les fichiers
 
 Lire les fichiers, c'est cela, la relecture : vérifier que la Pull Request fait ce que dit son
 titre, et rien d'autre.
@@ -172,7 +172,7 @@ check qui échoue ici n'est pas de votre faute et n'est pas à corriger.
       bas à gauche de VS Code), lancez **Training: Level 2** > **Set up one of my training orgs**
       sur `helios-dev`.
 
-#### Pourquoi
+#### Pourquoi seul le travail de Romain
 
 La Pull Request de Romain est le dernier merge dans `integration` sur GitHub. C'est le seul travail
 que votre org n'a pas : le backpromote l'apporte, et rien d'autre.
@@ -378,8 +378,9 @@ Trois choses qu'il ne fait délibérément **pas**, et les connaître économise
 Et une chose qu'il fait et que personne n'attend la première fois :
 
 !!! warning "Il vous laisse sur la branche de backpromote"
-    Le déploiement tourne depuis une branche appelée `backpromote/integration/<votre org>`, et **le
-    checkout y reste quand la commande se termine**. Le panneau le dit, et propose le bouton
+    Le déploiement tourne depuis une branche appelée `backpromote/integration/` suivie de l'id de
+    votre org en minuscules, comme `backpromote/integration/00d8e00000100001eaa` sur l'image de
+    l'étape 5, et **le checkout y reste quand la commande se termine**. Le panneau le dit, et propose le bouton
     **Back to `<votre branche>`** **(4)** pour le défaire : il restaure les modifications qu'il avait
     mises de côté avant l'exécution, puis propose un merge de la branche parente.
 
