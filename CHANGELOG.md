@@ -12,6 +12,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 - Lab 2.1: the backpromote branch is named after the id of your org, as the picture shows, not after its alias.
 - Lab 2.4: when MegaLinter's commit arrives after your last push, approve its workflows on the Pull Request, since there is nothing left to push.
 - Labs 3.5 and 3.8: **Publish my pipeline configuration** asks for **Squash and merge**, as the check comment of its Pull Request does, instead of a merge commit.
+- Labs 3.7 and 3.10: the retrofit story says how to reach `helios-dev`, **Scratch org** then **Reuse scratch org helios-dev**, since **Current org** is production by then.
 
 ## 2026-10-30
 

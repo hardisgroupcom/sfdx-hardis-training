@@ -282,6 +282,10 @@ l'incident reviendra un jour où personne ne l'attend.
 | Nom             | `US-045-retrofit`, la story dont vous ramenez le hotfix                    |
 | Org de travail  | `helios-dev` : rien n'est construit ici, l'org n'a donc guère d'importance |
 
+Pour l'org, prenez **Scratch org**, puis **Reuse scratch org helios-dev**, comme au
+[Lab 1.3](../level-1-contributor-basics/1-3-start-a-user-story-on-a-git-branch.md). Pas **Current org** : depuis le
+[Lab 3.1](3-1-configure-the-pipeline-up-to-production.md), votre org par défaut est `helios-prod`, la production.
+
 #### Pourquoi
 
 C'est à vous de le faire, pas à un contributeur : vous êtes celui qui sait ce qui est parti en ligne
