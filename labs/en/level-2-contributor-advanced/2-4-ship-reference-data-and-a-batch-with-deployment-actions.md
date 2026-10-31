@@ -318,7 +318,7 @@ its path. **Target orgs** **(3)** on **All target orgs** means every org the pip
 | Scheduled Job Name (Optional) | `Helios crew capacity nightly`                     |
 | Run Only Once By Org          | yes                                                |
 
-#### Why
+#### Why the dialog changed
 
 **Schedule Batch** **(1)** replaces the script field with two of its own: **Apex Class Name**
 **(2)**, a dropdown of the classes Salesforce can run on a schedule, read from your default org and
@@ -356,7 +356,7 @@ the class is there before it runs.
 4. Check: the page reads **All email**. If it already did, there is nothing to do.
 ```
 
-#### Why
+#### Why a step by hand
 
 Some things have no API. Email deliverability is the best known one: whether an org may send
 email at all is a setting in Setup that no deployment can change. The batch emails the planner a
@@ -402,7 +402,7 @@ you meant, they will guess, and a wrong guess in production is worse than no ste
    click **Pull**
 3. Commit the action file, then **Save / Publish**
 
-#### Why
+#### Why update the Pull Request
 
 So far the actions are only on your machine. Each **Save** wrote the action into a file under
 `scripts/actions/`, named after the number of your Pull Request: `.sfdx-hardis.12.yml` for Pull

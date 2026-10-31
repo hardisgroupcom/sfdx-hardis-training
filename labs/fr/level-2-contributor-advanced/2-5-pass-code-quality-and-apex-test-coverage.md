@@ -5,7 +5,7 @@ description: "Corrigez une trouvaille PMD et la couverture de code Apex qui bloq
 level: 2
 lab: 5
 lang: fr
-source_rev: "efc41b24930eb6a9c63f97840ebaac38c577058a"
+source_rev: "05a4d2525d9372546e13a1a4ecf84dfc8423fb8b"
 screenshots:
   - annotated/vscode/pipeline-cards--new-user-story
   - annotated/vscode/org-monitoring--apex-tests
@@ -324,7 +324,7 @@ tests de l'org, à chaque fois.
 
 1. Poussez, et lisez ce qu'ils disent sur la Pull Request
 
-#### Pourquoi
+#### Pourquoi dans la CI
 
 Les linters sont le seul contrôle que vous ne pouvez pas utilement lancer sur votre machine,
 parce qu'il leur faut une image de conteneur que la CI possède déjà. Cela fait deux minutes

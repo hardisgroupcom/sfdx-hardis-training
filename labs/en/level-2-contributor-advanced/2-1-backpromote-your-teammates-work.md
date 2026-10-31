@@ -144,7 +144,7 @@ Only if you answered **No**, or if the panel could not merge.
     If a check fails here, run **Simulate my teammates** again: it recreates the branch and the
     Pull Request.
 
-#### Why
+#### Why read the files
 
 Reading the files is the review: you are checking that the Pull Request does what its title says,
 and nothing else.
@@ -162,7 +162,7 @@ check that fails here is not your fault and not something to fix.
       step 2: with `integration` checked out (its name is in the bottom left corner of VS Code),
       run **Training: Level 2** > **Set up one of my training orgs** on `helios-dev`.
 
-#### Why
+#### Why only Romain's work
 
 Romain's Pull Request is the newest merge into `integration` on GitHub. It is the only work your org
 does not have: the backpromote brings it, and nothing else.

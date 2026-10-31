@@ -5,7 +5,7 @@ description: "Prenez votre premier ticket du backlog et créez sa branche Git et
 level: 1
 lab: 3
 lang: fr
-source_rev: "a9c1aec54b35e1834b76d29a72b577cb1bb935ef"
+source_rev: "c749b162d53cddd75a999205ccbc43b975db7fb0"
 screenshots:
   - annotated/vscode/pipeline-cards-level1--new-user-story
   - annotated/vscode/work-new-story-type
@@ -249,8 +249,8 @@ qui a fait six choses, dans cet ordre :
 3. **Créé la branche**, nommée d'après vos réponses :
    `git checkout -b features/US-014-panels-required`
 4. **Écrit votre configuration utilisateur** dans `config/user/.sfdx-hardis.<votre-utilisateur>.yml`,
-   en y notant l'org de cette User Story. Ce fichier est ignoré par git : il est à vous, personne
-   d'autre n'en a besoin
+   en y notant la branche que vise cette User Story, `integration`. Ce fichier est ignoré par
+   git : il est à vous, personne d'autre n'en a besoin
 5. **Sélectionné l'org** comme cible par défaut des commandes suivantes
 6. **Ouvert l'org** dans votre navigateur, puisque vous êtes sur le point d'y travailler
 

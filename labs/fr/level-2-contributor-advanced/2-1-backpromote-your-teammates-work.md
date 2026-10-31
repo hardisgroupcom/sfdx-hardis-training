@@ -5,7 +5,7 @@ description: "Votre org de développement est en retard sur integration. Faites-
 level: 2
 lab: 1
 lang: fr
-source_rev: "04806dac78b01b9587a43244bc18d1b2b5399870"
+source_rev: "18a30608d1f7776b71aa8f542ae956395b676c6b"
 screenshots:
   - annotated/vscode/sidebar-commands-custom-menu-2--training-menu
   - annotated/web/github-pr-files
@@ -153,7 +153,7 @@ Seulement si vous avez répondu **No**, ou si le panneau n'a pas pu merger.
     Si un check échoue ici, relancez **Simulate my teammates** : elle recrée la branche et la Pull
     Request.
 
-#### Pourquoi
+#### Pourquoi lire les fichiers
 
 Lire les fichiers, c'est cela, la relecture : vérifier que la Pull Request fait ce que dit son
 titre, et rien d'autre.
@@ -172,7 +172,7 @@ check qui échoue ici n'est pas de votre faute et n'est pas à corriger.
       bas à gauche de VS Code), lancez **Training: Level 2** > **Set up one of my training orgs**
       sur `helios-dev`.
 
-#### Pourquoi
+#### Pourquoi seul le travail de Romain
 
 La Pull Request de Romain est le dernier merge dans `integration` sur GitHub. C'est le seul travail
 que votre org n'a pas : le backpromote l'apporte, et rien d'autre.

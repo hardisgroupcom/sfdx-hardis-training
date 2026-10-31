@@ -5,7 +5,7 @@ description: "Un déploiement vert n'est pas une fonctionnalité qui marche. Liv
 level: 2
 lab: 4
 lang: fr
-source_rev: "23fcd314ece946f024d9d2d1787f3cf3204cc459"
+source_rev: "e034f4a003702f6a251375c2d825c49003d2b4b2"
 screenshots:
   - annotated/vscode/sidebar-commands-custom-menu-2--lab-records
   - annotated/salesforce/crew-capacity-records
@@ -325,7 +325,7 @@ lesquelles la pipeline déploie.
 | Scheduled Job Name (Optional) | `Helios crew capacity nightly`                     |
 | Run Only Once By Org          | oui                                                |
 
-#### Pourquoi
+#### Pourquoi la boîte de dialogue change
 
 **Schedule Batch** **(1)** remplace le champ de script par deux champs à lui : **Apex Class Name**
 **(2)**, une liste déroulante des classes que Salesforce peut lancer selon une planification, lues
@@ -363,7 +363,7 @@ déploie, et la classe y est avant qu'elle ne tourne.
 4. Check: the page reads **All email**. If it already did, there is nothing to do.
 ```
 
-#### Pourquoi
+#### Pourquoi une étape à la main
 
 Certaines choses n'ont pas d'API. La délivrabilité des e-mails est la plus connue : le droit pour une
 org d'envoyer des e-mails tout court est un réglage de Setup qu'aucun déploiement ne peut changer. Le
@@ -412,7 +412,7 @@ production est pire que pas d'étape du tout.
    Control**, cliquez sur **Pull**
 3. Commitez le fichier d'actions, puis **Save / Publish**
 
-#### Pourquoi
+#### Pourquoi mettre à jour la Pull Request
 
 Pour l'instant, les actions ne sont que sur votre poste. Chaque **Save** a écrit l'action dans un
 fichier sous `scripts/actions/`, nommé d'après le numéro de votre Pull Request :
