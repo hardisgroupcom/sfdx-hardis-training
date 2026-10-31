@@ -5,7 +5,7 @@ description: "Un déploiement vert n'est pas une fonctionnalité qui marche. Liv
 level: 2
 lab: 4
 lang: fr
-source_rev: "08a3bf613bfae8ceddf8563f28480723cdb5163f"
+source_rev: "d0af33d7b06d7ba34a028f03b1ea9604853e02b3"
 screenshots:
   - annotated/vscode/sidebar-commands-custom-menu-2--lab-records
   - annotated/salesforce/crew-capacity-records
@@ -626,9 +626,9 @@ contrôles, sans rien à approuver. Le même commit du robot figure dans le dép
 [Lab 1.6](../level-1-contributor-basics/1-6-pull-request-deployment-check-and-merge.md).
 
 Si vous aviez déjà tout poussé quand le commit du robot est arrivé, le Pull ne pousse rien et les
-contrôles de ce commit restent en attente d'une approbation. Ouvrez la Pull Request sur GitHub : son
-encadré de merge indique des workflows en attente d'approbation. Cliquez sur **Approve workflows to
-run**, et les deux contrôles démarrent sur le commit du robot.
+contrôles de ce commit restent en attente d'une approbation. Ouvrez la Pull Request sur GitHub : sous
+**Workflow(s) awaiting approval**, cliquez sur **Approve and run**, et les deux contrôles démarrent
+sur le commit du robot.
 
 **Le fichier d'actions s'appelle `.sfdx-hardis.draft.yml`, ou le check s'arrête sur *Draft deployment actions file found*.**
 Vous avez ajouté l'action alors que le panneau ne connaissait aucune Pull Request pour votre
