@@ -609,6 +609,11 @@ a commit your computer does not. In the **...** menu of **Source Control**, clic
 **Save / Publish** again: your push is what starts the checks again, with nothing to approve. The
 same robot commit is in the troubleshooting of [Lab 1.6](../level-1-contributor-basics/1-6-pull-request-deployment-check-and-merge.md).
 
+If you had already pushed everything when the robot's commit arrived, the Pull pushes nothing and
+the checks of that commit stay waiting for an approval. Open the Pull Request on GitHub: its merge
+box says workflows are awaiting approval. Click **Approve workflows to run**, and the two checks
+start on the robot's commit.
+
 **The action file is called `.sfdx-hardis.draft.yml`, or the check stops on *Draft deployment actions file found*.**
 You added the action while the panel knew no Pull Request for your branch: the **My Pull Request**
 card read *Pull Request not created yet*, so the action was kept in a draft. The pipeline only reads

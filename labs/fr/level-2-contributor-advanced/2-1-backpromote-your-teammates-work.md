@@ -5,7 +5,7 @@ description: "Votre org de développement est en retard sur integration. Faites-
 level: 2
 lab: 1
 lang: fr
-source_rev: "18a30608d1f7776b71aa8f542ae956395b676c6b"
+source_rev: "ac5493554e9de8dab1b3214e81a351b8746e87cf"
 screenshots:
   - annotated/vscode/sidebar-commands-custom-menu-2--training-menu
   - annotated/web/github-pr-files
@@ -378,8 +378,9 @@ Trois choses qu'il ne fait délibérément **pas**, et les connaître économise
 Et une chose qu'il fait et que personne n'attend la première fois :
 
 !!! warning "Il vous laisse sur la branche de backpromote"
-    Le déploiement tourne depuis une branche appelée `backpromote/integration/<votre org>`, et **le
-    checkout y reste quand la commande se termine**. Le panneau le dit, et propose le bouton
+    Le déploiement tourne depuis une branche appelée `backpromote/integration/` suivie de l'id de
+    votre org en minuscules, comme `backpromote/integration/00d8e00000100001eaa` sur l'image de
+    l'étape 5, et **le checkout y reste quand la commande se termine**. Le panneau le dit, et propose le bouton
     **Back to `<votre branche>`** **(4)** pour le défaire : il restaure les modifications qu'il avait
     mises de côté avant l'exécution, puis propose un merge de la branche parente.
 

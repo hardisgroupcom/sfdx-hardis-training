@@ -351,8 +351,9 @@ Three things it deliberately does **not** do, and knowing them saves an afternoo
 And one thing it does that nobody expects the first time:
 
 !!! warning "It leaves you on the backpromote branch"
-    The deployment runs from a branch called `backpromote/integration/<your org>`, and **the
-    checkout stays there when the command finishes**. The panel says so, and offers the
+    The deployment runs from a branch called `backpromote/integration/` followed by the id of your
+    org in lower case, such as `backpromote/integration/00d8e00000100001eaa` in the picture of step
+    5, and **the checkout stays there when the command finishes**. The panel says so, and offers the
     **Back to `<your branch>`** button **(4)** to undo it: it restores the changes it stashed
     before the run, then proposes a merge of the parent branch.
 
