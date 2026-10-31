@@ -11,6 +11,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 - Labs 1.6, 2.1, 2.2, 2.4 and 2.5: a step with several Why blocks gives each its own title, and French Lab 3.1 links to its step 12 again, so the MegaLinter comment of your Pull Requests no longer warns about 21 markdownlint errors in the course.
 - Lab 2.1: the backpromote branch is named after the id of your org, as the picture shows, not after its alias.
 - Lab 2.4: when MegaLinter's commit arrives after your last push, approve its workflows on the Pull Request, since there is nothing left to push.
+- Labs 3.5 and 3.8: **Publish my pipeline configuration** asks for **Squash and merge**, as the check comment of its Pull Request does, instead of a merge commit.
 
 ## 2026-10-30
 
