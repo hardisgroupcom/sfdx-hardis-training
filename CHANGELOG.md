@@ -3,6 +3,14 @@
 What changed in the course, for learners and trainers. The course has no versions: each section is
 a day, newest first, and a change goes under the date of the day it is made.
 
+## 2026-11-01
+
+- Lab 3.8: the first question of **Install Org Monitoring** says to answer Yes, and the warning about the `workflow` permission comes before you click the button.
+- Lab 3.8: the first run sends one email per check that found something, not a single one, and the panel lists **Warning** among the severities.
+- Lab 3.8: a check card runs the check again from your computer, and the unsecured Connected Apps one gets No to both of its questions.
+- Lab 3.8: the reason for silencing a check goes in the commit message, since the panel does not keep comments in the configuration file.
+- Lab 3.9: step 5 asks for one paragraph on the Installation page, and has you find the reasons of the preparation buffer and of the crew capacity cap in the generated pages.
+
 ## 2026-10-31
 
 - Lab 1.2: **Set up my training environment** lists its questions in the order it asks them, the GitHub sign-in or account first and the yes for `helios-prod` after.
