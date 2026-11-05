@@ -5,7 +5,7 @@ description: "Transportez trois User Stories approuvées sur cinq de uat vers pr
 level: 3
 lab: 10
 lang: fr
-source_rev: "c655e98c1bab331bfc47db9b9e5d869a4ee43e32"
+source_rev: "36833c32f092b2c2d3f165a810e0e56acc9f3239"
 screenshots:
   - annotated/vscode/welcome-custom-menu-3
   - annotated/vscode/pipeline-config-danger--promotion-branches
@@ -297,9 +297,10 @@ vu US-058.
 #### Pourquoi cette réponse
 
 La promotion est assemblée en entier, conflit compris, et vous le résolvez en une passe sur la
-branche ensuite, à l'étape 6. Les autres réponses sont pour d'autres semaines : résoudre ce conflit
-tout de suite dans l'éditeur pendant que la commande attend, laisser la story de côté, committer
-celle-ci avec ses marqueurs mais redemander au prochain conflit, ou tout arrêter et tout défaire.
+branche ensuite, à l'étape 6. Les autres réponses, dans l'ordre où la question les liste, sont pour
+d'autres semaines : committer celle-ci avec ses marqueurs mais redemander au prochain conflit,
+résoudre ce conflit tout de suite dans l'éditeur pendant que la commande attend, laisser la story de
+côté, les deux réponses risquées ci-dessous, ou tout arrêter et tout défaire.
 
 Les deux réponses marquées **(risky)** gardent le côté `uat` de chaque ligne en conflit, et personne
 ne relit ce qu'elles ont décidé. Ici, elles garderaient la ligne et le droit Warranty Years que

@@ -288,9 +288,10 @@ top of US-058, and `preprod` has never seen US-058.
 #### Why this answer
 
 The promotion is assembled whole, conflict included, and you solve it in one pass on the branch
-afterwards, in step 6. The other answers are for other weeks: solve this conflict now in the editor
-while the command waits, leave the story out, commit this one with its markers but ask again on the
-next conflict, or stop and undo everything.
+afterwards, in step 6. The other answers, in the order the question lists them, are for other weeks:
+commit this one with its markers but ask again on the next conflict, solve this conflict now in the
+editor while the command waits, leave the story out, the two risky ones below, or stop and undo
+everything.
 
 The two answers marked **(risky)** keep the `uat` side of every conflicting line, and nobody reads
 what they decided. Here they would keep the Warranty Years row and grant that step 6 deletes by
