@@ -244,9 +244,8 @@ same place.
 
 #### Do: open your Pull Request
 
-1. In the diagram: turn on **Show feature branches** at the top right, which is off until you ask for
-   it, and your own branch appears beside the major ones. Your feature branch **(1)**, and on the arrow
-   leaving it the numbered badge **(2)**. Click the badge
+1. In the diagram, which opens on **Feature branches**, your own branch sits beside the major ones:
+   your feature branch **(1)**, and on the arrow leaving it the numbered badge **(2)**. Click the badge
 
    ![The DevOps Pipeline panel, with the feature branch and the badge of its Pull Request](../../_assets/annotated/vscode/pipeline-workflow-cards.png)
 

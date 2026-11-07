@@ -5,7 +5,7 @@ description: "Prenez votre premier ticket du backlog et créez sa branche Git et
 level: 1
 lab: 3
 lang: fr
-source_rev: "3fe2187959e0c26f54455975b0cca58ae0fb9163"
+source_rev: "e4b6334dc3dcb31c356be06fff5cf58801505299"
 screenshots:
   - annotated/vscode/pipeline-cards-level1--new-user-story
   - annotated/vscode/work-new-story-type
@@ -237,7 +237,7 @@ Le panneau a lancé :
 
     sf hardis:work:new
 
-qui a fait six choses, dans cet ordre :
+qui a fait sept choses, dans cet ordre :
 
 1. **Choisi la branche cible**. Avec une seule entrée dans `availableTargetBranches` elle prend
    celle-là sans demander ; avec plusieurs elle demande, et elle retient la réponse pour cette
@@ -253,6 +253,10 @@ qui a fait six choses, dans cet ordre :
    git : il est à vous, personne d'autre n'en a besoin
 5. **Sélectionné l'org** comme cible par défaut des commandes suivantes
 6. **Ouvert l'org** dans votre navigateur, puisque vous êtes sur le point d'y travailler
+7. **Enregistré l'org** dans la liste des orgs de développement de votre repository, une issue
+   nommée **Development Orgs Dashboard** : `helios-dev` cible `integration`, et vous en êtes le
+   propriétaire. La vue **Dev orgs** du DevOps Pipeline l'affiche, avec le nombre de Pull Requests
+   mergées dans `integration` qu'elle n'a pas encore
 
 La liste des scratch orgs est celle des orgs créées par votre Dev Hub par défaut, que le [Lab 1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) a
 réglé sur `helios-prod`, moins celles nommées dans `config/branches/`. Rien ici n'amène ce qui est

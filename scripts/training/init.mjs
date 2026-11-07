@@ -632,6 +632,24 @@ async function ensureFork(handle) {
 }
 
 /**
+ * GitHub switches issues off on every new fork, and sfdx-hardis keeps the list of the development
+ * orgs (Lab 1.3 registers helios-dev in it) in an issue of the repository: without them, New User
+ * Story warns that it could not register the org. Never stops the setup.
+ */
+function ensureIssues(slug) {
+  const repo = ghJson(["api", `repos/${slug}`]);
+  if (!repo || repo.has_issues) {
+    return;
+  }
+  const res = run("gh", ["repo", "edit", slug, "--enable-issues"], { capture: true, quiet: true });
+  if (res.code === 0) {
+    ok(`Issues switched on in ${c.bold(slug)}: sfdx-hardis keeps the list of your development orgs in one.`);
+  } else {
+    warn(`Issues could not be switched on in ${slug}. On GitHub: Settings > General > Features, tick Issues.`);
+  }
+}
+
+/**
  * integration and uat, created from the state a Level 1 learner starts
  * from when the fork does not carry them yet. main exists in every fork.
  */
@@ -980,6 +998,7 @@ export default async function init(args) {
   }
 
   const slug = await ensureFork(handle);
+  ensureIssues(slug);
   // --no-actions-wait: for automation with no browser, where nobody can click the banner
   const actionsOn = await ensureActions(slug, { wait: args["no-actions-wait"] !== true });
 

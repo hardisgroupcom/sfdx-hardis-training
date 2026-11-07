@@ -604,8 +604,8 @@ VS Code offers two answers:
 #### You should now see
 
 - The icon turned from grey to colour, and its tooltip **Connected to GitHub**
-- What the panel could not show before: the Pull Requests on your branches, and the **Show feature
-  branches** toggle
+- What the panel could not show before: the Pull Requests on your branches, and in the top left
+  corner of the diagram the switch between **Major branches**, **Feature branches** and **Dev orgs**
 
 ### 8. Look at the pipeline before touching anything
 

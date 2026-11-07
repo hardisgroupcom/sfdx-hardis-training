@@ -3,6 +3,11 @@
 What changed in the course, for learners and trainers. The course has no versions: each section is
 a day, newest first, and a change goes under the date of the day it is made.
 
+## 2026-11-07
+
+- DevOps Pipeline: the **Show feature branches** toggle became a switch on the diagram between **Major branches**, **Feature branches** and **Dev orgs**. Labs 1.2, 2.3 and 3.2 and the pipeline screenshots follow it.
+- Lab 1.3: New User Story also registers `helios-dev` in the development orgs list of your repository, and the setup of your training environment switches issues on in your fork, where that list lives.
+
 ## 2026-11-05
 
 - Lab 3.10: the conflict question of the promotion shows its seven answers, including the new "solve now" and the two risky "keep the source version" ones, and the lab explains what those would have done to this week's promotion.

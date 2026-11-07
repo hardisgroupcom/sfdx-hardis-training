@@ -5,7 +5,7 @@ description: "Inscrivez-vous à une org Salesforce Developer Edition gratuite, p
 level: 1
 lab: 2
 lang: fr
-source_rev: "47ebc265cc7dc1192cd82702aa22d2e7d0610914"
+source_rev: "0c615beae8cdda69bb733e8bd986eabaf6f87b74"
 screenshots:
   - annotated/web/sf-signup
   - annotated/web/gh-cli-download
@@ -645,8 +645,9 @@ VS Code propose deux réponses :
 #### Vous devriez voir
 
 - L'icône passée du gris à la couleur, et son infobulle **Connected to GitHub**
-- Ce que le panneau ne pouvait pas montrer avant : les Pull Requests sur vos branches, et le
-  commutateur **Show feature branches**
+- Ce que le panneau ne pouvait pas montrer avant : les Pull Requests sur vos branches, et dans le
+  coin en haut à gauche du diagramme le sélecteur entre **Major branches**, **Feature branches** et
+  **Dev orgs**
 
 ### 8. Regarder la pipeline avant de toucher à quoi que ce soit
 

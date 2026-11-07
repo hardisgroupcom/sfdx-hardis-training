@@ -227,7 +227,7 @@ The panel ran:
 
     sf hardis:work:new
 
-which did six things, in order:
+which did seven things, in order:
 
 1. **Picked the target branch**. With a single entry in `availableTargetBranches` it takes that one
    without asking; with several it asks, and it remembers the answer for this branch
@@ -241,6 +241,10 @@ which did six things, in order:
    else needs it
 5. **Selected the org** as the default target for the following commands
 6. **Opened the org** in your browser, since you are about to work in it
+7. **Registered the org** in the development orgs list of your repository, an issue named
+   **Development Orgs Dashboard**: `helios-dev` targets `integration`, and you own it. The
+   **Dev orgs** view of the DevOps Pipeline shows it, with the number of Pull Requests merged into
+   `integration` that it does not have yet
 
 The list of scratch orgs is the ones your default Dev Hub created, which [Lab 1.2](1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) set to `helios-prod`,
 minus the ones named in `config/branches/`. Nothing here brings what is on `integration` into your
