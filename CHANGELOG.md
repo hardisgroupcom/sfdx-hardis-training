@@ -7,6 +7,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 
 - DevOps Pipeline: the **Show feature branches** toggle became a switch on the diagram between **Major branches**, **Feature branches** and **Dev orgs**. Labs 1.2, 2.3 and 3.2 and the pipeline screenshots follow it.
 - Lab 1.3: New User Story also registers `helios-dev` in the development orgs list of your repository, and the setup of your training environment switches issues on in your fork, where that list lives.
+- Lab 1.1: the Setup panel installs Browserforce too, now one of the dependencies of sfdx-hardis, and its screenshots show it.
 
 ## 2026-11-05
 
