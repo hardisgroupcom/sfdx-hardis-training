@@ -5,7 +5,7 @@ description: "Prenez votre premier ticket du backlog et créez sa branche Git et
 level: 1
 lab: 3
 lang: fr
-source_rev: "e4b6334dc3dcb31c356be06fff5cf58801505299"
+source_rev: "61bf3e456fc94efd2dbba601c60475134570652b"
 screenshots:
   - annotated/vscode/pipeline-cards-level1--new-user-story
   - annotated/vscode/work-new-story-type
@@ -338,6 +338,14 @@ le reste en l'état.
 **Elle échoue avec un message sur la limite de scratch orgs.**
 Vous avez pris **Create new scratch org**. Rien n'a été créé et rien n'est cassé : redémarrez la User
 Story et prenez **Reuse scratch org helios-dev**.
+
+**Elle avertit que `helios-dev` n'est pas enregistrée dans la liste des orgs de développement, car les issues sont désactivées.**
+Votre fork a été mis en place avant que la mise en place sache activer les issues, et GitHub les
+désactive sur chaque nouveau fork. sfdx-hardis tient la liste des orgs de développement dans une
+issue, donc la dernière chose que fait la commande, enregistrer l'org (étape 6, Sous le capot), n'a
+pas eu lieu. Rien d'autre n'est touché : votre branche et votre org sont prêtes. Recliquez sur
+**Training: Level 1 > Set up my training environment**, qui active les issues et laisse tout le
+reste en l'état. Le prochain **New User Story** enregistre `helios-dev`.
 
 ## Vérifiez votre travail
 

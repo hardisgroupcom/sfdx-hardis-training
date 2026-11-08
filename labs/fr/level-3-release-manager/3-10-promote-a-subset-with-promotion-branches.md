@@ -5,7 +5,7 @@ description: "Transportez trois User Stories approuvées sur cinq de uat vers pr
 level: 3
 lab: 10
 lang: fr
-source_rev: "36833c32f092b2c2d3f165a810e0e56acc9f3239"
+source_rev: "b6059bae37e4c491290a1dcbb0ee7b08fc95c2ea"
 screenshots:
   - annotated/vscode/welcome-custom-menu-3
   - annotated/vscode/pipeline-config-danger--promotion-branches
@@ -307,8 +307,9 @@ ne relit ce qu'elles ont décidé. Ici, elles garderaient la ligne et le droit W
 l'étape 6 supprime à la main, et qui appartiennent à US-058, une story que cette promotion laisse
 de côté. Cette semaine, la validation le verrait quand même, parce que `preprod` n'a pas de champ
 `Warranty_Years__c` et que le déploiement échoue. Avec un champ qui existe déjà dans `preprod`,
-rien ne le verrait : la Pull Request liste les fichiers sous un avertissement, et cet avertissement
-est la seule trace.
+rien ne le verrait : les fichiers sont seulement listés, sous un avertissement dans la description
+de la Pull Request et à la fin du message de commit de la story, pour que quelqu'un les relise avant
+le merge.
 
 Le log continue jusqu'au bout :
 

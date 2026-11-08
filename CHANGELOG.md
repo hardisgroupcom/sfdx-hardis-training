@@ -3,9 +3,18 @@
 What changed in the course, for learners and trainers. The course has no versions: each section is
 a day, newest first, and a change goes under the date of the day it is made.
 
+## 2026-11-08
+
+- Lab 1.1: the Browserforce dependency is named **sfdx-browserforce-plugin**, as its card in the Setup panel reads.
+- Lab 1.2: the setup output shows the line that switches issues on in your fork, and the switch between **Major branches**, **Feature branches** and **Dev orgs** is no longer described as appearing once GitHub is connected: it is always there.
+- Lab 1.3: a troubleshooting entry for the warning that `helios-dev` is not registered because issues are off in a fork set up before 2026-11-07, fixed by running **Set up my training environment** again.
+- Lab 3.10: the conflict question screenshot lists the answers in the order the command asks them, and the lab says the risky answers leave the files they decided in the Pull Request and in the commit message of the story.
+- **Set up my training environment** waits for a fork it has just created before switching issues on, and says what to do when it still cannot.
+- DevOps Pipeline screenshots in Labs 1.2 to 3.10 show the **Major branches** / **Feature branches** / **Dev orgs** switch instead of the former toggle, and Lab 3.2 points at **Feature branches** on its picture.
+
 ## 2026-11-07
 
-- DevOps Pipeline: the **Show feature branches** toggle became a switch on the diagram between **Major branches**, **Feature branches** and **Dev orgs**. Labs 1.2, 2.3 and 3.2 and the pipeline screenshots follow it.
+- DevOps Pipeline: the **Show feature branches** toggle became a switch on the diagram between **Major branches**, **Feature branches** and **Dev orgs**. Labs 1.2, 2.3 and 3.2 follow it.
 - Lab 1.3: New User Story also registers `helios-dev` in the development orgs list of your repository, and the setup of your training environment switches issues on in your fork, where that list lives.
 - Lab 1.1: the Setup panel installs Browserforce too, now one of the dependencies of sfdx-hardis, and its screenshots show it.
 

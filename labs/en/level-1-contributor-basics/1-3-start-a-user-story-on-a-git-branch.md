@@ -326,6 +326,14 @@ as it is.
 You took **Create new scratch org**. Nothing was created and nothing is broken: start the User Story
 again and take **Reuse scratch org helios-dev**.
 
+**It warns that `helios-dev` is not registered in the development orgs list, as issues are switched off.**
+Your fork was set up before the setup learned to switch issues on, and GitHub turns them off on
+every new fork. sfdx-hardis keeps the development orgs list in an issue, so the last thing the
+command does, registering the org (step 6, Under the hood), did not happen. Nothing else is
+affected: your branch and your org are ready. Click **Training: Level 1 > Set up my training
+environment** again, which switches issues on and leaves everything else as it is. The next
+**New User Story** registers `helios-dev`.
+
 ## Check your work
 
 Welcome page > **Training: Level 1** > **Check my work**, then pick **Lab 1.3**.

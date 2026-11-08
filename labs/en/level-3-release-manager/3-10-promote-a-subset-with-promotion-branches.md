@@ -297,8 +297,9 @@ The two answers marked **(risky)** keep the `uat` side of every conflicting line
 what they decided. Here they would keep the Warranty Years row and grant that step 6 deletes by
 hand, which belong to US-058, a story this promotion leaves behind. This week the validation would
 still catch it, because `preprod` has no `Warranty_Years__c` field and the deployment fails. With a
-field that already exists in `preprod`, nothing would: the Pull Request lists the files under a
-warning, and that warning is the only trace.
+field that already exists in `preprod`, nothing would: the files are only listed, under a warning
+in the Pull Request description and at the end of the commit message of the story, for somebody to
+read before merging.
 
 The log goes on to the end:
 

@@ -242,8 +242,8 @@ The dependencies worth knowing by name:
 - **SFDMU** - loads and extracts records, which is how your orgs get their data
 - **sfdx-git-delta** - works out what changed between two versions of the project, which is what the
   deployments send
-- **Browserforce** - changes the Setup settings that cannot be deployed, by clicking through Setup
-  in a browser nobody sees, when a deployment asks for it
+- **sfdx-browserforce-plugin** (Browserforce) - changes the Setup settings that cannot be deployed,
+  by clicking through Setup in a browser nobody sees, when a deployment asks for it
 - **Salesforce Extension Pack** - the official Salesforce tooling for VS Code
 
 The installs are the longest part of this lab and the only one you never repeat.

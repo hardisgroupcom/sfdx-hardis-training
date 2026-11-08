@@ -5,7 +5,7 @@ description: "Installez Git, Node.js, VS Code et l'extension sfdx-hardis, puis l
 level: 1
 lab: 1
 lang: fr
-source_rev: "9a10e2391c1f3b957300ea6c2ca40d6e05713126"
+source_rev: "1ce6da585afd0a877f290f1baac04e4b5274b7be"
 screenshots:
   - annotated/web/git-download
   - annotated/web/vscode-download
@@ -254,8 +254,9 @@ Les dépendances qu'il faut connaître par leur nom :
 - **SFDMU** - charge et extrait des enregistrements, c'est ainsi que vos orgs reçoivent leurs données
 - **sfdx-git-delta** - calcule ce qui a changé entre deux versions du projet, c'est ce que les
   déploiements envoient
-- **Browserforce** - modifie les paramètres de Setup qui ne se déploient pas, en cliquant dans Setup
-  depuis un navigateur que personne ne voit, quand un déploiement le demande
+- **sfdx-browserforce-plugin** (Browserforce) - modifie les paramètres de Setup qui ne se déploient
+  pas, en cliquant dans Setup depuis un navigateur que personne ne voit, quand un déploiement le
+  demande
 - **Salesforce Extension Pack** - l'outillage Salesforce officiel pour VS Code
 
 Les installations sont la partie la plus longue de ce lab, et la seule que vous ne referez jamais.
