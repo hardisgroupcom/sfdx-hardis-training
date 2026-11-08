@@ -17,7 +17,7 @@ depends_on:
   flags: []
   config: [commandsPostDeploy, apexScript, runOnlyOnceByOrg]
   panels: [pipeline, deploymentAction]
-  docs: [salesforce-devops-work-on-user-story-deployment-actions]
+  docs: [salesforce-devops-work-on-user-story-deployment-actions, salesforce-devops-work-on-user-story-deployment-actions-apex]
 ---
 
 # Lab 2.3 - Fix broken records with an Apex deployment action
@@ -451,5 +451,6 @@ Welcome page > **Training: Level 2** > **Check my work**, then pick **Lab 2.3**.
 ## Go deeper
 
 - [Deployment actions](https://sfdx-hardis.cloudity.com/salesforce-devops-work-on-user-story-deployment-actions/)
+- [Run an Apex script](https://sfdx-hardis.cloudity.com/salesforce-devops-work-on-user-story-deployment-actions-apex/)
 
 [Next: Lab 2.4 - Ship reference data and a batch with deployment actions](2-4-ship-reference-data-and-a-batch-with-deployment-actions.md){ .md-button .md-button--primary }
