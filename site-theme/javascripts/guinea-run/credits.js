@@ -53,7 +53,8 @@ export const SPECIAL_THANKS = [
   "Mathieu Rodrigues",
   "Hasnioui-Ysf",
   "Olivier Mulot",
-  "fkramer690"
+  "fkramer690",
+  "drsaavedra"
 ];
 
 /** Where the roll sends a player who wants sfdx-hardis set up, or support. */
