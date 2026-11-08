@@ -11,6 +11,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 - Lab 3.10: the conflict question screenshot lists the answers in the order the command asks them, and the lab says the risky answers leave the files they decided in the Pull Request and in the commit message of the story.
 - **Set up my training environment** waits for a fork it has just created before switching issues on, and says what to do when it still cannot.
 - DevOps Pipeline screenshots in Labs 1.2 to 3.10 show the **Major branches** / **Feature branches** / **Dev orgs** switch instead of the former toggle, on its own row above the diagram, and Lab 3.2 points at **Feature branches** on its picture.
+- Guinea Run: the end credits thank Haim Knokh (SFDMU) and Matthias Rolke (Browserforce), as the sfdx-hardis Special Thanks now do.
 
 ## 2026-11-07
 

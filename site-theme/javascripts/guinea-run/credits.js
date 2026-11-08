@@ -13,6 +13,8 @@ export const SPECIAL_THANKS = [
   "Taha Basri",
   "Anush Poudel",
   "Sebastien Colladon",
+  "Haim Knokh",
+  "Matthias Rolke",
   "Stepan Stepanov",
   "Shamina Mossodeean",
   "Michael Havrilla",
