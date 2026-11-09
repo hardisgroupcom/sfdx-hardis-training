@@ -22,7 +22,7 @@
  * username can ask the site what that person earned, with one GET and no index
  * to walk:
  *
- *     https://sfdx-hardis-training.github.io/badges/nvuillamy.json
+ *     https://sfdx-hardis-training.cloudity.com/badges/nvuillamy.json
  *
  * The Trailhead Banner project works from a Trailblazer username, and a badge
  * filed under a GitHub login would be invisible to it. The GitHub handle stays
@@ -60,7 +60,10 @@ if (!audit.ok) {
 
 const handle = audit.handle;
 const level = audit.level;
-const today = new Date().toISOString().slice(0, 10);
+// The moment of the award, to the second and in UTC. The day is kept beside it
+// because the badge image and the sites that read a record print a date.
+const now = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
+const today = now.slice(0, 10);
 const definition = LEVELS[level];
 const text = (value) => (typeof value === "string" && value.trim() ? value.trim() : null);
 
@@ -174,6 +177,7 @@ record.badges.push({
     course: SITE
   },
   issuedOn: today,
+  issuedAt: now,
   evidence: [
     { type: "Repository", url: audit.repo || null },
     { type: "ClaimIssue", url: args.issue ? `https://github.com/${UPSTREAM}/issues/${args.issue}` : null }

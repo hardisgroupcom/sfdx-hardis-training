@@ -1,0 +1,93 @@
+---
+# Guinea Run Hall of Fame.
+#
+# The scores no longer come through this repository: the game sends them to
+# its database (Supabase, scripts/guinea-run/supabase.sql) with the
+# publishable key in core/online-config.js, and the database checks them.
+# This workflow keeps that working:
+#
+#  - the unit tests of the game's save, sends and boards, on a Pull Request
+#  - the key check: the key the game signs with must be the key the database
+#    holds, or every score is refused (scripts/guinea-run/key-check.mjs)
+#  - every day, one read of the board: a free Supabase project is paused after
+#    a week without a request, and the board would stay down until someone
+#    restores it by hand
+#
+# Nothing here needs a secret: the publishable key is public by design.
+
+name: Guinea Run Hall of Fame
+
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  push:
+    branches:
+      - main
+    paths:
+      - site-theme/javascripts/guinea-run/core/**
+      - site-theme/javascripts/guinea-run/worlds/pinball/**
+      - site-theme/javascripts/guinea-run/worlds/orgman/**
+  pull_request:
+    paths:
+      - site-theme/javascripts/guinea-run/core/**
+      - site-theme/javascripts/guinea-run/worlds/pinball/**
+      - site-theme/javascripts/guinea-run/worlds/orgman/**
+      - scripts/guinea-run/**
+      - .github/workflows/hall-of-fame.yml
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  tests:
+    name: The save, the sends and the boards
+    # Not on a learner's fork, which runs every workflow of the course
+    if: >-
+      github.repository == 'hardisgroupcom/sfdx-hardis-training' &&
+      (github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout the training repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+
+      - name: Unit tests
+        run: node --test scripts/guinea-run/*.test.mjs
+
+  database:
+    name: The database answers and agrees on the key
+    if: github.repository == 'hardisgroupcom/sfdx-hardis-training'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout the training repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+
+      # The request that keeps a free project awake, and a check that the board reads
+      - name: Read the board
+        run: |
+          node --input-type=module -e '
+            import { ONLINE_URL, ONLINE_KEY } from "./site-theme/javascripts/guinea-run/core/online-config.js";
+            const response = await fetch(ONLINE_URL + "/rest/v1/guinea_totals?select=name&limit=1", { headers: { apikey: ONLINE_KEY } });
+            console.log("The board answered " + response.status + ".");
+            if (!response.ok) process.exit(1);
+          '
+
+      - name: Compare the key of the game with the database
+        run: node scripts/guinea-run/key-check.mjs

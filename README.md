@@ -4,7 +4,7 @@ Three free learning paths that take you from "I have never used Git" to "I own t
 [sfdx-hardis](https://sfdx-hardis.cloudity.com/) and its
 [VS Code extension](https://marketplace.visualstudio.com/items?itemName=NicolasVuillamy.vscode-sfdx-hardis).
 
-**Start here: [sfdx-hardis-training.github.io](https://sfdx-hardis-training.github.io/)**
+**Start here: [sfdx-hardis-training.cloudity.com](https://sfdx-hardis-training.cloudity.com/)**
 
 | Level                        | Audience                                                         | Time | Prerequisite   |
 |------------------------------|------------------------------------------------------------------|------|----------------|
@@ -38,10 +38,10 @@ Each level awards a **Cloudity badge**. It is a badge, not a certification.
    (`helios-dev`, `helios-integration`, `helios-uat`), and wires the `integration` and `uat`
    branches to them
 
-[Lab 1.1](https://sfdx-hardis-training.github.io/en/level-1-contributor-basics/1-1-install-vs-code-and-sfdx-hardis/) is
+[Lab 1.1](https://sfdx-hardis-training.cloudity.com/en/level-1-contributor-basics/1-1-install-vs-code-and-sfdx-hardis/) is
 the first block, with screenshots, and it stands on its own: finish it and stop if you only came to
 set a machine up.
-[Lab 1.2](https://sfdx-hardis-training.github.io/en/level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline/) is
+[Lab 1.2](https://sfdx-hardis-training.cloudity.com/en/level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline/) is
 the second.
 
 ## Everything happens in your own copy
@@ -106,6 +106,7 @@ scripts/data/         the SFDMU workspaces that seed the orgs
 scripts/training.mjs  the single entry point behind the Training menu
 scripts/verify/       the per-lab checks, used by "Check my work" and by the badge audit
 scripts/build/        generators: the backlog, the site, the screenshot fixtures
+scripts/stats/        the course statistics: who starts and finishes a level, and how long the labs take
 labs/en/              the lab content, plain markdown, and the reference every locale follows
 labs/fr/              the French translation, same file names, same structure
 labs/_assets/         the screenshots, produced by the extension harness with Helios fixtures
@@ -122,7 +123,7 @@ neither is committed.
 
 The course is published in **English** and in **French**, and the language selector in the header of
 the site switches between them. The French labs are at
-[/fr/](https://sfdx-hardis-training.github.io/fr/).
+[/fr/](https://sfdx-hardis-training.cloudity.com/fr/).
 
 Both walk through the same clicks on the same screenshots, so they assume sfdx-hardis, its VS Code
 extension and your Salesforce orgs are in **English**: a translated lab translates the prose and
@@ -137,7 +138,8 @@ The site is built here and published to
 [sfdx-hardis-training/sfdx-hardis-training.github.io](https://github.com/sfdx-hardis-training/sfdx-hardis-training.github.io).
 Its `gh-pages` branch is written by the build and force-pushed on every run, so nothing should ever
 be committed to it by hand. That repository is an organization site, so it serves at the root of its
-host, which is the base path the custom domain will answer on.
+host, and its custom domain is `sfdx-hardis-training.cloudity.com`: the build writes the `CNAME` file
+on every run, and `https://sfdx-hardis-training.github.io` redirects there.
 
 The address this repository used to serve, `hardisgroupcom.github.io/sfdx-hardis-training`, keeps
 answering. `scripts/build/redirect-site.mjs` builds what it serves: one redirect page per page of
@@ -163,6 +165,46 @@ node scripts/i18n/stamp-source-rev.mjs fr  # stamp source_rev from git, after co
 node scripts/i18n/check-structure.mjs    # a translation that lost an image or a block, reported not enforced
 node scripts/i18n/align-tables.mjs       # re-pad the tables of a translated lab
 ```
+
+A learner's Pull Request sometimes lands here instead of in their fork, because GitHub offers the
+original repository as the base of a Pull Request opened from a fork. `fork-pull-requests.yml`
+closes it with a comment saying where it belongs, when its head is a branch of the course
+(`integration`, `features/US-...`, `training/...`). Any other Pull Request from a fork is a
+contribution and is left open, and one closed by mistake stays open once reopened.
+
+The Statistics page of the site is built from `stats/course-stats.json`, which a workflow commits
+every Monday: how many learners start and finish each level, and the median time of the labs next to
+the time they announce. It is read from the forks of the course and the badge claims, and it names
+nobody. [STATS.md](STATS.md) is the same page in this repository, written from that file by the same
+workflow: never edit it by hand, and re-render it when the words of the page change in `i18n/en.json`. `scripts/stats/ignore.json` lists the accounts left out, the maintainers and the ones the
+end to end tests run under. `scripts/stats/markers.mjs` says which Pull Request ends which lab: a
+lab whose User Story or branch changes has to change there too.
+
+The times the pages announce come from the same file. `scripts/build/lab-times.mjs` writes them
+into the markdown under `labs/`, in every language, and the weekly workflow commits the result, so
+a change of time is a diff anybody can read: the `**Time**` line of a lab, the rows and the total of
+a level page, the table of the home page. It is the median, rounded down to five minutes for a lab
+and to a quarter of an hour for a level, followed by the median and the fastest plausible time
+between two `<!-- observed -->` comments. Never edit a time by hand to follow the figures: the next run
+overwrites it. The estimate a lab was written with lives in `training-universe.json` (`time`), and
+is what a lab fewer than three learners went through announces. `scripts/stats/lab-times.mjs` holds
+the rules.
+
+```bash
+node scripts/stats/course-stats.mjs            # read GitHub, write stats/course-stats.json and STATS.md
+node scripts/stats/course-stats.mjs --render   # no network: rewrite STATS.md after changing its words
+node scripts/build/lab-times.mjs               # no network: write the observed times into the lab pages, and restamp the translations that were current
+```
+
+Stamp only once the English commit has its final name: a rebase renames it, and a stamp written
+before names a commit that no longer exists.
+
+```bash
+node scripts/stats/course-stats.mjs --details  # and one row per learner, in hardis-report/course-stats/
+node --test scripts/stats/compute.test.mjs     # the arithmetic, on made-up repositories
+```
+
+The `--details` report names people. It is git-ignored, and it stays on your machine.
 
 Screenshots are captured from the extension repository, which must be a sibling clone:
 

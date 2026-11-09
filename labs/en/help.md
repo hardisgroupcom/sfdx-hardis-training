@@ -94,6 +94,16 @@ more things, and on a second attempt the answer to both is usually yes:
 - **Set up `helios-dev` and `helios-integration` again**, so the orgs match the start of the level
   instead of carrying what you built the first time
 
+Last, on Level 3, it opens a Pull Request named **Deployment actions of the earlier levels** and
+merges it once its checks pass, which takes 3 to 5 minutes. The start of Level 3 holds the Level 2
+stories as one commit no Pull Request of your fork made, and a promotion only runs the deployment
+actions of the Pull Requests it carries: this one gives them a Pull Request.
+
+The reset does not turn GitHub Actions on or off. If you switched them off in your fork between two
+attempts, switch them back on before **Reset this level**: on Level 3 it waits for the checks of
+that Pull Request, and with Actions off they never start. The **Actions** tab of your fork shows
+which state it is in, and **Trigger my workflows** in the Training menu of Level 1 checks it for you.
+
 **Start the whole course again.** On GitHub, open your fork, then **Settings**, scroll down to
 **Danger Zone**, and click **Delete this repository**. Delete your local folder too. Then follow
 [Lab 1.2](level-1-contributor-basics/1-2-create-your-dev-hub-scratch-orgs-and-pipeline.md) again
@@ -115,6 +125,17 @@ that work as a service, on top of the same open-source product this course teach
 - **Support.** A subscription that keeps a Cloudity expert reachable after go-live, with priority
   on deployment incidents, and a release manager as a service when you have nobody in the seat.
 
+DevOps is one practice among several. The same company delivers whole Salesforce projects:
+[Agentforce and Data Cloud](https://cloudity.com/services/ai-and-data/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=help),
+[Revenue Cloud](https://cloudity.com/services/revenue-lifecycle-management/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=help),
+[Field Service](https://cloudity.com/services/field-service-management/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=help),
+[Marketing Cloud](https://cloudity.com/services/marketing-engagement-and-personalization/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=help),
+[integration](https://cloudity.com/services/salesforce-implementation-integration/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=help),
+and [Managed Services](https://cloudity.com/services/managed-services/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=help) for a team that would rather have its org run for it.
+
+[![Cloudity, Salesforce consulting: Agentforce, Data Cloud, Revenue Cloud, Field Service, Marketing Cloud, Integration, Managed Services, DevOps](../_assets/brand/cloudity-services-en.png){ .cloudity-banner .wide-only loading=lazy }](https://cloudity.com/services/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=help)
+[![Cloudity, Salesforce consulting: Agentforce, Data Cloud, Revenue Cloud, Field Service, Marketing Cloud, Integration, Managed Services, DevOps](../_assets/brand/cloudity-services-en-narrow.png){ .cloudity-banner .narrow-only loading=lazy }](https://cloudity.com/services/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=help)
+
 ## Support is what keeps sfdx-hardis maintained
 
 sfdx-hardis is free to use. It is not free to maintain. Three Salesforce releases a year, metadata
@@ -126,4 +147,5 @@ Support subscriptions are what pays for it, and for this course being free. If y
 deliveries on sfdx-hardis, a subscription is the most direct way to keep the project alive and
 moving, and it puts your feature requests in front of the people who decide what ships next.
 
-[What Cloudity offers](https://sfdx-hardis.cloudity.com/salesforce-devops-home/#get-help-from-cloudity){ .md-button .md-button--primary }
+[What Cloudity offers for DevOps](https://sfdx-hardis.cloudity.com/salesforce-devops-home/#get-help-from-cloudity){ .md-button .md-button--primary }
+[All Cloudity services](https://cloudity.com/services/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=help){ .md-button }

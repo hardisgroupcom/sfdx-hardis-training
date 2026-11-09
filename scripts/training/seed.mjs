@@ -19,11 +19,12 @@ import fs from "fs";
 import os from "os";
 import path from "path";
 import {
-  ROOT, c, title, info, ok, warn, abort, run, runAsync, runJson,
+  ROOT, c, title, info, ok, warn, abort, run, runAsync, runStreamed, runJson,
   select, connectedOrgs, orgChoices, universe, readProgress, writeProgress, removeTempDir
 } from "../lib/util.mjs";
 
 const MANAGER_PERMSET = "Helios_Delivery_Manager";
+const ENGLISH = "en_US";
 
 /** The command that puts the Helios app into an org, shared by both routes in. */
 function deployArgs(target) {
@@ -38,6 +39,18 @@ function deployArgs(target) {
     // as a source tracking conflict: this clone has never seen the org
     "--ignore-conflicts"
   ];
+}
+
+/**
+ * What to do about a failed deployment, read from what it printed. A Profile naming a page
+ * layout or a tab the org does not have is not a connection problem, and saying it was sent a
+ * learner to reconnect an org that was connected.
+ */
+function deployFailureHint(output) {
+  if (/no (Layout|CustomTab) named/i.test(output)) {
+    return "A Profile names a page layout or a tab this org does not have: the errors above say which. The If it goes wrong section of Lab 2.6 explains why, and what to change.";
+  }
+  return "Read the errors above. The most common cause is a connection that expired: reconnect the org in Orgs Manager and run this again.";
 }
 
 /**
@@ -70,6 +83,43 @@ export function grantManager(target, options = {}) {
     { quiet: options.quiet === true, capture: true }
   );
   return res.code === 0 || /duplicate/i.test(res.stdout + res.stderr);
+}
+
+/**
+ * Makes the user of an org work in English, and says so when it changed something.
+ *
+ * Salesforce names what it creates in the language of the user who is working: a
+ * page layout made in an org used in French is "Présentation ..." where the same
+ * layout is "... Layout" in the scratch orgs, and a Profile assigns a layout by
+ * its name. A Developer Edition org takes the language of whoever signed up for
+ * it, so the two orgs Level 3 adds would differ from the scratch orgs on names
+ * alone. The labs name every Salesforce screen in English too.
+ */
+export function workInEnglish(target) {
+  const username = runJson("sf", ["org", "display", "--target-org", target, "--json"])?.result?.username;
+  if (!username) {
+    return false;
+  }
+  const where = `Username='${String(username).replace(/'/g, "")}'`;
+  const user = runJson("sf", [
+    "data", "query", "--query", `SELECT LanguageLocaleKey FROM User WHERE ${where}`,
+    "--target-org", target, "--json"
+  ])?.result?.records?.[0];
+  if (!user) {
+    return false;
+  }
+  // en_GB and the others name what Salesforce creates like en_US does
+  if (/^en(_|$)/.test(user.LanguageLocaleKey || "")) {
+    return true;
+  }
+  const res = run("sf", [
+    "data", "update", "record", "--sobject", "User", "--where", where,
+    "--values", `LanguageLocaleKey=${ENGLISH}`, "--target-org", target
+  ], { quiet: true, capture: true });
+  if (res.code === 0) {
+    ok(`Your user in ${c.bold(target)} works in English now, like the labs and the other orgs of the course.`);
+  }
+  return res.code === 0;
 }
 
 /**
@@ -178,14 +228,18 @@ export default async function seed(args) {
   info(`This will put the ${c.bold("Helios Delivery")} app and its sample data into ${c.bold(target)}.`);
   info(c.dim("Nothing is deleted. Running this twice is harmless."));
 
+  if (!workInEnglish(target)) {
+    warn(`The language of your user in ${target} could not be set to English. Set it yourself: your picture, top right > Settings > Language & Time Zone.`);
+  }
+
   // ------------------------------------------------------- 1. metadata
   title("1 of 4  Deploying the Helios Delivery app");
   info(c.dim("    On a brand new org this takes a few minutes."));
-  if (run("sf", deployArgs(target)).code !== 0) {
-    abort(
-      `The deployment to ${target} failed.`,
-      "Read the errors above. The most common cause is a connection that expired: reconnect the org in Orgs Manager and run this again."
-    );
+  // Streamed to the panel: with the console alone, the errors went to an output channel nobody
+  // has open, and "Read the errors above" pointed at nothing
+  const deployment = await runStreamed("sf", deployArgs(target));
+  if (deployment.code !== 0) {
+    abort(`The deployment to ${target} failed.`, deployFailureHint(deployment.output));
   }
   ok("The app is deployed");
 

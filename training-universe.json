@@ -3,7 +3,7 @@
   "version": 1,
   "course": {
     "name": "Salesforce DevOps with sfdx-hardis",
-    "site": "https://sfdx-hardis-training.github.io",
+    "site": "https://sfdx-hardis-training.cloudity.com",
     "upstreamRepo": "hardisgroupcom/sfdx-hardis-training",
     "docSite": "https://sfdx-hardis.cloudity.com",
     "trailheadOwner": "nvuillamy"
@@ -598,7 +598,7 @@
       "level": 1,
       "slug": "level-1-contributor-basics",
       "name": "Contributor basics",
-      "duration": "about 2 h",
+      "duration": "about 2 h 15",
       "prerequisite": null,
       "badge": "sfdx-hardis Contributor Basics",
       "star": "hardisgroupcom/sfdx-hardis",
@@ -732,7 +732,7 @@
       "level": 3,
       "slug": "level-3-release-manager",
       "name": "Release Manager",
-      "duration": "about 7 h 20",
+      "duration": "about 6 h 55",
       "prerequisite": 2,
       "badge": "sfdx-hardis Release Manager",
       "star": "hardisgroupcom/vscode-sfdx-hardis",
@@ -741,8 +741,8 @@
           "lab": 1,
           "slug": "3-1-configure-the-pipeline-up-to-production",
           "title": "Configure the CI/CD pipeline up to production",
-          "description": "Extend a two-stage Salesforce pipeline to production: branches, protections, and each org configured and authenticated with JWT by Add/Configure Org.",
-          "time": "75 min"
+          "description": "Extend a two-stage Salesforce pipeline to production: branches, protections, and each org authenticated with JWT by Add or Reconnect a Major Org.",
+          "time": "50 min"
         },
         {
           "lab": 2,
@@ -761,8 +761,8 @@
         {
           "lab": 4,
           "slug": "3-4-merge-colliding-pull-requests",
-          "title": "Three Pull Requests collide: choose the merge order",
-          "description": "Decide the order three Pull Requests are merged in when two change the same file and one fails its check, as a Salesforce release manager.",
+          "title": "Three Pull Requests in one release: review the merge order",
+          "description": "Review the merge order of two Pull Requests that changed the same permission set, and send back a third that fails its check, as a release manager.",
           "time": "35 min"
         },
         {
@@ -776,7 +776,7 @@
           "lab": 6,
           "slug": "3-6-release-to-production-and-read-dora-metrics",
           "title": "Release to production and read your DORA metrics",
-          "description": "Release through preprod to your production org, verify it, then measure deployment frequency, lead time and failure rate with a DORA report.",
+          "description": "Release through preprod to your production org, verify it, then read deployment frequency, lead time and failure rate in the DORA metrics panel.",
           "time": "35 min"
         },
         {
