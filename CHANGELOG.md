@@ -3,6 +3,10 @@
 What changed in the course, for learners and trainers. The course has no versions: each section is
 a day, newest first, and a change goes under the date of the day it is made.
 
+## 2026-11-09
+
+- Lab 1.2: the lab driver answers the question that a computer already signed in to GitHub gets first, *Fork the course into the GitHub account ...?*, which the lab describes, so the driver no longer stops on it.
+
 ## 2026-11-08
 
 - Lab 1.1: the Browserforce dependency is named **sfdx-browserforce-plugin**, as its card in the Setup panel reads.
