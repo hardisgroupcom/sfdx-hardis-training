@@ -3,7 +3,7 @@
 # mkdocs.yml is the project's own. Build with: python -m zensical build -f course-site.yml
 site_name: Salesforce DevOps with sfdx-hardis
 site_description: Free hands-on Salesforce DevOps training in three levels, from your first Pull Request to owning the CI/CD pipeline, with sfdx-hardis and VS Code
-site_url: https://sfdx-hardis-training.github.io/
+site_url: https://sfdx-hardis-training.cloudity.com/
 repo_url: https://github.com/hardisgroupcom/sfdx-hardis-training
 repo_name: hardisgroupcom/sfdx-hardis-training
 edit_uri: edit/main/labs/
@@ -22,11 +22,10 @@ docs_dir: site-src
 # scripts/build/site.mjs copies to site-src/theme/.
 theme:
   name: material
-  # Holds the Giscus comment widget every page ends with, the banner that says
-  # the course is in QA and asks for comments, and the four partials that keep
-  # each language to itself: the menu, the header logo, the translate widget and
-  # the previous and next arrows. Delete main.html when the course is released,
-  # and keep the folder and custom_dir: everything else in it outlives the QA.
+  # Holds the Giscus comment widget every page ends with, main.html, which sends
+  # a reader to the language they picked, and the four partials that keep each
+  # language to itself: the menu, the header logo, the translate widget and the
+  # previous and next arrows.
   custom_dir: site-overrides
   language: en
   font: false
@@ -129,6 +128,9 @@ extra_javascript:
   # it, so a click used to leave the lab and land on a bare PNG. This opens it
   # over the page instead. See site-theme/javascripts/lightbox.js.
   - theme/javascripts/lightbox.js
+  # Lab pages only: numbered captions under the screenshots, and the ticks a
+  # learner sets as they go, saved in their browser. See lab-page.js.
+  - theme/javascripts/lab-page.js
   # A guard: the template puts nothing after the footer, so anything found
   # there came from a page swap that went wrong. See after-footer.js.
   - theme/javascripts/after-footer.js
@@ -136,19 +138,17 @@ extra_javascript:
   # translate widget kept the links of the page the reader landed on. This
   # rebuilds them on every page change. See language-switch.js.
   - theme/javascripts/language-switch.js
+  # Links to another site open in a new tab, so the lab stays open beside VS
+  # Code. See external-links.js.
+  - theme/javascripts/external-links.js
+  # Something small and furry. It only listens for its two triggers; the rest,
+  # Three.js included, loads the first time one fires. See easter-egg.js.
+  - theme/javascripts/easter-egg.js
+  # The Hall of Fame page only: its boards are read from the game's database
+  # in the browser. See hall-of-fame-page.js.
+  - theme/javascripts/hall-of-fame-page.js
 
 extra:
-  # Which levels still carry the QA banner above the header.
-  #
-  # The banner asks the reader to comment where a step breaks, and it belongs on
-  # the pages where that is still being found out. A level that has been walked
-  # end to end and fixed comes off this list, and its pages stop showing it: the
-  # home page, the backlog, the badges and the story pages never did.
-  #
-  # Level 1 came off on 2026-09-23, after a manual walkthrough in French.
-  # The banner itself is in site-overrides/main.html.
-  qa_levels: [2, 3]
-
   # Google Analytics, on the course's own data stream inside the sfdx-hardis
   # property, so the course and the product documentation can be read together
   # or apart. The theme emits the tag, sends the page view of the page the
@@ -223,8 +223,10 @@ nav:
   # added or a lab renamed.
   #
   # The backlog and the badges are generated per language, so each course block
-  # ends with its own. The one entry in no language is the link to the
-  # sfdx-hardis documentation: another site, written once, in English.
+  # ends with its own, and with the link to Cloudity, whose site has an edition
+  # per language: nav.html tells them apart by their address. The one entry in
+  # no language is the link to the sfdx-hardis documentation: another site,
+  # written once, in English.
   - Home: index.md
   - "Level 1 - Contributor basics":
       - Start here: en/level-1-contributor-basics/index.md
@@ -262,6 +264,9 @@ nav:
   - Help: en/help.md
   - Backlog: BACKLOG.md
   - Badges: badges/index.md
+  - Statistics: stats/index.md
+  - Hall of Fame: hall-of-fame/index.md
+  - Cloudity: https://cloudity.com/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=menu
   - Accueil: fr/index.md
   - "Niveau 1 - Contributeur Salesforce DevOps, les bases":
       - Commencer ici: fr/level-1-contributor-basics/index.md
@@ -299,4 +304,7 @@ nav:
   - Aide: fr/help.md
   - Backlog: fr/BACKLOG.md
   - Badges: fr/badges/index.md
+  - Statistiques: fr/stats/index.md
+  - Hall of Fame: fr/hall-of-fame/index.md
+  - Cloudity: https://cloudity.com/fr/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=menu
   - sfdx-hardis documentation: https://sfdx-hardis.cloudity.com/

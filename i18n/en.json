@@ -1,6 +1,31 @@
 {
   "$comment": "The words of the pages this site generates: the backlog, a story, the badges index and a badge page. The labs are plain markdown under labs/<locale>/ and are not here. English is the reference: a locale is this file translated, plus the story, cast and level text of training-universe.json, which is written in English there. Read by scripts/lib/strings.mjs.",
   "lang": "en",
+  "banners": {
+    "course": {
+      "eyebrow": "FREE HANDS-ON COURSE",
+      "title": "Salesforce DevOps",
+      "titleLight": "with sfdx-hardis",
+      "subtitle": "From your first Pull Request to owning the pipeline",
+      "chips": [
+        "{levels} levels",
+        "{labs} labs",
+        "{levels} badges",
+        "100% free"
+      ],
+      "offeredBy": "offered to you by"
+    },
+    "services": {
+      "eyebrow": "This free course is offered by",
+      "tagline": "Salesforce consulting",
+      "practices": [
+        ["Agentforce", "Data Cloud", "Revenue Cloud"],
+        ["Field Service", "Marketing Cloud", "Integration"],
+        ["Managed Services", "DevOps"]
+      ],
+      "button": "DISCOVER WHAT WE DO"
+    }
+  },
   "backlog": {
     "title": "Helios Energy backlog: the User Stories of the course",
     "description": "Every User Story of the Salesforce DevOps training with sfdx-hardis, with its acceptance criteria, its Git branch and the lab that delivers it.",
@@ -26,6 +51,116 @@
     "backToBacklog": "All the stories of the backlog",
     "labLink": "Lab {level}.{lab} - {title}"
   },
+  "stats": {
+    "title": "Salesforce DevOps training statistics",
+    "description": "How many learners start and finish each level of the free Salesforce DevOps training with sfdx-hardis, and how long the labs really take them.",
+    "heading": "Course statistics",
+    "intro": [
+      "Read every Monday and after every badge awarded, from the public repositories of the {learners} learners who set up the course, and from the badges they claimed.",
+      "Last update: {date}."
+    ],
+    "level": "Level {level} - {name}",
+    "lab": "Lab {lab}",
+    "labs": "Labs {first} to {last}",
+    "labsPair": "Labs {first} and {last}",
+    "percent": "{value}%",
+    "notEnough": "not enough data yet",
+    "observed": "(observed: median {median}, {learners}{fastest})",
+    "learnerOne": "1 learner",
+    "learnerMany": "{sample} learners",
+    "fastest": ", fastest {time}",
+    "observedTogether": "({labs} observed together: median {median}, {learners}{fastest})",
+    "observedLevel": "Observed on {labs}: median {median}, {learners}{fastest}.",
+    "empty": "No numbers yet. They are read every Monday and after every badge awarded, and the first reading has not happened.",
+    "funnel": {
+      "heading": "Started and completed",
+      "intro": [
+        "A level is started when its first branch exists in the learner's repository, and completed when its badge was awarded."
+      ],
+      "columns": [
+        "Level",
+        "Started",
+        "Share of learners",
+        "Completed",
+        "Share of started"
+      ]
+    },
+    "time": {
+      "heading": "Time spent",
+      "intro": [
+        "The median time of the learners who went through, next to the estimate each lab was written with. A figure appears once {minSample} learners are behind it, and from then on it is the time the lab page announces. Under that, the lab keeps its estimate."
+      ],
+      "levelColumns": [
+        "Level",
+        "First estimate",
+        "Median",
+        "Fastest",
+        "Learners"
+      ],
+      "labColumns": ["Labs", "First estimate", "Median", "Fastest", "Learners"],
+      "byLab": {
+        "heading": "Lab by lab",
+        "intro": [
+          "From the learners who ran **Check my work** at the end of each lab: their receipts say when each one passed."
+        ]
+      }
+    },
+    "method": {
+      "heading": "How the time is measured",
+      "body": [
+        "Nobody is timed. The time is read afterwards, between the commits, the Pull Requests and the Pull Request comments of each repository: a lab ends when its Pull Request is merged, and runs from the end of the one before.",
+        "",
+        "A break longer than {cutoff} minutes is not counted, so a learner who stops for the night adds nothing. Work done in the org leaves no trace on GitHub, which makes every figure a low estimate.",
+        "",
+        "Labs 1.1 and 1.2 install the tools and create the orgs before the repository exists. They are not measured, and Level 1 is counted from Lab 1.3.",
+        "",
+        "Labs that share one Pull Request are measured together.",
+        "",
+        "The fastest is the fastest time somebody could have done the lab in. A figure under five minutes, or under a quarter of the median, is two labs checked in a row and is set aside. The slowest is not shown: it is somebody who was interrupted.",
+        "",
+        "The time a lab page announces is this median, rounded down to five minutes, and the time of a level is rounded down to a quarter of an hour. A lab measured with others takes its share of their time, and a lab fewer than {minSample} learners went through keeps its estimate. The pages are rewritten from the figures every Monday and after every badge awarded."
+      ]
+    }
+  },
+  "hallOfFame": {
+    "title": "Guinea Run Hall of Fame",
+    "description": "The best players of Guinea Run, the game hidden in the free Salesforce DevOps training with sfdx-hardis: overall and world by world.",
+    "heading": "Hall of Fame",
+    "intro": [
+      "Guinea Run is a game hidden in this site. Find the guinea pig at the end of the footer of any page, and play.",
+      "",
+      "Each world keeps the best score of each player. Pick a nickname and a guinea pig once in the game, after your first world: from then on your best scores come here on their own."
+    ],
+    "privacy": "Shown to everyone: the nickname, the guinea pig and the scores of each player. Nothing else is stored: no account, no email. A player can remove themselves from the Hall of Fame of the game.",
+    "loading": "Reading the Hall of Fame...",
+    "offline": "The Hall of Fame cannot be read just now. Try again in a moment.",
+    "empty": "Nobody here yet. Play, pick a nickname, and be the first.",
+    "general": {
+      "heading": "All worlds",
+      "intro": "The best score of each world, added up. The top {count} players."
+    },
+    "worlds": {
+      "heading": "World by world",
+      "intro": "The top {count} players of each world. A tie goes to the most stars, then to the fastest boss."
+    },
+    "world": "World {n} - {name}",
+    "worldEmpty": "Nobody finished this world yet.",
+    "generalColumns": ["#", "Player", "Total", "Stars"],
+    "worldColumns": ["#", "Player", "Score", "Mode", "Stars", "Boss time"],
+    "seconds": "{value} s",
+    "pinball": {
+      "heading": "Pipeline Pinball",
+      "intro": "The bonus table, open to whoever finished the ten worlds. The best game of each player, on its own: it is not added to the total. The top {count} players.",
+      "empty": "Nobody has a game of the bonus table here yet.",
+      "columns": ["#", "Player", "Score", "Level", "Missions", "Minutes"]
+    },
+    "orgman": {
+      "heading": "Org-Man",
+      "intro": "The maze, open to whoever finished the ten worlds. The best game of each player, on its own: it is not added to the total. The top {count} players.",
+      "empty": "Nobody has a game of Org-Man here yet.",
+      "columns": ["#", "Player", "Score", "Maze", "Admins caught", "Minutes"]
+    }
+  },
   "badges": {
     "title": "Salesforce DevOps training badges",
     "description": "The learners who finished a level of the free Salesforce DevOps training with sfdx-hardis, checked by a job that read their public repository.",
@@ -36,8 +171,10 @@
       "It is a badge, not a certification: there is no exam here. What it says is that a job read the",
       "person's public repository and found the work."
     ],
-    "columns": ["", "Name", "Highest badge", "GitHub", "Trailblazer"],
+    "columns": ["", "Name", "Awarded", "GitHub", "Trailblazer"],
+    "awardedAt": "{date} {time} UTC",
     "nobody": "Nobody has claimed a badge yet. Be the first.",
+    "totals": "Awarded so far:",
     "claim": {
       "heading": "Claim yours",
       "body": [
@@ -106,6 +243,17 @@
         "There is no exam and no accreditation here. Share this page under *Featured* on LinkedIn, or as a",
         "course. Not under *Licenses & certifications*."
       ]
+    },
+    "cloudity": {
+      "heading": "Who is behind this badge",
+      "body": [
+        "The course is free and open source. It is offered by [Cloudity](https://cloudity.com/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=badge), the Salesforce",
+        "consulting company that builds sfdx-hardis and runs its own projects with it: Agentforce and Data Cloud,",
+        "Revenue Cloud, Field Service, Managed Services and Salesforce DevOps."
+      ],
+      "link": "[See what Cloudity does](https://cloudity.com/services/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=badge)",
+      "bannerAlt": "Cloudity, Salesforce consulting: Agentforce, Data Cloud, Revenue Cloud, Field Service, Marketing Cloud, Integration, Managed Services, DevOps",
+      "bannerUrl": "https://cloudity.com/services/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=badge"
     },
     "takeTheCourse": "Take the course",
     "description": "{name} earned the {badge} badge of the free Salesforce DevOps training with sfdx-hardis, checked by a job that read their public repository.",

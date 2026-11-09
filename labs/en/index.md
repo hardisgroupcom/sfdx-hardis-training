@@ -7,7 +7,12 @@ lang: en
 
 # Salesforce DevOps training with sfdx-hardis
 
+[![Free hands-on Salesforce DevOps course with sfdx-hardis, in three levels with a badge each](../_assets/brand/course-banner-en.png){ .course-banner }](level-1-contributor-basics/index.md)
+
 Three free learning paths that take you from "I have never used Git" to "I own the pipeline".
+
+[Start Level 1](level-1-contributor-basics/index.md){ .md-button .md-button--primary }
+[See the three levels](#the-three-levels){ .md-button }
 
 You will work on a real repository for a fictional solar installer, **Helios Energy**, with free
 Salesforce orgs that come pre-loaded with the app and its data. Everything you do here is
@@ -17,13 +22,18 @@ If Git is new to you, that is the expected starting point. Level 1 defines the s
 repository and fork among them, at the moment you first meet each one, and the VS Code extension
 runs the Git commands for you.
 
+![The DevOps Pipeline panel of sfdx-hardis in VS Code, following a Pull Request from review to production](../_assets/brand/devops-pipeline.gif){ .course-demo loading=lazy }
+
+*The DevOps Pipeline panel of the VS Code extension: where you start each User Story and follow its
+Pull Request to production.*
+
 ## The three levels
 
-| Level                                                                 | Who it is for                                                    | Time | Before you start   | You finish able to                                                                                  |
-|-----------------------------------------------------------------------|------------------------------------------------------------------|------|--------------------|-----------------------------------------------------------------------------------------------------|
-| [**1 - Contributor basics**](level-1-contributor-basics/index.md)     | Admins and developers joining a team that already has a pipeline | 2 h  | Nothing            | Take a User Story, build it, publish it, get a green Pull Request, merge it                         |
-| [**2 - Contributor advanced**](level-2-contributor-advanced/index.md) | The same people, once the easy stories are behind them           | 4 h  | Level 1            | Solve deployment errors, declare deployment actions, handle overwrites, resolve conflicts           |
-| [**3 - Release Manager**](level-3-release-manager/index.md)           | The person who owns the pipeline, the orgs and the releases      | 7 h  | Levels 1 **and** 2 | Take over an org with no pipeline, review and merge, release to UAT and production, hotfix, monitor |
+| Level                                                                 | Who it is for                                                    | Time   | Before you start   | You finish able to                                                                                  |
+|-----------------------------------------------------------------------|------------------------------------------------------------------|--------|--------------------|-----------------------------------------------------------------------------------------------------|
+| [**1 - Contributor basics**](level-1-contributor-basics/index.md)     | Admins and developers joining a team that already has a pipeline | 2 h    | Nothing            | Take a User Story, build it, publish it, get a green Pull Request, merge it                         |
+| [**2 - Contributor advanced**](level-2-contributor-advanced/index.md) | The same people, once the easy stories are behind them           | 6 h 15 | Level 1            | Solve deployment errors, declare deployment actions, handle overwrites, resolve conflicts           |
+| [**3 - Release Manager**](level-3-release-manager/index.md)           | The person who owns the pipeline, the orgs and the releases      | 9 h 15 | Levels 1 **and** 2 | Take over an org with no pipeline, review and merge, release to UAT and production, hotfix, monitor |
 
 Levels 1 and 2 are both the contributor path, and they are for **admins and developers alike**. You
 do not need to know Git, the Salesforce CLI or DevOps: every step is a click in VS Code or on
@@ -45,8 +55,8 @@ conflicts and deployment actions. Someone who has never solved one cannot review
   one download at a time, with screenshots. Nothing to install, or not allowed to?
   [Agentforce Vibes](https://www.salesforce.com/agentforce/developers/vibe-coding/ide/) is VS Code in a browser tab,
   launched from a developer sandbox or from the free Developer Edition org Lab 1.2 signs you up
-  for, and the course runs there too, as it does in
-  [Cursor](https://cursor.com/) and the other editors built on VS Code.
+  for, and the course runs there too, as it does in [Cursor](https://cursor.com/). Follow it in
+  VS Code, Agentforce Vibes or Cursor, and keep the same one from start to finish.
 - A [GitHub](https://github.com/) account, free.
 - One free [Salesforce Developer Edition org](https://developer.salesforce.com/signup) to start
   with, and one more at Level 3. Lab 1.2 signs you up, and creates the other orgs the course
@@ -87,5 +97,25 @@ memory.
 ## Start
 
 [Level 1 - Contributor basics](level-1-contributor-basics/index.md){ .md-button .md-button--primary }
+
+## Who is behind this course
+
+[Cloudity](https://cloudity.com/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=home) is a Salesforce consulting company. It builds sfdx-hardis for its
+own delivery teams, releases it as open source, and offers this course for free. Nothing here is a
+trial: there is no paid version of the course, and none of the product.
+
+What Cloudity sells is the work on real projects:
+[Agentforce and Data Cloud](https://cloudity.com/services/ai-and-data/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=home),
+[Revenue Cloud](https://cloudity.com/services/revenue-lifecycle-management/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=home),
+[Field Service](https://cloudity.com/services/field-service-management/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=home),
+[Marketing Cloud](https://cloudity.com/services/marketing-engagement-and-personalization/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=home),
+[integration](https://cloudity.com/services/salesforce-implementation-integration/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=home),
+[Managed Services](https://cloudity.com/services/managed-services/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=home),
+and [Salesforce DevOps](https://sfdx-hardis.cloudity.com/salesforce-devops-home/#get-help-from-cloudity) with the tools this course teaches.
+
+[![Cloudity, Salesforce consulting: Agentforce, Data Cloud, Revenue Cloud, Field Service, Marketing Cloud, Integration, Managed Services, DevOps](../_assets/brand/cloudity-services-en.png){ .cloudity-banner .wide-only loading=lazy }](https://cloudity.com/services/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=home)
+[![Cloudity, Salesforce consulting: Agentforce, Data Cloud, Revenue Cloud, Field Service, Marketing Cloud, Integration, Managed Services, DevOps](../_assets/brand/cloudity-services-en-narrow.png){ .cloudity-banner .narrow-only loading=lazy }](https://cloudity.com/services/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=home)
+
+[Talk to Cloudity](https://cloudity.com/contact-us/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=home){ .md-button }
 
 [Lire ce cours en français](../fr/index.md)

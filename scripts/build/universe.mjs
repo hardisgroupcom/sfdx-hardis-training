@@ -354,13 +354,19 @@ emit("training-manifest.json", manifest());
 // from the pages, so there is one source of truth for them; these few words
 // have no page to take them from.
 const NAV_LABELS = {
-  en: { home: "Home", start: "Start here", help: "Help", backlog: "Backlog", badges: "Badges" },
-  fr: { home: "Accueil", start: "Commencer ici", help: "Aide", backlog: "Backlog", badges: "Badges" }
+  en: { home: "Home", start: "Start here", help: "Help", backlog: "Backlog", badges: "Badges", stats: "Statistics" },
+  fr: { home: "Accueil", start: "Commencer ici", help: "Aide", backlog: "Backlog", badges: "Badges", stats: "Statistiques" }
 };
 
 // The product documentation, which is not part of this site and is written once,
 // in English. It sits with the backlog and the badges at the end of every menu.
 const DOC_SITE_ENTRY = `  - sfdx-hardis documentation: ${DOC}/`;
+
+// Who offers the course. Its site has an edition per language, so each menu ends
+// with its own link, and site-overrides/partials/nav.html tells them apart by
+// their address. A locale the Cloudity site does not speak gets the English one.
+const CLOUDITY_SITES = { en: "https://cloudity.com/", fr: "https://cloudity.com/fr/" };
+const CLOUDITY_TRACKING = "utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=menu";
 
 /**
  * The navigation, one flat course per locale.
@@ -399,11 +405,14 @@ function nav() {
       }
     }
     lines.push(`  - ${labels.help}: ${locale}/help.md`);
-    // The backlog and the badges are generated pages, one per language, and the
+    // The backlog, the badges and the statistics are generated pages, one per language, and the
     // site language keeps the paths the outside world already holds
+    // The Hall of Fame page is built too, but stays out of the menu: it is reached by its address
     const prefix = locale === "en" ? "" : `${locale}/`;
     lines.push(`  - ${labels.backlog}: ${prefix}BACKLOG.md`);
     lines.push(`  - ${labels.badges}: ${prefix}badges/index.md`);
+    lines.push(`  - ${labels.stats || NAV_LABELS.en.stats}: ${prefix}stats/index.md`);
+    lines.push(`  - Cloudity: ${CLOUDITY_SITES[locale] || CLOUDITY_SITES.en}?${CLOUDITY_TRACKING}`);
   }
   lines.push(DOC_SITE_ENTRY);
   return lines.join("\n") + "\n";

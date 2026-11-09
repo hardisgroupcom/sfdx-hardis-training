@@ -40,16 +40,20 @@ import os from "os";
 import path from "path";
 import {
   ROOT, c, title, info, ok, warn, abort, run, runAsync, runJson, parseJsonOutput, git, gitOut,
-  select, confirm, connectedOrgs, orgChoices, universe, ensureGh, repoSlug, openUrl, removeTempDir
+  select, confirm, connectedOrgs, orgChoices, universe, ensureGh, confirmGhAccount, repoSlug, openUrl, removeTempDir,
+  readProgress, writeProgress
 } from "../lib/util.mjs";
-import { deployAppToAll, grantManager, loadData, recordSeeded, alreadySeeded } from "./seed.mjs";
-import { REQUIRED_CHECKS, protectBranches, withProtectionLifted } from "../lib/protection.mjs";
+import { deployAppToAll, grantManager, loadData, recordSeeded, alreadySeeded, workInEnglish } from "./seed.mjs";
+import { REQUIRED_CHECKS, protectBranches, deleteMergedBranches, withProtectionLifted } from "../lib/protection.mjs";
 
 const UPSTREAM = "hardisgroupcom/sfdx-hardis-training";
 const SCRATCH_DEF = path.join("config", "project-scratch-def.json");
 // The longest a scratch org can live. Setting the maximum is what lets a learner
 // take the course over a few weeks without meeting an expired org.
 const DURATION_DAYS = 30;
+// The settings of the scratch definition that switch a Salesforce feature off, which a scratch
+// org created before they were added still has on: see alignScratchOrgs.
+const SHAPE_SETTINGS = ["fieldServiceSettings", "workDotComSettings"];
 // Branches the fork needs for Levels 1 and 2. main exists in every fork, and
 // preprod is created by the release manager in Lab 3.1, from main.
 const PIPELINE_BRANCHES = ["integration", "uat"];
@@ -145,23 +149,32 @@ export async function findDevHub(orgs, preselected) {
   return select("Which org is your Developer Edition org?", orgChoices(candidates), null);
 }
 
-/** True when the org answers the one query only a Dev Hub can. */
-function isDevHub(alias) {
-  const res = runJson("sf", ["data", "query", "--query", "SELECT Id FROM ScratchOrgInfo LIMIT 1", "--target-org", alias, "--json"]);
-  return res?.status === 0;
-}
+const DEV_HUB_QUERY_TIMEOUT_MS = 2 * 60 * 1000;
+// The deploy waits 10 minutes itself, this is only for a CLI that never returns
+const DEV_HUB_DEPLOY_TIMEOUT_MS = 11 * 60 * 1000;
+const DEV_HUB_BY_HAND = "Open the org, go to Setup > Dev Hub, switch Enable Dev Hub on, then click Set up my training environment again.";
 
 /**
  * Turns Dev Hub on, which is one setting in Setup and cannot be turned off again.
  * On a throwaway Developer Edition org that costs nothing. It is deployed as
  * metadata rather than clicked, so nobody has to find the page.
+ *
+ * Every wait is announced before it starts, and the deploy says every minute
+ * that it is still running: without that, a slow deploy and a stuck one look
+ * the same in the panel.
  */
 export async function ensureDevHub(alias) {
-  if (isDevHub(alias)) {
+  info(`Checking whether ${c.bold(alias)} is a Dev Hub...`);
+  const before = await isDevHub(alias);
+  if (before === "timeout") {
+    abort(`${alias} did not answer within ${DEV_HUB_QUERY_TIMEOUT_MS / 60000} minutes.`, DEV_HUB_BY_HAND);
+  }
+  if (before) {
     ok(`${c.bold(alias)} is already a Dev Hub.`);
     return;
   }
-  info(`Turning Dev Hub on in ${c.bold(alias)}.`);
+  info(`Turning Dev Hub on in ${c.bold(alias)}: deploying the Dev Hub setting, up to 10 minutes.`);
+  info(c.dim(`    If it takes too long: open ${alias}, Setup > Dev Hub, switch Enable Dev Hub on, then click Set up my training environment again.`));
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "helios-devhub-"));
   fs.mkdirSync(path.join(dir, "settings"));
   fs.writeFileSync(
@@ -191,25 +204,40 @@ export async function ensureDevHub(alias) {
     ].join("\n"),
     "utf8"
   );
-  const res = run(
-    "sf",
-    ["project", "deploy", "start", "--metadata-dir", dir, "--target-org", alias, "--wait", "10", "--json"],
-    { quiet: true, capture: true }
-  );
-  removeTempDir(dir);
-  if (res.code !== 0) {
+  const started = Date.now();
+  const ticker = setInterval(() => {
+    const minutes = Math.round((Date.now() - started) / 60000);
+    info(c.dim(`    Still deploying the Dev Hub setting (${minutes} min)...`));
+  }, 60 * 1000);
+  let res;
+  try {
+    res = await runAsync(
+      "sf",
+      ["project", "deploy", "start", "--metadata-dir", dir, "--target-org", alias, "--wait", "10", "--json"],
+      { timeoutMs: DEV_HUB_DEPLOY_TIMEOUT_MS }
+    );
+  } finally {
+    clearInterval(ticker);
+    removeTempDir(dir);
+  }
+  if (res.timedOut) {
+    warn(`The deploy of the Dev Hub setting to ${alias} did not end within ${DEV_HUB_DEPLOY_TIMEOUT_MS / 60000} minutes.`);
+  } else if (res.code !== 0) {
     const json = parseJsonOutput(res.stdout);
     warn(json?.message || (res.stderr || res.stdout).trim().split("\n").slice(-5).join("\n"));
   }
   // The setting is saved before the objects behind it answer queries
-  for (let attempt = 0; res.code === 0 && attempt < 12 && !isDevHub(alias); attempt++) {
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+  let after = false;
+  if (res.code === 0) {
+    info(`Waiting for Dev Hub to take effect in ${c.bold(alias)}, up to a minute...`);
+    after = await isDevHub(alias);
+    for (let attempt = 0; after !== true && attempt < 12; attempt++) {
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      after = await isDevHub(alias);
+    }
   }
-  if (res.code !== 0 || !isDevHub(alias)) {
-    abort(
-      `Dev Hub could not be turned on in ${alias}.`,
-      "Open the org, go to Setup > Dev Hub, switch Enable Dev Hub on, then click Set up my training environment again."
-    );
+  if (after !== true) {
+    abort(`Dev Hub could not be turned on in ${alias}.`, DEV_HUB_BY_HAND);
   }
   // The org answers the query, but the CLI still has "not a Dev Hub" in the
   // auth file it wrote when the org was connected, and `sf org create scratch`
@@ -217,6 +245,22 @@ export async function ensureDevHub(alias) {
   // NotADevHubError on an org that is one.
   run("sf", ["org", "list", "--json"], { quiet: true, capture: true });
   ok(`${c.bold(alias)} is a Dev Hub now.`);
+}
+
+/**
+ * True when the org answers the one query only a Dev Hub can, "timeout" when it
+ * does not answer at all.
+ */
+async function isDevHub(alias) {
+  const res = await runAsync(
+    "sf",
+    ["data", "query", "--query", "SELECT Id FROM ScratchOrgInfo LIMIT 1", "--target-org", alias, "--json"],
+    { timeoutMs: DEV_HUB_QUERY_TIMEOUT_MS }
+  );
+  if (res.timedOut) {
+    return "timeout";
+  }
+  return parseJsonOutput(res.stdout.trim())?.status === 0;
 }
 
 // ------------------------------------------------------------ scratch orgs
@@ -237,6 +281,7 @@ export async function ensureScratchOrgs(devHub, aliases) {
   const orgs = connectedOrgs();
   const hubUsername = (orgs.find((o) => (o.aliases || []).includes(devHub) || o.username === devHub) || {}).username;
   const usernames = {};
+  const kept = [];
   const missing = [];
   for (const alias of aliases) {
     const existing = orgs.find((o) => (o.aliases || []).includes(alias));
@@ -244,6 +289,7 @@ export async function ensureScratchOrgs(devHub, aliases) {
       (!existing.devHubUsername || !hubUsername || existing.devHubUsername === hubUsername);
     if (alive) {
       usernames[alias] = existing.username;
+      kept.push(existing.username);
       ok(`${c.bold(alias)} already exists${existing.expirationDate ? `, until ${existing.expirationDate}` : ""}.`);
     } else {
       if (existing) {
@@ -307,6 +353,9 @@ export async function ensureScratchOrgs(devHub, aliases) {
       warn(`${alias} could not be created: ${json?.message || (res.stderr || res.stdout).trim().split("\n").pop()}`);
     }
   }
+  // Before the stop below: an org this run created has the features of the definition, and the
+  // next run, which keeps it, must not take it for an older one
+  rememberShape(Object.values(usernames).filter((username) => !kept.includes(username)));
   if (failures.length > 0) {
     abort(
       `${failures.length} scratch org(s) could not be created.`,
@@ -314,6 +363,99 @@ export async function ensureScratchOrgs(devHub, aliases) {
     );
   }
   return usernames;
+}
+
+/**
+ * Switches off, in the scratch orgs created before the scratch definition did
+ * it, the Salesforce features a Developer Edition org does not have.
+ *
+ * A scratch org comes with Field Service and the Thanks badges on, and a
+ * Developer Edition org with both off. A Profile retrieved whole lists the page
+ * layout and the tab of every object of its org, those two features' included,
+ * so the Profile of Lab 2.6 could not be deployed to the two Developer Edition
+ * orgs of Level 3. The definition switches them off in a new scratch org; this
+ * does the same in one that already exists, once.
+ */
+export async function alignScratchOrgs(usernames) {
+  const shape = scratchShape();
+  const done = readProgress().scratchShapes || {};
+  const todo = Object.keys(usernames).filter((alias) => done[usernames[alias]] !== shape.id);
+  if (todo.length === 0) {
+    return;
+  }
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "helios-shape-"));
+  fs.mkdirSync(path.join(dir, "settings"));
+  fs.writeFileSync(
+    path.join(dir, "package.xml"),
+    [
+      '<?xml version="1.0" encoding="UTF-8"?>',
+      '<Package xmlns="http://soap.sforce.com/2006/04/metadata">',
+      "    <types>",
+      ...shape.settings.map((setting) => `        <members>${setting.name}</members>`),
+      "        <name>Settings</name>",
+      "    </types>",
+      "    <version>64.0</version>",
+      "</Package>",
+      ""
+    ].join("\n"),
+    "utf8"
+  );
+  for (const setting of shape.settings) {
+    fs.writeFileSync(
+      path.join(dir, "settings", `${setting.name}.settings`),
+      [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        `<${setting.name}Settings xmlns="http://soap.sforce.com/2006/04/metadata">`,
+        ...Object.entries(setting.values).map(([key, value]) => `    <${key}>${value}</${key}>`),
+        `</${setting.name}Settings>`,
+        ""
+      ].join("\n"),
+      "utf8"
+    );
+  }
+  const results = await Promise.all(
+    todo.map(async (alias) => ({
+      alias,
+      res: await runAsync("sf", ["project", "deploy", "start", "--metadata-dir", dir, "--target-org", alias, "--wait", "10", "--json"])
+    }))
+  );
+  removeTempDir(dir);
+  const aligned = [];
+  for (const { alias, res } of results) {
+    if (res.code === 0) {
+      aligned.push(usernames[alias]);
+      ok(`${c.bold(alias)} has the same Salesforce features as a Developer Edition org.`);
+    } else {
+      // Not fatal: the org works, and only a Profile retrieved whole from it would show the difference
+      warn(`${alias} keeps Field Service and the Thanks badges on: ${parseJsonOutput(res.stdout)?.message || "the settings could not be deployed"}`);
+    }
+  }
+  rememberShape(aligned);
+}
+
+/** The feature settings of the scratch definition, and an id that changes when they do. */
+function scratchShape() {
+  const definition = JSON.parse(fs.readFileSync(path.join(ROOT, SCRATCH_DEF), "utf8"));
+  const settings = SHAPE_SETTINGS.filter((key) => definition.settings?.[key]).map((key) => ({
+    // fieldServiceSettings in the definition is the FieldService setting of the Metadata API
+    name: key.charAt(0).toUpperCase() + key.slice(1).replace(/Settings$/, ""),
+    values: definition.settings[key]
+  }));
+  return { settings, id: JSON.stringify(settings) };
+}
+
+/** Records the scratch orgs that have the features of the current definition. */
+function rememberShape(scratchUsernames) {
+  if (scratchUsernames.length === 0) {
+    return;
+  }
+  const progress = readProgress();
+  const { id } = scratchShape();
+  progress.scratchShapes = progress.scratchShapes || {};
+  scratchUsernames.forEach((username) => {
+    progress.scratchShapes[username] = id;
+  });
+  writeProgress(progress);
 }
 
 /** Deploys the app into every scratch org that has not had it yet, then its permissions and data. */
@@ -487,6 +629,39 @@ async function ensureFork(handle) {
   ok(`origin is now ${c.bold(fork)}, and the shared repository is upstream.`);
   ensurePipelineBranches();
   return fork;
+}
+
+/**
+ * GitHub switches issues off on every new fork, and sfdx-hardis keeps the list of the development
+ * orgs (Lab 1.3 registers helios-dev in it) in an issue of the repository: without them, New User
+ * Story warns that it could not register the org. Never stops the setup.
+ */
+async function ensureIssues(slug) {
+  // A fork that was created a second ago can refuse the first read, as in ensureFork
+  let repo = ghJson(["api", `repos/${slug}`]);
+  for (let attempt = 0; !repo && attempt < 5; attempt++) {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    repo = ghJson(["api", `repos/${slug}`]);
+  }
+  if (!repo) {
+    warn(
+      `Could not read the settings of ${slug}, so issues may still be off there. ` +
+        "On GitHub: Settings > General > Features, tick Issues, or run Set up my training environment again."
+    );
+    return;
+  }
+  if (repo.has_issues) {
+    return;
+  }
+  const res = run("gh", ["repo", "edit", slug, "--enable-issues"], { capture: true, quiet: true });
+  if (res.code === 0) {
+    ok(`Issues switched on in ${c.bold(slug)}: sfdx-hardis keeps the list of your development orgs in one.`);
+  } else {
+    warn(
+      `Issues could not be switched on in ${slug}. ` +
+        "On GitHub: Settings > General > Features, tick Issues, or run Set up my training environment again."
+    );
+  }
 }
 
 /**
@@ -803,7 +978,18 @@ export default async function init(args) {
   info(c.dim("already there, and nobody asks a new contributor to build them on their first day."));
   info("");
 
-  await ensureGh();
+  const signedInNow = await ensureGh();
+  // Before anything reads the account: the fork, and the name of the commits.
+  // Only while there is no fork yet: once origin is the fork, it is in the
+  // account it is in, and asking again would only make a learner doubt it.
+  const slugBefore = repoSlug();
+  const forkMade = slugBefore && slugBefore.toLowerCase() !== UPSTREAM.toLowerCase();
+  if (!forkMade && !signedInNow) {
+    if (!(await confirmGhAccount(args.account, { assumeYes: args.yes === true }))) {
+      info("Nothing was changed. Click Set up my training environment again when you know which account to use.");
+      return;
+    }
+  }
   const handle = currentHandle();
   if (!handle) {
     abort("Could not read your GitHub account.", "Click Set up my training environment again.");
@@ -820,20 +1006,27 @@ export default async function init(args) {
   }
   const devHub = await findDevHub(orgs, args.org);
 
+  info(c.dim(`    Your user in ${devHub} will work in English from now on, like the scratch orgs and the labs.`));
   if (!args.yes && !(await confirm(`Build your training environment from ${devHub}?`, true))) {
     info("Nothing was changed.");
     return;
   }
 
   const slug = await ensureFork(handle);
+  await ensureIssues(slug);
   // --no-actions-wait: for automation with no browser, where nobody can click the banner
   const actionsOn = await ensureActions(slug, { wait: args["no-actions-wait"] !== true });
 
   step(3, "Your Dev Hub");
   await ensureDevHub(devHub);
+  // Before the scratch orgs, which are all created in English: see workInEnglish.
+  if (!workInEnglish(devHub)) {
+    warn(`The language of your user in ${devHub} could not be set to English. Set it yourself: your picture, top right > Settings > Language & Time Zone.`);
+  }
 
   step(4, "Your three scratch orgs");
   const usernames = await ensureScratchOrgs(devHub, scratch.map((o) => o.alias));
+  await alignScratchOrgs(usernames);
   pointProjectAt(devHub, devAlias);
 
   step(5, "The Helios app in each of them");
@@ -862,6 +1055,11 @@ export default async function init(args) {
   step(8, "Changes through a Pull Request, merged once green");
   info(c.dim(`    A Pull Request into ${pipeline.map((s) => s.branch).join(" or ")} merges only once ${REQUIRED_CHECKS.join(" and ")} are green.`));
   const protectedBranches = protectBranches(slug, pipeline.map((s) => s.branch));
+  // Only once the major branches are protected: that is what keeps them when a
+  // promotion, whose source is a major branch, is merged.
+  if (protectedBranches) {
+    deleteMergedBranches(slug, pipeline.map((s) => s.branch));
+  }
 
   title("Done");
   info(`Your fork:               https://github.com/${slug}`);

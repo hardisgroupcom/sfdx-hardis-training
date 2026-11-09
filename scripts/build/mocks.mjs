@@ -16,6 +16,7 @@
  *   screenshot/helios/sf-mock-overlay.json     orgs and Apex classes the mock serves
  *   screenshot/helios/git-provider-mock.json   Pull Requests and CI jobs
  *   screenshot/helios/ticket-provider-mock.json  the backlog as a generic ticket provider
+ *   screenshot/helios/dora-report.json         what the DORA metrics panel shows in Lab 3.6
  *   training-project/                          the Helios SFDX workspace
  */
 import fs from "fs";
@@ -113,7 +114,7 @@ writeJson(path.join(OUT, "universe.json"), {
   // Where the "integration" node lands in the diagram, for the click that opens
   // its window. Mermaid lays it out from the branches this universe carries, so
   // it moves whenever they change, and the click then hits empty canvas.
-  branchNode: "1063,539",
+  branchNode: "1063,580",
   // The promotion branches variant of the run (SFDX_HARDIS_DOC_SCREENSHOTS_PROMOTION)
   // shows Lab 3.10: the uat window with its checkbox column, five User Stories
   // waiting there, and the promotion carrying three of them drawn on the uat to
@@ -121,7 +122,7 @@ writeJson(path.join(OUT, "universe.json"), {
   // out differently from the one above, and the rows are the checkboxes of the
   // first, third and fourth stories from the top (US-061, US-059, US-057).
   promotionBranch: "promotion/uat/preprod/2026-09-24-0930",
-  promotionNode: "1073,389",
+  promotionNode: "1073,430",
   promotionRows: "531,353;531,513;531,593",
   // The file the conflict editor shot opens: the Panel Batch layout as
   // hardis:project:promotion:create committed it, markers included. The files
@@ -153,6 +154,12 @@ writeJson(path.join(OUT, "universe.json"), {
   // The order the Deployment Actions tab lists them in, for the editor shots:
   // this project sets the email deliverability before the metadata deployment,
   // and loads its reference data after it
+  // The DORA metrics panel of Lab 3.6: the tab of a branch the capture opens is the one of
+  // production, the tab the lab reads
+  doraBranchTab: "main",
+  // The Export button of that panel on its Overview tab, in the pixels of the capture: the
+  // harness clicks it and takes the open menu, which only this universe shows
+  doraExportMenu: "1766,97",
   actionEditorOrder:
     "command,remove-packagexml-items,manual,data,apex,schedule-batch,publish-community,target-orgs-include,target-orgs-exclude",
   branches: [
@@ -273,7 +280,7 @@ const overlay = {
         value: o.alias,
         description: usernameFor(o.alias)
       })),
-    // What Add/Configure Org (hardis:project:configure:auth) is answered with in
+    // What Add or Reconnect a Major Org (hardis:project:configure:auth) is answered with in
     // Lab 3.1: the preprod branch and its Developer Edition org, among the four
     // major branches a Level 3 fork has. integration and uat keep their auth URL
     // secrets in the lab, so preprod is the first org it walks through
@@ -501,6 +508,9 @@ writeJson(path.join(OUT, "git-provider-mock.json"), {
 // runUiTest.ts in the extension). It is the state Lab 3.10 walks: five User
 // Stories waiting in uat, three of them approved, and the promotion carrying
 // those three to preprod, one of them committed with its conflict markers.
+// Under the five stories the window holds two older Pull Requests, the retrofit
+// of Lab 3.7 and the configuration of Lab 3.8, so uat counts seven, as it does
+// on a learner's fork.
 // Kept apart from the fixture above so every other screenshot of the course
 // still shows a project with no promotion in flight.
 const PROMOTION_BRANCH_NAME = "promotion/uat/preprod/2026-09-24-0930";
@@ -543,6 +553,29 @@ const promotionStories = PROMOTION_MERGE_ORDER.map((id, i) => {
     }
   };
 });
+// Merged into integration before the five stories and promoted to uat with
+// them: never ticked, and still waiting in uat once the promotion is merged
+const PROMOTION_OLDER = [
+  { number: 59, title: "Retrofit: US-045 back down into integration", branch: "retrofit/US-045-retrofit", commit: "4e8a1f6", day: 19, hour: 15 },
+  { number: 60, title: "Pipeline configuration, from the release manager", branch: "config/pipeline-2026-09-20-0905", commit: "a6c03d2", day: 20, hour: 9 }
+].map((pr) => ({
+  ...pr,
+  merged: {
+    id: pr.number,
+    number: pr.number,
+    title: pr.title,
+    sourceBranch: pr.branch,
+    targetBranch: "integration",
+    author: { name: "You", username: "you" },
+    authorLabel: "You",
+    state: "merged",
+    mergeDate: iso(pr.day, pr.hour),
+    createdAt: iso(pr.day, pr.hour),
+    webUrl: `${WEB}/pull/${pr.number}`,
+    jobsStatus: "success",
+    relatedTickets: []
+  }
+}));
 const carriedStories = promotionStories.filter((s) => s.carried);
 const conflicting = promotionStories.find((s) => s.story.id === PROMOTION_CONFLICTING);
 
@@ -655,7 +688,7 @@ writeJson(path.join(OUT, "git-provider-mock-promotion.json"), {
   ],
   mergedPullRequestsByBranch: {
     // Newest first, the way the branch window lists them
-    uat: [...promotionStories].reverse().map((s) => s.merged)
+    uat: [...PROMOTION_OLDER, ...promotionStories].reverse().map((s) => s.merged)
   }
 });
 
@@ -711,13 +744,13 @@ overlay.scenario.promotionCreate = {
   allowedSteps: "uat > preprod",
   branchName: PROMOTION_BRANCH_NAME,
   // Oldest first, the order the candidate table and the cherry-picks follow
-  candidates: promotionStories.map((s) => ({
+  candidates: [...PROMOTION_OLDER, ...promotionStories].map((s) => ({
     number: s.number,
     title: s.merged.title,
     author: login("you"),
     commit: s.commit,
     date: s.merged.mergeDate.replace("T", " ").slice(0, 16),
-    branch: s.story.branch
+    branch: s.merged.sourceBranch
   })),
   selected: carriedStories.map((s) => s.number),
   conflict: { number: conflicting.number, files: PROMOTION_CONFLICT_FILES },
@@ -726,6 +759,275 @@ overlay.scenario.promotionCreate = {
   candidatesReport: "hardis-report/promotion-candidates-2026-09-24-0930",
   promptReport: "hardis-report/promotion-conflicts-prompt-2026-09-24-0931.md"
 };
+// ------------------------------------------------ the first Pull Request
+// Lab 1.6: the Pull Request of US-014, open, in a pipeline nobody else has worked in yet
+// (SF_MOCK_PIPELINE_STATE=fresh-pr). Its comments and the files of its validation job are the
+// ones a real run of that lab produced, so the window reads like the GitHub pictures of the lab.
+const FIRST_PR = JSON.parse(fs.readFileSync(path.join(HERE, "fixtures", "first-pull-request.json"), "utf8"));
+const FIRST_PR_NUMBER = 46;
+const FIRST_PR_WEB = `https://github.com/${LEARNER_LOGIN}/${repo}`;
+const firstValidation = FIRST_PR.workflows.find((run) => run.kind === "validation");
+// The banner of a comment is a picture on the web, and the harness has no network: the comment
+// is shown as a project that turned the banners off gets it, starting at its verdict
+const BANNER = /^!\[[^\]]*\]\(https:\/\/raw\.githubusercontent\.com\/[^)]*pr-banner-[^)]*\)\n+/;
+const withoutBanner = (run) => ({ ...run, body: run.body.replace(BANNER, "") });
+overlay.workflows = { [FIRST_PR_NUMBER]: FIRST_PR.workflows.map(withoutBanner) };
+overlay.jobArtifacts = { [firstValidation.jobUrl]: FIRST_PR.validationFiles };
+writeJson(path.join(OUT, "git-provider-mock-first-pr.json"), {
+  _comment:
+    "The pipeline of Lab 1.6: the learner's first Pull Request, open, and nothing else. Used with SF_MOCK_PIPELINE_STATE=fresh-pr. Generated by scripts/build/mocks.mjs in the sfdx-hardis-training repository: do not edit by hand.",
+  branches: [STORY.branch],
+  addOpenPullRequests: [
+    {
+      id: FIRST_PR_NUMBER,
+      number: FIRST_PR_NUMBER,
+      title: `${STORY.id} Panels Required on Installation`,
+      description: STORY.story,
+      sourceBranch: STORY.branch,
+      targetBranch: "integration",
+      author: { name: "You", username: "you" },
+      authorLabel: "You",
+      state: "open",
+      createdAt: firstValidation.date,
+      updatedAt: firstValidation.date,
+      webUrl: `${FIRST_PR_WEB}/pull/${FIRST_PR_NUMBER}`,
+      jobs: FIRST_PR.workflows.map((run) => ({
+        name: run.kind === "validation" ? "Check deployment to integration" : "MegaLinter",
+        status: "success",
+        webUrl: run.jobUrl,
+        updatedAt: run.date
+      })),
+      jobsStatus: "success",
+      relatedTickets: ticketsOf(STORY)
+    }
+  ]
+});
+
+// ------------------------------------------- the Pull Request under review
+// Lab 3.2: Mariia's Pull Request for US-052, open, on top of the pipeline of Level 3
+// (SFDX_HARDIS_DOC_SCREENSHOTS_EXTRA_PRS names this file). Same origin as above: the comments
+// and the files of a real run of that lab.
+const REVIEW_PR = JSON.parse(fs.readFileSync(path.join(HERE, "fixtures", "review-pull-request.json"), "utf8"));
+const REVIEW_PR_NUMBER = 64;
+const REVIEW_SCENARIO = JSON.parse(
+  fs.readFileSync(path.join(ROOT, "scripts", "simulate", "us-052-layout-columns", "scenario.json"), "utf8")
+);
+const reviewValidation = REVIEW_PR.workflows.find((run) => run.kind === "validation");
+overlay.workflows[REVIEW_PR_NUMBER] = REVIEW_PR.workflows.map(withoutBanner);
+overlay.jobArtifacts[reviewValidation.jobUrl] = REVIEW_PR.validationFiles;
+writeJson(path.join(OUT, "git-provider-mock-review-pr.json"), {
+  _comment:
+    "The Pull Request Lab 3.2 reviews, open. Used with SFDX_HARDIS_DOC_SCREENSHOTS_EXTRA_PRS=git-provider-mock-review-pr.json. Generated by scripts/build/mocks.mjs in the sfdx-hardis-training repository: do not edit by hand.",
+  branches: [REVIEW_SCENARIO.branch],
+  addOpenPullRequests: [
+    {
+      id: REVIEW_PR_NUMBER,
+      number: REVIEW_PR_NUMBER,
+      title: REVIEW_SCENARIO.prTitle,
+      description: REVIEW_SCENARIO.prBody,
+      sourceBranch: REVIEW_SCENARIO.branch,
+      targetBranch: "integration",
+      author: { name: person("mariia").name, username: login("mariia") },
+      authorLabel: person("mariia").name,
+      state: "open",
+      createdAt: reviewValidation.date,
+      updatedAt: reviewValidation.date,
+      webUrl: `${FIRST_PR_WEB}/pull/${REVIEW_PR_NUMBER}`,
+      jobs: REVIEW_PR.workflows.map((run) => ({
+        name: run.kind === "validation" ? "Check deployment to integration" : "MegaLinter",
+        status: "success",
+        webUrl: run.jobUrl,
+        updatedAt: run.date
+      })),
+      jobsStatus: "success",
+      relatedTickets: []
+    }
+  ]
+});
+
+/*
+ * Three panels Lab 3.1 only shows, for settings Helios never switches on: the
+ * Org Initialization steps, a Scratch Org Pool and the Replacement Rules. They
+ * describe what Helios would have if it used them, so the pictures match the
+ * project around them. The shapes are the ones of the extension's own fixtures
+ * in test/fixtures/sf-shim, which the built-in replacement rules are read from.
+ */
+const SHIM = path.join(FIX, "sf-shim");
+const shimFixture = (name) => JSON.parse(fs.readFileSync(path.join(SHIM, name), "utf8"));
+const PERMISSION_SETS = ["Helios_Delivery_Crew", "Helios_Delivery_Manager"];
+const MAJOR_BRANCHES = ["integration", "uat", "preprod", "main"];
+
+const baseOrgInit = shimFixture("org-init.json");
+overlay.orgInit = {
+  ...baseOrgInit,
+  source: "orgInitSteps",
+  legacyKeys: [],
+  steps: [
+    {
+      id: "deploy-sources",
+      label: "Deploy project sources",
+      type: "deploy-sources",
+      orgTypes: ["scratch"],
+      enabled: true,
+      allowFailure: false,
+      runAtPoolFill: true
+    },
+    {
+      id: "assign-permission-sets",
+      label: "Assign the Helios Delivery permission sets",
+      type: "assign-permission-sets",
+      parameters: { permissionSets: PERMISSION_SETS },
+      orgTypes: ["scratch", "sandbox"],
+      enabled: true,
+      allowFailure: true,
+      runAtPoolFill: true
+    },
+    {
+      id: "load-baseline",
+      label: "Load the Helios baseline records",
+      type: "data",
+      parameters: { sfdmuProject: "HeliosBaseline" },
+      orgTypes: ["scratch"],
+      enabled: true,
+      allowFailure: false,
+      runAtPoolFill: true
+    },
+    {
+      id: "load-crew-reference-data",
+      label: "Load the crew reference data",
+      type: "data",
+      parameters: { sfdmuProject: "HeliosCrewRefData" },
+      orgTypes: ["scratch", "sandbox"],
+      enabled: true,
+      allowFailure: false,
+      runAtPoolFill: false
+    }
+  ],
+  definitionErrors: [],
+  scratchDef: {
+    path: "config/project-scratch-def.json",
+    exists: true,
+    content: JSON.parse(fs.readFileSync(path.join(ROOT, "config", "project-scratch-def.json"), "utf8")),
+    issues: []
+  },
+  scratchOrgDuration: 30,
+  scratchOrgMajorBranch: "integration",
+  scratchOrgShapes: {
+    global: null,
+    branches: Object.fromEntries(MAJOR_BRANCHES.map((branch) => [branch, null])),
+    majorBranches: MAJOR_BRANCHES
+  }
+};
+
+// Four scratch orgs ready of five, filled every night from integration
+const poolOrg = (day) => {
+  const stamp = `202609${String(day).padStart(2, "0")}`;
+  const expires = new Date(Date.UTC(2026, 8, day + 30));
+  return {
+    alias: `PO-h3Lx-integration_${stamp}_0312`,
+    username: `helios.deploy+po-h3lx-${stamp}@heliostraining.invalid`,
+    instanceUrl: `https://helios-po-h3lx-${stamp.slice(4)}-dev-ed.scratch.my.salesforce.com`,
+    createdDate: `2026-09-${String(day).padStart(2, "0")}T03:12:41.000Z`,
+    expirationDate: expires.toISOString().slice(0, 10),
+    daysLeft: day + 30 - 25
+  };
+};
+const poolJob = (id) => `${WEB}/actions/runs/${id}`;
+overlay.scratchOrgPool = {
+  storageService: "gitProvider",
+  dashboardUrl: `${WEB}/issues/7`,
+  available: 4,
+  max: 5,
+  canTake: true,
+  keyStatus: "ok",
+  orgs: [18, 21, 23, 25].map(poolOrg),
+  history: [
+    { date: iso(24, 14), by: login("mariia"), branch: "training/mate-us-019-quote-pdf", pullRequest: "", jobUrl: "", alias: "PO-h3Lx-integration_20260917_0312" },
+    { date: iso(22, 9), by: "github-actions[bot]", branch: "training/mate-us-020-apex-refactor", pullRequest: "#3", jobUrl: poolJob(18110452071), alias: "PO-h3Lx-integration_20260916_0312" },
+    { date: iso(19, 10), by: login("victor"), branch: "features/US-024-crew-size-required", pullRequest: "", jobUrl: "", alias: "PO-h3Lx-integration_20260915_0312" }
+  ],
+  failures: [],
+  lastRefresh: { date: "2026-09-25T03:12:48.000Z", jobUrl: poolJob(18110987345) },
+  devHubLimits: {
+    activeScratchOrgs: { used: 8, max: 40 },
+    dailyScratchOrgs: { used: 2, max: 80 }
+  }
+};
+
+// The warehouse URL of each org (Helios_Warehouse says so itself), and ViewSetup off in production
+const baseRules = shimFixture("replacement-rules.json");
+const WAREHOUSE = {
+  integration: "https://warehouse-int.helios.invalid",
+  uat: "https://warehouse-uat.helios.invalid",
+  preprod: "https://warehouse-preprod.helios.invalid",
+  main: "https://warehouse.helios.invalid",
+  default: "https://warehouse-dev.helios.invalid"
+};
+const HELIOS_RULES = [
+  {
+    id: "warehouse-url",
+    description: "Each org books panel batches with its own warehouse system",
+    type: "xml-value",
+    files: "**/remoteSiteSettings/Helios_Warehouse.remoteSite-meta.xml",
+    xmlPath: "RemoteSiteSetting/url",
+    values: WAREHOUSE,
+    required: true
+  },
+  {
+    id: "remove-view-setup-in-production",
+    description: "Crew members see Setup in the sandboxes only",
+    type: "xml-remove",
+    files: "**/profiles/Helios Crew.profile-meta.xml",
+    xmlPath: "Profile/userPermissions[name=ViewSetup]",
+    includeTargetBranches: ["main"]
+  }
+];
+const effectiveFor = (branch) => [
+  ...HELIOS_RULES.map((rule) => {
+    const applies = !rule.includeTargetBranches || rule.includeTargetBranches.includes(branch);
+    const resolved = rule.values ? { source: "branch", value: rule.values[branch] } : { source: "none" };
+    return { ...rule, enabled: true, origins: ["project"], builtIn: false, applies, resolved };
+  }),
+  ...(baseRules.list.effective.integration || []).filter((rule) => rule.builtIn)
+];
+const builtInCount = baseRules.list.builtInRules.length;
+overlay.replacementRules = {
+  ...baseRules,
+  list: {
+    ...baseRules.list,
+    outputString: `${HELIOS_RULES.length} replacement rules (${HELIOS_RULES.length} in project), ${builtInCount} built-in rules`,
+    definitions: HELIOS_RULES.map((rule) => ({ layer: "project", file: "config/.sfdx-hardis.yml", rule, overrides: [] })),
+    effective: Object.fromEntries([...MAJOR_BRANCHES, "default"].map((branch) => [branch, effectiveFor(branch)])),
+    layers: {
+      project: { file: "config/.sfdx-hardis.yml", count: HELIOS_RULES.length },
+      branches: [],
+      issue: { available: true, number: 0, url: "", count: 0 }
+    },
+    majorBranches: baseRules.list.majorBranches,
+    secretLookups: {},
+    issues: []
+  },
+  preview: Object.fromEntries(
+    ["uat", "main"].map((branch) => [
+      branch,
+      {
+        target: { targetBranch: branch, label: branch, apiVersion: 68 },
+        results: [
+          {
+            file: "force-app/main/default/remoteSiteSettings/Helios_Warehouse.remoteSite-meta.xml",
+            ruleId: "warehouse-url",
+            origins: ["project"],
+            status: "changed",
+            count: 1
+          }
+        ],
+        warnings: [],
+        appliedRules: [{ id: "warehouse-url", origins: ["project"], files: 1 }]
+      }
+    ])
+  )
+};
+
 writeJson(path.join(OUT, "sf-mock-overlay.json"), overlay);
 
 // ---------------------------------------------------- ticket-provider-mock
@@ -945,7 +1247,7 @@ const ACTIONS_YAML = `commandsPreDeploy:
     context: all
 commandsPostDeploy:
   - id: 7a1c3d2e-2d0b-4f1e-8e3b-024b00000002
-    label: Load the crew capacity reference data
+    label: Load crew capacity reference data
     type: data
     when: post-deploy
     parameters:
@@ -1117,6 +1419,418 @@ writeJson(path.join(OUT, "git-provider-mock-action-recovery.json"), {
     closeActionId: recoveryActionIds[2],
     closeActionLabel: "Add the deployment user to the Crew Leads group"
   }
+});
+
+// ------------------------------------------------------------ DORA metrics
+// Lab 3.6 step 7: what sf hardis:doc:dora-report --data-only --compare --json answers the
+// evening the first release reached production. The mocked CLI serves this file to the
+// DORA metrics panel when the universe is helios.
+//
+// It is the pipeline of a learner, not of a team: three weeks old inside a 90 day period,
+// ten deployments to integration and one to each of the three other orgs, one failed
+// deployment job (US-062, Lab 3.3 part 3) and one Pull Request left open (US-020, sent
+// back in Lab 3.4). The period before is empty, so nothing has a previous value.
+//
+// Nothing below is typed in: the jobs and the Pull Requests are listed, and every count,
+// rate, median, weekly bar and rating is computed from them with the formulas of
+// src/common/utils/doraMetricsUtils.ts, doraAttentionUtils.ts and doraUtils.ts in
+// sfdx-hardis. Change a job and the numbers follow.
+const DORA_NOW = Date.parse("2026-09-22T17:15:00.000Z");
+const DORA_DAYS = 90;
+const DAY_MS = 86400000;
+const HOUR_MS = 3600000;
+const DORA_FROM = DORA_NOW - DORA_DAYS * DAY_MS;
+const DORA_PREVIOUS_FROM = DORA_FROM - DORA_DAYS * DAY_MS;
+// The fork of the learner, as the first Pull Request fixture names it
+const DORA_WEB = `https://github.com/${LEARNER_LOGIN}/${repo}`;
+const DORA_DEPLOYMENT_JOB = "Process Deployment (sfdx-hardis)";
+const doraStoryTitle = (id) => {
+  const story = u.userStories.find((s) => s.id === id);
+  return `${story.id} ${story.title}`;
+};
+const doraIso = (time) => new Date(time).toISOString().replace(".000Z", "Z");
+const at = (day, hour, minute = 15) => Date.parse(`2026-09-${String(day).padStart(2, "0")}T${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}:00.000Z`);
+
+// One line per Pull Request: number, title, author, source branch, created, merged (null: still
+// open), who merged it, how long its deployment job waited and ran (seconds), and how the job ended.
+// checks is the result of each deployment check of the Pull Request, in order
+const DORA_PULL_REQUESTS = {
+  integration: [
+    { n: 40, title: doraStoryTitle("US-014"), by: "you", branch: "features/US-014-panels-required", created: at(3, 9), merged: at(4, 16), mergedBy: "victor", wait: 6, ran: 171, ok: true, checks: [true] },
+    { n: 41, title: doraStoryTitle("US-016"), by: "you", branch: "features/US-016-crew-notes", created: at(4, 9), merged: at(5, 16), mergedBy: "victor", wait: 5, ran: 158, ok: true, checks: [true] },
+    { n: 1, title: doraStoryTitle("US-018"), by: "mariia", branch: "training/mate-us-018-crew-capacity", created: at(10, 8), merged: at(11, 10), mergedBy: "victor", wait: 9, ran: 186, ok: true, checks: [true] },
+    { n: 24, title: doraStoryTitle("US-024"), by: "you", branch: "features/US-024-crew-size-required", created: at(16, 9), merged: at(16, 15), mergedBy: "victor", wait: 4, ran: 204, ok: true, checks: [false, true] },
+    { n: 2, title: doraStoryTitle("US-019"), by: "romain", branch: "training/mate-us-019-quote-pdf", created: at(11, 8), merged: at(17, 11), mergedBy: "you", wait: 7, ran: 192, ok: true, checks: [true] },
+    { n: 60, title: doraStoryTitle("US-050"), by: "you", branch: "features/US-050-pipeline-up-to-production", created: at(17, 13), merged: at(17, 15), mergedBy: "you", wait: 5, ran: 149, ok: true, checks: [true] },
+    { n: 64, title: doraStoryTitle("US-052"), by: "mariia", branch: "training/mate-us-052-layout-columns", created: at(18, 8), merged: at(18, 14), mergedBy: "you", wait: 8, ran: 163, ok: true, checks: [true] },
+    { n: 70, title: doraStoryTitle("US-056"), by: "romain", branch: "training/mate-us-056-crew-workload", created: at(18, 15), merged: at(19, 11), mergedBy: "you", wait: 6, ran: 177, ok: true, checks: [false, true] },
+    { n: RECOVERY_PR_NUMBER, title: doraStoryTitle("US-062"), by: "mariia", branch: recoveryStory.branch, created: at(19, 9), merged: at(19, 16, 11), mergedBy: "you", wait: 5, ran: 231, ok: false, checks: [true] },
+    { n: RECOVERY_FIX_PR_NUMBER, title: "US-062 Fix the crew capacity action", by: "mariia", branch: "training/mate-us-062-crew-leads-fix", created: at(20, 9), merged: at(20, 11), mergedBy: "you", wait: 7, ran: 182, ok: true, checks: [true] },
+    { n: 3, title: doraStoryTitle("US-020"), by: "mariia", branch: "training/mate-us-020-apex-refactor", created: at(12, 8), merged: null, checks: [false] }
+  ],
+  uat: [
+    { n: 73, title: "Promotion 2026-09: crew capacity cap, quote PDF", by: "you", branch: "integration", created: at(21, 10), merged: at(21, 14), mergedBy: "you", wait: 6, ran: 214, ok: true, checks: [true] }
+  ],
+  preprod: [
+    { n: 74, title: "Promotion 2026-09 to preprod", by: "you", branch: "uat", created: at(22, 8), merged: at(22, 10), mergedBy: "you", wait: 8, ran: 262, ok: true, checks: [true] }
+  ],
+  main: [
+    { n: 75, title: "Release 2026-09 to production", by: "you", branch: "preprod", created: at(22, 13), merged: at(22, 15), mergedBy: "you", wait: 5, ran: 281, ok: true, checks: [true] }
+  ]
+};
+
+// The same helpers as src/common/utils/statsUtils.ts
+const doraMedian = (values) => {
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+};
+const doraPercentile = (values, p) => {
+  const sorted = [...values].sort((a, b) => a - b);
+  return sorted[Math.max(0, Math.ceil((p / 100) * sorted.length) - 1)];
+};
+const round1 = (value) => Math.round(value * 10) / 10;
+const round2 = (value) => Math.round(value * 100) / 100;
+const doraAverage = (values) => values.reduce((sum, value) => sum + value, 0) / values.length;
+const doraDistribution = (values) =>
+  values.length === 0
+    ? { median: null, p90: null, avg: null }
+    : { median: round1(doraMedian(values)), p90: round1(doraPercentile(values, 90)), avg: round1(doraAverage(values)) };
+// The benchmarks of doraUtils.ts: frequency in deployments per day (higher is better), the others lower is better
+const doraLevelHigherIsBetter = (value, [elite, high, medium]) =>
+  value == null ? "none" : value >= elite ? "elite" : value >= high ? "high" : value >= medium ? "medium" : "low";
+const doraLevelLowerIsBetter = (value, [elite, high, medium]) =>
+  value == null ? "none" : value <= elite ? "elite" : value <= high ? "high" : value <= medium ? "medium" : "low";
+// ISO 8601 week of a date, like weekKey() of doraUtils.ts, in UTC so the file does not depend on the machine
+const doraWeekKey = (time) => {
+  const d = new Date(time);
+  const day = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+  day.setUTCDate(day.getUTCDate() + 4 - (day.getUTCDay() || 7));
+  const week = Math.ceil(((day.getTime() - Date.UTC(day.getUTCFullYear(), 0, 1)) / DAY_MS + 1) / 7);
+  return `${day.getUTCFullYear()}-W${String(week).padStart(2, "0")}`;
+};
+const doraWeekLabels = () => {
+  const labels = [];
+  for (let time = DORA_FROM; time <= DORA_NOW; time += 7 * DAY_MS) {
+    if (!labels.includes(doraWeekKey(time))) {
+      labels.push(doraWeekKey(time));
+    }
+  }
+  if (!labels.includes(doraWeekKey(DORA_NOW))) {
+    labels.push(doraWeekKey(DORA_NOW));
+  }
+  return labels;
+};
+const inDoraPeriod = (time) => time >= DORA_FROM && time < DORA_NOW;
+
+const DORA_LEVELS = { integration: 10, uat: 20, preprod: 30, main: 100 };
+let doraRunId = 17830000000;
+const doraBranches = u.branches.majors.map((name) => {
+  const all = DORA_PULL_REQUESTS[name];
+  const mergedPrs = all.filter((pr) => pr.merged != null);
+  const openPrs = all.filter((pr) => pr.merged == null);
+  // The deployment job of each merge, oldest first
+  const runs = mergedPrs
+    .map((pr) => {
+      const queued = pr.merged + 4000;
+      const started = queued + pr.wait * 1000;
+      doraRunId += 1873;
+      return { pr, queued, started, finished: started + pr.ran * 1000, ok: pr.ok, by: person(pr.mergedBy).name, url: `${DORA_WEB}/actions/runs/${doraRunId}` };
+    })
+    .sort((a, b) => a.finished - b.finished);
+  const succeeded = runs.filter((run) => run.ok);
+  const failed = runs.filter((run) => !run.ok);
+  const deployments = runs.length;
+  const perDay = succeeded.length / DORA_DAYS;
+  const ref = (pr) => ({ id: String(pr.n), title: pr.title, url: `${DORA_WEB}/pull/${pr.n}`, author: person(pr.by).name });
+
+  // Lead time: from the creation of the Pull Request to the end of the job that deployed its
+  // merge, which is the next successful one when its own job failed
+  const leadTimes = mergedPrs.map((pr) => {
+    const own = succeeded.find((run) => run.pr === pr);
+    const deployment = own || succeeded.find((run) => run.queued >= pr.merged && run.queued - pr.merged <= 14 * DAY_MS);
+    return { pr, days: ((deployment ? deployment.finished : pr.merged) - pr.created) / DAY_MS };
+  });
+  const failedDeployments = failed.map((run) => {
+    const recovery = succeeded.find((candidate) => candidate.finished > run.finished);
+    return {
+      date: doraIso(run.finished),
+      runName: DORA_DEPLOYMENT_JOB,
+      runUrl: run.url,
+      triggeredBy: run.by,
+      pullRequest: ref(run.pr),
+      recoveryHours: recovery ? round1((recovery.finished - run.finished) / HOUR_MS) : null
+    };
+  });
+  const recoveryHours = failedDeployments.map((failure) => failure.recoveryHours).filter((hours) => hours != null && hours > 0);
+  const hotfixPrs = mergedPrs.filter((pr) => /^(hotfix|fix|bugfix)[/-]/i.test(pr.branch));
+  let quickFixes = 0;
+  for (let i = 1; i < runs.length; i++) {
+    const gap = runs[i].finished - runs[i - 1].finished;
+    if (runs[i].ok && !runs[i - 1].ok && gap > 0 && gap <= 24 * HOUR_MS) {
+      quickFixes++;
+    }
+  }
+  const cycles = mergedPrs.map((pr) => ({ pr, days: (pr.merged - pr.created) / DAY_MS }));
+  // The checks of every Pull Request of the branch, a few minutes after it was opened, then after each fix
+  const checks = all.flatMap((pr) => pr.checks.map((ok, index) => ({ ok, finished: pr.created + (index * 90 + 4) * 60000 })));
+  const weeks = new Map(
+    doraWeekLabels().map((week) => [week, { week, succeeded: 0, failed: 0, canceled: 0, validations: 0, validationsFailed: 0, leadTimeMedianDays: null, leadTimes: [] }])
+  );
+  for (const run of runs) {
+    weeks.get(doraWeekKey(run.finished))[run.ok ? "succeeded" : "failed"]++;
+  }
+  for (const check of checks) {
+    const week = weeks.get(doraWeekKey(check.finished));
+    week.validations++;
+    week.validationsFailed += check.ok ? 0 : 1;
+  }
+  for (const entry of leadTimes) {
+    weeks.get(doraWeekKey(entry.pr.merged)).leadTimes.push(entry.days);
+  }
+  if ([...runs.map((run) => run.finished), ...checks.map((check) => check.finished), ...mergedPrs.map((pr) => pr.merged)].some((time) => !inDoraPeriod(time))) {
+    console.error(`DORA fixture: a job or a Pull Request of ${name} is outside the period.`);
+    process.exit(1);
+  }
+
+  const failureRate = deployments > 0 ? round1((failed.length / deployments) * 100) : null;
+  const reworkRate = deployments > 0 ? round1((Math.max(hotfixPrs.length, quickFixes) / deployments) * 100) : null;
+  const leadTime = doraDistribution(leadTimes.map((entry) => entry.days));
+  const recovery = doraDistribution(recoveryHours);
+
+  // Needs attention: the rules of doraAttentionUtils.ts, with the messages of sfdx-hardis in English
+  const attention = [];
+  const daysSince = (time) => Math.floor((DORA_NOW - time) / DAY_MS);
+  const last = runs[runs.length - 1];
+  if (last && !last.ok) {
+    attention.push({
+      code: "deploymentFailing",
+      severity: "error",
+      message: `Deployment failed on ${doraIso(last.finished).split("T")[0]} and has not succeeded since (${daysSince(last.finished)} days)`,
+      url: last.url
+    });
+  }
+  const stale = openPrs.filter((pr) => daysSince(pr.created) > 7).sort((a, b) => a.created - b.created);
+  if (stale.length > 0) {
+    attention.push({
+      code: "stalePullRequests",
+      severity: "warning",
+      message: `${stale.length} Pull Request(s) open for more than 7 days, oldest: ${stale[0].title} (${daysSince(stale[0].created)} days)`,
+      url: `${DORA_WEB}/pull/${stale[0].n}`
+    });
+  }
+  // failureRateUp needs a previous rate and noRecentDeployment 30 days without a deployment: neither can fire here
+
+  return {
+    result: {
+      name,
+      level: DORA_LEVELS[name],
+      isProduction: name === "main",
+      oldestRunDate: runs.length > 0 ? doraIso(runs[0].finished) : null,
+      metrics: {
+        deploymentFrequency: {
+          perDay: round2(perDay),
+          perWeek: round1(perDay * 7),
+          level: doraLevelHigherIsBetter(deployments === 0 ? null : perDay, [1, 1 / 7, 1 / 30]),
+          previousPerWeek: null
+        },
+        leadTime: { medianDays: leadTime.median, p90Days: leadTime.p90, avgDays: leadTime.avg, level: doraLevelLowerIsBetter(leadTime.median, [1, 7, 30]), previousMedianDays: null },
+        changeFailureRate: { percent: failureRate, level: doraLevelLowerIsBetter(failureRate, [5, 10, 15]), previousPercent: null },
+        mttr: { medianHours: recovery.median, avgHours: recovery.avg, recoveries: recoveryHours.length, level: doraLevelLowerIsBetter(recovery.median, [1, 24, 168]), previousMedianHours: null },
+        reworkRate: { percent: reworkRate, level: doraLevelLowerIsBetter(reworkRate, [5, 10, 20]), previousPercent: null }
+      },
+      supplementary: {
+        deploymentDuration: doraDistribution(succeeded.map((run) => (run.finished - run.started) / 60000)),
+        queueTime: doraDistribution(runs.map((run) => (run.started - run.queued) / 60000)),
+        prCycleTime: doraDistribution(cycles.map((entry) => entry.days)),
+        changeVolume: { prsPerWeek: round1((mergedPrs.length / DORA_DAYS) * 7), deploymentsPerWeek: round1(perDay * 7) },
+        validationSuccessRate: checks.length > 0 ? round1((checks.filter((check) => check.ok).length / checks.length) * 100) : null
+      },
+      counts: {
+        deployments,
+        succeeded: succeeded.length,
+        failed: failed.length,
+        canceled: 0,
+        validations: checks.length,
+        pullRequests: mergedPrs.length,
+        openPullRequests: openPrs.length
+      },
+      weeks: [...weeks.values()].map(({ leadTimes: weekLeadTimes, ...week }) => ({
+        ...week,
+        leadTimeMedianDays: weekLeadTimes.length > 0 ? round1(doraMedian(weekLeadTimes)) : null
+      })),
+      failedDeployments: failedDeployments.reverse(),
+      slowPullRequests: cycles
+        .filter((entry) => entry.days > 7)
+        .sort((a, b) => b.days - a.days)
+        .map((entry) => ({ ...ref(entry.pr), cycleDays: round1(entry.days) })),
+      hotfixPullRequests: hotfixPrs.map((pr) => ({ ...ref(pr), sourceBranch: pr.branch, mergedDate: doraIso(pr.merged) })),
+      attention
+    },
+    runs,
+    mergedPrs,
+    cycles
+  };
+});
+
+// The people behind the Pull Requests and the deployment jobs, the most active first
+const doraPeople = new Map();
+const doraPerson = (handle) => {
+  const name = person(handle).name;
+  if (!doraPeople.has(name)) {
+    doraPeople.set(name, { name, pullRequests: 0, cycleDays: [], deploymentsTriggered: 0, failedDeployments: 0 });
+  }
+  return doraPeople.get(name);
+};
+for (const branch of doraBranches) {
+  for (const entry of branch.cycles) {
+    doraPerson(entry.pr.by).pullRequests++;
+    doraPerson(entry.pr.by).cycleDays.push(entry.days);
+  }
+  for (const run of branch.runs) {
+    doraPerson(run.pr.mergedBy).deploymentsTriggered++;
+    doraPerson(run.pr.mergedBy).failedDeployments += run.ok ? 0 : 1;
+  }
+}
+
+// Pipeline flow: the rules of src/common/utils/doraPipelineUtils.ts in sfdx-hardis. A Pull
+// Request whose source is a major branch moves the stories that were in that branch when it
+// was merged; every other Pull Request is a story, which enters the pipeline where it was merged.
+// A story is in an org from the end of the deployment job of the merge that brought it.
+const doraMajors = u.branches.majors;
+const doraDeployedAt = (branch, pr) => {
+  const succeeded = branch.runs.filter((run) => run.ok);
+  const deployment = succeeded.find((run) => run.pr === pr) || succeeded.find((run) => run.queued >= pr.merged && run.queued - pr.merged <= 14 * DAY_MS);
+  return deployment ? deployment.finished : pr.merged;
+};
+const doraStories = [];
+const doraVehicles = [];
+doraBranches.forEach((branch, index) => {
+  const name = doraMajors[index];
+  for (const pr of branch.mergedPrs) {
+    if (doraMajors.includes(pr.branch)) {
+      doraVehicles.push({ pr, source: pr.branch, target: name, branch });
+    } else {
+      doraStories.push({ pr, entered: name, stops: new Map([[name, { arrivedAt: pr.merged, deployedAt: doraDeployedAt(branch, pr) }]]) });
+    }
+  }
+});
+for (const vehicle of doraVehicles.sort((a, b) => a.pr.merged - b.pr.merged)) {
+  // A merge back into an earlier branch moves nothing
+  if (doraMajors.indexOf(vehicle.source) > doraMajors.indexOf(vehicle.target)) {
+    continue;
+  }
+  for (const story of doraStories) {
+    const inSource = story.stops.get(vehicle.source);
+    if (inSource && inSource.arrivedAt <= vehicle.pr.merged && !story.stops.has(vehicle.target)) {
+      story.stops.set(vehicle.target, { arrivedAt: vehicle.pr.merged, deployedAt: doraDeployedAt(vehicle.branch, vehicle.pr) });
+    }
+  }
+}
+const doraStoryRef = (pr) => ({ id: String(pr.n), title: pr.title, url: `${DORA_WEB}/pull/${pr.n}`, author: person(pr.by).name });
+const doraLeadOf = (story, name) => (story.stops.get(name).deployedAt - story.pr.created) / DAY_MS;
+const doraWeeklyLead = (stories, name) => {
+  const weeks = new Map(doraWeekLabels().map((week) => [week, []]));
+  for (const story of stories) {
+    weeks.get(doraWeekKey(story.stops.get(name).deployedAt)).push(doraLeadOf(story, name));
+  }
+  return [...weeks.entries()].map(([week, values]) => ({ week, medianDays: values.length > 0 ? round1(doraMedian(values)) : null, changes: values.length }));
+};
+// Lead time of the stories that reached each branch, whatever merge brought them there
+doraBranches.forEach((branch, index) => {
+  const name = doraMajors[index];
+  const reached = doraStories.filter((story) => story.stops.has(name));
+  const lead = doraDistribution(reached.map((story) => doraLeadOf(story, name)));
+  branch.result.metrics.changeLeadTime = {
+    medianDays: lead.median,
+    p90Days: lead.p90,
+    avgDays: lead.avg,
+    level: doraLevelLowerIsBetter(lead.median, [1, 7, 30]),
+    previousMedianDays: null,
+    changes: reached.length,
+    weeks: doraWeeklyLead(reached, name).map(({ week, medianDays }) => ({ week, medianDays }))
+  };
+});
+const doraSteps = doraMajors.slice(1).map((to, index) => {
+  const from = doraMajors[index];
+  const through = doraStories.filter((story) => story.stops.has(from) && story.stops.has(to));
+  return {
+    from,
+    to,
+    changes: through.length,
+    viaPromotion: 0,
+    waitDays: doraDistribution(through.map((story) => (story.stops.get(to).deployedAt - story.stops.get(from).deployedAt) / DAY_MS)),
+    previousMedianDays: null
+  };
+});
+const doraMeasuredSteps = doraSteps.filter((step) => step.waitDays.median != null).sort((a, b) => b.waitDays.median - a.waitDays.median);
+const doraProduction = doraMajors[doraMajors.length - 1];
+const doraDelivered = doraStories.filter((story) => story.stops.has(doraProduction));
+const doraToProduction = doraDistribution(doraDelivered.map((story) => doraLeadOf(story, doraProduction)));
+const doraPipeline = {
+  stages: doraMajors.map((name, index) => {
+    const waiting = doraStories
+      .filter((story) => story.stops.has(name) && !doraMajors.slice(index + 1).some((later) => story.stops.has(later)))
+      .map((story) => ({ story, since: story.stops.get(name).deployedAt }))
+      .sort((a, b) => a.since - b.since);
+    const ages = waiting.map((entry) => (DORA_NOW - entry.since) / DAY_MS);
+    return {
+      branch: name,
+      isProduction: name === doraProduction,
+      entered: doraStories.filter((story) => story.entered === name).length,
+      waiting: {
+        // Nothing waits in production: it is where the pipeline ends
+        count: name === doraProduction ? 0 : waiting.length,
+        staleCount: name === doraProduction ? 0 : ages.filter((age) => age > 30).length,
+        oldestDays: name === doraProduction || ages.length === 0 ? null : round1(ages[0]),
+        medianDays: name === doraProduction || ages.length === 0 ? null : round1(doraMedian(ages)),
+        changes:
+          name === doraProduction
+            ? []
+            : waiting.slice(0, 10).map((entry, position) => ({ ...doraStoryRef(entry.story.pr), since: doraIso(entry.since), days: round1(ages[position]) }))
+      }
+    };
+  }),
+  steps: doraSteps,
+  timeToProduction: {
+    medianDays: doraToProduction.median,
+    p90Days: doraToProduction.p90,
+    avgDays: doraToProduction.avg,
+    level: doraLevelLowerIsBetter(doraToProduction.median, [1, 7, 30]),
+    previousMedianDays: null,
+    changes: doraDelivered.length
+  },
+  bottleneck: doraMeasuredSteps.length > 1 ? { from: doraMeasuredSteps[0].from, to: doraMeasuredSteps[0].to } : null,
+  weeks: doraWeeklyLead(doraDelivered, doraProduction),
+  slowestChanges: doraDelivered
+    .map((story) => ({ story, total: doraLeadOf(story, doraProduction) }))
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 10)
+    .map((entry) => ({
+      ...doraStoryRef(entry.story.pr),
+      enteredAt: entry.story.entered,
+      totalDays: round1(entry.total),
+      stages: [...entry.story.stops.entries()]
+        .sort(([, a], [, b]) => a.arrivedAt - b.arrivedAt)
+        .map(([name, stop]) => ({ branch: name, arrivedAt: doraIso(stop.arrivedAt), deployedAt: doraIso(stop.deployedAt) }))
+    })),
+  untraced: 0
+};
+writeJson(path.join(OUT, "dora-report.json"), {
+  schemaVersion: 2,
+  period: { days: DORA_DAYS, from: new Date(DORA_FROM).toISOString(), to: new Date(DORA_NOW).toISOString(), previousFrom: new Date(DORA_PREVIOUS_FROM).toISOString() },
+  source: { provider: "sfdx-hardis GitHub connector", repository: `${DORA_WEB}.git` },
+  branches: doraBranches.map((branch) => branch.result),
+  pipeline: doraPipeline,
+  contributors: [...doraPeople.values()]
+    .map(({ cycleDays, ...contributor }) => ({
+      name: contributor.name,
+      pullRequests: contributor.pullRequests,
+      avgCycleDays: cycleDays.length > 0 ? round1(doraAverage(cycleDays)) : null,
+      deploymentsTriggered: contributor.deploymentsTriggered,
+      failedDeployments: contributor.failedDeployments
+    }))
+    .sort((a, b) => b.pullRequests + b.deploymentsTriggered - (a.pullRequests + a.deploymentsTriggered) || a.name.localeCompare(b.name))
 });
 
 console.log(`Helios fixtures written into ${path.relative(ROOT, EXT)}:`);

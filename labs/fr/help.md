@@ -3,7 +3,7 @@ title: "Aide"
 description: "Où poser votre question quand une étape du cours ne fonctionne pas, et ce que Cloudity propose à une équipe qui utilise sfdx-hardis sur un vrai projet Salesforce : mise en place, formation et support."
 id: help
 lang: fr
-source_rev: "1651e48fae090ca8a17bcdbaee369e4501394d2a"
+source_rev: "b8c2c02fae21fd84d79b67e1341fbfdab9edb63a"
 ---
 
 # Aide
@@ -101,6 +101,18 @@ choses de plus, et à une deuxième tentative la réponse aux deux est en géné
 - **Remettre en place `helios-dev` et `helios-integration`**, pour que les orgs correspondent au
   début du niveau au lieu de garder ce que vous y avez construit la première fois
 
+Enfin, au Niveau 3, il ouvre une Pull Request nommée **Deployment actions of the earlier levels** et
+la merge une fois ses checks passés, ce qui prend 3 à 5 minutes. Le début du Niveau 3 contient les
+stories du Niveau 2 en un seul commit qu'aucune Pull Request de votre fork n'a fait, et une promotion
+ne lance que les deployment actions des Pull Requests qu'elle transporte : celle-ci leur donne une
+Pull Request.
+
+Le reset n'active ni ne désactive GitHub Actions. Si vous les avez désactivées dans votre fork entre
+deux tentatives, réactivez-les avant **Reset this level** : au Niveau 3, il attend les checks de
+cette Pull Request, et avec Actions désactivées ils ne démarrent jamais. L'onglet **Actions** de
+votre fork montre dans quel état il est, et **Trigger my workflows** dans le menu Training du
+Niveau 1 le vérifie pour vous.
+
 **Recommencer tout le cours.** Sur GitHub, ouvrez votre fork, puis **Settings**, descendez jusqu'à
 la **Danger Zone**, et cliquez sur **Delete this repository**. Supprimez aussi votre dossier local.
 Suivez ensuite à nouveau le
@@ -127,6 +139,18 @@ open source que ce cours enseigne.
   avec une priorité sur les incidents de déploiement, et un release manager en prestation quand
   personne n'occupe le poste.
 
+Le DevOps est une pratique parmi d'autres. La même société mène des projets Salesforce complets :
+[Agentforce et Data Cloud](https://cloudity.com/fr/services/ia-et-data/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=help),
+[Revenue Cloud](https://cloudity.com/fr/services/gestion-du-cycle-de-vie-des-revenus/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=help),
+[Field Service](https://cloudity.com/fr/services/gestion-des-interventions-terrain/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=help),
+[Marketing Cloud](https://cloudity.com/fr/services/engagement-marketing-et-personnalisation/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=help),
+[intégration](https://cloudity.com/fr/services/implementation-et-integration-salesforce/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=help),
+et des [services managés](https://cloudity.com/fr/services/services-manages/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=help) pour une équipe qui préfère confier l'exploitation
+de son org.
+
+[![Cloudity, conseil Salesforce : Agentforce, Data Cloud, Revenue Cloud, Field Service, Marketing Cloud, intégration, services managés, DevOps](../_assets/brand/cloudity-services-fr.png){ .cloudity-banner .wide-only loading=lazy }](https://cloudity.com/fr/services/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=help)
+[![Cloudity, conseil Salesforce : Agentforce, Data Cloud, Revenue Cloud, Field Service, Marketing Cloud, intégration, services managés, DevOps](../_assets/brand/cloudity-services-fr-narrow.png){ .cloudity-banner .narrow-only loading=lazy }](https://cloudity.com/fr/services/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=help)
+
 ## Le support est ce qui finance la maintenance de sfdx-hardis
 
 sfdx-hardis est gratuit à utiliser. Il n'est pas gratuit à maintenir. Trois releases Salesforce par
@@ -139,4 +163,5 @@ votre équipe fait ses livraisons avec sfdx-hardis, un abonnement est le moyen l
 garder le projet vivant et en mouvement, et il met vos demandes d'évolution devant les personnes
 qui décident de ce qui sort ensuite.
 
-[Ce que propose Cloudity](https://sfdx-hardis.cloudity.com/salesforce-devops-home/#get-help-from-cloudity){ .md-button .md-button--primary }
+[Ce que propose Cloudity pour le DevOps](https://sfdx-hardis.cloudity.com/salesforce-devops-home/#get-help-from-cloudity){ .md-button .md-button--primary }
+[Tous les services de Cloudity](https://cloudity.com/fr/services/?utm_source=sfdx-hardis-training&utm_medium=referral&utm_campaign=help){ .md-button }
