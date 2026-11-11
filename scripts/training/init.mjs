@@ -40,7 +40,7 @@ import os from "os";
 import path from "path";
 import {
   ROOT, c, title, info, ok, warn, abort, run, runAsync, runJson, parseJsonOutput, git, gitOut,
-  select, confirm, connectedOrgs, orgChoices, universe, ensureGh, repoSlug, openUrl, removeTempDir,
+  select, confirm, connectedOrgs, orgChoices, universe, ensureGh, confirmGhAccount, repoSlug, openUrl, removeTempDir,
   readProgress, writeProgress
 } from "../lib/util.mjs";
 import { deployAppToAll, grantManager, loadData, recordSeeded, alreadySeeded, workInEnglish } from "./seed.mjs";
@@ -632,6 +632,39 @@ async function ensureFork(handle) {
 }
 
 /**
+ * GitHub switches issues off on every new fork, and sfdx-hardis keeps the list of the development
+ * orgs (Lab 1.3 registers helios-dev in it) in an issue of the repository: without them, New User
+ * Story warns that it could not register the org. Never stops the setup.
+ */
+async function ensureIssues(slug) {
+  // A fork that was created a second ago can refuse the first read, as in ensureFork
+  let repo = ghJson(["api", `repos/${slug}`]);
+  for (let attempt = 0; !repo && attempt < 5; attempt++) {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    repo = ghJson(["api", `repos/${slug}`]);
+  }
+  if (!repo) {
+    warn(
+      `Could not read the settings of ${slug}, so issues may still be off there. ` +
+        "On GitHub: Settings > General > Features, tick Issues, or run Set up my training environment again."
+    );
+    return;
+  }
+  if (repo.has_issues) {
+    return;
+  }
+  const res = run("gh", ["repo", "edit", slug, "--enable-issues"], { capture: true, quiet: true });
+  if (res.code === 0) {
+    ok(`Issues switched on in ${c.bold(slug)}: sfdx-hardis keeps the list of your development orgs in one.`);
+  } else {
+    warn(
+      `Issues could not be switched on in ${slug}. ` +
+        "On GitHub: Settings > General > Features, tick Issues, or run Set up my training environment again."
+    );
+  }
+}
+
+/**
  * integration and uat, created from the state a Level 1 learner starts
  * from when the fork does not carry them yet. main exists in every fork.
  */
@@ -945,7 +978,18 @@ export default async function init(args) {
   info(c.dim("already there, and nobody asks a new contributor to build them on their first day."));
   info("");
 
-  await ensureGh();
+  const signedInNow = await ensureGh();
+  // Before anything reads the account: the fork, and the name of the commits.
+  // Only while there is no fork yet: once origin is the fork, it is in the
+  // account it is in, and asking again would only make a learner doubt it.
+  const slugBefore = repoSlug();
+  const forkMade = slugBefore && slugBefore.toLowerCase() !== UPSTREAM.toLowerCase();
+  if (!forkMade && !signedInNow) {
+    if (!(await confirmGhAccount(args.account, { assumeYes: args.yes === true }))) {
+      info("Nothing was changed. Click Set up my training environment again when you know which account to use.");
+      return;
+    }
+  }
   const handle = currentHandle();
   if (!handle) {
     abort("Could not read your GitHub account.", "Click Set up my training environment again.");
@@ -969,6 +1013,7 @@ export default async function init(args) {
   }
 
   const slug = await ensureFork(handle);
+  await ensureIssues(slug);
   // --no-actions-wait: for automation with no browser, where nobody can click the banner
   const actionsOn = await ensureActions(slug, { wait: args["no-actions-wait"] !== true });
 

@@ -4,12 +4,12 @@ description: "Tenez une pipeline CI/CD Salesforce avec sfdx-hardis : environneme
 id: l3-home
 level: 3
 lang: fr
-source_rev: "f189dc5d3b95e1deb8afbd28599b5c0ea6d72e45"
+source_rev: "36fcd204903c33adb0e0e5588327da050d4781dd"
 ---
 
 # Niveau 3 - Release manager Salesforce DevOps
 
-**Durée** : environ 9 h 30.<!-- observed --> Observé sur les Labs 3.1 à 3.11 : médiane 12 h 12, 5 participants, le plus rapide 7 h 36.<!-- /observed -->
+**Durée** : environ 8 h 45.<!-- observed --> Observé sur les Labs 3.1 à 3.11 : médiane 9 h 52, 13 participants, le plus rapide 2 h 56.<!-- /observed -->
 
 **Prérequis** : le [Niveau 1](../level-1-contributor-basics/index.md) **et** le
 [Niveau 2](../level-2-contributor-advanced/index.md). Les deux sont obligatoires, et l'audit du
@@ -78,17 +78,17 @@ Les mêmes commandes sont dans la vue **SFDX HARDIS** de la barre de gauche, sou
 
 | Lab                                                       | Titre                                                          | Durée  |
 |-----------------------------------------------------------|----------------------------------------------------------------|--------|
-| [3.1](3-1-configure-the-pipeline-up-to-production.md)     | Configurer la pipeline CI/CD jusqu'à la production             | 2 h 05 |
+| [3.1](3-1-configure-the-pipeline-up-to-production.md)     | Configurer la pipeline CI/CD jusqu'à la production             | 1 h 15 |
 | [3.2](3-2-review-a-contributor-pull-request.md)           | Relire et merger la Pull Request d'un contributeur             | 25 min |
-| [3.3](3-3-deploy-to-integration-and-read-the-log.md)      | Lire le log de déploiement, et ce que .forceignore lui cache   | 1 h 35 |
+| [3.3](3-3-deploy-to-integration-and-read-the-log.md)      | Lire le log de déploiement, et ce que .forceignore lui cache   | 1 h 15 |
 | [3.4](3-4-merge-colliding-pull-requests.md)               | Trois Pull Requests pour une release : revoir l'ordre de merge | 15 min |
 | [3.5](3-5-promote-to-uat-and-write-release-notes.md)      | Promouvoir en UAT et écrire les notes de version               | 50 min |
 | [3.6](3-6-release-to-production-and-read-dora-metrics.md) | Livrer en production et lire vos métriques DORA                | 1 h    |
-| [3.7](3-7-hotfix-and-retrofit.md)                         | La production est cassée : hotfix et retrofit                  | 35 min |
-| [3.8](3-8-monitor-your-production-org.md)                 | Monitorer votre org de production                              | 10 min |
+| [3.7](3-7-hotfix-and-retrofit.md)                         | La production est cassée : hotfix et retrofit                  | 30 min |
+| [3.8](3-8-monitor-your-production-org.md)                 | Monitorer votre org de production                              | 15 min |
 | [3.9](3-9-generate-the-project-documentation.md)          | Générer la documentation du projet Salesforce                  | 5 min  |
-| [3.10](3-10-promote-a-subset-with-promotion-branches.md)  | Promouvoir un sous-ensemble avec les promotion branches (Beta) | 1 h 15 |
-| [3.11](3-11-capstone-run-a-weekly-release-cycle.md)       | Épreuve finale : mener un cycle de release hebdomadaire        | 50 min |
+| [3.10](3-10-promote-a-subset-with-promotion-branches.md)  | Promouvoir un sous-ensemble avec les promotion branches (Beta) | 1 h 40 |
+| [3.11](3-11-capstone-run-a-weekly-release-cycle.md)       | Épreuve finale : mener un cycle de release hebdomadaire        | 1 h    |
 
 ## Une org de plus
 
@@ -103,6 +103,16 @@ avec **Training: Level 3 > Set up one of my training orgs** : `helios-preprod`, 
 qui jusqu'ici ne faisait que créer les autres et ne contenait rien. S'il s'arrête sur
 `Profile Helios Crew`, la section **En cas de problème** du
 [Lab 3.1](3-1-configure-the-pipeline-up-to-production.md) dit pourquoi.
+
+Salesforce refuse une deuxième org Developer Edition sur une adresse email qui en a déjà une.
+Donnez la même adresse avec un `+` et un mot avant le `@`, par exemple `monnom+preprod@gmail.com` :
+le mail arrive toujours dans votre boîte, et Salesforce y voit une nouvelle adresse. Inscrivez-vous
+depuis une fenêtre de navigation privée, déconnecté de Trailhead, sinon la page affiche un formulaire
+court qui ne demande qu'un pays.
+
+L'installation prend quelques minutes par org, et son compteur (`49/64` par exemple) peut rester
+sur le même nombre plusieurs minutes vers la fin. Laissez VS Code tranquille jusqu'à ce qu'il dise
+que l'application est déployée. Si VS Code dit que la fenêtre semble bloquée, choisissez **Wait**.
 
 `helios-prod` reçoit les mêmes sources que les autres orgs. Rien n'alimente un historique de
 déploiement, et l'alimentation elle-même n'est pas un déploiement du pipeline : les métriques DORA
