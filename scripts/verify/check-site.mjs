@@ -214,6 +214,11 @@ for (const locale of labLocales) {
   if (!fs.existsSync(path.join(SITE, page))) {
     problems.push(`/${page.replace(/\\/g, "/")} (the statistics page of ${locale} was not built)`);
   }
+  // The Hall of Fame is generated the same way, but stays out of the menu
+  const hall = path.join(locale === "en" ? "" : locale, "hall-of-fame", "index.html");
+  if (!fs.existsSync(path.join(SITE, hall))) {
+    problems.push(`/${hall.replace(/\\/g, "/")} (the Hall of Fame page of ${locale} was not built)`);
+  }
 }
 
 console.log(

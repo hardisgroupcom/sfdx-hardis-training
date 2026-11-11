@@ -1,6 +1,7 @@
 /**
  * The pages this site generates rather than writes: the backlog, one page per
- * User Story, the badges index, one page per badge holder and the statistics.
+ * User Story, the badges index, one page per badge holder, the statistics and
+ * the Guinea Run Hall of Fame.
  *
  * They are built here, once, and called with the words of a locale, so the
  * French backlog cannot drift from the English one: what differs between them
@@ -14,6 +15,9 @@
  */
 import { fill } from "./strings.mjs";
 import { duration } from "../stats/lab-times.mjs";
+import { PAGE_ROWS, WORLD_COUNT } from "../../site-theme/javascripts/guinea-run/core/hof.js";
+import { COATS } from "../../site-theme/javascripts/guinea-run/core/online.js";
+import { translator } from "../../site-theme/javascripts/guinea-run/texts.js";
 
 const separator = (columns) => `|${columns.map(() => "---").join("|")}|`;
 const row = (cells) => `| ${cells.join(" | ")} |`;
@@ -258,6 +262,83 @@ export function statsPage({ s, text, universe, stats }) {
     lines.push("");
   }
   lines.push(`## ${w.method.heading}`, "", ...w.method.body.map((line) => fill(line, { cutoff: stats.idleCutoffMinutes, minSample: stats.minSample })), "");
+  return lines.join("\n");
+}
+
+/**
+ * The Guinea Run Hall of Fame: the overall top, the tops of the bonuses,
+ * Pipeline Pinball and Org-Man, then the top of each world.
+ *
+ * The boards live in the game's database and change at every new best, so
+ * the page holds their places only: site-theme/javascripts/hall-of-fame-page.js
+ * fills them in the reader's browser, with the game's own code
+ * (core/online.js), so the page and the game show the same boards. The words
+ * it needs (columns, world names, modes) are written here, in the page's
+ * language, in a JSON block it reads.
+ */
+export function hallOfFamePage({ s }) {
+  const w = s.hallOfFame;
+  const t = translator(s.lang || "en");
+  const place = (board) => `<div class="gr-hof-board" data-board="${board}"><p>${w.loading}</p></div>`;
+  const words = {
+    lang: s.lang || "en",
+    top: PAGE_ROWS,
+    loading: w.loading,
+    offline: w.offline,
+    empty: w.empty,
+    worldEmpty: w.worldEmpty,
+    pinballEmpty: w.pinball.empty,
+    orgmanEmpty: w.orgman.empty,
+    seconds: w.seconds,
+    generalColumns: w.generalColumns,
+    worldColumns: w.worldColumns,
+    pinballColumns: w.pinball.columns,
+    orgmanColumns: w.orgman.columns,
+    modes: Object.fromEntries(["easy", "normal", "hard"].map((m) => [m, t(`mode_${m}`)])),
+    coats: Object.fromEntries(COATS.map((c) => [c, t(`coat_${c}`)]))
+  };
+  const lines = [
+    `# ${w.heading}`,
+    "",
+    ...w.intro,
+    "",
+    w.privacy,
+    "",
+    // The words of the page script; "<" is escaped so no text can close the block
+    `<script type="application/json" id="gr-hof-words">${JSON.stringify(words).replace(/</g, "\\u003c")}</script>`,
+    "",
+    // The boards sit in one block the stylesheet makes compact on a phone
+    `<div class="gr-hof" markdown>`,
+    "",
+    `## ${w.general.heading}`,
+    "",
+    fill(w.general.intro, { count: PAGE_ROWS }),
+    "",
+    place("all"),
+    "",
+    // The bonus tables right after the total: each is one board for the whole game
+    `## ${w.pinball.heading}`,
+    "",
+    fill(w.pinball.intro, { count: PAGE_ROWS }),
+    "",
+    place("pinball"),
+    "",
+    `## ${w.orgman.heading}`,
+    "",
+    fill(w.orgman.intro, { count: PAGE_ROWS }),
+    "",
+    place("orgman"),
+    "",
+    `## ${w.worlds.heading}`,
+    "",
+    fill(w.worlds.intro, { count: PAGE_ROWS }),
+    ""
+  ];
+  for (let n = 0; n < WORLD_COUNT; n++) {
+    const title = fill(w.world, { n, name: t(`w${n}_name`) }).replace(/"/g, "'");
+    lines.push(`??? note "${title}"`, "", `    ${place("w" + n)}`, "");
+  }
+  lines.push("</div>", "");
   return lines.join("\n");
 }
 

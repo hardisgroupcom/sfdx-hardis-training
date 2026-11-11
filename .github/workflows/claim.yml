@@ -22,6 +22,7 @@
 #     badge: one commit per badge, not a badge commit then a statistics commit.
 #     They read only the public GitHub API and the badges/ folder (the three
 #     rules of course-stats.yml), and a failure there never holds a badge back.
+#     The badge mark of the Guinea Run Hall of Fame goes in the same commit.
 #
 # The learner's code is never checked out into the workspace: it is cloned into a
 # temporary directory and read. That is what keeps this simple, and it is why the

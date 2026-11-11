@@ -128,6 +128,59 @@
       ]
     }
   },
+  "hallOfFame": {
+    "title": "Hall of Fame de Guinea Run",
+    "description": "Les meilleurs joueurs de Guinea Run, le jeu caché dans la formation Salesforce DevOps gratuite avec sfdx-hardis : au général et monde par monde.",
+    "heading": "Hall of Fame",
+    "intro": [
+      "Guinea Run est un jeu caché dans ce site. Trouvez le cochon d'Inde à la fin du pied de page de n'importe quelle page, et jouez.",
+      "",
+      "Chaque monde garde le meilleur score de chaque joueur. Choisissez une fois un pseudo et un cochon d'Inde dans le jeu, après votre premier monde : ensuite, vos meilleurs scores arrivent ici tout seuls."
+    ],
+    "privacy": "Visible par tous : le pseudo, le cochon d'Inde et les scores de chaque joueur. Rien d'autre n'est enregistré : ni compte, ni e-mail. Un joueur peut se retirer depuis le Hall of Fame du jeu.",
+    "loading": "Lecture du Hall of Fame...",
+    "offline": "Le Hall of Fame ne peut pas être lu pour l'instant. Réessayez dans un moment.",
+    "empty": "Personne pour l'instant. Jouez, choisissez un pseudo, et soyez le premier.",
+    "general": {
+      "heading": "Tous les mondes",
+      "intro": "Le meilleur score de chaque monde, additionné. Les {count} premiers joueurs."
+    },
+    "worlds": {
+      "heading": "Monde par monde",
+      "intro": "Les {count} premiers joueurs de chaque monde. À égalité, le plus d'étoiles passe devant, puis le boss le plus rapide."
+    },
+    "world": "Monde {n} - {name}",
+    "worldEmpty": "Personne n'a encore terminé ce monde.",
+    "generalColumns": ["#", "Joueur", "Total", "Étoiles"],
+    "worldColumns": [
+      "#",
+      "Joueur",
+      "Score",
+      "Mode",
+      "Étoiles",
+      "Temps du boss"
+    ],
+    "seconds": "{value} s",
+    "pinball": {
+      "heading": "Pipeline Pinball",
+      "intro": "La table bonus, ouverte à ceux qui ont terminé les dix mondes. La meilleure partie de chaque joueur, à part : elle ne compte pas dans le total. Les {count} premiers joueurs.",
+      "empty": "Personne n'a encore de partie de la table bonus ici.",
+      "columns": ["#", "Joueur", "Score", "Niveau", "Missions", "Minutes"]
+    },
+    "orgman": {
+      "heading": "Org-Man",
+      "intro": "Le labyrinthe, ouvert à ceux qui ont terminé les dix mondes. La meilleure partie de chaque joueur, à part : elle ne compte pas dans le total. Les {count} premiers joueurs.",
+      "empty": "Personne n'a encore de partie d'Org-Man ici.",
+      "columns": [
+        "#",
+        "Joueur",
+        "Score",
+        "Labyrinthe",
+        "Admins attrapés",
+        "Minutes"
+      ]
+    }
+  },
   "badges": {
     "title": "Badges de la formation Salesforce DevOps",
     "description": "Les personnes qui ont terminé un niveau de la formation Salesforce DevOps gratuite avec sfdx-hardis, vérifiées par un job qui a lu leur repository public.",
@@ -506,5 +559,5 @@
       }
     }
   },
-  "source_rev": "e544edd329b9a2f207db755b3bc05fe16fbaf678"
+  "source_rev": "4e3f39299efe1f5811884d255aa6e182e6e84aff"
 }

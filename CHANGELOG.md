@@ -3,8 +3,144 @@
 What changed in the course, for learners and trainers. The course has no versions: each section is
 a day, newest first, and a change goes under the date of the day it is made.
 
+## 2026-11-11
+
+- Guinea Run: **Remove me from the Hall of Fame** sticks. The game used to take the player's id back from its own save at the next write, then kept sending their new best scores.
+
+## 2026-11-10
+
+- Guinea Run: the first score of a player opens a window over the end card, with the score, a nickname box, the guinea pigs and a large **Join the Hall of Fame** button. **No thanks** or Escape closes it for good, and Enter in the nickname box joins.
+
+## 2026-11-09
+
+- The screenshots of the windows opened over the DevOps Pipeline (branch windows, Pull Request windows, deployment action editors) are taken again, with the new view switch behind them.
+- Lab 1.2: the lab driver answers the question that a computer already signed in to GitHub gets first, *Fork the course into the GitHub account ...?*, which the lab describes, so the driver no longer stops on it.
+
+## 2026-11-08
+
+- Lab 1.1: the Browserforce dependency is named **sfdx-browserforce-plugin**, as its card in the Setup panel reads.
+- Lab 1.2: the setup output shows the line that switches issues on in your fork, and the switch between **Major branches**, **Feature branches** and **Dev orgs** is no longer described as appearing once GitHub is connected: it is always there.
+- Lab 1.3: a troubleshooting entry for the warning that `helios-dev` is not registered because issues are off in a fork set up before 2026-11-07, fixed by running **Set up my training environment** again.
+- Labs 2.3, 2.4 and 2.9 link the new sfdx-hardis page of each deployment action type they use (Apex, Data, Schedule batch, Manual), which show these labs in their Learn by doing section.
+- Lab 3.10: the conflict question screenshot lists the answers in the order the command asks them, and the lab says the risky answers leave the files they decided in the Pull Request and in the commit message of the story.
+- **Set up my training environment** waits for a fork it has just created before switching issues on, and says what to do when it still cannot.
+- DevOps Pipeline screenshots in Labs 1.2 to 3.10 show the **Major branches** / **Feature branches** / **Dev orgs** switch instead of the former toggle, on its own row above the diagram, and Lab 3.2 points at **Feature branches** on its picture.
+- Guinea Run: the end credits thank Haim Knokh (SFDMU), Matthias Rolke (Browserforce) and Dave Renald Saavedra (scratch org snapshots), as the sfdx-hardis Special Thanks now do.
+
+## 2026-11-07
+
+- DevOps Pipeline: the **Show feature branches** toggle became a switch on the diagram between **Major branches**, **Feature branches** and **Dev orgs**. Labs 1.2, 2.3 and 3.2 follow it.
+- Lab 1.3: New User Story also registers `helios-dev` in the development orgs list of your repository, and the setup of your training environment switches issues on in your fork, where that list lives.
+- Lab 1.1: the Setup panel installs Browserforce too, now one of the dependencies of sfdx-hardis, and its screenshots show it.
+
+## 2026-11-05
+
+- Lab 3.10: the conflict question of the promotion shows its seven answers, including the new "solve now" and the two risky "keep the source version" ones, and the lab explains what those would have done to this week's promotion.
+
+## 2026-11-02
+
+- Guinea Run: pick a nickname and a guinea pig once, after your first world, and every new best score goes to the Hall of Fame on its own, with no GitHub account and nothing else about you stored.
+
+## 2026-11-01
+
+- Lab 3.8: the first question of **Install Org Monitoring** says to answer Yes, and the warning about the `workflow` permission comes before you click the button.
+- Lab 3.8: the first run sends one email per check that found something, not a single one, and the panel lists **Warning** among the severities.
+- Lab 3.8: a check card runs the check again from your computer, and the unsecured Connected Apps one gets No to both of its questions.
+- Lab 3.8: the reason for silencing a check goes in the commit message, since the panel does not keep comments in the configuration file.
+- Lab 3.9: step 5 asks for one paragraph on the Installation page, and has you find the reasons of the preparation buffer and of the crew capacity cap in the generated pages.
+
+## 2026-10-31
+
+- Lab 1.2: **Set up my training environment** lists its questions in the order it asks them, the GitHub sign-in or account first and the yes for `helios-prod` after.
+- Lab 1.3: the user configuration file records the branch your User Story targets, not its org.
+- Lab 1.5: Save / Publish shows one line per cleaning rule, four on this story, and none for Flow positions when the story has no Flow.
+- Labs 1.6, 2.1, 2.2, 2.4 and 2.5: a step with several Why blocks gives each its own title, and French Lab 3.1 links to its step 12 again, so the MegaLinter comment of your Pull Requests no longer warns about 21 markdownlint errors in the course.
+- Lab 2.1: the backpromote branch is named after the id of your org, as the picture shows, not after its alias.
+- Lab 2.4: when MegaLinter's commit arrives after your last push, approve its workflows on the Pull Request, since there is nothing left to push.
+- Labs 3.5 and 3.8: **Publish my pipeline configuration** asks for **Squash and merge**, as the check comment of its Pull Request does, instead of a merge commit.
+- Labs 3.7 and 3.10: the retrofit story says how to reach `helios-dev`, **Scratch org** then **Reuse scratch org helios-dev**, since **Current org** is production by then.
+
+## 2026-10-30
+
+- Lab 3.4: the cleaning step names the **Auto-Cleaning types** setting as the panel shows it.
+- Labs 3.6 and 3.7: the promotion, release and hotfix steps say to click **Create pull request** after the title.
+- Lab 3.7: the retrofit branch is created in the order the questions come, target branch first.
+- Lab 3.8: the monitoring repository is cloned with no folder open, as in Lab 1.2, with the address GitHub shows on an empty repository.
+
+## 2026-10-28
+
+- Lab 1.2: a troubleshooting entry for a Welcome page with no Training menus, when VS Code is not open on the course folder.
+- Level 3: the page says how to sign up for a second Developer Edition org with the same email address, and that the org setup can pause on one number for minutes.
+- Lab 3.1: the first picture shows your fork as it is, with no feature branches, and the step texts match the questions the command asks: the app name to keep, **System Administrator** to pick, and the end of the questions for `main`.
+- Lab 3.1: a troubleshooting entry for `You need openssl to be locally installed`, and the Replacement rules paragraph says your fork has none.
+- Your fork no longer runs the Guinea Run, links, translations and Hall of Fame checks of the course, which took up to half an hour of your GitHub Actions minutes per course update.
+
+## 2026-10-27
+
+- Guinea Run: in VS Code, your progress follows you in every project, and a save edited by hand sends the guinea pig back to the first world.
+- Lab 2.6: the `no Layout named ...` troubleshooting entry names `FlowRecord-Flow Layout` as a layout to delete from the Profile.
+- Lab 2.8: a troubleshooting entry says a red check on the Profile of the over-wide Pull Request is cleared by the reset, nothing to fix by hand.
+
+## 2026-10-26
+
+- Pipeline Pinball: a ball no longer gets stuck in a hole during multiball, Rollback now works and lights both outlanes, a ball below the Production floor waits until it is back in view, the admins show their faces, and the score display is easier to read.
+- Guinea Run: on a phone, the map now offers to add the game to the home screen, and the offer stays until the game is really installed.
+- Lab 2.7: step 1 builds the flat roof decision and its assignment click by click, with the names the pictures show, and both flow saves use **Save As New Version**.
+- Lab 2.7 and Lab 2.1: the teammate step names the **Open the Pull Request** button at the bottom of the panel.
+- Lab 2.6: step 3 says how to open the Pipeline Settings panel, and the settings are named by their panel labels, **Minimize Profiles** and **Auto-Remove User Permissions on profiles**, next to their keys in the configuration file.
+- Lab 2.4: says to pull the MegaLinter commit that adds the last line of `export.json` before pushing the deployment actions, with a troubleshooting entry for a refused push.
+- Guinea Run: once opened online, the game plays offline, and on a phone it can be added to the home screen; progress is no longer lost when the game is open in two tabs or two VS Code windows.
+- Guinea Run: Pipeline Pinball runs at the same speed in Easy, Normal and Hard, since its points do not depend on the mode.
+- Lab 1.2: **Set up my training environment** asks which GitHub account to fork into when this computer was already signed in to GitHub, and can switch to another one.
+- Home page and Lab 1.1: keep the same editor (VS Code, Agentforce Vibes or Cursor) from start to finish, since the scratch orgs are connected only in the editor that created them.
+- Lab 2.7: taking both sides of the permission set conflict gives two complete blocks with nothing to type, and the merge editor pictures show the real Helios file.
+- Lab 2.4: **Create my lab records** says when `External_Id__c` is not marked External Id or a field cannot be edited, instead of blaming the profile.
+- Lab 3.10: troubleshooting for a cherry-pick of US-059 that conflicts on one file only.
+- Labs 2.7 and 3.10: check that the SF Merge Driver is off before you start, since it solves the conflicts these labs teach.
+- Lab 3.11: how to stop the nightly crew capacity email in the orgs you keep.
+- Guinea Run has a second bonus, Org-Man: a maze where four admins chase the guinea pig, deployment rockets that turn them blue, faster mazes as you go, and its own Hall of Fame board. It opens with Pipeline Pinball, once the ten worlds are done.
+
+## 2026-10-24
+
+- Guinea Run no longer invites you to send your scores again a few minutes after a send, which the Hall of Fame refused as unverified. The game says when you can send again, and a send that comes too soon gets an answer that says so.
+
+## 2026-10-23
+
+- Guinea Run invites you to send your scores as soon as one would enter the top 5 of a world, of the overall total or of Pipeline Pinball.
+- Pipeline Pinball on a phone: the upper Production floor shows whole, and the messages and buttons fade while the ball passes under them.
+- The Guinea Run Hall of Fame page is no longer in the site menu.
+- The Guinea Run Hall of Fame page fits a phone screen: the avatar, handle and badge of a player share one column, and the boards no longer scroll sideways. Pipeline Pinball now comes right after the total, before the world boards.
+
+## 2026-10-22
+
+- Guinea Run has a bonus table for those who finish all ten worlds: Pipeline Pinball, a pinball game with a mission per world and its own Hall of Fame board.
+- The Hall of Fame answer on a score issue numbers the worlds from 0, as the game does.
+- Sending your Guinea Run scores works from the GitHub mobile app too: it used to open a blank issue.
+- Guinea Run, the game hidden in every page, is online: the Konami code or five taps on the guinea pig in the footer open it, on a computer or a smartphone.
+- The guinea pig of Guinea Run squeaks with a new, shorter set of wheeks when it jumps.
+- Guinea Run has Easy, Normal and Hard modes: Normal runs 1.5 times faster for 1.5 times the points, Hard twice as fast for twice the points.
+- Guinea Run has a [Hall of Fame](https://sfdx-hardis-training.cloudity.com/hall-of-fame/): send your scores from the game to GitHub, and beat the bosses fast for a speed bonus.
+
+## 2026-10-21
+
+- Something small and furry now lives in the footer of every page.
+- Every screenshot says it can be enlarged: "click to enlarge" at the end of its caption, and a magnifier when the mouse is over it.
+- The comments under each page show the newest first. The Oldest button above them still switches back.
+- The notes that only some learners need are tip boxes again, as before the step template: Agentforce Vibes and the other editors in Labs 1.1 to 1.4, and the star and LinkedIn banner asides of the three capstones. Lab 1.4 no longer sends anyone to a terminal to open an org.
+
+## 2026-10-20
+
+- Numbered tasks are only what every learner does: the Agentforce Vibes instructions, the ways back when something went wrong and the other ways in are now tip boxes inside the task they belong to.
+- Every step of every lab reads the same way: its goal, what to do as numbered tasks with each screenshot under its task, why, and what you should now see, with a box to tick when it is done. Proposed by [fkramer690](https://github.com/fkramer690) in [#142](https://github.com/hardisgroupcom/sfdx-hardis-training/discussions/142).
+- Labs 3.5, 3.6, 3.7 and 3.10 name the GitHub option to pick for a promotion: Create a merge commit, under the arrow of the green button.
+- Lab 3.1 shows the DevOps Pipeline in the middle of step 8, and its two settings steps are numbered lists.
+- Lab 3.3 says why a failed action has no Retry button, and why re-running the job on GitHub is not the same thing.
+- Simulate my teammates ends with a button that opens the Pull Request it created.
+- Lab 3.7 opens production from Orgs Manager, warns about hotfixes from integration at the top of step 2, and says what to do with a retrofit that brought nothing down.
+
 ## 2026-10-19
 
+- Trainers: the lab drivers point to the training scenario of the `e2e` skill of sfdx-hardis, which replaces the `training-e2e` skill.
 - Links to another site (GitHub, Salesforce, the sfdx-hardis documentation) open in a new tab, so the lab stays open.
 - Lab 2.3 says to copy only its four Apex files, and explains the check that fails on the Lab 2.4 batch when it is copied too.
 - Lab 3.8 says what to do when GitHub refuses a push during the configuration: never merge the monitoring branch into `main`, and store the two new secrets of each run.
