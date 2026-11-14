@@ -5,7 +5,7 @@ description: "Ouvrez une Pull Request GitHub, lisez le contrôle de déploiement
 level: 1
 lab: 6
 lang: fr
-source_rev: "512c5a46a7c8e678c5c77de8196b35334478e8dd"
+source_rev: "26c5f61fdc375e838adbc63aff6ee4587ddbe6b7"
 screenshots:
   - annotated/web/github-pr-checks
   - annotated/web/github-pr-comment
@@ -242,6 +242,10 @@ Azure Boards ou ServiceNow à la place.
    2. Le job **(2)** : son résultat, sa durée, **Open job** pour son log sur GitHub,
       **Open comment** pour le commentaire sur GitHub, et **Files**
    3. Le commentaire **(3)**, celui que vous venez de lire, mot pour mot
+   4. La barre de recherche **(4)** au-dessus des onglets, pour le jour où un commentaire est
+      long : tapez un mot, le nom de votre champ par exemple, et il s'allume dans chaque
+      commentaire, avec le nombre de correspondances sur chaque onglet. Entrée passe à la
+      suivante, et Ctrl+F (Cmd+F sur Mac) vous place dans la barre
 
    ![La fenêtre d'une Pull Request dans VS Code, sur son onglet Validation](../../_assets/annotated/vscode/pipeline-pr-window-validation.png)
 

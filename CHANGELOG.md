@@ -3,6 +3,10 @@
 What changed in the course, for learners and trainers. The course has no versions: each section is
 a day, newest first, and a change goes under the date of the day it is made.
 
+## 2026-11-15
+
+- Lab 1.6: the window of a Pull Request in VS Code has a search bar above its tabs, and the lab shows it next to the tabs, the job and the comment. Its pictures, and the ones of Lab 3.2, are taken again.
+
 ## 2026-11-11
 
 - Guinea Run: **Remove me from the Hall of Fame** sticks. The game used to take the player's id back from its own save at the next write, then kept sending their new best scores.
