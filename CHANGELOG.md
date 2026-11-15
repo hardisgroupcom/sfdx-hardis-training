@@ -5,7 +5,7 @@ a day, newest first, and a change goes under the date of the day it is made.
 
 ## 2026-11-15
 
-- Lab 1.6: the window of a Pull Request in VS Code has a search bar above its tabs, and the lab shows it next to the tabs, the job and the comment. Its pictures, and the ones of Lab 3.2, are taken again.
+- Lab 1.6: the window of a Pull Request in VS Code can search its comments, and the lab shows its search button next to the tabs, the job and the comment. Its pictures, and the ones of Lab 3.2, are taken again.
 
 ## 2026-11-11
 
