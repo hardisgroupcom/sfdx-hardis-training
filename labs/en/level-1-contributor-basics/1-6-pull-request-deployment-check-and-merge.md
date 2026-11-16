@@ -30,7 +30,7 @@ depends_on:
 
 **Level**: 1 Contributor basics
 
-**Time**: ~15 min<!-- observed --> (observed: median 18 min, 36 learners, fastest 5 min)<!-- /observed -->
+**Time**: ~15 min<!-- observed --> (observed: median 19 min, 41 learners, fastest 5 min)<!-- /observed -->
 
 **You will**: have a robot check your work before a human does, read what it says, and put US-014
 into the shared integration org.
@@ -235,6 +235,10 @@ ServiceNow connector instead.
    2. The job **(2)**: its result, how long it ran, **Open job** for its log on GitHub,
       **Open comment** for the comment on GitHub, and **Files**
    3. The comment **(3)**, the one you have just read, word for word
+   4. The search button **(4)**, for the day a comment runs long, or Ctrl+F (Cmd+F on a Mac): a
+      bar opens above the tabs. Type a word, the name of your field for instance, and it lights
+      up in every comment, with the number of matches on each tab. Enter goes to the next one,
+      and Escape closes the bar
 
    ![The window of a Pull Request in VS Code, on its Validation tab](../../_assets/annotated/vscode/pipeline-pr-window-validation.png)
 

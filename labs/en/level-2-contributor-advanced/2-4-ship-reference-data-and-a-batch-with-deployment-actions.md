@@ -21,14 +21,14 @@ depends_on:
   flags: []
   config: [dataPackages, commandsPostDeploy, failValidationOnPendingManualActions]
   panels: [dataWorkbench, deploymentAction, pipeline]
-  docs: [salesforce-devops-agent-data-workspaces, salesforce-devops-work-on-user-story-deployment-actions]
+  docs: [salesforce-devops-agent-data-workspaces, salesforce-devops-work-on-user-story-deployment-actions, salesforce-devops-work-on-user-story-deployment-actions-data, salesforce-devops-work-on-user-story-deployment-actions-schedule-batch, salesforce-devops-work-on-user-story-deployment-actions-manual]
 ---
 
 # Lab 2.4 - Ship reference data and a batch with deployment actions
 
 **Level**: 2 Contributor advanced
 
-**Time**: ~1 h 05<!-- observed --> (observed: median 1 h 06, 15 learners, fastest 20 min)<!-- /observed -->
+**Time**: ~1 h 10<!-- observed --> (observed: median 1 h 10, 17 learners, fastest 20 min)<!-- /observed -->
 
 **You will**: meet the worst kind of failure, the one where nothing fails, and fix it with three
 deployment actions of three different kinds.
@@ -659,5 +659,8 @@ Welcome page > **Training: Level 2** > **Check my work**, then pick **Lab 2.4**.
 
 - [Data workspaces with SFDMU](https://sfdx-hardis.cloudity.com/salesforce-devops-agent-data-workspaces/)
 - [Deployment actions](https://sfdx-hardis.cloudity.com/salesforce-devops-work-on-user-story-deployment-actions/)
+- [Import data (SFDMU)](https://sfdx-hardis.cloudity.com/salesforce-devops-work-on-user-story-deployment-actions-data/)
+- [Schedule an Apex batch](https://sfdx-hardis.cloudity.com/salesforce-devops-work-on-user-story-deployment-actions-schedule-batch/)
+- [Manual step](https://sfdx-hardis.cloudity.com/salesforce-devops-work-on-user-story-deployment-actions-manual/)
 
 [Next: Lab 2.5 - Pass the code quality gate and Apex test coverage](2-5-pass-code-quality-and-apex-test-coverage.md){ .md-button .md-button--primary }

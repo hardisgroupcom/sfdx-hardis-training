@@ -5,7 +5,7 @@ description: "Transportez trois User Stories approuvées sur cinq de uat vers pr
 level: 3
 lab: 10
 lang: fr
-source_rev: "79f10416e7c6c09eb6de8aa434cfd94fa40163ae"
+source_rev: "f9ce82fb6a3a8af664d5a799112dc89f73783716"
 screenshots:
   - annotated/vscode/welcome-custom-menu-3
   - annotated/vscode/pipeline-config-danger--promotion-branches
@@ -29,7 +29,7 @@ depends_on:
 
 **Niveau** : 3 Release Manager
 
-**Durée** : ~1 h 15<!-- observed --> (observé : médiane 1 h 16, 11 participants, le plus rapide 39 min)<!-- /observed -->
+**Durée** : ~1 h 35<!-- observed --> (observé : médiane 1 h 37, 15 participants, le plus rapide 39 min)<!-- /observed -->
 
 **Vous allez** : livrer en preprod trois User Stories approuvées pendant que deux autres restent en
 UAT, résoudre le conflit que l'une d'elles traîne avec elle, et remettre la pipeline d'aplomb
@@ -283,7 +283,7 @@ vu US-058.
 
 #### À faire : répondre à la question du conflit
 
-1. La commande demande quoi faire d'US-059, et propose quatre réponses **(1)**. Prenez la première,
+1. La commande demande quoi faire d'US-059, et propose sept réponses **(1)**. Prenez la première,
    **Recommended: commit this User Story and every following conflict with their conflict markers,
    without asking again**
 
@@ -297,9 +297,19 @@ vu US-058.
 #### Pourquoi cette réponse
 
 La promotion est assemblée en entier, conflit compris, et vous le résolvez en une passe sur la
-branche ensuite, à l'étape 6. Les trois autres réponses sont pour d'autres semaines : laisser la
-story de côté, committer celle-ci avec ses marqueurs mais redemander au prochain conflit, ou tout
-arrêter et tout défaire.
+branche ensuite, à l'étape 6. Les autres réponses, dans l'ordre où la question les liste, sont pour
+d'autres semaines : committer celle-ci avec ses marqueurs mais redemander au prochain conflit,
+résoudre ce conflit tout de suite dans l'éditeur pendant que la commande attend, laisser la story de
+côté, les deux réponses risquées ci-dessous, ou tout arrêter et tout défaire.
+
+Les deux réponses marquées **(risky)** gardent le côté `uat` de chaque ligne en conflit, et personne
+ne relit ce qu'elles ont décidé. Ici, elles garderaient la ligne et le droit Warranty Years que
+l'étape 6 supprime à la main, et qui appartiennent à US-058, une story que cette promotion laisse
+de côté. Cette semaine, la validation le verrait quand même, parce que `preprod` n'a pas de champ
+`Warranty_Years__c` et que le déploiement échoue. Avec un champ qui existe déjà dans `preprod`,
+rien ne le verrait : les fichiers sont seulement listés, sous un avertissement dans la description
+de la Pull Request et à la fin du message de commit de la story, pour que quelqu'un les relise avant
+le merge.
 
 Le log continue jusqu'au bout :
 
