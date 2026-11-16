@@ -3,6 +3,44 @@
 What changed in the course, for learners and trainers. The course has no versions: each section is
 a day, newest first, and a change goes under the date of the day it is made.
 
+## 2026-11-15
+
+- Lab 1.6: the window of a Pull Request in VS Code can search its comments, and the lab shows its search button next to the tabs, the job and the comment. Its pictures, and the ones of Lab 3.2, are taken again.
+
+## 2026-11-11
+
+- Guinea Run: **Remove me from the Hall of Fame** sticks. The game used to take the player's id back from its own save at the next write, then kept sending their new best scores.
+
+## 2026-11-10
+
+- Guinea Run: the first score of a player opens a window over the end card, with the score, a nickname box, the guinea pigs and a large **Join the Hall of Fame** button. **No thanks** or Escape closes it for good, and Enter in the nickname box joins.
+
+## 2026-11-09
+
+- The screenshots of the windows opened over the DevOps Pipeline (branch windows, Pull Request windows, deployment action editors) are taken again, with the new view switch behind them.
+- Lab 1.2: the lab driver answers the question that a computer already signed in to GitHub gets first, *Fork the course into the GitHub account ...?*, which the lab describes, so the driver no longer stops on it.
+
+## 2026-11-08
+
+- Lab 1.1: the Browserforce dependency is named **sfdx-browserforce-plugin**, as its card in the Setup panel reads.
+- Lab 1.2: the setup output shows the line that switches issues on in your fork, and the switch between **Major branches**, **Feature branches** and **Dev orgs** is no longer described as appearing once GitHub is connected: it is always there.
+- Lab 1.3: a troubleshooting entry for the warning that `helios-dev` is not registered because issues are off in a fork set up before 2026-11-07, fixed by running **Set up my training environment** again.
+- Labs 2.3, 2.4 and 2.9 link the new sfdx-hardis page of each deployment action type they use (Apex, Data, Schedule batch, Manual), which show these labs in their Learn by doing section.
+- Lab 3.10: the conflict question screenshot lists the answers in the order the command asks them, and the lab says the risky answers leave the files they decided in the Pull Request and in the commit message of the story.
+- **Set up my training environment** waits for a fork it has just created before switching issues on, and says what to do when it still cannot.
+- DevOps Pipeline screenshots in Labs 1.2 to 3.10 show the **Major branches** / **Feature branches** / **Dev orgs** switch instead of the former toggle, on its own row above the diagram, and Lab 3.2 points at **Feature branches** on its picture.
+- Guinea Run: the end credits thank Haim Knokh (SFDMU), Matthias Rolke (Browserforce) and Dave Renald Saavedra (scratch org snapshots), as the sfdx-hardis Special Thanks now do.
+
+## 2026-11-07
+
+- DevOps Pipeline: the **Show feature branches** toggle became a switch on the diagram between **Major branches**, **Feature branches** and **Dev orgs**. Labs 1.2, 2.3 and 3.2 follow it.
+- Lab 1.3: New User Story also registers `helios-dev` in the development orgs list of your repository, and the setup of your training environment switches issues on in your fork, where that list lives.
+- Lab 1.1: the Setup panel installs Browserforce too, now one of the dependencies of sfdx-hardis, and its screenshots show it.
+
+## 2026-11-05
+
+- Lab 3.10: the conflict question of the promotion shows its seven answers, including the new "solve now" and the two risky "keep the source version" ones, and the lab explains what those would have done to this week's promotion.
+
 ## 2026-11-02
 
 - Guinea Run: pick a nickname and a guinea pig once, after your first world, and every new best score goes to the Hall of Fame on its own, with no GitHub account and nothing else about you stored.
