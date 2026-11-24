@@ -5,7 +5,7 @@ description: "Modifiez un flow Salesforce existant, puis lisez correctement un c
 level: 2
 lab: 2
 lang: fr
-source_rev: "35a006aad5018c8fa9b60c656e4066dc7a68d45e"
+source_rev: "e5fe1ff3765a1f4158d2c1412785c6f303e83786"
 screenshots:
   - annotated/vscode/package-xml-filtered
   - annotated/vscode/editor-field-file
@@ -210,9 +210,10 @@ Rappel : [Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publish
 
    ![La carte Save / Publish du panneau DevOps Pipeline](../../_assets/annotated/vscode/pipeline-cards--save-publish.png)
 
-5. Poussez, ouvrez la Pull Request vers `integration` dans votre fork (votre copie personnelle du
-   repository du cours sur GitHub, par exemple `github.com/my-username/sfdx-hardis-training`), et
-   attendez
+5. En bas du panneau, cliquez sur **Create Pull Request**, comme dans le [Lab 1.6](../level-1-contributor-basics/1-6-pull-request-deployment-check-and-merge.md) :
+   elle ouvre la Pull Request vers `integration` dans votre fork (votre copie personnelle du
+   repository du cours sur GitHub, par exemple `github.com/my-username/sfdx-hardis-training`).
+   Créez-la, et attendez
 
 !!! warning "Regardez ce que vous n'avez pas récupéré"
     Le retriever a aussi listé `Installation__c.Crew_Warning_Sent__c`, le champ que vous avez créé en

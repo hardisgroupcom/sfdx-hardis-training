@@ -5,7 +5,7 @@ description: "Votre org de développement est en retard sur integration. Faites-
 level: 2
 lab: 1
 lang: fr
-source_rev: "17620963ea4cea45bcb99819123daaf900f1bfb0"
+source_rev: "dea5039c04fbd8fd7c3b6d88d2c833e9bbe525ad"
 screenshots:
   - annotated/vscode/sidebar-commands-custom-menu-2--training-menu
   - annotated/web/github-pr-files
@@ -250,7 +250,9 @@ d'absence, il mérite d'être lu avant toute chose.
 
 #### Vous devriez voir
 
-- Pour la seule story de Romain, **WHERE** qui indique **1 Pull Request in the window**
+- **WHERE** qui indique **0 Pull Requests in the window** : cette première fois, rien n'est encore
+  choisi. Il passe à **1 Pull Request in the window** quand vous choisissez la story de Romain à
+  l'étape 4
 
 ### 4. Choisir ce qu'on rapatrie
 

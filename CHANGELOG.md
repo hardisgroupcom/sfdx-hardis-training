@@ -5,6 +5,8 @@ a day, newest first, and a change goes under the date of the day it is made.
 
 ## 2026-11-24
 
+- Lab 2.1: step 3 says the **WHERE** block reads 0 Pull Requests on a first backpromote, and turns to 1 once Romain's story is picked in step 4.
+- Lab 2.2: step 3 opens the Pull Request with the **Create Pull Request** button of the Save / Publish panel, which targets `integration` in the learner's fork.
 - Badge claims: the audit also checks on GitHub that each lab ended with a merged Pull Request on which Simulate Deployment (sfdx-hardis) ran against the learner's org, and that no level went faster than its own deployment checks, so a fork filled with copied files no longer earns a badge.
 
 ## 2026-11-15

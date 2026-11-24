@@ -236,7 +236,8 @@ refresh is needed. On a Monday after a week off it is worth reading before anyth
 
 #### You should now see
 
-- For Romain's story alone, **WHERE** reads **1 Pull Request in the window**
+- **WHERE** reading **0 Pull Requests in the window**: this first time, nothing is picked yet. It
+  turns to **1 Pull Request in the window** when you pick Romain's story in step 4
 
 ### 4. Choose what comes down
 

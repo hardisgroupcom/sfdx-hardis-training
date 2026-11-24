@@ -205,7 +205,9 @@ Refresher: [Lab 1.5](../level-1-contributor-basics/1-5-retrieve-commit-and-publi
 
    ![The Save / Publish card of the DevOps Pipeline panel](../../_assets/annotated/vscode/pipeline-cards--save-publish.png)
 
-5. Push, open the Pull Request into `integration` in your fork (your own copy of the course repository on GitHub, for example `github.com/my-username/sfdx-hardis-training`), and wait
+5. At the bottom of the panel, click **Create Pull Request**, as in [Lab 1.6](../level-1-contributor-basics/1-6-pull-request-deployment-check-and-merge.md): it opens the
+   Pull Request into `integration` in your fork (your own copy of the course repository on GitHub,
+   for example `github.com/my-username/sfdx-hardis-training`). Create it, and wait
 
 !!! warning "Look at what you did not retrieve"
     The retriever also listed `Installation__c.Crew_Warning_Sent__c`, the field you created first.
