@@ -85,8 +85,10 @@ submit. [Opening the form by hand](https://github.com/hardisgroupcom/sfdx-hardis
 works too.
 
 A job clones your repository, re-runs every check of the level against its actual content and
-history, and answers on the issue. Nobody reviews claims by hand. A level 2 claim re-runs the level
-1 audit too, and a level 3 claim re-runs all three.
+history, and answers on the issue. It also reads, through the GitHub API, the Pull Request each lab
+ended with and the deployment check that ran on it against your org, because the files of a level
+can be copied and that trace cannot. Nobody reviews claims by hand. A level 2 claim re-runs the
+level 1 audit too, and a level 3 claim re-runs all three.
 
 The claim command also shows the open source project each level teaches, sfdx-hardis, MegaLinter
 and the VS Code extension, in case you want to star it. It never stars anything for you, and the

@@ -148,7 +148,7 @@ const MAX_HISTORY_PAGES = 20;
  * repository is gone, and anything else has to stop the run: counted as a
  * missing repository, it would quietly take a learner out of every figure.
  */
-async function graphql(token, query, variables) {
+export async function graphql(token, query, variables) {
   const answer = await request(token, `${API}/graphql`, { method: "POST", body: JSON.stringify({ query, variables }) });
   const errors = answer.errors || [];
   if (errors.some((error) => error.type !== "NOT_FOUND")) {

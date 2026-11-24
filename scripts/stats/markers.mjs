@@ -32,20 +32,20 @@ export const SEGMENTS = [
   // ------------------------------------------------------------- level 1
   // Set up my training environment ends with this commit
   { level: 1, labs: ["1.2"], anchor: true, end: commit(/^Point the pipeline at my training orgs/i) },
-  { level: 1, labs: ["1.3", "1.4", "1.5", "1.6"], end: head(/^features\/US-014/i) },
-  { level: 1, labs: ["1.7"], end: head(/^features\/US-016/i) },
+  { level: 1, labs: ["1.3", "1.4", "1.5", "1.6"], end: head(/(^|\/)US-014/i) },
+  { level: 1, labs: ["1.7"], end: head(/(^|\/)US-016/i) },
   // ------------------------------------------------------------- level 2
   // The backpromote of Lab 2.1 happens in the org and leaves nothing here
-  { level: 2, labs: ["2.1", "2.2"], end: head(/^features\/US-021/i) },
-  { level: 2, labs: ["2.3"], end: head(/^features\/US-024/i) },
-  { level: 2, labs: ["2.4"], end: head(/^features\/US-026/i) },
-  { level: 2, labs: ["2.5"], end: head(/^features\/US-027/i) },
-  { level: 2, labs: ["2.6"], end: head(/^features\/US-033/i) },
-  { level: 2, labs: ["2.7"], end: head(/^features\/US-034/i) },
-  { level: 2, labs: ["2.8"], end: head(/^features\/US-038/i) },
-  { level: 2, labs: ["2.9"], end: head(/^features\/US-041/i) },
+  { level: 2, labs: ["2.1", "2.2"], end: head(/(^|\/)US-021/i) },
+  { level: 2, labs: ["2.3"], end: head(/(^|\/)US-024/i) },
+  { level: 2, labs: ["2.4"], end: head(/(^|\/)US-026/i) },
+  { level: 2, labs: ["2.5"], end: head(/(^|\/)US-027/i) },
+  { level: 2, labs: ["2.6"], end: head(/(^|\/)US-033/i) },
+  { level: 2, labs: ["2.7"], end: head(/(^|\/)US-034/i) },
+  { level: 2, labs: ["2.8"], end: head(/(^|\/)US-038/i) },
+  { level: 2, labs: ["2.9"], end: head(/(^|\/)US-041/i) },
   // ------------------------------------------------------------- level 3
-  { level: 3, labs: ["3.1"], end: head(/^features\/US-050/i) },
+  { level: 3, labs: ["3.1"], end: head(/(^|\/)US-050/i) },
   { level: 3, labs: ["3.2"], end: head(/^training\/mate-us-052/i) },
   { level: 3, labs: ["3.3"], end: head(/^training\/mate-us-0(56|62)/i) },
   { level: 3, labs: ["3.4"], end: head(/^training\/mate-us-020/i) },
@@ -67,8 +67,8 @@ export const SEGMENTS = [
  */
 export const LEVEL_STARTED = {
   1: [/^integration$/i, /^features\//i],
-  2: [/^training\/mate-us-017/i, /^features\/US-0(21|24|26|27|33|34|38|41)/i],
-  3: [/^preprod$/i, /^features\/US-050/i, /^training\/mate-us-05[2-9]/i, /^training\/mate-us-06/i, /^retrofit\//i, /^promotion\//i]
+  2: [/^training\/mate-us-017/i, /(^|\/)US-0(21|24|26|27|33|34|38|41)/i],
+  3: [/^preprod$/i, /(^|\/)US-050/i, /^training\/mate-us-05[2-9]/i, /^training\/mate-us-06/i, /^retrofit\//i, /^promotion\//i]
 };
 
 export const LEVELS = [1, 2, 3];

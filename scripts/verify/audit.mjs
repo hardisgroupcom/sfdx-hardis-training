@@ -14,6 +14,10 @@
  *  4. Bound the clone: depth, blob filter, size, timeout.
  *  5. A level claim re-runs the audits of the levels it requires.
  *
+ * Next to the rules, which read files, it reads what GitHub says about the work
+ * (evidence.mjs): each lab ended with a merged Pull Request that deployed to the
+ * learner's org. The files alone can be copied from this repository.
+ *
  * Output: a markdown report on stdout, and a JSON summary when --json is passed.
  * Exit code 0 when the claim passes, 1 when it does not.
  */
@@ -21,7 +25,9 @@ import fs from "fs";
 import path from "path";
 import { pathToFileURL } from "url";
 import { makeContext, rulesForLevel } from "./rules.mjs";
-import { parseArgs } from "../lib/util.mjs";
+import { parseArgs, universe } from "../lib/util.mjs";
+import { githubToken, parseRepositoryUrl } from "../stats/collect.mjs";
+import { evidenceChecks, isEvidenceExempt, levelHasPullRequests, readEvidence, shippedWorkflows } from "./evidence.mjs";
 
 const LEVEL_NAMES = {
   1: "sfdx-hardis Contributor Basics",
@@ -97,9 +103,30 @@ export function claimObjections(ctx, level) {
   return objections;
 }
 
-export function auditRepository(dir, level) {
+/**
+ * The levels whose GitHub evidence is asked for: the level claimed, always, and
+ * each level below it that the learner worked in this repository. "Reset this
+ * level" hands a learner the finished work of the levels below, without a Pull
+ * Request of theirs, and the audit already accepts that work as it accepts the
+ * files. It shows either as the start branch, when the fork kept it, or as a
+ * level none of whose labs left a Pull Request. A level with some of its Pull
+ * Requests was worked here, and has to have all of them.
+ */
+export function levelsNeedingEvidence(ctx, level, evidence) {
+  return levelsToAudit(level).filter((each) =>
+    each === level ||
+    (![each + 1, each + 2].some((above) => above <= 3 && satOnStartState(ctx, above)) && levelHasPullRequests(evidence, each)));
+}
+
+/**
+ * Audits a clone. `evidence` and `shipped` come from evidence.mjs; when
+ * `evidence` is null the GitHub checks are not run (an exempt account, or a run
+ * by hand with --skip-evidence). `objections: false` reads a repository past the
+ * level asked, which the re-audit of existing badges needs.
+ */
+export function auditRepository(dir, level, { evidence = null, shipped = null, objections: withObjections = true } = {}) {
   const ctx = makeContext(dir);
-  const objections = claimObjections(ctx, level);
+  const objections = withObjections ? claimObjections(ctx, level) : [];
   if (objections.length > 0) {
     return { results: [], passed: 0, total: 0, ok: false, objections };
   }
@@ -121,6 +148,9 @@ export function auditRepository(dir, level) {
       }
       results.push({ level: each, rule, ...outcome });
     }
+  }
+  if (evidence) {
+    results.push(...evidenceChecks(evidence, levelsNeedingEvidence(ctx, level, evidence), shipped || new Map()));
   }
   const passed = results.filter((r) => r.ok).length;
   return { results, passed, total: results.length, ok: passed === results.length, objections: [] };
@@ -208,7 +238,12 @@ async function main() {
     process.exit(2);
   }
 
-  const audit = auditRepository(dir, level);
+  let audit;
+  try {
+    audit = auditRepository(dir, level, await evidenceFor(args));
+  } catch (error) {
+    audit = unreadableEvidence(error);
+  }
   const report = renderReport(audit, {
     level,
     handle: args.handle || "unknown",
@@ -245,6 +280,38 @@ async function main() {
   }
 
   process.exit(audit.ok ? 0 : 1);
+}
+
+/**
+ * The GitHub evidence of the repository named by --repo. None for the account
+ * of the end to end tests, or with --skip-evidence on a run by hand.
+ */
+async function evidenceFor(args) {
+  if (args["skip-evidence"] || isEvidenceExempt(args.handle)) {
+    return {};
+  }
+  const repo = parseRepositoryUrl(args.repo);
+  if (!repo) {
+    throw new Error("--repo is not a GitHub repository URL, so its Pull Requests cannot be read");
+  }
+  const token = githubToken();
+  const evidence = await readEvidence(token, repo);
+  if (!evidence) {
+    throw new Error(`${repo.owner}/${repo.name} could not be read through the GitHub API`);
+  }
+  return { evidence, shipped: await shippedWorkflows(token, universe().course.upstreamRepo) };
+}
+
+/** A failed audit that says GitHub could not be read, rather than a pass without the evidence. */
+function unreadableEvidence(error) {
+  const result = {
+    level: 0,
+    rule: { id: "-", title: "The Pull Requests of your repository could be read" },
+    ok: false,
+    detail: `GitHub could not be read: ${error.message}`,
+    where: "nothing to change on your side: edit this issue in a few minutes to run the audit again"
+  };
+  return { results: [result], passed: 0, total: 1, ok: false, objections: [] };
 }
 
 // A Windows file URL carries three slashes and a drive letter, so comparing the

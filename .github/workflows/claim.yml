@@ -152,6 +152,9 @@ jobs:
           LEVEL: ${{ steps.claim.outputs.level }}
           HANDLE: ${{ steps.claim.outputs.handle }}
           REPO_URL: ${{ steps.claim.outputs.repo }}
+          # To read the Pull Requests of the learner repository and the deployment
+          # runs on them (scripts/verify/evidence.mjs). Public data, read only.
+          GH_TOKEN: ${{ github.token }}
         run: |
           node scripts/verify/audit.mjs \
             --level "$LEVEL" \

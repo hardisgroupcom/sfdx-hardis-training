@@ -5,7 +5,7 @@ description: "Livrez une User Story Salesforce de bout en bout sans pas-à-pas :
 level: 1
 lab: 7
 lang: fr
-source_rev: "817b481bad3a9f793d8623ac75039d489caa82e9"
+source_rev: "ce33c71860201d5415b1b927f4015ad374643571"
 screenshots:
   - annotated/web/github-star-sfdx-hardis
 depends_on:
@@ -135,6 +135,11 @@ Un job clone ensuite votre fork, rejoue sur lui tous
 les contrôles ci-dessus, et répond sur l'issue. Personne ne le relit à la main, cela prend donc
 généralement deux minutes. Si quelque chose ne se vérifie pas, le commentaire nomme le lab exact et
 ce qu'il a cherché, vous corrigez, et vous modifiez l'issue pour le relancer.
+
+Les fichiers ne suffisent pas à eux seuls. Le job lit aussi, sur GitHub, la Pull Request par
+laquelle chaque lab s'est terminé, et vérifie que **Simulate Deployment (sfdx-hardis)** a tourné
+dessus contre votre org. C'est la trace du travail lui-même, et la raison pour laquelle chaque lab
+se merge par une Pull Request aux contrôles verts plutôt que par un push.
 
 Votre fork doit être public pour que l'audit
 puisse le lire. S'il est privé, la commande propose de le rendre public.

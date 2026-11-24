@@ -3,6 +3,10 @@
 What changed in the course, for learners and trainers. The course has no versions: each section is
 a day, newest first, and a change goes under the date of the day it is made.
 
+## 2026-11-24
+
+- Badge claims: the audit also checks on GitHub that each lab ended with a merged Pull Request on which Simulate Deployment (sfdx-hardis) ran against the learner's org, and that no level went faster than its own deployment checks, so a fork filled with copied files no longer earns a badge.
+
 ## 2026-11-15
 
 - Lab 1.6: the window of a Pull Request in VS Code can search its comments, and the lab shows its search button next to the tabs, the job and the comment. Its pictures, and the ones of Lab 3.2, are taken again.

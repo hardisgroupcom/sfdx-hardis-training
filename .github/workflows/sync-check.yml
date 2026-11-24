@@ -60,6 +60,11 @@ jobs:
       - name: The GitHub accounts gh holds are read right
         run: node --test scripts/lib/gh-accounts.test.mjs
 
+      # A badge claim also asks GitHub for the Pull Request and the deployment
+      # each lab ends with: a repository assembled from the files passed without
+      - name: The badge audit asks for the work, not only its files
+        run: node --test scripts/verify/evidence.test.mjs
+
       # The Statistics page is built from a committed file, and that file must
       # never name a learner
       - name: The course statistics add up, and name nobody

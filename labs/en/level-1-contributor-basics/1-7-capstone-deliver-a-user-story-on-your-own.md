@@ -128,6 +128,11 @@ reviews it by hand, so it usually takes a couple of minutes. If something does n
 comment names the exact lab and what it looked for, you fix it, and you edit the issue to run it
 again.
 
+The files are not enough on their own. The job also reads, on GitHub, the Pull Request each lab
+ended with, and checks that **Simulate Deployment (sfdx-hardis)** ran on it against your org. That
+is the trace of the work itself, and why each lab merges through a Pull Request with its checks
+green rather than by a push.
+
 Your fork has to be public for the audit to read it. If it is private, the command offers to
 make it public.
 
